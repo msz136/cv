@@ -338,10 +338,9 @@
           <div class="date">2026.03 - 至今</div>
         </div>
         <ul>
-          <li>面向平台侧机器人集群控制，设计 robot task harness，统一任务上下文、机器人状态 memory、subagent 分工、排他动作控制与取消补偿；并行调度作为其中一项能力，支持多机器人任务与非物理任务并发。</li>
-          <li>将原生工具 schema、robot scope、参数约束与取消补偿写入 SFT/GRPO 训练目标和 schema-aware reward；组织 62,223 条 SFT 数据与 8,916 条 GRPO 数据，完成 Qwen3-VL-8B 500-step SFT + 1007-step online GRPO。</li>
-          <li>训练后 SFT tool-call holdout 达到 tool accuracy 95.3%、critical 94.7%、coverage 96.4%；project robot sandbox 130 条样本 tool/arg/scope 均达 100%，在 robot sandbox 对比集上 tool accuracy 从 base 8B 的 0% 提升至 100%。</li>
-          <li>面向语义导航 grounding 与 OPD 多任务融合，构建 13,879 个 high-quality base boxes / 41,637 条训练样本并完成 Qwen3-VL-8B SFT；held-out strict format 100%，Mean IoU 从 0.1319 提升至 0.3501，OPD final 在 10k raw-holdout 达到 Box Acc@0.5 51.3%、Point Hit@100 84.1%、Text loose 87.4%、Bool acc 90.0%。</li>
+          <li>面向平台侧机器人集群控制，设计并实现 robot task harness：将多会话任务上下文、robot memory、subagent 分工、request 级 robot mutex、排他动作与取消补偿收敛到统一执行语义；支持按 robot scope 的会话级互斥、取消恢复与多机器人/非物理任务并发。</li>
+          <li>围绕 native tools 的 schema、robot scope、参数约束与时序可取消性，构造 SFT/GRPO 数据和 schema-aware reward；组织 62,223 条 SFT / 8,916 条 GRPO 数据，完成 Qwen3-VL-8B 500-step SFT + 1007-step online GRPO，并扩展 Qwen3-VL-32B SFT/GRPO 评估：8B SFT holdout tool accuracy 95.3%、critical 94.7%、coverage 96.4%；32B SFT/GRPO holdout tool accuracy 95.4%/95.6%，robot sandbox 130 条样本 tool/coverage/critical 均达 100%。</li>
+          <li>面向语义导航 grounding，设计数据筛选、box 质量控制与 OPD 多任务训练口径：构建 13,879 个 high-quality base boxes / 41,637 条训练样本作为冷启动数据，将 box/point/text/bool 任务统一纳入 OPD 融合；held-out strict format 100%，Mean IoU 从 0.1319 提升至 0.3501，OPD final 在 10k raw-holdout 达到 Box Acc@0.5 51.3%、Point Hit@100 84.1%、Text loose 87.4%、Bool acc 90.0%。</li>
         </ul>
       </div>
 
@@ -361,12 +360,12 @@
       <div class="project-grid">
         <div class="project wide">
           <div class="row">
-            <div class="role">OpenPiVLA / OpenPI VLA 机器人策略评估</div>
+            <div class="role">OpenPiVLA / OpenPI VLA 训练复现与策略评估</div>
             <div class="date">2026.06</div>
           </div>
           <ul>
-            <li>作为 VLA 项目复现 OpenPI/OpenPiVLA 策略训练与评估路径，围绕 LIBERO/ALOHA 的 observation/state 归一化、action chunk、controller 与 simulator contract，明确 task-level rollout、success/reward 与视频证据的可比口径。</li>
-            <li>将 OpenPI policy 输出映射到 MuJoCo / robosuite 原生 7D action contract，记录 action norm/delta/jerk、state divergence、reward/success 与轨迹视频，用于区分策略误差、动作尺度错配和控制器约束。</li>
+            <li>基于官方 OpenPI 源码改造 VLA 训练复现路径，接入 Qwen3-VL-2B + LoRA，重构 RunRecipe、DROID/MindCube iterable dataset、Qwen3VLCollator 与统一 trainer；将 image/instruction/action window 序列化为 assistant-side action JSON，实现 VLA-only、VLM-only、co-train 三类 recipe 的可保存训练。</li>
+            <li>评估侧保留官方 OpenPI policy server + LIBERO/ALOHA task-native rollout，统一 observation/state normalization、action chunk、controller 与 7D/14D action contract，记录 success/reward、action norm/delta/jerk、state divergence 与视频证据；LIBERO 四套件评估最优 run 在 goal/object/spatial/libero_10 达到 0.99/0.995/0.98/0.93。</li>
           </ul>
         </div>
 
