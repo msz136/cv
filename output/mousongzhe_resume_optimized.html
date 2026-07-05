@@ -338,7 +338,7 @@
           <div class="date">2026.03 - 至今</div>
         </div>
         <ul>
-          <li>面向平台侧对机器人集群的任务编排与控制，设计 robot task harness，将任务上下文、机器人状态 memory、subagent 分工、排他动作锁与取消补偿纳入统一执行语义；其中任务并行支持同一 robot_id 会话级互斥、不同机器人/非物理任务并发，保障导航-下单等长时序控制任务的连续性。</li>
+          <li>面向平台侧机器人集群控制，设计 robot task harness，统一任务上下文、机器人状态 memory、subagent 分工、排他动作控制与取消补偿；并行调度作为其中一项能力，支持多机器人任务与非物理任务并发。</li>
           <li>将原生工具 schema、robot scope、参数约束与取消补偿写入 SFT/GRPO 训练目标和 schema-aware reward；组织 62,223 条 SFT 数据与 8,916 条 GRPO 数据，完成 Qwen3-VL-8B 500-step SFT + 1007-step online GRPO。</li>
           <li>训练后 SFT tool-call holdout 达到 tool accuracy 95.3%、critical 94.7%、coverage 96.4%；project robot sandbox 130 条样本 tool/arg/scope 均达 100%，在 robot sandbox 对比集上 tool accuracy 从 base 8B 的 0% 提升至 100%。</li>
           <li>面向语义导航 grounding 与 OPD 多任务融合，构建 13,879 个 high-quality base boxes / 41,637 条训练样本并完成 Qwen3-VL-8B SFT；held-out strict format 100%，Mean IoU 从 0.1319 提升至 0.3501，OPD final 在 10k raw-holdout 达到 Box Acc@0.5 51.3%、Point Hit@100 84.1%、Text loose 87.4%、Bool acc 90.0%。</li>
@@ -384,12 +384,12 @@
 
         <div class="project">
           <div class="row">
-            <div class="role">UWM / LIBERO 世界模型策略评估</div>
+            <div class="role">UWM / LIBERO 世界模型策略训练与评估复现</div>
             <div class="date">2026.07</div>
           </div>
           <ul>
-            <li>复现 UWM 在 LIBERO 的 fixed-init 评估协议，引入 pruned_init、5-step zero-action warmup、episode seed/init-state/checkpoint hash 等记录，使 policy success 可按任务与初始化状态复核。</li>
-            <li>已完成两个 50-rollout strict 任务：libero_book_caddy 34/50 = 68%，libero_soup_cheese 30/50 = 60%；同步分析 reset-style 与 fixed-init 协议差异对成功率口径的影响。</li>
+            <li>复现 UWM 官方 LIBERO 训练到评估全流程：从 LIBERO-90 checkpoint 继承到 5 个 LIBERO-10 下游任务 finetune，整理多卡训练、checkpoint / normalizer / eval manifest，并对齐 pruned_init、5-step zero-action warmup、50 rollouts/task 的 fixed-init closed-loop eval 协议。</li>
+            <li>最新 strict aligned LIBERO 5-task 评估达到 186/250 = 74.4%：book_caddy 44/50、soup_cheese 40/50、bowl_drawer 38/50、moka_moka 33/50、mug_mug 31/50；接近官方 Table II 0.79 口径。</li>
           </ul>
         </div>
       </div>

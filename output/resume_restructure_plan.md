@@ -15,7 +15,7 @@
 - 删除未形成有效产出的经历，给具身方向项目留出篇幅。
 - VLA 项目保留 OpenPI/OpenPiVLA 的策略训练与评估设计；本地暂未检索到 LIBERO 超官方 baseline 的落档指标，HTML 正文先留空，不放低价值 smoke 指标。
 - WAM 项目强调 1-epoch 后训练复现、action/world/value 多目标训练合同、loss breakdown 与可视化诊断。
-- UWM 项目强调 LIBERO fixed-init 评估协议与已完成 strict 任务指标。
+- UWM 项目改为训练与评估全流程复现：LIBERO-90 checkpoint 到 5 个 LIBERO-10 下游任务 finetune，配套 checkpoint / normalizer / eval manifest，并使用最新 strict aligned 5-task 指标。
 
 ## 2. 推荐定位
 
@@ -43,7 +43,7 @@
 | P0 | 商汤 `muxi/OPD` | 并入同一段商汤实习，作为语义导航 grounding 与 OPD 多任务融合成果呈现。 |
 | P1 | `Project/openpivla_deployment` | 单独写成 VLA 项目，突出 OpenPI/OpenPiVLA 策略训练、动作语义和 LIBERO/ALOHA 评估口径；LIBERO 超 baseline 指标待落档后补。 |
 | P1 | `Project/reproduction_plan.md` Cosmos Policy | 单独写成 WAM 项目，突出 1 epoch 后训练复现、loss/data contract、future prediction 诊断。 |
-| P1 | `Project/report/uwm_libero...` | 单独写成 UWM 项目，突出 LIBERO fixed-init 协议和两个 50-rollout strict 任务结果。 |
+| P1 | `Project/wm/uwm_libero_official_repro` + `Project/report/uwm_libero_strict_eval_recovery_20260702` | 单独写成 UWM 项目，突出 LIBERO-90 到 LIBERO-10 的训练复现、fixed-init 评估协议和最新 5-task strict aligned 结果。 |
 | P2 | 广州皓岚 DeepSeek | 保留一条，作为早期大模型训练经历，不加入未经证实的数值。 |
 | P3 | 医学图像分割 | 本轮移出简历，给具身方向项目留空间。 |
 
@@ -53,8 +53,8 @@
 
 可以写：
 
-- 平台级机器人集群控制 task harness：任务上下文、机器人状态 memory、subagent 分工、排他动作锁、取消补偿与任务并行。
-- 任务并行作为 harness 的一个 feature：request 级 robot mutex、robot_id 粒度互斥、不同机器人和非物理任务并行、按 robot 取消活跃请求。
+- 平台级机器人集群控制 task harness：任务上下文、机器人状态 memory、subagent 分工、排他动作控制与取消补偿。
+- 任务并行只作为 harness 的其中一项能力：支持多机器人任务与非物理任务并发，避免在简历中喧宾夺主。
 - SFT 数据 62,223 条，GRPO 数据 8,916 条。
 - Qwen3-VL-8B 完成 500-step SFT 与 1007-step online GRPO。
 - SFT tool-call holdout：tool accuracy 95.3%，critical 94.7%，coverage 96.4%。
@@ -116,15 +116,16 @@
 
 可以写：
 
+- 复现 UWM 官方 LIBERO 训练到评估全流程：从 LIBERO-90 checkpoint 初始化，到 5 个 LIBERO-10 下游任务 finetune，再到 fixed-init closed-loop rollout。
+- 训练侧证据包括 8 卡 Muxi DDP finetune wrapper、任务列表、checkpoint、batch / steps 配置、checkpoint / normalizer / eval manifest 和 run-specific 输出。
 - LIBERO fixed-init 评估协议：`pruned_init`、5-step zero-action warmup、50 rollouts/task、8 shards、600 rollout length。
-- 每个 episode 记录 seed、init-state、checkpoint hash / data hash，便于复核。
-- strict result：`libero_book_caddy` 34/50 = 68%，`libero_soup_cheese` 30/50 = 60%。
-- 可讨论 reset-style 与 fixed-init 协议差异对成功率口径的影响。
+- 最新 strict aligned 5-task result：186/250 = 74.4%，其中 `libero_book_caddy` 44/50，`libero_soup_cheese` 40/50，`libero_bowl_drawer` 38/50，`libero_moka_moka` 33/50，`libero_mug_mug` 31/50。
+- 与官方 Table II rounded average 0.79 口径接近，差距约 4.6 个百分点；简历正文采用“接近官方 Table II 0.79 口径”的保守表达。
 
 谨慎边界：
 
-- 5-task strict average 未确认前不作为简历指标。
-- reset-style 历史结果可在面试追问时解释协议差异，正文优先展示 strict fixed-init 已完成结果。
+- 不使用早期宽松评估口径做正式 benchmark 对比。
+- RoboCasa 低成功率诊断不作为 UWM 项目的简历成果；UWM 正文聚焦 LIBERO full-flow 训练复现与最新 strict aligned 指标。
 
 ## 5. 最终简历结构
 
@@ -137,7 +138,7 @@
 5. 项目经历：
    - OpenPiVLA / OpenPI VLA 机器人策略评估
    - Cosmos Policy / WAM 后训练 1 epoch 复现
-   - UWM / LIBERO 世界模型策略评估
+   - UWM / LIBERO 世界模型策略训练与评估复现
 
 ## 6. 面试表达建议
 
@@ -146,7 +147,7 @@
 - 商汤实习：从“平台如何表示、分解、记忆和调度机器人控制任务”切入，再讲并行控制与训练评估。
 - VLA 项目：强调动作语义、仿真器、controller、success/reward/video 证据，LIBERO 指标补档后再做强表达。
 - WAM 项目：强调 action/world/value 三类训练信号、loss mask、1 epoch 复现和 future rollout 诊断。
-- UWM 项目：强调 fixed-init 评估协议、strict 任务结果和指标可比性。
+- UWM 项目：强调训练复现、fixed-init 评估协议、5-task strict aligned 指标和与官方口径的可比性。
 
 最高风险追问：
 
