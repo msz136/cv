@@ -1,163 +1,153 @@
 # 缪宋哲简历重构与优化方案
 
-## 1. 当前简历诊断
+## 1. 本轮改写结论
 
-原 PDF 是一页传统中文简历，版式干净，但最大问题是高价值经历没有被展开：
+本轮按“具身智能 / VLA-VLM Grounding / 机器人策略评估”重新组织简历，不再把 VLM/WM/WAM 压缩为一个小项目，也不把 OPD 单独分成商汤科技之外的一段经历。
 
-- 商汤实习只写了 4 条概括，未体现 Agent 工程、工具调用后训练、schema-aware eval、SFT/GRPO 训练规模和评估闭环。
-- `OPD` 与 Qwen3-VL semantic-nav 是实习支线，但原简历完全没有利用到数据构造、8 卡训练、held-out eval 和 raw-holdout 结果。
-- `Project` 里的 VLA/WM/WAM 是开源复现与小改造，应作为补充项目，不宜和商汤实习主线同权重。
-- 医学图像分割项目缺少 Dice 数值、baseline、消融表和个人贡献边界，暂时只能保留为弱项目。
-- 技能区过于泛，建议按 `后训练 / Agent / VLM-VLA / 工程 / 数学` 重组，而不是只列“LLM/VLM/VLA 相关技术栈”。
+改写后的 HTML 简历在：
+
+`C:\Users\mousongzhe\cv\output\mousongzhe_resume_optimized.html`
+
+核心变化：
+
+- 商汤实习合并为一个主体经历，覆盖机器人任务执行、工具使用训练、schema-aware reward/eval、semantic navigation grounding、OPD 多专家融合评估。
+- 删除未形成可验证产出的输入过滤工作。
+- 项目经历拆成三个独立项目：`OpenPiVLA / OpenPI` 表述为 VLA 项目；`Cosmos Policy / Predict2.5 1 epoch` 表述为 WAM 项目；`UWM / LIBERO` 单独表述为 UWM 项目。
+- 工作内容从“工程串接”改为“任务表示、训练目标、评估协议、指标口径、失败归因和报告产出”。
+- 指标只使用本地报告中能追溯的数字，避免把 smoke、proxy 或 partial eval 写成正式性能收益。
 
 ## 2. 推荐定位
 
 主叙事：
 
-> 数学背景 + 具身智能/Agent 算法实习，能把工具调用、模型后训练、机器人/VLM 评估和工程部署串成闭环。
+> 数学背景 + 商汤具身算法实习 + VLA/WAM/UWM 机器人学习复现，具备从任务数据、训练目标、评估协议到失败归因的闭环能力。
 
-最适合投递方向：
+适合投递：
 
-- 大模型算法实习：Agent、Tool Use、Post-Training、Alignment、RLHF/RLAIF/GRPO。
-- Embodied AI / VLA / VLM 算法实习：grounding、semantic navigation、robot policy eval。
-- AI infra / LLM application algorithm：OpenAI-compatible serving、tool schema、eval harness、model deployment。
+- 具身智能算法实习：VLA、VLM grounding、semantic navigation、robot policy eval。
+- 多模态算法实习：Qwen3-VL、box/point grounding、held-out eval、bad case 分析。
+- 大模型训练与评估实习：SFT、GRPO、schema-aware reward、native tools eval。
 
 不建议当前主打：
 
-- 纯医学图像算法岗位：证据最弱，缺少可追问指标。
-- 纯机器人控制策略岗位：Project 里有复现和评估，但实习主线更强的是 Agent/post-training/eval，不是从零做 policy learning。
+- 纯后端或平台岗位：会稀释具身/VLA 叙事。
+- 纯医学图像岗位：原医学分割项目证据弱，且与当前最强经历不一致。
+- 强硬件机器人控制岗位：目前证据更强的是策略评估、grounding 与复现实验，不是自研控制器。
 
-## 3. 经历权重排序
+## 3. 经历重排
 
 | 优先级 | 内容 | 简历处理 |
 | --- | --- | --- |
-| P0 | 商汤 `agent` 主线 | 放在实习第一段，写成 4 条核心 bullet，覆盖 Agent 工程、SFT/GRPO、schema-aware eval、模型部署。 |
-| P1 | 商汤支线 `OPD / muxi` | 放在商汤实习下的支线项目，写 2-3 条，突出数据构造、8 卡训练、held-out/raw-holdout 指标。 |
-| P2 | 广州皓岚 DeepSeek SFT/DPO | 保留一条，补数据规模、base model、eval benchmark 后可增强。 |
-| P3 | `Project` VLA/WM/WAM 复现 | 放到“开源复现与小改造”，强调部署、评估协议、边界意识，避免写成主实习成果。 |
-| P4 | 医学图像分割 | 暂保留一条；补充 Dice 后再决定是否展开。 |
+| P0 | 商汤 `agent` 主体 | 写成具身算法实习，强调机器人任务执行、工具使用行为建模、SFT/GRPO 与 native tools eval。 |
+| P0 | 商汤 `muxi/OPD` | 并入同一段商汤实习，作为 VLM grounding 与多专家融合评估成果呈现。 |
+| P1 | `Project/openpivla_deployment` | 单独写成 VLA 项目，突出 OpenPI/OpenPiVLA 策略评估、ALOHA 真实仿真结果和 LIBERO 失败边界。 |
+| P1 | `Project/reproduction_plan.md` Cosmos Policy | 单独写成 WAM 项目，突出 1 epoch 后训练复现、loss/data contract、RoboCasa 失败分析。 |
+| P1 | `Project/report/uwm_libero...` | 单独写成 UWM 项目，突出 LIBERO strict fixed-init 协议、partial results 和 benchmark 口径控制。 |
+| P2 | 广州皓岚 DeepSeek | 保留一条，作为早期大模型训练经历，不加入未经证实的数值。 |
+| P3 | 医学图像分割 | 本轮移出简历，给具身方向项目留空间。 |
 
-## 4. 可直接使用的重写结构
+## 4. 证据审计
 
-推荐一页结构：
+### 商汤机器人任务执行与工具使用训练
 
-1. 顶部定位：`大模型算法 / Agent / Embodied AI 实习方向`
-2. 教育背景：中山大学 + 上海交通大学推免，保留 GPA 和数学高分课程
-3. 专业技能：后训练、Agent、VLM/VLA、工程、数学与英语
+可以写：
+
+- SFT 数据 62,223 条，GRPO 数据 8,916 条。
+- 500-step SFT 与 1007-step online GRPO 完成，日志未出现 NaN/OOM/traceback/non-finite loss。
+- Project robot sandbox 130 条样本 tool/arg/scope 全为 100%。
+- SFT tool-call holdout tool accuracy 95.3%。
+- 报告建议进入 constrained shadow eval，而不是直接自动执行；safety side-effect 覆盖不足是后续风险。
+
+谨慎边界：
+
+- 不写未经证实的生产状态或整体负责人表述。
+- 不写超出当前评估边界的机器人自主执行结论。
+- 不把 tool-use 训练写成纯 Agent 岗位主叙事，简历中将其放在机器人任务执行与评估边界下。
+
+### 商汤 VLM grounding 与 OPD
+
+可以写：
+
+- 13,879 个 high-quality base boxes。
+- 41,637 条 high-quality train rows。
+- Qwen3-VL-8B semantic-nav SFT：163 optimizer steps，train loss 0.777。
+- held-out object_ref：strict format 100%，Mean IoU 0.3501；base lenient Mean IoU 0.1319。
+- OPD final raw-holdout 10k：Box Acc@0.5 51.3%，Point Hit@100 84.1%，Text loose 87.4%，Bool acc 90.0%。
+
+谨慎边界：
+
+- semantic-nav box 仍是 OPD 的短板，不能写“解决语义导航”。
+- OPD final 不是所有单项最佳，应该写“综合均衡”“形成 checkpoint 选择与数据配比建议”。
+
+### VLA 项目：OpenPiVLA / OpenPI
+
+可以写：
+
+- ALOHA official OpenPI MuJoCo rollout：3 episodes success 2/3 = 0.6667。
+- ALOHA multi-view visual rollout：2 episodes success 0.5。
+- LIBERO true simulator smoke 已跑通，但 first smoke success 0.0。
+- Bridge/Fractal 当前不具备 task-level success/reward result，只能写 renderer/blocker 与 proxy action 诊断。
+- 项目价值在于 VLA 评估协议、动作语义、controller、视频证据和 task-level result 边界。
+
+谨慎边界：
+
+- 不把 Bridge/Fractal proxy 写成正式 rollout。
+- 不把 LIBERO smoke 写成性能成果。
+
+### WAM 项目：Cosmos Policy / Predict2.5 1 epoch
+
+可以写：
+
+- 10-step、100-step、1k-step 与 full10k 训练均完成，full10k 保存 `iter_000010000` checkpoint。
+- WAM 数据合同覆盖 video、action、value、mask、slot index。
+- full10k 去重后 demo=4950、world=2519、value=2531；iter 10000 loss=0.0543。
+- 24 tasks × 5 episodes RoboCasa 小规模评估全部 exit code 0。
+- conservative trusted success = 0/118，应写作失败分析和训练复现，不写作策略性能提升。
+
+谨慎边界：
+
+- 1-episode smoke、future prediction 视频、PSNR/SSIM 不能写成整体 policy success。
+- 当前项目的亮点是 WAM 训练合同、loss 诊断、评估失败归因，而不是 benchmark 成绩。
+
+### UWM 项目
+
+可以写：
+
+- strict fixed-init 协议使用 `pruned_init`、5-step zero-action warmup、50 rollouts/task、8 shards、600 rollout length。
+- strict partial result：`libero_book_caddy` 34/50 = 0.68，`libero_soup_cheese` 30/50 = 0.60。
+- 旧的 UWM reset-style 结果 232/250 = 0.928 只能作为非严格对照。
+- 5-task strict average 尚未确认，不能写最终平均。
+
+谨慎边界：
+
+- 不把 UWM reset-style 写成 LIBERO strict benchmark。
+- 不报告未完成的 5-task strict average。
+
+## 5. 最终简历结构
+
+1. 顶部定位：具身智能 / VLA-VLM Grounding / 机器人策略评估
+2. 教育背景：中山大学数学本科 + 上海交通大学数学硕士推免
+3. 专业技能：具身方向、策略评估、模型训练、VLM/WAM、工程工具、英语
 4. 实习经历：
    - 商汤科技 | 具身算法实习
-   - 商汤支线 | Qwen3-VL semantic-nav / OPD
-   - 广州皓岚 | 大模型应用
+   - 广州皓岚信息技术有限公司 | 大模型应用实习
 5. 项目经历：
-   - VLA/WM/WAM 开源复现与小改造
-   - 医学图像分割
+   - OpenPiVLA / OpenPI VLA 机器人策略评估
+   - Cosmos Policy / WAM 后训练 1 epoch 复现
+   - UWM / LIBERO 世界模型策略评估
 
-我已按这个结构生成 HTML 草稿：
+## 6. 面试表达建议
 
-`C:\Users\mousongzhe\cv\output\mousongzhe_resume_optimized.html`
+最稳的讲法：
 
-## 5. 证据审计
+- 商汤实习：从“机器人任务怎样被表示、训练和评估”切入，而不是从服务开发切入。
+- VLA 项目：强调动作语义、仿真器、controller、success/reward/video 证据，不夸大失败结果。
+- WAM 项目：强调 action/world/value 三类训练信号、loss mask、1 epoch 复现和 RoboCasa failure analysis。
+- UWM 项目：强调评估协议差异和 benchmark 口径，主动说明 partial results 与 non-strict results 的区别。
 
-### 商汤 Agent 主线
+最高风险追问：
 
-证据强度：强。
-
-可写事实：
-
-- AceAgent 服务支持 OpenAI-compatible `/v1/chat/completions`、`/v1/chat`、工具调用、流式响应、robot prompt、tool_names 筛选、取消补偿、Redis 可恢复流等。
-- 训练流水线完成 62,223 条 SFT 数据和 8,916 条 GRPO 数据组织。
-- 8 卡环境完成 500-step SFT 与 1007-step online GRPO，报告中记录无 NaN/OOM/traceback/non-finite loss。
-- schema-aware native tools eval 中 project robot sandbox 130 条样本达到 tool/arg/scope 100%，SFT tool-call holdout tool accuracy 约 95%+。
-
-谨慎边界：
-
-- 不要写“上线生产”或“主导整个系统”，除非能提供内部上线、负责人边界和用户流量证据。
-- 不要写“自主智能体完全自动完成复杂任务”，应写“工具调用、参数约束、沙箱评估和执行边界”。
-
-### OPD / Qwen3-VL 支线
-
-证据强度：强。
-
-可写事实：
-
-- 语义导航 box-grounding 数据：13,879 high-quality base boxes，41,637 high-quality train rows。
-- Qwen3-VL-8B semantic-nav SFT：41,637 行，有效 batch size 256，163 optimizer steps，train loss 0.777。
-- Held-out object_ref：SFT expert strict format 100%，Mean IoU 0.3501；base lenient Mean IoU 0.1319。
-- Raw-holdout 10k：OPD final Box Acc@0.5 51.3%，Point Hit@100 84.1%，Text loose 87.4%，Bool acc 90.0%。
-
-谨慎边界：
-
-- `region_ref` transfer 仍弱，不要写“全面解决 semantic navigation”。
-- OPD 是实习支线，建议作为支线项目而不是压过 Agent 主线。
-
-### VLA / WM / WAM 开源复现
-
-证据强度：中。
-
-可写事实：
-
-- OpenPiVLA / OpenPI 部署有正式 remote deployment log，包含官方 checkpoint、MuJoCo rollout、LIBERO/robosuite 路径和 action eval。
-- ALOHA official checkpoint smoke 有 2/3 success；LIBERO first smoke success 为 0，需要如实表述为 simulator path 验证。
-- UWM/LIBERO 有 strict fixed-init 评估脚本和部分 50-rollout/task 结果，但最终 5-task strict average 未确认。
-- Cosmos/WAM 有训练和 eval 记录，但部分正式 eval 结果较弱，不适合作为“效果提升”主卖点。
-
-推荐写法：
-
-> 复现并小改造 VLA/WM/WAM 开源项目，完成远端环境部署、评估协议整理、rollout/eval 脚本适配和可视化报告；区分真实 simulator rollout、replay-only 可视化和 action-vector 诊断，避免将 smoke/proxy 结果误写成正式 benchmark。
-
-### 广州皓岚 DeepSeek 蒸馏
-
-证据强度：中。
-
-当前可写：
-
-- 数据准备、SFT、DPO、评估、数学推理场景。
-
-需要补证据：
-
-- 数据量、base/distilled model 名称、benchmark 名称、前后准确率或 pass@k、DPO 偏好对来源。
-
-### 医学图像分割
-
-证据强度：弱到中。
-
-当前可写：
-
-- Transformer/attention 模块、UNet/AUNet、Kvasir/Polygen、Dice、消融。
-
-需要补证据：
-
-- baseline Dice、改进后 Dice、是否有统计均值、训练配置、代码仓库或实验表。
-
-## 6. 可替换进简历的核心 Bullet
-
-### 商汤 Agent 主线
-
-- 参与机器人 Agent 对话与工具调用链路建设，支持 OpenAI-compatible tools、SSE 流式响应、robot scope 绑定、工具筛选和取消补偿，沉淀可评估的 tool schema 与执行边界。
-- 参与 Qwen3-VL 工具调用后训练流水线，组织 62,223 条 SFT 数据与 8,916 条 GRPO 数据，在 8 卡环境完成 500-step SFT 与 1007-step online GRPO，训练日志未出现 NaN/OOM/traceback。
-- 基于 AceAgent 原生工具 schema 设计 schema-aware reward 与 native tools eval；project robot sandbox 130 条样本达到 tool/arg/scope 100%，SFT tool-call holdout tool accuracy 约 95%+。
-
-### OPD 支线
-
-- 构建 semantic-nav box-grounding 数据链路，将 RoboPoint object_ref 样本转为 box manifest，并结合 Qwen-122B crop 标注扩展为 41,637 条高质量训练样本。
-- 在 MACA C500 8 卡上完成 Qwen3-VL-8B semantic-nav SFT，held-out object_ref 上 strict format 达到 100%，Mean IoU 从 base lenient 0.1319 提升到 0.3501。
-- 参与 OPD 多教师融合评估，构建 10k raw-holdout 审计；OPD final 在综合评估中达到 Box Acc@0.5 51.3%、Point Hit@100 84.1%、Text loose 87.4%。
-
-### 开源复现项目
-
-- 复现 OpenPiVLA、UWM/LIBERO、Cosmos Policy/WAM 等开源机器人学习项目，完成远端部署、脚本适配、评估协议整理和可视化报告。
-- 搭建 LIBERO/MuJoCo rollout 与 action-eval 记录链路，明确区分正式 simulator rollout、replay-only 可视化和 proxy action-vector 诊断，保证实验结论可追溯且不过度外推。
-
-## 7. 面试前必须补齐的问题
-
-1. 商汤 `agent/teamagent` 中你本人负责的模块边界是什么？是数据、训练、eval、服务接口、工具 schema，还是全链路联调？
-2. BERT 输入过滤模型的数据来源、正负样本规模、指标和上线/试用状态是什么？
-3. MiniMax-M2.5、Qwen3.5-122B、AceBrain 部署与推理优化里，你具体做了哪些优化？吞吐、延迟、显存、并发有没有数字？
-4. DeepSeek 蒸馏项目的数学推理评估集、baseline 和提升幅度是多少？DPO 偏好对怎么构造？
-5. 医学分割项目的 Dice baseline 和提升后结果是多少？是否有代码、实验表或报告？
-
-## 8. 下一步建议
-
-- 若要投具体 JD：先贴 JD，再按 `Agent / Post-Training / Embodied AI` 三类岗位分别定制版本。
-- 若要形成长期简历库：把商汤 Agent、OPD、广州皓岚、开源复现分别整理成 `timeline` 条目，后续可以自动按 JD 组合。
-- 若要生成最终 PDF：在确认上述 5 个问题后，基于 HTML 草稿做一轮压缩和打印检查，再导出一页 PDF。
+- “你本人负责的边界是什么？”答法应围绕数据、训练目标、reward/eval、报告与失败归因，不抢全部 owner。
+- “为什么 Cosmos Policy 评估结果是 0？”答法应说明这是 WAM 复现与诊断项目，正式结论是训练可跑通但策略成功率不足。
+- “UWM 0.928 为什么不能写成正式成绩？”答法应说明 reset-style 与 LIBERO fixed-init 的协议不同，正式比较必须用 strict fixed-init。
+- “OPD 是否解决 semantic-nav？”答法应说明 object_ref 有明确提升，但 semantic-nav box 仍是短板，后续应改进数据配比与 hard/boundary 样本。
