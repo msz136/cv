@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>缪宋哲 - 具身智能 Research 简历</title>
+  <style>
+    :root {
+      --ink: #17191c;
+      --muted: #59616c;
+      --line: #d7dce3;
+      --accent: #1f6f5b;
+      --accent-soft: #e7f2ee;
+      --paper: #ffffff;
+      --bg: #edf0f3;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif;
+      font-size: 11.75px;
+      line-height: 1.27;
+    }
+
+    body {
+      padding: 18px 0;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 10mm 14mm 9mm;
+      background: var(--paper);
+      box-shadow: 0 14px 42px rgba(21, 28, 38, 0.13);
+    }
+
+    .top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: start;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .headline {
+      margin-top: 5px;
+      color: var(--accent);
+      font-size: 13.2px;
+      font-weight: 800;
+    }
+
+    .summary {
+      margin: 5px 0 0;
+      max-width: 620px;
+      color: #30343a;
+      font-size: 11.7px;
+    }
+
+    .contact {
+      display: grid;
+      gap: 4px;
+      min-width: 210px;
+      padding-top: 3px;
+      color: var(--muted);
+      font-size: 11.2px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .contact strong {
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    section {
+      margin-top: 6px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 4px;
+      color: var(--ink);
+      font-size: 13.8px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .section-title::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: var(--line);
+    }
+
+    .item {
+      margin: 0 0 5px;
+    }
+
+    .item:last-child {
+      margin-bottom: 0;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 2px;
+    }
+
+    .role {
+      font-weight: 900;
+      font-size: 12.1px;
+    }
+
+    .date {
+      color: var(--ink);
+      font-weight: 800;
+      font-size: 11.1px;
+      white-space: nowrap;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 11.1px;
+      margin-top: -1px;
+    }
+
+    ul {
+      margin: 2px 0 0;
+      padding-left: 15px;
+    }
+
+    li {
+      margin: 1px 0;
+      padding-left: 1px;
+    }
+
+    .skills {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 3px 12px;
+      margin-top: 2px;
+    }
+
+    .skill-line {
+      display: grid;
+      grid-template-columns: 66px 1fr;
+      gap: 6px;
+      color: #2f343a;
+      font-size: 11.1px;
+    }
+
+    .skill-line strong {
+      color: var(--accent);
+      font-weight: 900;
+    }
+
+    .edu-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3px;
+    }
+
+    .edu-line {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 4px;
+    }
+
+    .tag {
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 12px;
+    }
+
+    .project {
+      border-left: 3px solid var(--accent);
+      padding-left: 8px;
+    }
+
+    .project.wide {
+      grid-column: 1 / -1;
+    }
+
+    .project .row {
+      margin-bottom: 1px;
+    }
+
+    .project ul {
+      margin-top: 3px;
+    }
+
+    @media print {
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      html,
+      body {
+        background: #fff;
+      }
+
+      body {
+        padding: 0;
+      }
+
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0;
+        box-shadow: none;
+      }
+
+      .top {
+        grid-template-columns: minmax(0, 1fr) 172px;
+      }
+
+      .contact {
+        min-width: 172px;
+        text-align: right;
+        white-space: nowrap;
+      }
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 0;
+      }
+
+      .page {
+        width: 100%;
+        min-height: auto;
+        padding: 24px 20px;
+      }
+
+      .top,
+      .project-grid,
+      .skills {
+        grid-template-columns: 1fr;
+      }
+
+      .project.wide {
+        grid-column: auto;
+      }
+
+      .contact {
+        min-width: 0;
+        text-align: left;
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>缪宋哲</h1>
+      </div>
+      <div class="contact">
+        <div><strong>电话</strong> 13692260513</div>
+        <div><strong>邮箱</strong> 1835462718@qq.com</div>
+        <div><strong>身份</strong> 2026 届本科 / 硕士推免</div>
+      </div>
+    </header>
+
+    <section>
+      <h2 class="section-title">教育背景</h2>
+      <div class="edu-grid">
+        <div class="edu-line">
+          <div><strong>中山大学</strong> | 数学与应用数学（本科）</div>
+          <div class="date">2022.09 - 2026.06</div>
+        </div>
+        <div class="sub">GPA: 4.0/5.0；数学分析 I/II/III: 99/96/94，几何与代数 I/II: 94/96</div>
+        <div class="edu-line">
+          <div><strong>上海交通大学</strong> | 数学（学术型硕士）</div>
+          <div class="date">推免拟录取</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">专业技能</h2>
+      <div class="skills">
+        <div class="skill-line"><strong>具身学习</strong><span>VLA、VLM grounding、semantic navigation、robot policy eval、LIBERO、RoboCasa</span></div>
+        <div class="skill-line"><strong>算法设计</strong><span>task representation、schema-aware reward、action/world/value objective、failure diagnosis</span></div>
+        <div class="skill-line"><strong>数据设计</strong><span>box grounding 数据构造、strict held-out split、action/state normalization、bad case mining</span></div>
+        <div class="skill-line"><strong>训练评估</strong><span>SFT、DPO、GRPO、WAM/UWM finetune、fixed-init rollout、ablation / benchmark protocol</span></div>
+        <div class="skill-line"><strong>模型栈</strong><span>Qwen3-VL、OpenPI/OpenPiVLA、Cosmos Policy / Predict2.5、UWM、PyTorch、JAX/Flax</span></div>
+        <div class="skill-line"><strong>英语</strong><span>CET-4 618 / CET-6 568</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">实习经历</h2>
+      <div class="item">
+        <div class="row">
+          <div class="role">商汤科技 | 具身算法实习</div>
+          <div class="date">2026.03 - 至今</div>
+        </div>
+        <ul>
+          <li>面向机器人集群任务表示，抽象 robot task harness：将任务上下文、机器人状态 memory、subagent 分工、排他动作与取消补偿统一为可训练的 action / tool 语义，为后续 SFT/GRPO 的 schema 对齐提供结构化监督。</li>
+          <li>围绕 native tools 的参数约束、robot scope 与时序可取消性，设计 schema-aware reward 与训练样本构造；组织 62,223 条 SFT 数据与 8,916 条 GRPO 数据，完成 Qwen3-VL-8B 500-step SFT + 1007-step online GRPO。</li>
+          <li>训练后 SFT tool-call holdout 达到 tool accuracy 95.3%、critical 94.7%、coverage 96.4%；robot sandbox 130 条样本 tool/arg/scope 均达 100%，在对比集上 tool accuracy 从 base 8B 的 0% 提升至 100%。</li>
+          <li>面向语义导航 grounding，设计 box-grounding 数据筛选与训练口径，构建 13,879 个 high-quality base boxes / 41,637 条训练样本并完成 Qwen3-VL-8B SFT；held-out strict format 100%，Mean IoU 从 0.1319 提升至 0.3501，OPD final 在 10k raw-holdout 达到 Box Acc@0.5 51.3%、Point Hit@100 84.1%、Text loose 87.4%、Bool acc 90.0%。</li>
+        </ul>
+      </div>
+
+      <div class="item">
+        <div class="row">
+          <div class="role">广州皓岚信息技术有限公司 | 大模型应用实习</div>
+          <div class="date">2025.10 - 2026.01</div>
+        </div>
+        <ul>
+          <li>围绕 DeepSeek 蒸馏模型数学推理任务，参与训练样本与偏好样本整理、SFT/DPO 实验、评估复盘和错误样例归因，沉淀推理数据质量、偏好对构造与失败类型分析经验。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">项目经历</h2>
+      <div class="project-grid">
+        <div class="project wide">
+          <div class="row">
+            <div class="role">OpenPiVLA / OpenPI VLA 策略复现与动作语义分析</div>
+            <div class="date">2026.06</div>
+          </div>
+          <ul>
+            <li>作为 VLA 项目复现 OpenPI/OpenPiVLA 策略训练与评估路径，重点分析 observation/state 归一化、action chunk、controller 与 simulator contract 如何影响 LIBERO/ALOHA task-level rollout 的可比性。</li>
+            <li>围绕策略动作语义建立诊断指标：将 OpenPI policy 输出映射到 MuJoCo / robosuite 原生 7D action，记录 action norm/delta/jerk、state divergence、reward/success 与轨迹视频，用于区分策略误差、动作尺度错配和控制器约束。</li>
+          </ul>
+        </div>
+
+        <div class="project">
+          <div class="row">
+            <div class="role">Cosmos Policy / WAM 后训练目标复现</div>
+            <div class="date">2026.06</div>
+          </div>
+          <ul>
+            <li>基于 Cosmos Policy / Predict2.5 robot policy recipe 复现 RoboCasa WAM 1-epoch 后训练，围绕 action imitation、world prediction、value estimation 三类监督信号设计最小可验训练目标，保持 p_world_model=0.5、gamma=0.99、action loss multiplier 16 等关键设定。</li>
+            <li>验证 WAM 数据与 loss routing：video (3,41,224,224)、action (32,7)、value scalar、world/value mask 互斥与 demo/world/value slot 分流；full10k checkpoint 保存成功，iter 10000 loss = 0.0543。</li>
+            <li>完成 full10k loss breakdown：demo=4950、world=2519、value=2531，并结合 rollout / future prediction 可视化分析 action loss、world model sample mask 与 value head 的误差来源。</li>
+          </ul>
+        </div>
+
+        <div class="project">
+          <div class="row">
+            <div class="role">UWM / LIBERO 世界模型训练与 benchmark 复现</div>
+            <div class="date">2026.07</div>
+          </div>
+          <ul>
+            <li>复现 UWM 官方 LIBERO 训练到评估流程：从 LIBERO-90 checkpoint 继承到 5 个 LIBERO-10 下游任务 finetune，整理 checkpoint / normalizer / eval manifest，约束训练继承、动作归一化与 fixed-init 评估口径的一致性。</li>
+            <li>对齐 pruned_init、5-step zero-action warmup、50 rollouts/task 的 strict closed-loop benchmark，最新 LIBERO 5-task 评估达到 186/250 = 74.4%：book_caddy 44/50、soup_cheese 40/50、bowl_drawer 38/50、moka_moka 33/50、mug_mug 31/50，接近官方 Table II 0.79 口径。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

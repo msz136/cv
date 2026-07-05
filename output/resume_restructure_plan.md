@@ -4,9 +4,20 @@
 
 本轮重构简历时去掉顶部自我定位摘要，把商汤经历合并为一个主体实习，突出面向平台级机器人集群控制的 task harness、schema-aware SFT/GRPO、语义导航 grounding 与 OPD 指标；项目经历拆成 VLA、WAM、UWM 三个独立项目，不再把 VLM/WAM/UWM 压缩为一个小项目。
 
+当前同时维护两个取向：
+
+- 工程版本：强调平台侧机器人集群控制、执行语义、训练评估闭环与可复现实验，适合偏工程落地、算法工程、具身平台方向。
+- Research 版本：强调算法设计、数据设计、训练目标、benchmark protocol 与 failure diagnosis，适合具身智能算法、VLA/VLM grounding、robot learning research 实习方向。
+
 改写后的 HTML 简历在：
 
 `C:\Users\mousongzhe\cv\output\mousongzhe_resume_optimized.html`
+
+命名版本在：
+
+`C:\Users\mousongzhe\cv\output\mousongzhe_resume_engineering.html`
+
+`C:\Users\mousongzhe\cv\output\mousongzhe_resume_research.html`
 
 核心变化：
 
@@ -16,18 +27,24 @@
 - VLA 项目保留 OpenPI/OpenPiVLA 的策略训练与评估设计；本地暂未检索到 LIBERO 超官方 baseline 的落档指标，HTML 正文先留空，不放低价值 smoke 指标。
 - WAM 项目强调 1-epoch 后训练复现、action/world/value 多目标训练合同、loss breakdown 与可视化诊断。
 - UWM 项目改为训练与评估全流程复现：LIBERO-90 checkpoint 到 5 个 LIBERO-10 下游任务 finetune，配套 checkpoint / normalizer / eval manifest，并使用最新 strict aligned 5-task 指标。
+- Research 版本将 task harness 改写为“机器人任务表示与训练监督设计”，将 WAM/UWM 改写为“训练目标复现、数据/loss routing、benchmark 口径对齐”，减少平台执行与工程流程措辞。
 
 ## 2. 推荐定位
 
-主叙事：
+工程版本主叙事：
 
 > 数学背景 + 商汤具身算法实习 + VLA/WAM/UWM 机器人学习复现，具备从任务表示、训练目标、reward/eval 到指标复盘的闭环能力。
+
+Research 版本主叙事：
+
+> 数学背景 + 具身学习训练/评估实践，重点在机器人任务表示、VLM grounding 数据构造、schema-aware reward、WAM/UWM 训练目标复现与 benchmark protocol 对齐。
 
 适合投递：
 
 - 具身智能算法实习：VLA、VLM grounding、semantic navigation、robot policy eval。
 - 多模态算法实习：Qwen3-VL、box/point grounding、held-out eval、bad case 分析。
 - 大模型训练与评估实习：SFT、GRPO、schema-aware reward、native tools eval。
+- Research / 算法实习：robot learning、VLA/VLM grounding、world model policy、post-training objective、data-centric evaluation。
 
 不建议当前主打：
 
@@ -46,6 +63,16 @@
 | P1 | `Project/wm/uwm_libero_official_repro` + `Project/report/uwm_libero_strict_eval_recovery_20260702` | 单独写成 UWM 项目，突出 LIBERO-90 到 LIBERO-10 的训练复现、fixed-init 评估协议和最新 5-task strict aligned 结果。 |
 | P2 | 广州皓岚 DeepSeek | 保留一条，作为早期大模型训练经历，不加入未经证实的数值。 |
 | P3 | 医学图像分割 | 本轮移出简历，给具身方向项目留空间。 |
+
+## 3.1 双版本口径差异
+
+| 模块 | 工程版本 | Research 版本 |
+| --- | --- | --- |
+| 商汤 task harness | 平台侧机器人集群控制、memory/subagent/并行调度、排他动作控制 | 机器人任务表示、action/tool 语义、schema 对齐监督、reward 设计 |
+| 商汤 grounding / OPD | 语义导航 grounding 与 OPD 多任务融合结果 | box-grounding 数据筛选、held-out split、Mean IoU 与 raw-holdout 多任务指标 |
+| VLA | 策略训练与评估路径、controller/simulator contract | observation/state 归一化、action chunk、动作语义与 rollout 可比性 |
+| WAM | 1 epoch 后训练复现、loss/data contract、future prediction 诊断 | action/world/value 三目标、mask / slot loss routing、误差来源分析 |
+| UWM | 多卡训练、checkpoint / normalizer / eval manifest、fixed-init eval | checkpoint 继承、动作归一化、benchmark protocol、strict 5-task 指标 |
 
 ## 4. 证据审计
 
