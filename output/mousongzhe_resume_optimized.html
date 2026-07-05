@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>缪宋哲 - 算法实习简历</title>
+  <style>
+    :root {
+      --ink: #151515;
+      --muted: #5c6470;
+      --line: #d8dde5;
+      --accent: #245b45;
+      --accent-soft: #e9f3ee;
+      --paper: #ffffff;
+      --bg: #eef1f4;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.38;
+    }
+
+    body {
+      padding: 28px 0;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 13mm 16mm 12mm;
+      background: var(--paper);
+      box-shadow: 0 14px 45px rgba(24, 32, 42, 0.14);
+    }
+
+    .top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: start;
+      padding-bottom: 9px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .headline {
+      margin-top: 6px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .summary {
+      margin: 6px 0 0;
+      max-width: 610px;
+      color: #30343a;
+      font-size: 12.6px;
+    }
+
+    .contact {
+      display: grid;
+      gap: 5px;
+      min-width: 210px;
+      padding-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .contact strong {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    section {
+      margin-top: 9px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 6px;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .section-title::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: var(--line);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+    }
+
+    .item {
+      margin: 0 0 7px;
+    }
+
+    .item:last-child {
+      margin-bottom: 0;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 3px;
+    }
+
+    .role {
+      font-weight: 800;
+      font-size: 13.2px;
+    }
+
+    .date {
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: -2px;
+    }
+
+    ul {
+      margin: 3px 0 0;
+      padding-left: 17px;
+    }
+
+    li {
+      margin: 2px 0;
+      padding-left: 1px;
+    }
+
+    .skills {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 5px 12px;
+      margin-top: 2px;
+    }
+
+    .skill-line {
+      display: grid;
+      grid-template-columns: 68px 1fr;
+      gap: 7px;
+      font-size: 12px;
+      color: #2e3339;
+    }
+
+    .skill-line strong {
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .edu-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 5px;
+    }
+
+    .edu-line {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 5px;
+    }
+
+    .tag {
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .compact {
+      margin-top: 5px;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 11.6px;
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px 14px;
+    }
+
+    .project {
+      border-left: 3px solid var(--accent);
+      padding-left: 9px;
+    }
+
+    .project .row {
+      margin-bottom: 2px;
+    }
+
+    .project ul {
+      margin-top: 4px;
+    }
+
+    @media print {
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      html,
+      body {
+        background: #fff;
+      }
+
+      body {
+        padding: 0;
+      }
+
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0;
+        box-shadow: none;
+      }
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 0;
+      }
+
+      .page {
+        width: 100%;
+        min-height: auto;
+        padding: 24px 20px;
+      }
+
+      .top,
+      .two-col,
+      .project-grid,
+      .skills {
+        grid-template-columns: 1fr;
+      }
+
+      .contact {
+        min-width: 0;
+        text-align: left;
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>缪宋哲</h1>
+        <div class="headline">大模型算法 / Agent / Embodied AI 实习方向</div>
+        <p class="summary">中山大学数学与应用数学本科，推免拟录取上海交通大学数学学术型硕士。商汤科技具身算法实习聚焦机器人 Agent、工具调用后训练、VLM/VLA grounding 与评估闭环。</p>
+      </div>
+      <div class="contact">
+        <div><strong>电话</strong> 13692260513</div>
+        <div><strong>邮箱</strong> 1835462718@qq.com</div>
+        <div><strong>身份</strong> 2026 届本科 / 推免硕士</div>
+      </div>
+    </header>
+
+    <section>
+      <h2 class="section-title">教育背景</h2>
+      <div class="edu-grid">
+        <div class="edu-line">
+          <div><strong>中山大学</strong> | 数学与应用数学（本科）</div>
+          <div class="date">2022.09 - 2026.06</div>
+        </div>
+        <div class="sub">GPA: 4.0/5.0；数学分析 I/II/III: 99/96/94，几何与代数 I/II: 94/96，常微分方程: 87，偏微分方程: 88</div>
+        <div class="edu-line">
+          <div><strong>上海交通大学</strong> | 数学（学术型硕士）</div>
+          <div class="date">推免拟录取</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">专业技能</h2>
+      <div class="skills">
+        <div class="skill-line"><strong>后训练</strong><span>SFT、DPO、GRPO、偏好数据、reward/schema-aware scoring、held-out eval 与 bad case 分析</span></div>
+        <div class="skill-line"><strong>Agent</strong><span>OpenAI-compatible tools、tool schema、参数校验、scope 约束、SSE 流式与可恢复对话链路</span></div>
+        <div class="skill-line"><strong>VLM/VLA</strong><span>Qwen3-VL、grounding、语义导航 box/point 数据、VLA/VLM 后训练与评估</span></div>
+        <div class="skill-line"><strong>工程</strong><span>Python、FastAPI/Pydantic、DeepSpeed、MACA C500 8 卡训练、评估脚本与报告自动化</span></div>
+        <div class="skill-line"><strong>模型</strong><span>Qwen3-VL/Qwen3.5、MiniMax-M2.5、AceBrain、DeepSeek 蒸馏模型、BERT 输入过滤</span></div>
+        <div class="skill-line"><strong>英语</strong><span>CET-4 618 / CET-6 568</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">实习经历</h2>
+      <div class="item">
+        <div class="row">
+          <div class="role">商汤科技 | 具身算法实习</div>
+          <div class="date">2026.03 - 至今</div>
+        </div>
+        <ul>
+          <li>围绕机器人复杂任务执行参与 AceAgent / teamagent 链路建设，支持 OpenAI-compatible 对话接口、工具调用、流式响应、机器人绑定、工具筛选和取消补偿。</li>
+          <li>参与 Qwen3-VL 工具调用后训练流水线：组织 62,223 条 SFT 数据与 8,916 条 GRPO 数据，完成 500-step SFT 与 1007-step online GRPO，训练日志未发现 NaN/OOM/traceback。</li>
+          <li>基于 AceAgent 原生工具 schema 搭建 schema-aware 评估与 reward 约束；project robot sandbox 130 条样本 tool/arg/scope 为 100%，SFT tool-call holdout tool accuracy 约 95%+。</li>
+          <li>参与 MiniMax-M2.5、Qwen3.5-122B、AceBrain 等模型部署与推理链路联调；训练 BERT 输入过滤模型，并参与 VLM 参数化记忆 Adapter 与 VLA/VLM 后训练实验。</li>
+        </ul>
+      </div>
+
+      <div class="item">
+        <div class="row">
+          <div class="role">商汤科技支线 | Qwen3-VL 语义导航 Grounding / OPD</div>
+          <div class="date">2026.05 - 2026.06</div>
+        </div>
+        <ul>
+          <li>构建语义导航 box-grounding 数据链路：从 RoboPoint object_ref 生成 box manifest，结合 Qwen-122B crop 标注与 prompt 扩展，产出 13,879 个高质量 base boxes 与 41,637 条训练样本。</li>
+          <li>在 MACA C500 8 卡环境下完成 Qwen3-VL-8B semantic-nav SFT，训练 41,637 行、有效 batch size 256；held-out object_ref 上 strict format 100%，Mean IoU 从 base lenient 0.1319 提升到 0.3501。</li>
+          <li>参与 OPD 多教师融合评估与 raw-holdout 10k 审计，覆盖 box、point、text 三类指标；OPD final 在综合指标上达到 Box Acc@0.5 51.3%、Point Hit@100 84.1%、Text loose 87.4%。</li>
+        </ul>
+      </div>
+
+      <div class="item compact">
+        <div class="row">
+          <div class="role">广州皓岚信息技术有限公司 | 大模型应用实习</div>
+          <div class="date">2025.10 - 2026.01</div>
+        </div>
+        <ul>
+          <li>围绕 DeepSeek 蒸馏模型完成数据准备、SFT、DPO 与评估流程，面向数学推理场景做训练样本整理、效果对比和错误样例复盘。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">项目经历</h2>
+      <div class="project-grid">
+        <div class="project">
+          <div class="row">
+            <div class="role">VLA / WM / WAM 开源复现与小改造</div>
+            <div class="date">2026.06 - 2026.07</div>
+          </div>
+          <ul>
+            <li>复现 OpenPiVLA、UWM/LIBERO、Cosmos Policy/WAM 等开源机器人学习项目，完成远端环境部署、脚本适配、评估协议整理和可视化报告。</li>
+            <li>搭建 LIBERO / MuJoCo rollout 与 action-eval 记录链路，区分真实 simulator rollout、replay-only 可视化和 action-vector 诊断。</li>
+          </ul>
+        </div>
+
+        <div class="project">
+          <div class="row">
+            <div class="role">基于 Transformer 的医学图像分割</div>
+            <div class="date">2026.03</div>
+          </div>
+          <ul>
+            <li>设计注意力增强模块，在 UNet、AUNet 网络与 Kvasir、Polygen 数据集上进行实验和消融，对 Dice 指标提升进行验证。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
