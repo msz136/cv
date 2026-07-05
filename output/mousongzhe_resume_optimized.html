@@ -295,8 +295,6 @@
     <header class="top">
       <div>
         <h1>缪宋哲</h1>
-        <div class="headline">具身智能 / VLA-VLM Grounding / 机器人策略评估</div>
-        <p class="summary">中山大学数学与应用数学本科，推免拟录取上海交通大学数学学术型硕士。商汤具身算法实习聚焦机器人任务并行、VLM grounding 与 schema-aware SFT/GRPO；开源复现覆盖 VLA、WAM、UWM，强调算法设计、指标结果和可复现实验。</p>
       </div>
       <div class="contact">
         <div><strong>电话</strong> 13692260513</div>
@@ -312,7 +310,7 @@
           <div><strong>中山大学</strong> | 数学与应用数学（本科）</div>
           <div class="date">2022.09 - 2026.06</div>
         </div>
-        <div class="sub">GPA: 4.0/5.0；数学分析 I/II/III: 99/96/94，几何与代数 I/II: 94/96，常微分方程: 87，偏微分方程: 88</div>
+        <div class="sub">GPA: 4.0/5.0；数学分析 I/II/III: 99/96/94，几何与代数 I/II: 94/96</div>
         <div class="edu-line">
           <div><strong>上海交通大学</strong> | 数学（学术型硕士）</div>
           <div class="date">推免拟录取</div>
@@ -340,7 +338,7 @@
           <div class="date">2026.03 - 至今</div>
         </div>
         <ul>
-          <li>围绕机器人长耗时任务与多会话并发，设计 request 级 robot mutex 与任务并行策略：同一 robot_id 的排他动作在会话级互斥，不同机器人与非物理任务并行执行，并支持按 robot 取消活跃请求，避免导航-下单等长时序任务被中间状态抢占。</li>
+          <li>面向平台侧对机器人集群的任务编排与控制，设计 robot task harness，将任务上下文、机器人状态 memory、subagent 分工、排他动作锁与取消补偿纳入统一执行语义；其中任务并行支持同一 robot_id 会话级互斥、不同机器人/非物理任务并发，保障导航-下单等长时序控制任务的连续性。</li>
           <li>将原生工具 schema、robot scope、参数约束与取消补偿写入 SFT/GRPO 训练目标和 schema-aware reward；组织 62,223 条 SFT 数据与 8,916 条 GRPO 数据，完成 Qwen3-VL-8B 500-step SFT + 1007-step online GRPO。</li>
           <li>训练后 SFT tool-call holdout 达到 tool accuracy 95.3%、critical 94.7%、coverage 96.4%；project robot sandbox 130 条样本 tool/arg/scope 均达 100%，在 robot sandbox 对比集上 tool accuracy 从 base 8B 的 0% 提升至 100%。</li>
           <li>面向语义导航 grounding 与 OPD 多任务融合，构建 13,879 个 high-quality base boxes / 41,637 条训练样本并完成 Qwen3-VL-8B SFT；held-out strict format 100%，Mean IoU 从 0.1319 提升至 0.3501，OPD final 在 10k raw-holdout 达到 Box Acc@0.5 51.3%、Point Hit@100 84.1%、Text loose 87.4%、Bool acc 90.0%。</li>

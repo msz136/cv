@@ -2,7 +2,7 @@
 
 ## 1. 本轮改写结论
 
-本轮按“具身智能 / VLA-VLM Grounding / 机器人策略评估”重构简历。商汤经历合并为一个主体实习，突出机器人任务并行、schema-aware SFT/GRPO、语义导航 grounding 与 OPD 指标；项目经历拆成 VLA、WAM、UWM 三个独立项目，不再把 VLM/WAM/UWM 压缩为一个小项目。
+本轮重构简历时去掉顶部自我定位摘要，把商汤经历合并为一个主体实习，突出面向平台级机器人集群控制的 task harness、schema-aware SFT/GRPO、语义导航 grounding 与 OPD 指标；项目经历拆成 VLA、WAM、UWM 三个独立项目，不再把 VLM/WAM/UWM 压缩为一个小项目。
 
 改写后的 HTML 简历在：
 
@@ -10,7 +10,7 @@
 
 核心变化：
 
-- 商汤实习从低价值过程表述转为“任务并行设计、训练目标、reward 设计、可验证指标”。
+- 商汤实习从低价值过程表述转为“robot task harness、训练目标、reward 设计、可验证指标”。
 - OPD 支线并入商汤实习，作为 VLM grounding 与多任务融合成果呈现。
 - 删除未形成有效产出的经历，给具身方向项目留出篇幅。
 - VLA 项目保留 OpenPI/OpenPiVLA 的策略训练与评估设计；本地暂未检索到 LIBERO 超官方 baseline 的落档指标，HTML 正文先留空，不放低价值 smoke 指标。
@@ -39,7 +39,7 @@
 
 | 优先级 | 内容 | 简历处理 |
 | --- | --- | --- |
-| P0 | 商汤 `agent` 主体 | 写成具身算法实习，强调机器人长耗时任务并行、schema-aware SFT/GRPO 与 robot sandbox 指标。 |
+| P0 | 商汤 `agent` 主体 | 写成具身算法实习，强调面向机器人集群控制的 task harness、memory/subagent/并行控制、schema-aware SFT/GRPO 与 robot sandbox 指标。 |
 | P0 | 商汤 `muxi/OPD` | 并入同一段商汤实习，作为语义导航 grounding 与 OPD 多任务融合成果呈现。 |
 | P1 | `Project/openpivla_deployment` | 单独写成 VLA 项目，突出 OpenPI/OpenPiVLA 策略训练、动作语义和 LIBERO/ALOHA 评估口径；LIBERO 超 baseline 指标待落档后补。 |
 | P1 | `Project/reproduction_plan.md` Cosmos Policy | 单独写成 WAM 项目，突出 1 epoch 后训练复现、loss/data contract、future prediction 诊断。 |
@@ -53,7 +53,8 @@
 
 可以写：
 
-- 机器人长耗时任务并行：request 级 robot mutex、robot_id 粒度互斥、不同机器人和非物理任务并行、按 robot 取消活跃请求。
+- 平台级机器人集群控制 task harness：任务上下文、机器人状态 memory、subagent 分工、排他动作锁、取消补偿与任务并行。
+- 任务并行作为 harness 的一个 feature：request 级 robot mutex、robot_id 粒度互斥、不同机器人和非物理任务并行、按 robot 取消活跃请求。
 - SFT 数据 62,223 条，GRPO 数据 8,916 条。
 - Qwen3-VL-8B 完成 500-step SFT 与 1007-step online GRPO。
 - SFT tool-call holdout：tool accuracy 95.3%，critical 94.7%，coverage 96.4%。
@@ -127,7 +128,7 @@
 
 ## 5. 最终简历结构
 
-1. 顶部定位：具身智能 / VLA-VLM Grounding / 机器人策略评估
+1. 顶部信息：姓名、联系方式、2026 届本科 / 硕士推免身份
 2. 教育背景：中山大学数学本科 + 上海交通大学数学硕士推免
 3. 专业技能：具身方向、策略评估、模型训练、VLM/WAM、工程工具、英语
 4. 实习经历：
@@ -142,7 +143,7 @@
 
 最稳的讲法：
 
-- 商汤实习：从“机器人任务怎样被表示、并行、训练和评估”切入。
+- 商汤实习：从“平台如何表示、分解、记忆和调度机器人控制任务”切入，再讲并行控制与训练评估。
 - VLA 项目：强调动作语义、仿真器、controller、success/reward/video 证据，LIBERO 指标补档后再做强表达。
 - WAM 项目：强调 action/world/value 三类训练信号、loss mask、1 epoch 复现和 future rollout 诊断。
 - UWM 项目：强调 fixed-init 评估协议、strict 任务结果和指标可比性。
