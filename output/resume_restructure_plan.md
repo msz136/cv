@@ -2,11 +2,11 @@
 
 ## 1. 本轮结论
 
-本轮不再维护工程取向版本，`mousongzhe_resume_engineering.html` 仅保留为归档文件，不继续同步。统一维护目标改为：
+本轮不再维护工程取向版本，`mousongzhe_resume_engineering.html` 仅保留为历史文件，不继续同步。统一维护目标改为：
 
 `C:\Users\mousongzhe\cv\output\mousongzhe_resume_optimized.html`
 
-`optimized` 已对齐 research-forward 口径，并进一步强化算法设计、数据设计、训练目标、评估协议和指标解释。正文避免把工作写成执行记录，重点放在可以被面试追问的设计判断与结果证据上。
+`optimized` 已对齐 research-forward 口径，并进一步强化算法设计、数据设计、训练目标、评估协议和指标解释。正文重点放在可以被面试追问的设计判断与结果证据上。
 
 ## 2. 叙事定位
 
@@ -44,10 +44,10 @@
 
 可以写：
 
-- 机器人集群控制 task harness：多会话任务上下文、robot memory、subagent 分工、排他动作、取消补偿、多机器人并发边界。
+- 机器人集群控制 task harness：统一 task/action 表示，多会话任务上下文、robot memory、subagent 分工、排他动作、取消补偿、多机器人并发边界。
 - 数据规模：62,223 条 SFT，8,916 条 GRPO。
-- 8B 用作 schema/reward pilot，不作为主成果。
-- 32B 是主线：holdout tool accuracy 从 37.8% 提升到 95.4%/95.6%，coverage 从 39.4% 提升到 96.2%/96.3%。
+- 8B 用于校准数据和 reward 口径，不作为主成果；同一 schema 迁移到 Qwen3-VL-32B SFT/GRPO。
+- 32B 是主结果：holdout tool accuracy 稳定在 95% 以上，较 base 32B 提高约 58pp，coverage 稳定在 96% 左右。
 - robot sandbox 130 条样本 tool/scope/critical 达到 100%，GRPO argument exact 92.3%、semantic 96.9%。
 
 谨慎边界：
@@ -60,7 +60,7 @@
 
 可以写：
 
-- 数据由一部分开源清洗和一部分场景标注/合成 pipeline 统一成训练分布。
+- 数据由开源清洗样本与场景标注/合成样本共同组成，统一成 OPD 训练分布。
 - 13,879 个 high-quality base boxes，41,637 条训练样本。
 - held-out Mean IoU 从 0.1319 提升到 0.3501。
 - OPD final 10k raw-holdout：Box Acc@0.5 51.3%、Point Hit@100 84.1%、Text loose 87.4%、Bool acc 90.0%。
@@ -80,12 +80,13 @@
 - 连续 action window 到 compact assistant-side action JSON token 的动作表示设计。
 - `RunRecipe`、DROID/MindCube iterable dataset、`Qwen3VLCollator`、统一 trainer/checkpoint。
 - 三类训练 recipe：VLA-only、VLM-only、co-train。
-- LIBERO 四套件最优 run：goal/object/spatial/libero_10 = 0.99/0.995/0.98/0.93。
+- LIBERO 四套件结果：goal/object/spatial/libero_10 = 0.99/0.995/0.98/0.93，四套件平均 97.4%，高于官方 OpenPI `pi05_libero` 96.85%。
 - 在沐曦 C500/MACA 环境迁移三条 100k-step formal runs，并保留官方 policy server 与 task-native rollout 评估证据。
 
 谨慎边界：
 
 - 不声称等价复刻原全参 Pi0/Qwen-VL action expert。
+- 不把内部 run 名或内部消融指标写入正式简历；分辨率、horizon、pretrain 的影响只作为面试复盘思路。
 - ALOHA 与单任务 LIBERO 小样本只作为评估协议与动作诊断证据，不当作核心 benchmark。
 
 ### Cosmos Policy / WAM
@@ -94,8 +95,8 @@
 
 - RoboCasa WAM 1-epoch 后训练目标复现。
 - action/world/value 三类监督信号、world/value mask、demo/world/value slot routing。
-- full10k checkpoint：iter 10000 loss = 0.0543；loss breakdown demo=4950、world=2519、value=2531。
-- deterministic held-out proxy 上 policy MSE 0.05349，较 first-action-repeat baseline 0.09718 降低约 45%。
+- 10k-step 训练收敛到 loss 0.0543；demo/world/value 样本分布为 4950/2519/2531。
+- held-out proxy 上 policy MSE 0.05349，较 first-action-repeat baseline 0.09718 降低约 45%。
 - RoboCasa kitchen24：短时序任务 CloseDoubleDoor/CloseDrawer/OpenDrawer/PnPCounterToSink 为 0.95/0.90/0.75/0.75，用于 failure pattern 分层。
 
 谨慎边界：
@@ -110,8 +111,8 @@
 - 在 MACA/C500 环境迁移 UWM 官方训练到评估流程。
 - 从 LIBERO-90 checkpoint 到 5 个 LIBERO-10 下游任务 finetune。
 - strict benchmark：pruned_init、5-step zero-action warmup、50 rollouts/task。
-- 最新 5-task average：186/250 = 74.4%；book_caddy 0.88、soup_cheese 0.80、bowl_drawer 0.76、moka_moka 0.66、mug_mug 0.62。
-- 较官方 Table II rounded average 0.79 低 4.6pp，四个任务差距约 2-4pp，短板集中在 soup_cheese。
+- 最新 5-task average：74.4% (186/250)；book_caddy 0.88、soup_cheese 0.80、bowl_drawer 0.76、moka_moka 0.66、mug_mug 0.62。
+- 当前结果低于官方 Table II rounded average 0.79，简历正文不强调负向对比，改为说明 strict 协议与失败轨迹归因。
 
 谨慎边界：
 
@@ -128,8 +129,8 @@
 
 ## 6. 面试表达建议
 
-- 商汤实习：从“机器人平台需要怎样表示和约束可执行任务”切入，再讲 harness 语义如何转成 schema-aware 数据与 reward。
+- 商汤实习：从“机器人平台需要怎样表示和约束可执行任务”切入，再讲 harness 如何支撑 schema-aware 数据与 reward。
 - OPD：先讲数据分布设计，再讲多教师在线融合，最后用 raw-holdout 指标解释综合能力。
-- OpenPiVLA：先抛 LIBERO 0.99/0.995/0.98/0.93，再展开动作表示和训练目标改造。
+- OpenPiVLA：先抛 LIBERO 0.99/0.995/0.98/0.93 与官方 OpenPI 结果对比，再展开动作表示和训练目标改造。
 - WAM：讲清 action/world/value 三目标与 failure pattern，不把项目包装成策略成功率提升。
 - UWM：突出严格 fixed-init 协议和与官方 Table II 的可比性，主动解释 soup_cheese 是主要差距。
