@@ -16,9 +16,9 @@
 
 适合投递：
 
-- 具身智能算法实习：VLA、VLM grounding、semantic navigation、robot policy eval。
-- 多模态算法实习：Qwen3-VL、box/point grounding、held-out eval、bad case 分析。
-- 大模型训练与评估实习：SFT、GRPO、schema-aware reward、native tools eval。
+- 具身智能算法实习：VLA、VLM Grounding、机器人策略学习。
+- 多模态算法实习：grounding 数据与训练、held-out 评估、错误归因。
+- 大模型训练与评估实习：SFT、GRPO、工具调用训练、评估协议设计。
 - Research / 算法实习：robot learning、world model policy、data-centric evaluation。
 
 不建议当前主打：
@@ -125,9 +125,9 @@
 
 1. 顶部信息：姓名、联系方式、2026 届本科 / 硕士推免身份。
 2. 教育背景：中山大学数学本科 + 上海交通大学数学硕士推免。
-3. 专业技能：具身学习、算法设计、数据设计、训练评估、模型栈、英语。
-4. 实习经历：商汤科技具身算法实习、广州皓岚大模型应用实习。
-5. 项目经历：OpenPiVLA、Cosmos/WAM、UWM，三者纵向排列。
+3. 实习经历：商汤科技具身算法实习、广州皓岚大模型应用实习。
+4. 项目经历：OpenPiVLA、Cosmos/WAM、UWM，三者纵向排列。
+5. 技术栈：放在页面末尾，压缩为研究方向、训练评估、框架平台、基础能力四类，不重复正文中的细粒度设计词。
 
 ## 6. 面试表达建议
 
