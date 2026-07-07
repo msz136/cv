@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>缪宋哲 - 面试项目材料包</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 32px 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; color: #17202a; background: #f5f7f8; line-height: 1.75; }
+    article { max-width: 980px; margin: 0 auto; background: #fff; padding: 36px 44px; border-radius: 10px; box-shadow: 0 18px 48px rgba(20, 35, 50, 0.10); }
+    h1 { margin: 0 0 8px; font-size: 32px; line-height: 1.2; }
+    h2 { margin: 34px 0 14px; padding-left: 12px; border-left: 4px solid #1f6f5b; font-size: 22px; }
+    h3 { margin: 22px 0 10px; font-size: 18px; }
+    p { margin: 0 0 14px; }
+    a { color: #1f6f5b; text-decoration: none; font-weight: 650; }
+    a:hover { text-decoration: underline; }
+    .meta { color: #66727f; font-size: 14px; margin-bottom: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .card { border: 1px solid #dce4e8; border-radius: 10px; padding: 18px 20px; background: #fbfdfc; }
+    .card h3 { margin-top: 0; }
+    .tag { display: inline-block; margin: 4px 6px 0 0; padding: 2px 8px; border-radius: 999px; background: #e7f2ee; color: #1f6f5b; font-size: 13px; font-weight: 700; }
+    .note { border-left: 4px solid #3b82f6; background: #eff6ff; padding: 12px 14px; border-radius: 6px; }
+    ol, ul { padding-left: 1.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 22px; font-size: 14px; }
+    th, td { border: 1px solid #d9e1e6; padding: 8px 10px; vertical-align: top; }
+    th { background: #f3f6f7; text-align: left; }
+    @media (max-width: 760px) { article { padding: 24px 18px; } .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<article>
+  <h1>缪宋哲 - 面试项目材料包</h1>
+  <p class="meta">创建日期：2026-07-07 | 范围：简历背后的项目机制、证据边界、面试追问与回答策略 | 不修改简历正文</p>
+
+  <div class="note">
+    <strong>使用方式：</strong>面试前先读对应项目的“一句话定位”和“2-3 分钟口述稿”，再用“高频追问”和“高压质疑”做自测。所有强指标沿用简历与重构方案中的本地证据；公开方法背景只作辅助解释。
+  </div>
+
+  <h2>项目页</h2>
+  <div class="grid">
+    <section class="card">
+      <h3><a href="01_robot_harness_tool_training.html">01. Robot Harness 与工具调用训练</a></h3>
+      <p>回答“工程 harness 如何过渡到训练数据设计”，解释 schema、reward、holdout eval 与真实机器人任务控制之间的代理关系。</p>
+      <span class="tag">task/action schema</span><span class="tag">SFT/GRPO</span><span class="tag">tool accuracy</span>
+    </section>
+    <section class="card">
+      <h3><a href="02_opd_vlm_grounding.html">02. OPD / VLM Grounding</a></h3>
+      <p>把 OPD 的收益机制讲清楚：数据分布、teacher 融合、格式对齐分别贡献什么，哪些仍需 ablation 证明。</p>
+      <span class="tag">OPD</span><span class="tag">multi-teacher</span><span class="tag">grounding</span>
+    </section>
+    <section class="card">
+      <h3><a href="03_openpivla_action_modeling.html">03. OpenPiVLA 动作表示与闭环控制</a></h3>
+      <p>解释连续控制动作为什么可被离散 token 表示，以及 action window、normalization、controller 执行的闭环关系。</p>
+      <span class="tag">VLA</span><span class="tag">action token</span><span class="tag">LIBERO</span>
+    </section>
+    <section class="card">
+      <h3><a href="04_cosmos_wam_multitask_training.html">04. Cosmos / WAM 多目标后训练</a></h3>
+      <p>解释 world prediction 和 value estimation 为什么可能帮助 action imitation，以及 mask/routing 如何避免目标互相污染。</p>
+      <span class="tag">WAM</span><span class="tag">world/value</span><span class="tag">RoboCasa</span>
+    </section>
+    <section class="card">
+      <h3><a href="05_uwm_libero_eval_protocol.html">05. UWM / LIBERO 评估协议</a></h3>
+      <p>解释 strict protocol 为什么是项目核心，init、warmup、normalizer、checkpoint、rollout 数如何改变可比性。</p>
+      <span class="tag">UWM</span><span class="tag">strict protocol</span><span class="tag">failure trace</span>
+    </section>
+  </div>
+
+  <h2>总口径</h2>
+  <table>
+    <thead>
+      <tr><th>简历主线</th><th>面试时要讲出的设计感</th><th>边界防线</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>机器人任务表示与工具调用训练</td>
+        <td>从平台可执行约束抽象出 schema，再通过 SFT/GRPO 学习可验证的 action/tool 语义。</td>
+        <td>tool accuracy 是真实任务执行的前置代理，不等价于真实机器人成功率。</td>
+      </tr>
+      <tr>
+        <td>VLM Grounding 与 OPD</td>
+        <td>把数据分布、teacher 互补性、输出格式对齐拆开讲，避免只报指标。</td>
+        <td>没有完整 ablation 时，不把提升单因果归于 OPD；只能说“证据支持该机制解释”。</td>
+      </tr>
+      <tr>
+        <td>VLA / WAM / UWM 复现与改造</td>
+        <td>重点讲动作表示、训练目标、评估协议，而不是“我跑通了框架”。</td>
+        <td>仿真 benchmark 不覆盖真实机器人全部泛化、视觉扰动、延迟和任务组合复杂度。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>证据边界</h2>
+  <ul>
+    <li><strong>本地证据：</strong>当前简历 HTML、<code>resume_restructure_plan.md</code>、用户提供的训练/评估指标与项目事实。</li>
+    <li><strong>公开背景：</strong>LIBERO、OpenPI、Cosmos Policy、RoboCasa、UWM 等公开论文/仓库/文档，用于解释方法上下文，不替代本地证据。</li>
+    <li><strong>面试表达：</strong>可以讲机制假设、设计取舍和风险边界；不要把代理指标说成真实机器人任务成功率。</li>
+  </ul>
+</article>
+</body>
+</html>

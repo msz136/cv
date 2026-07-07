@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UWM / LIBERO 评估协议 - 面试材料</title>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 32px 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; color: #17202a; background: #f6f8fa; line-height: 1.78; }
+    article { max-width: 980px; margin: 0 auto; background: #fff; padding: 36px 44px; border-radius: 10px; box-shadow: 0 18px 48px rgba(20,35,50,.10); }
+    h1 { margin: 0 0 8px; font-size: 30px; line-height: 1.2; }
+    h2 { margin: 34px 0 14px; padding-left: 12px; border-left: 4px solid #1f6f5b; font-size: 22px; }
+    h3 { margin: 22px 0 10px; font-size: 18px; }
+    p { margin: 0 0 14px; }
+    a { color: #1f6f5b; text-decoration: none; font-weight: 650; }
+    .meta { color: #66727f; font-size: 14px; margin-bottom: 22px; }
+    .toc { background: #f0f7f4; border: 1px solid #d5e7df; border-left: 4px solid #1f6f5b; border-radius: 8px; padding: 14px 18px; margin: 18px 0 28px; }
+    .toc ol { columns: 2; margin: 0; }
+    .note { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+    .warning { background: #fff7ed; border-left: 4px solid #f97316; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 22px; font-size: 14px; }
+    th, td { border: 1px solid #d9e1e6; padding: 8px 10px; vertical-align: top; }
+    th { background: #f3f6f7; text-align: left; }
+    tr:nth-child(even) { background: #fbfcfd; }
+    code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-family: Consolas, monospace; }
+    pre { background: #0f172a; color: #e5e7eb; border-radius: 8px; padding: 14px 16px; overflow-x: auto; }
+    pre code { background: transparent; padding: 0; color: inherit; }
+    .good { color: #166534; font-weight: 700; }
+    .bad { color: #991b1b; font-weight: 700; }
+    .ok { color: #1d4ed8; font-weight: 700; }
+    @media (max-width: 760px) { article { padding: 24px 18px; } .toc ol { columns: 1; } table { display: block; overflow-x: auto; } }
+  </style>
+</head>
+<body>
+<article>
+  <h1>UWM / LIBERO：为什么评估协议本身就是项目难点</h1>
+  <p class="meta">材料类型：项目面试页 | 证据截止：2026-07-07 | 对应简历：UWM / LIBERO 世界模型策略训练与封闭循环评估</p>
+
+  <nav class="toc" aria-label="目录">
+    <ol>
+      <li><a href="#question">核心问题</a></li>
+      <li><a href="#answer">短答案</a></li>
+      <li><a href="#protocol">Strict Protocol</a></li>
+      <li><a href="#failure">失败轨迹解释</a></li>
+      <li><a href="#pack">项目面试 8 件套</a></li>
+      <li><a href="#questions">追问树</a></li>
+      <li><a href="#references">参考与证据</a></li>
+    </ol>
+  </nav>
+
+  <section id="question">
+    <h2>问题（Question）</h2>
+    <p>面试官会问：<strong>“UWM 的评估协议为什么是核心难点？不同 init、warmup、normalizer、checkpoint、rollout 数真的会让结果不可比吗？失败轨迹说明了什么训练分布缺口？”</strong></p>
+  </section>
+
+  <section id="answer">
+    <h2>短答案</h2>
+    <div class="note">
+      <p><strong>可直接口述：</strong>UWM 项目的价值不只是训练了一个 checkpoint，而是把官方训练到评估的闭环协议迁移并固定下来。机器人策略评估对初始状态、动作归一化、warmup、checkpoint、rollout 数非常敏感；这些因素任何一个变化，成功率都可能不是模型能力差异，而是协议差异。所以 strict protocol 的意义是保证结果可比：同一 checkpoint 来源、同一 normalizer、同一 init、同一 warmup、每任务 50 rollouts。当前 5-task average 是 74.4% (186/250)，任务间 0.62-0.88；失败轨迹显示 soup_cheese 的夹取精度和长时序恢复是主要缺口，说明世界模型 rollout 分支还需要覆盖更细粒度接触和失败恢复分布。</p>
+    </div>
+  </section>
+
+  <section id="protocol">
+    <h2>为什么 Strict Protocol 重要</h2>
+    <table>
+      <thead><tr><th>协议因素</th><th>如果不固定会怎样</th><th>本项目处理</th><th>面试表达</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Init state</td>
+          <td>初始物体位置不同，任务难度完全变化。</td>
+          <td>pruned_init</td>
+          <td>保证任务起点可比。</td>
+        </tr>
+        <tr>
+          <td>Warmup</td>
+          <td>一开始机器人状态未稳定，动作输出可能被非策略因素影响。</td>
+          <td>5-step zero-action warmup</td>
+          <td>隔离初始化瞬态影响。</td>
+        </tr>
+        <tr>
+          <td>Normalizer</td>
+          <td>动作尺度错会造成系统性过冲或动作幅度不足。</td>
+          <td>统一动作归一化和 checkpoint 配套 normalizer</td>
+          <td>这是策略评估最常见的隐藏坑。</td>
+        </tr>
+        <tr>
+          <td>Checkpoint</td>
+          <td>预训练、finetune、任务 checkpoint 混用会让结果不可解释。</td>
+          <td>LIBERO-90 checkpoint → 5 个 LIBERO-10 下游任务 finetune</td>
+          <td>说明训练来源和评估对象。</td>
+        </tr>
+        <tr>
+          <td>Rollout 数</td>
+          <td>低 episode 数方差大，容易误报。</td>
+          <td>50 rollouts/task，共 250 episodes</td>
+          <td>让 success rate 有基本统计稳定性。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>成功率估计可以写成：</p>
+    \[
+      \hat{p}_{task} = \frac{1}{N}\sum_{i=1}^{N}\mathbf{1}[\mathrm{success}_i],
+      \quad N=50
+    \]
+    <p>其中 \(\hat{p}_{task}\) 是单任务成功率，\(N=50\) 是每个任务 rollout 数。实现映射上，简历中写的是 5-task average 74.4% (186/250)，说明总成功次数来自固定 5 个任务、每任务 50 次，而不是宽松 reset-style 对照。</p>
+  </section>
+
+  <section id="failure">
+    <h2>失败轨迹说明了什么训练分布缺口</h2>
+    <table>
+      <thead><tr><th>失败类型</th><th>现象</th><th>可能训练分布缺口</th><th>后续方向</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>soup_cheese 夹取精度</td>
+          <td>接触点、抓取姿态或对象定位略偏导致失败。</td>
+          <td>细粒度接触、对象几何、视觉定位误差覆盖不足。</td>
+          <td>增加接触敏感任务、局部视觉扰动、失败恢复样本。</td>
+        </tr>
+        <tr>
+          <td>长时序恢复</td>
+          <td>早期小误差在后续步骤累积，策略无法回到可成功状态。</td>
+          <td>训练数据偏专家轨迹，缺少 off-distribution recovery。</td>
+          <td>世界模型 rollout 分支加入扰动状态和恢复监督。</td>
+        </tr>
+        <tr>
+          <td>动作尺度偏差</td>
+          <td>动作过冲或不足。</td>
+          <td>normalizer 或任务间动作分布差异。</td>
+          <td>检查 per-task normalizer 和 action denorm。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="pack">
+    <h2>项目面试 8 件套</h2>
+    <h3>1. 岗位能力映射</h3>
+    <table>
+      <thead><tr><th>能力</th><th>证据</th><th>讲法</th></tr></thead>
+      <tbody>
+        <tr><td>训练-评估闭环</td><td>LIBERO-90 checkpoint 到 5 个 LIBERO-10 下游任务 finetune</td><td>强调从训练到 eval 的完整复现。</td></tr>
+        <tr><td>协议控制</td><td>pruned_init、5-step warmup、50 rollouts/task</td><td>评估协议是结果可比性的核心。</td></tr>
+        <tr><td>失败分析</td><td>5-task average 74.4%，任务间 0.62-0.88</td><td>主动解释差距，不把低分任务藏起来。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>2. 真实性边界</h3>
+    <table>
+      <thead><tr><th>Claim</th><th>可说程度</th><th>防线</th></tr></thead>
+      <tbody>
+        <tr><td>完成 strict closed-loop 评估</td><td>可说</td><td>说明具体协议。</td></tr>
+        <tr><td>超过官方结果</td><td>不能说</td><td>当前结果低于官方 rounded average 0.79，正文不做负向对比。</td></tr>
+        <tr><td>世界模型 rollout 分支改造方向</td><td>可作为分析</td><td>不要说已经完成性能提升。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3. 简历 Bullet 三档</h3>
+    <table>
+      <thead><tr><th>版本</th><th>表达</th></tr></thead>
+      <tbody>
+        <tr><td>保守版</td><td>迁移 UWM / LIBERO 训练与评估流程，整理 fixed-init closed-loop 协议和失败轨迹。</td></tr>
+        <tr><td>标准版</td><td>完成 LIBERO-90 checkpoint 到 5 个 LIBERO-10 下游任务 finetune，并按 pruned_init、warmup、50 rollouts/task 协议测试。</td></tr>
+        <tr><td>偏强版</td><td>通过严格固定 init、warmup、normalizer、checkpoint 与 rollout 数，使 UWM 5-task closed-loop 评估达到 74.4%，并将主要误差定位到夹取精度和长时序恢复。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>4. 架构讲解稿</h3>
+    <table>
+      <tbody>
+        <tr><th>输入</th><td>LIBERO 任务、图像/state observation、语言指令、LIBERO-90 checkpoint、normalizer。</td></tr>
+        <tr><th>核心节点</th><td>finetune、checkpoint/normalizer 对齐、pruned_init、zero-action warmup、closed-loop rollout。</td></tr>
+        <tr><th>输出</th><td>每任务 50 次 rollout 的 success rate、失败轨迹和任务间分布。</td></tr>
+        <tr><th>失败类型</th><td>soup_cheese 夹取精度、长时序恢复、动作尺度偏差、off-distribution state。</td></tr>
+        <tr><th>评估方式</th><td>5-task average 74.4% (186/250)，任务间成功率 0.62-0.88。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>5. 2-3 分钟口述稿</h3>
+    <p>UWM 这个项目我主要想讲评估协议，因为机器人策略复现里很多结果差异不是模型本身，而是 init、warmup、normalizer、checkpoint 和 rollout 数带来的协议差异。我在沐曦 C500/MACA 上迁移 UWM 官方 LIBERO 训练与评估流程，从 LIBERO-90 checkpoint finetune 到 5 个 LIBERO-10 下游任务，并固定动作归一化、初始化状态和评估脚本。评估上使用 pruned_init、5-step zero-action warmup、50 rollouts/task 的 strict closed-loop 协议，得到 5-task average 74.4% (186/250)，任务间成功率 0.62-0.88。这个结果不包装成超过官方，而是用来分析失败分布：soup_cheese 的夹取精度和长时序恢复是主要误差来源，说明世界模型 rollout 分支需要补更细粒度接触、扰动状态和失败恢复样本。这个项目体现的是我对评估可比性和失败归因的控制，而不只是跑了一个 benchmark。</p>
+
+    <h3>6. 高频追问</h3>
+    <ol>
+      <li>为什么 init 会影响成功率？</li>
+      <li>warmup 的作用是什么？</li>
+      <li>normalizer 错了会怎样？</li>
+      <li>checkpoint 和 normalizer 为什么要配套？</li>
+      <li>为什么每任务 50 rollouts？</li>
+      <li>5-task average 如何计算？</li>
+      <li>为什么不写 reset-style 结果？</li>
+      <li>当前结果和官方 Table II 怎么比？</li>
+      <li>soup_cheese 为什么难？</li>
+      <li>长时序恢复失败说明什么？</li>
+      <li>世界模型 rollout 分支如何补？</li>
+      <li>如何判断是模型问题还是 eval harness 问题？</li>
+      <li>如果某任务成功率低，你第一步查什么？</li>
+      <li>动作归一化如何验证？</li>
+      <li>仿真 seed 是否影响结果？</li>
+      <li>UWM 和 WAM 的区别是什么？</li>
+      <li>MACA 迁移是否影响数值？</li>
+      <li>失败轨迹如何记录？</li>
+      <li>如果继续做，先改训练还是评估？</li>
+      <li>你个人贡献在哪里？</li>
+    </ol>
+
+    <h3>7. 补证据 Checklist</h3>
+    <table>
+      <thead><tr><th>时间</th><th>可补材料</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td>半天</td><td>整理 strict protocol 表：init、warmup、normalizer、checkpoint、rollout 数</td><td>回答“协议为什么重要”</td></tr>
+        <tr><td>1 天</td><td>整理 5-task 成功率、失败次数和典型失败轨迹截图/描述</td><td>支撑失败归因</td></tr>
+        <tr><td>3 天</td><td>补 reset-style 与 strict protocol 的对照说明，但不写进简历</td><td>解释为什么宽松结果不可比</td></tr>
+        <tr><td>1 周</td><td>补 normalizer/checkpoint mismatch 的排查记录或小实验</td><td>证明你能定位 eval harness 问题</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="questions">
+    <h2>追问树与回答分层</h2>
+    <table>
+      <thead><tr><th>问题</th><th>危险回答</th><th>可过回答</th><th>强回答</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>“评估协议有什么技术含量？”</td>
+          <td class="bad">就是按官方跑。</td>
+          <td class="ok">协议会影响结果。</td>
+          <td class="good">机器人评估中 init、normalizer、warmup、checkpoint、rollout 数都会改变分布；固定协议是做可比失败归因的前提。</td>
+        </tr>
+        <tr>
+          <td>“为什么不写更高的 reset-style 结果？”</td>
+          <td class="bad">那个也可以写。</td>
+          <td class="ok">不够严格。</td>
+          <td class="good">reset-style 和 strict closed-loop 不是同一协议，写进去会破坏可比性；宁愿写低但严格的结果。</td>
+        </tr>
+        <tr>
+          <td>“失败轨迹有什么价值？”</td>
+          <td class="bad">用来看看哪里失败。</td>
+          <td class="ok">帮助定位问题。</td>
+          <td class="good">把失败从单个数字拆成训练分布缺口：接触精度、长时序恢复、off-distribution state，指导下一轮数据和 world rollout 设计。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="references">
+    <h2>参考与证据</h2>
+    <ol>
+      <li>本地证据：<a href="../output/mousongzhe_resume_optimized.html">optimized 简历</a> 与 <a href="../output/resume_restructure_plan.md">resume_restructure_plan.md</a> 中 UWM 指标和边界。</li>
+      <li>LIBERO benchmark：用于理解 LIBERO task suites 与机器人策略评估背景。<a href="https://libero-project.github.io/main.html">https://libero-project.github.io/main.html</a></li>
+    </ol>
+  </section>
+</article>
+</body>
+</html>

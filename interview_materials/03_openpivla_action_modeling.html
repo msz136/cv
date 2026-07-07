@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenPiVLA 动作表示与闭环控制 - 面试材料</title>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 32px 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; color: #17202a; background: #f6f8fa; line-height: 1.78; }
+    article { max-width: 980px; margin: 0 auto; background: #fff; padding: 36px 44px; border-radius: 10px; box-shadow: 0 18px 48px rgba(20,35,50,.10); }
+    h1 { margin: 0 0 8px; font-size: 30px; line-height: 1.2; }
+    h2 { margin: 34px 0 14px; padding-left: 12px; border-left: 4px solid #1f6f5b; font-size: 22px; }
+    h3 { margin: 22px 0 10px; font-size: 18px; }
+    p { margin: 0 0 14px; }
+    a { color: #1f6f5b; text-decoration: none; font-weight: 650; }
+    .meta { color: #66727f; font-size: 14px; margin-bottom: 22px; }
+    .toc { background: #f0f7f4; border: 1px solid #d5e7df; border-left: 4px solid #1f6f5b; border-radius: 8px; padding: 14px 18px; margin: 18px 0 28px; }
+    .toc ol { columns: 2; margin: 0; }
+    .note { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+    .warning { background: #fff7ed; border-left: 4px solid #f97316; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 22px; font-size: 14px; }
+    th, td { border: 1px solid #d9e1e6; padding: 8px 10px; vertical-align: top; }
+    th { background: #f3f6f7; text-align: left; }
+    tr:nth-child(even) { background: #fbfcfd; }
+    code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-family: Consolas, monospace; }
+    pre { background: #0f172a; color: #e5e7eb; border-radius: 8px; padding: 14px 16px; overflow-x: auto; }
+    pre code { background: transparent; padding: 0; color: inherit; }
+    .good { color: #166534; font-weight: 700; }
+    .bad { color: #991b1b; font-weight: 700; }
+    .ok { color: #1d4ed8; font-weight: 700; }
+    @media (max-width: 760px) { article { padding: 24px 18px; } .toc ol { columns: 1; } table { display: block; overflow-x: auto; } }
+  </style>
+</head>
+<body>
+<article>
+  <h1>OpenPiVLA：把连续控制重新表述为多模态序列预测</h1>
+  <p class="meta">材料类型：项目面试页 | 证据截止：2026-07-07 | 对应简历：OpenPiVLA / OpenPI VLA 动作表示改造与多模态策略训练</p>
+
+  <nav class="toc" aria-label="目录">
+    <ol>
+      <li><a href="#question">核心问题</a></li>
+      <li><a href="#answer">短答案</a></li>
+      <li><a href="#mechanism">动作 token 机制</a></li>
+      <li><a href="#closed-loop">闭环关系</a></li>
+      <li><a href="#limits">Benchmark 边界</a></li>
+      <li><a href="#pack">项目面试 8 件套</a></li>
+      <li><a href="#questions">追问树</a></li>
+      <li><a href="#references">参考与证据</a></li>
+    </ol>
+  </nav>
+
+  <section id="question">
+    <h2>问题（Question）</h2>
+    <p>面试官会问：<strong>“连续控制动作为什么可以被离散语言 token 表示？这会不会损失精度？horizon 和 action chunk 如何影响闭环控制？LIBERO 结果能代表真实吗？”</strong></p>
+  </section>
+
+  <section id="answer">
+    <h2>短答案</h2>
+    <div class="note">
+      <p><strong>可直接口述：</strong>这个项目的关键不是把连续动作“硬塞进文本”，而是把 VLA 的动作建模问题重写成多模态序列预测：输入是图像、状态和任务语言，输出是一个未来 action window。离散 token 表示会带来量化误差，但它也让动作预测可以复用 VLM 的自回归训练、chat template 和 LoRA 微调能力。精度损失主要由动作量化粒度、归一化、horizon 和 controller 执行频率决定。闭环上，模型每次预测一段 action chunk，controller 只执行前若干步，然后重新观测、重新规划。LIBERO 的优势是协议规整、可比性强；边界是它没有完全覆盖真实机器人里的视觉扰动、控制延迟、物理接触和任务组合复杂度。</p>
+    </div>
+  </section>
+
+  <section id="mechanism">
+    <h2>连续动作为什么能离散化</h2>
+    <p>动作 token 化不是说连续控制本质上是语言，而是把一个连续向量序列编码成模型可生成的离散符号，再在执行前解码回连续动作。令动作维度为 \(d\)，horizon 为 \(H\)，一个 action window 是：</p>
+    \[
+      A_{t:t+H-1} = [a_t, a_{t+1}, \ldots, a_{t+H-1}], \quad a_t \in \mathbb{R}^{d}
+    \]
+    <p>在本项目口径中，DROID 侧使用 horizon=15、dim=72，因此一个训练样本的动作目标可以理解为 \(15 \times 72\) 的连续矩阵。离散 token 化可以抽象为：</p>
+    \[
+      q_{i,j} = Q(\mathrm{norm}(a_{i,j})), \quad
+      token = \mathrm{serialize}(q_{1:H,1:d})
+    \]
+    <p>其中 \(Q\) 是量化函数，\(\mathrm{norm}\) 是动作归一化，\(\mathrm{serialize}\) 是把量化后的动作矩阵写成 assistant 侧离散动作 token 的序列。实现映射上，对应简历中的“连续 action window 编码为 assistant 侧离散动作 token，统一 DROID horizon=15/dim=72 与 MindCube VLM QA 的数据格式”。</p>
+
+    <table>
+      <thead><tr><th>优点</th><th>风险</th><th>面试回答</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>复用 VLM 自回归建模、LoRA、chat template、统一 VLA/VLM co-train</td>
+          <td>量化误差、长序列误差累积、动作维度相关性被文本序列打散</td>
+          <td>承认 token 化有误差，但它换来了训练统一性；误差通过 normalization、chunk 执行和闭环 replanning 缓解。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="closed-loop">
+    <h2>Action Window、Observation Normalization 与 Controller 的闭环</h2>
+    <pre><code class="language-text">Observation image / proprio / task language
+        |
+        v
+Qwen3-VL + LoRA policy predicts action token sequence
+        |
+        v
+decode tokens -> normalized action window (H=15, dim=72)
+        |
+        v
+denormalize / slice / map to controller action space
+        |
+        v
+execute first K actions, then re-observe and replan</code></pre>
+
+    <p>闭环控制里最关键的是 <strong>H</strong> 和 <strong>K</strong> 的关系。\(H\) 是模型一次预测的未来动作长度，\(K\) 是实际执行多少步后重新规划：</p>
+    \[
+      \pi_\theta(o_t, s_t, c) \rightarrow \hat{A}_{t:t+H-1}, \quad
+      env.step(\hat{a}_t), \ldots, env.step(\hat{a}_{t+K-1})
+    \]
+    <p>如果 \(H\) 太短，模型难以表达跨阶段动作意图；如果 \(H\) 太长，后半段动作更容易因为新观测变化而过时。\(K\) 越小，闭环更稳但推理成本更高；\(K\) 越大，执行更流畅但更依赖 open-loop 预测。面试中要讲出这个 trade-off，而不是只报 horizon 数字。</p>
+
+    <pre><code class="language-python">def libero_rollout(env, policy, task, replan_steps):
+    # 1. 读取当前图像、机器人状态和任务语言。
+    obs = env.reset(task)
+    done = False
+    while not done:
+        # 2. 对 observation/state 做与训练一致的归一化和格式化。
+        model_input = build_vla_input(obs, task)
+
+        # 3. 模型输出 assistant 侧动作 token，再解码成未来 action window。
+        action_tokens = policy.generate(model_input)
+        action_window = decode_and_denormalize(action_tokens)
+
+        # 4. 只执行前 K 步，随后重新观察并规划。
+        for action in action_window[:replan_steps]:
+            obs, reward, done, info = env.step(action)
+            if done or info.get("success"):
+                break
+    return info</code></pre>
+  </section>
+
+  <section id="limits">
+    <h2>LIBERO Benchmark 的边界</h2>
+    <table>
+      <thead><tr><th>LIBERO 能说明什么</th><th>不能说明什么</th><th>面试防线</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>在规整仿真任务、固定协议和公开 baseline 下，策略能否完成标准 manipulation 指令。</td>
+          <td>真实机器人视觉扰动、相机偏移、控制延迟、摩擦/接触误差、任务组合泛化。</td>
+          <td>说“公开可比 benchmark 上超过 baseline”，不要说“真实机器人泛化已解决”。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="pack">
+    <h2>项目面试 8 件套</h2>
+    <h3>1. 岗位能力映射</h3>
+    <table>
+      <thead><tr><th>能力</th><th>证据</th><th>讲法</th></tr></thead>
+      <tbody>
+        <tr><td>动作表示设计</td><td>连续 action window → assistant 侧离散动作 token</td><td>把连续控制重写为多模态序列预测。</td></tr>
+        <tr><td>训练策略</td><td>VLA-only、VLM-only、co-train 三类策略</td><td>不是单纯替换 backbone，而是统一数据格式和目标。</td></tr>
+        <tr><td>公开评估</td><td>LIBERO 四套件平均 97.4%，官方 OpenPI pi05_libero baseline 96.85%</td><td>指标放在公开协议下讲，不使用内部 run 名。</td></tr>
+        <tr><td>国产化迁移</td><td>沐曦 C500/MACA 三类 100k-step 训练迁移</td><td>包装为跨算力训练适配，而不是单独炫硬件。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>2. 真实性边界</h3>
+    <table>
+      <thead><tr><th>Claim</th><th>可说程度</th><th>防线</th></tr></thead>
+      <tbody>
+        <tr><td>LIBERO 平均 97.4% 高于官方 baseline</td><td>可说</td><td>确认同一公开协议，避免内部对比。</td></tr>
+        <tr><td>动作 token 化不损失精度</td><td>不能这么说</td><td>应该说量化误差可控但存在，需要闭环 replanning 缓解。</td></tr>
+        <tr><td>真实机器人泛化</td><td>谨慎</td><td>只能说 task-native rollout 验证接口一致性，不说真实泛化已解决。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3. 简历 Bullet 三档</h3>
+    <table>
+      <thead><tr><th>版本</th><th>表达</th></tr></thead>
+      <tbody>
+        <tr><td>保守版</td><td>基于 OpenPI 完成 VLA 训练复现与 LIBERO 评估，整理动作表示、归一化和 rollout 失败样例。</td></tr>
+        <tr><td>标准版</td><td>在 OpenPI 框架上改造 Qwen3-VL + LoRA 训练目标，将连续 action window 编码为 assistant 侧动作 token，并完成公开 LIBERO 四套件评估。</td></tr>
+        <tr><td>偏强版</td><td>将 VLA 动作建模重写为多模态序列预测问题，统一 DROID/MindCube 数据格式和 action token 输出，在公开 LIBERO 平均 97.4%，高于官方 OpenPI pi05_libero baseline。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>4. 架构讲解稿</h3>
+    <table>
+      <tbody>
+        <tr><th>输入</th><td>图像 observation、proprio/state、任务语言、历史上下文。</td></tr>
+        <tr><th>核心节点</th><td>Qwen3-VL + LoRA、VLA-only/VLM-only/co-train recipe、action token serializer、normalizer、policy rollout。</td></tr>
+        <tr><th>输出</th><td>assistant 侧离散动作 token，解码为连续 action window 后交给 controller。</td></tr>
+        <tr><th>失败类型</th><td>动作 token 量化误差、normalization 错、action chunk 执行过长、视觉扰动、控制延迟。</td></tr>
+        <tr><th>评估方式</th><td>LIBERO goal/object/spatial/libero_10 四套件，平均 97.4%，与官方 pi05_libero baseline 对比。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>5. 2-3 分钟口述稿</h3>
+    <p>OpenPiVLA 这个项目我会把它定义成 VLA 动作建模改造，而不是普通复现。我在 OpenPI 框架上接入 Qwen3-VL-2B + LoRA，把连续 action window 表示成 assistant 侧离散动作 token，并统一 DROID horizon=15/dim=72 和 MindCube VLM QA 的数据格式。这样 VLA 的核心问题从“单独训练一个连续动作头”变成“图像、语言、状态到动作 token 序列的多模态预测”。这里的难点是离散化会带来量化误差，所以必须通过动作归一化、action chunk、controller 反归一化和闭环 replanning 保持可执行性。评估上，我按公开 LIBERO 四套件口径得到 goal/object/spatial/libero_10 = 99.0%/99.5%/98.0%/93.0%，平均 97.4%，高于官方 OpenPI pi05_libero baseline 96.85%。边界是 LIBERO 是规整仿真 benchmark，不能代表真实机器人里的全部扰动和延迟，但它能说明在公开协议下这套动作表示和训练策略是有效的。</p>
+
+    <h3>6. 高频追问</h3>
+    <ol>
+      <li>为什么连续动作可以 token 化？</li>
+      <li>token 化误差怎么估计？</li>
+      <li>action horizon=15 的设计含义是什么？</li>
+      <li>action dim=72 包含什么？</li>
+      <li>VLA-only、VLM-only、co-train 的区别是什么？</li>
+      <li>为什么接 Qwen3-VL + LoRA？</li>
+      <li>和原 OpenPI action expert 有什么差异？</li>
+      <li>controller contract 是什么？</li>
+      <li>normalization 错会导致什么失败？</li>
+      <li>LIBERO 四套件分别测什么？</li>
+      <li>为什么 libero_10 更难？</li>
+      <li>超过官方 baseline 是否统计显著？</li>
+      <li>真实机器人上会遇到什么问题？</li>
+      <li>控制延迟如何影响 action chunk？</li>
+      <li>视觉扰动会影响哪个模块？</li>
+      <li>如何定位失败是 VLM 理解错还是动作执行错？</li>
+      <li>国产化迁移的技术难点在哪里？</li>
+      <li>如果继续做，最想补哪个实验？</li>
+      <li>这个项目和 WAM/UWM 有什么关系？</li>
+      <li>你个人贡献在哪里？</li>
+    </ol>
+
+    <h3>7. 补证据 Checklist</h3>
+    <table>
+      <thead><tr><th>时间</th><th>可补材料</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td>半天</td><td>画出 action token encode/decode 与 controller 执行图</td><td>回答“连续动作为什么能 token 化”</td></tr>
+        <tr><td>1 天</td><td>整理 LIBERO 四套件逐任务成功率和失败样例</td><td>解释 97.4% 的来源和边界</td></tr>
+        <tr><td>3 天</td><td>补 action horizon / replan_steps 对比实验或小样本分析</td><td>支撑 horizon 与闭环控制 trade-off</td></tr>
+        <tr><td>1 周</td><td>补视觉扰动、延迟或真实机器人小闭环验证</td><td>回应“LIBERO 不能代表真实泛化”的质疑</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="questions">
+    <h2>追问树与回答分层</h2>
+    <table>
+      <thead><tr><th>问题</th><th>危险回答</th><th>可过回答</th><th>强回答</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>“离散 token 不会损失连续控制精度吗？”</td>
+          <td class="bad">不会，模型能学会。</td>
+          <td class="ok">会有误差，但结果还不错。</td>
+          <td class="good">承认量化误差，解释 normalization、chunk decode、闭环 replanning 如何降低误差累积，并说明 benchmark 边界。</td>
+        </tr>
+        <tr>
+          <td>“这是不是只是换了个 backbone？”</td>
+          <td class="bad">我接了 Qwen3-VL。</td>
+          <td class="ok">还改了动作格式。</td>
+          <td class="good">强调训练目标和 I/O contract 变化：图像/语言/状态输入统一，连续 action window 被序列化成 assistant 动作 token，支持 VLA/VLM/co-train。</td>
+        </tr>
+        <tr>
+          <td>“LIBERO 高分能说明真实吗？”</td>
+          <td class="bad">说明策略很好。</td>
+          <td class="ok">说明仿真任务效果好。</td>
+          <td class="good">LIBERO 说明公开仿真协议下可比有效；真实机器人还要补视觉扰动、延迟、控制频率、组合任务和安全验证。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="references">
+    <h2>参考与证据</h2>
+    <ol>
+      <li>本地证据：<a href="../output/mousongzhe_resume_optimized.html">optimized 简历</a> 与 <a href="../output/resume_restructure_plan.md">resume_restructure_plan.md</a> 中 OpenPiVLA 指标和设计边界。</li>
+      <li>OpenPI 官方仓库与 LIBERO 示例文档：用于官方 baseline 和 VLA 训练背景。<a href="https://github.com/Physical-Intelligence/openpi">https://github.com/Physical-Intelligence/openpi</a></li>
+      <li>LIBERO benchmark：用于理解 goal/object/spatial/libero_10 的公开评估背景。<a href="https://libero-project.github.io/main.html">https://libero-project.github.io/main.html</a></li>
+    </ol>
+  </section>
+</article>
+</body>
+</html>

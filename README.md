@@ -35,6 +35,10 @@ This repository collects resume, internship, job-search, and interview-preparati
 7. `interview-coach`: use after the resume is plausible, when the next bottleneck is storybank, mock interviews, transcript analysis, or long-term practice.
 8. `timeline-polishing` + `resume-generation`: adopt when you want a long-term resume-as-code workflow.
 
+## Interview Materials
+
+- [面试项目材料包](interview_materials/index.html): 覆盖 Robot Harness、OPD / VLM Grounding、OpenPiVLA、Cosmos / WAM、UWM / LIBERO 五个项目的机制解释、证据边界、口述稿、追问树和回答策略。
+
 ## Security Review
 
 Static review was performed before deployment. No repository scripts were executed during review.

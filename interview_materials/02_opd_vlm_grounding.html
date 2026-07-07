@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OPD / VLM Grounding - 面试材料</title>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 32px 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; color: #17202a; background: #f6f8fa; line-height: 1.78; }
+    article { max-width: 980px; margin: 0 auto; background: #fff; padding: 36px 44px; border-radius: 10px; box-shadow: 0 18px 48px rgba(20,35,50,.10); }
+    h1 { margin: 0 0 8px; font-size: 30px; line-height: 1.2; }
+    h2 { margin: 34px 0 14px; padding-left: 12px; border-left: 4px solid #1f6f5b; font-size: 22px; }
+    h3 { margin: 22px 0 10px; font-size: 18px; }
+    p { margin: 0 0 14px; }
+    a { color: #1f6f5b; text-decoration: none; font-weight: 650; }
+    .meta { color: #66727f; font-size: 14px; margin-bottom: 22px; }
+    .toc { background: #f0f7f4; border: 1px solid #d5e7df; border-left: 4px solid #1f6f5b; border-radius: 8px; padding: 14px 18px; margin: 18px 0 28px; }
+    .toc ol { columns: 2; margin: 0; }
+    .note { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+    .warning { background: #fff7ed; border-left: 4px solid #f97316; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 22px; font-size: 14px; }
+    th, td { border: 1px solid #d9e1e6; padding: 8px 10px; vertical-align: top; }
+    th { background: #f3f6f7; text-align: left; }
+    tr:nth-child(even) { background: #fbfcfd; }
+    code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-family: Consolas, monospace; }
+    pre { background: #0f172a; color: #e5e7eb; border-radius: 8px; padding: 14px 16px; overflow-x: auto; }
+    pre code { background: transparent; padding: 0; color: inherit; }
+    .good { color: #166534; font-weight: 700; }
+    .bad { color: #991b1b; font-weight: 700; }
+    .ok { color: #1d4ed8; font-weight: 700; }
+    @media (max-width: 760px) { article { padding: 24px 18px; } .toc ol { columns: 1; } table { display: block; overflow-x: auto; } }
+  </style>
+</head>
+<body>
+<article>
+  <h1>OPD / VLM Grounding：从数据分布到多教师融合机制</h1>
+  <p class="meta">材料类型：项目面试页 | 证据截止：2026-07-07 | 对应简历：商汤科技语义导航 grounding / OPD</p>
+
+  <nav class="toc" aria-label="目录">
+    <ol>
+      <li><a href="#question">核心问题</a></li>
+      <li><a href="#answer">短答案</a></li>
+      <li><a href="#mechanism">机制拆解</a></li>
+      <li><a href="#math">训练目标解释</a></li>
+      <li><a href="#pack">项目面试 8 件套</a></li>
+      <li><a href="#questions">追问树</a></li>
+      <li><a href="#references">参考与证据</a></li>
+    </ol>
+  </nav>
+
+  <section id="question">
+    <h2>问题（Question）</h2>
+    <p>面试官会追问：<strong>“OPD 为什么优于单一 teacher 或单一 SFT？提升到底来自数据分布、teacher 融合，还是格式对齐？”</strong></p>
+  </section>
+
+  <section id="answer">
+    <h2>短答案</h2>
+    <div class="note">
+      <p><strong>可直接口述：</strong>我不会把提升单因果地归因给 OPD。更严谨的解释是三层贡献叠加：第一，开源清洗样本提供 box grounding 冷启动，场景标注/合成样本补足长尾语义和空间分布；第二，SFT 主要解决输出格式、基础定位能力和多类型任务统一；第三，OPD 的价值是在线整合多个 teacher 的互补信号，让 box、point、text、bool 四类 grounding 在同一训练分布里联合优化，减少单一 teacher 的偏置。当前指标支持这个机制解释，但如果要严格拆因果，还需要单 teacher、仅 SFT、无场景合成数据等 ablation。</p>
+    </div>
+  </section>
+
+  <section id="mechanism">
+    <h2>机制拆解：三类收益不要混讲</h2>
+    <table>
+      <thead><tr><th>来源</th><th>解决的问题</th><th>对指标的可能贡献</th><th>面试防线</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>数据分布</td>
+          <td>开源清洗样本初始化 box grounding；场景标注/合成 pipeline 扩充长尾语义、空间关系和任务语言。</td>
+          <td>提升覆盖率、减少无框/错框、改善 held-out Mean IoU。</td>
+          <td>可以说“数据分布是基础”，不要说“只靠数据就够”。</td>
+        </tr>
+        <tr>
+          <td>SFT 格式对齐</td>
+          <td>让模型学会按统一格式输出 box、point、text、bool，减少格式错误和多任务混淆。</td>
+          <td>提升 strict format、降低无效输出。</td>
+          <td>SFT 是冷启动和格式对齐，不是最终主成果。</td>
+        </tr>
+        <tr>
+          <td>OPD 多教师融合</td>
+          <td>不同 teacher 对对象定位、文本判断、布尔判断、point hit 的强弱不同；在线融合避免单 teacher 偏置。</td>
+          <td>提升综合 raw-holdout，尤其是 Text loose、Box Acc@0.5、Bool acc。</td>
+          <td>没有 ablation 时，只说“证据支持”，不要说“已证明唯一原因”。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>面试中建议用一句话打底：<strong>“数据决定覆盖，SFT 决定格式，OPD 决定多任务 teacher 信号如何被联合优化。”</strong></p>
+  </section>
+
+  <section id="math">
+    <h2>训练目标解释</h2>
+    <p>可以把 OPD 讲成一个多教师、多输出类型的加权监督目标。令 \(T_k\) 表示第 \(k\) 个 teacher，\(z\) 表示输入图像与任务文本，\(y^{(m)}\) 表示第 \(m\) 类输出目标，\(m \in \{box, point, text, bool\}\)。一个简化目标是：</p>
+    \[
+      \mathcal{L}_{OPD}
+      =
+      \sum_{m}
+      \sum_{k}
+      \alpha_{m,k}(z)
+      \cdot
+      \ell_m(f_\theta(z), T_k^{(m)}(z))
+    \]
+    <p>变量解释：\(\ell_m\) 是对应输出类型的损失或 reward，\(\alpha_{m,k}\) 表示在当前样本和输出类型上 teacher 的权重。实现映射上，报告中只能把它作为机制解释，因为本地简历证据证明了多教师融合和指标结果，但没有完整暴露每个 teacher 的权重函数。面试中可说“OPD 的思想是按任务类型和样本状态整合 teacher，而不是盲目平均所有 teacher”。</p>
+
+    <pre><code class="language-python">def opd_training_step(batch, teachers, student):
+    # 1. 输入包括图像、语言指令和目标输出类型：box / point / text / bool。
+    z, output_type = batch["input"], batch["output_type"]
+
+    # 2. 多个 teacher 产生候选监督信号。
+    teacher_targets = [teacher.predict(z, output_type) for teacher in teachers]
+
+    # 3. 根据样本类型、置信度或规则选择/加权 teacher 信号。
+    weights = compute_teacher_weights(z, output_type, teacher_targets)
+
+    # 4. 学生模型在统一格式下学习多类型 grounding 输出。
+    pred = student(z)
+    loss = weighted_grounding_loss(pred, teacher_targets, weights)
+    return loss</code></pre>
+  </section>
+
+  <section id="pack">
+    <h2>项目面试 8 件套</h2>
+    <h3>1. 岗位能力映射</h3>
+    <table>
+      <thead><tr><th>能力</th><th>项目证据</th><th>讲法</th></tr></thead>
+      <tbody>
+        <tr><td>Grounding 数据设计</td><td>13,879 个标注框，41,637 条样本，开源清洗 + 场景标注/合成 pipeline</td><td>不是“做数据清洗”，而是在构造训练分布。</td></tr>
+        <tr><td>多任务目标统一</td><td>box、point、text、bool 四类输出统一到 OPD</td><td>强调多输出类型之间的格式和监督信号对齐。</td></tr>
+        <tr><td>指标解释</td><td>Mean IoU 0.1319 → 0.3501；Text +35.4pp，Box +8.0pp，Bool +8.8pp</td><td>把指标连接到机制，不干摆数字。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>2. 真实性边界</h3>
+    <table>
+      <thead><tr><th>Claim</th><th>可说程度</th><th>防线</th></tr></thead>
+      <tbody>
+        <tr><td>设计 grounding 数据分布与 OPD 训练目标</td><td>可重点讲</td><td>注意“设计/参与”边界按真实贡献回答。</td></tr>
+        <tr><td>OPD 优于单一 teacher</td><td>可讲机制假设与指标支持</td><td>没有完整 ablation 时，不说“严格证明”。</td></tr>
+        <tr><td>提升来自数据还是 teacher</td><td>必须拆开讲</td><td>用“数据覆盖 + SFT 格式 + OPD 融合”三段式。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3. 简历 Bullet 三档</h3>
+    <table>
+      <thead><tr><th>版本</th><th>表达</th></tr></thead>
+      <tbody>
+        <tr><td>保守版</td><td>参与 VLM grounding 数据整理与格式对齐，构建 box/point/text/bool 多类型样本并进行 held-out 评估。</td></tr>
+        <tr><td>标准版</td><td>设计分阶段 grounding 数据分布，并将多类型输出统一到 OPD 训练目标，held-out Mean IoU 从 0.1319 提升至 0.3501。</td></tr>
+        <tr><td>偏强版</td><td>通过开源清洗、场景标注/合成和在线多教师融合构建 VLM grounding 训练分布，使 Box/Text/Bool 等 raw-holdout 指标获得正向提升。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>4. 2-3 分钟口述稿</h3>
+    <p>这个项目是语义导航 grounding 的数据与训练目标设计。问题不是简单地让模型输出一个框，而是要在机器人场景里统一处理 box、point、text、bool 多种 grounding 输出。我的做法是先用开源清洗样本初始化 box grounding 能力，再用场景标注和合成 pipeline 补足长尾语义和空间分布，最后把这些样本统一到 OPD 在线多教师融合目标里。SFT 的作用主要是格式对齐和冷启动，OPD 的作用是融合不同 teacher 在不同输出类型上的互补信号，避免单一 teacher 的偏置。结果上，13,879 个标注框和 41,637 条样本支撑迭代，held-out Mean IoU 从 0.1319 到 0.3501；相对 Qwen3-VL-8B-Instruct，Text loose 提升 35.4pp、Box Acc@0.5 提升 8.0pp、Bool acc 提升 8.8pp。边界是目前没有把每个收益完全拆成 ablation，所以面试里我会把它表述为机制解释和指标支持，而不是绝对因果证明。</p>
+
+    <h3>5. 架构讲解稿</h3>
+    <table>
+      <tbody>
+        <tr><th>输入</th><td>图像、语义导航指令、对象/空间关系文本、输出类型标记。</td></tr>
+        <tr><th>核心节点</th><td>开源样本清洗、场景标注、合成数据、SFT 冷启动、OPD 多教师融合、held-out 评估。</td></tr>
+        <tr><th>输出</th><td>box、point、text、bool 四类 grounding 结果。</td></tr>
+        <tr><th>失败类型</th><td>框偏移、错对象、关系词理解错误、格式错误、布尔判断不稳。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>6. 高频追问</h3>
+    <ol>
+      <li>为什么不是只做 SFT？</li>
+      <li>单 teacher 的偏置是什么？</li>
+      <li>你如何判断数据分布覆盖长尾？</li>
+      <li>box、point、text、bool 的 loss 能统一吗？</li>
+      <li>Mean IoU 提升和 Box Acc 提升的关系是什么？</li>
+      <li>Text loose 提升为什么最大？</li>
+      <li>OPD 的 teacher 权重怎么来？</li>
+      <li>如何避免 teacher 错误传播？</li>
+      <li>合成数据会不会污染真实分布？</li>
+      <li>如果只用开源样本会怎样？</li>
+      <li>如果只用场景样本会怎样？</li>
+      <li>为什么 Point Hit@100 没写成主要提升？</li>
+      <li>held-out 如何划分？</li>
+      <li>格式对齐如何单独评估？</li>
+      <li>这和普通目标检测有什么区别？</li>
+      <li>如何迁移到真实导航？</li>
+      <li>这个工作里最难的 bad case 是什么？</li>
+      <li>OPD 和 GRPO 的关系是什么？</li>
+      <li>后续最想补哪个 ablation？</li>
+      <li>你个人贡献在哪里？</li>
+    </ol>
+
+    <h3>7. 补证据 Checklist</h3>
+    <table>
+      <thead><tr><th>时间</th><th>可补材料</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td>半天</td><td>整理 5 个 grounding bad case：错对象、框偏移、关系词错误、格式错误、bool 判断错误</td><td>支撑“错误归因”而不是只报指标</td></tr>
+        <tr><td>1 天</td><td>补一张数据来源/输出类型分布表：开源清洗、场景标注、合成样本分别覆盖什么</td><td>回答“提升来自数据分布还是 OPD”</td></tr>
+        <tr><td>3 天</td><td>补最小 ablation：仅 SFT、无合成数据、单 teacher 与 OPD 对比</td><td>把机制解释升级为更强证据</td></tr>
+        <tr><td>1 周</td><td>补 teacher disagreement 分析：哪些样本 teacher 分歧最大，OPD 如何处理</td><td>证明 multi-teacher 融合不是空话</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="questions">
+    <h2>追问树与回答分层</h2>
+    <table>
+      <thead><tr><th>问题</th><th>危险回答</th><th>可过回答</th><th>强回答</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>“提升到底是谁贡献的？”</td>
+          <td class="bad">主要是 OPD。</td>
+          <td class="ok">数据和 OPD 都有贡献。</td>
+          <td class="good">拆成数据覆盖、SFT 格式对齐、OPD teacher 融合三部分；当前指标支持组合机制，但需要 ablation 拆因果。</td>
+        </tr>
+        <tr>
+          <td>“为什么多 teacher 比单 teacher 好？”</td>
+          <td class="bad">多个 teacher 更强。</td>
+          <td class="ok">不同 teacher 能互补。</td>
+          <td class="good">不同输出类型的错误分布不同，多 teacher 融合能降低单 teacher 在某类输出上的系统偏置，尤其是 text/bool 与 box 的监督粒度不同。</td>
+        </tr>
+        <tr>
+          <td>“合成数据会不会过拟合格式？”</td>
+          <td class="bad">不会，我们数据质量高。</td>
+          <td class="ok">需要 held-out 检查。</td>
+          <td class="good">这是风险，所以要用真实场景 held-out、格式错误率和不同输出类型指标一起看；不能只看训练 loss。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="references">
+    <h2>参考与证据</h2>
+    <ol>
+      <li>本地证据：<a href="../output/mousongzhe_resume_optimized.html">optimized 简历</a> 与 <a href="../output/resume_restructure_plan.md">resume_restructure_plan.md</a> 中的 OPD 数据规模和指标。</li>
+      <li>公开背景：VLM grounding / object localization 的通用训练与评估概念，本页不把内部 OPD 机制包装成公开论文结论。</li>
+    </ol>
+  </section>
+</article>
+</body>
+</html>

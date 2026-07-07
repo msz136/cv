@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Robot Harness 与工具调用训练 - 面试材料</title>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 32px 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; color: #17202a; background: #f6f8fa; line-height: 1.78; }
+    article { max-width: 980px; margin: 0 auto; background: #fff; padding: 36px 44px; border-radius: 10px; box-shadow: 0 18px 48px rgba(20,35,50,.10); }
+    h1 { margin: 0 0 8px; font-size: 30px; line-height: 1.2; }
+    h2 { margin: 34px 0 14px; padding-left: 12px; border-left: 4px solid #1f6f5b; font-size: 22px; }
+    h3 { margin: 22px 0 10px; font-size: 18px; }
+    p { margin: 0 0 14px; }
+    a { color: #1f6f5b; text-decoration: none; font-weight: 650; }
+    a:hover { text-decoration: underline; }
+    .meta { color: #66727f; font-size: 14px; margin-bottom: 22px; }
+    .toc { background: #f0f7f4; border: 1px solid #d5e7df; border-left: 4px solid #1f6f5b; border-radius: 8px; padding: 14px 18px; margin: 18px 0 28px; }
+    .toc ol { columns: 2; margin: 0; }
+    .note { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+    .warning { background: #fff7ed; border-left: 4px solid #f97316; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+    .evidence { background: #f7f2ff; border-left: 4px solid #7c3aed; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 22px; font-size: 14px; }
+    th, td { border: 1px solid #d9e1e6; padding: 8px 10px; vertical-align: top; }
+    th { background: #f3f6f7; text-align: left; }
+    tr:nth-child(even) { background: #fbfcfd; }
+    code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-family: Consolas, monospace; }
+    pre { background: #0f172a; color: #e5e7eb; border-radius: 8px; padding: 14px 16px; overflow-x: auto; }
+    pre code { background: transparent; padding: 0; color: inherit; }
+    .good { color: #166534; font-weight: 700; }
+    .bad { color: #991b1b; font-weight: 700; }
+    .ok { color: #1d4ed8; font-weight: 700; }
+    @media (max-width: 760px) { article { padding: 24px 18px; } .toc ol { columns: 1; } table { display: block; overflow-x: auto; } }
+  </style>
+</head>
+<body>
+<article>
+  <h1>Robot Harness 与工具调用训练：从工程约束到可学习监督</h1>
+  <p class="meta">材料类型：项目面试页 | 证据截止：2026-07-07 | 对应简历：商汤科技具身算法实习第一、二条</p>
+
+  <nav class="toc" aria-label="目录">
+    <ol>
+      <li><a href="#question">核心问题</a></li>
+      <li><a href="#answer">短答案</a></li>
+      <li><a href="#mechanism">因果机制</a></li>
+      <li><a href="#schema-reward-eval">Schema / Reward / Eval</a></li>
+      <li><a href="#pack">项目面试 8 件套</a></li>
+      <li><a href="#questions">追问树</a></li>
+      <li><a href="#strategy">回答策略</a></li>
+      <li><a href="#references">参考与证据</a></li>
+    </ol>
+  </nav>
+
+  <section id="question">
+    <h2>问题（Question）</h2>
+    <p>面试官最可能追问：<strong>“你说 harness 设计和训练数据设计有关，但工程 harness 到算法训练之间的过渡是什么？tool accuracy / scope correctness 这些指标为什么可以作为真实机器人任务控制能力的前置代理？”</strong></p>
+  </section>
+
+  <section id="answer">
+    <h2>短答案</h2>
+    <div class="note">
+      <p><strong>可直接口述：</strong>harness 的价值不是“搭了平台”，而是把机器人集群控制中的可执行约束转成模型能学习、能被 reward 检查、能被 held-out 评估的 action/tool 语义。工程侧产生的是带上下文的任务状态、机器人状态、排他动作和取消补偿；算法侧消费的是 schema 化的 tool-call 样本、GRPO reward 和严格评估集。tool accuracy、scope correctness、critical-action correctness 不能证明真实机器人一定成功，但能证明模型在进入低层控制之前不会选错工具、越权操作、破坏时序约束，是真实任务执行能力的前置代理指标。</p>
+    </div>
+    <div class="warning">
+      <p><strong>边界防线：</strong>不要说“tool accuracy 提升 = 机器人成功率提升”。更安全的表述是：它降低了无效/越权/时序错误的高层动作概率，为真实机器人闭环控制提供更干净的上层决策输入。</p>
+    </div>
+  </section>
+
+  <section id="mechanism">
+    <h2>因果机制：工程 Harness 如何过渡到训练数据</h2>
+    <p>可以把项目拆成三层：运行层、语义层、训练层。</p>
+    <table>
+      <thead><tr><th>层级</th><th>输入</th><th>设计动作</th><th>输出</th><th>面试时要强调</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>运行层 Harness</td>
+          <td>多会话任务、robot_id、robot memory、subagent、排他动作、取消请求、执行结果</td>
+          <td>定义任务状态机和 robot 级约束，记录“什么条件下允许做什么动作”</td>
+          <td>结构化 trace 和 action candidates</td>
+          <td>不是单纯并发调度，而是在抽象机器人控制语义</td>
+        </tr>
+        <tr>
+          <td>语义层 Schema</td>
+          <td>trace、action、状态约束</td>
+          <td>把 action name、arguments、scope、precondition、cancelability、critical flag 写入 schema</td>
+          <td>SFT 样本和 reward 可读字段</td>
+          <td>这是工程到算法的桥：约束从代码逻辑变成监督信号</td>
+        </tr>
+        <tr>
+          <td>训练层 SFT/GRPO</td>
+          <td>62,223 条 SFT 数据、8,916 条 GRPO 数据、held-out 评估集</td>
+          <td>SFT 学格式和基本动作分布，GRPO 用 schema-aware reward 约束工具选择、scope 和参数语义</td>
+          <td>32B holdout tool accuracy 95%+、coverage 约 96%、argument exact/semantic 92.3%/96.9%</td>
+          <td>指标是高层 action semantics 的代理，不是物理控制成功率</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>形式化地说，harness 产生的不是普通日志，而是带约束的训练样本：</p>
+    \[
+      x = (c, m, s_r, q), \quad
+      y = (tool, args, scope, temporal\_tag)
+    \]
+    <p>其中 \(c\) 是会话上下文，\(m\) 是 robot memory，\(s_r\) 是机器人状态，\(q\) 是用户或子任务请求；目标 \(y\) 是模型要输出的工具调用。实现映射上，harness 把原本散落在调度、互斥、取消补偿中的约束压成字段，训练时模型学习这些字段之间的对应关系。</p>
+
+    <pre><code class="language-python">def convert_trace_to_training_sample(trace):
+    # 1. 从 harness trace 中读取用户意图、robot 状态和会话记忆。
+    context = build_context(trace.session, trace.memory, trace.subagents)
+
+    # 2. 将可执行动作规范化为 tool/action schema。
+    schema = {
+        "tool": trace.action.name,
+        "args": normalize_args(trace.action.args),
+        "robot_scope": trace.robot_id,
+        "exclusive": trace.action.requires_mutex,
+        "cancelable": trace.action.cancelable,
+        "critical": trace.action.is_critical,
+    }
+
+    # 3. SFT 使用 schema 作为目标；GRPO 使用同一 schema 计算 reward。
+    return {"prompt": context, "target": schema}</code></pre>
+  </section>
+
+  <section id="schema-reward-eval">
+    <h2>哪些约束进 Schema，哪些进 Reward，哪些进 Holdout Eval</h2>
+    <table>
+      <thead><tr><th>约束类型</th><th>进入 Schema</th><th>进入 Reward</th><th>进入 Holdout Eval</th><th>为什么这样放</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>工具选择</td>
+          <td>tool name、动作类别、critical flag</td>
+          <td>tool exact match / semantic match</td>
+          <td>tool accuracy</td>
+          <td>高层动作选错会直接导致任务无效，是第一优先级</td>
+        </tr>
+        <tr>
+          <td>参数约束</td>
+          <td>参数字段、类型、必填项、可选项</td>
+          <td>argument exact / semantic reward</td>
+          <td>argument exact / semantic match</td>
+          <td>参数是工具调用能否落到正确对象或状态的关键</td>
+        </tr>
+        <tr>
+          <td>robot scope</td>
+          <td>robot_id、multi-robot boundary</td>
+          <td>scope correctness reward</td>
+          <td>scope correctness</td>
+          <td>避免跨 robot 越权、抢占或串会话</td>
+        </tr>
+        <tr>
+          <td>排他动作</td>
+          <td>exclusive / mutex 标记</td>
+          <td>非法并发惩罚</td>
+          <td>critical case set</td>
+          <td>导航、抓取、下单等长时序动作不能被中间状态抢占</td>
+        </tr>
+        <tr>
+          <td>取消补偿</td>
+          <td>cancelable、cancel target、compensation action</td>
+          <td>取消顺序和目标一致性 reward</td>
+          <td>cancel scenario holdout</td>
+          <td>真实系统里取消比正常执行更容易暴露语义漏洞</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>GRPO reward 可以用分项组合解释：</p>
+    \[
+      R(y,\hat{y}) =
+      w_t r_{tool} +
+      w_a r_{arg} +
+      w_s r_{scope} +
+      w_c r_{critical} -
+      w_v r_{violation}
+    \]
+    <p>这里 \(\hat{y}\) 是模型输出，\(y\) 是 schema 目标；\(r_{tool}\) 约束工具选择，\(r_{arg}\) 约束参数，\(r_{scope}\) 约束 robot 归属，\(r_{critical}\) 约束关键动作，\(r_{violation}\) 惩罚非法并发或取消错误。面试中不必强调具体权重，而要强调 reward 不是泛泛打分，而是由 harness 暴露出来的可执行约束组成。</p>
+  </section>
+
+  <section id="pack">
+    <h2>项目面试 8 件套</h2>
+    <h3>1. 岗位能力映射</h3>
+    <table>
+      <thead><tr><th>岗位能力</th><th>本项目证据</th><th>面试表达</th></tr></thead>
+      <tbody>
+        <tr><td>具身任务表示</td><td>统一 task/action schema，包含 memory、subagent、排他动作、取消补偿、多机器人边界</td><td>我做的是“可执行任务语义”的抽象，而不是普通后端调度。</td></tr>
+        <tr><td>训练数据设计</td><td>62,223 条 SFT、8,916 条 GRPO 数据</td><td>数据来自 harness 约束，不是人工拼 prompt。</td></tr>
+        <tr><td>评估协议</td><td>holdout tool accuracy 95%+，coverage 约 96%，严格集 tool/scope/critical 100%</td><td>指标评价高层工具语义，不夸大为真实机器人成功率。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>2. 真实性边界</h3>
+    <table>
+      <thead><tr><th>Claim</th><th>证据等级</th><th>可说程度</th><th>防线</th></tr></thead>
+      <tbody>
+        <tr><td>设计 robot task harness 与训练 schema</td><td>C2</td><td>可重点讲</td><td>讲设计边界，不说整个平台 owner。</td></tr>
+        <tr><td>32B SFT/GRPO 后工具调用指标显著提升</td><td>C3</td><td>可讲具体指标</td><td>指标限于 tool-call holdout，不代表物理任务成功率。</td></tr>
+        <tr><td>结构化工具调用能力迁移到真实机器人任务控制</td><td>C1/C2 推断</td><td>只能讲“前置代理”和“必要非充分条件”</td><td>必须承认还需要感知、低层控制、延迟和真实机器人验证。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3. 简历 Bullet 三档</h3>
+    <table>
+      <thead><tr><th>版本</th><th>表达</th></tr></thead>
+      <tbody>
+        <tr><td>保守版</td><td>参与机器人任务 harness 与工具调用训练数据整理，梳理 robot scope、参数约束和关键动作评估口径。</td></tr>
+        <tr><td>标准版</td><td>设计 robot task/action schema，将 memory、subagent、排他动作和取消补偿转为 SFT/GRPO 监督，构建工具调用训练与 held-out 评估。</td></tr>
+        <tr><td>偏强版</td><td>面向机器人集群控制设计可学习的 action/tool 语义层，推动 Qwen3-VL-32B tool-call holdout accuracy 提升至 95%+，并以严格集验证 scope 与 critical action 约束。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>4. 2-3 分钟口述稿</h3>
+    <p>这个项目的背景是机器人平台里存在多会话、多机器人和长时序动作，单纯把工具接起来并不能保证模型输出可执行。我的工作是把平台控制约束抽象为 robot task harness 和统一 task/action schema。具体来说，我把 robot memory、subagent 分工、robot scope、排他动作、取消补偿这些约束显式进入 schema，再把 schema 转成 SFT 数据和 GRPO reward。这样工程侧的“什么动作在什么状态下可执行”，就变成模型侧可学习、可评估的监督信号。结果上，我们构建了 62,223 条 SFT 和 8,916 条 GRPO 数据，主线扩展到 Qwen3-VL-32B，holdout tool accuracy 从 base 的 37.8% 提升到 95% 以上，coverage 约 96%，严格集中工具选择、robot scope 和 critical action 都达到 100%。这个结果的边界是，它证明的是高层工具调用语义，不等价于真实机器人成功率；但它是进入真实控制闭环前非常关键的前置代理，因为低层控制再强，也承受不了上层工具选错、越权或破坏时序。</p>
+
+    <h3>5. 架构讲解稿</h3>
+    <table>
+      <tbody>
+        <tr><th>输入</th><td>用户请求、多会话上下文、robot memory、robot_id、任务状态、subagent 中间结果。</td></tr>
+        <tr><th>核心节点</th><td>harness 状态机、schema 转换、SFT 样本构造、GRPO reward、holdout eval。</td></tr>
+        <tr><th>输出</th><td>工具选择、结构化参数、robot scope、critical/cancelable 标记。</td></tr>
+        <tr><th>失败类型</th><td>工具错选、参数缺失、robot scope 错误、排他动作冲突、取消目标错误。</td></tr>
+        <tr><th>评估方式</th><td>tool accuracy、coverage、scope correctness、critical action correctness、argument exact/semantic match。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>6. 高频追问 20 题</h3>
+    <ol>
+      <li>harness 和训练数据之间的中间产物是什么？</li>
+      <li>哪些字段是你设计进 schema 的？</li>
+      <li>为什么 tool accuracy 可以作为代理指标？</li>
+      <li>这个代理指标有哪些盲区？</li>
+      <li>SFT 和 GRPO 各自解决什么问题？</li>
+      <li>reward 是规则写死的吗，还是模型打分？</li>
+      <li>critical action 如何定义？</li>
+      <li>scope correctness 错了会发生什么？</li>
+      <li>取消补偿为什么难？</li>
+      <li>多机器人并发怎么避免互相污染？</li>
+      <li>8B 和 32B 的定位有什么不同？</li>
+      <li>为什么不直接让模型学自然语言轨迹？</li>
+      <li>如何构造 held-out，避免和训练集泄漏？</li>
+      <li>coverage 约 96% 指什么？</li>
+      <li>argument semantic match 怎么判断？</li>
+      <li>如果真实机器人执行失败，如何判断是工具层还是控制层问题？</li>
+      <li>这个设计和普通 function calling 有什么区别？</li>
+      <li>如果工具 schema 变更，训练数据如何更新？</li>
+      <li>你个人贡献在哪里？</li>
+      <li>如果继续做，下一步补什么证据？</li>
+    </ol>
+  </section>
+
+  <section id="questions">
+    <h2>追问树</h2>
+    <table>
+      <thead><tr><th>面试官问题</th><th>危险回答</th><th>可过回答</th><th>强回答策略</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>“这不就是工程链路吗，算法价值在哪里？”</td>
+          <td class="bad">我搭了 harness，然后拿数据训练。</td>
+          <td class="ok">harness 产出了结构化训练样本。</td>
+          <td class="good">把工程约束转成可学习语义：schema 定义监督空间，reward 定义优化目标，holdout eval 定义泛化检查。</td>
+        </tr>
+        <tr>
+          <td>“tool accuracy 为什么能代表机器人能力？”</td>
+          <td class="bad">工具调用准确，机器人就能执行。</td>
+          <td class="ok">它是高层决策正确性的代理。</td>
+          <td class="good">它是必要非充分条件：只能证明上层动作语义、scope 和参数约束，不能覆盖视觉、控制延迟、物理接触。</td>
+        </tr>
+        <tr>
+          <td>“你怎么防止 reward hacking？”</td>
+          <td class="bad">reward 规则比较严格。</td>
+          <td class="ok">我们用 held-out 做验证。</td>
+          <td class="good">reward 分项和 holdout 分项解耦：训练时看 tool/arg/scope，评估中增加 critical/cancel 场景，避免只学格式。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="strategy">
+    <h2>面试策略与补证据 Checklist</h2>
+    <table>
+      <thead><tr><th>时间</th><th>可补材料</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td>半天</td><td>画一张 harness → schema → SFT/GRPO → holdout eval 的图</td><td>回答“工程到算法的桥”</td></tr>
+        <tr><td>1 天</td><td>整理 5 个失败样例：scope 错、参数错、取消错、critical 错、并发错</td><td>支撑 bad case 和 reward 设计</td></tr>
+        <tr><td>3 天</td><td>补一个 ablation：无 scope reward / 无 critical reward / 仅 SFT 对比</td><td>增强因果解释</td></tr>
+        <tr><td>1 周</td><td>接一个小型仿真或真实机器人任务闭环验证</td><td>缩小 proxy 与真实执行的证据 gap</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="references">
+    <h2>参考与证据</h2>
+    <ol>
+      <li>本地证据：<a href="../output/mousongzhe_resume_optimized.html">optimized 简历</a> 与 <a href="../output/resume_restructure_plan.md">resume_restructure_plan.md</a> 中的商汤实习指标与证据边界。</li>
+      <li>方法背景：OpenAI / LLM function calling 与 schema-following 思路可作类比，但本页不依赖具体外部 API 结论。</li>
+    </ol>
+  </section>
+</article>
+</body>
+</html>

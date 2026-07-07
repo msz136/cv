@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cosmos / WAM 多目标后训练 - 面试材料</title>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 32px 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; color: #17202a; background: #f6f8fa; line-height: 1.78; }
+    article { max-width: 980px; margin: 0 auto; background: #fff; padding: 36px 44px; border-radius: 10px; box-shadow: 0 18px 48px rgba(20,35,50,.10); }
+    h1 { margin: 0 0 8px; font-size: 30px; line-height: 1.2; }
+    h2 { margin: 34px 0 14px; padding-left: 12px; border-left: 4px solid #1f6f5b; font-size: 22px; }
+    h3 { margin: 22px 0 10px; font-size: 18px; }
+    p { margin: 0 0 14px; }
+    a { color: #1f6f5b; text-decoration: none; font-weight: 650; }
+    .meta { color: #66727f; font-size: 14px; margin-bottom: 22px; }
+    .toc { background: #f0f7f4; border: 1px solid #d5e7df; border-left: 4px solid #1f6f5b; border-radius: 8px; padding: 14px 18px; margin: 18px 0 28px; }
+    .toc ol { columns: 2; margin: 0; }
+    .note { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+    .warning { background: #fff7ed; border-left: 4px solid #f97316; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 22px; font-size: 14px; }
+    th, td { border: 1px solid #d9e1e6; padding: 8px 10px; vertical-align: top; }
+    th { background: #f3f6f7; text-align: left; }
+    tr:nth-child(even) { background: #fbfcfd; }
+    code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-family: Consolas, monospace; }
+    pre { background: #0f172a; color: #e5e7eb; border-radius: 8px; padding: 14px 16px; overflow-x: auto; }
+    pre code { background: transparent; padding: 0; color: inherit; }
+    .good { color: #166534; font-weight: 700; }
+    .bad { color: #991b1b; font-weight: 700; }
+    .ok { color: #1d4ed8; font-weight: 700; }
+    @media (max-width: 760px) { article { padding: 24px 18px; } .toc ol { columns: 1; } table { display: block; overflow-x: auto; } }
+  </style>
+</head>
+<body>
+<article>
+  <h1>Cosmos / WAM：action、world、value 三目标为什么能互相帮助</h1>
+  <p class="meta">材料类型：项目面试页 | 证据截止：2026-07-07 | 对应简历：Cosmos Policy / WAM 多目标后训练与 RoboCasa 策略诊断</p>
+
+  <nav class="toc" aria-label="目录">
+    <ol>
+      <li><a href="#question">核心问题</a></li>
+      <li><a href="#answer">短答案</a></li>
+      <li><a href="#mechanism">辅助目标机制</a></li>
+      <li><a href="#mask-routing">Mask / Routing</a></li>
+      <li><a href="#pack">项目面试 8 件套</a></li>
+      <li><a href="#questions">追问树</a></li>
+      <li><a href="#references">参考与证据</a></li>
+    </ol>
+  </nav>
+
+  <section id="question">
+    <h2>问题（Question）</h2>
+    <p>面试官会问：<strong>“world prediction 和 value estimation 为什么会帮助 action imitation？什么时候反而会干扰 policy？多目标梯度如何共享视觉表征，又如何通过 mask/routing 避免互相污染？”</strong></p>
+  </section>
+
+  <section id="answer">
+    <h2>短答案</h2>
+    <div class="note">
+      <p><strong>可直接口述：</strong>action imitation 只告诉模型“专家此刻做了什么”，world prediction 迫使视觉表征保留动作后果和环境动态，value estimation 让表征关注哪些状态更接近成功。因此三者共享视觉 encoder 时，world/value 可以给 action head 提供更有规划含义的表示。但它们也可能干扰 policy：如果 world loss 权重过大，表征会偏向像素/未来预测而不是可控动作；如果 value label 噪声大，可能把错误成功先验传给 policy；如果 routing 错，把 world/value 样本也拿去算 action loss，就会污染动作监督。所以项目关键是通过 world/value mask 互斥和 demo/world/value slot routing 控制每类样本只更新对应目标，同时共享底层视觉表示。</p>
+    </div>
+  </section>
+
+  <section id="mechanism">
+    <h2>辅助目标为什么可能帮助 Action Imitation</h2>
+    <table>
+      <thead><tr><th>目标</th><th>学到的信号</th><th>如何帮助 action</th><th>可能干扰</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Action imitation</td>
+          <td>专家动作分布 \(p(a_t|o_t,c)\)</td>
+          <td>直接训练 policy 输出</td>
+          <td>容易学到短视 repeat 或数据偏置</td>
+        </tr>
+        <tr>
+          <td>World prediction</td>
+          <td>动作后果、未来观测、环境动态</td>
+          <td>让视觉表征包含“做这个动作后会发生什么”</td>
+          <td>权重过大时会偏向预测视觉细节，降低动作判别性</td>
+        </tr>
+        <tr>
+          <td>Value estimation</td>
+          <td>状态到成功/回报的可达性</td>
+          <td>让表征关注任务进展和成功相关特征</td>
+          <td>value label 噪声会误导 policy</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>一个简化训练目标可以写为：</p>
+    \[
+      \mathcal{L}
+      =
+      \lambda_a m_a \mathcal{L}_{action}
+      +
+      \lambda_w m_w \mathcal{L}_{world}
+      +
+      \lambda_v m_v \mathcal{L}_{value}
+    \]
+    <p>其中 \(m_a,m_w,m_v\) 是样本级或 slot 级 mask，\(\lambda_a,\lambda_w,\lambda_v\) 是损失权重。关键不是公式本身，而是 mask/routing 决定“哪个样本更新哪个 head”。本项目简历中对应的是 action/world/value 三目标、world/value mask 互斥、demo/world/value slot routing。</p>
+  </section>
+
+  <section id="mask-routing">
+    <h2>Mask / Routing 如何避免互相污染</h2>
+    <pre><code class="language-python">def wam_training_step(batch, model):
+    # batch.type 决定该样本是 demo/action、world prediction 还是 value estimation。
+    z = model.visual_encoder(batch.images)
+
+    # 三个 head 共享视觉表征，但 loss 由 routing 控制。
+    pred_action = model.action_head(z)
+    pred_world = model.world_head(z)
+    pred_value = model.value_head(z)
+
+    # mask 保证每类样本只对目标 head 产生梯度。
+    action_loss = batch.m_action * mse(pred_action, batch.actions)
+    world_loss = batch.m_world * world_objective(pred_world, batch.future)
+    value_loss = batch.m_value * mse(pred_value, batch.value)
+
+    # world/value mask 互斥，避免同一 slot 同时承载冲突语义。
+    loss = wa * action_loss + ww * world_loss + wv * value_loss
+    return loss</code></pre>
+
+    <p>面试中可以说：<strong>“共享的是视觉 encoder，隔离的是目标 head 和 loss route。”</strong>这比“我复现了三目标训练”更能体现算法理解。</p>
+  </section>
+
+  <section id="pack">
+    <h2>项目面试 8 件套</h2>
+    <h3>1. 岗位能力映射</h3>
+    <table>
+      <thead><tr><th>能力</th><th>证据</th><th>讲法</th></tr></thead>
+      <tbody>
+        <tr><td>多目标训练理解</td><td>action/world/value 三目标复现和样本路由分析</td><td>重点讲梯度共享与隔离。</td></tr>
+        <tr><td>指标解释</td><td>policy MSE 0.09718 → 0.05349，降低约 45%</td><td>离线代理指标说明动作分布不再依赖 repeat baseline。</td></tr>
+        <tr><td>失败归因</td><td>RoboCasa kitchen24，开关门 0.90-0.95，抓取/放置代表任务 0.75</td><td>定位长 horizon 和迁移任务的训练分布缺口。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>2. 真实性边界</h3>
+    <table>
+      <thead><tr><th>Claim</th><th>可说程度</th><th>防线</th></tr></thead>
+      <tbody>
+        <tr><td>多目标后训练降低离线 policy MSE</td><td>可说</td><td>这是 held-out proxy，不等价于在线成功率提升。</td></tr>
+        <tr><td>world/value 一定帮助 policy</td><td>不能这么说</td><td>要说“在权重、mask、label 质量合适时帮助”。</td></tr>
+        <tr><td>RoboCasa 策略性能提升</td><td>谨慎</td><td>正文定位为复现、诊断和失败分析。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3. 简历 Bullet 三档</h3>
+    <table>
+      <thead><tr><th>版本</th><th>表达</th></tr></thead>
+      <tbody>
+        <tr><td>保守版</td><td>复现 Cosmos Policy / WAM RoboCasa 后训练流程，整理 action/world/value 三目标和失败类型。</td></tr>
+        <tr><td>标准版</td><td>分析 action imitation、world prediction、value estimation 三目标的样本路由与损失权重，以 held-out policy MSE 验证动作分布改善。</td></tr>
+        <tr><td>偏强版</td><td>通过 world/value mask 互斥和 demo/world/value slot routing 隔离多目标梯度，使 held-out policy MSE 较 first-action-repeat baseline 降低约 45%。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>4. 架构讲解稿</h3>
+    <table>
+      <tbody>
+        <tr><th>输入</th><td>RoboCasa 图像/状态、任务语言、专家动作、future/world target、value label。</td></tr>
+        <tr><th>核心节点</th><td>共享视觉 encoder、action head、world head、value head、mask/routing、loss weighting。</td></tr>
+        <tr><th>输出</th><td>动作预测、未来/世界预测、value estimation。</td></tr>
+        <tr><th>失败类型</th><td>repeat 先验、长 horizon pick-and-place、world/value 目标污染 action、value label 噪声。</td></tr>
+        <tr><th>评估方式</th><td>held-out policy MSE、RoboCasa kitchen24 成功率与失败类型分析。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>5. 2-3 分钟口述稿</h3>
+    <p>Cosmos/WAM 这个项目我主要关注多目标后训练为什么能改善机器人 policy 表征。action imitation 直接学专家动作，但容易依赖短视 repeat 先验；world prediction 让视觉表征理解动作后果，value estimation 让表征关注任务是否接近成功。因此三者共享视觉 encoder 有潜在互补性。但辅助目标也可能污染 policy，比如 world loss 过大导致表征偏向预测视觉细节，value label 噪声会误导动作。我的工作是复现 RoboCasa recipe，并重点梳理 world/value mask 互斥、demo/world/value slot routing 和损失权重，使三类样本共享底层表示但只更新对应 head。结果上，held-out policy MSE 从 first-action-repeat baseline 的 0.09718 降到 0.05349，降低约 45%。同时我按官方 RoboCasa eval 复现 kitchen24，短时序开关门任务 0.90-0.95，抓取/放置代表任务 0.75；对低成功任务的分析指向长 horizon pick-and-place、world sample mask 和 value head 的后续改造。</p>
+
+    <h3>6. 高频追问</h3>
+    <ol>
+      <li>world prediction 学到的是什么？</li>
+      <li>value estimation 和 reward model 有什么区别？</li>
+      <li>为什么 action imitation 会学 repeat baseline？</li>
+      <li>policy MSE 为什么是合理 proxy？</li>
+      <li>MSE 降低为什么不等于成功率提升？</li>
+      <li>三目标共享哪些参数？</li>
+      <li>哪些 head 是分开的？</li>
+      <li>mask 互斥具体防什么？</li>
+      <li>routing 错了会怎样？</li>
+      <li>world loss 权重大会怎样？</li>
+      <li>value label 噪声会怎样？</li>
+      <li>为什么短时序任务更好？</li>
+      <li>pick-and-place 为什么更难？</li>
+      <li>RoboCasa 和 LIBERO 有什么差别？</li>
+      <li>如何从失败视频判断问题来源？</li>
+      <li>是否做过在线 rollout？</li>
+      <li>下一步会先调 action loss 还是 world/value？</li>
+      <li>这和 UWM 有什么关系？</li>
+      <li>这个项目最大的限制是什么？</li>
+      <li>你个人贡献在哪里？</li>
+    </ol>
+
+    <h3>7. 补证据 Checklist</h3>
+    <table>
+      <thead><tr><th>时间</th><th>可补材料</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td>半天</td><td>画出共享 encoder + 三 head + mask/routing 的结构图</td><td>回答“多目标如何共享又隔离”</td></tr>
+        <tr><td>1 天</td><td>整理 MSE baseline、训练后 MSE、动作维度和 held-out 划分口径</td><td>增强指标可信度</td></tr>
+        <tr><td>3 天</td><td>补 action-only / action+world / action+value / all 三目标消融</td><td>回答辅助目标贡献</td></tr>
+        <tr><td>1 周</td><td>补失败视频分类和 task family 成功率表</td><td>把 RoboCasa 结果转成训练分布诊断</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="questions">
+    <h2>追问树与回答分层</h2>
+    <table>
+      <thead><tr><th>问题</th><th>危险回答</th><th>可过回答</th><th>强回答</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>“world/value 为什么会帮 action？”</td>
+          <td class="bad">多任务训练一般会更好。</td>
+          <td class="ok">它们提供辅助监督。</td>
+          <td class="good">world 提供动作后果建模，value 提供任务进展信号；二者改善共享视觉表征，但必须通过 mask/routing 控制梯度。</td>
+        </tr>
+        <tr>
+          <td>“什么时候会干扰？”</td>
+          <td class="bad">一般不会。</td>
+          <td class="ok">权重不合适会干扰。</td>
+          <td class="good">world 权重过大、value label 噪声、样本 routing 错误、slot 语义冲突都会污染 action head。</td>
+        </tr>
+        <tr>
+          <td>“MSE 降了为什么成功率不一定涨？”</td>
+          <td class="bad">应该会涨。</td>
+          <td class="ok">离线和在线不同。</td>
+          <td class="good">MSE 只看动作接近专家，在线成功还取决于闭环误差累积、contact dynamics、视觉状态分布偏移和成功判定。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="references">
+    <h2>参考与证据</h2>
+    <ol>
+      <li>本地证据：<a href="../output/mousongzhe_resume_optimized.html">optimized 简历</a> 与 <a href="../output/resume_restructure_plan.md">resume_restructure_plan.md</a> 中 WAM 指标和边界。</li>
+      <li>RoboCasa benchmark：用于理解 kitchen manipulation 任务背景。<a href="https://robocasa.ai/">https://robocasa.ai/</a></li>
+      <li>NVIDIA Cosmos / Cosmos Policy 公开材料：用于方法背景。<a href="https://github.com/NVIDIA/Cosmos">https://github.com/NVIDIA/Cosmos</a></li>
+    </ol>
+  </section>
+</article>
+</body>
+</html>
