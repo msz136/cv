@@ -17,11 +17,13 @@
     h3 { margin: 22px 0 10px; font-size: 18px; }
     p { margin: 0 0 14px; }
     a { color: #1f6f5b; text-decoration: none; font-weight: 650; }
+    a:hover { text-decoration: underline; }
     .meta { color: #66727f; font-size: 14px; margin-bottom: 22px; }
     .toc { background: #f0f7f4; border: 1px solid #d5e7df; border-left: 4px solid #1f6f5b; border-radius: 8px; padding: 14px 18px; margin: 18px 0 28px; }
     .toc ol { columns: 2; margin: 0; }
     .note { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
     .warning { background: #fff7ed; border-left: 4px solid #f97316; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+    .evidence { background: #f7f2ff; border-left: 4px solid #7c3aed; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
     table { width: 100%; border-collapse: collapse; margin: 12px 0 22px; font-size: 14px; }
     th, td { border: 1px solid #d9e1e6; padding: 8px 10px; vertical-align: top; }
     th { background: #f3f6f7; text-align: left; }
@@ -37,90 +39,206 @@
 </head>
 <body>
 <article>
-  <h1>OPD / VLM Grounding：从数据分布到多教师融合机制</h1>
-  <p class="meta">材料类型：项目面试页 | 证据截止：2026-07-07 | 对应简历：商汤科技语义导航 grounding / OPD</p>
+  <h1>OPD / VLM Grounding：多域数据分布、五教师路由与统一输出协议</h1>
+  <p class="meta">材料类型：项目面试页 | 证据截止：2026-07-07 | 对应简历：商汤科技 VLM grounding / OPD</p>
 
   <nav class="toc" aria-label="目录">
     <ol>
       <li><a href="#question">核心问题</a></li>
       <li><a href="#answer">短答案</a></li>
-      <li><a href="#mechanism">机制拆解</a></li>
-      <li><a href="#math">训练目标解释</a></li>
+      <li><a href="#research-framing">Research Framing</a></li>
+      <li><a href="#data">数据与 Teacher 设计</a></li>
+      <li><a href="#mechanism">机制解释</a></li>
+      <li><a href="#math">训练目标</a></li>
+      <li><a href="#evidence">评估证据</a></li>
       <li><a href="#pack">项目面试 8 件套</a></li>
       <li><a href="#questions">追问树</a></li>
+      <li><a href="#grill">高压追问答复</a></li>
       <li><a href="#references">参考与证据</a></li>
     </ol>
   </nav>
 
   <section id="question">
     <h2>问题（Question）</h2>
-    <p>面试官会追问：<strong>“OPD 为什么优于单一 teacher 或单一 SFT？提升到底来自数据分布、teacher 融合，还是格式对齐？”</strong></p>
+    <p>面试官会追问：<strong>“OPD 为什么可能优于单一 teacher 或单一 SFT？提升到底来自数据分布、teacher 融合，还是格式对齐？”</strong></p>
   </section>
 
   <section id="answer">
     <h2>短答案</h2>
     <div class="note">
-      <p><strong>可直接口述：</strong>我不会把提升单因果地归因给 OPD。更严谨的解释是三层贡献叠加：第一，开源清洗样本提供 box grounding 冷启动，场景标注/合成样本补足长尾语义和空间分布；第二，SFT 主要解决输出格式、基础定位能力和多类型任务统一；第三，OPD 的价值是在线整合多个 teacher 的互补信号，让 box、point、text、bool 四类 grounding 在同一训练分布里联合优化，减少单一 teacher 的偏置。当前指标支持这个机制解释，但如果要严格拆因果，还需要单 teacher、仅 SFT、无场景合成数据等 ablation。</p>
+      <p><strong>可直接口述：</strong>我不会把这个项目讲成“OPD 单独证明优于 SFT”，因为当前没有完整的 SFT-only、单 teacher、无合成数据 ablation。更准确的讲法是：我围绕 VLM grounding 构建了一个多域训练分布和五教师 OPD 路由体系。数据分为点选 grounding、通用/keepalive、物体 bbox、区域/场景 bbox、物体关系 relation 五类；原始池各域大约百万级，最终不是全量灌入，而是按论文思路和任务边界筛成十万级路由分布。五个 expert 分别训练并在同一 10k raw-holdout 上评估，OPD 再按样本的 target expert 在线调用对应 teacher rollout/top1 supervision，让 8B student 同时学会 box、point、text 三类输出协议。指标上，OPD5000 ckpt5000 在 10k raw-holdout 上达到 Box Acc@0.5=0.5238、Point Hit@100=0.8729、Text exact=0.8724，相比 8B instruct 的 Box Acc@0.5=0.4331 有明显提升，并把 point/text 的统一协议稳定下来。</p>
+    </div>
+    <div class="warning">
+      <p><strong>边界防线：</strong>不要说“已经证明 OPD 比纯 SFT 好”。安全说法是：当前证据支持“多域分布 + 专家路由 + 在线 OPD”比 base/instruct 和单一能力侧 expert 更均衡；但严格因果拆分还缺 SFT-only、单 teacher、无合成/重合成对照。已有经验里“合成比例过重的一版效果很差”，反而说明数据质量和分布设计比单纯扩数据更关键。</p>
     </div>
   </section>
 
-  <section id="mechanism">
-    <h2>机制拆解：三类收益不要混讲</h2>
+  <section id="research-framing">
+    <h2>Research Framing：多域 Grounding 的研究叙事</h2>
+    <p>这个项目要避免被讲成“做了很多 bbox 数据”。更强的讲法是：围绕 VLM grounding 的开放问题，分阶段提出数据分布、teacher 路由和 OPD student 的机制假设。</p>
     <table>
-      <thead><tr><th>来源</th><th>解决的问题</th><th>对指标的可能贡献</th><th>面试防线</th></tr></thead>
+      <thead><tr><th>阶段</th><th>Motivation 动机</th><th>Hypothesis 假设</th><th>Method 方法</th><th>Experiment 实验</th><th>Failure Analysis 失败分析</th></tr></thead>
       <tbody>
         <tr>
-          <td>数据分布</td>
-          <td>开源清洗样本初始化 box grounding；场景标注/合成 pipeline 扩充长尾语义、空间关系和任务语言。</td>
-          <td>提升覆盖率、减少无框/错框、改善 held-out Mean IoU。</td>
-          <td>可以说“数据分布是基础”，不要说“只靠数据就够”。</td>
+          <td>1. 五域 grounding 数据分布</td>
+          <td>开放问题是：一个通用 VLM 如何在统一输出协议下同时处理 point、box、region、relation 和 text？相关背景来自 VLM grounding、referring expression comprehension、object/region grounding、robot semantic navigation；本项目不是单篇论文复现，而是把多类 grounding 数据整理成统一训练分布。</td>
+          <td>单一混合数据会让大域压制小域，或者让模型只学格式、不保留专长。point、object、region、relation、general 的错误分布不同，必须分域设计。</td>
+          <td>清洗五类数据：point grounding、general/keepalive、object bbox、region/scene bbox、relation grounding；原始池大约各域百万级，但最终按任务边界和论文思路抽成十万级 route 分布。</td>
+          <td>用 10k raw-holdout 按 box / point / text 评估，OPD5000 ckpt5000 达到 Box Acc@0.5=0.5238、Point Hit@100=0.8729、Text exact=0.8724；相对 8B instruct 的 Box Acc@0.5=0.4331 有提升。</td>
+          <td>合成数据过重版本效果差，说明“更多数据”不是充分条件；失败集中在 semantic-nav region、关系消歧、框尺度偏差和格式冲突。</td>
         </tr>
         <tr>
-          <td>SFT 格式对齐</td>
-          <td>让模型学会按统一格式输出 box、point、text、bool，减少格式错误和多任务混淆。</td>
-          <td>提升 strict format、降低无效输出。</td>
-          <td>SFT 是冷启动和格式对齐，不是最终主成果。</td>
+          <td>2. 五教师 expert 与 route 设计</td>
+          <td>动机是避免单一 teacher 把自己的 domain bias 传给 student。对应论文背景是 multi-teacher distillation / online policy distillation / mixture-of-experts routing，但本地实现是面向 grounding 任务的 route-based teacher supervision。</td>
+          <td>不同 expert 在 point、object、region、relation、general 上各有专长；按样本路由 teacher 比平均融合更适合多输出协议任务。</td>
+          <td>训练五个 expert，并为 OPD student 样本写入 target expert、candidate experts、expected format、seen/unseen/hard 等 metadata；训练时按 target route 在线调用对应 teacher。</td>
+          <td>比较 base、instruct、expert 和 OPD ckpt 的分域指标；OPD 的价值不是每个单项都赢所有 expert，而是在一个 8B student 中统一保持 box/point/text 能力。</td>
+          <td>当前缺单 teacher vs route teacher 的严格 ablation；面试中要说“证据支持 route 机制解释”，不能说已完全证明多 teacher 因果贡献。</td>
         </tr>
         <tr>
-          <td>OPD 多教师融合</td>
-          <td>不同 teacher 对对象定位、文本判断、布尔判断、point hit 的强弱不同；在线融合避免单 teacher 偏置。</td>
-          <td>提升综合 raw-holdout，尤其是 Text loose、Box Acc@0.5、Bool acc。</td>
-          <td>没有 ablation 时，只说“证据支持”，不要说“已证明唯一原因”。</td>
+          <td>3. OPD student 训练与协议对齐</td>
+          <td>开放问题是：能不能把多个 specialist teacher 的能力压进一个统一 VLM student，同时保证输出可评估、可部署？OPD 是训练机制，格式对齐是部署前提，两者不能混讲。</td>
+          <td>提升来自三件事共同作用：数据覆盖、格式协议、teacher route。没有格式协议，point/text 会被 strict eval 判失败；没有 route，teacher 专长难以稳定注入 student。</td>
+          <td>构建 OPD student 数据，在线 teacher rollout/top1 token supervision；统一 <code>&lt;box&gt;</code>、<code>&lt;point&gt;</code>、text/boolean 输出协议，并保留 format_conflict/boundary 样本。</td>
+          <td>OPD5000 raw-holdout 指标相对 base/instruct 改善，尤其 box Acc@0.5 和 point/text 协议稳定。指标表明组合机制有效，但不是单因素因果证明。</td>
+          <td>缺 SFT-only、无合成、单 teacher 对照；下一步最有研究价值的是固定数据分布做 SFT-only vs OPD，再固定 OPD 做 route teacher vs single teacher。</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="warning">
+      <p><strong>Grill Me 预留问题：</strong>如果面试官问“为什么 OPD 优于单一 SFT”，你的最强回答是承认缺消融，同时给出机制拆分与待补实验，而不是把最终指标全部归因给 OPD。</p>
+    </div>
+  </section>
+
+  <section id="data">
+    <h2>数据与 Teacher 设计</h2>
+    <p>这个项目的核心不是“做一个 bbox 数据集”，而是把 VLM grounding 拆成不同错误分布，再为每类错误分布设计 expert 与 OPD 路由。可以按五类数据来讲：</p>
+    <table>
+      <thead><tr><th>数据域</th><th>来源与构造</th><th>主要学习信号</th><th>对应 expert / 路由价值</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>点选 grounding</td>
+          <td>以 RoboPoint 类点选数据为主，清洗旧格式、缺图和坐标协议冲突</td>
+          <td><code>&lt;point&gt;</code> 输出协议、点位几何定位</td>
+          <td><code>robopoint_expert</code> 提供 point 专精能力</td>
+        </tr>
+        <tr>
+          <td>通用/keepalive</td>
+          <td>服务器 sharedata 中的通用数据为主，多数仍是公源或公源衍生，含通用 VQA/机器人常识</td>
+          <td>短答案、bool/text 判断、通用视觉语义保持</td>
+          <td><code>general_reasoning_expert</code> 防止 grounding 训练压垮通用能力</td>
+        </tr>
+        <tr>
+          <td>物体 bbox</td>
+          <td>RefCOCO、Flickr30K、Visual Genome object 等公源数据；另有 YOLO proposal + 强 VLM score/label 的合成筛选数据</td>
+          <td>物体级 <code>&lt;box&gt;</code> 定位</td>
+          <td><code>general_obj_expert</code> 提供 object grounding 上限</td>
+        </tr>
+        <tr>
+          <td>区域/场景 bbox</td>
+          <td>区域描述、场景区域、类似“蓝色区域”的 region grounding 数据</td>
+          <td>区域描述到框的映射，不局限于单个物体名</td>
+          <td><code>region_expert</code> 处理描述性区域定位</td>
+        </tr>
+        <tr>
+          <td>关系 relation</td>
+          <td>物体间关系、空间关系样本，按关系词和难例做分布设计</td>
+          <td>关系词、anchor object、相对空间定位</td>
+          <td><code>spatial_rel_expert</code> 处理关系框选和语义导航短板</td>
         </tr>
       </tbody>
     </table>
 
-    <p>面试中建议用一句话打底：<strong>“数据决定覆盖，SFT 决定格式，OPD 决定多任务 teacher 信号如何被联合优化。”</strong></p>
+    <div class="evidence">
+      <p><strong>实现证据：</strong><code>build_expert_mixes_seed0_v2.py</code> 中每个 expert 都有不同的训练配比，例如 point expert 大量采样 <code>robopoint</code>，region expert 大量采样 <code>vg_region</code>，spatial-rel expert 以 balanced relationship 为主；<code>build_opd_student_v1.py</code> 中 OPD student 的 domain 主干按每个 expert <code>seen_100k / unseen_same_distribution / hard_static</code> 分配，另加入 keepalive、boundary、format_conflict 等样本。</p>
+    </div>
+  </section>
+
+  <section id="mechanism">
+    <h2>机制解释：数据、格式、OPD 不要混讲</h2>
+    <table>
+      <thead><tr><th>因素</th><th>真正解决的问题</th><th>证据强度</th><th>面试防线</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>数据分布设计</td>
+          <td>把 point、object、region、relation、general 分开建模，避免单一混合分布把长尾关系和通用能力互相污染</td>
+          <td>C2：有数据构造脚本、配比、raw-holdout 分域结果</td>
+          <td>可以说是核心设计点；不要把百万级原始池直接写成最终训练规模</td>
+        </tr>
+        <tr>
+          <td>格式与协议对齐</td>
+          <td>统一 <code>&lt;box&gt;</code>、<code>&lt;point&gt;</code>、text 短答案格式，解决 point strict eval 中最容易被判失败的协议问题</td>
+          <td>C3：format / coord 在 expert 和 OPD 上基本达到 100%</td>
+          <td>强调“部署协议能力”，同时承认裸坐标 lenient 评估与 strict 协议是不同口径</td>
+        </tr>
+        <tr>
+          <td>五教师路由 OPD</td>
+          <td>不是平均五个 teacher，而是按样本 target/candidate expert 路由到对应 teacher，在线 rollout 并用 teacher top1 token 监督 student</td>
+          <td>C2/C3：有训练代码和 10k eval 对比</td>
+          <td>可以说 OPD 形成更均衡的 8B student；不能说已严格证明强于纯 SFT</td>
+        </tr>
+        <tr>
+          <td>合成数据</td>
+          <td>补足公源数据中缺失的特定 bbox/region 场景，但过量合成会引入分布偏差</td>
+          <td>C1/C2：有 YOLO+强 VLM 合成与“合成过重版本效果差”的经验</td>
+          <td>把它讲成数据设计取舍，不讲成“合成越多越好”</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>一句话版机制：<strong>数据分布决定覆盖，格式样本决定可评估协议，OPD 路由决定不同 expert 的专长如何被压进同一个 8B student。</strong></p>
   </section>
 
   <section id="math">
     <h2>训练目标解释</h2>
-    <p>可以把 OPD 讲成一个多教师、多输出类型的加权监督目标。令 \(T_k\) 表示第 \(k\) 个 teacher，\(z\) 表示输入图像与任务文本，\(y^{(m)}\) 表示第 \(m\) 类输出目标，\(m \in \{box, point, text, bool\}\)。一个简化目标是：</p>
+    <p>当前稳定实现更接近“route-based online teacher distillation”，不是简单多 teacher 加权平均。对样本 \(i\)，先从 metadata 中得到路由 \(r_i\)，由对应 teacher \(T_{r_i}\) 生成回答，再让 student 在 teacher 生成序列上学习 teacher top1 token：</p>
     \[
       \mathcal{L}_{OPD}
       =
-      \sum_{m}
-      \sum_{k}
-      \alpha_{m,k}(z)
-      \cdot
-      \ell_m(f_\theta(z), T_k^{(m)}(z))
+      \frac{1}{N}
+      \sum_i
+      w_i
+      \sum_{t \in \mathcal{R}(y_i^T)}
+      \mathrm{CE}
+      \left(
+        p_\theta(\cdot \mid x_i, y_{i,<t}^T),
+        \arg\max T_{r_i}(\cdot \mid x_i, y_{i,<t}^T)
+      \right)
     \]
-    <p>变量解释：\(\ell_m\) 是对应输出类型的损失或 reward，\(\alpha_{m,k}\) 表示在当前样本和输出类型上 teacher 的权重。实现映射上，报告中只能把它作为机制解释，因为本地简历证据证明了多教师融合和指标结果，但没有完整暴露每个 teacher 的权重函数。面试中可说“OPD 的思想是按任务类型和样本状态整合 teacher，而不是盲目平均所有 teacher”。</p>
+    <p>这里 \(x_i\) 是图像和指令，\(r_i\) 是目标 expert 路由，\(y_i^T\) 是 teacher rollout，\(\mathcal{R}\) 是 response token 区间，\(w_i\) 是样本/路由权重。代码映射上，<code>train_opd_online_vl.py</code> 会读取 <code>target_expert</code> 与 <code>candidate_experts</code>，给样本写入 <code>_opd_route</code>，在线调用对应 teacher，并只在 response tokens 上计算 loss。</p>
 
-    <pre><code class="language-python">def opd_training_step(batch, teachers, student):
-    # 1. 输入包括图像、语言指令和目标输出类型：box / point / text / bool。
-    z, output_type = batch["input"], batch["output_type"]
+    <pre><code class="language-python">def opd_step(sample):
+    # 1. 数据构造阶段已经决定 target_expert / candidate_experts。
+    route = sample["metadata"]["opd"]["target_expert"]
 
-    # 2. 多个 teacher 产生候选监督信号。
-    teacher_targets = [teacher.predict(z, output_type) for teacher in teachers]
+    # 2. 训练阶段按 route 选择对应 teacher，而不是盲目平均五个 teacher。
+    teacher = teachers[route]
 
-    # 3. 根据样本类型、置信度或规则选择/加权 teacher 信号。
-    weights = compute_teacher_weights(z, output_type, teacher_targets)
+    # 3. teacher 在线 rollout；student 学 teacher 在 response token 上的 top1 行为。
+    teacher_response = teacher.generate(sample["prompt"])
+    teacher_top1 = teacher.forward(sample["prompt"], teacher_response).logits.argmax(-1)
+    student_logits = student.forward(sample["prompt"], teacher_response).logits
 
-    # 4. 学生模型在统一格式下学习多类型 grounding 输出。
-    pred = student(z)
-    loss = weighted_grounding_loss(pred, teacher_targets, weights)
-    return loss</code></pre>
+    # 4. loss 只覆盖 answer 区间，避免把 prompt 也当成监督。
+    return cross_entropy_on_response_tokens(student_logits, teacher_top1)</code></pre>
+  </section>
+
+  <section id="evidence">
+    <h2>评估证据</h2>
+    <p>主评估是 10k raw-holdout，包含 6,100 条 box、1,400 条 point、2,500 条 text；报告中做了 source-line、fingerprint、image+prompt+answer 三类去重，并检查训练图片泄漏为 0。</p>
+    <table>
+      <thead><tr><th>模型</th><th>Box IoU</th><th>Box Acc@0.5</th><th>Point Hit@100</th><th>Text exact</th><th>面试解读</th></tr></thead>
+      <tbody>
+        <tr><td>8B base</td><td>0.3854</td><td>0.4087</td><td>0.0000 strict</td><td>0.0080</td><td>基础 box 能力存在，但 point/text 协议不对齐</td></tr>
+        <tr><td>8B instruct</td><td>0.4134</td><td>0.4331</td><td>0.0000 strict</td><td>0.0076 exact / 0.5200 loose</td><td>box 略强，text loose 有能力，但 strict 输出格式不稳定</td></tr>
+        <tr><td>RoboPoint expert 200k</td><td>0.4491</td><td>0.4861</td><td>0.8986</td><td>0.8540</td><td>point 上限强，说明 expert 专长真实存在</td></tr>
+        <tr><td>General obj expert 200k</td><td>0.4740</td><td>0.5167</td><td>0.8479</td><td>0.8492</td><td>object box 专长强，box 第一梯队</td></tr>
+        <tr><td>OPD5000 ckpt5000</td><td>0.4759</td><td>0.5238</td><td>0.8729</td><td>0.8724</td><td>综合均衡：box 提升、point 保留、text 协议稳定</td></tr>
+      </tbody>
+    </table>
+    <p>可以这样讲指标：<strong>相比 8B instruct，OPD5000 ckpt5000 的 Box Acc@0.5 从 0.4331 提升到 0.5238，提升 9.1 个百分点；相比 8B base，Box IoU 提升 0.0905，Box Acc@0.5 提升 11.5 个百分点，并在原始 strict point 协议下达到 Hit@100=0.8729。</strong> 但 point 指标要补一句：base/instruct strict 为 0 部分来自输出协议不一致，不应把它解释为完全没有几何定位能力。</p>
+    <div class="warning">
+      <p><strong>Bad case / 局限：</strong>semantic-nav box 仍是短板域，明显弱于 RefCOCO / Flickr30K 这类规整框选数据；后续提升更可能来自 semantic-nav 数据质量、关系/anchor 消歧和 hard case 设计，而不是单纯延长 OPD steps。</p>
+    </div>
   </section>
 
   <section id="pack">
@@ -129,9 +247,9 @@
     <table>
       <thead><tr><th>能力</th><th>项目证据</th><th>讲法</th></tr></thead>
       <tbody>
-        <tr><td>Grounding 数据设计</td><td>13,879 个标注框，41,637 条样本，开源清洗 + 场景标注/合成 pipeline</td><td>不是“做数据清洗”，而是在构造训练分布。</td></tr>
-        <tr><td>多任务目标统一</td><td>box、point、text、bool 四类输出统一到 OPD</td><td>强调多输出类型之间的格式和监督信号对齐。</td></tr>
-        <tr><td>指标解释</td><td>Mean IoU 0.1319 → 0.3501；Text +35.4pp，Box +8.0pp，Bool +8.8pp</td><td>把指标连接到机制，不干摆数字。</td></tr>
+        <tr><td>Grounding 数据分布设计</td><td>五类数据域，百万级原始池，按 expert/route 十万级抽样；含 seen/unseen/hard、boundary、format_conflict</td><td>讲“训练分布设计”，不要讲成普通数据清洗。</td></tr>
+        <tr><td>多教师训练设计</td><td>五个 expert 各自 eval；OPD 按 target expert 在线 teacher rollout/top1 distillation</td><td>强调 route-based teacher，而不是“多个 teacher 平均”。</td></tr>
+        <tr><td>评估与指标解释</td><td>10k raw-holdout，box/point/text 分口径，严格去重和训练图片泄漏检查</td><td>指标要带口径：box、point、text 不能混成一个准确率。</td></tr>
       </tbody>
     </table>
 
@@ -139,9 +257,10 @@
     <table>
       <thead><tr><th>Claim</th><th>可说程度</th><th>防线</th></tr></thead>
       <tbody>
-        <tr><td>设计 grounding 数据分布与 OPD 训练目标</td><td>可重点讲</td><td>注意“设计/参与”边界按真实贡献回答。</td></tr>
-        <tr><td>OPD 优于单一 teacher</td><td>可讲机制假设与指标支持</td><td>没有完整 ablation 时，不说“严格证明”。</td></tr>
-        <tr><td>提升来自数据还是 teacher</td><td>必须拆开讲</td><td>用“数据覆盖 + SFT 格式 + OPD 融合”三段式。</td></tr>
+        <tr><td>设计五域数据分布与 OPD 路由训练口径</td><td>可重点讲</td><td>具体配比复杂，引用实现与报告；不要临场编每个域最终行数。</td></tr>
+        <tr><td>OPD 比 base/instruct 更适合统一 grounding 协议</td><td>可讲具体指标</td><td>使用 10k raw-holdout 表；point 指标说明 strict/lenient 区别。</td></tr>
+        <tr><td>OPD 严格优于纯 SFT 或单 teacher</td><td>当前不建议强写</td><td>没有完整 ablation，只能讲机制假设与间接证据。</td></tr>
+        <tr><td>合成数据带来提升</td><td>谨慎讲</td><td>有一版合成过重效果很差，说明合成数据需要质量筛选和分布控制。</td></tr>
       </tbody>
     </table>
 
@@ -149,57 +268,57 @@
     <table>
       <thead><tr><th>版本</th><th>表达</th></tr></thead>
       <tbody>
-        <tr><td>保守版</td><td>参与 VLM grounding 数据整理与格式对齐，构建 box/point/text/bool 多类型样本并进行 held-out 评估。</td></tr>
-        <tr><td>标准版</td><td>设计分阶段 grounding 数据分布，并将多类型输出统一到 OPD 训练目标，held-out Mean IoU 从 0.1319 提升至 0.3501。</td></tr>
-        <tr><td>偏强版</td><td>通过开源清洗、场景标注/合成和在线多教师融合构建 VLM grounding 训练分布，使 Box/Text/Bool 等 raw-holdout 指标获得正向提升。</td></tr>
+        <tr><td>保守版</td><td>整理 VLM grounding 多域数据与 raw-holdout 评估，覆盖 point、object box、region box、relation 与通用 VQA。</td></tr>
+        <tr><td>标准版</td><td>设计五域 grounding 数据分布与五 expert 路由口径，构建 OPD student 训练集并完成 10k raw-holdout 评估。</td></tr>
+        <tr><td>偏强版</td><td>基于多域数据分布与 route-based online OPD，将 Qwen3-VL-8B 的 Box Acc@0.5 从 0.4331 提升至 0.5238，并在统一 strict 协议下获得 Point Hit@100=0.8729、Text exact=0.8724。</td></tr>
       </tbody>
     </table>
 
     <h3>4. 2-3 分钟口述稿</h3>
-    <p>这个项目是语义导航 grounding 的数据与训练目标设计。问题不是简单地让模型输出一个框，而是要在机器人场景里统一处理 box、point、text、bool 多种 grounding 输出。我的做法是先用开源清洗样本初始化 box grounding 能力，再用场景标注和合成 pipeline 补足长尾语义和空间分布，最后把这些样本统一到 OPD 在线多教师融合目标里。SFT 的作用主要是格式对齐和冷启动，OPD 的作用是融合不同 teacher 在不同输出类型上的互补信号，避免单一 teacher 的偏置。结果上，13,879 个标注框和 41,637 条样本支撑迭代，held-out Mean IoU 从 0.1319 到 0.3501；相对 Qwen3-VL-8B-Instruct，Text loose 提升 35.4pp、Box Acc@0.5 提升 8.0pp、Bool acc 提升 8.8pp。边界是目前没有把每个收益完全拆成 ablation，所以面试里我会把它表述为机制解释和指标支持，而不是绝对因果证明。</p>
+    <p>这个项目是 VLM grounding 的多域数据与 OPD 训练设计。最初的问题不是单纯让模型会框物体，而是要让一个 8B VLM 在统一协议下同时处理 box、point 和 text：点选 grounding、通用 VQA、物体 bbox、区域/场景 bbox、关系 relation 这五类数据的错误分布不一样，如果直接混在一起，模型容易学到格式但损失专长，或者在某个域过拟合。我的做法是先清洗和筛选五类数据，原始池大约是各域百万级，最终按论文思路和任务边界抽成十万级路由分布；再训练五个 expert，并把 OPD student 数据写入 target expert、candidate experts、expected format、seen/unseen/hard 等 metadata。训练时不是平均五个 teacher，而是按 route 在线调用对应 teacher rollout，用 teacher top1 token 监督 student。结果上，在 10k raw-holdout 上，OPD5000 ckpt5000 达到 Box Acc@0.5=0.5238、Point Hit@100=0.8729、Text exact=0.8724，相比 8B instruct 的 Box Acc@0.5=0.4331 有明显提升。边界是我没有完整 SFT-only/单 teacher ablation，所以面试里我会把它讲成“多域分布 + expert 路由 + OPD 的组合机制”，而不是说 OPD 单因素被严格证明。</p>
 
     <h3>5. 架构讲解稿</h3>
     <table>
       <tbody>
-        <tr><th>输入</th><td>图像、语义导航指令、对象/空间关系文本、输出类型标记。</td></tr>
-        <tr><th>核心节点</th><td>开源样本清洗、场景标注、合成数据、SFT 冷启动、OPD 多教师融合、held-out 评估。</td></tr>
-        <tr><th>输出</th><td>box、point、text、bool 四类 grounding 结果。</td></tr>
-        <tr><th>失败类型</th><td>框偏移、错对象、关系词理解错误、格式错误、布尔判断不稳。</td></tr>
+        <tr><th>输入</th><td>图像、grounding 指令、输出格式要求、source domain、target expert metadata。</td></tr>
+        <tr><th>数据层</th><td>point / general / object box / region box / relation 五域清洗，YOLO proposal + 强 VLM score 的部分合成筛选，十万级 route 抽样。</td></tr>
+        <tr><th>训练层</th><td>五个 expert SFT；OPD student 使用 target route 在线 teacher rollout/top1 token 监督。</td></tr>
+        <tr><th>输出</th><td><code>&lt;box&gt;</code>、<code>&lt;point&gt;</code>、text/boolean 短答案。</td></tr>
+        <tr><th>失败类型</th><td>框偏移、关系/anchor 消歧失败、point 协议不合规、合成数据分布偏差、通用能力被 grounding 覆盖。</td></tr>
       </tbody>
     </table>
 
     <h3>6. 高频追问</h3>
-    <ol>
-      <li>为什么不是只做 SFT？</li>
-      <li>单 teacher 的偏置是什么？</li>
-      <li>你如何判断数据分布覆盖长尾？</li>
-      <li>box、point、text、bool 的 loss 能统一吗？</li>
-      <li>Mean IoU 提升和 Box Acc 提升的关系是什么？</li>
-      <li>Text loose 提升为什么最大？</li>
-      <li>OPD 的 teacher 权重怎么来？</li>
-      <li>如何避免 teacher 错误传播？</li>
-      <li>合成数据会不会污染真实分布？</li>
-      <li>如果只用开源样本会怎样？</li>
-      <li>如果只用场景样本会怎样？</li>
-      <li>为什么 Point Hit@100 没写成主要提升？</li>
-      <li>held-out 如何划分？</li>
-      <li>格式对齐如何单独评估？</li>
-      <li>这和普通目标检测有什么区别？</li>
-      <li>如何迁移到真实导航？</li>
-      <li>这个工作里最难的 bad case 是什么？</li>
-      <li>OPD 和 GRPO 的关系是什么？</li>
-      <li>后续最想补哪个 ablation？</li>
-      <li>你个人贡献在哪里？</li>
-    </ol>
+    <table>
+      <thead><tr><th>追问</th><th>推荐答法</th><th>防线 / 证据</th></tr></thead>
+      <tbody>
+        <tr><td>五类数据分别解决什么错误？</td><td>point 解决点选/点击式 grounding，object bbox 解决物体框，region bbox 解决区域/场景描述，relation 解决物体间关系和 anchor 消歧，general/keepalive 防止模型只会输出框而丢掉通用 VQA 和短答案能力。</td><td>证据是五域数据分布和各域 held-out；不要把所有 grounding 错误混成一个问题。</td></tr>
+        <tr><td>为什么不直接把所有数据混起来 SFT？</td><td>直接混合会让格式、任务难度和错误分布相互污染：box、point、text 的输出协议不同，某个大域容易压制小域。先做 expert 和 route，可以保留各域专长，再通过 OPD 压到统一 student。</td><td>当前缺纯 SFT 对照，所以要说“设计动机”和“组合证据”，不说严格证明。</td></tr>
+        <tr><td>五个 expert 的分布有什么差异？</td><td>它们对应不同数据域和输出协议：point expert 更关注点击/坐标，object/region expert 更关注 box 几何，relation expert 更关注 anchor 和相对关系，general expert 负责保留通用语义与格式稳定性。</td><td>不要说五个 teacher 都全局更强；要讲各有专长。</td></tr>
+        <tr><td>OPD 的 route 是怎么决定的？</td><td>route 来自样本 metadata，包括 target expert、candidate experts、expected format、seen/unseen/hard 等字段。训练时按样本路由调用目标 teacher，而不是平均所有 teacher。</td><td>证据是 build_opd_student_v1.py 中的 route 字段和 OPD 样本构造。</td></tr>
+        <tr><td>teacher 是平均融合还是按样本路由？</td><td>按样本路由。平均融合在不同输出协议之间容易产生折中噪声；route-based OPD 更像让对应 expert 在对应 domain 上给 top1 token supervision。</td><td>不要把它讲成 ensemble 投票；它是 teacher rollout/token 监督。</td></tr>
+        <tr><td>为什么没有 SFT-only ablation 仍然可以讲这个项目？</td><td>可以讲，因为实际完成的是 OPD 训练闭环和相对 base/instruct 的 raw-holdout 提升；但不能写“OPD 严格优于 SFT”。面试里主动承认缺 SFT-only/单 teacher ablation，并给出补实验方案。</td><td>这是边界题；承认证据缺口更可信。</td></tr>
+        <tr><td>合成数据多的一版为什么效果差？</td><td>合成数据会带 proposal bias、标签噪声和描述模板偏差。比例过重时，模型可能学到伪框分布或格式捷径，而不是稳健 grounding；所以关键不是多合成，而是筛选质量和最终分布配比。</td><td>不要说合成数据天然高质量；提“合成重版本失败”作为经验。</td></tr>
+        <tr><td>YOLO + 强 VLM score 合成 bbox 有什么噪声？</td><td>YOLO proposal 可能漏小物体、框过大/过小或类别偏；强 VLM score 也可能受语言先验影响，把相似物体或关系框错。它适合做候选生成，不能当完全干净标签。</td><td>证据：过滤规则、bad case、合成比例。</td></tr>
+        <tr><td>semantic-nav box 为什么仍是短板？</td><td>semantic-nav 常包含区域、关系词和非标准对象，例如“蓝色区域”“靠近某物的区域”。这比单物体 bbox 更依赖上下文和关系推理，框也更容易出现尺度偏差。</td><td>不要把 object bbox 指标泛化到所有语义导航场景。</td></tr>
+        <tr><td>point strict 0 是否说明 base/instruct 不会定位？</td><td>不一定。strict 指标强依赖输出协议，例如是否带 <code>&lt;point&gt;</code> 标签和固定格式；base/instruct strict 0 更说明协议不兼容，不能等同于几何能力为 0。</td><td>区分 strict protocol 和 lenient geometry。</td></tr>
+        <tr><td>Box IoU 和 Acc@0.5 哪个更重要？</td><td>IoU 看平均几何质量，Acc@0.5 看是否超过可用阈值。机器人或导航场景里 Acc@0.5 更接近可执行门槛，但 IoU 能暴露框系统性偏大/偏小。</td><td>两个都要看；不要单点报喜。</td></tr>
+        <tr><td>为什么 OPD 不是每个单项都第一还值得做？</td><td>目标不是让 student 在每个单域都超过专门 expert，而是在一个 8B student 中统一保留 box、point、text 多域能力和输出协议。整体可用性与均衡性比单项第一更重要。</td><td>防线：student 是统一模型，不是每域 specialist。</td></tr>
+        <tr><td>如何防止 grounding 训练破坏通用 VQA？</td><td>保留 general/keepalive 数据，并在 route 分布里控制其比例；评估时不只看 box/point，也看 text exact 或通用短答，防止模型形成“见图就输出框”的偏置。</td><td>证据是 general 数据比例和 text exact 指标。</td></tr>
+        <tr><td>held-out 如何避免训练泄漏？</td><td>在数据构建前固定 raw-holdout，训练抽样和合成筛选不能回流；评估按 box/point/text 和数据池分层，避免某一域泄漏被总体指标掩盖。</td><td>需要 manifest；不要用测试集反复调配比。</td></tr>
+        <tr><td>如果重做，最优先补哪个 ablation？</td><td>优先补 SFT-only vs OPD，其次单 teacher vs route teacher，再补低/高合成比例。这样能回答提升来自 OPD、teacher 路由还是数据分布。</td><td>别现场编已有消融；说清补实验顺序。</td></tr>
+        <tr><td>你个人贡献在哪里？</td><td>我负责五域数据清洗和配比设计、teacher/expert 路由思路、OPD student 训练分布、raw-holdout 评估和结果归因。重点不是只跑训练，而是决定哪些数据该进哪个 domain、哪个 teacher 负责哪个 route。</td><td>把贡献落到数据/训练/评估设计，不要泛泛说“负责项目”。</td></tr>
+      </tbody>
+    </table>
 
     <h3>7. 补证据 Checklist</h3>
     <table>
       <thead><tr><th>时间</th><th>可补材料</th><th>用途</th></tr></thead>
       <tbody>
-        <tr><td>半天</td><td>整理 5 个 grounding bad case：错对象、框偏移、关系词错误、格式错误、bool 判断错误</td><td>支撑“错误归因”而不是只报指标</td></tr>
-        <tr><td>1 天</td><td>补一张数据来源/输出类型分布表：开源清洗、场景标注、合成样本分别覆盖什么</td><td>回答“提升来自数据分布还是 OPD”</td></tr>
-        <tr><td>3 天</td><td>补最小 ablation：仅 SFT、无合成数据、单 teacher 与 OPD 对比</td><td>把机制解释升级为更强证据</td></tr>
-        <tr><td>1 周</td><td>补 teacher disagreement 分析：哪些样本 teacher 分歧最大，OPD 如何处理</td><td>证明 multi-teacher 融合不是空话</td></tr>
+        <tr><td>半天</td><td>整理五域数据分布图：raw pool、最终抽样、expert route、expected format</td><td>回答“数据设计到底设计了什么”</td></tr>
+        <tr><td>1 天</td><td>补 teacher 专长对比表：每个 expert 在 box/point/text 和 by-pool 的优势/短板</td><td>回答“为什么需要五 teacher”</td></tr>
+        <tr><td>3 天</td><td>补最小 ablation：SFT-only、单 teacher route、去掉 format_conflict、低合成比例 vs 高合成比例</td><td>把机制解释升级为因果证据</td></tr>
+        <tr><td>1 周</td><td>补 semantic-nav bad-case gallery：anchor 消歧、关系词、区域描述、框过大/过小</td><td>支撑下一步研究方向</td></tr>
       </tbody>
     </table>
   </section>
@@ -210,22 +329,91 @@
       <thead><tr><th>问题</th><th>危险回答</th><th>可过回答</th><th>强回答</th></tr></thead>
       <tbody>
         <tr>
-          <td>“提升到底是谁贡献的？”</td>
-          <td class="bad">主要是 OPD。</td>
-          <td class="ok">数据和 OPD 都有贡献。</td>
-          <td class="good">拆成数据覆盖、SFT 格式对齐、OPD teacher 融合三部分；当前指标支持组合机制，但需要 ablation 拆因果。</td>
+          <td>“提升到底来自 OPD、数据，还是格式对齐？”</td>
+          <td class="bad">主要是 OPD，指标涨了。</td>
+          <td class="ok">数据和 OPD 都有贡献，但没有 ablation。</td>
+          <td class="good">拆成三层：五域数据分布提供覆盖，format_conflict 和严格标签解决可评估协议，route-based OPD 把五个 expert 的专长压进同一个 8B student。当前证据支持组合机制，但没有 SFT-only/单 teacher ablation，所以不做单因果归因。</td>
         </tr>
         <tr>
-          <td>“为什么多 teacher 比单 teacher 好？”</td>
-          <td class="bad">多个 teacher 更强。</td>
-          <td class="ok">不同 teacher 能互补。</td>
-          <td class="good">不同输出类型的错误分布不同，多 teacher 融合能降低单 teacher 在某类输出上的系统偏置，尤其是 text/bool 与 box 的监督粒度不同。</td>
+          <td>“没有 SFT-only 对照，为什么还能写 OPD？”</td>
+          <td class="bad">因为最终就是 OPD，所以写 OPD。</td>
+          <td class="ok">可以写训练方法，但不能说严格优于 SFT。</td>
+          <td class="good">我会把 claim 降到证据能支撑的范围：写“构建 OPD 训练与评估闭环，并相对 base/instruct 获得 raw-holdout 提升”，不写“OPD 已严格证明优于 SFT”。下一步补 SFT-only 是明确的证据增强项。</td>
         </tr>
         <tr>
-          <td>“合成数据会不会过拟合格式？”</td>
-          <td class="bad">不会，我们数据质量高。</td>
-          <td class="ok">需要 held-out 检查。</td>
-          <td class="good">这是风险，所以要用真实场景 held-out、格式错误率和不同输出类型指标一起看；不能只看训练 loss。</td>
+          <td>“多 teacher 为什么不是噱头？”</td>
+          <td class="bad">多个 teacher 肯定更强。</td>
+          <td class="ok">不同 teacher 有不同专长。</td>
+          <td class="good">用数据说话：RoboPoint expert 在 point 上更强，general/object/region/spatial experts 在不同 box pool 上有不同上限；OPD 的价值是让 student 在统一协议下保留多域能力，而不是追求每个单项都赢所有 expert。</td>
+        </tr>
+        <tr>
+          <td>“合成数据会不会污染训练？”</td>
+          <td class="bad">不会，我们做了筛选。</td>
+          <td class="ok">会，所以要控制比例和质量。</td>
+          <td class="good">这正是本项目的经验之一：有一版合成过重效果很差，所以我不会把合成数据描述成越多越好。更合理的是用 YOLO proposal + 强 VLM score 作为候选生成，再通过质量过滤和分布配比把它放在合适的 domain/route 里。</td>
+        </tr>
+        <tr>
+          <td>“point strict 为 0 是不是说明 base 完全不会 point？”</td>
+          <td class="bad">是，base 没有这个能力。</td>
+          <td class="ok">不一定，可能是格式问题。</td>
+          <td class="good">要分 strict protocol 与 lenient geometry：原始 raw-holdout strict 要求 <code>&lt;point&gt;</code> 标签，base/instruct 常输出裸坐标会被判 0；所以 point strict 更像部署协议指标，不能完全等同于几何定位能力。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="grill">
+    <h2>Grill Me：高压追问答复卡</h2>
+    <table>
+      <thead><tr><th>高压追问</th><th>推荐口述</th><th>危险边界</th><th>需要证据</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>OPD 为什么可能优于单一 teacher 或单一 SFT？</td>
+          <td>我会把机制拆成三层：第一层是五类数据分布，覆盖 point、general、object bbox、region bbox、relation；第二层是五个 expert 的能力分工，不同 expert 在不同输出协议和场景上更稳定；第三层才是 OPD，把 target expert 的在线 token 监督压到同一个 student 里。它的优势不是“teacher 多所以一定更好”，而是避免单一 teacher 把自己的 domain bias 和格式偏好直接灌给 student。</td>
+          <td>不能说已经严格证明 OPD 优于纯 SFT；当前缺 SFT-only 和单 teacher 完整 ablation。</td>
+          <td>五域数据分布、expert 单项评估、OPD5000 raw-holdout 表。</td>
+        </tr>
+        <tr>
+          <td>提升到底来自数据分布、teacher 融合，还是格式对齐？</td>
+          <td>目前不能做单因果归因。更稳的回答是：数据分布解决覆盖，格式对齐解决可训练和可评估，teacher 路由解决多域能力迁移。指标提升是这三者组合后的结果。已有反例是合成比例过重的一版效果很差，说明“更多数据”本身不是答案，分布和质量控制才是关键。</td>
+          <td>不要把 +9.1pp Box Acc@0.5 全部归因于 OPD 算法本身。</td>
+          <td>合成重版本失败记录、数据配比脚本、format_conflict 字段。</td>
+        </tr>
+        <tr>
+          <td>bbox 合成数据会不会污染模型？</td>
+          <td>会，所以我不会把合成数据讲成越多越好。我的做法是把 YOLO proposal 和强 VLM score/label 当成候选生成器，再通过质量筛选、domain route 和最终训练分布控制它的占比。bbox 合成负责补覆盖，但必须避免把 proposal bias 或伪标签噪声变成 student 的主分布。</td>
+          <td>不要说“强 VLM 打分后就是高质量标签”。伪标签始终要当成带噪声数据。</td>
+          <td>候选过滤规则、各域最终 10w 级采样比例、bad case。</td>
+        </tr>
+        <tr>
+          <td>为什么要同时做 point、box、text，单独做 box 不就够了吗？</td>
+          <td>面向语义导航和具身任务，模型不仅要框物体，还要理解指代、区域和关系。point 更接近用户点选/点击式 grounding，box 更适合执行区间，text exact 检查输出协议和语义短答。统一到一个 student 里，是为了让下游系统不用为不同 grounding 任务维护完全割裂的模型。</td>
+          <td>不要把三类指标直接相加成一个总分；它们代表不同能力。</td>
+          <td>point/box/text held-out 任务样例、输出协议示例。</td>
+        </tr>
+        <tr>
+          <td>Point strict 为 0 是不是说明 base 模型完全不会定位？</td>
+          <td>不是。strict 指标强依赖输出协议，比如是否带 <code>&lt;point&gt;</code> 标签、坐标格式是否完全合规。base/instruct 的 strict 为 0，更多说明它不遵守本项目的部署协议；几何能力要看 lenient 或人工解析结果。所以我会把 strict 讲成“协议可用性指标”，不把它等同于纯定位能力。</td>
+          <td>不要用 strict 0 去贬低 base 的全部视觉能力；面试官会追问评估公平性。</td>
+          <td>strict/lenient 评估脚本、base 输出样例。</td>
+        </tr>
+        <tr>
+          <td>没有纯 SFT 对照，简历为什么还能写 OPD？</td>
+          <td>可以写 OPD，因为这是实际完成的训练方法和评估闭环；但 claim 要降到证据能支撑的范围：我构建了五域数据、五教师路由和在线 OPD 训练，并在 raw-holdout 上相对 base/instruct 提升。不能写“OPD 已严格优于 SFT”。下一步最该补的就是 SFT-only、单 teacher 和无合成对照。</td>
+          <td>不要在论文式追问里强辩因果；承认证据缺口反而更可信。</td>
+          <td>SFT-only 补实验计划、当前 OPD ckpt 表、teacher eval 表。</td>
+        </tr>
+        <tr>
+          <td>五个 teacher 是怎么选的，为什么不是平均投票？</td>
+          <td>它不是通用投票，而是 route-based supervision。每个样本有 target expert 或 domain metadata，在线训练时调用对应 teacher，避免把不擅长该域的 teacher 输出混进去。平均投票在格式、坐标和任务语义不统一时可能产生折中噪声，尤其是 point/box/text 混合任务。</td>
+          <td>不要说五个 teacher 都比 student 强；真实情况是各有专长。</td>
+          <td>target expert 字段、candidate experts 字段、各 expert 单项结果。</td>
+        </tr>
+        <tr>
+          <td>如果面试官要求你证明 OPD 机制，而不是只报指标？</td>
+          <td>我会先承认当前指标证明的是组合效果，然后给出可补证据路径：固定数据分布，比较 SFT-only 与 OPD；固定 OPD，比较单 teacher 与 route teacher；固定 teacher，比较有/无合成和不同合成比例；最后按 box/point/text 分开看，而不是只看总体指标。这样才能把机制从经验结论推进到因果证据。</td>
+          <td>不要现场编一个不存在的 ablation 表。</td>
+          <td>实验设计表、待补运行脚本、每项指标的评价协议。</td>
         </tr>
       </tbody>
     </table>
@@ -234,8 +422,11 @@
   <section id="references">
     <h2>参考与证据</h2>
     <ol>
-      <li>本地证据：<a href="../output/mousongzhe_resume_optimized.html">optimized 简历</a> 与 <a href="../output/resume_restructure_plan.md">resume_restructure_plan.md</a> 中的 OPD 数据规模和指标。</li>
-      <li>公开背景：VLM grounding / object localization 的通用训练与评估概念，本页不把内部 OPD 机制包装成公开论文结论。</li>
+      <li>数据分布脚本：<code>C:\Users\mousongzhe\muxi\build_expert_mixes_seed0_v2.py</code>、<code>C:\Users\mousongzhe\muxi\build_opd_student_v1.py</code>。</li>
+      <li>OPD 训练实现：<code>C:\Users\mousongzhe\muxi\train_opd_online_vl.py</code>。</li>
+      <li>10k raw-holdout 报告：<code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\raw_holdout_eval_8models_report.md</code>。</li>
+      <li>200k experts 与 OPD5000 checkpoint 评估：<code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\base_instruct_experts200k_opd_ckpts_eval_table.md</code>。</li>
+      <li>语义导航 box 子管线：<code>C:\Users\mousongzhe\muxi\report.md</code> 中 semantic-nav box 数据合成与评估记录。</li>
     </ol>
   </section>
 </article>

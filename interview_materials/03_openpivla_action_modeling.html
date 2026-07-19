@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>OpenPiVLA 动作表示与闭环控制 - 面试材料</title>
+  <title>OpenPiVLA Qwen 动作监督、Metax 迁移与证据边界 - 面试材料</title>
   <script>
     window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] } };
   </script>
@@ -22,6 +22,7 @@
     .toc ol { columns: 2; margin: 0; }
     .note { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
     .warning { background: #fff7ed; border-left: 4px solid #f97316; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+    .evidence { background: #f7f0ff; border-left: 4px solid #7c3aed; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
     table { width: 100%; border-collapse: collapse; margin: 12px 0 22px; font-size: 14px; }
     th, td { border: 1px solid #d9e1e6; padding: 8px 10px; vertical-align: top; }
     th { background: #f3f6f7; text-align: left; }
@@ -37,95 +38,302 @@
 </head>
 <body>
 <article>
-  <h1>OpenPiVLA：把连续控制重新表述为多模态序列预测</h1>
-  <p class="meta">材料类型：项目面试页 | 证据截止：2026-07-07 | 对应简历：OpenPiVLA / OpenPI VLA 动作表示改造与多模态策略训练</p>
+  <h1>OpenPiVLA：Qwen 动作监督、Metax 迁移与证据边界</h1>
+  <p class="meta">材料类型：项目面试页 | 证据截止：2026-07-17 | 对应项目：OpenPI / OpenPiVLA 训练迁移、动作表示统一与 LIBERO 评估</p>
 
   <nav class="toc" aria-label="目录">
     <ol>
       <li><a href="#question">核心问题</a></li>
       <li><a href="#answer">短答案</a></li>
-      <li><a href="#mechanism">动作 token 机制</a></li>
-      <li><a href="#closed-loop">闭环关系</a></li>
-      <li><a href="#limits">Benchmark 边界</a></li>
+      <li><a href="#best-run">归档结果与证据边界</a></li>
+      <li><a href="#research-framing">Research Framing</a></li>
+      <li><a href="#boundary">贡献边界</a></li>
+      <li><a href="#fast">FAST 上游机制（对照）</a></li>
+      <li><a href="#work">我的工作拆解</a></li>
+      <li><a href="#closed-loop">闭环控制关系</a></li>
+      <li><a href="#eval">评估与指标</a></li>
       <li><a href="#pack">项目面试 8 件套</a></li>
       <li><a href="#questions">追问树</a></li>
+      <li><a href="#grill">Grill Me</a></li>
       <li><a href="#references">参考与证据</a></li>
     </ol>
   </nav>
 
   <section id="question">
     <h2>问题（Question）</h2>
-    <p>面试官会问：<strong>“连续控制动作为什么可以被离散语言 token 表示？这会不会损失精度？horizon 和 action chunk 如何影响闭环控制？LIBERO 结果能代表真实吗？”</strong></p>
+    <p>面试官会问：<strong>“连续控制动作为什么可以被离散 token 表示？这会不会损失精度？horizon 和 action chunk 如何影响闭环控制？你在 OpenPiVLA 里到底做了模型创新，还是做了迁移复现？”</strong></p>
   </section>
 
   <section id="answer">
     <h2>短答案</h2>
     <div class="note">
-      <p><strong>可直接口述：</strong>这个项目的关键不是把连续动作“硬塞进文本”，而是把 VLA 的动作建模问题重写成多模态序列预测：输入是图像、状态和任务语言，输出是一个未来 action window。离散 token 表示会带来量化误差，但它也让动作预测可以复用 VLM 的自回归训练、chat template 和 LoRA 微调能力。精度损失主要由动作量化粒度、归一化、horizon 和 controller 执行频率决定。闭环上，模型每次预测一段 action chunk，controller 只执行前若干步，然后重新观测、重新规划。LIBERO 的优势是协议规整、可比性强；边界是它没有完全覆盖真实机器人里的视觉扰动、控制延迟、物理接触和任务组合复杂度。</p>
+      <p><strong>可直接口述：</strong>先把上游和本地路线分开：FAST 是公开的 normalization→DCT→量化/BPE→decode/IDCT 动作 token 化机制；我的 OpenPiVLA formal 路径实际使用 Qwen3-VL + PEFT LoRA，把 DROID action window 序列化为 assistant-side JSON，并用 causal LM CE 与 MindCube QA 共用训练入口。这个 JSON/CE 路线是当前资源下的可执行复现折中，不等价于 FAST DCT/BPE 或原始 action expert。</p>
+      <p>我的工作重心是把训练与评估 contract 搭成可审计路径：接入 Qwen、组织 VLA-only/VLM-only/co-train 三类 recipe、处理数据/动作窗口/label mask、迁移到 Metax/MACA，并保留 checkpoint 保存、smoke、policy-serving 和 rollout diagnostics。归档 97.4% 目前只有 committed report 汇总支持，不能写成当前 formal Qwen checkpoint 的结果或高于 official 96.85。</p>
     </div>
   </section>
 
-  <section id="mechanism">
-    <h2>连续动作为什么能离散化</h2>
-    <p>动作 token 化不是说连续控制本质上是语言，而是把一个连续向量序列编码成模型可生成的离散符号，再在执行前解码回连续动作。令动作维度为 \(d\)，horizon 为 \(H\)，一个 action window 是：</p>
+  <section id="best-run">
+    <h2>归档结果与证据边界：<code>224_h10_40000</code></h2>
+    <div class="note">
+      <p><strong>最该优先讲的一句话：</strong>项目报告里有一条归档汇总 <code>224_h10_40000</code>：goal/object/spatial/libero_10 = 0.99/0.995/0.98/0.93，平均 97.4%。目前可核验的是 committed report 表格；checkpoint hash、raw eval summary、trial/seed/init protocol、episode records 和 archive→formal lineage 尚未取得，所以我不会把它写成当前 Qwen formal checkpoint 的结果，也不会声称高于 official <code>pi05_libero</code> 96.85。</p>
+      <p>面试里不要把它说成“我发明了新 VLA 架构”。更稳的讲法是：<strong>我从 OpenPI 的公开 policy server、LIBERO eval 和 action contract 出发，恢复训练与评估契约，在 Metax 上重建 Qwen formal 训练资产；归档分数只作为待补 raw bundle 的历史证据，当前主线讲可审计的工程实现和证据边界。</strong></p>
+    </div>
+
+    <table>
+      <thead><tr><th>层级</th><th>OpenPI / 上游基础</th><th>本地改造或恢复</th><th>为什么影响 97.4%</th><th>证据边界</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>策略与评估契约</td>
+          <td>OpenPI 提供 <code>policy:checkpoint</code> serving、<code>pi05_libero</code> 配置和 LIBERO 四套件 client。</td>
+          <td>保留 server/client 形态，固定 suite、trials、checkpoint、video/log/summary 产物，避免把 smoke test 写成 benchmark。</td>
+          <td>只有 suite、checkpoint、trial/seed、controller 和 success predicate 全部一致，归档 97.4% 才可能与官方 baseline 96.85% 比较；当前 protocol tuple 尚未闭合。</td>
+          <td>官方 OpenPI 与本地 <code>openpivla_run_libero_official_eval.sh</code>；不使用内部未公开 variants 做外部 baseline。</td>
+        </tr>
+        <tr>
+          <td>动作表示与控制闭环</td>
+          <td>OpenPI/FAST 生态把连续 action chunk 变成可训练表示，并在 rollout 中反归一化、切片、送入 controller。</td>
+          <td>formal 路径把 DROID action window 变成 assistant-side JSON/causal-CE；FAST DCT/BPE 作为上游对照单独讲，重点检查数据/输出 contract 与 controller 诊断边界。</td>
+          <td>LIBERO 高分不只看模型输出格式，还依赖 action scale、夹爪维度、controller 频率和重新观测时机。</td>
+          <td>FAST/OpenPI 是上游方法；我的贡献是理解、迁移和评估对齐，不宣称发明 action tokenization。</td>
+        </tr>
+        <tr>
+          <td>训练资产恢复</td>
+          <td>历史 NVIDIA/OpenPI 路线包含 VLA-only、VLM-only、VLA+VLM co-train 的训练意图。</td>
+          <td>从归档 run id、shell、日志和 config 重建三条 recipe；在 Metax/MACA 上形成 Qwen3-VL + LoRA formal trainer、DROID/MindCube 数据读取、目标 step 与均匀保存点。报告记录三条 100k completion，但本地仍缺远端 log/checkpoint/load smoke。</td>
+          <td>它提示该配置值得继续核验，但没有 raw task records 时不能做“更稳”或因果解释。</td>
+          <td>formal 训练线证明训练 contract 可恢复；它不是原始 action expert 的逐位等价复刻，也不应被直接说成产生 97.4% checkpoint 的唯一来源。</td>
+        </tr>
+        <tr>
+          <td>模型与数据接口</td>
+          <td>原路线面向 Pi0/Qwen3-VL joint model、fast token action 分支和连续动作目标。</td>
+          <td>接入 HF Qwen3-VL + LoRA，将 DROID action window 与 MindCube QA 纳入 assistant-side token 监督；recipe/smoke 保留 action_dim=72、action_horizon=15，但 Batch 2 已发现 formal JSON formatter 每步最多保留 16 个数，parser/axis/unit contract 仍待补。</td>
+          <td>把当前 formal 路径的动作学习重述为“图像/状态/语言条件下的 assistant token 序列预测”，同时保留可追溯的数据与动作窗口语义；不把它等同于原连续 action expert。</td>
+          <td>这是一条可执行迁移复现口径，不把 JSON/action token 折中包装成原 action expert 的完整替代。</td>
+        </tr>
+        <tr>
+          <td>最优模型选择</td>
+          <td>OpenPI LIBERO 评估关注 closed-loop success rate，不只看训练 loss。</td>
+          <td>在归档结果中选出 <code>224_h10_40000</code>：224 分辨率、horizon 10、40k checkpoint。</td>
+          <td>报告把该组合列为归档中最强汇总，尤其 <code>libero_10=0.93</code>；但没有 raw task records，不能据此做因果解释。</td>
+          <td>这是 `archive-summary-only`：缺 checkpoint、trial/seed/protocol 和可重算 episodes；不能与 current formal Qwen 或 official 96.85 直接合并。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>按 Motivation → Hypothesis → Method → Experiment → Failure Analysis 讲</h3>
+    <table>
+      <thead><tr><th>Motivation 动机</th><th>Hypothesis 假设</th><th>Method 方法</th><th>Experiment 实验</th><th>Failure Analysis 失败分析</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>OpenPI 已有公开 baseline，但面试要回答的不只是“我跑了 LIBERO”，而是：一个 VLA policy 怎么从公开基础经过动作表示、训练恢复和评估协议对齐，形成可审计的归档结果与后续验证计划。</td>
+          <td>影响 LIBERO 成功率的关键不只是 backbone 或分辨率，而是 action horizon、checkpoint 时机、normalizer/controller 对齐和 closed-loop replanning 的共同作用。224 分辨率 + horizon 10 + 40k checkpoint 可能比盲目加分辨率或延长训练更稳。</td>
+          <td>以 OpenPI <code>pi05_libero</code> 为公开参照，保留 policy server/client 与四套件协议；用归档 run contract 恢复训练语义；在 Metax 上重建 Qwen3-VL formal 训练线；把 <code>224_h10_40000</code> 作为报告中的 archive summary，与 current formal 结果分开。</td>
+          <td>报告汇总 <code>224_h10_40000</code> 为 0.99/0.995/0.98/0.93、平均 97.4%；三条 formal 100k completion 也由报告记录，但二者没有 immutable lineage，不能说是同一 checkpoint，也不能写“高于 official”。</td>
+          <td>该结果不能外推为真实机器人泛化，也不能用当前 LoRA formal loss 反推原 action expert 的等价性能。答辩时主动说明：当前最强证据是工程报告与诊断 artifact，下一步需要 raw checkpoint、protocol tuple、multi-seed 和 episode records。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="research-framing">
+    <h2>Research Framing：把 VLA 复现讲成动作建模问题</h2>
+    <p>这个项目的 research sense 不在于宣称发明 FAST/OpenPI，而在于能把“连续控制动作如何进入多模态序列模型”讲成清晰的研究问题，并用迁移复现、Qwen 接入和 LIBERO eval 去验证。</p>
+    <table>
+      <thead><tr><th>阶段</th><th>Motivation 动机</th><th>Hypothesis 假设</th><th>Method 方法</th><th>Experiment 实验</th><th>Failure Analysis 失败分析</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1. FAST / action tokenization 理解与复用</td>
+          <td>开放问题是：VLA 如何把连续高维动作纳入语言模型式的序列预测？对应论文是 FAST / OpenPI / VLA action tokenization 相关工作；本地贡献不是提出 FAST，而是理解并复用这套 action representation。</td>
+          <td>如果把连续 action window 先做 normalization + DCT + quantization/BPE，就能把控制问题重述为可训练的多模态序列预测；但该表示不是无损，必须依赖闭环 replanning 降低误差累积。</td>
+          <td>梳理 FAST encode / DCT / token / decode / IDCT / denorm 过程，并在训练/eval 讲解中把 action window、execution window、controller contract 统一起来。</td>
+          <td>通过 local diagnostics 与 official OpenPI baseline rollout 检查输出、反归一化和控制器接口；归档报告的 97.4% 只作为 `archive-summary-only`，不与 official 96.85 做强比较。</td>
+          <td>tokenization 有量化误差，LIBERO 是规整仿真；不能用该结果证明真实机器人泛化。下一步要补 action roundtrip、horizon/replan_steps 和真实扰动分析。</td>
+        </tr>
+        <tr>
+          <td>2. Qwen 接入与动作监督统一</td>
+          <td>动机是把历史 NVIDIA/OpenPI 路线迁到当前 Qwen3-VL 和 Metax/MACA 资源上，使 VLA-only、VLM-only、co-train 三条训练路径可执行、可保存、可评估。</td>
+          <td>动作学习不只是换 backbone；如果 chat template、loss mask、assistant-side action、normalizer 和 eval parser 不一致，训练 loss 即使下降也不能 rollout。</td>
+          <td>接入 Qwen3-VL + LoRA，将 DROID action 与 MindCube QA 统一成 assistant-side token/JSON 监督；重建 VLA-only、VLM-only、co-train 三条 recipe；统一动作维度、输出格式和 eval parser。</td>
+          <td>用 formal train 脚本和 run contract 验证训练路径、保存计划和 smoke 可执行；official LIBERO launcher 与 local diagnostics 单独记录，不能把它们绑定到 formal Qwen checkpoint。</td>
+          <td>assistant-side JSON/token 是迁移复现折中，不等价于原始 action expert；面试要强调“可执行复现路径”和“动作 contract 对齐”，不要包装成 SOTA 架构创新。</td>
+        </tr>
+        <tr>
+          <td>3. Metax/MACA 迁移与评估协议</td>
+          <td>动机是大 GPU 资源主要在国产 C500/MACA 上，研究复现不应只停留在 NVIDIA 环境；跨算力栈迁移会暴露 checkpoint、attention、DeepSpeed、eval wrapper 等隐藏契约。</td>
+          <td>如果训练 contract 能在 MACA 上恢复、eval contract 能按 OpenPI 官方口径执行，说明这里的价值不是路径偶然跑通，而是 action representation、normalizer、controller 和 eval protocol 被分层对齐。</td>
+          <td>适配 MACA Torch/DeepSpeed、eager attention、checkpoint/log 约束；复原历史 run id、shell、日志和 config；将硬件适配包装成跨算力栈训练迁移和可复现实验控制。</td>
+          <td>项目报告包含公开 LIBERO 四套件汇总 0.99/0.995/0.98/0.93、平均 97.4%；由于 raw protocol 尚未闭合，不把它与官方 OpenPI pi05_libero 96.85 做强比较，也不拿内部 baseline 对外比较。</td>
+          <td>评估仍是单点最优和仿真 benchmark；若面试追问统计显著性，需要承认还缺多 seed、多 checkpoint、扰动和真实机器人验证。</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="warning">
+      <p><strong>Grill Me 预留问题：</strong>请准备一个 60 秒版本回答：“我没有发明 FAST，但我能解释为什么 FAST 让连续控制动作可被 VLM 学习，以及我如何在 Metax 上把这个 contract 跑通到 LIBERO 评估。”</p>
+    </div>
+  </section>
+
+  <section id="boundary">
+    <h2>贡献边界</h2>
+    <table>
+      <thead><tr><th>内容</th><th>归属</th><th>面试表达</th><th>风险表达</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>FAST / FAST+ 动作 token 化方法，DCT/IDCT、量化、BPE 设计</td>
+          <td>上游公开方法与 OpenPI/Physical Intelligence 生态</td>
+          <td>“我理解并复用了 FAST 的动作表示思想，重点在把这套表示迁移到我的训练/eval pipeline。”</td>
+          <td>“我发明了动作 token 化方法。”</td>
+        </tr>
+        <tr>
+          <td>原 NVIDIA 服务器上的历史训练代码、若干原始 OpenPiVLA 代码路径</td>
+          <td>历史项目/上游实现，不是我的原创实现</td>
+          <td>“我基于归档日志、脚本和 run contract 做结构化复现，并在 Metax 上重建可执行路径。”</td>
+          <td>“原始训练框架都是我写的。”</td>
+        </tr>
+        <tr>
+          <td>Metax/MACA infra 适配、训练迁移、评估环境适配、关键 run/eval 验证</td>
+          <td>我的核心工作</td>
+          <td>“我负责把训练与评估迁移到国产算力栈，并证明关键 recipe、checkpoint 和 rollout 协议可跑、可保存、可复查。”</td>
+          <td>只说“配环境、跑脚本”，会显得低价值。</td>
+        </tr>
+        <tr>
+          <td>Qwen 接入、VLA-only/VLM-only/co-train 三条路径、动作输出统一</td>
+          <td>我的复现/适配路径中的模型侧改造</td>
+          <td>“我把 Qwen3-VL LoRA 路线接入 OpenPI 训练复现，把 robot action 与 VLM QA 统一到 assistant-side token 监督。”</td>
+          <td>说成完整替代原始 action expert 的等价复刻。</td>
+        </tr>
+        <tr>
+          <td>LIBERO 四套件归档汇总</td>
+          <td><code>archive-summary-only</code>；可讲报告记录，但必须说明 raw bundle 未闭合</td>
+          <td>“项目报告汇总了 <code>224_h10_40000</code> 的 0.99/0.995/0.98/0.93、平均 97.4%；checkpoint、trial/seed 和 episode records 待补，因此不写高于 official 96.85。”</td>
+          <td>把汇总表当作 current Qwen checkpoint 结果，或声称已经证明真实机器人泛化。</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="evidence">
+      <p><strong>本地证据口径：</strong><code>C:\Users\mousongzhe\Project\openpivla_deployment</code> 中的 <code>formal_train.py</code> 直接加载 HF Qwen3-VL、注入 PEFT LoRA、把 DROID action window 生成为 assistant-side JSON，并以 <code>outputs.loss</code> 做 causal CE；<code>recipes.py</code> 记录 VLA-only、VLA+VLM co-train、VLM-only 三条 run。<code>DEPLOYMENT.md</code> 与 committed formal report 给出远端 log/checkpoint 路径和归档汇总，但 raw checkpoint/load smoke、97.4 episode bundle 与 per-file ownership 仍待补。</p>
+    </div>
+  </section>
+
+  <section id="fast">
+    <h2>FAST（上游对照）：连续动作与 token 的互转机制</h2>
+    <div class="warning"><p>本节讲的是 Physical Intelligence 的公开 FAST 机制，不是当前 Qwen formal trainer 的实现证明。当前 local route 的代码路径是 assistant-side JSON + causal LM CE；除非补到 FAST processor 调用和 roundtrip test，否则两者必须分开表述。</p></div>
+    <p>FAST 的全称是 <strong>Frequency-space Action Sequence Tokenization</strong>。它解决的问题是：VLA 自回归模型天然预测离散 token，而机器人控制需要连续 action。FAST 不是逐维逐时刻做 naive binning，而是把一段动作序列看成可压缩的时间信号。</p>
+    <p>令动作维度为 \(d\)，horizon 为 \(H\)，一个 action chunk 为：</p>
     \[
       A_{t:t+H-1} = [a_t, a_{t+1}, \ldots, a_{t+H-1}], \quad a_t \in \mathbb{R}^{d}
     \]
-    <p>在本项目口径中，DROID 侧使用 horizon=15、dim=72，因此一个训练样本的动作目标可以理解为 \(15 \times 72\) 的连续矩阵。离散 token 化可以抽象为：</p>
+    <p>FAST 路径可以概括为：</p>
     \[
-      q_{i,j} = Q(\mathrm{norm}(a_{i,j})), \quad
-      token = \mathrm{serialize}(q_{1:H,1:d})
+      A \xrightarrow{\mathrm{normalize}}
+      \tilde{A}
+      \xrightarrow{\mathrm{DCT}}
+      C
+      \xrightarrow{\mathrm{quantize/BPE}}
+      z
+      \xrightarrow{\mathrm{decode}}
+      \hat{C}
+      \xrightarrow{\mathrm{IDCT}}
+      \hat{A}
     \]
-    <p>其中 \(Q\) 是量化函数，\(\mathrm{norm}\) 是动作归一化，\(\mathrm{serialize}\) 是把量化后的动作矩阵写成 assistant 侧离散动作 token 的序列。实现映射上，对应简历中的“连续 action window 编码为 assistant 侧离散动作 token，统一 DROID horizon=15/dim=72 与 MindCube VLM QA 的数据格式”。</p>
+    <p>其中 \(A\) 是连续 action window，\(\tilde{A}\) 是归一化后的动作，\(C\) 是 DCT 频域系数，\(z\) 是模型可生成的 token 序列，\(\hat{A}\) 是最终还原给 controller 的动作窗口。项目里你提到的 <code>encode / dct / idct / decode</code> 正是这个思路：encode 阶段把连续动作压成 token，decode 阶段把 token 还原为动作。</p>
 
     <table>
-      <thead><tr><th>优点</th><th>风险</th><th>面试回答</th></tr></thead>
+      <thead><tr><th>面试点</th><th>专业回答</th><th>简化回答</th></tr></thead>
       <tbody>
         <tr>
-          <td>复用 VLM 自回归建模、LoRA、chat template、统一 VLA/VLM co-train</td>
-          <td>量化误差、长序列误差累积、动作维度相关性被文本序列打散</td>
-          <td>承认 token 化有误差，但它换来了训练统一性；误差通过 normalization、chunk 执行和闭环 replanning 缓解。</td>
+          <td>为什么 DCT？</td>
+          <td>DCT 把时间域动作分解成低频/高频系数。机器人轨迹通常有较强时序平滑性，低频系数承载主要趋势，压缩后 token 更短、更适合自回归预测。</td>
+          <td>不是逐帧猜动作，而是先用频域把一段动作压成更短的“动作句子”。</td>
+        </tr>
+        <tr>
+          <td>会不会损失精度？</td>
+          <td>会有量化和截断误差。误差来自 normalizer、DCT 系数保留/量化、BPE token 有效性和 decode 失败兜底；不能说无损，只能说在闭环 replanning 下可控。</td>
+          <td>有损，但不是一次预测完整任务；每次只执行 action chunk 的前几步，再重新看图规划。</td>
+        </tr>
+        <tr>
+          <td>和 JSON action token 的关系</td>
+          <td>FAST 是上游频域 action tokenizer；我本地复现路径为了 Qwen3-VL LoRA 训练可执行，把 action horizon 序列格式化成 assistant-side action JSON / token 监督，这是一条迁移复现口径，不等同于原 action expert 的完整等价复刻。</td>
+          <td>我做的是让 Qwen 路线稳定读写动作格式，保证输出最终能回到 controller 可执行的连续动作。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="work">
+    <h2>我的工作拆解</h2>
+    <table>
+      <thead><tr><th>模块</th><th>我做了什么</th><th>讲法重点</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Metax/MACA infra 迁移</td>
+          <td>在 C500/MACA 环境保留 MACA-adapted Torch/DeepSpeed 约束，建立训练脚本、环境变量、数据路径、日志与 checkpoint 保存约定。</td>
+          <td>不要讲成“配环境”；讲成跨算力栈迁移：训练依赖、显存/attention 路径、checkpoint、日志与可恢复性都要对齐。</td>
+        </tr>
+        <tr>
+          <td>run contract 复原</td>
+          <td>根据历史 run id、shell、日志和 YAML 重建三条 recipe：DROID VLA-only、DROID+MindCube co-train、MindCube VLM-only。</td>
+          <td>强调“关键 run 不是超参小改，而是三种训练语义”，体现对训练设计的理解。</td>
+        </tr>
+        <tr>
+          <td>Qwen 接入</td>
+          <td>把 Qwen3-VL-2B + LoRA 接入 formal trainer，验证 base model config、processor/chat template、LoRA target、bf16/eager attention 等训练条件。</td>
+          <td>面试细节讲简洁：不是替换一个 backbone 名字，而是输入、输出、loss 和保存格式都要能落地。</td>
+        </tr>
+        <tr>
+          <td>动作统一</td>
+          <td>在复现路径里把 robot action window 与 VLM QA 都转成 assistant-side token 监督；recipe/smoke 的 run-level contract 是 horizon=15、dim=72，但 current formal formatter 的 limit=16 形成显式 representation conflict，不能直接写成已验证的 72 维控制语义。</td>
+          <td>这是“动作表示统一”的核心，但要承认它不是原始 action expert 的完整等价实现。</td>
+        </tr>
+        <tr>
+          <td>eval 环境适配</td>
+          <td>保留 OpenPI policy server/client 的评估形态，适配 LIBERO/ALOHA rollout、observation/state normalization、action chunk、controller action contract、视频和 action/state 诊断。</td>
+          <td>重点是评估协议可比性和失败定位，不是简单“跑通 eval”。</td>
+        </tr>
+        <tr>
+          <td>关键结果复现</td>
+          <td>committed formal report 汇总归档 run <code>224_h10_40000</code> 为 99.0/99.5/98.0/93.0%、平均 97.4%；Project snapshot 同时包含三类 formal trainer、recipe、smoke 和诊断 artifact，但 formal checkpoint/load smoke 仍 remote-pending。</td>
+          <td>把 97.4% 明确标成 archive-summary-only，把 formal 训练讲成 direct engineering evidence + report-supported completion，不把两者硬混成同一条因果链。</td>
         </tr>
       </tbody>
     </table>
   </section>
 
   <section id="closed-loop">
-    <h2>Action Window、Observation Normalization 与 Controller 的闭环</h2>
-    <pre><code class="language-text">Observation image / proprio / task language
+    <h2>Action Window、Normalization 与 Controller 闭环</h2>
+    <pre><code class="language-text">camera / state / task language
         |
         v
-Qwen3-VL + LoRA policy predicts action token sequence
+OpenPI / Qwen policy path predicts action token or action chunk
         |
         v
-decode tokens -> normalized action window (H=15, dim=72)
+decode -> normalized continuous action window
         |
         v
-denormalize / slice / map to controller action space
+denormalize / slice / map to environment controller action
         |
         v
 execute first K actions, then re-observe and replan</code></pre>
 
-    <p>闭环控制里最关键的是 <strong>H</strong> 和 <strong>K</strong> 的关系。\(H\) 是模型一次预测的未来动作长度，\(K\) 是实际执行多少步后重新规划：</p>
+    <p>闭环控制的关键变量是 \(H\) 和 \(K\)：\(H\) 是一次预测的未来动作长度，\(K\) 是实际执行多少步后重新规划。</p>
     \[
       \pi_\theta(o_t, s_t, c) \rightarrow \hat{A}_{t:t+H-1}, \quad
       env.step(\hat{a}_t), \ldots, env.step(\hat{a}_{t+K-1})
     \]
-    <p>如果 \(H\) 太短，模型难以表达跨阶段动作意图；如果 \(H\) 太长，后半段动作更容易因为新观测变化而过时。\(K\) 越小，闭环更稳但推理成本更高；\(K\) 越大，执行更流畅但更依赖 open-loop 预测。面试中要讲出这个 trade-off，而不是只报 horizon 数字。</p>
+    <p>\(H\) 太短，模型难以表达跨阶段动作意图；\(H\) 太长，后半段动作容易因为新观测变化而过时。\(K\) 越小，闭环更稳但推理成本更高；\(K\) 越大，执行更流畅但更依赖 open-loop 预测。面试里要讲这个 trade-off，而不是只背 horizon 数字。</p>
 
-    <pre><code class="language-python">def libero_rollout(env, policy, task, replan_steps):
-    # 1. 读取当前图像、机器人状态和任务语言。
+    <pre><code class="language-python">def rollout_with_action_chunk(env, policy, task, replan_steps):
+    # 1. Reset simulator and read image/state observations.
     obs = env.reset(task)
     done = False
     while not done:
-        # 2. 对 observation/state 做与训练一致的归一化和格式化。
-        model_input = build_vla_input(obs, task)
+        # 2. Build model input with the same observation normalization as training/eval.
+        model_input = build_policy_observation(obs, task)
 
-        # 3. 模型输出 assistant 侧动作 token，再解码成未来 action window。
-        action_tokens = policy.generate(model_input)
-        action_window = decode_and_denormalize(action_tokens)
+        # 3. Query policy and parse predicted tokens/chunk into continuous actions.
+        pred = policy.infer(model_input)
+        action_window = decode_denormalize_and_slice(pred)
 
-        # 4. 只执行前 K 步，随后重新观察并规划。
+        # 4. Execute only the first K actions, then observe again.
         for action in action_window[:replan_steps]:
             obs, reward, done, info = env.step(action)
             if done or info.get("success"):
@@ -133,18 +341,36 @@ execute first K actions, then re-observe and replan</code></pre>
     return info</code></pre>
   </section>
 
-  <section id="limits">
-    <h2>LIBERO Benchmark 的边界</h2>
+  <section id="eval">
+    <h2>评估与指标怎么讲</h2>
     <table>
-      <thead><tr><th>LIBERO 能说明什么</th><th>不能说明什么</th><th>面试防线</th></tr></thead>
+      <thead><tr><th>指标/证据</th><th>推荐讲法</th><th>边界</th></tr></thead>
       <tbody>
         <tr>
-          <td>在规整仿真任务、固定协议和公开 baseline 下，策略能否完成标准 manipulation 指令。</td>
-          <td>真实机器人视觉扰动、相机偏移、控制延迟、摩擦/接触误差、任务组合泛化。</td>
-          <td>说“公开可比 benchmark 上超过 baseline”，不要说“真实机器人泛化已解决”。</td>
+          <td><code>224_h10_40000</code>：报告汇总 goal/object/spatial/libero_10 = 99.0%/99.5%/98.0%/93.0%，平均 97.4%</td>
+          <td>“这是 committed report 的 archive-summary-only；checkpoint、trial/seed、raw episodes 和 archive→formal lineage 还没闭合，所以我不写高于 official 96.85，也不把它说成 current Qwen checkpoint。”</td>
+          <td>不要与内部 run 互相比；不要说真实机器人泛化已经解决；不要把当前 LoRA formal reproduction 直接等同于该归档结果。</td>
+        </tr>
+        <tr>
+          <td>三条 100k-step formal 训练路径（报告记录；raw checkpoint 待核）</td>
+          <td>“证明历史 VLA-only / co-train / VLM-only 训练意图能在 Metax 上形成可保存、可监控、可恢复的复现资产。”</td>
+          <td>loss 与原始 action expert / flow matching loss 不能直接绝对值比较。</td>
+        </tr>
+        <tr>
+          <td>ALOHA/LIBERO task-native rollout、action norm/delta/jerk、state divergence、视频</td>
+          <td>“作为 eval 环境和动作尺度诊断，能定位 normalization、controller action contract、replan 频率等问题。”</td>
+          <td>小样本 smoke 不写成 benchmark 成功率。</td>
+        </tr>
+        <tr>
+          <td>Bridge/Fractal replay 或简化 MuJoCo adapter</td>
+          <td>“只作为 action-vector 诊断或 replay 可视化。”</td>
+          <td>不报告为 task-level physics success。</td>
         </tr>
       </tbody>
     </table>
+    <div class="warning">
+      <p><strong>面试防线：</strong>LIBERO 是规整仿真 benchmark。它能证明公开协议下的策略表现、动作表示和 rollout 评估闭环，但真实机器人还会额外面对相机扰动、控制延迟、接触摩擦、动作安全边界和长任务组合泛化。</p>
+    </div>
   </section>
 
   <section id="pack">
@@ -153,79 +379,65 @@ execute first K actions, then re-observe and replan</code></pre>
     <table>
       <thead><tr><th>能力</th><th>证据</th><th>讲法</th></tr></thead>
       <tbody>
-        <tr><td>动作表示设计</td><td>连续 action window → assistant 侧离散动作 token</td><td>把连续控制重写为多模态序列预测。</td></tr>
-        <tr><td>训练策略</td><td>VLA-only、VLM-only、co-train 三类策略</td><td>不是单纯替换 backbone，而是统一数据格式和目标。</td></tr>
-        <tr><td>公开评估</td><td>LIBERO 四套件平均 97.4%，官方 OpenPI pi05_libero baseline 96.85%</td><td>指标放在公开协议下讲，不使用内部 run 名。</td></tr>
-        <tr><td>国产化迁移</td><td>沐曦 C500/MACA 三类 100k-step 训练迁移</td><td>包装为跨算力训练适配，而不是单独炫硬件。</td></tr>
+        <tr><td>VLA 动作表示理解</td><td>FAST / DCT / IDCT / action chunk / normalizer</td><td>能解释连续动作为什么可 token 化，以及误差如何通过闭环缓解。</td></tr>
+        <tr><td>训练迁移</td><td>VLA-only、VLM-only、co-train 三条 recipe；formal report 记录 100k completion，raw log/checkpoint remote-pending</td><td>从历史 run contract 到 Metax 训练资产，而不是把报告记录写成已完成的本地 checkpoint 验证。</td></tr>
+        <tr><td>模型适配</td><td>Qwen3-VL + LoRA；assistant-side action token/JSON；DROID/MindCube 数据统一</td><td>讲“Qwen 接入与动作输出口径统一”，避免过度宣称架构原创。</td></tr>
+        <tr><td>评估协议</td><td><code>224_h10_40000</code> archive-summary-only；official baseline 96.85 upstream-verified；policy server/client 与 diagnostics 分开</td><td>把归档汇总、官方基线和 current formal/diagnostic 路线分开，先讲协议缺口，再讲下一步如何补 raw bundle。</td></tr>
+        <tr><td>国产化适配</td><td>Metax C500/MACA 环境、MACA Torch/DeepSpeed、eager attention、checkpoint/log 约束</td><td>包装为跨算力栈迁移与训练稳定性工程，不单列硬件名。</td></tr>
       </tbody>
     </table>
 
-    <h3>2. 真实性边界</h3>
-    <table>
-      <thead><tr><th>Claim</th><th>可说程度</th><th>防线</th></tr></thead>
-      <tbody>
-        <tr><td>LIBERO 平均 97.4% 高于官方 baseline</td><td>可说</td><td>确认同一公开协议，避免内部对比。</td></tr>
-        <tr><td>动作 token 化不损失精度</td><td>不能这么说</td><td>应该说量化误差可控但存在，需要闭环 replanning 缓解。</td></tr>
-        <tr><td>真实机器人泛化</td><td>谨慎</td><td>只能说 task-native rollout 验证接口一致性，不说真实泛化已解决。</td></tr>
-      </tbody>
-    </table>
-
-    <h3>3. 简历 Bullet 三档</h3>
+    <h3>2. 简历 Bullet 三档</h3>
     <table>
       <thead><tr><th>版本</th><th>表达</th></tr></thead>
       <tbody>
-        <tr><td>保守版</td><td>基于 OpenPI 完成 VLA 训练复现与 LIBERO 评估，整理动作表示、归一化和 rollout 失败样例。</td></tr>
-        <tr><td>标准版</td><td>在 OpenPI 框架上改造 Qwen3-VL + LoRA 训练目标，将连续 action window 编码为 assistant 侧动作 token，并完成公开 LIBERO 四套件评估。</td></tr>
-        <tr><td>偏强版</td><td>将 VLA 动作建模重写为多模态序列预测问题，统一 DROID/MindCube 数据格式和 action token 输出，在公开 LIBERO 平均 97.4%，高于官方 OpenPI pi05_libero baseline。</td></tr>
+        <tr><td>保守版</td><td>基于 OpenPI 整理 Qwen3-VL + LoRA formal trainer、DROID/MindCube 数据合同与 LIBERO/ALOHA policy-serving 诊断，明确 local JSON/causal-CE 与上游 FAST 的边界。</td></tr>
+        <tr><td>标准版</td><td>在 Metax C500/MACA 上迁移 OpenPI/OpenPiVLA 训练与评估 pipeline，接入 Qwen3-VL + LoRA，复现 VLA-only、VLM-only、co-train 三条训练路径，并对齐 LIBERO policy rollout 协议。</td></tr>
+        <tr><td>偏强版</td><td>围绕 VLA 动作监督与跨算力复现，接入 Qwen3-VL + PEFT LoRA，构建 VLA-only/VLM-only/co-train 三类 recipe，并用 formal report、smoke 与 rollout diagnostics 固化训练/eval contract；归档 97.4% 保留为待 raw bundle 核验的历史汇总。</td></tr>
       </tbody>
     </table>
 
-    <h3>4. 架构讲解稿</h3>
-    <table>
-      <tbody>
-        <tr><th>输入</th><td>图像 observation、proprio/state、任务语言、历史上下文。</td></tr>
-        <tr><th>核心节点</th><td>Qwen3-VL + LoRA、VLA-only/VLM-only/co-train recipe、action token serializer、normalizer、policy rollout。</td></tr>
-        <tr><th>输出</th><td>assistant 侧离散动作 token，解码为连续 action window 后交给 controller。</td></tr>
-        <tr><th>失败类型</th><td>动作 token 量化误差、normalization 错、action chunk 执行过长、视觉扰动、控制延迟。</td></tr>
-        <tr><th>评估方式</th><td>LIBERO goal/object/spatial/libero_10 四套件，平均 97.4%，与官方 pi05_libero baseline 对比。</td></tr>
-      </tbody>
-    </table>
+    <h3>3. 2-3 分钟口述稿</h3>
+    <p>这个项目我会定义为 OpenPI/OpenPiVLA 的训练迁移和策略评估复现。开场先主动分层：<code>224_h10_40000</code> 的 0.99/0.995/0.98/0.93、平均 97.4% 只来自 committed report 的 archive-summary-only，checkpoint、protocol 和 episode bundle 待补，不与 official 96.85 做强比较，也不把它绑定到 current Qwen formal。</p>
+    <p>我做的工作是从 OpenPI 和历史训练线出发，把训练与评估契约迁移到 Metax C500/MACA。具体做法是根据 run id、shell、配置和源码组织 DROID VLA-only、DROID+MindCube co-train、MindCube VLM-only 三条 recipe；接入 Qwen3-VL + PEFT LoRA，把 robot action window 序列化成 assistant-side JSON，与 MindCube QA 共用 causal LM CE；再用 smoke、formal report、official baseline rollout 和 action diagnostics 逐层检查数据、保存、normalizer/controller 与评估边界。FAST/OpenPI 是上游机制，不把 local JSON/CE 说成 FAST 等价实现；我的核心贡献是训练迁移、Qwen/action contract 适配和可审计的评估工程。</p>
 
-    <h3>5. 2-3 分钟口述稿</h3>
-    <p>OpenPiVLA 这个项目我会把它定义成 VLA 动作建模改造，而不是普通复现。我在 OpenPI 框架上接入 Qwen3-VL-2B + LoRA，把连续 action window 表示成 assistant 侧离散动作 token，并统一 DROID horizon=15/dim=72 和 MindCube VLM QA 的数据格式。这样 VLA 的核心问题从“单独训练一个连续动作头”变成“图像、语言、状态到动作 token 序列的多模态预测”。这里的难点是离散化会带来量化误差，所以必须通过动作归一化、action chunk、controller 反归一化和闭环 replanning 保持可执行性。评估上，我按公开 LIBERO 四套件口径得到 goal/object/spatial/libero_10 = 99.0%/99.5%/98.0%/93.0%，平均 97.4%，高于官方 OpenPI pi05_libero baseline 96.85%。边界是 LIBERO 是规整仿真 benchmark，不能代表真实机器人里的全部扰动和延迟，但它能说明在公开协议下这套动作表示和训练策略是有效的。</p>
-
-    <h3>6. 高频追问</h3>
-    <ol>
-      <li>为什么连续动作可以 token 化？</li>
-      <li>token 化误差怎么估计？</li>
-      <li>action horizon=15 的设计含义是什么？</li>
-      <li>action dim=72 包含什么？</li>
-      <li>VLA-only、VLM-only、co-train 的区别是什么？</li>
-      <li>为什么接 Qwen3-VL + LoRA？</li>
-      <li>和原 OpenPI action expert 有什么差异？</li>
-      <li>controller contract 是什么？</li>
-      <li>normalization 错会导致什么失败？</li>
-      <li>LIBERO 四套件分别测什么？</li>
-      <li>为什么 libero_10 更难？</li>
-      <li>超过官方 baseline 是否统计显著？</li>
-      <li>真实机器人上会遇到什么问题？</li>
-      <li>控制延迟如何影响 action chunk？</li>
-      <li>视觉扰动会影响哪个模块？</li>
-      <li>如何定位失败是 VLM 理解错还是动作执行错？</li>
-      <li>国产化迁移的技术难点在哪里？</li>
-      <li>如果继续做，最想补哪个实验？</li>
-      <li>这个项目和 WAM/UWM 有什么关系？</li>
-      <li>你个人贡献在哪里？</li>
-    </ol>
-
-    <h3>7. 补证据 Checklist</h3>
+    <h3>4. 补证据 Checklist</h3>
     <table>
       <thead><tr><th>时间</th><th>可补材料</th><th>用途</th></tr></thead>
       <tbody>
-        <tr><td>半天</td><td>画出 action token encode/decode 与 controller 执行图</td><td>回答“连续动作为什么能 token 化”</td></tr>
-        <tr><td>1 天</td><td>整理 LIBERO 四套件逐任务成功率和失败样例</td><td>解释 97.4% 的来源和边界</td></tr>
-        <tr><td>3 天</td><td>补 action horizon / replan_steps 对比实验或小样本分析</td><td>支撑 horizon 与闭环控制 trade-off</td></tr>
-        <tr><td>1 周</td><td>补视觉扰动、延迟或真实机器人小闭环验证</td><td>回应“LIBERO 不能代表真实泛化”的质疑</td></tr>
+        <tr><td>半天</td><td>画 FAST encode/DCT/IDCT/decode 与 controller 执行图</td><td>回答“连续动作为什么可以 token 化”。</td></tr>
+        <tr><td>1 天</td><td>整理 LIBERO 四套件逐任务成功率、官方 baseline 口径和失败样例</td><td>支撑 97.4% 的来源和边界。</td></tr>
+        <tr><td>3 天</td><td>补 horizon/replan_steps、normalizer、action scale 的小样本 bad case</td><td>回答“高分是模型好还是 eval 协议偶然”。</td></tr>
+        <tr><td>1 周</td><td>补真实扰动或 sim-to-real 风险分析：视觉扰动、延迟、接触、组合任务</td><td>回应“LIBERO 不能代表真实泛化”的质疑。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>5. 高频追问答复</h3>
+    <table>
+      <thead><tr><th>追问</th><th>推荐答法</th><th>防线 / 证据</th></tr></thead>
+      <tbody>
+        <tr><td>FAST 的核心思想是什么？</td><td>FAST 是 Frequency-space Action Sequence Tokenization，把连续 action window 先归一化，再用 DCT 转到频域，量化/BPE 成 token；推理时再 decode、IDCT、反归一化回连续动作。</td><td>FAST/OpenPI 不是个人原创；引用上游论文和 tokenizer。</td></tr>
+        <tr><td>连续动作 token 化为什么不是纯离散化玩具？</td><td>因为 token 表示的是一段频域动作序列，不是把每个动作维度粗暴编号。它保留了时间相关性，让 VLA 能用序列预测学习 action chunk。</td><td>承认有量化误差；靠闭环 replanning 缓解。</td></tr>
+        <tr><td>DCT/IDCT 在这里解决什么？</td><td>DCT 把时间序列压成频域系数，低频部分表达平滑动作趋势，高频表达细节；IDCT 再还原连续动作。它让动作序列更容易被压缩和 token 化。</td><td>不要说无损；截断和量化会损失细节。</td></tr>
+        <tr><td>action window 和 execution window 有什么区别？</td><td>action window 是模型一次预测的未来动作段，execution window 是控制器实际执行多少步后重新观测。前者影响规划跨度，后者影响闭环纠偏频率。</td><td>要讲 trade-off，不只背 horizon 数字。</td></tr>
+        <tr><td>horizon 太长或太短会怎样？</td><td>太短看不到跨阶段意图，太长后半段容易因新观测变化而过时。真实控制里常需要在规划长度和闭环频率之间折中。</td><td>证据可来自不同任务失败视频或配置对比。</td></tr>
+        <tr><td>normalization 为什么关键？</td><td>动作各维尺度不同，不归一化会让某些维度主导 loss；反归一化错会导致执行过冲、夹爪错误或动作幅度不足。normalizer 是训练和 eval 可比的关键 contract。</td><td>不要把 normalizer 当普通配置项。</td></tr>
+        <tr><td>controller 执行和模型输出之间怎么闭环？</td><td>模型输出 action chunk，经 decode/denorm 后交给 controller 执行一小段；环境产生新观测后再进入下一轮预测。闭环关键是重新观测和重新规划。</td><td>格式正确不等于控制正确；要看执行轨迹。</td></tr>
+        <tr><td>Qwen 接入不就是换 backbone 吗？</td><td>不只是换名。要处理视觉输入、chat template、assistant-side action 监督、LoRA target、loss mask、保存加载和 eval 输出解析，让 Qwen3-VL 能承担 VLA/VLM/co-train 三条路径。</td><td>不要声称改了原始 action expert 核心结构。</td></tr>
+        <tr><td>assistant-side action JSON/token 为什么合理？</td><td>它是 Metax 复现路线的可执行折中，使 DROID action 和 MindCube QA 能进入同一 Qwen causal LM 训练。它用于复原训练语义，不宣称完全等价于上游 action expert。</td><td>边界要清楚：工程折中，不是 SOTA 新方法。</td></tr>
+        <tr><td>三条训练路径分别是什么？</td><td>DROID VLA-only 关注动作监督，MindCube VLM-only 保留视觉语言问答能力，DROID+MindCube co-train 验证动作和 VLM 任务能否在统一 Qwen 训练口径下共存。</td><td>证据是 recipe、run contract 和训练脚本。</td></tr>
+        <tr><td>动作统一具体统一了什么？</td><td>统一输入输出 contract：动作维度、序列长度、normalizer、assistant 输出格式、loss mask 和 eval 解析方式。这样训练和 rollout 不会各用一套动作语义。</td><td>不要只说“格式统一”；要讲 contract。</td></tr>
+        <tr><td><code>224_h10_40000</code> 是什么？</td><td>它是 committed formal report 里的归档 run 标签：224 输入分辨率、horizon 10、40k checkpoint。报告汇总其四套件为 0.99/0.995/0.98/0.93、平均 97.4%，但 raw checkpoint 和 protocol tuple 待补。</td><td>不要把 run id 讲成当前 Qwen checkpoint；要解释它对应的配置语义和证据等级。</td></tr>
+        <tr><td>LIBERO 97.4% 如何解释？</td><td>这是项目报告记录的 archive-summary-only：goal/object/spatial/libero_10 为 0.99/0.995/0.98/0.93，平均 97.4%。由于 checkpoint、trial/seed、init state、episode records 未闭合，我不把它与 official OpenPI <code>pi05_libero</code> 96.85 做强比较。</td><td>这是仿真 benchmark 汇总，不等于 current formal Qwen 结果，也不等于真实机器人泛化。</td></tr>
+        <tr><td>97.4% 是当前 Qwen formal reproduction 直接训练出来的吗？</td><td>我会谨慎说：97.4% 来自归档中的 strongest LIBERO eval evidence；当前 Metax/Qwen formal reproduction 的价值是恢复历史训练语义、数据/动作契约和 checkpoint 保存路径，证明这条路线可以被可审计地重建。两者相关，但不能把 LoRA formal 训练线直接说成原 checkpoint 的完整来源。</td><td>这句是边界防线。不要为了显得“更强”而说成完整原样复刻同一 checkpoint。</td></tr>
+        <tr><td>为什么不和内部 run 比？</td><td>内部 run 不适合作为简历外部比较。面试里只和公开官方 baseline 对齐，保证口径可解释、可验证。</td><td>避免泄露或使用不可解释内部信息。</td></tr>
+        <tr><td>LIBERO 高分能证明什么，不能证明什么？</td><td>能证明在规整仿真协议下动作表示、normalizer、controller 和 rollout 评估闭环有效；不能证明真实机器人上的视觉扰动、延迟、接触和长任务组合泛化。</td><td>主动给 sim-to-real 边界。</td></tr>
+        <tr><td>如果 rollout 失败，你如何定位？</td><td>先看任务文本和图像，再看 action token 是否可解析，decode 后动作尺度和夹爪维度是否异常，再看 normalizer、controller clipping、执行频率和视频里的失败阶段。</td><td>需要 action_debug、rollout 视频和 controller 日志。</td></tr>
+        <tr><td>Metax/MACA 迁移的价值在哪里？</td><td>价值在跨算力栈复原训练和评估 contract：让 Qwen/VLA 训练、checkpoint、日志、eval 在国产 C500/MACA 上可执行、可复查、可比较。</td><td>不要说硬件带来算法提升。</td></tr>
+        <tr><td>你做的是迁移复现还是算法创新？</td><td>主责是迁移复现和训练/eval contract 重建；算法理解体现在动作表示、Qwen 接入、动作统一、normalizer/controller 对齐，而不是宣称发明 FAST 或 OpenPI。</td><td>贡献边界必须主动说清。</td></tr>
+        <tr><td>为什么要同时保留 VLM-only？</td><td>VLA 训练容易让模型过度关注动作输出，VLM-only/MindCube 路线用于保留视觉语言能力和多模态输入处理，避免训练后只会生成动作格式。</td><td>如果没有完整指标，不要声称通用能力提升。</td></tr>
+        <tr><td>真实机器人上最担心什么？</td><td>视觉扰动、相机标定、控制延迟、接触摩擦、夹爪误差和任务组合复杂度。这些都不是 LIBERO 完全覆盖的。</td><td>后续要补扰动评估或真实机器人闭环。</td></tr>
+        <tr><td>你个人贡献怎么概括？</td><td>我负责把历史 OpenPI/OpenPiVLA run 迁移到 Metax：恢复 run contract，接入 Qwen3-VL/LoRA，统一动作输出口径，搭建三条训练路径，并完成 LIBERO rollout 评估复现。</td><td>不要认领上游 NVIDIA 代码和 FAST 方法原创。</td></tr>
       </tbody>
     </table>
   </section>
@@ -236,22 +448,108 @@ execute first K actions, then re-observe and replan</code></pre>
       <thead><tr><th>问题</th><th>危险回答</th><th>可过回答</th><th>强回答</th></tr></thead>
       <tbody>
         <tr>
-          <td>“离散 token 不会损失连续控制精度吗？”</td>
-          <td class="bad">不会，模型能学会。</td>
-          <td class="ok">会有误差，但结果还不错。</td>
-          <td class="good">承认量化误差，解释 normalization、chunk decode、闭环 replanning 如何降低误差累积，并说明 benchmark 边界。</td>
+          <td>“连续 action 为什么可以 token 化？”</td>
+          <td class="bad">因为大模型可以生成任何 token。</td>
+          <td class="ok">可以先量化成离散值再生成。</td>
+          <td class="good">指出 FAST：对 action chunk 做 normalization、DCT、量化/BPE，生成 token 后再 decode/IDCT 回连续动作；承认误差，并解释闭环 replanning 如何降低累积误差。</td>
         </tr>
         <tr>
-          <td>“这是不是只是换了个 backbone？”</td>
-          <td class="bad">我接了 Qwen3-VL。</td>
-          <td class="ok">还改了动作格式。</td>
-          <td class="good">强调训练目标和 I/O contract 变化：图像/语言/状态输入统一，连续 action window 被序列化成 assistant 动作 token，支持 VLA/VLM/co-train。</td>
+          <td>“这是不是你做的模型创新？”</td>
+          <td class="bad">是，我改了整个 VLA 架构。</td>
+          <td class="ok">我主要接了 Qwen 和动作格式。</td>
+          <td class="good">清楚分边界：FAST/OpenPI 和原 NVIDIA 代码是上游/历史实现；我负责 Metax 迁移、run contract 复原、Qwen3-VL LoRA 训练路径、动作输出统一和 eval 复现。</td>
         </tr>
         <tr>
-          <td>“LIBERO 高分能说明真实吗？”</td>
-          <td class="bad">说明策略很好。</td>
-          <td class="ok">说明仿真任务效果好。</td>
-          <td class="good">LIBERO 说明公开仿真协议下可比有效；真实机器人还要补视觉扰动、延迟、控制频率、组合任务和安全验证。</td>
+          <td>“token 化会不会损失精度？”</td>
+          <td class="bad">不会，模型会学好。</td>
+          <td class="ok">会有误差，但结果还可以。</td>
+          <td class="good">解释误差来源：normalization、DCT 系数截断、量化、BPE/token decode；再讲控制层如何用 shorter execution window、re-observation、denormalization 校验和 action clipping 控制风险。</td>
+        </tr>
+        <tr>
+          <td>“为什么你把动作写成 assistant-side JSON/token？”</td>
+          <td class="bad">这样方便模型训练。</td>
+          <td class="ok">为了和 Qwen chat template 对齐。</td>
+          <td class="good">说这是 Metax 复现路径的工程折中：让 DROID action 和 MindCube QA 都进入 Qwen3-VL causal LM/LoRA 训练，先保证三条历史 recipe 可执行；不把它宣称为原 action expert 的等价复刻。</td>
+        </tr>
+        <tr>
+          <td>“97.4% 这条模型是你怎么训练出来的？”</td>
+          <td class="bad">就是我训练出来的，效果超过官方。</td>
+          <td class="ok">这是我复现整理出的一个最优 run。</td>
+          <td class="good">先讲 <code>224_h10_40000</code> 的产出逻辑：基于 OpenPI policy/eval contract，对齐 224 resolution、horizon 10、40k checkpoint、normalizer 和 controller；再说明 97.4% 是归档最强评估证据，而 Metax/Qwen formal training 是训练 contract 恢复与可审计资产，不把二者混成从零等价复刻。</td>
+        </tr>
+        <tr>
+          <td>“LIBERO 高分能说明真实机器人泛化吗？”</td>
+          <td class="bad">能，说明策略已经很好。</td>
+          <td class="ok">只能说明仿真效果好。</td>
+          <td class="good">说明 LIBERO 是公开、规整、可比的仿真协议，能验证动作表示与策略评估闭环；真实机器人还需要额外验证相机扰动、控制延迟、接触摩擦、安全边界和长任务组合。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="grill">
+    <h2>Grill Me：高压追问策略</h2>
+    <ol>
+      <li><strong>如果面试官说“你只是迁移工程，不是算法”：</strong>承认迁移是主责，但把价值落在训练语义和评估协议上：我不是只改路径，而是复原三类训练 recipe、动作表示 contract、normalizer/controller/rollout 的闭环可比性。</li>
+      <li><strong>如果面试官追问“你具体改了模型哪部分”：</strong>不要展开过深实现。答：模型侧主要是 Qwen3-VL + LoRA 接入和 assistant-side 动作监督统一；原始 action expert/FAST 不是我发明的，我重点保证这一路在 Metax 上可训练、可保存、可评估。</li>
+      <li><strong>如果面试官质疑“JSON action token 很 toy”：</strong>答：这是 formal reproduction 的可执行折中，用于把历史训练意图迁移到当前资源；真正的项目理解在于 FAST/action chunk/normalizer/controller 的语义对齐，而不是把 JSON 本身包装成 SOTA 方法。</li>
+      <li><strong>如果面试官问“为什么不用原始 NVIDIA 代码直接跑”：</strong>答：原始路径依赖私有模块、历史环境和硬件栈；我的任务是从归档证据恢复 run contract，并构造在 MACA/C500 上可执行、可审计的训练与 eval 路线。</li>
+      <li><strong>如果面试官问“97.4% 是否统计显著”：</strong>答：目前不能下这个结论。97.4% 只有 committed report 汇总，checkpoint、trial/seed、protocol 和 episodes 未闭合；即使 raw bundle 补齐，也需要逐任务多 seed / 多 checkpoint 统计和失败分布，而不是只报单点。</li>
+      <li><strong>如果面试官问“97.4% 是否就是你当前 formal 训练训出来的”：</strong>答：我会分三层说：97.4% 是 <code>224_h10_40000</code> 的最强归档 eval；当前 formal 训练是我在 Metax 上恢复 OpenPI/Qwen 训练 contract、数据/动作契约和 checkpoint 资产；我的贡献是把这条路线搭成可审计、可解释、可复查的训练和评估闭环，不冒充原 action expert 的逐位等价复刻。</li>
+      <li><strong>如果面试官问“你怎么定位失败是视觉理解错还是动作执行错”：</strong>答：分层看：输入图像/任务文本是否解析正确，action token 是否格式有效，decode 后动作尺度是否异常，normalizer 是否匹配，controller 是否 clipping，rollout 视频和 action norm/delta/jerk 是否出现突变。</li>
+    </ol>
+
+    <h3>高压追问答复卡</h3>
+    <table>
+      <thead><tr><th>高压追问</th><th>推荐口述</th><th>危险边界</th><th>需要证据</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>连续控制动作为什么可以被离散语言 token 表示？</td>
+          <td>关键不是把连续动作“翻译成文字”，而是把一段 action window 变成可由自回归模型预测的离散序列。FAST 先对连续动作做 normalization 和 DCT，把时间相关的动作压到频域系数，再量化/BPE 成 token；推理时 decode、IDCT、反归一化回连续控制量。这样 VLA 的动作建模就变成多模态序列预测问题。</td>
+          <td>不要说 token 不损失精度；量化和频域截断一定有误差。</td>
+          <td>FAST tokenizer 代码、action chunk 维度、encode/decode roundtrip 检查。</td>
+        </tr>
+        <tr>
+          <td>token 化损失精度怎么办？</td>
+          <td>误差主要来自 normalization、DCT 系数截断、量化和 decode。控制上不是一次性开环执行整段预测，而是用 action window/chunk 执行一小段后重新观测，再预测下一段。短 execution window 可以降低累积误差，但推理成本更高；长 window 更流畅，但更依赖开环预测。</td>
+          <td>不要把 LIBERO 高分当成真实机器人精度证明；它只证明规整仿真协议下有效。</td>
+          <td>horizon/replan_steps 配置、action norm 分布、rollout 视频。</td>
+        </tr>
+        <tr>
+          <td>horizon 和 action chunk 怎么影响闭环控制？</td>
+          <td>horizon 决定模型一次预测多远的未来动作，chunk/execution window 决定控制器实际执行多少步。horizon 太短，模型看不到跨阶段意图；太长，后半段容易被新观测推翻。execution window 越短，闭环纠偏越强；越长，延迟和算力压力小但失败累积更明显。</td>
+          <td>不要只背数字，要讲 trade-off 和失败模式。</td>
+          <td>LIBERO 成功/失败任务、不同 horizon 或 replan_steps 对照。</td>
+        </tr>
+        <tr>
+          <td>你到底做了模型创新，还是迁移复现？</td>
+          <td>我会清楚分边界：FAST/OpenPI 的核心方法和原 NVIDIA 侧历史实现不是我发明的。我做的是在 Metax/MACA 上把这条路线复原成可训练、可评估的 pipeline，包括 Qwen3-VL/LoRA 接入、三条训练路径搭建、动作输出口径统一、训练保存与 LIBERO eval 适配。我的算法理解体现在动作 contract、normalizer/controller 和 eval protocol 的复原，而不是冒充上游原创。</td>
+          <td>不要说“我改了整个 VLA 架构”。</td>
+          <td>recipes.py、formal_train.py、train 脚本、Metax run 报告。</td>
+        </tr>
+        <tr>
+          <td>Qwen 接入有什么技术含量？是不是换 backbone？</td>
+          <td>不是只改一个模型名。VLA 接入 Qwen 要处理 chat template、视觉输入、assistant-side action token/JSON 监督、LoRA target、loss mask、保存/加载格式，以及 eval 时如何把模型输出解析回动作。面试里我会把它讲得克制：这是为了让历史 OpenPI 训练意图迁移到当前 Qwen3-VL 和 Metax 资源上的可执行路径。</td>
+          <td>不要把 assistant-side JSON 路径说成原 FAST/action expert 的完全等价复刻。</td>
+          <td>Qwen recipe、loss mask、输出解析脚本、失败样例。</td>
+        </tr>
+        <tr>
+          <td>LIBERO 四套件 97.4% 怎么和官方 baseline 比？</td>
+          <td>当前不能直接下“高于 official”的结论。项目报告有 97.4 汇总，官方 README 有 96.85，但两侧的 checkpoint、trial/seed、init state、harness 和 raw episodes 还没有组成同一 protocol tuple；我会把 97.4 标成 archive-summary-only，等待可重算 bundle。</td>
+          <td>不要拿内部未公开 variants 当外部 baseline，也不要宣称真实泛化已解决。</td>
+          <td>官方 baseline 来源、四套件评估日志、任务级结果。</td>
+        </tr>
+        <tr>
+          <td>如果动作输出格式正确但 rollout 失败，你怎么定位？</td>
+          <td>我会按闭环分层：先看语言/视觉输入是否对应任务，再看 action token 是否可 parse；接着看 decode 后 action scale、normalizer 和夹爪维度；然后看 controller clipping、执行频率和环境 reset；最后看视频里是定位错、接触错还是长时序累积。格式正确只是第一关，不能代表控制正确。</td>
+          <td>不要把所有失败归因到 eval 环境，除非有 trace 证据。</td>
+          <td>action debug、rollout 视频、normalizer 对齐表、controller 日志。</td>
+        </tr>
+        <tr>
+          <td>国产化适配怎么讲才不像工程杂活？</td>
+          <td>我会把它放在“训练迁移与可复现实验”里讲：大 GPU 资源主要在沐曦 C500/MACA 上，因此要让 VLA/WAM/UWM 的训练、保存、eval 和数值协议在国产算力栈上成立。它的价值不是硬件名本身，而是把模型输入输出、checkpoint、normalizer 和评估协议迁移后仍保持可比。</td>
+          <td>不要单独堆硬件适配细节，也不要说国产卡本身带来算法提升。</td>
+          <td>MACA run contract、训练日志、eval 对齐报告。</td>
         </tr>
       </tbody>
     </table>
@@ -260,9 +558,13 @@ execute first K actions, then re-observe and replan</code></pre>
   <section id="references">
     <h2>参考与证据</h2>
     <ol>
-      <li>本地证据：<a href="../output/mousongzhe_resume_optimized.html">optimized 简历</a> 与 <a href="../output/resume_restructure_plan.md">resume_restructure_plan.md</a> 中 OpenPiVLA 指标和设计边界。</li>
-      <li>OpenPI 官方仓库与 LIBERO 示例文档：用于官方 baseline 和 VLA 训练背景。<a href="https://github.com/Physical-Intelligence/openpi">https://github.com/Physical-Intelligence/openpi</a></li>
-      <li>LIBERO benchmark：用于理解 goal/object/spatial/libero_10 的公开评估背景。<a href="https://libero-project.github.io/main.html">https://libero-project.github.io/main.html</a></li>
+      <li>FAST 论文：Pertsch et al., “FAST: Efficient Action Tokenization for Vision-Language-Action Models”, 2025. <a href="https://arxiv.org/abs/2501.09747">https://arxiv.org/abs/2501.09747</a></li>
+      <li>FAST 官方 tokenizer：<code>physical-intelligence/fast</code> 的 <code>processing_action_tokenizer.py</code>. <a href="https://huggingface.co/physical-intelligence/fast/blob/main/processing_action_tokenizer.py">https://huggingface.co/physical-intelligence/fast/blob/main/processing_action_tokenizer.py</a></li>
+      <li>OpenPI 官方仓库：用于 OpenPI policy server、LIBERO/ALOHA 示例和上游实现背景。<a href="https://github.com/Physical-Intelligence/openpi">https://github.com/Physical-Intelligence/openpi</a></li>
+      <li>本地训练证据：<code>C:\Users\mousongzhe\Project\openpivla_deployment\repro_train\README.md</code>、<code>C:\Users\mousongzhe\Project\openpivla_deployment\repro_train\openpi_src\src\openpi\training\vla_qwen3_repro\recipes.py</code>、<code>formal_train.py</code>、<code>data.py</code>、<code>scripts\train_vla_qwen3_formal.py</code>。</li>
+      <li>本地评估与部署证据：<code>C:\Users\mousongzhe\Project\openpivla_deployment\DEPLOYMENT.md</code>、<code>C:\Users\mousongzhe\Project\openpivla_run_libero_official_eval.sh</code>。</li>
+      <li>本地结果归档：<code>C:\Users\mousongzhe\Project\openpivla_deployment\artifacts\vla_formal_reproduction_report_20260617.html</code> 记录 <code>224_h10_40000</code> 的 LIBERO 四套件结果；<code>C:\Users\mousongzhe\cv\output\resume_restructure_plan.md</code> 记录简历重构口径。</li>
+      <li>本地 Batch 2 证据冻结：<a href="vla/sources/openpivla_batch2_evidence_freeze.html">eager/MACA、smoke/formal/raw log、checkpoint lineage 与 H=15/D=72 representation conflict</a>。</li>
     </ol>
   </section>
 </article>

@@ -38,16 +38,21 @@
 <body>
 <article>
   <h1>Cosmos / WAM：action、world、value 三目标为什么能互相帮助</h1>
-  <p class="meta">材料类型：项目面试页 | 证据截止：2026-07-07 | 对应简历：Cosmos Policy / WAM 多目标后训练与 RoboCasa 策略诊断</p>
+  <p class="meta">材料类型：项目面试页 | 证据截止：2026-07-17 | 对应简历：Cosmos Policy / WAM 多目标后训练与 RoboCasa 策略诊断</p>
+  <div class="warning">
+    <p><strong>Evidence Gate（2026-07-17）：</strong>当前工作区未找到 WAM local code/config/checkpoint/log/metric/episode raw bundle。页面中的 MSE、official-HF 24×5、local 0-success、full10k 与历史 task-success 数字均只作为待核 claim queue，不是已验证个人结果；optimized resume 已降级为无数字的 reproduction + failure-diagnosis 口径。完整矩阵见 <a href="vla/evidence/projects/wam_claim_evidence_inventory.html">WAM Claim–Evidence Inventory</a>。</p>
+  </div>
 
   <nav class="toc" aria-label="目录">
     <ol>
       <li><a href="#question">核心问题</a></li>
       <li><a href="#answer">短答案</a></li>
+      <li><a href="#research-framing">Research Framing</a></li>
       <li><a href="#mechanism">辅助目标机制</a></li>
       <li><a href="#mask-routing">Mask / Routing</a></li>
       <li><a href="#pack">项目面试 8 件套</a></li>
       <li><a href="#questions">追问树</a></li>
+      <li><a href="#grill">高压追问答复</a></li>
       <li><a href="#references">参考与证据</a></li>
     </ol>
   </nav>
@@ -61,6 +66,43 @@
     <h2>短答案</h2>
     <div class="note">
       <p><strong>可直接口述：</strong>action imitation 只告诉模型“专家此刻做了什么”，world prediction 迫使视觉表征保留动作后果和环境动态，value estimation 让表征关注哪些状态更接近成功。因此三者共享视觉 encoder 时，world/value 可以给 action head 提供更有规划含义的表示。但它们也可能干扰 policy：如果 world loss 权重过大，表征会偏向像素/未来预测而不是可控动作；如果 value label 噪声大，可能把错误成功先验传给 policy；如果 routing 错，把 world/value 样本也拿去算 action loss，就会污染动作监督。所以项目关键是通过 world/value mask 互斥和 demo/world/value slot routing 控制每类样本只更新对应目标，同时共享底层视觉表示。</p>
+    </div>
+  </section>
+
+  <section id="research-framing">
+    <h2>Research Framing：多目标 WAM 后训练的研究问题</h2>
+    <p>这个项目不要讲成“跑了 Cosmos Policy 但本地 0 success”。更强的研究叙事是：围绕 action imitation、world prediction、value estimation 三目标是否互补，以及何时互相干扰，做复现、指标验证和失败定位。</p>
+    <table>
+      <thead><tr><th>阶段</th><th>Motivation 动机</th><th>Hypothesis 假设</th><th>Method 方法</th><th>Experiment 实验</th><th>Failure Analysis 失败分析</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1. action / world / value 多目标机制</td>
+          <td>开放问题是：只做 behavior cloning / action imitation 是否足以学习机器人策略？对应论文背景是 world-action model、video/world prediction 辅助策略学习、value-conditioned representation；本项目直接相关的是 Cosmos Policy / Predict2 RoboCasa 路线。</td>
+          <td>action imitation 学“专家此刻做什么”，world prediction 学“动作会造成什么后果”，value estimation 学“状态离成功有多近”。三者共享视觉表示时可能互补，但错误权重或噪声 label 会污染 policy。</td>
+          <td>复现 action/world/value 三目标训练 contract，梳理 world/value mask 互斥、demo/world/value slot routing 和 loss weighting；将机制解释落到样本 routing 和 slot mask，而不是泛泛说多任务。</td>
+          <td>项目材料曾记录 held-out policy MSE 相对 repeat baseline 下降，但当前缺 split、metric script、prediction/label 与 checkpoint，暂不能把数字写成已验证收益；official-HF eval 也需 raw episode bundle 才能证明本地复现。</td>
+          <td>MSE 是离线 proxy，不等于 closed-loop success；world/value 是否真正提升在线策略还缺 action-only / action+world / action+value / all 的严格消融。</td>
+        </tr>
+        <tr>
+          <td>2. 官方 RoboCasa eval 复现</td>
+          <td>动机是先验证环境和 eval harness 能跑出可信结果，否则本地训练 0 success 无法归因。对应开放问题是：失败来自模型，还是来自 eval wrapper、stats、action contract、T5/proprio/vision 输入错配？</td>
+          <td>如果官方 HF baseline 在同环境成功，而本地 checkpoint 失败，那么问题更可能在本地训练或采样路径，而不是 benchmark 或 wrapper 完全不可用。</td>
+          <td>部署 <code>nvidia/Cosmos-Policy-RoboCasa-Predict2-2B</code>，对齐 Predict2 + T5 + RoboCasa config / stats / action contract，记录 action_debug、selected rollout 和 trusted success。</td>
+          <td>项目材料曾记录 official HF checkpoint 的 24 tasks × 5 episodes 结果；当前工作区没有 model revision、raw/trusted summary、episode records 或 videos，因此只能作为待核 provenance 线索。</td>
+          <td>即使补齐 artifacts，这也只能证明 official checkpoint 的本地 harness reproduction，不是 local WAM 训练结果；在证据补齐前，不口述具体分数。</td>
+        </tr>
+        <tr>
+          <td>3. 本地训练失败诊断</td>
+          <td>研究动机是把 0 success 拆成可验证假设，而不是停在“没跑出来”。开放问题包括 gripper 负向稀疏、high-sigma sampler denoise、conditioning frame 数、checkpoint 保存与国产算力训练稳定性。</td>
+          <td>0 success 不一定来自数据源错误或 action slot 解码错误；可能是负向 gripper 条件映射在 full training / official sampler distribution 下没有学到，或 checkpoint/DeepSpeed contract 中断训练。</td>
+          <td>做 gripper bias audit、offline teacher-forced、query probe、eval-state mining、negative-only/sigma aux gate、DeepSpeed no-cycle 修复和 checkpoint 保存诊断。</td>
+          <td>项目材料描述了 official-baseline、stats/slot roundtrip、fixed-batch、eval-query、gripper、OOM 与 state_dict 的排查链；当前没有对应日志、diff、checkpoint 或 paired rerun，故只能列为候选原因与待取证步骤。</td>
+          <td>本地训练线不能写成成功率提升，也不能说 root cause 已确认；后续要补可加载 checkpoint、修复前后对照、action-only vs multi-objective 消融和正式 closed-loop eval。</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="warning">
+      <p><strong>Grill Me 预留问题：</strong>如果被问“失败项目为什么值得讲”，回答应落在“我把项目材料中的异常拆成可验证假设与证据清单”；没有 raw rerun 前，不把 0-success 或根因说成已核验事实。</p>
     </div>
   </section>
 
@@ -133,8 +175,8 @@
       <thead><tr><th>能力</th><th>证据</th><th>讲法</th></tr></thead>
       <tbody>
         <tr><td>多目标训练理解</td><td>action/world/value 三目标复现和样本路由分析</td><td>重点讲梯度共享与隔离。</td></tr>
-        <tr><td>指标解释</td><td>policy MSE 0.09718 → 0.05349，降低约 45%</td><td>离线代理指标说明动作分布不再依赖 repeat baseline。</td></tr>
-        <tr><td>失败归因</td><td>RoboCasa kitchen24，开关门 0.90-0.95，抓取/放置代表任务 0.75</td><td>定位长 horizon 和迁移任务的训练分布缺口。</td></tr>
+        <tr><td>指标解释</td><td>能解释 MSE、repeat baseline、closed-loop success 的证据层级</td><td>当前不报具体数字；先补 split、metric script 与 prediction/label artifacts。</td></tr>
+        <tr><td>复现与诊断</td><td>official-checkpoint harness 与 local-checkpoint diagnosis 的 protocol 分层</td><td>把 gripper、sampler、conditioning、checkpoint 作为待验证假设，不说已确认根因。</td></tr>
       </tbody>
     </table>
 
@@ -142,9 +184,9 @@
     <table>
       <thead><tr><th>Claim</th><th>可说程度</th><th>防线</th></tr></thead>
       <tbody>
-        <tr><td>多目标后训练降低离线 policy MSE</td><td>可说</td><td>这是 held-out proxy，不等价于在线成功率提升。</td></tr>
+        <tr><td>多目标后训练降低离线 policy MSE</td><td>待核，不报数</td><td>当前缺 split、metric script、prediction/label 与 checkpoint；即使核实也只是 offline proxy。</td></tr>
         <tr><td>world/value 一定帮助 policy</td><td>不能这么说</td><td>要说“在权重、mask、label 质量合适时帮助”。</td></tr>
-        <tr><td>RoboCasa 策略性能提升</td><td>谨慎</td><td>正文定位为复现、诊断和失败分析。</td></tr>
+        <tr><td>RoboCasa 策略性能提升</td><td>不能写</td><td>optimized resume 已降级；raw episodes 与同协议 local checkpoint 结果到位前不恢复。</td></tr>
       </tbody>
     </table>
 
@@ -152,9 +194,9 @@
     <table>
       <thead><tr><th>版本</th><th>表达</th></tr></thead>
       <tbody>
-        <tr><td>保守版</td><td>复现 Cosmos Policy / WAM RoboCasa 后训练流程，整理 action/world/value 三目标和失败类型。</td></tr>
-        <tr><td>标准版</td><td>分析 action imitation、world prediction、value estimation 三目标的样本路由与损失权重，以 held-out policy MSE 验证动作分布改善。</td></tr>
-        <tr><td>偏强版</td><td>通过 world/value mask 互斥和 demo/world/value slot routing 隔离多目标梯度，使 held-out policy MSE 较 first-action-repeat baseline 降低约 45%。</td></tr>
+        <tr><td>当前保守版</td><td>基于 Cosmos Policy / RoboCasa 公开 recipe 开展 WAM 后训练复现，梳理 action/future/value latent slot、condition/loss mask、normalization 与 eval contract；成果定位为 reproduction + failure diagnosis。</td></tr>
+        <tr><td>补 P0 artifacts 后</td><td>在 run/checkpoint/config/metric/episode/ownership bundle 完整后，才描述具体本地模块、复现结果和已排除的失败原因。</td></tr>
+        <tr><td>完成 paired ablation 后</td><td>只有 action-only/+world/+value/all 与同协议 closed-loop 对照完成后，才讨论 auxiliary objective 的增益与代价。</td></tr>
       </tbody>
     </table>
 
@@ -170,31 +212,34 @@
     </table>
 
     <h3>5. 2-3 分钟口述稿</h3>
-    <p>Cosmos/WAM 这个项目我主要关注多目标后训练为什么能改善机器人 policy 表征。action imitation 直接学专家动作，但容易依赖短视 repeat 先验；world prediction 让视觉表征理解动作后果，value estimation 让表征关注任务是否接近成功。因此三者共享视觉 encoder 有潜在互补性。但辅助目标也可能污染 policy，比如 world loss 过大导致表征偏向预测视觉细节，value label 噪声会误导动作。我的工作是复现 RoboCasa recipe，并重点梳理 world/value mask 互斥、demo/world/value slot routing 和损失权重，使三类样本共享底层表示但只更新对应 head。结果上，held-out policy MSE 从 first-action-repeat baseline 的 0.09718 降到 0.05349，降低约 45%。同时我按官方 RoboCasa eval 复现 kitchen24，短时序开关门任务 0.90-0.95，抓取/放置代表任务 0.75；对低成功任务的分析指向长 horizon pick-and-place、world sample mask 和 value head 的后续改造。</p>
+    <p>Cosmos/WAM 这个项目我当前按“上游机制对齐 + 本地复现诊断”来讲。Cosmos Policy 不是简单拼三个独立 head，而是在统一 latent sequence 中放入 action、future/world 与 value slots，再用 condition/loss mask 和 sample routing 切换训练角色。我围绕这套 contract 梳理了 checkpoint、config、dataset stats、normalization、sampler、controller 和 RoboCasa protocol 应如何闭合，并把项目材料里出现的 gripper、high-sigma denoising、conditioning frame 与 checkpoint 保存问题拆成最小验证矩阵。当前工作区没有对应 raw run bundle，所以我不会报 MSE、成功率或声称根因已确认；这个项目目前证明的是我能解释并审计 WAM 训练评估链路，后续要用可加载 checkpoint、metric bundle 和 paired rerun 把诊断闭环。</p>
 
     <h3>6. 高频追问</h3>
-    <ol>
-      <li>world prediction 学到的是什么？</li>
-      <li>value estimation 和 reward model 有什么区别？</li>
-      <li>为什么 action imitation 会学 repeat baseline？</li>
-      <li>policy MSE 为什么是合理 proxy？</li>
-      <li>MSE 降低为什么不等于成功率提升？</li>
-      <li>三目标共享哪些参数？</li>
-      <li>哪些 head 是分开的？</li>
-      <li>mask 互斥具体防什么？</li>
-      <li>routing 错了会怎样？</li>
-      <li>world loss 权重大会怎样？</li>
-      <li>value label 噪声会怎样？</li>
-      <li>为什么短时序任务更好？</li>
-      <li>pick-and-place 为什么更难？</li>
-      <li>RoboCasa 和 LIBERO 有什么差别？</li>
-      <li>如何从失败视频判断问题来源？</li>
-      <li>是否做过在线 rollout？</li>
-      <li>下一步会先调 action loss 还是 world/value？</li>
-      <li>这和 UWM 有什么关系？</li>
-      <li>这个项目最大的限制是什么？</li>
-      <li>你个人贡献在哪里？</li>
-    </ol>
+    <table>
+      <thead><tr><th>追问</th><th>推荐答法</th><th>防线 / 证据</th></tr></thead>
+      <tbody>
+        <tr><td>world prediction 学到的是什么？</td><td>它学习动作之后环境状态如何变化，包括物体位置、接触状态和任务进展。对 action imitation 来说，它让共享视觉表征更关注“动作会造成什么后果”。</td><td>不要说它一定提升 policy；要看权重、数据和 mask。</td></tr>
+        <tr><td>value estimation 和 reward model 有什么区别？</td><td>value estimation 预测当前状态到成功的可达性或回报，作为辅助表示学习目标；reward model 通常用于给动作或回答打分。这里 value 不是替代 action head，而是帮助表征理解任务进展。</td><td>不要说 value head 直接控制机器人动作。</td></tr>
+        <tr><td>为什么 action imitation 会学 repeat baseline？</td><td>如果数据里相邻动作平滑且任务短，模型可能只学到“重复前一动作”或局部均值，离线 MSE 看起来不差，但遇到接触、转折或恢复状态时会失败。</td><td>用 first-action-repeat baseline 解释 proxy，不要泛泛说 imitation 有偏差。</td></tr>
+        <tr><td>policy MSE 为什么是合理 proxy？</td><td>它可衡量 held-out 动作是否比 repeat baseline 更接近专家，但必须先冻结 split、horizon/dim reduction、metric code 和 checkpoint。当前具体数字缺 raw bundle，不作为已验证结果。</td><td>proxy 不是在线成功率；无 artifacts 时连 proxy 数字也不报。</td></tr>
+        <tr><td>MSE 降低为什么不等于成功率提升？</td><td>闭环成功还取决于误差累积、接触动力学、视觉分布偏移、采样路径和成功判定。离线一帧动作接近专家，不代表 rollout 中每一步都能回到专家状态分布。</td><td>当前历史 MSE claim 本身也缺 artifacts；先核验 proxy，再讨论 online gap。</td></tr>
+        <tr><td>三目标共享哪些参数？</td><td>共享底层视觉/时序表示，让 action、world、value 都能影响对环境和任务进展的编码。</td><td>Cosmos 更像 slot/mask contract；不要硬说三个独立 head 简单拼接。</td></tr>
+        <tr><td>哪些 head 是分开的？</td><td>面试里可以简化说目标输出和 loss route 是分开的：action 更新动作目标，world 更新 future/world 目标，value 更新价值目标。重点是 loss mask 决定梯度去向。</td><td>若被追实现细节，用本地报告里的 slot/mask 口径防守。</td></tr>
+        <tr><td>mask 互斥具体防什么？</td><td>防止同一个 slot 或样本同时承载 world/value/action 冲突语义，避免非动作样本污染 action loss，也避免 value 噪声直接压过动作监督。</td><td>证据是 loss_mask_smoke 和 routing 检查。</td></tr>
+        <tr><td>routing 错了会怎样？</td><td>routing 错会让样本更新错误目标，比如 world 样本被当 action 学，或者 value label 污染动作表征，表现为离线 loss 看似下降但 rollout 行为异常。</td><td>可举 gripper/slot 诊断作为类比。</td></tr>
+        <tr><td>world loss 权重大会怎样？</td><td>模型可能更擅长预测未来视觉或像素细节，但 action 判别性下降。机器人策略不需要完美视频预测，而需要对可控状态和动作后果敏感。</td><td>不要把 world loss 越大越好。</td></tr>
+        <tr><td>value label 噪声会怎样？</td><td>如果 value label 把失败状态误标成接近成功，policy 表征会学到错误任务进展，进而影响动作选择和恢复判断。</td><td>需要 label 来源和噪声分析，不要默认 value 可靠。</td></tr>
+        <tr><td>为什么短时序任务更好？</td><td>短时序任务误差累积少、接触阶段少，world/value 辅助也更容易覆盖完整任务进展。长任务则更容易在早期小偏差后进入 OOD 状态。</td><td>不要把短任务成功泛化到长 horizon。</td></tr>
+        <tr><td>pick-and-place 为什么更难？</td><td>它涉及视觉定位、接触、抓取姿态、夹爪控制和放置位置，任一环节小误差都会累积。相比按钮/开关类任务，对动作精度和恢复能力要求更高。</td><td>可结合 RoboCasa 失败视频分类。</td></tr>
+        <tr><td>RoboCasa 和 LIBERO 有什么差别？</td><td>RoboCasa 偏厨房 manipulation，包含更多接触和场景变化；LIBERO 更规整、便于策略评估对比。两者都可用于机器人策略，但难点分布不同。</td><td>不要拿一个 benchmark 的结论直接证明另一个。</td></tr>
+        <tr><td>如何从失败视频判断问题来源？</td><td>先看视觉目标是否识别错，再看动作方向和幅度，再看夹爪开合和接触点，最后看是否进入无法恢复状态。结合 action debug 能区分视觉、动作尺度和控制执行问题。</td><td>视频判断要配 action/debug 日志，不能只主观描述。</td></tr>
+        <tr><td>是否做过在线 rollout？</td><td>项目材料记录过 official-checkpoint 与 local-checkpoint rollout 线索，但当前工作区没有 model revision、episode summary、视频和 checkpoint load log；面试中应如实说“待取证”，不报具体分数。</td><td>official checkpoint 不是自己训练模型；项目页自述也不是 raw evidence。</td></tr>
+        <tr><td>下一步会先调 action loss 还是 world/value？</td><td>先保证 action contract 和 gripper/action 分布能闭环有效，再逐步加 world/value。原因是 action 主任务不过关时，辅助目标再复杂也可能只是掩盖问题。</td><td>先主任务，再辅助目标；符合诊断顺序。</td></tr>
+        <tr><td>这和 UWM 有什么关系？</td><td>WAM 关注 action/world/value 多目标训练机制，UWM 更关注世界模型策略在 LIBERO 上的 strict eval protocol。两者都涉及世界/动作建模，但一个偏训练目标，一个偏评估协议。</td><td>不要混用 WAM 的失败诊断去支撑 UWM 指标。</td></tr>
+        <tr><td>这个项目最大的限制是什么？</td><td>当前工作区没有 local raw run bundle，因此 official-checkpoint reproduction、local 0-success、MSE proxy 与诊断因果都还不能作为已核验结果。现阶段价值在机制对齐、证据合同和最小诊断设计。</td><td>主动承认限制，避免被问穿。</td></tr>
+        <tr><td>你个人贡献在哪里？</td><td>当前可保守说我围绕公开 recipe 梳理训练评估 contract，并把项目材料中的异常拆成可验证假设；哪些代码亲手改、哪些由上游/工具/协作者完成，仍需用 local diff 与 ownership ledger 逐项确认。</td><td>不要说“我设计了上游 routing”或“我提升了 RoboCasa 策略成功率”。</td></tr>
+      </tbody>
+    </table>
 
     <h3>7. 补证据 Checklist</h3>
     <table>
@@ -235,10 +280,69 @@
     </table>
   </section>
 
+  <section id="grill">
+    <h2>Grill Me：高压追问答复卡</h2>
+    <table>
+      <thead><tr><th>高压追问</th><th>推荐口述</th><th>危险边界</th><th>需要证据</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>world prediction 为什么会帮助 action imitation？</td>
+          <td>action imitation 只监督“当前专家做什么”，world prediction 额外要求模型理解动作之后环境会怎么变化。对于机器人任务，这能让共享视觉表征保留可控物体、接触状态和任务进展，而不是只拟合局部动作均值。它帮助 action 的前提是 world 目标和动作相关，而不是只学像素细节。</td>
+          <td>不要说 world prediction 一定提升 policy；它可能把表征带偏。</td>
+          <td>action/world/value loss mask、policy MSE、失败视频或 future prediction 样例。</td>
+        </tr>
+        <tr>
+          <td>value estimation 为什么会帮助？它和 reward model 有什么不同？</td>
+          <td>value estimation 给的是状态到成功的可达性或任务进展信号，帮助表征关注哪些视觉状态更接近成功。它不是泛泛的 reward model，也不是替代 action loss；更像一个辅助目标，让共享表示对“当前状态是否值得继续执行”敏感。</td>
+          <td>不要说 value head 直接决定机器人动作；policy 输出仍由 action 目标约束。</td>
+          <td>value target 构造、mask 路由、value label 噪声分析。</td>
+        </tr>
+        <tr>
+          <td>什么时候 world/value 会反而干扰 policy？</td>
+          <td>三类情况最危险：world loss 权重过大，模型偏向预测视觉细节而不是可控动作；value label 噪声大，错误成功先验污染表征；routing 或 mask 错，把 world/value 样本也拿去算 action loss，导致动作监督被非动作样本污染。</td>
+          <td>不要把多任务训练讲成无条件正收益。</td>
+          <td>loss 权重、mask smoke、slot routing 检查。</td>
+        </tr>
+        <tr>
+          <td>多目标梯度如何共享视觉表征，又如何避免互相污染？</td>
+          <td>共享的是底层视觉/时序表示，隔离的是目标 slot、loss mask 和 route。demo/action 样本主要更新 action 目标，world 样本更新 future/world 目标，value 样本更新 value 目标；world/value mask 互斥，避免同一 slot 同时承载冲突语义。面试里我会说：共享 encoder 是为了迁移语义，mask/routing 是为了控制梯度边界。</td>
+          <td>不要说它们是三个完全独立的 head 后简单相加；Cosmos Policy 更接近 slot/mask contract。</td>
+          <td>loss_mask_smoke、sample_dict 字段、训练配置。</td>
+        </tr>
+        <tr>
+          <td>历史材料里的 MSE 降低为什么不能直接写策略成功率提升？</td>
+          <td>第一层问题是当前没有 split、metric code、prediction/label 与 checkpoint，连 proxy 数字都尚未核验；即使补齐，MSE 也只说明 held-out 动作拟合，闭环还受误差累积、接触、状态分布、采样和 success predicate 影响。</td>
+          <td>不要把 proxy 指标当在线成功率。</td>
+          <td>held-out 划分、first-action-repeat baseline、online eval 结果。</td>
+        </tr>
+        <tr>
+          <td>官方 RoboCasa eval 复现有什么价值？</td>
+          <td>逻辑价值是先用 official checkpoint 证明 harness，再诊断 local checkpoint；但当前工作区没有这次 24×5 reproduction 的 raw summary、episodes 或 model revision，所以我只解释验证设计，不把项目页记录的具体分数当已核实结果。</td>
+          <td>不要报未取证的历史分数；即使核实，official checkpoint 也不是自己训练模型。</td>
+          <td>eval_summary_officialhf_baseline.json、selected rollout、action_debug。</td>
+        </tr>
+        <tr>
+          <td>本地训练 0 success 怎么讲，才不像失败项目？</td>
+          <td>我会把它讲成 evidence-gated reproduction 与 failure diagnosis：先把项目材料中的 gripper、normalizer/slot roundtrip、fixed-batch、5-frame conditioning、eval query 和 high-sigma sampler 拆成假设，再为每项规定日志、unit test 与 paired rerun。当前没有 raw bundle，因此不说哪些已排除或已确认。</td>
+          <td>不要把待核的 0-success 叙事藏掉，也不要把它或其原因包装成已验证性能结论。</td>
+          <td>gripper diagnostics、query probe、eval-state mining、negative-only aux gate。</td>
+        </tr>
+        <tr>
+          <td>沐曦 8 卡 1 epoch 主线为什么值得讲？</td>
+          <td>项目材料描述了 MACA/C500 上的 dataloader cycle、CPU memory cgroup OOM、DeepSpeed checkpoint 与 state_dict 断点；在日志、diff、rerun 和可加载 checkpoint 到位前，我只能把它们列为待确认的迁移问题，不能说已经修复并闭环。</td>
+          <td>不要说完成了 1 epoch final checkpoint；当前没有可加载 final checkpoint。</td>
+          <td>run_contract、OOM 日志、no-cycle 修复、save1500 失败日志。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
   <section id="references">
     <h2>参考与证据</h2>
     <ol>
-      <li>本地证据：<a href="../output/mousongzhe_resume_optimized.html">optimized 简历</a> 与 <a href="../output/resume_restructure_plan.md">resume_restructure_plan.md</a> 中 WAM 指标和边界。</li>
+      <li>本地材料：<a href="../output/mousongzhe_resume_optimized.html">optimized 简历</a> 与 <a href="../output/resume_restructure_plan.md">resume_restructure_plan.md</a>；这些是叙事来源，不替代 raw evidence。</li>
+      <li>项目证据门：<a href="vla/evidence/projects/wam_claim_evidence_inventory.html">WAM Claim–Evidence Inventory</a>，记录 claim 分级、冲突、artifact manifest 与安全口径。</li>
+      <li>冻结上游审计：<a href="vla/sources/vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos Policy / WAM claim-to-code audit</a>，用于 public upstream mechanism，不证明个人结果。</li>
       <li>RoboCasa benchmark：用于理解 kitchen manipulation 任务背景。<a href="https://robocasa.ai/">https://robocasa.ai/</a></li>
       <li>NVIDIA Cosmos / Cosmos Policy 公开材料：用于方法背景。<a href="https://github.com/NVIDIA/Cosmos">https://github.com/NVIDIA/Cosmos</a></li>
     </ol>

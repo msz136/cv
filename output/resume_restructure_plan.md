@@ -76,34 +76,36 @@
 
 可以写：
 
-- 官方 OpenPI 上改造 Qwen3-VL-2B + LoRA 训练复现。
-- 连续 action window 到 assistant 侧离散动作 token 的动作表示设计。
-- `RunRecipe`、DROID/MindCube iterable dataset、`Qwen3VLCollator`、统一 trainer/checkpoint。
+- 在 OpenPI/OpenPiVLA 工程上实现 Qwen3-VL + PEFT LoRA formal trainer。
+- 将 DROID action window 序列化为 assistant-side JSON，以 Qwen causal LM CE 与 MindCube QA 共用训练入口；明确这条 local route 不等价于上游 FAST DCT/BPE。
+- 落地 `RunRecipe`、DROID/MindCube iterable dataset、`Qwen3VLCollator`、统一 trainer/checkpoint 保存与 smoke/report 记录。
 - 三类训练策略：VLA-only、VLM-only、co-train。
-- LIBERO 四套件结果：goal/object/spatial/libero_10 = 0.99/0.995/0.98/0.93，四套件平均 97.4%，高于官方 OpenPI `pi05_libero` 96.85%。
-- 在沐曦 C500/MACA 环境迁移三条 100k-step formal runs，并保留官方 policy server 与 task-native rollout 评估证据。
+- 在沐曦 C500/MACA 环境搭建并迁移三类 formal training path，处理 eager attention、数据流、checkpoint 保存和 policy-serving / rollout diagnostics。
+- 项目报告保留 `224_h10_40000` 的 97.4% 归档汇总作为待核证据，不把它写成 current Qwen checkpoint 结果，也不与 official `pi05_libero` 96.85 做强比较。
 
 谨慎边界：
 
-- 不声称等价复刻原全参 Pi0/Qwen-VL action expert。
+- 不声称等价复刻原全参 Pi0/Qwen-VL action expert，也不把 JSON/causal-CE 写成 FAST DCT/BPE 的实现。
 - 不把内部 run 名或内部消融指标写入正式简历；分辨率、horizon、pretrain 的影响只作为面试分析思路。
-- ALOHA 与单任务 LIBERO 小样本只作为评估协议与动作诊断证据，不当作核心 benchmark。
-- 标题避免把项目降格为“训练复现”，正文以动作表示改造、多模态协同训练和公开指标为主线。
+- ALOHA 与单任务 LIBERO 小样本只作为评估协议与动作诊断证据，不当作核心 benchmark；official baseline rollout 与 formal Qwen rollout 分开讲。
+- `224_h10_40000` 的 checkpoint、trial/seed、raw eval summary、episodes 和 archive→formal lineage 未闭合前，不在投递稿中写 97.4%、96.85 对比或三条 100k 无条件完成态。
+- 标题避免把项目降格为“训练复现”，正文以 Qwen/action contract、跨算力迁移、可审计训练资产和评估边界为主线。
 
 ### Cosmos Policy / WAM
 
 可以写：
 
-- RoboCasa WAM 1-epoch 后训练目标复现。
-- action/world/value 三类监督信号、world/value mask、demo/world/value slot routing。
-- action/world/value 三类监督信号、world/value mask、demo/world/value slot routing，用于隔离动作学习与世界/价值预测信号。
-- held-out proxy 上 policy MSE 0.05349，较 first-action-repeat baseline 0.09718 降低约 45%，这是正文主要指标。
-- RoboCasa kitchen24：短时序开关门任务成功率 0.90-0.95，抓取/放置代表任务 0.75，用于失败类型分析。
+- 基于 Cosmos Policy / Predict2.5 RoboCasa 公开 recipe 开展 WAM 后训练复现。
+- 按上游实现口径解释 action、future/world、value latent slot、condition/loss mask 与 sample routing，不写成个人原创的“三个 head”。
+- 整理 checkpoint/config/stats、action normalization、sampler、controller 与 task/init/success predicate 的训练评估证据合同。
+- 对 gripper 分布、high-sigma denoising、conditioning frame 与 checkpoint 保存问题建立诊断假设和最小测试矩阵。
 
 谨慎边界：
 
-- 不把低样本或非严格评估写成策略性能提升。
-- 正文定位为 WAM 训练目标复现、动作头诊断和失败类型分析。
+- 当前工作区没有 WAM local code/config/checkpoint/log/metric/episode raw bundle；正文定位为 upstream-aligned reproduction 与 failure diagnosis。
+- `0.09718→0.05349`、`0.90-0.95 / 0.75`、official-HF `84/118` 与 local 0-success 全部留在 evidence queue，不能进入可投递 bullet 或强回答。
+- full10k 与 MACA/C500 final-checkpoint 叙述在 run ledger 拆清前不能合并。
+- 不把诊断假设写成已确认 root cause，不把低样本或非严格评估写成策略性能提升。
 - loss 绝对值、样本计数和超参数罗列留在面试材料，不进入一页简历正文。
 
 ### UWM / LIBERO
@@ -133,6 +135,6 @@
 
 - 商汤实习：从“机器人平台需要怎样表示和约束可执行任务”切入，再讲 harness 如何把平台控制约束转成 schema-aware 数据与 reward。
 - OPD：先讲数据分布设计，再讲多教师在线融合，最后用 raw-holdout 指标解释综合能力。
-- OpenPiVLA：先抛 LIBERO 0.99/0.995/0.98/0.93 与官方 OpenPI 结果对比，再展开 assistant 侧动作 token 与训练目标改造。
-- WAM：讲清 action/world/value 三目标、离线 MSE 正向对比与失败类型分析，不把项目包装成策略成功率提升。
+- OpenPiVLA：先讲 Qwen3-VL + PEFT LoRA、assistant-side JSON/causal-CE 与三类 recipe，再说明 `224_h10_40000` 只是 committed report 的 archive-summary-only；不抛“高于 official”的比较。
+- WAM：讲清上游 action/future/value slot、mask/routing 与本地复现/诊断边界；raw artifacts 到位前不报 MSE、成功率或已确认 root cause。
 - UWM：突出严格 fixed-init 协议和与官方 Table II 的可比性，主动解释 soup_cheese 夹取精度与长时序恢复是主要差距。

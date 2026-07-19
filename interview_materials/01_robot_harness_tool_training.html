@@ -40,16 +40,19 @@
 <body>
 <article>
   <h1>Robot Harness 与工具调用训练：从工程约束到可学习监督</h1>
-  <p class="meta">材料类型：项目面试页 | 证据截止：2026-07-07 | 对应简历：商汤科技具身算法实习第一、二条</p>
+  <p class="meta">材料类型：项目面试页 | 证据截止：2026-07-10 | 对应简历：商汤科技具身算法实习第一、二条</p>
 
   <nav class="toc" aria-label="目录">
     <ol>
       <li><a href="#question">核心问题</a></li>
       <li><a href="#answer">短答案</a></li>
+      <li><a href="#research-framing">Research Framing</a></li>
       <li><a href="#mechanism">因果机制</a></li>
+      <li><a href="#data-routing">样本分流证据</a></li>
       <li><a href="#schema-reward-eval">Schema / Reward / Eval</a></li>
       <li><a href="#pack">项目面试 8 件套</a></li>
       <li><a href="#questions">追问树</a></li>
+      <li><a href="#grill">高压追问答复</a></li>
       <li><a href="#strategy">回答策略</a></li>
       <li><a href="#references">参考与证据</a></li>
     </ol>
@@ -63,10 +66,47 @@
   <section id="answer">
     <h2>短答案</h2>
     <div class="note">
-      <p><strong>可直接口述：</strong>harness 的价值不是“搭了平台”，而是把机器人集群控制中的可执行约束转成模型能学习、能被 reward 检查、能被 held-out 评估的 action/tool 语义。工程侧产生的是带上下文的任务状态、机器人状态、排他动作和取消补偿；算法侧消费的是 schema 化的 tool-call 样本、GRPO reward 和严格评估集。tool accuracy、scope correctness、critical-action correctness 不能证明真实机器人一定成功，但能证明模型在进入低层控制之前不会选错工具、越权操作、破坏时序约束，是真实任务执行能力的前置代理指标。</p>
+      <p><strong>可直接口述：</strong>这是我以 owner 方式完整推进的项目，工程实现和 schema 字段展开主要由 Codex 完成；我负责把机器人集群控制里的上层失败模式定义成可训练问题，包括任务目标、工具协议约束、数据分流策略、训练口径、D/OOD eval 和验收指标。harness 的价值不是“搭了平台”，而是先把工具选择、参数格式、robot scope 这类高层动作语义稳定下来，尤其是导航参数写错这种会直接导致任务失效的问题。训练数据主体来自开源工具调用/Agent 数据，一部分内部通用数据用于补通用能力，少量业务数据主要进入 eval。实际脚本里，SFT 走 OpenAI-compatible messages + tools 的 teacher-forcing 路径：排除 ToolACE，保留可清洗的工具调用样本、project sandbox 轨迹样本和少量高层 VQA 辅助；GRPO 走 rewardable RL task 路径：从 allowed/forbidden tools、reference trajectory、success criteria、policy constraints、minefields 等字段构造可规则判分任务，并在 32B 阶段额外加入 tool-restraint no-call/clarification mix。tool accuracy、scope correctness 和 argument correctness 不能证明真实机器人一定成功，但能证明模型在进入低层控制前不会频繁选错工具或写错关键参数，是真实任务执行能力的前置代理指标。</p>
     </div>
     <div class="warning">
-      <p><strong>边界防线：</strong>不要说“tool accuracy 提升 = 机器人成功率提升”。更安全的表述是：它降低了无效/越权/时序错误的高层动作概率，为真实机器人闭环控制提供更干净的上层决策输入。</p>
+      <p><strong>边界防线：</strong>不要说“tool accuracy 提升 = 机器人成功率提升”。更安全的表述是：它降低了无效工具、错误参数、越权 scope 等高层动作错误概率，为真实机器人闭环控制提供更干净的上层决策输入。memory/subagent 是 harness 的 runtime 抽象，目前没有足够训练数据支撑它们作为模型训练主线。</p>
+    </div>
+  </section>
+
+  <section id="research-framing">
+    <h2>Research Framing：把经历讲成研究问题</h2>
+    <p>面试时可以把这个项目拆成三个研究阶段，而不是只讲“做了 harness + 训练”。每个阶段都按 Motivation / Hypothesis / Method / Experiment / Failure Analysis 展开。</p>
+    <table>
+      <thead><tr><th>阶段</th><th>Motivation 动机</th><th>Hypothesis 假设</th><th>Method 方法</th><th>Experiment 实验</th><th>Failure Analysis 失败分析</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1. Robot harness 语义抽象</td>
+          <td>机器人集群控制不是普通 function calling：同一 robot 的排他动作、取消补偿、会话状态、robot scope 都会影响真实执行。对应论文更多是 embodied agents / tool use / function calling 的方法背景，不是某篇论文的直接复现；开放问题是如何把高层语言指令转成安全、可执行、可追踪的 robot action semantics。</td>
+          <td>真实任务失败中有一类不是视觉或低层控制失败，而是上层工具协议错误：工具选错、导航参数写错、robot_id/scope 错。只要先降低这些高层错误，就能为后续真实控制提供更干净的输入。</td>
+          <td>设计 harness 作为语义边界：任务上下文、robot 状态 memory、subagent 分工、排他动作、取消补偿和工具协议统一进入 action/tool schema；工程实现和字段展开主要由 Codex 完成，我负责约束定义、取舍和验收。</td>
+          <td>通过 runtime trace、schema 样本和 holdout case 检查输出是否可解析、scope 是否正确、导航参数是否合规。这里的实验不是物理任务成功率，而是工具协议层的可执行性验证。</td>
+          <td>memory/subagent 当前更多是 runtime 抽象，训练数据覆盖不足；不能把它们说成模型已经学会的能力。面试防线是：训练主线先收敛到工具协议、参数和 scope。</td>
+        </tr>
+        <tr>
+          <td>2. SFT / GRPO 数据设计</td>
+          <td>开放问题是：结构化工具调用能力能否作为真实机器人任务控制的前置代理？对应方法背景是 schema following、tool learning、RL with verifiable rewards；本项目不是泛泛做 post-training，而是把机器人控制约束转成可监督、可 reward 的样本。</td>
+          <td>SFT 更适合学习稳定协议格式、工具调用模板和语言/通用能力；GRPO 更适合承载可规则判分的行为约束，例如 forbidden tool、clarification、scope、cancel/compensation 和参考轨迹。这样比把所有样本平均 SFT 更能处理“导航参数错、scope 越权、格式违规”这类致命错误。</td>
+          <td>脚本上分成两条路径：SFT 从 <code>openai_tool_sft.jsonl</code>、project sandbox 与高层 VQA auxiliary 构造 teacher-forcing 样本；GRPO 从 <code>rl_tasks_train_ready.jsonl</code> 和 project sandbox 轨迹构造 rewardable task，并在 32B 训练阶段加入 tool-restraint no-call/clarification mix。</td>
+          <td>v2 manifest 记录 62,223 条 SFT 数据与 8,916 条 canonical GRPO 数据；32B GRPO train mix 在 8,052 条 train 上额外合成 1,200 条 tool-restraint 样本。主线扩展到 32B 后，tool-call holdout 的 tool accuracy 从 37.8% 提升到 95% 左右，robot sandbox 的 argument exact/semantic match 达到 92.3%/96.9%。</td>
+          <td>这些指标只能证明高层工具协议能力，不等价于真实机器人成功率。下一步要补 SFT-only / no-scope-reward / no-arg-reward ablation，并接小型闭环仿真或真实机器人任务。</td>
+        </tr>
+        <tr>
+          <td>3. D/OOD eval 与代理指标</td>
+          <td>研究动机是避免“训练 loss 降了但任务不可用”。机器人控制前置能力需要可解释评估：in-domain 工具协议、业务分布样本、OOD safety/general suite 分开看。</td>
+          <td>如果 tool accuracy、scope correctness、argument correctness 在 held-out 上稳定提升，说明模型至少减少了进入控制器前的高层动作错误；但视觉、控制延迟、物理接触仍需独立评估。</td>
+          <td>提前切出 D split，OOD 引入安全/通用能力 suite；业务数据规模小，因此主要用于 eval，而非训练主干。评估拆成 tool、arg、scope、coverage 和格式合规。</td>
+          <td>用 holdout 指标证明协议能力提升，并通过 robot sandbox 样本检查工具/参数/scope 是否稳定。面试里强调这是“前置代理指标”，不是最终任务成功率。</td>
+          <td>最大失败风险是评估泄漏和 proxy overclaim。防线：不把 tool-call 指标写成真实机器人成功率；补证据方向是固定 split manifest、bad-case gallery 和闭环任务验证。</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="warning">
+      <p><strong>Grill Me 预留问题：</strong>如果后续要再精确，你需要补一张表：每类工具协议错误在训练前后的占比、真实 robot trace 中这些错误对应的任务失败例子、以及 32B SFT-only vs SFT+GRPO 的差分。</p>
     </div>
   </section>
 
@@ -78,22 +118,22 @@
       <tbody>
         <tr>
           <td>运行层 Harness</td>
-          <td>多会话任务、robot_id、robot memory、subagent、排他动作、取消请求、执行结果</td>
-          <td>定义任务状态机和 robot 级约束，记录“什么条件下允许做什么动作”</td>
-          <td>结构化 trace 和 action candidates</td>
-          <td>不是单纯并发调度，而是在抽象机器人控制语义</td>
+          <td>多会话任务、robot_id、工具定义、导航参数、robot memory、subagent、排他动作、取消请求、执行结果</td>
+          <td>用 harness 承载 runtime 语义：任务状态、robot scope、工具协议、排他/取消约束</td>
+          <td>可清洗的 tool-call 样本、协议错误样例和 eval case</td>
+          <td>memory/subagent 主要是运行时抽象；训练主线是工具协议和参数正确性</td>
         </tr>
         <tr>
           <td>语义层 Schema</td>
-          <td>trace、action、状态约束</td>
-          <td>把 action name、arguments、scope、precondition、cancelability、critical flag 写入 schema</td>
-          <td>SFT 样本和 reward 可读字段</td>
-          <td>这是工程到算法的桥：约束从代码逻辑变成监督信号</td>
+          <td>开源数据、内部通用数据、少量业务 eval 数据、工具调用 trace</td>
+          <td>由 Codex 展开具体 schema 字段，我负责约束审核：tool name、arguments、robot scope、格式合规和可 reward 条件</td>
+          <td>SFT target、GRPO reward 字段、holdout eval case</td>
+          <td>这是工程到算法的桥：harness 期望的工具协议变成可训练/可评估的格式</td>
         </tr>
         <tr>
           <td>训练层 SFT/GRPO</td>
-          <td>62,223 条 SFT 数据、8,916 条 GRPO 数据、held-out 评估集</td>
-          <td>SFT 学格式和基本动作分布，GRPO 用 schema-aware reward 约束工具选择、scope 和参数语义</td>
+          <td>62,223 条 SFT 数据、8,916 条 canonical GRPO 数据、32B tool-restraint train mix、held-out 评估集</td>
+          <td>SFT 负责协议格式和 teacher-forcing imitation；GRPO 负责 reference trajectory、forbidden/clarification/scope/cancel 等可规则判分行为</td>
           <td>32B holdout tool accuracy 95%+、coverage 约 96%、argument exact/semantic 92.3%/96.9%</td>
           <td>指标是高层 action semantics 的代理，不是物理控制成功率</td>
         </tr>
@@ -102,27 +142,97 @@
 
     <p>形式化地说，harness 产生的不是普通日志，而是带约束的训练样本：</p>
     \[
-      x = (c, m, s_r, q), \quad
-      y = (tool, args, scope, temporal\_tag)
+      x = (c, q, d), \quad
+      y = (tool, args, scope)
     \]
-    <p>其中 \(c\) 是会话上下文，\(m\) 是 robot memory，\(s_r\) 是机器人状态，\(q\) 是用户或子任务请求；目标 \(y\) 是模型要输出的工具调用。实现映射上，harness 把原本散落在调度、互斥、取消补偿中的约束压成字段，训练时模型学习这些字段之间的对应关系。</p>
+    <p>其中 \(c\) 是多轮上下文，\(q\) 是用户或子任务请求，\(d\) 是工具定义和协议描述；目标 \(y\) 是模型要输出的工具调用。实现映射上，harness 的工程代码与多数 schema 字段由 Codex 生成，但训练数据的关键不是代码本身，而是样本是否严格遵守我定义的 harness 约束与验收口径，尤其是工具名、导航参数和 robot scope。</p>
 
-    <pre><code class="language-python">def convert_trace_to_training_sample(trace):
-    # 1. 从 harness trace 中读取用户意图、robot 状态和会话记忆。
-    context = build_context(trace.session, trace.memory, trace.subagents)
+    <pre><code class="language-python">def route_sample(sample):
+    # SFT: clean teacher-forcing data in OpenAI-compatible messages + tools.
+    if sample.file == "openai_tool_sft.jsonl" and sample.source != "ToolACE":
+        return "sft", normalize_messages_and_tool_calls(sample)
 
-    # 2. 将可执行动作规范化为 tool/action schema。
-    schema = {
-        "tool": trace.action.name,
-        "args": normalize_args(trace.action.args),
-        "robot_scope": trace.robot_id,
-        "exclusive": trace.action.requires_mutex,
-        "cancelable": trace.action.cancelable,
-        "critical": trace.action.is_critical,
-    }
+    # SFT + GRPO: project sandbox rows are useful only when they have expected trajectory.
+    if sample.file == "agent_sandbox_cases_project_ready.jsonl" and sample.expected.trajectory:
+        return ["sft", "grpo"], build_project_protocol_row(sample)
 
-    # 3. SFT 使用 schema 作为目标；GRPO 使用同一 schema 计算 reward。
-    return {"prompt": context, "target": schema}</code></pre>
+    # SFT auxiliary: high-level VQA/general capability; exclude coordinate, bbox, point, and action-token targets.
+    if sample.is_point_general_vqa and not sample.has_low_level_coordinate_or_action_target:
+        return "sft_aux", build_language_or_vlm_auxiliary_row(sample)
+
+    # GRPO: rewardable RL task rows with tools, constraints, trajectories, minefields, or clarification targets.
+    if sample.file == "rl_tasks_train_ready.jsonl":
+        return "grpo", build_rewardable_task(sample)
+
+    # 32B GRPO train mix: tools are visible, but correct behavior is no tool call plus clarification/refusal.
+    if sample.is_tool_restraint_candidate and sample.source != "AppWorld":
+        return "grpo_train_mix", synthesize_tool_restraint_row(sample)
+
+    return "eval_or_drop", keep_only_if_useful_for_holdout(sample)</code></pre>
+  </section>
+
+  <section id="data-routing">
+    <h2>样本分流证据：哪些进 SFT，哪些进 GRPO</h2>
+    <p>这部分是本轮补强后的核心证据。面试里不要只说“可 reward 的进 GRPO，剩下进 SFT”，而要能落到脚本条件、字段和训练目的。</p>
+    <table>
+      <thead><tr><th>样本类型</th><th>进入路径</th><th>脚本条件 / 字段</th><th>训练目的</th><th>面试边界</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>OpenAI-compatible 工具调用样本</td>
+          <td>SFT</td>
+          <td><code>prepare_sft_data.py</code> 读取 <code>openai_tool_sft.jsonl</code>，显式排除 <code>source == "ToolACE"</code>；规范化 <code>messages</code>、<code>tools</code>、assistant <code>tool_calls</code> 与 JSON-string arguments。</td>
+          <td>学习工具调用格式、工具名、参数结构和稳定输出协议，是 teacher-forcing 的主干。</td>
+          <td>这是协议 imitation，不是 RL；不要把它讲成 reward 优化。</td>
+        </tr>
+        <tr>
+          <td>Project sandbox / robot 轨迹样本</td>
+          <td>SFT + GRPO</td>
+          <td>SFT 路径读取 <code>agent_sandbox_cases_project_ready.jsonl</code>；GRPO 路径只保留 <code>expected.trajectory</code> 非空样本，并写入 <code>reference_trajectory</code>、<code>success_criteria</code>、<code>scope_id/scope_type</code>、<code>allowed_tools</code>、<code>forbidden_tools</code>。</td>
+          <td>SFT 学协议目标，GRPO 用轨迹、状态检查、scope 与 forbidden tools 做规则 reward。</td>
+          <td>memory/subagent 是 harness runtime 抽象；训练主线不是“训练 memory/subagent”，而是工具协议、参数和 robot scope。</td>
+        </tr>
+        <tr>
+          <td>Robo2VLM / point-general 高层 VQA 辅助</td>
+          <td>SFT auxiliary</td>
+          <td><code>keep_point_general</code> 排除 RoboPoint、<code>&lt;point&gt;</code>/<code>&lt;box&gt;</code>、coordinate/bbox prompt、低层 action-token target；v2 language-only 脚本移除图像输入并保留文本提示/答案。</td>
+          <td>保留通用语言/视觉语义能力，避免纯工具协议训练过窄。</td>
+          <td>它不是 robot tool reward 数据，也不用于证明真实机器人执行能力。</td>
+        </tr>
+        <tr>
+          <td>RL train-ready 工具任务</td>
+          <td>GRPO canonical</td>
+          <td><code>prepare_grpo_data.py</code> 读取 <code>rl_tasks_train_ready.jsonl</code>，保留 <code>allowed_tools</code>、<code>forbidden_tools</code>、<code>reference_trajectory</code>、<code>success_criteria</code>、<code>policy_constraints</code>、<code>minefields</code>；WebLINX/Mind2Web browser runner 默认不进 GRPO。</td>
+          <td>把工具顺序、参数语义、禁止副作用、澄清请求、scope 边界和状态成功转成 reward。</td>
+          <td>GRPO 的价值在规则可判分；没有可靠 reference/reward 的样本不应硬塞进 RL。</td>
+        </tr>
+        <tr>
+          <td>Clarification / refusal / no-action 工具克制样本</td>
+          <td>32B GRPO train mix</td>
+          <td><code>build_grpo_tool_restraint_mix.py</code> 合成“工具可见但正确行为是不调用工具、转而澄清或拒绝”的样本；AppWorld quarantine 被排除，因为空轨迹常表示缺 runner trajectory，不等价于真实 no-action label。</td>
+          <td>补足“有工具也不能乱调”的克制能力，约束 forbidden side effect 和 missing-info 情况。</td>
+          <td>这是 train-only mix：原 canonical GRPO 总量仍是 8,916；32B 混合 train 是 8,052 + 1,200 = 9,252。</td>
+        </tr>
+        <tr>
+          <td>OOD / safety / general probe 与少量业务样本</td>
+          <td>Eval / OOD probe</td>
+          <td>OOD suite 与少量业务分布样本主要用于验收；用户口径是业务数据百条级，更多进入 eval 而非 train。当前未看到独立“大规模业务 train split”脚本证据。</td>
+          <td>检查协议能力是否泛化到真实业务分布、安全/通用能力和 schema-absent 情况。</td>
+          <td>这是面试防线：不能暗示有大量业务数据训练，也不能用 OOD probe 的混合结果包装成全面提升。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table>
+      <thead><tr><th>落档指标</th><th>数值</th><th>怎么讲</th></tr></thead>
+      <tbody>
+        <tr><td>v2 SFT manifest</td><td>62,223 total；train/dev/test = 55,967 / 3,164 / 3,092</td><td>主干是协议 teacher-forcing，加上语言/通用能力辅助；不要说全部都是 robot 数据。</td></tr>
+        <tr><td>v2 GRPO manifest</td><td>8,916 total；train/dev/test = 8,052 / 439 / 425</td><td>canonical GRPO 是 rewardable 工具任务集合，按 clarification、forbidden side effect、project robot、cancel/compensation、scope 分类。</td></tr>
+        <tr><td>32B tool-restraint mix</td><td>base train 8,052；generated 1,200；mixed train 9,252</td><td>这是 32B 阶段补的“有工具但不应调用”训练集，不要把它混成 canonical GRPO 总数。</td></tr>
+        <tr><td>tool-restraint reward check</td><td>128 rows；good score mean 1.0000，bad / malformed mean -5.3423，bad cases not penalized = 0</td><td>说明 reward checker 能区分正确克制和错误调用，支撑 GRPO 可判分性。</td></tr>
+        <tr><td>32B tool-call holdout</td><td>base 32B tool accuracy 37.8%；SFT 95.4%；GRPO ckpt100/200 95.6%</td><td>主结论放在 32B：协议监督让工具选择稳定；GRPO 是边际细化，不要说所有 OOD 指标都提升。</td></tr>
+        <tr><td>32B robot sandbox</td><td>SFT/GRPO tool、coverage、critical、scope 达到 100%；GRPO argument exact / semantic 为 92.3% / 96.9%</td><td>这是最贴近 robot tool 协议的 eval；仍然只代表高层 action semantics，不等于真实闭环成功率。</td></tr>
+      </tbody>
+    </table>
   </section>
 
   <section id="schema-reward-eval">
@@ -132,14 +242,14 @@
       <tbody>
         <tr>
           <td>工具选择</td>
-          <td>tool name、动作类别、critical flag</td>
+          <td>tool name、工具类别、调用格式</td>
           <td>tool exact match / semantic match</td>
           <td>tool accuracy</td>
           <td>高层动作选错会直接导致任务无效，是第一优先级</td>
         </tr>
         <tr>
           <td>参数约束</td>
-          <td>参数字段、类型、必填项、可选项</td>
+          <td>参数字段、类型、必填项、可选项，重点是导航参数</td>
           <td>argument exact / semantic reward</td>
           <td>argument exact / semantic match</td>
           <td>参数是工具调用能否落到正确对象或状态的关键</td>
@@ -149,21 +259,21 @@
           <td>robot_id、multi-robot boundary</td>
           <td>scope correctness reward</td>
           <td>scope correctness</td>
-          <td>避免跨 robot 越权、抢占或串会话</td>
+          <td>避免跨 robot 越权、串会话；但当前训练重点仍是协议与参数正确性</td>
         </tr>
         <tr>
-          <td>排他动作</td>
-          <td>exclusive / mutex 标记</td>
-          <td>非法并发惩罚</td>
-          <td>critical case set</td>
-          <td>导航、抓取、下单等长时序动作不能被中间状态抢占</td>
+          <td>多轮工具调用</td>
+          <td>对话历史、工具调用历史、当前 query</td>
+          <td>reference trajectory、clarification、forbidden side effect、cancel/compensation、scope 等规则可判分项</td>
+          <td>held-out D split</td>
+          <td>不是所有多轮样本都进 GRPO；只有脚本中具备可判分字段或可合成克制目标的样本才进入 GRPO</td>
         </tr>
         <tr>
-          <td>取消补偿</td>
-          <td>cancelable、cancel target、compensation action</td>
-          <td>取消顺序和目标一致性 reward</td>
-          <td>cancel scenario holdout</td>
-          <td>真实系统里取消比正常执行更容易暴露语义漏洞</td>
+          <td>memory / subagent</td>
+          <td>主要保留在 harness runtime 抽象</td>
+          <td>当前不作为主 reward 项</td>
+          <td>当前不作为主 eval 指标</td>
+          <td>没有足够训练数据支撑，面试中要主动降级</td>
         </tr>
       </tbody>
     </table>
@@ -174,10 +284,10 @@
       w_t r_{tool} +
       w_a r_{arg} +
       w_s r_{scope} +
-      w_c r_{critical} -
+      w_f r_{format} -
       w_v r_{violation}
     \]
-    <p>这里 \(\hat{y}\) 是模型输出，\(y\) 是 schema 目标；\(r_{tool}\) 约束工具选择，\(r_{arg}\) 约束参数，\(r_{scope}\) 约束 robot 归属，\(r_{critical}\) 约束关键动作，\(r_{violation}\) 惩罚非法并发或取消错误。面试中不必强调具体权重，而要强调 reward 不是泛泛打分，而是由 harness 暴露出来的可执行约束组成。</p>
+    <p>这里 \(\hat{y}\) 是模型输出，\(y\) 是 schema 目标；\(r_{tool}\) 约束工具选择，\(r_{arg}\) 约束参数，\(r_{scope}\) 约束 robot 归属，\(r_{format}\) 约束工具协议格式，\(r_{violation}\) 惩罚违反协议的输出。面试中不必强调具体权重，而要强调 reward 不是泛泛打分，而是围绕 harness 期望的工具协议，尤其是导航参数和 scope 正确性。</p>
   </section>
 
   <section id="pack">
@@ -186,9 +296,9 @@
     <table>
       <thead><tr><th>岗位能力</th><th>本项目证据</th><th>面试表达</th></tr></thead>
       <tbody>
-        <tr><td>具身任务表示</td><td>统一 task/action schema，包含 memory、subagent、排他动作、取消补偿、多机器人边界</td><td>我做的是“可执行任务语义”的抽象，而不是普通后端调度。</td></tr>
-        <tr><td>训练数据设计</td><td>62,223 条 SFT、8,916 条 GRPO 数据</td><td>数据来自 harness 约束，不是人工拼 prompt。</td></tr>
-        <tr><td>评估协议</td><td>holdout tool accuracy 95%+，coverage 约 96%，严格集 tool/scope/critical 100%</td><td>指标评价高层工具语义，不夸大为真实机器人成功率。</td></tr>
+        <tr><td>具身任务表示</td><td>robot task harness 包含 memory、subagent、排他动作、取消补偿、多机器人边界等 runtime 抽象</td><td>这些体现机器人集群控制的运行语义；训练主线要聚焦工具协议、导航参数和 scope。</td></tr>
+        <tr><td>训练数据设计</td><td>62,223 条 SFT、8,916 条 canonical GRPO 数据；32B train mix 额外加入 1,200 条 tool-restraint 样本；开源数据为主，内部通用数据补通用能力，少量业务数据主要进 eval</td><td>分流逻辑要讲成脚本条件：SFT 学协议 imitation，GRPO 学可规则判分的 tool/order/arg/scope/safety 行为。</td></tr>
+        <tr><td>评估协议</td><td>holdout tool accuracy 95%+，coverage 约 96%；robot sandbox 小集 tool/arg/scope 达到 100%</td><td>指标评价高层工具语义，不夸大为真实机器人成功率。</td></tr>
       </tbody>
     </table>
 
@@ -196,7 +306,7 @@
     <table>
       <thead><tr><th>Claim</th><th>证据等级</th><th>可说程度</th><th>防线</th></tr></thead>
       <tbody>
-        <tr><td>设计 robot task harness 与训练 schema</td><td>C2</td><td>可重点讲</td><td>讲设计边界，不说整个平台 owner。</td></tr>
+        <tr><td>个人以 owner 方式推进项目，工程代码与多数 schema 字段由 Codex 完成</td><td>C2</td><td>可重点讲但要会包装</td><td>说清楚你负责问题定义、约束设计、数据分流、训练/eval 口径和结果归因；Codex 是实现加速器。</td></tr>
         <tr><td>32B SFT/GRPO 后工具调用指标显著提升</td><td>C3</td><td>可讲具体指标</td><td>指标限于 tool-call holdout，不代表物理任务成功率。</td></tr>
         <tr><td>结构化工具调用能力迁移到真实机器人任务控制</td><td>C1/C2 推断</td><td>只能讲“前置代理”和“必要非充分条件”</td><td>必须承认还需要感知、低层控制、延迟和真实机器人验证。</td></tr>
       </tbody>
@@ -206,49 +316,53 @@
     <table>
       <thead><tr><th>版本</th><th>表达</th></tr></thead>
       <tbody>
-        <tr><td>保守版</td><td>参与机器人任务 harness 与工具调用训练数据整理，梳理 robot scope、参数约束和关键动作评估口径。</td></tr>
-        <tr><td>标准版</td><td>设计 robot task/action schema，将 memory、subagent、排他动作和取消补偿转为 SFT/GRPO 监督，构建工具调用训练与 held-out 评估。</td></tr>
-        <tr><td>偏强版</td><td>面向机器人集群控制设计可学习的 action/tool 语义层，推动 Qwen3-VL-32B tool-call holdout accuracy 提升至 95%+，并以严格集验证 scope 与 critical action 约束。</td></tr>
+        <tr><td>保守版</td><td>整理机器人工具调用训练数据与评估集，重点清洗工具协议、robot scope 和导航参数错误样例。</td></tr>
+        <tr><td>标准版</td><td>围绕 harness 期望的工具协议制定数据分流与验收口径：用 SFT 承载 OpenAI-compatible tool-call imitation 与通用能力辅助，用 GRPO 承载 reference trajectory、scope、forbidden tool、clarification 和 cancel/compensation 等可判分约束。</td></tr>
+        <tr><td>偏强版</td><td>面向机器人任务控制构建工具协议训练与评估闭环，使 Qwen3-VL-32B tool-call holdout accuracy 提升至 95%+，并显著降低导航参数等致命协议错误。</td></tr>
       </tbody>
     </table>
 
     <h3>4. 2-3 分钟口述稿</h3>
-    <p>这个项目的背景是机器人平台里存在多会话、多机器人和长时序动作，单纯把工具接起来并不能保证模型输出可执行。我的工作是把平台控制约束抽象为 robot task harness 和统一 task/action schema。具体来说，我把 robot memory、subagent 分工、robot scope、排他动作、取消补偿这些约束显式进入 schema，再把 schema 转成 SFT 数据和 GRPO reward。这样工程侧的“什么动作在什么状态下可执行”，就变成模型侧可学习、可评估的监督信号。结果上，我们构建了 62,223 条 SFT 和 8,916 条 GRPO 数据，主线扩展到 Qwen3-VL-32B，holdout tool accuracy 从 base 的 37.8% 提升到 95% 以上，coverage 约 96%，严格集中工具选择、robot scope 和 critical action 都达到 100%。这个结果的边界是，它证明的是高层工具调用语义，不等价于真实机器人成功率；但它是进入真实控制闭环前非常关键的前置代理，因为低层控制再强，也承受不了上层工具选错、越权或破坏时序。</p>
+    <p>这个项目是我以 owner 方式推进的工具调用训练项目，工程实现和 schema 字段展开主要由 Codex 完成，我负责的是问题定义、harness 约束、数据分流、训练/eval 口径和指标验收。背景是机器人任务控制里，很多失败不是低层控制问题，而是上层工具协议错误，比如导航参数写错、scope 写错、工具选择错误。我的做法是先用 harness 明确机器人集群控制的 runtime 抽象，再把最适合训练的部分收敛到工具协议、参数和 scope：SFT 侧保留 OpenAI-compatible tool-call、project sandbox 轨迹样本和少量高层 VQA 辅助，用来学习稳定格式和工具协议；GRPO 侧只放具备 reference trajectory、allowed/forbidden tools、success criteria、policy constraints 或 minefields 的可判分样本，并在 32B 阶段补 tool-restraint 样本，让模型学会“有工具也不能乱调”。数据来源上，主体来自开源数据集，一部分内部通用数据补通用能力，少量业务数据主要进入 eval。结果上，我们构建了 62,223 条 SFT 和 8,916 条 canonical GRPO 数据，主线扩展到 Qwen3-VL-32B，在同一 holdout 口径下 tool accuracy 从 37.8% 提升到 95% 以上；robot sandbox 上 tool/coverage/critical/scope 达到 100%，GRPO 后 argument exact/semantic match 达到 92.3%/96.9%。这个结果的边界是，它证明的是高层工具调用语义和参数正确性，不等价于真实机器人成功率；但它能显著降低真实控制前最致命的协议错误。</p>
 
     <h3>5. 架构讲解稿</h3>
     <table>
       <tbody>
-        <tr><th>输入</th><td>用户请求、多会话上下文、robot memory、robot_id、任务状态、subagent 中间结果。</td></tr>
-        <tr><th>核心节点</th><td>harness 状态机、schema 转换、SFT 样本构造、GRPO reward、holdout eval。</td></tr>
-        <tr><th>输出</th><td>工具选择、结构化参数、robot scope、critical/cancelable 标记。</td></tr>
-        <tr><th>失败类型</th><td>工具错选、参数缺失、robot scope 错误、排他动作冲突、取消目标错误。</td></tr>
-        <tr><th>评估方式</th><td>tool accuracy、coverage、scope correctness、critical action correctness、argument exact/semantic match。</td></tr>
+        <tr><th>输入</th><td>开源工具调用/多轮数据、内部通用数据、少量业务 eval 数据、工具定义、用户请求。</td></tr>
+        <tr><th>核心节点</th><td>Codex 实现的 harness 与字段展开、协议清洗、SFT/GRPO 脚本分流、tool-restraint mix、schema-aware reward、D/OOD eval。</td></tr>
+        <tr><th>输出</th><td>工具选择、结构化参数、robot scope、导航参数、格式合规输出。</td></tr>
+        <tr><th>失败类型</th><td>工具错选、导航参数写错、参数缺失、robot scope 错误、格式不合规。</td></tr>
+        <tr><th>评估方式</th><td>tool accuracy、coverage、scope correctness、argument exact/semantic match、OOD safety/general suite。</td></tr>
       </tbody>
     </table>
 
-    <h3>6. 高频追问 20 题</h3>
-    <ol>
-      <li>harness 和训练数据之间的中间产物是什么？</li>
-      <li>哪些字段是你设计进 schema 的？</li>
-      <li>为什么 tool accuracy 可以作为代理指标？</li>
-      <li>这个代理指标有哪些盲区？</li>
-      <li>SFT 和 GRPO 各自解决什么问题？</li>
-      <li>reward 是规则写死的吗，还是模型打分？</li>
-      <li>critical action 如何定义？</li>
-      <li>scope correctness 错了会发生什么？</li>
-      <li>取消补偿为什么难？</li>
-      <li>多机器人并发怎么避免互相污染？</li>
-      <li>8B 和 32B 的定位有什么不同？</li>
-      <li>为什么不直接让模型学自然语言轨迹？</li>
-      <li>如何构造 held-out，避免和训练集泄漏？</li>
-      <li>coverage 约 96% 指什么？</li>
-      <li>argument semantic match 怎么判断？</li>
-      <li>如果真实机器人执行失败，如何判断是工具层还是控制层问题？</li>
-      <li>这个设计和普通 function calling 有什么区别？</li>
-      <li>如果工具 schema 变更，训练数据如何更新？</li>
-      <li>你个人贡献在哪里？</li>
-      <li>如果继续做，下一步补什么证据？</li>
-    </ol>
+    <h3>6. 高频追问</h3>
+    <table>
+      <thead><tr><th>追问</th><th>推荐答法</th><th>防线 / 证据</th></tr></thead>
+      <tbody>
+        <tr><td>harness 和训练数据之间的中间产物是什么？</td><td>中间产物是可执行的 tool/action schema、带字段校验的样本、rewardable 标签和 holdout case。harness 先定义机器人集群控制里什么叫合法动作，训练数据再把这些合法动作转成 SFT 监督和 GRPO reward。</td><td>不要说 harness 自动生成能力；证据是 schema、样本路由规则和 SFT/GRPO 数据统计。</td></tr>
+        <tr><td>哪些 harness 约束被转成了 schema 字段、reward 项和 holdout 指标？</td><td>schema 放工具名、参数类型、robot_id/scope、可取消动作等硬约束；reward 检查工具选择、导航参数、scope 越权和格式违规；holdout 评估 tool accuracy、argument correctness、scope correctness 和 OOD 安全/通用能力。</td><td>schema、reward、eval 要分层讲；不要混成“都做了评测”。</td></tr>
+        <tr><td>为什么 tool accuracy 可以作为代理指标？</td><td>它是上层动作语义的前置代理。真实机器人失败可能来自视觉或控制，但如果上层已经选错工具、写错导航参数或发给错误 robot，低层控制无法弥补。</td><td>必要非充分条件；不能说 tool accuracy 等于真实成功率。</td></tr>
+        <tr><td>这个代理指标有哪些盲区？</td><td>它不覆盖视觉 grounding、路径规划、控制延迟、物理接触、执行器异常和长时序恢复。它只证明进入控制器前的工具协议更干净。</td><td>主动承认盲区比硬辩更强；后续要补闭环仿真/真实机器人验证。</td></tr>
+        <tr><td>到底哪些样本进 SFT，哪些样本进 GRPO？</td><td>SFT 进的是可规范化成 OpenAI-compatible messages + tools 的 teacher-forcing 样本，包括主工具调用、project sandbox 轨迹样本和少量高层 VQA auxiliary；ToolACE 在 SFT 脚本中被排除。GRPO 进的是 <code>rl_tasks_train_ready</code> 里带 allowed/forbidden tools、reference trajectory、success criteria、policy constraints、minefields 等字段的可判分样本，以及有 expected trajectory 的 project sandbox 样本；32B 阶段再加 tool-restraint no-call/clarification mix。</td><td>证据是 <code>prepare_sft_data.py</code>、<code>prepare_grpo_data.py</code>、<code>build_grpo_tool_restraint_mix.py</code> 和 manifest。</td></tr>
+        <tr><td>SFT 和 GRPO 各自解决什么问题？</td><td>SFT 负责把工具协议、格式和参数习惯稳定学进去，是 imitation；GRPO 负责强化可规则判分的行为约束，包括工具顺序、参数语义、scope、forbidden side effect、clarification、cancel/compensation 和 tool restraint。</td><td>不要把 SFT/GRPO 讲成泛泛“训一训”；要绑定脚本字段和 reward 条件。</td></tr>
+        <tr><td>reward 是规则写死的吗，还是模型打分？</td><td>主线是 schema-aware 规则 reward，不依赖另一个模型主观打分。它围绕工具名、参数、scope、格式和致命错误惩罚构造，优点是可复现、可解释，缺点是覆盖不到所有语义细节。</td><td>证据是 reward checker；不要声称 reward 能评估真实执行质量。</td></tr>
+        <tr><td>训练里哪些字段真的有数据支撑？</td><td>训练主线有数据支撑的是工具协议、工具选择、导航参数、robot scope、参数格式和部分安全/通用能力。memory/subagent 更多是 runtime 抽象，当前不是训练主线。</td><td>这是高危边界题；不要把 harness 中所有抽象都说成已训练。</td></tr>
+        <tr><td>scope correctness 错了会发生什么？</td><td>scope 错会把动作发给错误 robot，或让一个会话越权影响另一个 robot 的活跃请求。在集群控制里这比普通格式错误更严重，因为会造成物理执行对象错误。</td><td>可结合 robot_id、互斥动作、取消补偿来解释。</td></tr>
+        <tr><td>memory/subagent 为什么没有作为训练主线？</td><td>因为缺少足够覆盖的训练样本，强行写成训练能力会越界。它们更适合作为 harness runtime 功能，当前训练优先解决工具协议和导航参数这些更致命的错误。</td><td>防线：runtime 有，训练主线没有充分覆盖。</td></tr>
+        <tr><td>少量业务数据为什么主要放 eval？</td><td>业务数据只有百条级，作为训练主干会过拟合且难以证明泛化；放进 eval 更有价值，用来检查开源/通用数据训练出的协议能力是否覆盖真实业务分布。</td><td>不要暗示有大规模业务训练数据；强调泄漏控制。</td></tr>
+        <tr><td>8B 和 32B 的定位有什么不同？</td><td>8B 是 reward 和样本口径 pilot，用来快速验证协议和暴露错误；32B 是主线容量，能更接近实际部署。面试里要把指标重点放在 32B holdout 的工具协议提升上。</td><td>不要把 8B 包装成主成果，也不要错误比较协议不同的 base。</td></tr>
+        <tr><td>为什么不直接让模型学自然语言轨迹？</td><td>自然语言轨迹可读但不可稳定执行，缺少类型、scope 和参数约束。机器人控制需要模型输出能被 harness 验证和执行的结构化动作，否则评估和失败归因都不稳定。</td><td>核心是可执行性、可评估性、可归因性。</td></tr>
+        <tr><td>如何构造 held-out，避免和训练集泄漏？</td><td>脚本使用 stable hash 按 normalized goal + expected/reference trajectory 做 group-level split，WebLINX/Mind2Web 按 demo/task id，ARL-SCOUT 按 transcript/trial id，避免同一轨迹变体同时出现在 train/test；OOD suite 独立作为压力测试。</td><td>证据是 manifest 的 split rule；不要用训练后 bad case 反复调到 holdout 上。</td></tr>
+        <tr><td>coverage 约 96% 指什么？</td><td>coverage 指模型在 holdout 中能输出可解析、可进入评测的工具调用比例。它和 accuracy 不同：coverage 低说明格式或拒答问题，accuracy 高但 coverage 低也不能算可用。</td><td>把 coverage 与 tool accuracy 区分开。</td></tr>
+        <tr><td>argument semantic match 怎么判断？</td><td>exact match 看参数字符串或结构完全一致；semantic match 允许同义表达、可等价解析的参数或轻微格式差异。机器人场景中导航目标、位置描述和对象名更适合同时看 exact 与 semantic。</td><td>必须说明人工/规则口径；不要让 semantic match 变成主观放水。</td></tr>
+        <tr><td>如果真实机器人执行失败，如何判断是工具层还是控制层问题？</td><td>先看模型输出：工具名、参数、scope、格式是否正确；再看 harness 调度和取消互斥；最后看导航、视觉和控制器日志。如果工具层正确但执行失败，就不能用 tool accuracy 解释，需要进入低层控制诊断。</td><td>分层 trace 是关键证据。</td></tr>
+        <tr><td>这个设计和普通 function calling 有什么区别？</td><td>普通 function calling 更多是软件 API 参数约束；这里面向机器人集群控制，多了 robot scope、排他动作、取消补偿、长时序任务和物理执行风险。因此 schema/reward 不只是格式，而是控制安全边界。</td><td>避免说“更高级”；具体说多了哪些机器人约束。</td></tr>
+        <tr><td>如果工具 schema 变更，训练数据如何更新？</td><td>先做 schema versioning 和迁移脚本，把旧样本解析到新字段；不能迁移的样本降权或剔除；reward checker 和 holdout 同步版本化，避免模型按旧协议训练、新协议评测。</td><td>可补证据：schema diff、数据迁移日志、回归评测。</td></tr>
+        <tr><td>工程实现由 Codex 完成，你个人贡献在哪里？</td><td>Codex 是实现加速器。我负责定义问题、拆机器人集群控制约束、决定数据分流和 reward/eval 口径、判断结果和 bad case；Codex 把这些约束落成代码和 schema。</td><td>不要说自己手写所有工程；也不要把自己降成“只让 Codex 写”。</td></tr>
+        <tr><td>如果继续做，下一步补什么证据？</td><td>最优先补闭环验证和 ablation：无 scope reward、无参数 reward、SFT-only 对比，以及小型仿真/真实机器人任务成功率。这样能把 tool-call proxy 和真实执行之间的证据 gap 缩小。</td><td>补证据方向要服务因果解释，不是多跑几个日志。</td></tr>
+      </tbody>
+    </table>
   </section>
 
   <section id="questions">
@@ -260,7 +374,7 @@
           <td>“这不就是工程链路吗，算法价值在哪里？”</td>
           <td class="bad">我搭了 harness，然后拿数据训练。</td>
           <td class="ok">harness 产出了结构化训练样本。</td>
-          <td class="good">把工程约束转成可学习语义：schema 定义监督空间，reward 定义优化目标，holdout eval 定义泛化检查。</td>
+          <td class="good">把“工程实现”降级，把“训练问题定义”前置：我确定 harness 期望的工具协议、数据分流和验收指标，Codex 完成实现与字段展开；reward/eval 口径才是算法价值。</td>
         </tr>
         <tr>
           <td>“tool accuracy 为什么能代表机器人能力？”</td>
@@ -269,10 +383,79 @@
           <td class="good">它是必要非充分条件：只能证明上层动作语义、scope 和参数约束，不能覆盖视觉、控制延迟、物理接触。</td>
         </tr>
         <tr>
-          <td>“你怎么防止 reward hacking？”</td>
-          <td class="bad">reward 规则比较严格。</td>
-          <td class="ok">我们用 held-out 做验证。</td>
-          <td class="good">reward 分项和 holdout 分项解耦：训练时看 tool/arg/scope，评估中增加 critical/cancel 场景，避免只学格式。</td>
+          <td>“memory/subagent 这些能力真的训练了吗？”</td>
+          <td class="bad">训练了，schema 里有。</td>
+          <td class="ok">主要是 harness 能力，不是训练重点。</td>
+          <td class="good">主动降级：memory/subagent 是 runtime abstraction，目前缺少训练数据支撑；训练主线是工具协议、参数和 scope 正确性。</td>
+        </tr>
+        <tr>
+          <td>“工程全是 Codex 写的，那你的贡献是什么？”</td>
+          <td class="bad">Codex 帮我写代码，但想法是我的。</td>
+          <td class="ok">我负责需求、数据和验收。</td>
+          <td class="good">把 Codex 包装成实现加速器：我负责问题定义、约束取舍、数据清洗/路由、SFT/GRPO 训练策略、D/OOD eval 设计和结果归因；Codex 负责把这些约束快速落成 harness、schema 和工程代码，但不替代算法判断。</td>
+        </tr>
+        <tr>
+          <td>“业务数据只有百条左右，为什么有价值？”</td>
+          <td class="bad">业务数据质量高。</td>
+          <td class="ok">它主要用于 eval。</td>
+          <td class="good">业务数据量小，不适合当训练主干；放进 eval 更有价值，用来检查开源/通用数据训练出的工具协议能否覆盖真实业务分布和安全/通用能力边界。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="grill">
+    <h2>Grill Me：高压追问答复卡</h2>
+    <table>
+      <thead><tr><th>高压追问</th><th>推荐口述</th><th>危险边界</th><th>需要证据</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>“harness 设计”和“训练数据设计”之间到底有什么因果关系？</td>
+          <td>harness 不是训练后的附属平台，而是先定义机器人集群控制里什么叫合法的高层动作：工具名、参数、robot scope、可取消时序和互斥动作。训练数据再按这些约束被清洗成模型要学习的 action/tool 语义：SFT 路径承载可规范化的 teacher-forcing 协议样本，GRPO 路径承载具备 reference trajectory、forbidden/allowed tools、success criteria、policy constraints、minefields 或 tool-restraint 目标的可判分样本。所以因果关系是：harness 定义可执行语义和失败边界，数据设计把这些语义转成监督目标、reward 项和 holdout 指标。</td>
+          <td>不能说 harness 自动产生机器人能力，也不能说 tool-call 指标等价于真实任务成功率。</td>
+          <td>schema 字段、数据路由规则、SFT/GRPO 样本统计、D/OOD holdout。</td>
+        </tr>
+        <tr>
+          <td>哪些约束进 schema，哪些进 reward，哪些进 holdout eval？</td>
+          <td>schema 放“必须结构化且执行前可解析”的约束，例如工具名、参数类型、robot_id/scope、可取消动作字段；reward 放“可以用规则判定对错”的行为约束，例如工具选择、导航参数合法性、scope 越权和格式违规；holdout eval 则放最终验收问题，包括 in-domain 工具协议、OOD 安全/通用 suite，以及少量业务分布样本。</td>
+          <td>不要把 schema、reward、eval 混成一件事；schema 是输出契约，reward 是训练信号，eval 是验收协议。</td>
+          <td>reward checker、holdout 划分说明、OOD suite 列表。</td>
+        </tr>
+        <tr>
+          <td>tool accuracy / scope correctness 为什么可以当真实机器人能力的前置代理？</td>
+          <td>它们不是充分条件，但是真实执行前的必要条件。机器人失败有很多低层原因，但如果上层已经选错工具、写错导航参数或把动作发给错误 robot，低层控制再强也救不回来。所以这些指标衡量的是进入控制器前的高层动作合法性。</td>
+          <td>不能说“工具调用准，所以机器人一定成功”。要主动补一句还缺视觉、控制延迟、物理接触和闭环恢复验证。</td>
+          <td>tool/arg/scope 指标、导航参数 bad case、真实/仿真闭环计划。</td>
+        </tr>
+        <tr>
+          <td>8B 和 32B 怎么讲，哪个是主线？</td>
+          <td>8B 更像 reward 口径和样本协议的 pilot，用来快速暴露 schema、导航参数和 holdout 设计的问题；主线价值在 32B，因为它更接近实际部署模型容量。面试里我会说：在同一工具协议 holdout 上，32B 经过 SFT/GRPO 后工具选择和参数合法性稳定到 95% 左右，说明协议监督能迁移到更大模型，而不是只在 toy 8B 上成立。</td>
+          <td>不要把 base 8B 的协议不兼容说成“0% 能力”，也不要把 8B pilot 包装成主成果。</td>
+          <td>32B holdout 表、SFT/GRPO 对照、协议版本说明。</td>
+        </tr>
+        <tr>
+          <td>memory / subagent / 任务并行有没有进入训练？</td>
+          <td>它们主要是 harness runtime 抽象，用来服务机器人集群控制：状态 memory、subagent 分工、排他动作、取消补偿和不同机器人并行。当前训练主线不是让模型学习 memory/subagent，而是先解决工具协议、导航参数和 robot scope 这些更致命的动作合法性问题。</td>
+          <td>不能说 memory/subagent 已经被 SFT/GRPO 充分训练；这会被追问数据来源。</td>
+          <td>harness 设计文档、runtime trace、训练样本字段覆盖统计。</td>
+        </tr>
+        <tr>
+          <td>业务数据只有百条左右，为什么项目还有价值？</td>
+          <td>业务数据太少，不适合作为训练主干。我的处理是让开源/通用数据承担主体训练，内部通用数据补通用能力，少量业务样本更适合提前从训练中隔离出来做 eval，检查模型是否能在真实业务分布和安全约束下遵守工具协议。</td>
+          <td>不要暗示大规模业务数据参与训练，也不要用业务数据支撑泛化结论。</td>
+          <td>数据来源分布、业务样本 eval 划分、泄漏控制说明。</td>
+        </tr>
+        <tr>
+          <td>工程实现全由 Codex 完成，你个人贡献怎么讲？</td>
+          <td>我会把 Codex 讲成实现加速器，而不是个人贡献替代品。我的贡献在问题定义、机器人集群控制需求拆解、工具协议和数据分流策略、reward/eval 口径、训练结果判断和 bad case 归因；Codex 负责把这些约束快速落成 schema、harness 和脚本。面试里重点讲我如何决定“什么要学、怎么验收、哪里算失败”。</td>
+          <td>不要说自己手写了所有工程实现；也不要把贡献降成“让 Codex 写代码”。</td>
+          <td>设计记录、prompt/PR 历史、数据与评估产物、结果复盘。</td>
+        </tr>
+        <tr>
+          <td>如果真实机器人任务失败，怎么判断是工具协议问题还是低层控制问题？</td>
+          <td>先分层定位：第一层看模型是否选对工具、参数和 scope；第二层看 harness 是否正确调度、取消和互斥；第三层看导航/控制器输入是否合理；最后看视觉定位、控制延迟和物理接触。如果第一层错，回到 schema/reward 和数据；如果第一层对但执行失败，就不能再用 tool accuracy 解释，需要补闭环控制和环境分布诊断。</td>
+          <td>不要把所有失败都归因到模型，也不要把低层控制失败写成训练成功。</td>
+          <td>分层 trace、失败样例、工具输出和执行日志对齐。</td>
         </tr>
       </tbody>
     </table>
@@ -284,8 +467,8 @@
       <thead><tr><th>时间</th><th>可补材料</th><th>用途</th></tr></thead>
       <tbody>
         <tr><td>半天</td><td>画一张 harness → schema → SFT/GRPO → holdout eval 的图</td><td>回答“工程到算法的桥”</td></tr>
-        <tr><td>1 天</td><td>整理 5 个失败样例：scope 错、参数错、取消错、critical 错、并发错</td><td>支撑 bad case 和 reward 设计</td></tr>
-        <tr><td>3 天</td><td>补一个 ablation：无 scope reward / 无 critical reward / 仅 SFT 对比</td><td>增强因果解释</td></tr>
+        <tr><td>1 天</td><td>整理 5 个失败样例：工具错选、导航参数错、参数缺失、scope 错、格式不合规</td><td>支撑 bad case 和 reward 设计</td></tr>
+        <tr><td>3 天</td><td>补一个 ablation：无 scope reward / 无参数 reward / 仅 SFT 对比</td><td>增强因果解释</td></tr>
         <tr><td>1 周</td><td>接一个小型仿真或真实机器人任务闭环验证</td><td>缩小 proxy 与真实执行的证据 gap</td></tr>
       </tbody>
     </table>
@@ -295,7 +478,11 @@
     <h2>参考与证据</h2>
     <ol>
       <li>本地证据：<a href="../output/mousongzhe_resume_optimized.html">optimized 简历</a> 与 <a href="../output/resume_restructure_plan.md">resume_restructure_plan.md</a> 中的商汤实习指标与证据边界。</li>
-      <li>方法背景：OpenAI / LLM function calling 与 schema-following 思路可作类比，但本页不依赖具体外部 API 结论。</li>
+      <li>分流脚本：<code>C:\Users\mousongzhe\agent\remote_training_pipeline_scripts\prepare_sft_data.py</code>、<code>C:\Users\mousongzhe\agent\remote_training_pipeline_scripts\prepare_grpo_data.py</code>、<code>C:\Users\mousongzhe\agent\remote_training_pipeline_scripts\common.py</code>。</li>
+      <li>v2 数据脚本：<code>C:\Users\mousongzhe\agent\remote_training_pipeline_v2\scripts\prepare_language_only_data.py</code>、<code>C:\Users\mousongzhe\agent\remote_training_pipeline_v2\scripts\build_grpo_tool_restraint_mix.py</code>。</li>
+      <li>Manifest：<code>C:\Users\mousongzhe\agent\remote_training_pipeline_v2\manifests\sft_data_manifest.json</code>、<code>C:\Users\mousongzhe\agent\remote_training_pipeline_v2\manifests\grpo_data_manifest.json</code>、<code>C:\Users\mousongzhe\agent\remote_training_pipeline_v2\manifests\tool_restraint_mix_manifest.json</code>。</li>
+      <li>Reward / Eval 报告：<code>C:\Users\mousongzhe\agent\remote_training_pipeline_v2\reports\tool_restraint_reward_check.md</code>、<code>C:\Users\mousongzhe\agent\remote_training_pipeline_v2\reports\eval_32b_ckpt100_200_d_ood_compare_1000_ladder_20260622_140818_attempt3_d32_ood32_comparison.md</code>。</li>
+      <li>方法背景：LLM function calling、schema-following、tool learning 与 verifiable reward 思路可作类比，但本页项目 claim 以本地脚本、manifest 与 eval 报告为准。</li>
     </ol>
   </section>
 </article>

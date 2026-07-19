@@ -25,9 +25,9 @@
       padding: 0;
       color: var(--ink);
       background: var(--bg);
-      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif;
-      font-size: 10.95px;
-      line-height: 1.35;
+      font-family: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Segoe UI", Arial, sans-serif;
+      font-size: 11.45px;
+      line-height: 1.4;
     }
 
     body {
@@ -38,7 +38,7 @@
       width: 210mm;
       min-height: 297mm;
       margin: 0 auto;
-      padding: 8mm 12mm 13mm;
+      padding: 9mm 12mm 10mm;
       background: var(--paper);
       box-shadow: 0 14px 42px rgba(21, 28, 38, 0.13);
     }
@@ -46,15 +46,15 @@
     .top {
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 18px;
+      gap: 20px;
       align-items: start;
-      padding-bottom: 6px;
+      padding-bottom: 7px;
       border-bottom: 2px solid var(--ink);
     }
 
     h1 {
       margin: 0;
-      font-size: 26px;
+      font-size: 28px;
       line-height: 1.05;
       letter-spacing: 0;
     }
@@ -62,7 +62,7 @@
     .headline {
       margin-top: 5px;
       color: var(--accent);
-      font-size: 12.9px;
+      font-size: 13.4px;
       font-weight: 800;
     }
 
@@ -75,11 +75,11 @@
 
     .contact {
       display: grid;
-      gap: 4px;
+      gap: 3px;
       min-width: 210px;
       padding-top: 3px;
       color: var(--muted);
-      font-size: 10.5px;
+      font-size: 11px;
       text-align: right;
       white-space: nowrap;
     }
@@ -90,16 +90,16 @@
     }
 
     section {
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
     .section-title {
       display: flex;
       align-items: center;
       gap: 9px;
-      margin: 0 0 3px;
+      margin: 0 0 6px;
       color: var(--ink);
-      font-size: 13.2px;
+      font-size: 14px;
       font-weight: 900;
       letter-spacing: 0;
     }
@@ -112,7 +112,7 @@
     }
 
     .item {
-      margin: 0 0 4px;
+      margin: 0 0 6px;
     }
 
     .item:last-child {
@@ -122,52 +122,53 @@
     .row {
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 12px;
+      gap: 14px;
       align-items: baseline;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
 
     .role {
       font-weight: 900;
-      font-size: 11.9px;
+      font-size: 12.4px;
     }
 
     .date {
       color: var(--muted);
       font-weight: 700;
-      font-size: 10.9px;
+      font-size: 11.2px;
+      font-variant-numeric: tabular-nums;
       white-space: nowrap;
     }
 
     .sub {
       color: var(--muted);
-      font-size: 10.8px;
+      font-size: 11px;
       margin-top: -1px;
     }
 
     ul {
-      margin: 1px 0 0;
-      padding-left: 14px;
+      margin: 3px 0 0;
+      padding-left: 16px;
     }
 
     li {
-      margin: 1.5px 0;
+      margin: 2.4px 0;
       padding-left: 1px;
     }
 
     .skills {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 2px 10px;
-      margin-top: 2px;
+      gap: 4px 16px;
+      margin-top: 3px;
     }
 
     .skill-line {
       display: grid;
-      grid-template-columns: 72px 1fr;
-      gap: 6px;
+      grid-template-columns: 76px 1fr;
+      gap: 7px;
       color: #2f343a;
-      font-size: 10.7px;
+      font-size: 11.1px;
     }
 
     .skill-line strong {
@@ -178,20 +179,20 @@
     .edu-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 3px;
+      gap: 4px;
     }
 
     .edu-line {
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 12px;
+      gap: 14px;
       align-items: baseline;
     }
 
     .tag-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px;
+      gap: 7px;
       margin-top: 4px;
     }
 
@@ -208,12 +209,12 @@
     .project-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 5px;
+      gap: 7px;
     }
 
     .project {
-      border-left: 2px solid var(--accent);
-      padding-left: 9px;
+      border-left: 2.5px solid var(--accent);
+      padding-left: 10px;
     }
 
     .project.wide {
@@ -225,7 +226,23 @@
     }
 
     .project ul {
-      margin-top: 3px;
+      margin-top: 4px;
+    }
+
+    .row > :first-child,
+    .edu-line > :first-child {
+      min-width: 0;
+    }
+
+    .item,
+    .project,
+    .edu-line {
+      break-inside: avoid;
+    }
+
+    .section-title,
+    .row {
+      break-after: avoid;
     }
 
     @media print {
@@ -237,6 +254,8 @@
       html,
       body {
         background: #fff;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
 
       body {
@@ -245,7 +264,8 @@
 
       .page {
         width: 210mm;
-        min-height: 297mm;
+        height: 297mm;
+        min-height: 0;
         margin: 0;
         box-shadow: none;
       }
@@ -258,6 +278,10 @@
         min-width: 172px;
         text-align: right;
         white-space: nowrap;
+      }
+
+      .skills {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -353,9 +377,9 @@
             <div class="date">2026.06</div>
           </div>
           <ul>
-            <li>在公开 LIBERO 四套件完成策略评估，goal/object/spatial/libero_10 达到 99.0%/99.5%/98.0%/93.0%，四套件平均 97.4%，高于官方 OpenPI pi05_libero baseline 的 96.85%；结合任务失败分布分析分辨率、action horizon 与 pretrain 对长时序策略的影响。</li>
-            <li>在 OpenPI 框架上设计 VLA 训练目标与动作表示改造：以 Qwen3-VL-2B + LoRA 作为视觉语言主干，将连续 action window 编码为 assistant 侧离散动作 token，统一 DROID horizon=15/dim=72 与 MindCube VLM QA 的数据格式；形成 VLA-only、VLM-only、co-train 三类训练策略。</li>
-            <li>在沐曦 C500/MACA 国产算力栈上完成三类 100k-step 训练迁移，处理数据流、checkpoint 与样本拼接的硬件适配；通过 LIBERO/ALOHA task-native rollout 验证 observation 归一化、action chunk 与控制执行语义的一致性。</li>
+            <li>在 OpenPI/OpenPiVLA 工程上实现 Qwen3-VL + PEFT LoRA formal trainer：将 DROID action window 序列化为 assistant-side JSON，以 causal LM CE 与 MindCube QA 共用训练入口，并用 VLA-only/VLM-only/co-train 三类 recipe 组织数据与训练语义。</li>
+            <li>在沐曦 C500/MACA 上迁移并结构化 formal training path，处理 eager attention、数据流、action/label mask、checkpoint 保存与 smoke/report 记录；明确 local JSON/causal-CE 路线不等价于上游 FAST DCT/BPE 或原始 action expert。</li>
+            <li>围绕 OpenPI policy-serving 与 LIBERO/ALOHA rollout 建立 observation normalization、action chunk、controller contract 和失败诊断链路；将归档评估与 current formal Qwen 结果分开，待 checkpoint、protocol 与 raw episodes 核验后再汇报 benchmark 数字。</li>
           </ul>
         </div>
 
@@ -365,9 +389,9 @@
             <div class="date">2026.06</div>
           </div>
           <ul>
-            <li>基于 Cosmos Policy / Predict2.5 RoboCasa recipe 复现 WAM 1-epoch 后训练，梳理 action imitation、world prediction、value estimation 三目标在共享视觉 encoder 下的梯度来源；通过 world/value mask 互斥与 demo/world/value slot routing 控制样本路由和损失权重，隔离动作学习与世界/价值预测信号。</li>
-            <li>以 held-out 轨迹 policy MSE 作为离线代理指标验证多目标后训练收益：MSE 由 first-action-repeat baseline 的 0.09718 降至 0.05349，降低约 45%，表明策略动作分布不再依赖简单 repeat 先验。</li>
-            <li>按官方 RoboCasa eval 流程复现 kitchen24；短时序开关门任务成功率达 0.90-0.95，抓取/放置类代表任务达 0.75；对低成功率长 horizon pick-and-place 与柜门/微波炉迁移任务做失败类型分析，定位动作损失、world sample mask 与 value head 的改造方向。</li>
+            <li>基于 Cosmos Policy / Predict2.5 RoboCasa 公开 recipe 开展 WAM 后训练复现，梳理 action、future/world 与 value 在统一 latent sequence 中的 slot routing、condition/loss mask 和 loss weighting；明确上游公开设计与本地复现边界。</li>
+            <li>围绕 RoboCasa 训练到评估链路整理 checkpoint、config、dataset stats、action normalization、sampler、controller 与 task/init/success predicate 的证据合同，用于区分 official-checkpoint harness 验证与 local-checkpoint 诊断。</li>
+            <li>针对项目记录中的 gripper 分布、high-sigma denoising、conditioning frame 与 checkpoint 保存断点建立假设和最小测试矩阵；当前成果定位为复现与 failure diagnosis，不宣称未经 raw artifact 核验的闭环成功率提升。</li>
           </ul>
         </div>
 

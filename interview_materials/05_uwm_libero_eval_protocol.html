@@ -44,10 +44,12 @@
     <ol>
       <li><a href="#question">核心问题</a></li>
       <li><a href="#answer">短答案</a></li>
+      <li><a href="#research-framing">Research Framing</a></li>
       <li><a href="#protocol">Strict Protocol</a></li>
       <li><a href="#failure">失败轨迹解释</a></li>
       <li><a href="#pack">项目面试 8 件套</a></li>
       <li><a href="#questions">追问树</a></li>
+      <li><a href="#grill">高压追问答复</a></li>
       <li><a href="#references">参考与证据</a></li>
     </ol>
   </nav>
@@ -60,7 +62,44 @@
   <section id="answer">
     <h2>短答案</h2>
     <div class="note">
-      <p><strong>可直接口述：</strong>UWM 项目的价值不只是训练了一个 checkpoint，而是把官方训练到评估的闭环协议迁移并固定下来。机器人策略评估对初始状态、动作归一化、warmup、checkpoint、rollout 数非常敏感；这些因素任何一个变化，成功率都可能不是模型能力差异，而是协议差异。所以 strict protocol 的意义是保证结果可比：同一 checkpoint 来源、同一 normalizer、同一 init、同一 warmup、每任务 50 rollouts。当前 5-task average 是 74.4% (186/250)，任务间 0.62-0.88；失败轨迹显示 soup_cheese 的夹取精度和长时序恢复是主要缺口，说明世界模型 rollout 分支还需要覆盖更细粒度接触和失败恢复分布。</p>
+      <p><strong>可直接口述：</strong>UWM 项目的价值不只是训练了一个 checkpoint，而是把官方训练到评估的闭环协议迁移并固定下来。机器人策略评估对初始状态、动作归一化、warmup、checkpoint、rollout 数非常敏感；这些因素任何一个变化，成功率都可能不是模型能力差异，而是协议差异。所以 strict protocol 的意义是保证结果可比：同一 checkpoint 来源、同一 normalizer、同一 init、同一 warmup、每任务 50 rollouts。当前 5-task average 是 74.4% (186/250)，任务间 0.62-0.88；它低于官方 rounded average 0.79 约 4.6pp，所以不能包装成超过官方。更有价值的结论是：相对官方差距最大的是 soup_cheese，绝对低分集中在 moka/mug 这类长时序任务，说明世界模型 rollout 分支还需要覆盖更细粒度接触、对象放置和失败恢复分布。</p>
+    </div>
+  </section>
+
+  <section id="research-framing">
+    <h2>Research Framing：把评估协议讲成研究对象</h2>
+    <p>UWM 页最容易被误解成“跑 benchmark”。更强的研究叙事是：机器人策略结果的可比性本身是开放问题，init、warmup、normalizer、checkpoint、rollout 数会改变结论。</p>
+    <table>
+      <thead><tr><th>阶段</th><th>Motivation 动机</th><th>Hypothesis 假设</th><th>Method 方法</th><th>Experiment 实验</th><th>Failure Analysis 失败分析</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1. Strict protocol 复现</td>
+          <td>开放问题是：同一个机器人策略在不同 init、reset、warmup、normalizer 和 rollout 数下，成功率是否可比？对应论文背景是 UWM / LIBERO official evaluation；本项目核心不是改模型，而是把官方训练-评估闭环迁移并固定。</td>
+          <td>reset-style 高分可能来自更容易的随机初始状态，而不是模型更强。只有 fixed official init、配套 normalizer、固定 warmup 和足够 rollouts 才能用于可比分析。</td>
+          <td>在沐曦 C500/MACA 上迁移 UWM/LIBERO 流程，固定 pruned_init、5-step zero-action warmup、checkpoint/normalizer、50 rollouts/task 和 5-task strict closed-loop protocol。</td>
+          <td>最终 strict aligned eval 为 186/250=74.4%，逐任务 0.88/0.80/0.76/0.66/0.62；官方 Table II rounded average 0.79，当前低约 4.6pp。</td>
+          <td>不能把 reset-style 232/250=0.928 写成正式 benchmark；它只说明协议变化会显著改变结果，是诊断证据而非对外成绩。</td>
+        </tr>
+        <tr>
+          <td>2. 协议差异归因</td>
+          <td>动机是解释为什么同一策略在 reset-style 和 strict eval 下差 18.4pp。研究问题是：差异来自模型权重，还是来自评估分布和协议？</td>
+          <td>如果模型权重不变而结果大幅变化，主要原因应是 init/reset 分布、horizon/warmup、normalizer 和任务难度分布，而不是模型能力突然变化。</td>
+          <td>对比 reset-style 与 strict fixed-init 的 protocol，保留每任务成功率、官方 per-task gap 和 muxi runtime 差异说明；不把不可比结果混进简历。</td>
+          <td>reset-style 为 0.928，strict 为 0.744；四个任务相对官方只低 2-4pp，主要差距来自 soup_cheese 13pp，说明协议控制后失败更集中、更可解释。</td>
+          <td>不能把所有 drop 都归因于 MACA 数值差异；硬件可能解释小幅 residual drop，但不能解释完整协议差异。</td>
+        </tr>
+        <tr>
+          <td>3. 失败轨迹与训练分布缺口</td>
+          <td>动机是把 success rate 拆成可行动的训练信号。机器人策略失败不能只报一个数字，要知道是接触精度、对象定位、动作尺度，还是长时序恢复。</td>
+          <td>soup_cheese 相对官方差距最大，指向抓取/接触/对象定位；moka/mug 绝对成功率更低，指向长时序组合和 off-distribution recovery 缺口。</td>
+          <td>按任务族和失败阶段分析 rollout：init、动作归一化、视频轨迹、成功判定、接触阶段和恢复阶段；将失败映射到 world rollout 分支后续数据设计。</td>
+          <td>5-task strict 结果揭示任务间差异：book_caddy 0.88，soup_cheese 0.80，bowl_drawer 0.76，moka_moka 0.66，mug_mug 0.62。对比官方后，soup_cheese 是最大相对 gap。</td>
+          <td>失败分析目前主要基于评估 summary 和任务语义，还需要更多失败视频分类、action trace 和 normalizer mismatch 小实验来支撑更强因果结论。</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="warning">
+      <p><strong>Grill Me 预留问题：</strong>如果被问“低于官方为什么还要讲”，最强回答是：我不会包装成超过官方；价值在于固定 strict protocol、识别不可比 reset-style、并把失败定位到具体任务分布缺口。</p>
     </div>
   </section>
 
@@ -122,7 +161,7 @@
           <td>增加接触敏感任务、局部视觉扰动、失败恢复样本。</td>
         </tr>
         <tr>
-          <td>长时序恢复</td>
+          <td>moka/mug 长时序恢复</td>
           <td>早期小误差在后续步骤累积，策略无法回到可成功状态。</td>
           <td>训练数据偏专家轨迹，缺少 off-distribution recovery。</td>
           <td>世界模型 rollout 分支加入扰动状态和恢复监督。</td>
@@ -181,31 +220,34 @@
     </table>
 
     <h3>5. 2-3 分钟口述稿</h3>
-    <p>UWM 这个项目我主要想讲评估协议，因为机器人策略复现里很多结果差异不是模型本身，而是 init、warmup、normalizer、checkpoint 和 rollout 数带来的协议差异。我在沐曦 C500/MACA 上迁移 UWM 官方 LIBERO 训练与评估流程，从 LIBERO-90 checkpoint finetune 到 5 个 LIBERO-10 下游任务，并固定动作归一化、初始化状态和评估脚本。评估上使用 pruned_init、5-step zero-action warmup、50 rollouts/task 的 strict closed-loop 协议，得到 5-task average 74.4% (186/250)，任务间成功率 0.62-0.88。这个结果不包装成超过官方，而是用来分析失败分布：soup_cheese 的夹取精度和长时序恢复是主要误差来源，说明世界模型 rollout 分支需要补更细粒度接触、扰动状态和失败恢复样本。这个项目体现的是我对评估可比性和失败归因的控制，而不只是跑了一个 benchmark。</p>
+    <p>UWM 这个项目我主要想讲评估协议，因为机器人策略复现里很多结果差异不是模型本身，而是 init、warmup、normalizer、checkpoint 和 rollout 数带来的协议差异。我在沐曦 C500/MACA 上迁移 UWM 官方 LIBERO 训练与评估流程，从 LIBERO-90 checkpoint finetune 到 5 个 LIBERO-10 下游任务，并固定动作归一化、初始化状态和评估脚本。评估上使用 pruned_init、5-step zero-action warmup、50 rollouts/task 的 strict closed-loop 协议，得到 5-task average 74.4% (186/250)，任务间成功率 0.62-0.88。这个结果低于官方 rounded average 0.79 约 4.6pp，所以我不会写成超过官方；更有价值的是用它复盘协议差异和失败分布：reset-style 0.928 只能作为诊断对照，strict result 才是可信比较点；相对官方差距最大的是 soup_cheese，绝对低分任务显示长时序恢复和对象放置还有缺口。这个项目体现的是我对训练-评估闭环、协议可比性和失败归因的控制，而不只是跑了一个 benchmark。</p>
 
     <h3>6. 高频追问</h3>
-    <ol>
-      <li>为什么 init 会影响成功率？</li>
-      <li>warmup 的作用是什么？</li>
-      <li>normalizer 错了会怎样？</li>
-      <li>checkpoint 和 normalizer 为什么要配套？</li>
-      <li>为什么每任务 50 rollouts？</li>
-      <li>5-task average 如何计算？</li>
-      <li>为什么不写 reset-style 结果？</li>
-      <li>当前结果和官方 Table II 怎么比？</li>
-      <li>soup_cheese 为什么难？</li>
-      <li>长时序恢复失败说明什么？</li>
-      <li>世界模型 rollout 分支如何补？</li>
-      <li>如何判断是模型问题还是 eval harness 问题？</li>
-      <li>如果某任务成功率低，你第一步查什么？</li>
-      <li>动作归一化如何验证？</li>
-      <li>仿真 seed 是否影响结果？</li>
-      <li>UWM 和 WAM 的区别是什么？</li>
-      <li>MACA 迁移是否影响数值？</li>
-      <li>失败轨迹如何记录？</li>
-      <li>如果继续做，先改训练还是评估？</li>
-      <li>你个人贡献在哪里？</li>
-    </ol>
+    <table>
+      <thead><tr><th>追问</th><th>推荐答法</th><th>防线 / 证据</th></tr></thead>
+      <tbody>
+        <tr><td>为什么 init 会影响成功率？</td><td>init 决定物体初始位置、朝向和任务难度。机器人策略对起始状态非常敏感，随机 reset 和官方 fixed init 可能评估到完全不同的难例分布。</td><td>证据是 reset-style 0.928 与 strict 0.744 的协议差异。</td></tr>
+        <tr><td>warmup 的作用是什么？</td><td>warmup 用零动作让环境和观测状态稳定，避免 reset 后的瞬态影响策略输出。没有 warmup，失败可能来自仿真初始化，而不是模型策略。</td><td>不要说是随手加的步骤；它是 protocol 的一部分。</td></tr>
+        <tr><td>normalizer 错了会怎样？</td><td>动作归一化错会系统性放大或缩小动作，造成过冲、动作不足或夹爪维度异常。即使模型输出 token/向量正确，denorm 错也会让控制完全失真。</td><td>checkpoint 和 normalizer 必须配套验证。</td></tr>
+        <tr><td>checkpoint 和 normalizer 为什么要配套？</td><td>checkpoint 学到的是某个动作分布下的 normalized output，normalizer 定义如何还原到真实控制空间。换错 normalizer 相当于改变动作尺度，结果不可比较。</td><td>证据是 checkpoint/normalizer manifest。</td></tr>
+        <tr><td>为什么每任务 50 rollouts？</td><td>少量 rollout 方差太大，容易被偶然初始状态或单次接触失败影响。每任务 50 次能提供基本稳定的 success rate，并与官方评估口径更接近。</td><td>50 不是完美统计显著性，但比 5/10 episode 更稳。</td></tr>
+        <tr><td>5-task average 如何计算？</td><td>每个任务 50 rollouts，共 250 次；当前成功数是 186/250，所以 micro 和 macro average 都是 0.744。逐任务为 44/50、40/50、38/50、33/50、31/50。</td><td>要说清分母，避免像只报百分比。</td></tr>
+        <tr><td>为什么不写 reset-style 结果？</td><td>reset-style 使用随机 reset，不是官方 fixed initial-state 协议，和官方 Table II 不可比。它可以作为诊断对照，但简历正式结果只能写 strict aligned 74.4%。</td><td>不能拿 0.928 对比官方 0.79。</td></tr>
+        <tr><td>当前结果和官方 Table II 怎么比？</td><td>官方 rounded average 是 0.79，当前 strict muxi 结果是 0.744，低约 4.6pp。四个任务差距约 2-4pp，主要差距来自 soup_cheese 的 13pp。</td><td>不要说超过官方；诚实比较更可信。</td></tr>
+        <tr><td>soup_cheese 为什么难？</td><td>它对对象定位、抓取接触点和夹取姿态更敏感，早期小偏差会导致后续放置失败。当前它相对官方差距最大，说明细粒度接触和恢复分布不足。</td><td>可以讲分布缺口，不要瞎说单一原因已证实。</td></tr>
+        <tr><td>长时序恢复失败说明什么？</td><td>说明策略主要在 expert-like 状态上学得好，但一旦早期动作把系统带到偏离专家轨迹的状态，就缺少 recovery 能力。moka/mug 这类低分任务更能暴露这个问题。</td><td>连接到 off-distribution recovery 数据。</td></tr>
+        <tr><td>世界模型 rollout 分支如何补？</td><td>可以加入扰动状态、失败恢复片段、接触敏感任务和更细粒度对象状态，让 world rollout 不只覆盖干净 expert trajectory，而能学习偏离后如何回到成功区域。</td><td>这是后续方向，不要说已经提升成功率。</td></tr>
+        <tr><td>如何判断是模型问题还是 eval harness 问题？</td><td>先查 harness：init、warmup、normalizer、checkpoint、horizon、success predicate、rollout 数和脚本版本；这些确认后再看模型输出、视频和失败轨迹。</td><td>机器人复现里先排协议错，再调模型。</td></tr>
+        <tr><td>如果某任务成功率低，你第一步查什么？</td><td>先查该任务的 init 和 normalizer/checkpoint 是否一致，再看失败是否集中在同一阶段；如果协议没错，再看视觉定位、动作尺度和接触阶段。</td><td>不要一上来改训练超参。</td></tr>
+        <tr><td>动作归一化如何验证？</td><td>看 normalized action 的范围、denorm 后是否落在控制器期望区间，检查夹爪维度和 xyz/rot 维度是否合理，再用少量 rollout 视频确认动作幅度没有系统性过大/过小。</td><td>需要 action debug 或 normalizer checksum。</td></tr>
+        <tr><td>仿真 seed 是否影响结果？</td><td>会影响随机 reset 分布和某些物体初始状态；这也是为什么 strict fixed init 更重要。seed 不是坏事，但必须被记录和控制。</td><td>seed 不能替代 official init protocol。</td></tr>
+        <tr><td>UWM 和 WAM 的区别是什么？</td><td>WAM 讲 action/world/value 多目标训练机制；UWM 讲 unified world model 在 LIBERO 上的训练-评估闭环和 strict protocol。一个偏训练目标机制，一个偏评估协议与可比性。</td><td>不要混用两个项目的指标。</td></tr>
+        <tr><td>MACA 迁移是否影响数值？</td><td>可能带来 runtime 和数值库差异，能解释小幅 residual drop，但不能作为所有差距的借口。核心是固定同一 MACA 环境下的训练和 eval contract，让结果可复查。</td><td>不要把低分全归因硬件。</td></tr>
+        <tr><td>失败轨迹如何记录？</td><td>记录每个 rollout 的 success、任务名、初始状态、动作日志、视频和失败阶段，再按视觉定位、动作尺度、接触、长时序恢复分类，服务下一轮数据补充。</td><td>只写 exit code 没价值；要能归因。</td></tr>
+        <tr><td>如果继续做，先改训练还是评估？</td><td>先把评估协议继续固定并整理失败类型，再改训练。因为没有稳定评估，训练改动无法判断是否真的有效；有失败分布后再补 recovery 数据和 world rollout 分支。</td><td>先评估可比，再训练改造。</td></tr>
+        <tr><td>你个人贡献在哪里？</td><td>我负责在沐曦 C500/MACA 上迁移 UWM/LIBERO 训练与评估流程，固定 strict protocol，整理 5-task 结果，与官方 Table II 对齐比较，并把失败归因到接触精度、长时序恢复和协议差异。</td><td>不要说超过官方；讲复现、协议控制和失败分析。</td></tr>
+      </tbody>
+    </table>
 
     <h3>7. 补证据 Checklist</h3>
     <table>
@@ -241,6 +283,63 @@
           <td class="bad">用来看看哪里失败。</td>
           <td class="ok">帮助定位问题。</td>
           <td class="good">把失败从单个数字拆成训练分布缺口：接触精度、长时序恢复、off-distribution state，指导下一轮数据和 world rollout 设计。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="grill">
+    <h2>Grill Me：高压追问答复卡</h2>
+    <table>
+      <thead><tr><th>高压追问</th><th>推荐口述</th><th>危险边界</th><th>需要证据</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>为什么评估协议本身是项目难点，而不是“按官方跑一下”？</td>
+          <td>机器人 closed-loop eval 对初始状态、normalizer、warmup、checkpoint、horizon 和 rollout 数都敏感。任何一个不固定，成功率变化都可能来自评估分布，而不是模型能力。所以这个项目的难点是把训练来源、checkpoint/normalizer、fixed init 和 rollout 协议全部固定，得到可比较、可复盘的结果。</td>
+          <td>不要把协议控制讲成低价值跑分；要讲“可比性”和“失败归因”的前提。</td>
+          <td>strict eval manifest、eval 脚本、50 rollouts/task summary。</td>
+        </tr>
+        <tr>
+          <td>为什么 reset-style 232/250=0.928 不能写成正式 benchmark？</td>
+          <td>reset-style 使用 env.seed + env.reset 的随机初始分布，不等于官方 fixed initial-state 协议。它可以作为诊断，说明同一个策略在较宽松或不同初始分布下能成功，但不能和官方 Table II 直接比较。简历里宁愿写 74.4% strict，也不写看起来更高但不可比的 92.8%。</td>
+          <td>不要把 0.928 和官方 0.79 做正向对比；这是最容易被问穿的点。</td>
+          <td>final_strict_eval JSON、reset-style protocol 说明。</td>
+        </tr>
+        <tr>
+          <td>当前 74.4% 低于官方 0.79，怎么回答不显弱？</td>
+          <td>我会主动说这个结果没有超过官方，低约 4.6pp。价值在于它是在严格对齐协议下的可信复现点，并且四个任务只低约 2-4pp，主要差距来自 soup_cheese。对面试来说，诚实比较和定位 gap 比报一个不可比高分更有价值。</td>
+          <td>不要回避低于官方，也不要把 muxi 数值差异当万能解释。</td>
+          <td>per-task official gap 表、Muxi runtime 差异说明。</td>
+        </tr>
+        <tr>
+          <td>init、warmup、normalizer 各自为什么会影响结果？</td>
+          <td>init 改变物体位置和任务难度；warmup 避免环境刚 reset 后状态不稳定影响策略；normalizer 决定连续动作尺度，错了会系统性过冲或动作幅度不足。这些因素在语言模型 eval 里可能像配置项，但在机器人 closed-loop 里会直接改变物理轨迹。</td>
+          <td>不要只说“会影响”，要能说出影响路径。</td>
+          <td>初始化协议、zero-action warmup、normalizer 文件和 action range。</td>
+        </tr>
+        <tr>
+          <td>失败轨迹说明了什么训练分布缺口？</td>
+          <td>失败不是只看 success rate 一个数字。soup_cheese 相对官方差距最大，说明抓取接触点、对象定位和视觉误差恢复还不稳；moka/mug 绝对成功率更低，说明长时序组合和对象放置过程中的小误差会累积。对应的训练分布缺口是 expert trajectory 太干净，缺少 off-distribution recovery 和接触敏感样本。</td>
+          <td>不要说“失败轨迹说明模型不好”这么空；要落到数据和 world rollout 设计。</td>
+          <td>失败视频/trace、任务族成功率、off-policy recovery 设计。</td>
+        </tr>
+        <tr>
+          <td>如果某任务突然掉很多，你第一步查模型还是 eval harness？</td>
+          <td>先查 eval harness，因为协议错误会造成假失败：checkpoint 是否对应 normalizer，init 是否 fixed，warmup 是否一致，动作 denorm 是否正确，episode horizon 和 success predicate 是否官方一致。确认这些无误后，再看模型侧的视觉定位、动作分布和失败轨迹。</td>
+          <td>不要一上来调模型；机器人复现里 eval harness 错误很常见。</td>
+          <td>脚本 hash、normalizer checksum、per-task summary。</td>
+        </tr>
+        <tr>
+          <td>UWM 和 WAM 的差别怎么讲？</td>
+          <td>WAM 页我讲的是 action/world/value 多目标如何帮助或干扰 policy imitation；UWM 页我讲的是 unified world model 在 LIBERO 上从训练到 strict closed-loop eval 的协议复现。前者偏训练目标机制，后者偏评估协议和世界模型策略复现。两者都和世界/动作建模有关，但面试叙事不能混成一个项目。</td>
+          <td>不要把 WAM 的失败诊断指标拿来支撑 UWM 性能。</td>
+          <td>两个项目各自的报告、任务集和 eval protocol。</td>
+        </tr>
+        <tr>
+          <td>沐曦 C500/MACA 对结果有什么影响？</td>
+          <td>我会谨慎说：国产算力迁移会带来 runtime、数值库和保存/恢复协议的差异，可能解释小幅 residual drop，但不能用来解释所有差距。更重要的是我在同一 MACA 环境下固定训练和 eval contract，让结果能被复查，而不是把硬件差异当借口。</td>
+          <td>不要说所有低分都是硬件造成；面试官会要求证据。</td>
+          <td>MACA run contract、strict summary、与官方 per-task gap。</td>
         </tr>
       </tbody>
     </table>
