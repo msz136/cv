@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-030 Source Freeze：Test-time Planning Latency、Communication 与 Risk Contract</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm030_test_time_planning_latency_risk_source_freeze.md">
+<meta name="aris:source-sha256" content="b97ac83aeacc7d509dcd98ed04d6e45cd18b40e9333eb17de439b4f7044184ff">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>b97ac83aeacc7d509dcd98ed04d6e45cd18b40e9333eb17de439b4f7044184ff</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm030_test_time_planning_latency_risk_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 来源冻结</a></li><li><a href="#2-1-frozen-cosmos-files">2.1 Frozen Cosmos files</a></li><li><a href="#3-planning-critical-path">3. Planning critical path</a></li><li><a href="#4-n-world-value-ensemble-depth">4. N、world/value ensemble、depth 的计算模型</a></li><li><a href="#5-frozen-cosmos-exact-behavior">5. Frozen Cosmos exact behavior</a></li><li><a href="#5-1-recipe">5.1 论文 recipe</a></li><li><a href="#5-2">5.2 代码路径</a></li><li><a href="#6">6. 正确计时合同</a></li><li><a href="#6-1-clock">6.1 两种 clock，两类问题</a></li><li><a href="#6-2">6.2 统计协议</a></li><li><a href="#7-deadline-freshness-failure-policy">7. Deadline、freshness 与 failure policy</a></li><li><a href="#7-1-stop-and-plan">7.1 同步 stop-and-plan</a></li><li><a href="#7-2-overlap">7.2 异步 overlap</a></li><li><a href="#7-3-freshness-gate">7.3 Freshness gate</a></li><li><a href="#7-4">7.4 限险状态机</a></li><li><a href="#8-matched-n-latency-success-evaluation">8. Matched N–latency–success evaluation</a></li><li><a href="#9">9. 可审计伪代码</a></li><li><a href="#10-wam">10. WAM 真实性边界</a></li><li><a href="#11">11. 下一入口</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 WM-030 Source Freeze：Test-time Planning Latency、Communication 与 Risk Contract</h1>
+<div class="meta">审计日期：2026-07-18 状态：source_frozen / VLA-WM-030 / knowledge_synced / card_synced / WARN 覆盖题目：VLA-WM-030 本轮边界：冻结 test-time planning 的 action proposal、world rollout、value scoring、selector、N/ensemble/search-depth 开销，端到端计时方法和 deadline/freshness/fallback 合同；不把上游指定硬件 wall-clock 外推到本机或用户 WAM，也不声称当前项目已完成 planning latency 优化。</div>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>先拆 stage，再谈“planning latency”。</strong>最小 critical path 是 observation capture/serialize/upload → admission/queue/preprocess → action proposal → world rollout → value scoring → selector → response/download → action queue/controller apply；只计 GPU forward 会漏掉通信、排队、序列化和 stale action。[S2][S5]</li><li><strong>N 增大既不是纯线性成本，也不是免费并行。</strong>串行时近似累加 N 个 branch；N 个 GPU 并行时 wall-clock 更接近最慢 branch 加 IPC/queue/collect，但 compute、显存、payload 和 tail latency 仍增长。必须同时报告 N、并行度 P、world/value ensemble、denoising steps、search depth 和 batch policy。[S1][S2]</li><li><strong>CUDA 计时必须处理异步执行。</strong>PyTorch 官方说明 GPU operation 默认异步，未同步的 CPU wall-clock 不准确；kernel 段用 CUDA Event 或显式 synchronize，端到端段用 monotonic wall-clock，并分别报告 warmup/cold-start 与 p50/p95/p99。[S3]</li><li><strong>deadline 取决于执行架构。</strong>同步 stop-and-plan 检查最大允许 pause；异步 overlap 检查 \(L_{plan}+M\le K/f_{ctrl}\)；两者都要检查 observation/action age、TTL、queue underrun、late-result cancellation 和 watchdog，不能只用平均 latency。[S6]</li><li><strong>Frozen Cosmos 给出的是特定 recipe。</strong>论文报告 direct joint generation 在单 H100 上 5-step 为 0.61 s、1-step 为 0.16 s，ALOHA 10-step 为 0.95 s；真实机器人 best-of-N 使用 N=8、8 张 H100、action 10-step、3 个 world samples×5-step、每个 future 5 个 value samples×5-step，总计 4.9 s。它们是指定硬件/实现的 action-chunk wall-clock，不是通用 VLA SLA。[S1]</li><li><strong>Frozen code 的 telemetry 仍不完整。</strong>代码用 <code>time.time()</code> 分段打印 action/future/value 和 parallel total，<code>parallel_timeout=15</code>，默认 <code>search_depth=1</code>；但没有统一 request id 下的 upload/queue/IPC/selector/download/controller-apply 时间戳，也没有 CUDA Event、warmup 或 percentile ledger。[S2]</li><li><strong>WAM 本地没有 planning runtime 证据。</strong>当前缺 candidate/future/value ledger、N/P/depth sweep、network trace、action freshness、controller apply、fallback 和 matched success-latency curve，不能说已经实现或优化 Cosmos planning。[S7]</li></ol>
+<h2 id="2">2. 来源冻结</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>冻结版本</th><th>可支持</th><th>不能支持</th><th>状态</th></tr></thead><tbody>
+<tr><td>S1</td><td><em>Cosmos Policy: Fine-Tuning Video Models for Visuomotor Control and Planning</em></td><td>arXiv:2601.16163v1；HTML 访问 2026-07-18；UTF-8 SHA-256 <code>02ca817937f4b62a96873dc2702574d6e1c4a66715f8cedec24fd5cf42f4fc70</code></td><td>direct/action-chunk wall-clock、1/5/10 denoise、真实机器人 N=8/3 world/5 value/4.9 s、指定 H100 语境与动态任务限制</td><td>本机 latency、网络/队列分解、任意任务 SLA、WAM 本地复现</td><td>primary / checked</td></tr>
+<tr><td>S2</td><td>NVlabs/cosmos-policy</td><td>commit <code>18a2accadf4e7a3531e56754102af5a24d2316da</code></td><td>serial/parallel best-of-N、worker queue、timeout、stage prints、FastAPI <code>/act</code>、selector、默认 N/depth/ensemble/open-loop fields</td><td>打印即完整 trace；timeout 后一定安全 fallback；上游代码等于个人实现</td><td>official-code / WARN</td></tr>
+<tr><td>S3</td><td>PyTorch CUDA semantics</td><td>PyTorch 2.13 docs；访问 2026-07-18</td><td>CUDA 默认异步；未同步 CPU timing 不准确；<code>torch.cuda.synchronize()</code> 与 CUDA Event/<code>elapsed_time</code> 方法</td><td>某模型真实 kernel latency 或端到端 SLA</td><td>official-doc / checked</td></tr>
+<tr><td>S4</td><td>NVIDIA Triton Perf Analyzer measurements</td><td>rolling docs；访问 2026-07-18；UTF-8 SHA-256 <code>0c24a82a70b5993bfd6be59ac899c4d285c2b57c60a62d8c666a528fed0b734e</code></td><td>client latency、send/receive/response wait、server queue/compute/overhead、p50/p90/p95/p99 与 throughput-latency 分解范式</td><td>当前服务使用 Triton；其字段已被 WAM/Cosmos 采集</td><td>official-doc / checked</td></tr>
+<tr><td>S5</td><td>VOL 05 ENG-022 Policy Server Resilience</td><td>本地 canonical + review；2026-07-18</td><td>bounded queue、backpressure、deadline/cancel、action freshness、watchdog/fallback 的 serving 合同</td><td>当前项目已实现 resilience 或达到 p99</td><td>supporting / WARN</td></tr>
+<tr><td>S6</td><td>WM-023 Open-loop / Receding Horizon 与 WM-029 OOD Value</td><td>本地 canonical + review；2026-07-18</td><td>H/K/action-age 时间轴、同步/异步合同、best-of-N selector risk</td><td>某 K/N/β 对 WAM 已最优</td><td>supporting / WARN</td></tr>
+<tr><td>S7</td><td>WAM Claim–Evidence Inventory</td><td>2026-07-18</td><td>local checkpoint/protocol/ownership 与 planning artifact 缺口</td><td>local planning latency、success uplift 或线上部署</td><td>local-evidence / WARN</td></tr>
+</tbody></table>
+<h3 id="2-1-frozen-cosmos-files">2.1 Frozen Cosmos files</h3>
+<table><thead><tr><th>文件</th><th>关键作用</th><th>SHA-256</th></tr></thead><tbody>
+<tr><td><code>cosmos_policy/experiments/robot/cosmos_utils.py</code></td><td>action/world/value generation、same-model ensembles、worker pool、IPC queue、timeout</td><td><code>ebe56d63d88f9a4d4ad6706d9a9ecd1376a1dff1b5cbb010c8fcd8f0c2ee0b1d</code></td></tr>
+<tr><td><code>cosmos_policy/experiments/robot/libero/run_libero_eval.py</code></td><td>LIBERO N/open-loop/serial-parallel path、stage logging、selector 与 env step</td><td><code>2c00207579749d935102276081858a790ad413a7a64c5b838cb8f4d5d508c9a7</code></td></tr>
+<tr><td><code>cosmos_policy/experiments/robot/robocasa/run_robocasa_eval.py</code></td><td>RoboCasa defaults 与 planning loop</td><td><code>8e92cddfc72a23b95abe8c2b99fce93a1c382cf46ea0e97d87a8805c06360f4b</code></td></tr>
+<tr><td><code>cosmos_policy/experiments/robot/aloha/deploy.py</code></td><td>FastAPI <code>/act</code>、serial/parallel N、selector、optional all-results response</td><td><code>e4592f5ac26a41d5d550190ea7cd9531029ac329955be8409d2f60d54824914e</code></td></tr>
+</tbody></table>
+<h2 id="3-planning-critical-path">3. Planning critical path</h2>
+<pre><code class="language-text">camera/state capture (t_obs)
+  → encode / serialize / upload
+  → admission / server queue / preprocess
+  → N action proposals
+  → per proposal: E_w world samples
+  → per future: E_v value samples
+  → depth aggregation + best-of-N selector
+  → serialize / download
+  → action queue / controller apply (t_apply)</code></pre>
+<p>端到端 observation-to-actuation latency 定义为：</p>
+<div class="formula">\[
+L_{e2e}=t_{apply}-t_{obs}.
+\]</div>
+<p>变量解释：\(t_{obs}\) 是传感器样本时间而非 client 发包时间，\(t_{apply}\) 是 controller 真正接收/应用动作而非 server 返回时间。实现必须使用 <code>request_id + observation_version + monotonic timestamp</code> 串起各 stage；跨主机单向分解需要时钟同步或用 RTT/服务端时间间接估计。</p>
+<p>可审计分解为：</p>
+<div class="formula">\[
+L_{e2e}=L_{capture}+L_{encode}+L_{up}+L_{queue}+L_{pre}
++L_{plan}+L_{select}+L_{down}+L_{ctrl}.
+\]</div>
+<p>变量解释：<code>plan</code> 是模型搜索，<code>select</code> 是 depth/value 聚合与候选选择，<code>ctrl</code> 含 action queue 到 apply；这些项可能 overlap，所以逐项和只在同一 critical path、相同 timestamp 语义下成立。Triton 的 queue/compute/send-receive 分解只作为 instrumentation 范式，不表示 Cosmos 使用 Triton。[S4]</p>
+<h2 id="4-n-world-value-ensemble-depth">4. N、world/value ensemble、depth 的计算模型</h2>
+<p>令 \(N\) 为 action proposals，\(E_w\) 为每个 proposal 的 world samples，\(E_v\) 为每个 future 的 value samples，\(D\) 为 search depth，\(P\) 为并行 worker/GPU 数。depth=1、autoregressive stage 的粗略 work 为：</p>
+<div class="formula">\[
+W_{plan}\approx N\left(C_a+E_w C_w+E_wE_v C_v\right).
+\]</div>
+<p>变量解释：\(C_a,C_w,C_v\) 分别是一次 action、world、value generation 的成本；denoising steps、输入长度、图像数、dtype/backend 和 batch 决定每项实际值。公式只表示调用数级别，不假设 kernel cost 严格线性。[S1][S2]</p>
+<p>串行 wall-clock 近似：</p>
+<div class="formula">\[
+L_{plan}^{serial}\approx
+\sum_{i=1}^{N}L_i+L_{select}.
+\]</div>
+<p>并行 wall-clock 近似：</p>
+<div class="formula">\[
+L_{plan}^{parallel}\approx
+L_{dispatch}+\max_{i\le N}L_i+L_{collect}+L_{select},
+\qquad P\ge N.
+\]</div>
+<p>变量解释：并行由最慢 branch 决定，并额外支付 process start/warmup、observation 复制、IPC serialization、queue wait、result copy 和 straggler 成本；若 \(P&lt;N\)，还要分 wave，不能把 N GPU 结果外推到单 GPU。search depth &gt;1 时，后续 action→world→value 会递归增加 work，且 branch factor 取决于 world samples；frozen defaults 为 depth=1。[S2]</p>
+<h2 id="5-frozen-cosmos-exact-behavior">5. Frozen Cosmos exact behavior</h2>
+<h3 id="5-1-recipe">5.1 论文 recipe</h3>
+<ul><li>direct policy 同一次生成 action/future/value：单 H100，5 denoise 为 0.61 s，1 denoise 为 0.16 s；ALOHA 10 denoise 为 0.95 s。论文明确这些是生成一个 action chunk 的 wall-clock，并举例 ALOHA 会暂停 0.95 s 后执行 2 s chunk。[S1]</li><li>model-based planning 真实机器人 recipe：N=8，8 张并行 H100；每个 action proposal 10 denoise；每个 proposal 3 个 future，每个 5 denoise；每个 future 5 个 value，每个 5 denoise；总 search 4.9 s。[S1]</li><li>论文同时把约 5 s planning latency 视为 dynamic manipulation/locomotion 的限制；不能把“任务能跑”解释成满足实时性或安全 SLA。</li></ul>
+<h3 id="5-2">5.2 代码路径</h3>
+<ul><li><code>WorkerPoolManager</code> 为每个 GPU 建 <code>multiprocessing.Queue</code>，把 observation/task 分发给 query，等待 <code>num_queries_best_of_n</code> 个结果直到 <code>parallel_timeout</code>；默认 timeout 15 s，worker 初始化 timeout 600 s。[S2]</li><li>worker 内分别用 <code>time.time()</code> 围住 action、future、value 调用；parallel caller 只记录整批完成时间。代码没有显式 CUDA Event/synchronize，因此这些日志受异步 kernel、隐式 CPU copy/sync 和 Python/IPC 边界共同影响，不能当 kernel-only profile。[S2][S3]</li><li>LIBERO/RoboCasa 默认 N=1、parallel off、depth=1、world ensemble off、value ensemble off；公开支持不等于默认启用。</li><li>ALOHA deploy 暴露 FastAPI <code>/act</code>；request 可携带多路图像、proprio 与 task，response 默认返回 selected actions/future/value。若 <code>return_all_query_results=True</code>，还会返回所有 action、future/value/depth 结果，通信与 JSON serialization 可能显著放大，必须单独测 payload bytes 和 latency。[S2]</li><li>selector 在已有结果中取最大 value。timeout/worker error 的 returned-result count、missing candidate IDs、fallback reason 与 stale request 需要显式落盘；不能只记录 selected seed。</li></ul>
+<h2 id="6">6. 正确计时合同</h2>
+<h3 id="6-1-clock">6.1 两种 clock，两类问题</h3>
+<table><thead><tr><th>区间</th><th>推荐时钟</th><th>必须处理</th><th>输出</th></tr></thead><tbody>
+<tr><td>GPU kernel / stage</td><td>CUDA Event；必要时 <code>torch.cuda.synchronize()</code></td><td>async stream、warmup、host-device copy 边界</td><td>每 stage ms、p50/p95/p99</td></tr>
+<tr><td>process/client/server/controller wall-clock</td><td>monotonic <code>perf_counter_ns</code> 类时钟</td><td>request id、clock domain、serialization、queue、RTT</td><td>e2e/action age/queue/RTT</td></tr>
+</tbody></table>
+<p>PyTorch 官方明确指出 GPU operation 默认异步，未同步的 CPU timing 不准确；<code>Event.elapsed_time</code> 返回 event 间毫秒。不要在每个生产 request 中无条件全局 synchronize 破坏并发，benchmark/profile run 可同步，线上可用 event/trace sampled instrumentation。[S3]</p>
+<h3 id="6-2">6.2 统计协议</h3>
+<ol><li>固定 model/checkpoint、processor、normalizer、dtype/backend、image shape/count、N/P/\(E_w\)/\(E_v\)/D、denoise、batch、K/frequency。</li><li>cold-start 单独报告 model load、CUDA context、compile/cache/T5 init；steady-state 先 warmup，再采足够 request。</li><li>记录 p50/p95/p99/max、timeout/cancel/error/fallback rate、queue depth、payload bytes、GPU utilization/memory，而非只报 mean/FPS。</li><li>client RTT、server queue、preprocess、GPU service、selector、serialization、controller apply 分开；server compute 不能从 client RTT 直接相减，除非 timestamp/clock contract成立。</li><li>每条 episode 绑定 request/observation/action IDs，保留 selected/unselected candidate latency 与 outcome，防止只看成功候选。</li></ol>
+<h2 id="7-deadline-freshness-failure-policy">7. Deadline、freshness 与 failure policy</h2>
+<h3 id="7-1-stop-and-plan">7.1 同步 stop-and-plan</h3>
+<p>机器人在规划时停止或保持安全动作，约束是：</p>
+<div class="formula">\[
+L_{plan}^{p99}+M\le L_{pause,max}.
+\]</div>
+<p>变量解释：\(M\) 是 scheduling/network/controller margin，\(L_{pause,max}\) 由任务稳定性、负载/接触保持与安全分析给出。它不要求必然小于 chunk execution time，但 pause 本身必须进入成功和安全评估。</p>
+<h3 id="7-2-overlap">7.2 异步 overlap</h3>
+<p>当前 chunk 执行时准备下一 chunk，避免 queue underflow 的必要工程 gate 为：</p>
+<div class="formula">\[
+L_{plan}^{p99}+M\le \frac{K}{f_{ctrl}}.
+\]</div>
+<p>变量解释：\(K/f_{ctrl}\) 是当前可用 action prefix 的物理时长；若 deadline miss，不能静默等待或执行任意 stale chunk，必须执行已冻结的 fallback。</p>
+<h3 id="7-3-freshness-gate">7.3 Freshness gate</h3>
+<p>对第 j 个动作：</p>
+<div class="formula">\[
+A_j=t_{apply,j}-t_{obs},
+\qquad
+execute(a_j)\iff A_j\le TTL\land version(a_j)=version_{active}.
+\]</div>
+<p>变量解释：<code>TTL</code> 是按任务/阶段冻结的最大 action age，version 防止旧 request 晚到覆盖新 plan。还要记录 cancel acknowledged time、late-result drop、queue underrun、watchdog trip 与 terminal/safety reason。[S5][S6]</p>
+<h3 id="7-4">7.4 限险状态机</h3>
+<pre><code class="language-text">admit request only if queue/deadline budget permits
+  → plan with candidate-completeness contract
+  → if complete and fresh: select + enqueue
+  → if partial: accept only when min_candidates and policy allow; mark degraded
+  → if timeout/error/stale: cancel late work
+  → fallback: direct policy / last safe short prefix / hold / safe stop
+  → watchdog logs reason and recovery</code></pre>
+<p>具体 fallback 必须由机器人/任务安全评审决定；“重复上一动作”在接触和移动目标任务中可能危险，不能作为通用默认值。</p>
+<h2 id="8-matched-n-latency-success-evaluation">8. Matched N–latency–success evaluation</h2>
+<p>最小实验分两层：</p>
+<table><thead><tr><th>层</th><th>固定</th><th>扫描</th><th>记录</th></tr></thead><tbody>
+<tr><td>algorithmic N</td><td>同一最大 candidate pool、proposal seeds、world/value checkpoint、selector、episode/init</td><td>prefix N=1/2/4/8；必要时 oracle/random</td><td>rank/selected regret、success、failure stage；避免不同 N 采到不同候选造成混淆</td></tr>
+<tr><td>system scaling</td><td>checkpoint/data/protocol/N</td><td>P、serial/parallel/batch、payload mode</td><td>p50/p95/p99 stage/e2e、GPU-hours、memory、queue、timeout/fallback</td></tr>
+<tr><td>denoise/ensemble/depth</td><td>candidate identity 与 episode</td><td>action/world/value steps，\(E_w/E_v/D\)</td><td>quality-latency frontier、OOD/error、deadline miss</td></tr>
+<tr><td>control</td><td>task/init/controller/success predicate</td><td>K/frequency、sync/async、latency injection</td><td>action age、pause、underrun、recovery、safety event</td></tr>
+</tbody></table>
+<p>比较时至少报告 \((N,P,E_w,E_v,D,s_a,s_w,s_v,K,f_{ctrl})\) 与 hardware/software revision。只画 success–N 而不画 latency/resource，或只画 latency 而不固定 candidate/episode，都不能支持部署取舍。</p>
+<h2 id="9">9. 可审计伪代码</h2>
+<pre><code class="language-python">def plan_with_deadline(obs, cfg, planner, controller, trace):
+    # 1. Bind sensor time, request identity and freshness deadline.
+    req = new_request(obs.timestamp, obs.version, deadline=cfg.deadline)
+    trace.mark(req, &quot;client_encode_start&quot;)
+
+    # 2. Record admission/queue/preprocess separately from GPU stages.
+    admitted = bounded_admission(req, max_queue=cfg.max_queue)
+    if not admitted:
+        return safe_fallback(&quot;queue_reject&quot;)
+
+    # 3. Use CUDA events for GPU stages; keep candidate IDs through N/world/value.
+    candidates = planner.propose(req, n=cfg.N, trace_cuda=True)
+    futures = planner.rollout(candidates, ensemble=cfg.Ew, trace_cuda=True)
+    scores = planner.score(futures, ensemble=cfg.Ev, trace_cuda=True)
+
+    # 4. Drop late/stale results before selection; partial results require policy.
+    if expired(req) or obs.version != controller.active_observation_version:
+        cancel_late_work(req)
+        return safe_fallback(&quot;stale_or_timeout&quot;)
+    if len(scores) &lt; cfg.min_candidates:
+        return safe_fallback(&quot;insufficient_candidates&quot;)
+
+    selected = select(scores)
+    action = controller.enqueue(selected.actions, request=req)
+    trace.mark(req, &quot;controller_apply&quot;, action_id=action.id)
+    return action</code></pre>
+<p>这是 instrumentation/failure-policy 设计，不是 WAM 已执行代码。真实实现还需处理 clock sync、process crash、GPU OOM、client disconnect、controller reject 与 safety supervisor。</p>
+<h2 id="10-wam">10. WAM 真实性边界</h2>
+<p>当前 WAM inventory 可支持训练/评估材料的局部诊断，但没有 request-level planning trace、candidate/world/value bundle、N/P/ensemble/depth sweep、network payload/RTT、controller apply、action-age、deadline/fallback 或 matched closed-loop episodes。[S7]</p>
+<p>安全说法：<strong>“我会先把 action/world/value/selector 与通信/队列/controller apply 放到同一 request trace，再分别做 algorithmic N 和 system P sweep，用 p99 deadline、action freshness 和 fallback rate 约束 success–latency frontier。”</strong></p>
+<p>不能说：<strong>“我已经把 WAM best-of-N 并行化到 4.9 秒/实时，并证明 planning 提升成功率。”</strong>4.9 s 是 Cosmos 论文的指定 8×H100 recipe，不是个人结果。</p>
+<h2 id="11">11. 下一入口</h2>
+<p>下一 bounded slice 是 <code>VLA-WM-031</code>：Sim2Real reality gap 的视觉、动力学、控制、任务与随机性分层。本页不提前扩写 domain randomization 或 system identification。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>NVlabs, <a href="https://arxiv.org/html/2601.16163v1">Cosmos Policy</a>, 2026。</li><li>NVlabs, <a href="https://github.com/NVlabs/cosmos-policy/tree/18a2accadf4e7a3531e56754102af5a24d2316da"><code>cosmos-policy@18a2acc</code></a>，重点 <a href="https://github.com/NVlabs/cosmos-policy/blob/18a2accadf4e7a3531e56754102af5a24d2316da/cosmos_policy/experiments/robot/cosmos_utils.py"><code>cosmos_utils.py</code></a> 与 <a href="https://github.com/NVlabs/cosmos-policy/blob/18a2accadf4e7a3531e56754102af5a24d2316da/cosmos_policy/experiments/robot/aloha/deploy.py"><code>aloha/deploy.py</code></a>。</li><li>PyTorch 2.13, <a href="https://docs.pytorch.org/docs/2.13/notes/cuda.html#asynchronous-execution">CUDA semantics: Asynchronous execution</a>、<a href="https://docs.pytorch.org/docs/2.13/generated/torch.cuda.Event.html"><code>torch.cuda.Event</code></a>、<a href="https://docs.pytorch.org/docs/2.13/generated/torch.cuda.synchronize.html"><code>torch.cuda.synchronize</code></a>。</li><li>NVIDIA Triton, <a href="https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/perf_analyzer/docs/measurements_metrics.html">Perf Analyzer: Measurements and Metrics</a>。</li><li><a href="vol_05_eng022_policy_server_resilience_source_freeze.html">ENG-022 Policy Server Resilience</a>。</li><li><a href="vol_04_wm023_open_loop_receding_horizon_source_freeze.html">WM-023 Open-loop / Receding Horizon</a>。</li><li><a href="vol_04_wm029_imagined_ood_value_calibration_pessimism_source_freeze.html">WM-029 Imagined/OOD Value Calibration</a>。</li><li><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM Claim–Evidence Inventory</a>。</li></ol>
+</article></body></html>

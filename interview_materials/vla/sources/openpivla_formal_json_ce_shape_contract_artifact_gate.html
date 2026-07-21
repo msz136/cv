@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenPiVLA 本地 Artifact Gate：JSON/CE 动作表示与 H/D shape contract</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\openpivla_formal_json_ce_shape_contract_artifact_gate.md">
+<meta name="aris:source-sha256" content="7c8b6d350d63dd9ed95cacd7605af3c3e57191eb622d79252f18ef4ae6d3d7de">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>7c8b6d350d63dd9ed95cacd7605af3c3e57191eb622d79252f18ef4ae6d3d7de</code>；生成自：<code>interview_materials\vla\sources\openpivla_formal_json_ce_shape_contract_artifact_gate.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-evidence-freeze">1. Evidence freeze</a></li><li><a href="#2-droid-row-json-assistant-causal-ce">2. 实际数据流：DROID row → JSON assistant → causal CE</a></li><li><a href="#3-formatter-probe">3. 直接代码证据与 formatter probe</a></li><li><a href="#4-h-d-serialized-width">4. H/D/serialized-width 冲突的正确解释</a></li><li><a href="#5-fast-processor">5. FAST 边界：字段名不是 processor 调用</a></li><li><a href="#6-smoke-evidence">6. Smoke evidence 与 结果边界</a></li><li><a href="#7-claim">7. 对项目 claim 的回写</a></li><li><a href="#30">30 秒项目回答</a></li><li><a href="#8">8. 风险与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>OpenPiVLA 本地 Artifact Gate：JSON/CE 动作表示与 H/D shape contract</h1>
+<div class="meta">状态：<code>local_direct_audit / formatter_probe_passed / semantics_open / WARN</code> 审查日期：2026-07-19 范围：<code>C:\Users\mousongzhe\Project\openpivla_deployment</code> 中 Qwen3-VL formal trainer、recipe、public smoke summary 与 action formatter；只关闭一个本地证据切片，不宣称 checkpoint、benchmark 或个人 ownership 已闭合。 结论先行：本地 formal trainer 的可核验实现是 <strong>assistant JSON content + full-chat Qwen causal LM CE</strong>，不是 assistant-token-only loss，也不是 frozen FAST DCT/BPE processor或连续 flow/action-expert loss。recipe/smoke 的模型合同是 <code>H=15,D=72</code>，但 JSON formatter 对每个 action/state row 使用 <code>limit=16</code>；实际 probe 得到 <code>15×16</code>。后续 <a href="openpivla_action_json_parser_roundtrip_artifact_gate.html">parser/round-trip gate</a> 进一步确认 840/1080 个 schema positions 未序列化、formal package 中没有 action-output parser，axis/unit/decoder/controller 继续 <code>semantics-open</code>。</div>
+<h2 id="1-evidence-freeze">1. Evidence freeze</h2>
+<table><thead><tr><th>ID</th><th>本地对象</th><th>直接核对</th><th>SHA-256 / 状态</th></tr></thead><tbody>
+<tr><td>L01</td><td><code>...\vla_qwen3_repro\formal_train.py</code></td><td><code>_format_action_sequence</code>、<code>DroidActionTextDataset</code>、Qwen chat template、padding labels、<code>Qwen3VLForConditionalGeneration</code>、LoRA、<code>outputs.loss</code></td><td><code>51B67D3E04496E68076BF6461506141EBCDDF9A82E6C30AF1FDC0F1F2CCC6F94</code> / <code>local-direct</code></td></tr>
+<tr><td>L02</td><td><code>...\vla_qwen3_repro\recipes.py</code></td><td><code>action_dim=72</code>、<code>proprio_dim=72</code>、<code>action_horizon=15</code>、<code>fast_tokenizer</code> 字段、三种 run recipe</td><td><code>397D1B384A2BD93D9DC81B7003E6AB7BFAC3FC458EA04008197C3F503F9D780E</code> / <code>local-direct</code></td></tr>
+<tr><td>L03</td><td><code>...\vla_qwen3_repro\data.py</code></td><td>public smoke dataset/batch adapter 与 action padding helper</td><td><code>32C6AA76929D941C4832D2EB4C2550527D3E607E31C2A9F5507CC76EEEDBC2EC</code> / <code>local-direct</code></td></tr>
+<tr><td>S01</td><td><code>artifacts\vla_train_repro\20260305_122516-akpdp2to_smoke_summary.json</code></td><td>VLA-only public smoke、<code>[2,15,72]</code>、tiny loss/grad、private data false</td><td><code>local-direct</code></td></tr>
+<tr><td>S02</td><td><code>artifacts\vla_train_repro\20260310_125200-c6665s5x_smoke_summary.json</code></td><td>co-train public smoke、robot/VLM batch shape、tiny loss/grad、private data false</td><td><code>local-direct</code></td></tr>
+<tr><td>S03</td><td><code>artifacts\vla_train_repro\20260311_114400-nodm49pk_smoke_summary.json</code></td><td>VLM-only public smoke、private data false</td><td><code>local-direct</code></td></tr>
+<tr><td>R01</td><td><code>C:\Users\mousongzhe\Project\openpivla_deployment\artifacts\vla_formal_reproduction_report_20260617.html</code></td><td>报告中 100k/97.4 等汇总与历史路线描述</td><td><code>report-supported</code>；不作为本页 formatter 事实唯一来源</td></tr>
+</tbody></table>
+<p>本页的 <code>Project</code> 路径是用户工作区外的本地项目目录；它没有被复制进本仓库，也没有改写其代码。smoke JSON 的 <code>private_data_deployed=false</code> 明确限制了“公源接口 smoke”与“私有 formal run”之间的推断。</p>
+<h2 id="2-droid-row-json-assistant-causal-ce">2. 实际数据流：DROID row → JSON assistant → causal CE</h2>
+<p><code>formal_train.py</code> 的 DROID path 逐步做：</p>
+<ol><li>从 parquet 读取 <code>action</code>、<code>observation.state</code>、episode 与 language instruction；</li><li>连续 action window 按 <code>action_horizon</code> 截取；</li><li>每一行通过 <code>_to_flat_float_list(..., limit=16)</code>，然后 <code>_format_action_sequence</code> 在不足 horizon 时重复最后一行；</li><li>生成紧凑 <code>{"actions": ...}</code> assistant 文本；</li><li>通过 Qwen chat template/tokenizer；</li><li>collator 只把 <code>attention_mask==0</code> 的 token label 置为 <code>-100</code>；user prompt、chat wrapper 与 assistant JSON 的全部非 padding token 进入 HF causal LM <code>outputs.loss</code>。</li></ol>
+<p>抽象为：</p>
+<div class="formula">\[
+\text{action window}
+\xrightarrow{\text{flatten/limit=16 + repeat}}
+Y\in\mathbb R^{H\times16}
+\xrightarrow{\text{JSON + tokenizer}}
+y_{1:L}
+\xrightarrow{\text{causal LM}}
+\mathcal L_{\mathrm{CE}}(y).
+\]</div>
+<p>变量与边界：(H=15) 是 recipe 的窗口长度；<code>16</code> 是当前 formatter 的每行上限；(L) 是 JSON/token 文本长度，不等于 (H\times D)。<code>action_dim=72</code> 出现在 recipe/smoke batch contract，但当前 <code>formal_train.py</code> 的 assistant serializer 没有把 72 维 row 原样写入 JSON。除非存在 decoder/parser/axis mapping 证据，不能把 <code>(15,72)</code> 直接当作 controller-ready action。</p>
+<h2 id="3-formatter-probe">3. 直接代码证据与 formatter probe</h2>
+<p>关键片段（来源为 L01）：</p>
+<pre><code class="language-python">def _format_action_sequence(values, horizon):
+    # Each serialized row is flattened and truncated to at most 16 numbers.
+    seq = [_to_flat_float_list(v, limit=16) for v in values]
+    if not seq:
+        seq = [[0.0]]
+    # Tail padding repeats the last available row, not a valid-length mask.
+    while len(seq) &lt; horizon:
+        seq.append(seq[-1])
+    return seq[:horizon]
+
+# The dataset writes the result as assistant-side compact JSON.
+answer = json.dumps({&quot;actions&quot;: action_seq}, separators=(&quot;,&quot;, &quot;:&quot;))</code></pre>
+<p>本轮用 AST 提取上述两个真实函数（没有导入完整训练栈），输入两行 72D synthetic rows、<code>horizon=15</code>：</p>
+<table><thead><tr><th>Probe</th><th>结果</th><th>含义</th></tr></thead><tbody>
+<tr><td>formatter output length</td><td><code>15</code> rows</td><td>recipe horizon 被使用</td></tr>
+<tr><td>every serialized row width</td><td><code>16</code></td><td><code>limit=16</code> 截断真实生效</td></tr>
+<tr><td>short window tail</td><td>第 3–15 行重复第 2 行</td><td>padding 是 repeat，不是 mask</td></tr>
+<tr><td>first row <code>[0..71]</code></td><td>输出前 16 个值 <code>[0..15]</code></td><td>72D row 未原样序列化</td></tr>
+</tbody></table>
+<p>probe 输出摘要：<code>horizon=15</code>, <code>row_widths=[16]</code>, <code>tail_repeat=True</code>。这验证的是 formatter 语义，不证明 tokenizer round-trip、robot axis/unit 或 learned checkpoint。</p>
+<h2 id="4-h-d-serialized-width">4. H/D/serialized-width 冲突的正确解释</h2>
+<table><thead><tr><th>层</th><th>当前事实</th><th>能说什么</th><th>不能说什么</th></tr></thead><tbody>
+<tr><td>recipe/model</td><td><code>action_horizon=15</code>, <code>action_dim=72</code>, <code>proprio_dim=72</code></td><td>formal batch/schema 目标是 <code>H=15,D=72</code></td><td>不能证明 JSON 每行包含 72 个可执行量</td></tr>
+<tr><td>smoke batch</td><td>robot <code>actions=[2,15,72]</code>，state <code>[2,72]</code></td><td>public smoke tensor contract 通过</td><td>不能证明 private DROID/formal checkpoint 同源</td></tr>
+<tr><td>formal serializer</td><td>每行 <code>limit=16</code>，assistant JSON</td><td>当前 local representation 是 15 行 × 最多 16 数值</td><td>不能称为 15×72 的完整 action decode</td></tr>
+<tr><td>controller boundary</td><td>本切片未发现 parser/axis/unit/normalizer round-trip</td><td>semantics-open、需补 artifact</td><td>不能声称 controller-ready 或 rollout success</td></tr>
+</tbody></table>
+<p>因此 <code>H=15,D=72</code> 与 <code>limit=16</code> 不是简单“超参数不同”：前者是 batch/model contract，后者改变了 serialized action semantics。面试中应主动指出冲突，并把“谁发现、是否修复、如何验证”作为 ownership 追问，而不是用 <code>shape=(15,72)</code> 掩盖它。</p>
+<h2 id="5-fast-processor">5. FAST 边界：字段名不是 processor 调用</h2>
+<p><code>ModelRecipe</code> 保留 <code>fast_tokenizer="physical-intelligence/fast"</code>、<code>slowfast=1</code> 与 <code>fast_only=True</code> 等字段；但本次直接读取的 <code>formal_train.py</code> action path 使用 <code>json.dumps</code>、Qwen chat template 与 causal LM CE，没有调用 frozen FAST processor 的 DCT/quantization/BPE/inverse pipeline。</p>
+<p>安全分类：</p>
+<ul><li><strong>upstream-verified</strong>：FAST 的 DCT/quantization/BPE 方法与 OpenPI/FAST frozen source；</li><li><strong>local-direct</strong>：本地 formal JSON/CE formatter；</li><li><strong>representation-conflict</strong>：仅凭 recipe 字段把 local JSON 宣称为 FAST；</li><li><strong>待补</strong>：formatter→tokenizer→decode→72D/action-controller round-trip。</li></ul>
+<h2 id="6-smoke-evidence">6. Smoke evidence 与 结果边界</h2>
+<p>三个 smoke summary 都记录 Qwen3-VL recipe、public roots、batch shape 与 tiny train step；其中 VLA-only 和 co-train 的 robot batch 是 <code>[2,15,72]</code>，co-train 另有 VLM batch，且三份 summary 都写 <code>private_data_deployed=false</code>。这些文件支持：</p>
+<ol><li>代码路径能够在 public smoke 设置下构造 batch；</li><li>tiny train step 能返回 loss/grad norm；</li><li>三种 recipe 的 mode/config 具有可读的分层合同。</li></ol>
+<p>它们不支持：</p>
+<ul><li>远端 formal checkpoint 已在本地存在或可加载；</li><li>archived <code>97.4%</code> 与这些 smoke/formal run 同一 lineage；</li><li>private DROID/MindCube 数据已进入 smoke；</li><li>JSON representation 已通过 robot controller 或 closed-loop success。</li></ul>
+<h2 id="7-claim">7. 对项目 claim 的回写</h2>
+<table><thead><tr><th>Claim</th><th>当前 verdict</th><th>面试安全口径</th><th>升级所需 artifact</th></tr></thead><tbody>
+<tr><td><code>OPV-CL-002</code> assistant JSON + causal CE</td><td><code>local-direct / PASS WITH WARNING</code></td><td>“formal trainer 把 action window 序列化为 assistant JSON content，但当前 objective 覆盖 full chat 非 padding token；不是 assistant-only 或连续 flow loss”</td><td>parser、token/JSON round-trip、assistant-span mask test</td></tr>
+<tr><td><code>OPV-CL-003</code> 复用 FAST DCT/BPE</td><td><code>REPRESENTATION-CONFLICT</code></td><td>“recipe 有 FAST 字段，但当前直接审计到的是 JSON/CE；不能把两者混写”</td><td>frozen processor call、revision、round-trip</td></tr>
+<tr><td><code>OPV-CL-004</code> H=15/D=72 action contract</td><td><code>local-direct / SEMANTICS-OPEN</code></td><td>“smoke tensor 是 <code>[B,15,72]</code>，但 formatter 每行 limit=16；语义闭环仍待修”</td><td>decoder、axis/unit、normalizer、controller trace</td></tr>
+<tr><td><code>OPV-CL-005</code> 三种 recipe</td><td><code>local-direct</code></td><td>“三类 recipe 与 public smoke 可读；不能据此证明三条 private formal completion”</td><td>immutable logs/checkpoints/load smoke</td></tr>
+<tr><td><code>OPV-CL-007</code> archived 97.4</td><td><code>archive-summary-only</code></td><td>“报告有归档汇总；不是本页 local formatter/smoke 的结果证明”</td><td>checkpoint/protocol/raw episodes</td></tr>
+</tbody></table>
+<h3 id="30">30 秒项目回答</h3>
+<p>“我会把这条 local route 讲成 Qwen3-VL 的 JSON action training path：代码把 action window 截成 \(H=15\)，序列化为 assistant JSON content，但 collator 只屏蔽 padding，所以实际是 full-chat causal CE。它与 FAST 的 DCT/BPE 不是同一个实现。recipe/smoke 写 \(D=72\)，formatter 每行只取 16 个数；后续 probe 又确认没有 formal Qwen parser/controller round-trip，所以不能说已经形成 72 维 controller contract。”</p>
+<h2 id="8">8. 风险与下一步</h2>
+<ol><li><strong>已关闭</strong>：local formal source 的 JSON/CE 表示、<code>H=15,D=72</code> recipe/smoke、<code>limit=16</code> serializer 与 tail-repeat probe。</li><li><strong>仍开放</strong>：72D action 的 decode、axis order、unit/frame、normalizer、controller 与 safety contract。</li><li><strong>仍开放</strong>：FAST 字段是否只是 recipe metadata，还是另有未读取的 processor path；需要 call-site/revision/round-trip 证据。</li><li><strong>仍开放</strong>：checkpoint/load/eval lineage 与个人 ownership；smoke summary 不升级 C3。</li><li><strong>下一 bounded slice</strong>：parser/round-trip negative-evidence gate 已完成；后续优先做 ownership confirmation，或补 immutable formal checkpoint/generation bundle；不新增题卡。</li></ol>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Local <code>formal_train.py</code>、<code>data.py</code>、<code>recipes.py</code>，路径与 SHA 见本页 Evidence freeze。</li><li>Local smoke summaries <code>vla_train_repro/*_smoke_summary.json</code>，本页 S01–S03。</li><li><a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA Claim–Evidence Inventory</a>，用于 claim tier 与真实性边界。</li><li><a href="../evidence/projects/openpivla_ownership_ledger.html">OpenPiVLA Ownership Ledger</a>，用于个人贡献边界。</li><li><a href="vol_03_pi0_fast_openpi_independent_fact_review.html">FAST upstream audit</a>，用于 DCT/BPE 与 local JSON/CE 的对照边界。</li><li><a href="openpivla_action_json_parser_roundtrip_artifact_gate.html">OpenPiVLA Action JSON Parser / Round-trip Artifact Gate</a>，用于 72→16 loss、full-sequence CE、parser absence 与 official-eval lineage 边界。</li></ol>
+</article></body></html>

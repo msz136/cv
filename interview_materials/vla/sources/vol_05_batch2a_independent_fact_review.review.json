@@ -1,0 +1,55 @@
+{
+  "artifact": "sources/vol_05_batch2a_independent_fact_review.md",
+  "html": "sources/vol_05_batch2a_independent_fact_review.html",
+  "review_date": "2026-07-17",
+  "status": "source_reviewed / ENG-009..011",
+  "verdict": "WARN",
+  "source_sha256": "0EEEF7C84ED4B1BF87CC6E7476EC972BCF760472782638FB065AA7C4C157D8F6",
+  "coverage": {
+    "knowledge_nodes": 3,
+    "covered_ids": [
+      "VLA-ENG-009",
+      "VLA-ENG-010",
+      "VLA-ENG-011"
+    ],
+    "official_pages_checked": 7,
+    "node_verdicts": {
+      "VLA-ENG-009": "PASS WITH WARNING",
+      "VLA-ENG-010": "PASS WITH WARNING",
+      "VLA-ENG-011": "PASS WITH WARNING"
+    }
+  },
+  "normalized_main_text_sha256": {
+    "dvc_dvc_files": "27cd7fc76b1f6fe720c835ad4c3b34bfd89549c464fddb032ebb1fee4e268b5a",
+    "pytorch_2_13_data": "9032517582f5a20a811008e4f71a81e356d058380cfc985b552ef338b1cecf5f",
+    "pytorch_2_13_pad_sequence": "b8fb4f7c4d334a2d65f957c5aa1387bc43f995dea64fe2999ced80db15ce928e",
+    "pytorch_2_13_reproducibility": "5a19f15c86d56dbd0f9ea0572b86e960475328c99c36408cfb82d4fce90a03c5",
+    "hf_datasets_4_8_4_cache": "afaabe583e52ab68350addcd56f2fe90f746b52ae153b263143c63aa993cd61e",
+    "hf_datasets_4_8_4_about_cache": "bcedb14fe09d45e1cb43f58db96b00753e0a076992754d1f887ea6f42767cdfa",
+    "hf_transformers_5_14_0_data_collator": "6250a91993214a7dee35eb553e110ddef230848a6d5561cff18c7fa65d44e945"
+  },
+  "checks": {
+    "direct_official_fetch": "PASS (seven official pages fetched directly; final URLs, read date, normalized main-text length and SHA recorded; raw HTML hash deliberately not treated as stable)",
+    "dvc_semantics": "PASS WITH WARNING (outs/path/hash/deps/wdir metadata supported; object availability and VLA manifest fields remain engineering boundaries)",
+    "dataloader_semantics": "PASS (worker process, dataset/collate/worker_init, IterableDataset replica, prefetch, persistent workers and pin memory verified)",
+    "reproducibility_semantics": "PASS WITH WARNING (worker reseed and RNG sources verified; cross-release/platform complete reproducibility explicitly not guaranteed)",
+    "hf_cache_semantics": "PASS WITH WARNING (stable cache/fingerprint pages frozen; decoder/dtype/shape/seed custom key is not an HF default)",
+    "padding_semantics": "PASS (pad_sequence T/B shapes and padding options verified; valid lengths and masks are not returned automatically)",
+    "padding_formula": "PASS WITH WARNING (slot-fraction derivation correct; not a direct FLOP or wall-time estimator)",
+    "dynamic_batching_boundary": "PASS WITH WARNING (dynamic-size possibility adjacent to official docs; bucket/budget/per-rank/mask contract remains engineering framework)",
+    "claim_source_separation": "PASS (official, engineering contract, inference, project evidence and unsupported absolutes separated)",
+    "knowledge_card_corrections": "PASS (current PyTorch hashes, versioned HF URLs and persistent-worker wording synchronized into knowledge/cards)",
+    "project_truth_boundary": "PASS (no project metric, checkpoint, performance or ownership claim upgraded)",
+    "html_static_validation": "PASS (source SHA, one H1, ten H2, nine H3, two tables and two formula blocks)",
+    "local_links": "PASS (all relative knowledge/question links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static validation does not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "DVC source remains a rolling official page; preserve normalized main-text hash and recheck if wording changes materially.",
+    "Collect project manifest diff, cache replay and matched fixed-vs-dynamic batching artifacts before upgrading engineering contracts to local evidence.",
+    "Keep VLA-ENG-009..011 cards unseen until the candidate answers them orally.",
+    "Keep ENG-012..016 deferred until a later source-ready slice."
+  ],
+  "next": "Begin one-question-at-a-time oral drill for ENG-009..011 or select ENG-012 as the next source-first knowledge slice; do not expand the whole Batch 2 at once."
+}

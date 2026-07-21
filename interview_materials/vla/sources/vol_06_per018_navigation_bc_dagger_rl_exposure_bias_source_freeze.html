@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 PER-018 Source Freeze：Navigation BC、DAgger、RL 与 Exposure Bias</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per018_navigation_bc_dagger_rl_exposure_bias_source_freeze.md">
+<meta name="aris:source-sha256" content="af567f683bc0e7ee38efc036e4163e7b828ea37d2d7edf5b2eeba022102bf506">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>af567f683bc0e7ee38efc036e4163e7b828ea37d2d7edf5b2eeba022102bf506</code>；生成自：<code>interview_materials\vla\sources\vol_06_per018_navigation_bc_dagger_rl_exposure_bias_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-paper">2. Primary Paper 冻结矩阵</a></li><li><a href="#3-official-repository">3. Official Repository 冻结矩阵</a></li><li><a href="#4-official-file-ledger-27-files">4. Official File Ledger（27 files）</a></li><li><a href="#4-1-vln-ce-729d141">4.1 VLN-CE @ `729d141`</a></li><li><a href="#4-2-habitat-lab-0fb6f43">4.2 Habitat-Lab @ `0fb6f43`</a></li><li><a href="#4-3-r2r-envdrop-6f938ab">4.3 R2R-EnvDrop @ `6f938ab`</a></li><li><a href="#4-4-matterport3dsimulator-589d091">4.4 Matterport3DSimulator @ `589d091`</a></li><li><a href="#5">5. 节点边界与依赖</a></li><li><a href="#6-typed-navigation-training-manifest">6. Typed Navigation Training Manifest</a></li><li><a href="#7-behavior-cloning-teacher-forcing">7. Behavior Cloning 与 Teacher Forcing</a></li><li><a href="#8-student-forcing-scheduled-sampling-exposure-bias">8. Student Forcing、Scheduled Sampling 与 Exposure Bias</a></li><li><a href="#9-dagger-identity-vln-ce">9. DAgger Identity 与 VLN-CE 实现</a></li><li><a href="#10-return-gae-ppo-dd-ppo">10. Return、GAE、PPO 与 DD-PPO</a></li><li><a href="#11">11. 方法身份对比</a></li><li><a href="#12-training-evaluation-contract">12. Training ↔ Evaluation Contract</a></li><li><a href="#13-first-divergence-failure-diagnosis">13. First-divergence Failure Diagnosis</a></li><li><a href="#14-fail-closed-navigation-training">14. Fail-closed Navigation Training 伪代码</a></li><li><a href="#15-deterministic-probes">15. 十个 Deterministic Probes</a></li><li><a href="#16-public-method-code-mapping">16. Public Method → Code Mapping</a></li><li><a href="#17-inventory-direct-audit">17. 本地五项目 Inventory 与 Direct Audit</a></li><li><a href="#17-1-canonical-inventory">17.1 Canonical Inventory</a></li><li><a href="#17-2-local-direct-files">17.2 Local-direct Files</a></li><li><a href="#18-project-truth-boundary">18. Project Truth Boundary</a></li><li><a href="#19-source-gate">19. Source Gate 与下一切片</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 PER-018 Source Freeze：Navigation BC、DAgger、RL 与 Exposure Bias</h1>
+<div class="meta">状态：<code>source_frozen / VLA-PER-018 / primary_official_checked / independent_fact_reviewed / navigation_training_contract / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本 source slice 只冻结 navigation behavior cloning、teacher/student forcing、scheduled sampling、DAgger、GAE、PPO/DD-PPO、训练—评估身份与五项目真实性边界；不生成 knowledge/card，不修改 268 张题卡的 mastery，不创建 coaching state，也不重写 VOL 02 的通用 IL/RL、PER-004 的任务指标、PER-005 的 policy architecture、PER-017 的 exploration 或 PER-019 的完整评估节点。</div>
+<h2 id="question">问题（Question）</h2>
+<p>VLN/ObjectNav/PointGoal 策略训练中，离线 behavior cloning、teacher forcing、student forcing、scheduled sampling、DAgger 与 RL/PPO 到底改变了什么数据分布、监督信号和优化目标？怎样冻结 oracle、reward、rollout、stop、termination、checkpoint 与 metric contract，避免把 recovery data、离线 action loss、闭环 evaluation 或代码关键词误写成已实现 DAgger/PPO？</p>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>BC 是 expert-distribution 上的监督学习</strong>：训练数据由 expert trajectory 冻结，优化 action negative log-likelihood 或回归 loss；它不自动覆盖策略犯错后访问的 state。</li><li><strong>Teacher forcing 与 student forcing 改的是训练时访问分布</strong>：teacher forcing 执行 expert/ground-truth action；student forcing 执行 policy action，再从当前 state 计算 target。R2R 明确把后者写成 online DAgger / always-sampling 的对应形式，但“模型自己滚动”仍不充分：必须有 current-state oracle label 与 aggregation contract。</li><li><strong>Exposure bias 是 train/inference history mismatch</strong>：scheduled sampling 用概率在 ground-truth previous token/action 与 model output 间切换；它与 DAgger 都改变访问分布，但 DAgger 还要求在策略访问 state 上查询 expert 并聚合各轮数据。</li><li><strong>DAgger 不是 recovery 数据的别名</strong>：最低身份是 <code>current policy rollout → expert query at visited state → append immutable round → train on aggregate → decay/record β</code>。只有离线 recovery demonstrations、数据增强或 student rollout 而无 oracle relabel，不能称 canonical DAgger。</li><li><strong>RL/PPO 优化 return，不是 action label</strong>：最低 runtime 是 fresh policy rollout、reward/done/truncation、behavior log-prob、value/return/advantage、policy/checkpoint revision与更新日志。PPO clip 只约束 surrogate term，不能替代 rollout freshness、reward validity、value/entropy项或安全保证。</li><li><strong>导航训练必须带 protocol identity</strong>：scene/split/episode、observation/action/stop、oracle、reward、horizon、termination/truncation、simulator/controller、seed、policy/value checkpoint、normalizer与 metric denominator 缺一不可；train loss 下降不等于 val-unseen、closed-loop 或真实机器人提升。</li><li>本轮冻结 <strong>7 份明确版本 primary PDF / 96 页</strong>、<strong>4 个 official repositories / 27 个 fixed files</strong>、<strong>10 个 deterministic probes</strong>、五份 canonical project inventories 与八个 local-direct files。PDF 全部有 <code>%PDF</code>、尾部 <code>%%EOF</code>、全文可抽取；7 张代表页在 150 DPI 下视觉可读；probe 为 <code>10/10</code>。</li><li>五项目当前都没有可归入候选人的 local-direct navigation DAgger/PPO runtime。OpenPiVLA、UWM、Robot Harness、OPD、WAM 分别只有 supervised text/action、offline finetune、tool reward schema、text-teacher rollout 或失败 evaluation trace 等邻接证据；它们不能自动升级为 navigation on-policy training、oracle aggregation、reward improvement 或个人 ownership。</li></ol>
+<h2 id="2-primary-paper">2. Primary Paper 冻结矩阵</h2>
+<table><thead><tr><th>ID</th><th>Primary source</th><th>固定版本 / 完整性</th><th>支持的 claim</th><th>不支持的 claim</th></tr></thead><tbody>
+<tr><td>P1</td><td>Ross, Gordon &amp; Bagnell, <a href="https://arxiv.org/pdf/1011.0686v3">DAgger</a></td><td><code>1011.0686v3</code>；9页；551,229 bytes；SHA <code>12B032CFD451B8ACE4B18145DBE24382D2CBE2EDA6B562331BC86799BBAAFD5E</code></td><td>current-policy visited states、expert labels、aggregate dataset、mixture <code>β_i</code> 与 no-regret reduction</td><td>任意 recovery dataset 都是 DAgger；无需在线 expert/oracle</td></tr>
+<tr><td>P2</td><td>Bengio et al., <a href="https://arxiv.org/pdf/1506.03099v3">Scheduled Sampling</a></td><td><code>1506.03099v3</code>；9页；283,137 bytes；SHA <code>9769DF7150C7686237A2E709FA4FC004BFA03636A8329C9C1FD5C60163CFB00C</code></td><td>train/inference previous-token mismatch、teacher→model curriculum</td><td>navigation oracle、DAgger aggregation 或闭环 success</td></tr>
+<tr><td>P3</td><td>Anderson et al., <a href="https://arxiv.org/pdf/1711.07280v3">R2R / Matterport3D Simulator</a></td><td><code>1711.07280v3</code>；13页；9,720,283 bytes；SHA <code>B7589865EE573D4753EE9E25BDC494CBBB199E6EC17D0A349091AED0FD86C420</code></td><td>teacher-forcing/student-forcing、current-pose shortest-path target、R2R train/val-seen/val-unseen语境</td><td>continuous low-level control、真实机器人部署、跨协议指标可比</td></tr>
+<tr><td>P4</td><td>Krantz et al., <a href="https://arxiv.org/pdf/2004.02857v2">VLN-CE</a></td><td><code>2004.02857v2</code>；18页；10,596,423 bytes；SHA <code>8C62871FFB3D266F38EE2FEA944583645F74DBE10AC85213AD536486C18CB1A3</code></td><td>continuous environment DAgger、<code>β=0.75^n</code>、5k trajectories/round、4 IL epochs、inflection weight 与 VLN metrics</td><td>本地复现、任意 task 的超参最优性、DAgger 自动解决 sim-to-real</td></tr>
+<tr><td>P5</td><td>Wijmans et al., <a href="https://arxiv.org/pdf/1911.00357v2">DD-PPO</a></td><td><code>1911.00357v2</code>；21页；3,578,072 bytes；SHA <code>CB9A5B9C603A6EDDD95F6A8D17E946C46681506FD51302371FE67EE208AF6F2D</code></td><td>decentralized synchronous PPO、rollout straggler preemption、PointGoal scale与 freshness语境</td><td>“分布式”自动带来样本效率/泛化；任意本地 PPO 已复现 2.5B frame result</td></tr>
+<tr><td>P6</td><td>Schulman et al., <a href="https://arxiv.org/pdf/1707.06347v2">PPO</a></td><td><code>1707.06347v2</code>；12页；2,923,532 bytes；SHA <code>E78FEADADBDBB0B601B3C2BCC81404722CD431A489B307545F9B7BEA1E8C4F5B</code></td><td>old/new policy ratio、clipped surrogate、多 epoch minibatch update</td><td>clip 是严格 trust region、安全边界或完整 trainer objective</td></tr>
+<tr><td>P7</td><td>Schulman et al., <a href="https://arxiv.org/pdf/1506.02438v6">GAE</a></td><td><code>1506.02438v6</code>；14页；1,798,117 bytes；SHA <code>5AA736CCF3517A1F36D0CA8146982E69BEAF9A2BDCCAC2AE324F780743BC045E</code></td><td>TD residual、<code>γλ</code> 加权 advantage、bias/variance trade-off</td><td>不区分 termination/truncation；value estimate正确性自动成立</td></tr>
+</tbody></table>
+<p>完整性检查：7/7 文件以 <code>%PDF-</code> 开始，末 2 KiB 内含 <code>%%EOF</code>；pypdf 读取 96/96 页且无空白抽取页。代表页为 DAgger p4、Scheduled Sampling p3、R2R p7、VLN-CE p11、DD-PPO p4、PPO p3、GAE p4；均以 150 DPI 渲染，标题、正文、公式、算法框和表格可读。视觉可读只证明文档没有明显损坏，不等于对所有实验数字做独立复现。</p>
+<h2 id="3-official-repository">3. Official Repository 冻结矩阵</h2>
+<table><thead><tr><th>Repo</th><th>固定 revision / commit date</th><th>License</th><th>本轮读取</th><th>主要用途</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/jacobkrantz/VLN-CE/tree/729d141b2ee10628061ada74dd3a5b9f70faeba5">jacobkrantz/VLN-CE</a></td><td><code>729d141b2ee10628061ada74dd3a5b9f70faeba5</code>；2025-01-07</td><td>MIT</td><td>8 files</td><td>DAgger <code>p^iteration</code>、LMDB aggregation、oracle action、inflection weighting、DD-PPO extension</td></tr>
+<tr><td><a href="https://github.com/facebookresearch/habitat-lab/tree/0fb6f43ffe806a8088a171b036336c093bcf604e">facebookresearch/habitat-lab</a></td><td><code>0fb6f43ffe806a8088a171b036336c093bcf604e</code>；2026-05-07</td><td>MIT</td><td>7 files</td><td>PPO ratio/clip/value/entropy、rollout returns/GAE、DDPPO与 PointNav config</td></tr>
+<tr><td><a href="https://github.com/airsplay/R2R-EnvDrop/tree/6f938abcf2db999c0118c7e548d8357ab8f006db">airsplay/R2R-EnvDrop</a></td><td><code>6f938abcf2db999c0118c7e548d8357ab8f006db</code>；2021-10-23</td><td>MIT</td><td>6 files</td><td>R2R teacher/sample feedback、ML+RL混合、reward/value/entropy、env/eval</td></tr>
+<tr><td><a href="https://github.com/peteanderson80/Matterport3DSimulator/tree/589d091b111333f9e9f9d6cfd021b2eb68435925">peteanderson80/Matterport3DSimulator</a></td><td><code>589d091b111333f9e9f9d6cfd021b2eb68435925</code>；2021-09-08</td><td>MIT</td><td>6 files</td><td>原始 R2R teacher/argmax/sample feedback、CE trainer、env与 scorer</td></tr>
+</tbody></table>
+<p>四份 LICENSE 都是 MIT，但只覆盖各仓库中相应代码/文档；Matterport3D/R2R/VLN-CE 数据、预训练权重、依赖与第三方资产可能有独立条款，不能把 repo license 外推到所有 dataset/model artifacts。</p>
+<h2 id="4-official-file-ledger-27-files">4. Official File Ledger（27 files）</h2>
+<h3 id="4-1-vln-ce-729d141">4.1 VLN-CE @ <code>729d141</code></h3>
+<table><thead><tr><th>File</th><th>bytes / lines</th><th>SHA-256</th><th>直接读取到</th></tr></thead><tbody>
+<tr><td><code>LICENSE</code></td><td>1,124 / 23</td><td><code>C7C9E93E64F244505D84BA6B0F1D28AB3BD9492B70349727F0F4D0CC4D691200</code></td><td>MIT 与 copyright</td></tr>
+<tr><td><code>README.md</code></td><td>16,460 / 293</td><td><code>33C547D6D6FA8A7DECA433C5E441894AAD72D676DFCA152FEA0CD4EF80B9A41C</code></td><td>installation/data/checkpoint入口与引用</td></tr>
+<tr><td><code>vlnce_baselines/dagger_trainer.py</code></td><td>21,716 / 611</td><td><code>924BE549FE25C31AE3E85AF95DE5A9414254323385883A1093EDC830497C0AD7</code></td><td><code>β=p^data_it</code>、oracle/policy action mix、LMDB round、action/aux loss</td></tr>
+<tr><td><code>vlnce_baselines/common/recollection_dataset.py</code></td><td>9,420 / 273</td><td><code>61042AADE2CD06AB70D6B8F1B4FD0D19613FC3E0E70D2B6282632650B2EE3DC6</code></td><td>episode trajectory、prev/oracle action与 inflection weights</td></tr>
+<tr><td><code>vlnce_baselines/common/rollout_storage.py</code></td><td>10,602 / 289</td><td><code>EF57F404434C4C55F2AF3B904E4FC3C912DAD059BEFA3CFB679C8D88FF28C569</code></td><td>recurrent rollout fields/returns storage</td></tr>
+<tr><td><code>vlnce_baselines/common/ddppo_alg.py</code></td><td>5,532 / 150</td><td><code>206F93983D45A34D9E4840B0291BFACC2EBE35FD04618D15F92502F5807B0EC5</code></td><td>WDDPPO advantage、ratio、clip、value/entropy项</td></tr>
+<tr><td><code>vlnce_baselines/config/r2r_baselines/seq2seq_da.yaml</code></td><td>630 / 28</td><td><code>9376FA4E112D1844C5066E0E8FD6E4D07DD585EE590E3ECFFCB1FA2E1D300D44</code></td><td>10 rounds、5k update、<code>p=.75</code>、4 epochs</td></tr>
+<tr><td><code>vlnce_baselines/models/policy.py</code></td><td>1,628 / 59</td><td><code>876AB141702F8FA6DC88020ECADFD2662A7CC76923A582ACC7850A04D6BF17F4</code></td><td>policy registration与 action distribution入口</td></tr>
+</tbody></table>
+<h3 id="4-2-habitat-lab-0fb6f43">4.2 Habitat-Lab @ <code>0fb6f43</code></h3>
+<table><thead><tr><th>File</th><th>bytes / lines</th><th>SHA-256</th><th>直接读取到</th></tr></thead><tbody>
+<tr><td><code>LICENSE</code></td><td>1,092 / 22</td><td><code>2D4C3D00D67067461412A2D9A2F3F8B7B9CDA62B3DB501E4B6844CCF35C949AA</code></td><td>MIT 与 Meta copyright</td></tr>
+<tr><td><code>habitat-baselines/README.md</code></td><td>16,525 / 237</td><td><code>676F8DF0A87DBF18E817A6F98E447EFE00684C196A97192E45B23170AF409445</code></td><td>baseline/config/run入口</td></tr>
+<tr><td><code>.../rl/ppo/ppo.py</code></td><td>12,743 / 385</td><td><code>639063D9ADC1AA8D2BFDD0054958177EDD362D90ED43CD2BE05C74A2436C3ECF</code></td><td>normalized advantage、ratio/clip、value/entropy、grad norm</td></tr>
+<tr><td><code>.../common/rollout_storage.py</code></td><td>9,557 / 276</td><td><code>914DCA269E640992B5B0343B5811B24110DCCF073B92AE7097F551388DF351B0</code></td><td>reward/mask/value/return 与 GAE reverse recursion</td></tr>
+<tr><td><code>.../rl/ddppo/algo/ddppo.py</code></td><td>5,447 / 158</td><td><code>20C91A45BA4F7F857A0EB938A3A404A33EE88F288BF45F41C1A17F3361EC0AFF</code></td><td>distributed mean/variance、DDP wrapper与 PPO inheritance</td></tr>
+<tr><td><code>.../rl/ppo/ppo_trainer.py</code></td><td>33,390 / 912</td><td><code>3D092753BF3B0CA6273E0213316C9A66653EED8D519C9DF60F2104CA883FA169</code></td><td>env sampling、rollout/update/eval orchestration</td></tr>
+<tr><td><code>.../config/pointnav/ddppo_pointnav.yaml</code></td><td>1,984 / 77</td><td><code>B8B443ACE3E48556E500260606B96390963A84ECDB1E23253918348BF9B3077A</code></td><td><code>2.5e9</code> steps、clip .2、GAE、γ .99、τ .95、sync .6</td></tr>
+</tbody></table>
+<h3 id="4-3-r2r-envdrop-6f938ab">4.3 R2R-EnvDrop @ <code>6f938ab</code></h3>
+<table><thead><tr><th>File</th><th>bytes / lines</th><th>SHA-256</th><th>直接读取到</th></tr></thead><tbody>
+<tr><td><code>LICENSE</code></td><td>1,110 / 22</td><td><code>3B28E3FB157F4975938969424094221A9DBF4BB7B1234F623E11A93A8B4AE8D6</code></td><td>MIT</td></tr>
+<tr><td><code>README.md</code></td><td>4,868 / 99</td><td><code>EF69FB7EEA0DB7D66865E41A736FB1C55B666BDF6A2D3F069897528512640577</code></td><td>R2R/EnvDrop运行与模型入口</td></tr>
+<tr><td><code>r2r_src/agent.py</code></td><td>38,389 / 858</td><td><code>13710C80CA462E68379E24CF0D347B8C1934ECD1085450A835C7C69C4CB2F565</code></td><td>teacher/sample/argmax、CE target、distance reward、value/entropy与 RL loss</td></tr>
+<tr><td><code>r2r_src/train.py</code></td><td>18,682 / 473</td><td><code>604B35E3F97AE7043EEFAC11E10A05918E8F1907F0F08363AF5534F2A13EA376</code></td><td>feedback method、GT/aug mix、ML weight、train/validation loop</td></tr>
+<tr><td><code>r2r_src/env.py</code></td><td>14,181 / 337</td><td><code>D799E17F9DCEF2E169C91F7F3D547E1F78953B192917D2AE6FF73DCD26423380</code></td><td>state/candidate/teacher/env contract</td></tr>
+<tr><td><code>r2r_src/eval.py</code></td><td>6,773 / 168</td><td><code>6EED076F81BA5C510793FC3E684110F2992A8E4AEFCFAF0F5FFEF247EFC643C4</code></td><td>trajectory scorer与 split evaluation</td></tr>
+</tbody></table>
+<h3 id="4-4-matterport3dsimulator-589d091">4.4 Matterport3DSimulator @ <code>589d091</code></h3>
+<table><thead><tr><th>File</th><th>bytes / lines</th><th>SHA-256</th><th>直接读取到</th></tr></thead><tbody>
+<tr><td><code>LICENSE</code></td><td>1,197 / 23</td><td><code>95D4B81BA57FC88AAA4568685F96A58C73CB2CE83DB0CD057CA365AF9545F1CB</code></td><td>MIT</td></tr>
+<tr><td><code>tasks/R2R/README.md</code></td><td>2,939 / 76</td><td><code>B0996D95562D19D7AFE4548062C99E85EAEAC7E084393282368647A26B859E90</code></td><td>原始 baseline运行入口</td></tr>
+<tr><td><code>tasks/R2R/agent.py</code></td><td>11,955 / 321</td><td><code>CCE3492EDB2AD0A36CDAF750022052420F3615953DC2DD0CBA0DA26DD9C42F7C</code></td><td>teacher/sample/argmax、CE与 test-time no-cheat gate</td></tr>
+<tr><td><code>tasks/R2R/train.py</code></td><td>6,637 / 165</td><td><code>F472A6AA74A1CEFDB2316B51FF745D53008CA4E185D7C65013D028217C0B19F9</code></td><td>teacher/sample feedback、train/val seen/unseen loop</td></tr>
+<tr><td><code>tasks/R2R/env.py</code></td><td>9,855 / 228</td><td><code>E8CAA75EC10A76B76A353CCF04FA3B7556B46BCBB4F7310CF7A1C47B8121E2FE</code></td><td>R2R observation/teacher/state transition</td></tr>
+<tr><td><code>tasks/R2R/eval.py</code></td><td>6,022 / 150</td><td><code>78E2867DA1C79BA7D2657091FF385CFF622BBF85F07A72A4635A62B2F38E321C</code></td><td>path length/error/success scorer</td></tr>
+</tbody></table>
+<h2 id="5">5. 节点边界与依赖</h2>
+<table><thead><tr><th>Node</th><th>已负责</th><th>PER-018 只消费/新增</th></tr></thead><tbody>
+<tr><td>VOL 02 IL/RL</td><td>DAgger/GAE/PPO通用公式、offline RL/post-training</td><td>消费已独立复核机制；新增 navigation data/oracle/stop/rollout identity</td></tr>
+<tr><td>PER-004</td><td>VLN/ObjectNav task、episode、action/stop与 SR/SPL/nDTW</td><td>冻结训练数据和 eval split必须对齐 task protocol</td></tr>
+<tr><td>PER-005</td><td>map-free/map-based policy、planner/controller architecture</td><td>不重复 architecture；只定义 update object与训练 runtime</td></tr>
+<tr><td>PER-016</td><td>localization/map frame</td><td>state/oracle/action label必须绑定 frame/map revision</td></tr>
+<tr><td>PER-017</td><td>belief/memory/frontier exploration</td><td>exploration rollout不自动等于 RL rollout；memory reset仍是训练输入合同</td></tr>
+<tr><td>PER-019</td><td>完整 navigation evaluation、collision/stop、CI/failure taxonomy</td><td>本页只冻结训练所需 metric/denominator identity，不宣称评估节点完成</td></tr>
+</tbody></table>
+<h2 id="6-typed-navigation-training-manifest">6. Typed Navigation Training Manifest</h2>
+<p>任何 <code>BC / DAgger / PPO improved navigation</code> claim 至少绑定以下身份：</p>
+<table><thead><tr><th>Layer</th><th>Required fields</th><th>缺失时的结论</th></tr></thead><tbody>
+<tr><td>task/data</td><td>task、dataset revision/license、scene split、episode IDs、observation/action/stop schema、frame/unit、horizon</td><td>不知道在学什么任务或是否泄漏</td></tr>
+<tr><td>expert/oracle</td><td>expert type、shortest-path/teacher policy revision、map/navmesh revision、query availability、invalid action rule</td><td>不能确认 label 或 DAgger 身份</td></tr>
+<tr><td>policy</td><td>architecture/config、checkpoint parent/hash、normalizer/tokenizer、memory reset、action distribution</td><td>loss/result无法绑定模型</td></tr>
+<tr><td>rollout</td><td>collector code SHA、policy revision、behavior log-prob、env/simulator/controller revision、seed、timestamp、termination/truncation</td><td>不能确认 on-policy/freshness</td></tr>
+<tr><td>reward/value</td><td>reward components/scale、success/stop predicate、discount、bootstrap rule、value checkpoint</td><td>不能确认 RL objective/credit assignment</td></tr>
+<tr><td>update</td><td>algorithm、loss mask/denominator、optimizer、grad norm、dataset round或 PPO epoch/minibatch、KL/clip stats</td><td>不能确认实际更新了什么</td></tr>
+<tr><td>result</td><td>checkpoint SHA、split、episode denominator、SR/SPL/nDTW/collision、raw per-episode trace、failure taxonomy</td><td>不能从 train loss 推导 closed-loop能力</td></tr>
+<tr><td>ownership</td><td>upstream/local diff、author/reviewer、run operator、artifact custodian</td><td>不能把上游或工具生成代码写成个人创新</td></tr>
+</tbody></table>
+<p>推荐 immutable lineage：</p>
+<pre><code class="language-text">task_manifest_sha + dataset/env revision + oracle/reward revision
+-&gt; collector policy_sha / behavior_policy_sha
+-&gt; round_or_rollout_id + raw trajectories
+-&gt; update_config_sha + loss/ratio/return logs
+-&gt; checkpoint_sha + eval_protocol_sha
+-&gt; per_episode_results + summary + ownership ledger</code></pre>
+<h2 id="7-behavior-cloning-teacher-forcing">7. Behavior Cloning 与 Teacher Forcing</h2>
+<p>令 (D_E) 为 expert trajectory 构成的离线数据集，(m_{b,t}) 为有效 action mask，(w_{b,t}) 为 inflection/class/sample weight，(pi_\theta(a\mid o,h,c)) 为策略在 observation、history 与 instruction/goal 条件下的 action distribution。离散 action BC 可写为：</p>
+<div class="formula">$$
+\mathcal{L}_{\mathrm{BC}}(\theta)
+=-
+\frac{\sum_{b,t}m_{b,t}w_{b,t}\log \pi_\theta(a^*_{b,t}\mid o^E_{b,t},h^E_{b,t},c_b)}
+{\sum_{b,t}m_{b,t}w_{b,t}}
+$$</div>
+<p>变量与实现映射：(a^*) 是 expert/oracle action；上标 (E) 表示 state/history来自 expert trajectory。R2R <code>agent.py</code> 以 cross entropy 对 teacher action训练；VLN-CE dataset同时返回 oracle action与 inflection weight。分母为0、oracle action为<code>-1</code>、padding/STOP语义未知时应 fail closed，不能返回0 loss并声称训练成功。</p>
+<p>Teacher forcing执行 expert action，因此后续 observation 继续位于 expert 轨迹；它的优点是 label稳定、训练便宜，缺点是部署时一个错误会把策略带到训练数据外。单步 accuracy 或 CE 下降不能证明 policy能恢复。</p>
+<h2 id="8-student-forcing-scheduled-sampling-exposure-bias">8. Student Forcing、Scheduled Sampling 与 Exposure Bias</h2>
+<p>令 (\epsilon_i) 表示第 (i) 个训练阶段使用 ground-truth previous action/token 的概率：</p>
+<div class="formula">$$
+a^{\mathrm{in}}_{t-1}=
+\begin{cases}
+a^*_{t-1}, &amp; z_t&lt;\epsilon_i,\\
+\hat a_{t-1}\sim\pi_\theta, &amp; z_t\ge\epsilon_i,
+\end{cases}
+\qquad z_t\sim\mathrm{Uniform}(0,1)
+$$</div>
+<p>变量与实现映射：<code>ε=1</code> 是完整 teacher forcing，<code>ε=0</code> 是 always sampling/student forcing。Scheduled Sampling论文把 <code>ε</code> 作为 curriculum；R2R p7在当前 pose重新计算 shortest-path target，并把 student forcing解释为 online DAgger / always sampling。若只是把 model token喂回去，却仍使用原 expert path上错位的 label，则不能直接获得 DAgger 的 current-state expert guarantee。</p>
+<p>Exposure bias至少分三层：</p>
+<ol><li><strong>history exposure</strong>：训练读 expert previous action，部署读 model action；</li><li><strong>state exposure</strong>：错误动作改变 pose/observation，后续 state离开 expert distribution；</li><li><strong>termination exposure</strong>：训练 trajectory长度/STOP固定，部署的错误 STOP、loop、collision 改变 episode denominator。</li></ol>
+<h2 id="9-dagger-identity-vln-ce">9. DAgger Identity 与 VLN-CE 实现</h2>
+<p>第 (i) 轮 mixture policy 为：</p>
+<div class="formula">$$
+\pi_i=\beta_i\pi^*+(1-\beta_i)\hat\pi_i,
+\qquad
+D\leftarrow D\cup\{(s,\pi^*(s)):s\sim d_{\pi_i}\}
+$$</div>
+<p>变量与实现映射：(\pi^*) 是 expert/oracle，(hat\pi_i) 是当前 learner，(d_{\pi_i}) 是本轮实际访问 state分布；新 state经 expert relabel后追加到 aggregate dataset。VLN-CE <code>dagger_trainer.py</code> 使用 <code>β=p^data_it</code>，<code>seq2seq_da.yaml</code> 冻结 <code>p=.75</code>、10 iterations、每轮5,000 trajectories、4 epochs。代码还对 oracle action变化位置加 inflection weight，并跳过 invalid expert action。</p>
+<p>DAgger 的 four gates：</p>
+<ol><li>rollout确由声明的 current/mixture policy产生；</li><li>visited state有同一 task/map/oracle revision 的 expert label；</li><li>每轮 trajectory不可变且进入 aggregate dataset，round/episode可追溯；</li><li>policy/checkpoint、<code>β_i</code>、invalid/skipped、duplicate与 early termination denominator全部记录。</li></ol>
+<p>只有“收集失败轨迹再微调”可能是 recovery BC；只有“student rollout”但 teacher没有在 visited state标注，可能是 self-training/distillation；只有 DAgger 数据文件名而没有 collector/oracle manifest，也不能证明 DAgger runtime。</p>
+<h2 id="10-return-gae-ppo-dd-ppo">10. Return、GAE、PPO 与 DD-PPO</h2>
+<p>令 (r_t) 为 reward，(V_\phi(s_t)) 为 value，(d_t^{term}) 为真正 terminal mask。TD residual与 GAE为：</p>
+<div class="formula">$$
+\delta_t=r_t+\gamma(1-d_t^{term})V_\phi(s_{t+1})-V_\phi(s_t),
+\qquad
+\hat A_t^{\mathrm{GAE}(\gamma,\lambda)}
+=\sum_{l=0}^{T-t-1}(\gamma\lambda)^l\delta_{t+l}
+$$</div>
+<p>变量与实现映射：(gamma) 是 discount，(lambda) 控制 bias/variance；Habitat rollout storage按逆时间计算 returns/GAE。time-limit truncation通常仍需 bootstrap，真正 terminal才把 next value切掉；环境应分别记录 terminated/truncated，而不是一个含糊的<code>done</code>。独立复核确认固定commit <code>0fb6f43</code> 的<code>ppo_trainer.py</code>仍把单一<code>dones</code>转成<code>not_done_masks</code>，因此双字段分离是本仓库的工程合同，不是该pinned path已经实现的code-exact事实。</p>
+<p>PPO old/new policy ratio与 clipped surrogate为：</p>
+<div class="formula">$$
+r_t(\theta)=\frac{\pi_\theta(a_t\mid s_t)}{\pi_{\theta_{old}}(a_t\mid s_t)},
+\qquad
+L^{CLIP}(\theta)=\mathbb{E}_t\left[
+\min\!\left(r_t\hat A_t,
+\mathrm{clip}(r_t,1-\epsilon,1+\epsilon)\hat A_t\right)
+\right]
+$$</div>
+<p>变量与实现映射：behavior log-prob必须来自采样该 action 的 <code>θ_old</code>；Habitat <code>ppo.py</code>计算 ratio、clipped action loss、value loss、entropy与 grad norm。若 rollout policy/checkpoint hash与 log-prob不一致，或在多轮更新后继续把旧数据叫 fresh on-policy，ratio已失去身份。</p>
+<p>典型 trainer还包含：</p>
+<div class="formula">$$
+\mathcal{L}_{\mathrm{PPO-total}}
+=-L^{CLIP}+c_v\mathcal{L}_{value}-c_H\mathcal{H}(\pi_\theta)+\mathcal{L}_{aux}
+$$</div>
+<p>变量与实现映射：(c_v) 和 (c_H) 分别是 value/entropy系数；VLN-CE WDDPPO还拆出 pano/offset/distance entropy。PPO paper的 clip公式不是完整 loss；漏掉 value target、entropy、aux、mask/denominator与 gradient statistic时，不能用一个 surrogate公式声称复现。</p>
+<p>DD-PPO 的关键不是“多GPU”三个字，而是同步、去中心化、无参数服务器的 fresh rollout/update；straggler preemption必须记录每个 worker实际贡献的 step与 episode denominator。Habitat config中的 <code>2.5e9</code>、sync fraction <code>.6</code> 是 frozen official recipe事实，不是本地项目运行规模。</p>
+<h2 id="11">11. 方法身份对比</h2>
+<table><thead><tr><th>Method</th><th>访问 state</th><th>target/signal</th><th>是否聚合</th><th>最小 runtime</th><th>常见误写</th></tr></thead><tbody>
+<tr><td>offline BC</td><td>fixed expert trajectory</td><td>expert action</td><td>fixed dataset</td><td>dataset+mask+loss+checkpoint</td><td>action loss低=闭环好</td></tr>
+<tr><td>teacher forcing</td><td>expert action产生后续 state</td><td>next expert action</td><td>可固定</td><td>ordered trajectory</td><td>没有 exposure bias</td></tr>
+<tr><td>student forcing</td><td>policy action产生后续 state</td><td>current-state target</td><td>视实现</td><td>env rollout+target rule</td><td>model rollout自动等于 DAgger</td></tr>
+<tr><td>scheduled sampling</td><td>expert/model previous input混合</td><td>sequence label</td><td>通常不是跨轮 aggregate</td><td><code>ε</code> schedule+sample trace</td><td>等同 no-regret DAgger</td></tr>
+<tr><td>DAgger</td><td>mixture/current policy state</td><td>expert query at visited state</td><td>是</td><td>round collector+oracle+immutable aggregate</td><td>recovery demos/文件名=DAgger</td></tr>
+<tr><td>PPO</td><td>fresh current/old-policy rollout</td><td>reward/return/advantage</td><td>rollout buffer，不是 expert dataset</td><td>reward+old logp+value+returns+update</td><td>有reward或GRPO名=PPO</td></tr>
+<tr><td>DD-PPO</td><td>多worker fresh rollout</td><td>同 PPO + synchronized gradient</td><td>distributed rollout</td><td>worker/step/preemption/all-reduce ledger</td><td>GPU多=复现论文规模</td></tr>
+</tbody></table>
+<h2 id="12-training-evaluation-contract">12. Training ↔ Evaluation Contract</h2>
+<p>训练与评估至少固定：</p>
+<ul><li>dataset/scene split：train、val-seen、val-unseen、test不能混用；early stopping选择规则单独记录；</li><li>episode：instruction/goal、start/goal、scene、oracle/path revision、seed/init、horizon；</li><li>observation：camera/depth/GPS/compass/proprio、resize、normalization、frame与age；</li><li>action：discrete/continuous、axis/unit、STOP、collision/no-op、action repeat/controller；</li><li>rollout：policy checkpoint、memory reset、determinism、replan/action chunk、termination/truncation；</li><li>reward：distance-progress、success、slack、collision/stop等组件及尺度；reward shaping不能替代 SR/SPL；</li><li>result：episode denominator、lost/crash/timeout是否计失败、SR/SPL/nDTW与 confidence interval、raw trajectory。</li></ul>
+<p>R2R teacher/student forcing表格只在其图导航、split与 scorer下成立；VLN-CE DAgger只在continuous environment与其oracle/config下成立；DD-PPO的PointGoal规模结果也不能外推到VLN、ObjectNav或真实机器人。</p>
+<h2 id="13-first-divergence-failure-diagnosis">13. First-divergence Failure Diagnosis</h2>
+<table><thead><tr><th>症状</th><th>first divergence</th><th>首查 artifact</th><th>不应先做</th></tr></thead><tbody>
+<tr><td>BC loss低、rollout立刻偏航</td><td>expert/model state distribution</td><td>episode pose/action trace、teacher/student state coverage</td><td>只继续降train loss</td></tr>
+<tr><td>DAgger轮次越多越差</td><td>oracle/map revision、β、aggregate污染</td><td>round manifest、invalid/skipped、duplicate、oracle query log</td><td>把所有历史LMDB无条件拼接</td></tr>
+<tr><td>student forcing不收敛</td><td>current-state target错位或初始policy过弱</td><td>executed action、next state、recomputed target三联</td><td>改名scheduled sampling</td></tr>
+<tr><td>PPO reward升、SR不升</td><td>reward hacking/scale/STOP mismatch</td><td>reward component、success predicate、raw episode</td><td>把reward当SPL</td></tr>
+<tr><td>PPO ratio/clip异常</td><td>stale rollout或old log-prob错</td><td>policy hash、collector/update timestamps、ratio histogram</td><td>只调clip epsilon</td></tr>
+<tr><td>value loss爆炸</td><td>return/terminal/bootstrap错</td><td>reward、terminated/truncated、Vnext、GAE trace</td><td>先换更大backbone</td></tr>
+<tr><td>DD-PPO结果不可复现</td><td>worker/preemption/step denominator</td><td>worker ledger、sync fraction、seed、checkpoint</td><td>只报GPU数和wall time</td></tr>
+<tr><td>val-seen好、val-unseen差</td><td>scene/instruction overfit</td><td>split manifest、duplicate/leakage、per-scene failure</td><td>合并seen/unseen均值</td></tr>
+</tbody></table>
+<p>诊断顺序固定为：task/split/schema → expert/oracle/reward identity → policy/checkpoint/normalizer → collector state/action/stop → label/log-prob/value/return → mask/denominator → optimizer/grad/ratio → checkpoint save/load → eval protocol/result。不要从最终 success反推中间合同正确。</p>
+<h2 id="14-fail-closed-navigation-training">14. Fail-closed Navigation Training 伪代码</h2>
+<pre><code class="language-python">def train_navigation(run, manifests, policy, expert=None, value=None):
+    # 1. Freeze task/data/env/policy identity before reading a sample or rollout.
+    assert manifests.task_sha and manifests.action_schema_sha
+    assert manifests.policy_parent_sha and manifests.split_sha
+
+    if run.algorithm == &quot;bc&quot;:
+        # 2. BC consumes immutable expert trajectories; empty masks are invalid.
+        batch = manifests.expert_dataset.next_batch()
+        assert batch.oracle_revision == manifests.oracle_revision
+        if batch.valid_action_mask.sum() == 0:
+            return stop(&quot;empty_bc_denominator&quot;)
+        return update_masked_action_nll(policy, batch)
+
+    if run.algorithm == &quot;dagger&quot;:
+        # 3. Roll out the declared mixture/current policy and label visited states.
+        beta = run.p ** run.round_id
+        trajectory = collect_mixture_rollout(policy, expert, beta, manifests.env)
+        if trajectory.policy_sha != policy.sha or not trajectory.all_states_labeled:
+            return stop(&quot;invalid_dagger_round&quot;)
+        manifests.aggregate.append_immutable(run.round_id, trajectory)
+        return update_on_aggregate(policy, manifests.aggregate)
+
+    if run.algorithm == &quot;ppo&quot;:
+        # 4. PPO requires fresh behavior log-probs, reward, terminal masks and value.
+        rollout = collect_fresh_rollout(policy, value, manifests.env)
+        if rollout.behavior_policy_sha != policy.sha:
+            return stop(&quot;stale_behavior_policy&quot;)
+        if not rollout.has_reward_logp_value_terminated_truncated:
+            return stop(&quot;incomplete_ppo_rollout&quot;)
+        advantages, returns = compute_gae_fail_closed(rollout)
+        return ppo_update_with_ratio_stats(policy, value, rollout, advantages, returns)
+
+    return stop(&quot;unknown_algorithm_identity&quot;)</code></pre>
+<p>伪代码是 identity/gate目标，不是五项目已存在的统一 trainer。生产环境还需并发 collector、backpressure、oracle限流、dataset version transaction、distributed worker failure、NaN rollback、checkpoint atomics、evaluation canary与安全 stop。</p>
+<h2 id="15-deterministic-probes">15. 十个 Deterministic Probes</h2>
+<table><thead><tr><th>Probe</th><th>固定输入</th><th>结果</th><th>教学结论</th></tr></thead><tbody>
+<tr><td>masked BC NLL</td><td><code>p=.8</code>有效、<code>.5</code>被mask</td><td><code>.2231435513</code></td><td>denominator只含有效label</td></tr>
+<tr><td>empty mask</td><td>mask <code>[0,0]</code></td><td>gate=<code>false</code></td><td>不返回伪0 loss</td></tr>
+<tr><td>exposure state shift</td><td>expert首步<code>+1</code>，model首步<code>-1</code></td><td>visited state不同</td><td>单个错误改变后续分布</td></tr>
+<tr><td>scheduled endpoints</td><td><code>ε=1/0</code></td><td>teacher/model input</td><td>schedule identity可测</td></tr>
+<tr><td>DAgger beta</td><td><code>p=.75</code>，round <code>1..4</code></td><td><code>.75/.5625/.421875/.316406</code></td><td>与 fixed code一致</td></tr>
+<tr><td>nominal aggregate</td><td>10 rounds × 5,000</td><td>50,000</td><td>仍需扣invalid/duplicate/early stop</td></tr>
+<tr><td>inflection weight</td><td>actions <code>0,0,1,1,2</code>，coef 3.2</td><td><code>1,1,3.2,1,3.2</code></td><td>action change位置加权</td></tr>
+<tr><td>GAE reverse</td><td><code>δ=[1,1,1]</code>，γ=.99，λ=.95</td><td><code>2.82504,1.9405,1</code></td><td>逆时间递推</td></tr>
+<tr><td>PPO clip</td><td><code>(r,A)=(1.3,1)/(.7,-1)</code>，ε=.2</td><td><code>1.2/-0.8</code></td><td>正负advantage方向不同</td></tr>
+<tr><td>terminal/truncation</td><td><code>r=1,γ=.99,Vnext=10</code></td><td><code>1 / 10.9</code></td><td>true terminal与timeout bootstrap分开</td></tr>
+</tbody></table>
+<p>实际执行得到 <code>10/10 expected decisions matched</code>。附加 method gate 判定：无 on-policy/expert/aggregate 的离线数据不通过 DAgger；有 fresh rollout/reward/old-logp/returns 才进入 PPO candidate。probe只验证合同与数值反例，不是论文 benchmark、训练稳定性或本地项目结果。</p>
+<h2 id="16-public-method-code-mapping">16. Public Method → Code Mapping</h2>
+<table><thead><tr><th>Mechanism</th><th>Fixed source/code</th><th>本页直接确认</th><th>仍需单独验证</th></tr></thead><tbody>
+<tr><td>BC/teacher forcing</td><td>R2R paper + Matterport R2R code</td><td>CE target、teacher executed action、test no-cheat</td><td>continuous action regression/local checkpoint</td></tr>
+<tr><td>student forcing</td><td>R2R paper/code</td><td>policy action进入next state、current target</td><td>oracle correctness与local run</td></tr>
+<tr><td>scheduled sampling</td><td>Bengio et al.</td><td><code>ε</code>切换 previous truth/model output</td><td>navigation effectiveness</td></tr>
+<tr><td>DAgger</td><td>Ross + VLN-CE</td><td>aggregate、<code>β=p^i</code>、5k×10、oracle action、inflection weight</td><td>local collector/oracle/LMDB lineage</td></tr>
+<tr><td>PPO/GAE</td><td>PPO/GAE + Habitat-Lab</td><td>ratio/clip、returns/GAE、value/entropy、grad stats</td><td>reward validity、fresh rollout、local result</td></tr>
+<tr><td>DD-PPO</td><td>DD-PPO + Habitat-Lab</td><td>distributed sync、preemption与 config</td><td>local worker/run/2.5B-scale reproduction</td></tr>
+<tr><td>IL+RL hybrid</td><td>R2R-EnvDrop</td><td>teacher CE、sample action、distance reward、value/entropy</td><td>与 PPO/DAgger身份不能混写</td></tr>
+</tbody></table>
+<h2 id="17-inventory-direct-audit">17. 本地五项目 Inventory 与 Direct Audit</h2>
+<h3 id="17-1-canonical-inventory">17.1 Canonical Inventory</h3>
+<table><thead><tr><th>Inventory</th><th>Canonical SHA-256</th><th>与 PER-018 的安全映射</th></tr></thead><tbody>
+<tr><td><a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA</a></td><td><code>13023578D1B7343083BEB588C7F8CE7B1BDC267E2BC834204D309106E8EA132A</code></td><td>action JSON/full-chat CE与offline recipe；不是 continuous-action BC、navigation DAgger或PPO</td></tr>
+<tr><td><a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness</a></td><td><code>71C3B62F52204574C1B854B554258DABC1856F5D9044EB9628280A32500A797F</code></td><td>SFT trajectory与tool reward schema；不是 fresh robot-navigation rollout/PPO</td></tr>
+<tr><td><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD</a></td><td><code>C002B2275EB1F747E1E6F383CB271539F081AE8CCEE0C8D11AFC92EBABE99AFA</code></td><td>text teacher generation与student CE/distillation；不是 env-state DAgger</td></tr>
+<tr><td><a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM</a></td><td><code>C35C41D6248E3B072E9181F4AD3AAFA423631D74604207CB5AB65352105DD8A9</code></td><td>offline finetune launcher与closed-loop eval；无 online expert/reward update</td></tr>
+<tr><td><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a></td><td><code>2362311B8D90A5B82D9D2D6333F5D376625CF2311DD7A3921F42B339BB55AFB4</code></td><td>one-task failed action rollout trace；无完整 trainer/checkpoint/denominator</td></tr>
+</tbody></table>
+<h3 id="17-2-local-direct-files">17.2 Local-direct Files</h3>
+<table><thead><tr><th>Fixed local file</th><th>SHA-256</th><th>直接支持</th><th>不能升级</th></tr></thead><tbody>
+<tr><td>OpenPiVLA <code>formal_train.py</code></td><td><code>51B67D3E04496E68076BF6461506141EBCDDF9A82E6C30AF1FDC0F1F2CCC6F94</code></td><td>DROID action window→assistant JSON、padding-only mask、full-chat causal CE、LoRA trainer</td><td>FAST等价、assistant-only loss、DAgger/PPO或formal rollout</td></tr>
+<tr><td>Harness <code>prepare_sft_data.py</code></td><td><code>AF75E07ED5F2483686D0E4DFADFE23D7F50BD31FE3455FCC3BC7354AB5E85589</code></td><td>tool/project trajectory、group split、SFT mix</td><td>physical navigation action BC</td></tr>
+<tr><td>Harness <code>prepare_grpo_data.py</code></td><td><code>EAA4136BE5159E894A70D755B93C1BA427CAF6E47E6AB2802B3670E2DDB28250</code></td><td>rewardable task/schema、tool/state/proxy weights</td><td>trainer、fresh rollout、PPO/online GRPO或robot success</td></tr>
+<tr><td>UWM finetune launcher</td><td><code>E5B6DCB03FD6612B996AB9DFD3227CB2426E0A147F21FACEE383BBF56EC29D92</code></td><td>LIBERO-90 parent、5-task offline finetune、buffer/output contract</td><td>DAgger oracle、PPO reward或checkpoint内容</td></tr>
+<tr><td>UWM rollout eval</td><td><code>05E912C2096EFF4BFE8D061E4C334517B03DE80847793D83025A2AA3E18F3943</code></td><td>reset style、warmup、seed、checkpoint prefix、success summary</td><td>eval trajectory反向成为online training data</td></tr>
+<tr><td>OPD <code>train_opd_online_vl.py</code></td><td><code>BF9120B5D88180EA4C4725C6F4934913F35FDD36ECB4BC8E6B3B089FB964D8D9</code></td><td>route teacher generation、student CE、loss/teacher counters</td><td>navigation state/oracle aggregation；canonical DAgger</td></tr>
+<tr><td>WAM base manifest</td><td><code>63A518674F061D1C14A880805FF9C23DAC2425C9D7B34CC4C75FD3CEDBD33A86</code></td><td>CoffeePressButton episode0、seed/horizon/controller、<code>success=false</code></td><td>policy update或benchmark denominator</td></tr>
+<tr><td>WAM trained manifest</td><td><code>809AE4F879C9421F954C7BFC26C70005B94387412449039F9FA8B6E479EF55CC</code></td><td>同协议trained-side失败trace引用</td><td>matched checkpoint因果、RL/BC收益</td></tr>
+</tbody></table>
+<p>本轮逐字节重算八个 local-direct SHA，8/8 与 canonical inventories一致。定向扫描 Agent server 58 files、Harness training pipeline 45、OpenPiVLA deployment 93、UWM repro 17、<code>muxi</code> code/config 3,720：前四处没有 <code>DAgger/teacher forcing/student forcing/PPO/GAE/old_log_prob/compute_returns</code> 精确实现命中；<code>muxi</code>有11个命中文件，但均位于 <code>embodied/</code>、dependency或第三方navigation树。代表性的 <code>StreamVLN/streamvln_dagger.py</code> 被 <code>muxi/.gitignore:53 embodied/</code> 排除，README署名上游作者，不能计入 canonical OPD inventory、local run或候选人ownership。检索没有覆盖未同步远端、历史分支或其他机器，故结论是“当前检查范围内未绑定”，不是绝对不存在。</p>
+<h2 id="18-project-truth-boundary">18. Project Truth Boundary</h2>
+<table><thead><tr><th>项目</th><th>当前可以讲</th><th>当前不能说</th><th>最小补强 artifact</th></tr></thead><tbody>
+<tr><td>OpenPiVLA</td><td>offline action-to-text supervision、recipe/mask/serialization冲突与rollout lineage缺口</td><td>已做navigation BC/DAgger/PPO、formal checkpoint闭环提升</td><td>continuous action target/parser/controller、collector/oracle/reward、checkpoint+episode bundle</td></tr>
+<tr><td>Robot Harness</td><td>tool trajectory SFT、schema-aware reward与proxy eval</td><td>PPO/GRPO已在线提升机器人导航成功率</td><td>actual trainer revision、generation groups、fresh effect-sink rollout、old logp/returns或canonical GRPO fields、robot episodes</td></tr>
+<tr><td>OPD</td><td>teacher generation/student CE与route-conditioned distillation</td><td>“online”即env on-policy、DAgger或RL</td><td>environment state/action、current student rollout、expert relabel、round aggregate与navigation eval</td></tr>
+<tr><td>UWM</td><td>offline finetune→separate rollout eval、reset/seed/protocol工程</td><td>evaluation episode被用于DAgger/RL更新、0.744证明online RL</td><td>immutable train dataset/checkpoint、online collector/oracle/reward/update logs、matched evaluation</td></tr>
+<tr><td>WAM</td><td>action trace、controller/horizon字段与失败诊断</td><td>trained manifest证明BC/RL improvement</td><td>loadable matched checkpoints、training objective/log、完整 episode denominator与ownership</td></tr>
+</tbody></table>
+<p>安全回答顺序：<code>public definition → fixed paper/repo → algorithm identity gates → local inventory → local-direct exception → missing runtime/result → candidate ownership</code>。文件名含 <code>dagger/ppo/online/reward</code>、ignored upstream checkout、train loss、Git author或closed-loop eval都不能替代状态分布、oracle/reward、update、result和个人贡献证据。</p>
+<h2 id="19-source-gate">19. Source Gate 与下一切片</h2>
+<p>本轮已关闭：</p>
+<ul><li>7份 primary paper 的明确版本、PDF SHA、页数、全文抽取与代表页视觉检查；</li><li>4个 official repos 的 fixed commit/date/license 与27个核心文件 byte-level SHA；</li><li>BC/teacher/student forcing、scheduled sampling、DAgger、GAE/PPO/DD-PPO 的 update-object 与 runtime identity；</li><li>typed navigation training manifest、train/eval linkage、termination/truncation、STOP/reward/denominator与 first-divergence诊断；</li><li>10个 deterministic probes，全部命中预期；</li><li>五份 canonical inventory、八个 local-direct files及 ignored third-party navigation checkout边界。</li></ul>
+<p>仍为 <code>WARN</code>：本地没有归属于候选人的 navigation expert/oracle、current-policy DAgger collector、immutable aggregation rounds、fresh PPO rollout、behavior log-prob/value/return、reward/STOP contract、matched checkpoint/eval episode、跨seed结果或逐文件ownership闭环。论文与official code只能证明公共机制，不能补成本地结果。</p>
+<p>下游 <a href="vol_06_per018_navigation_bc_dagger_rl_exposure_bias_independent_fact_review.html">PER-018 Independent Fact Review</a> 已完成7/7 PDF、10/10 official files、10/10 probes、8/8 local files与source→knowledge→card reconciliation；public facts为<code>PASS WITH WARNING</code>。下一 bounded slice优先进行一题真实口述；保持269张题卡<code>unseen</code>，不启动PER-019、不创建 coaching state。</p>
+<h2 id="references">References</h2>
+<ol><li>Ross, Gordon &amp; Bagnell, <a href="https://arxiv.org/abs/1011.0686">A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning</a>, AISTATS 2011.</li><li>Bengio et al., <a href="https://arxiv.org/abs/1506.03099">Scheduled Sampling for Sequence Prediction with Recurrent Neural Networks</a>, NeurIPS 2015.</li><li>Anderson et al., <a href="https://arxiv.org/abs/1711.07280">Vision-and-Language Navigation: Interpreting visually-grounded navigation instructions in real environments</a>, CVPR 2018；<a href="https://github.com/peteanderson80/Matterport3DSimulator/tree/589d091b111333f9e9f9d6cfd021b2eb68435925">official simulator/code</a>.</li><li>Krantz et al., <a href="https://arxiv.org/abs/2004.02857">Beyond the Nav-Graph: Vision-and-Language Navigation in Continuous Environments</a>；<a href="https://github.com/jacobkrantz/VLN-CE/tree/729d141b2ee10628061ada74dd3a5b9f70faeba5">official code</a>.</li><li>Wijmans et al., <a href="https://arxiv.org/abs/1911.00357">DD-PPO: Learning Near-Perfect PointGoal Navigators from 2.5 Billion Frames</a>, ICLR 2020；<a href="https://github.com/facebookresearch/habitat-lab/tree/0fb6f43ffe806a8088a171b036336c093bcf604e">Habitat-Lab</a>.</li><li>Schulman et al., <a href="https://arxiv.org/abs/1707.06347">Proximal Policy Optimization Algorithms</a>, 2017.</li><li>Schulman et al., <a href="https://arxiv.org/abs/1506.02438">High-Dimensional Continuous Control Using Generalized Advantage Estimation</a>, ICLR 2016.</li><li>Tan, Yu &amp; Bansal, <a href="https://arxiv.org/abs/1904.04195">Learning to Navigate Unseen Environments: Back Translation with Environmental Dropout</a>；<a href="https://github.com/airsplay/R2R-EnvDrop/tree/6f938abcf2db999c0118c7e548d8357ab8f006db">official code</a>.</li><li><a href="vol_02_il_rl_posttraining_sources.html">VOL 02 IL / RL / Post-training Source Registry</a> 与 <a href="vol_02_il_rl_posttraining_independent_fact_review.html">Independent Fact Review</a>.</li><li><a href="vol_06_per004_vln_objectnav_source_freeze.html">PER-004 VLN / ObjectNav</a>、<a href="vol_06_per005_navigation_policy_architecture_source_freeze.html">PER-005 Navigation Policy Architecture</a>、<a href="vol_06_per017_belief_memory_frontier_active_exploration_source_freeze.html">PER-017 Belief / Memory / Exploration</a>.</li><li><a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA</a>、<a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness</a>、<a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD</a>、<a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM</a> 与 <a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a> Claim–Evidence Inventories.</li><li><a href="vol_06_per018_navigation_bc_dagger_rl_exposure_bias_independent_fact_review.html">PER-018 Independent Fact Review</a>：PDF/code重新获取、Habitat done-mask版本边界、10 probes与local rehash。</li></ol>
+</article></body></html>

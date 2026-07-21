@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-025 Source Freeze：Cosmos/WAM Action、Future/World、Value 的 Slot、Mask 与 Loss</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm025_cosmos_wam_slot_mask_loss_source_freeze.md">
+<meta name="aris:source-sha256" content="2bb0f073a939520a6def6e3028ba17c306806acc05e70ca7690220c7937a4664">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>2bb0f073a939520a6def6e3028ba17c306806acc05e70ca7690220c7937a4664</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm025_cosmos_wam_slot_mask_loss_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 题目与核心结论</a></li><li><a href="#2">2. 来源冻结</a></li><li><a href="#3">3. 概率角色与统一布局</a></li><li><a href="#4-action-future-value-slot">4. Action、Future 与 Value 如何进入 slot</a></li><li><a href="#4-1-action">4.1 Action</a></li><li><a href="#4-2-future-world">4.2 Future/world</a></li><li><a href="#4-3-value">4.3 Value</a></li><li><a href="#5-mask-routing">5. 四种 mask / routing 不可混淆</a></li><li><a href="#6-loss-reduction">6. Loss 与 reduction</a></li><li><a href="#7-routing-padding-mask">7. Routing、padding 与 mask 的最小单测</a></li><li><a href="#8">8. 项目真实性边界</a></li><li><a href="#9-source-gate">9. Source gate 结论</a></li><li><a href="#section-13">参考来源</a></li></ol></nav>
+<h1>VOL 04 WM-025 Source Freeze：Cosmos/WAM Action、Future/World、Value 的 Slot、Mask 与 Loss</h1>
+<div class="meta">审计日期：2026-07-18 状态：source_frozen / VLA-WM-025 / knowledge_synced / card_synced / WARN 覆盖题目：VLA-WM-025 本轮边界：冻结 Cosmos Policy/WAM 的统一 latent sequence、action/future/value slot、sample routing、condition mask、target loss mask 与 EDM loss；不把上游结构、公开分数或未核验本地 run 写成个人设计与结果。</div>
+<h2 id="1">1. 题目与核心结论</h2>
+<p>题目：<strong>Cosmos/WAM 的 action、future/world、value 三类目标怎样映射到数据 slot、mask 和 loss？</strong></p>
+<p>核心结论：</p>
+<ol><li><strong>不是视频 backbone 后简单外挂三个独立 head。</strong>frozen paper/code 将当前 proprio、相机、action chunk、future proprio/images 与 value 编排进同一 latent-video sequence；共享 diffusion transformer 通过输入 slot、condition mask、sample routing 和可选 target mask 切换 policy/world/value 角色。[S1]</li><li><strong>Slot 定义数据放在哪里，condition mask 定义哪些 slot 是已知条件，target loss mask 定义哪些预测误差进入反向。</strong>三者属于不同层，不能把 mask=1 的 condition 语义直接当作 loss 权重。</li><li><strong>训练主项是 noise-weighted latent EDM MSE。</strong>action/future/value 的 component L1/MSE 可用于日志诊断，但不等于主反向 loss；action_loss_multiplier 和 mask_loss_for_action_future_state_prediction 属于可选分支，必须核对主 config 与调用点。</li><li><strong>Dataset routing 决定样本承担哪种角色。</strong>demo、success rollout、failure rollout 进入统一索引空间；base recipe 约形成 policy/world/value 50/25/25 的角色比例，但这只支持指定 frozen contract，不是所有 checkpoint 的通用事实。</li><li><strong>本地 WAM 项目目前只能安全说“按上游 contract 梳理/对齐 slot、mask、routing 与评测边界”。</strong>raw config、run log、checkpoint、gradient trace、paired ablation 和 ownership 仍不完整，不能说本人设计三目标或证明 auxiliary objective 有收益。[S3]</li></ol>
+<h2 id="2">2. 来源冻结</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>冻结版本</th><th>可支持</th><th>不能支持</th><th>状态</th></tr></thead><tbody>
+<tr><td>S1</td><td>Cosmos Policy paper + NVlabs/cosmos-policy claim-to-code audit</td><td>arXiv:2601.16163v1；repo commit 18a2accadf4e7a3531e56754102af5a24d2316da，Apache-2.0</td><td>latent layout、action/value injection/extraction、dataset routing、condition mask、EDM loss、direct/planning contract</td><td>用户本地 checkpoint/run、个人原创、公开结果是本地结果</td><td>primary + official-code audit / WARN</td></tr>
+<tr><td>S2</td><td>WM-016 Joint Objective Source Freeze</td><td>本地 canonical + review</td><td>shared representation、sample routing、condition/noise/target/metric mask 分层、reduction/gradient 审计模板</td><td>WM-016 的抽象式就是所有 Cosmos config 的 exact loss</td><td>supporting / WARN</td></tr>
+<tr><td>S3</td><td>WAM Claim–Evidence Inventory</td><td>2026-07-17/18 evidence audit</td><td>上游机制已核；本地 raw bundle、ownership、MSE/success/0-success claim 风险与安全口径</td><td>历史数字、root cause 或个人模块已核实</td><td>local evidence / WARN</td></tr>
+<tr><td>S4</td><td>WM-024 Reward / Value / Success / Termination</td><td>本地 canonical + review</td><td>value/return、success、termination 的语义分离和 calibration 要求</td><td>value frame 是校准 success probability</td><td>supporting / WARN</td></tr>
+<tr><td>S5</td><td>Benchmark / Evidence + WM-019 Metric Boundary</td><td>本地 frozen audits</td><td>component loss、future proxy、direct success、planning score 的 metric ladder</td><td>离线 component loss 下降证明闭环提升</td><td>supporting / WARN</td></tr>
+</tbody></table>
+<h2 id="3">3. 概率角色与统一布局</h2>
+<p>令 \(s=(o,p,c)\) 表示当前 cameras、proprio 和任务文本，\(a\in\mathbb R^{K\times D_a}\) 是 action chunk，\(s'\) 是 \(t+K\) 的 future proprio/images proxy，\(G\) 是 rollout return。frozen paper 将三种角色写成：</p>
+<div class="formula">\[
+\begin{aligned}
+\text{policy: }&amp;p_\theta(a,s&#x27;,G\mid s),\\
+\text{world: }&amp;p_\theta(s&#x27;,G\mid s,a),\\
+\text{value: }&amp;p_\theta(G\mid s,a,s&#x27;).
+\end{aligned}
+\]</div>
+<p>变量解释：同一个 \(\theta\) 表示共享 diffusion backbone；角色差异来自哪些 slot 被提供为 clean condition、哪些 slot 需要 denoise/predict。这里的 \(s'\) 是 future observation proxy，不是可直接读取的完整 simulator state；\(G\) 是指定 return contract，不自动等于成功概率。</p>
+<p>冻结 layout：</p>
+<table><thead><tr><th>Suite</th><th>语义 slot 顺序</th><th>action/proprio</th></tr></thead><tbody>
+<tr><td>LIBERO</td><td>blank、current proprio、wrist、primary、action、future proprio、future wrist、future primary、value</td><td>action 16×7；proprio 9D</td></tr>
+<tr><td>RoboCasa</td><td>blank、current proprio、wrist、left primary、right primary、action、future proprio、future wrist、future left、future right、value</td><td>action 32×7；proprio 9D</td></tr>
+</tbody></table>
+<p>每个语义 frame 对应 \(16\times28\times28\) latent volume；tokenizer 的 temporal compression 使输入按重复 semantic frame 组织为指定长度。这个 layout 是 frozen commit 的实现事实，不能外推为所有 video-VLA。</p>
+<h2 id="4-action-future-value-slot">4. Action、Future 与 Value 如何进入 slot</h2>
+<h3 id="4-1-action">4.1 Action</h3>
+<p>归一化 action chunk \(A\in[-1,1]^{K\times D_a}\) 被 flatten、重复并填入 action latent volume；提取时只保留可组成完整 action copy 的元素，reshape 后跨 copy 求均值，再按 dataset actions_min/actions_max 反归一化。[S1]</p>
+<p>因此 action slot 的审计必须包含：\(K,D_a\)、normalizer revision、latent index、完整 copy 数、尾部不完整片段、round-trip error、controller mapping。它不是一个 action-specific learned encoder，也不能跳过 statistics 文件。</p>
+<h3 id="4-2-future-world">4.2 Future/world</h3>
+<p>future target 由 \(t+K\) 的 proprio 和 camera observations 构成。episode 尾部会 clamp 到最后一帧，action 不足会重复最后动作；frozen behavior 没有独立 valid-step mask，因此 terminal padding 可能作为真实 target 参与训练。future image 解码前还要恢复 blank/proprio/action 位置的 clean placeholder latent。</p>
+<h3 id="4-3-value">4.3 Value</h3>
+<p>value scalar 扩展到整个 value frame；采样后对 value frame 求均值，并从 \([-1,1]\) 映射/clip 到 \([0,1]\)。value label 使用 future index 对应的 return。value slot 的低 loss 或高 score只证明指定 latent/return contract 的拟合或排序信号，不证明 closed-loop success。</p>
+<h2 id="5-mask-routing">5. 四种 mask / routing 不可混淆</h2>
+<table><thead><tr><th>层</th><th>回答的问题</th><th>Frozen Cosmos/WAM 语义</th><th>常见错误</th></tr></thead><tbody>
+<tr><td>sample routing</td><td>这条样本扮演什么训练角色？</td><td>demo / world rollout / value rollout / V/Q variant</td><td>只看 batch 名称，不看 role flag</td></tr>
+<tr><td>condition/input mask</td><td>哪些 slot 保持 clean、哪些需生成？</td><td>mask=1 表示 clean condition，mask=0 表示 denoise/predict</td><td>当成 attention mask 或 loss mask</td></tr>
+<tr><td>target loss mask</td><td>哪些预测元素进入反向 reduction？</td><td>可选按 policy/world/value 保留 action/future/value target</td><td>看到配置名就断言主实验启用</td></tr>
+<tr><td>metric mask</td><td>日志统计哪些 component？</td><td>action/future/value L1/MSE、planning/direct metrics</td><td>把日志 L1 当主训练 loss</td></tr>
+</tbody></table>
+<p>角色到 condition 的映射：</p>
+<table><thead><tr><th>角色</th><th>Clean condition</th><th>主要 target</th></tr></thead><tbody>
+<tr><td>policy demo</td><td>current state \(s\)</td><td>action、future、value 可联合生成</td></tr>
+<tr><td>world rollout</td><td>current state + action</td><td>future proprio/images；value 可 auxiliary</td></tr>
+<tr><td>value rollout</td><td>full prefix \(s,a,s'\)</td><td>value frame</td></tr>
+<tr><td>state-value variant</td><td>future state only</td><td>\(V(s')\)，mask current/action</td></tr>
+<tr><td>Q variant</td><td>current state + action</td><td>\(Q(s,a)\)，mask future state</td></tr>
+</tbody></table>
+<p>get_data_and_condition 对 world sample 把 action slot 置 clean，对 value sample 把除 value 之外的 slots 置 clean；V/Q variant 再改变 current/action/future 的 input mask。必须把 mask 类型、1/0 方向、shape、dtype 和 slot index 一起记录。</p>
+<h2 id="6-loss-reduction">6. Loss 与 reduction</h2>
+<p>frozen training 先得到 clean latent \(x_0\)，按 HybridEDMSDE 产生 noisy \(x_t\)，denoiser 预测 \(\hat x_0\)。主项可抽象为：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{EDM}}=
+\frac{\sum_{b,t,c,h,w}
+m_{b,t}\,w(\sigma_{b,t})
+\left(x_{0,bcthw}-\hat x_{0,bcthw}\right)^2}
+\sum_{b,t,c,h,w}m_{b,t}}.
+\]</div>
+<p>变量解释：\(m_{b,t}\) 是真正参与 loss 的 latent-frame target mask，\(w(\sigma)\) 是 noise-level weight；实现必须核对 empty mask、denominator、dtype 和 distributed reduction。该式是审计化表达，不能据此声称所有 frozen config 都启用了同一 target mask。</p>
+<p>当 mask_loss_for_action_future_state_prediction 打开时，可让 demo 只保留 action slot、world sample 只保留 future slots、value sample 只保留 value slot。代码还支持 action_loss_multiplier。当前 audit 没有确认该 target-mask flag 是所有官方 checkpoint 的主训练默认，因此回答必须说“可选分支 + 需查 config”。</p>
+<p>各 action/future/value component L1/MSE 是诊断 metric；主反向项仍是 noise-weighted latent MSE。README 的 action L1 经验阈值也不能替代 checkpoint、closed-loop success 或 early-stopping 充分条件。</p>
+<h2 id="7-routing-padding-mask">7. Routing、padding 与 mask 的最小单测</h2>
+<ol><li><strong>Slot round-trip</strong>：action normalize→inject→extract→denormalize；value scalar→frame→scalar；检查 shape、finite、误差与尾部 copy。</li><li><strong>Role matrix</strong>：各取一条 demo、world rollout、value rollout、V/Q sample，打印 role flag、clean condition slots、target slots、sigma 与 loss denominator。</li><li><strong>Non-zero gradient</strong>：对 action/future/value target 分别检查 masked loss、gradient norm 与 shared backbone gradient；empty mask 必须 fail-fast。</li><li><strong>Padding A/B</strong>：episode 尾部 repeated action/future 与 valid-step masked 版本配对，检查 component loss 和 closed-loop 影响。</li><li><strong>Objective ablation</strong>：action-only、+world、+value、all；固定 dataset split、checkpoint init、steps、scheduler、normalizer 和 eval protocol。</li></ol>
+<h2 id="8">8. 项目真实性边界</h2>
+<p>WAM inventory 的当前安全口径是：上游 slot/mask/routing 已核实，个人可以解释并设计审计；当前工作区的 WAM raw run bundle、可加载 checkpoint、exact local config、loss/gradient trace、closed-loop paired ablation 和 ownership 未闭合。外部 CoffeePressButton diagnostic 仅支持部分 trace/proxy，checkpoint 与目标 metric 仍未验证。</p>
+<p>因此面试可说：</p>
+<div class="meta">“我按 frozen Cosmos contract 梳理了 action/future/value 的 latent slots、condition/loss mask、sample routing、normalization 与 eval gate，并把缺失 artifact 列成单测和 paired ablation。”</div>
+<p>不能说：</p>
+<div class="meta">“我原创设计三个 head，并证明 world/value auxiliary 提升了成功率。”</div>
+<h2 id="9-source-gate">9. Source gate 结论</h2>
+<p>本 source freeze 为 WARN：三种概率角色、LIBERO/RoboCasa layout、action/future/value 注入、condition/target/metric mask、EDM loss 与最小单测已冻结；主 checkpoint 的 exact config、local runtime gradient、paired ablation、closed-loop result 和 ownership 仍缺。下游知识页和题卡只能写机制与审计合同。</p>
+<h2 id="section-13">参考来源</h2>
+<ol><li><a href="vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos Policy / WAM claim-to-code audit</a>。</li><li><a href="vol_04_wm016_joint_objective_source_freeze.html">WM-016 Joint Objective Source Freeze</a>。</li><li><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM Claim–Evidence Inventory</a>。</li><li><a href="../knowledge/vol_04_world_model_sim2real_wm024_reward_value_success_termination.html">WM-024 Reward / Value / Success / Termination</a>。</li><li><a href="vol_04_wm019_metric_boundary_source_freeze.html">WM-019 Metric Boundary</a>。</li><li><a href="vol_04_benchmark_evidence_claim_to_protocol.html">Benchmark / Evidence audit</a>。</li></ol>
+</article></body></html>

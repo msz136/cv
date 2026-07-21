@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenPiVLA / LIBERO Checkpoint Load–Serve–Client Lineage Gate</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\openpivla_libero_checkpoint_load_lineage_gate.md">
+<meta name="aris:source-sha256" content="02b6d0a5ecc380c992b92ebc03e7bbe6eeaf47e30b9a22020b3f7a43f8c4648a">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>02b6d0a5ecc380c992b92ebc03e7bbe6eeaf47e30b9a22020b3f7a43f8c4648a</code>；生成自：<code>interview_materials\vla\sources\openpivla_libero_checkpoint_load_lineage_gate.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. Question 与证据目标</a></li><li><a href="#2-immutable-evidence-freeze">2. Immutable evidence freeze</a></li><li><a href="#3-server-side-checkpoint-load-chain">3. Server-side checkpoint load chain</a></li><li><a href="#4-client-rollout-contract">4. Client 与 rollout contract</a></li><li><a href="#5-same-run-binding">5. Same-run binding 强度</a></li><li><a href="#6">6. 面试安全口径</a></li><li><a href="#30">30 秒回答</a></li><li><a href="#section-8">高频追问</a></li><li><a href="#7">7. 下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>OpenPiVLA / LIBERO Checkpoint Load–Serve–Client Lineage Gate</h1>
+<div class="meta">状态：<code>local-direct / log-hash-frozen / checkpoint-load-confirmed / binary-unverified / WARN</code> 审查日期：2026-07-21 范围：<code>C:\Users\mousongzhe\project\openpivla_deployment</code> 中 <code>libero_franka_true_rollout_v1</code> 的 server/client log、rollout script 与部署记录。 结论先行：本地 <code>serve.log</code> 直接证明 <strong>Orbax 从官方 <code>pi05_libero/params</code> 路径恢复了约 6.2 GiB 参数、从 checkpoint assets 加载 normalization stats、启动 WebSocket server 并接受 localhost client 连接</strong>；同目录 <code>client.log</code> 与 <code>summary.json</code> 记录了随后完成的 LIBERO task-0 70-step model/no-op rollout。该证据关闭了“是否真的 load 并 serve 官方 checkpoint”的主要疑问，但仍没有 checkpoint 文件级 manifest/SHA、精确启动命令、processor/tokenizer revision、run UUID 或私有 LoRA checkpoint，因此不能升级为 fine-tune lineage、完整可重复 benchmark 或个人 ownership。</div>
+<h2 id="1-question">1. Question 与证据目标</h2>
+<p>上一份 <a href="openpivla_runtime_rollout_artifact_gate.html">Runtime Rollout Artifact Gate</a> 已冻结 ALOHA <code>2/3</code>、多视角 <code>1/2</code> 与 LIBERO task-0 <code>0/1</code>，但当时只有 summary 中的 checkpoint 字段，尚未直接读取 checkpoint restore 和 server/client 连接日志。本页只回答四个问题：</p>
+<ol><li>server 是否真正从 <code>pi05_libero</code> checkpoint 恢复参数；</li><li>normalization stats 是否随相同 checkpoint lineage 被加载；</li><li>server 是否监听、client 是否连接、rollout 是否产生结果；</li><li>这组日志仍缺哪些内容，因而不能支持哪些强 claim。</li></ol>
+<p>本页不重新运行远端训练或评估，不复制权重，也不把部署日志改写成候选人的算法贡献。</p>
+<h2 id="2-immutable-evidence-freeze">2. Immutable evidence freeze</h2>
+<table><thead><tr><th>ID</th><th>本地对象</th><th>SHA-256</th><th>直接支持</th></tr></thead><tbody>
+<tr><td>L01</td><td><code>artifacts\libero_franka_true_rollout_v1\serve.log</code></td><td><code>FF0B39D7B87D604D86486A0088E7CF7FD2D3EA99CB151B99FD5D9B9E60AACD2A</code></td><td>Orbax version、checkpoint restore path/bytes/time、norm stats path、listen port、client connection</td></tr>
+<tr><td>L02</td><td><code>artifacts\libero_franka_true_rollout_v1\client.log</code></td><td><code>BC1B7FE6E54735B4623062D151D47667BD418F4F7A46B6CC471EC1F961869572</code></td><td>LIBERO task/config/checkpoint summary、70-step model/no-op run、reward/success/result filenames</td></tr>
+<tr><td>C01</td><td><code>scripts\run_libero_true_rollout.py</code></td><td><code>1C7F74DE83FD373A27FEDC70D863D5F0BF164B4512ED63E1D76552A0F22C3016</code></td><td>observation schema、state transform、image preprocessing、action slice/replan、environment step 与 summary writer</td></tr>
+<tr><td>D01</td><td><code>DEPLOYMENT.md</code></td><td><code>C0A3DD0C0DA8C1C0D36023046D5337900A71680B413657BC9B1062EEF2EEA14E</code></td><td>remote directory、OpenPI recorded commit <code>c23745b</code>、official checkpoint inventory、环境与结果边界</td></tr>
+</tbody></table>
+<p><code>summary.json</code> 已在 Runtime Rollout Artifact Gate 中冻结为 <code>341E77110D75E50B601A078923F51EF8FA39AAA045FA491843A1003B0320E1DB</code>。本页新增冻结的关键对象是 <code>serve.log</code>、<code>client.log</code> 与 rollout script。所有路径均指向用户本地项目目录，未把权重或运行产物复制进面试仓库。</p>
+<h2 id="3-server-side-checkpoint-load-chain">3. Server-side checkpoint load chain</h2>
+<p><code>L01</code> 的顺序证据为：</p>
+<pre><code class="language-text">Loading model...
+orbax-checkpoint version: 0.11.13
+Restoring checkpoint from .../checkpoints/pi05_libero/params
+read total bytes: 6.2 GiB
+Finished restoring checkpoint in 17.00 seconds
+Norm stats not found in official source assets path, skipping
+Loaded norm stats from .../checkpoints/pi05_libero/assets/physical-intelligence/libero
+server listening on 0.0.0.0:8399
+Connection from (&#x27;127.0.0.1&#x27;, 46490) opened</code></pre>
+<p>这比 summary 的字符串字段更强：它记录了 Orbax restore 的执行、读取体量和完成事件，也把 normalization stats 定位到同一 checkpoint 根目录的 assets。可审计的运行身份可写成：</p>
+<div class="formula">\[
+I_{\mathrm{serve}}
+=
+(P_{\mathrm{params}}, P_{\mathrm{norm}}, V_{\mathrm{orbax}}, B_{\mathrm{read}}, T_{\mathrm{restore}}, H, p)
+\]</div>
+<p>变量解释：<code>P_params</code> 是 <code>/pi05_libero/params</code>，<code>P_norm</code> 是 checkpoint 内的 <code>assets/physical-intelligence/libero</code>，<code>V_orbax=0.11.13</code>，<code>B_read≈6.2 GiB</code>，<code>T_restore=17.00 s</code>，<code>H</code> 是日志中的容器 host，<code>p=8399</code>。直觉上，这个 tuple 绑定的是“这次 server 进程加载了什么并监听在哪里”；它来自本地 log 的直接证据，而不是从 summary 反推。</p>
+<p>仍不能把它称为 immutable checkpoint manifest：本地没有 <code>params</code> 目录的逐文件列表、总 SHA/Merkle root、对象存储 revision 或下载 manifest。路径一致和 restore success 能证明可加载性，不能证明远端目录之后绝不会被替换。</p>
+<h2 id="4-client-rollout-contract">4. Client 与 rollout contract</h2>
+<p><code>C01</code> 说明 client 不是只发一个空请求，而是按以下 contract 构造 policy observation：</p>
+<table><thead><tr><th>字段</th><th>来源与变换</th><th>当前证据边界</th></tr></thead><tbody>
+<tr><td><code>observation/image</code></td><td><code>agentview_image</code> 双轴翻转，再 resize-with-pad 和 uint8 转换</td><td>script direct；本次 invocation 的原始图像 hash 未保存</td></tr>
+<tr><td><code>observation/wrist_image</code></td><td><code>robot0_eye_in_hand_image</code>，同样翻转、resize、uint8</td><td>script direct</td></tr>
+<tr><td><code>observation/state</code></td><td>eef position + quaternion-to-axis-angle + gripper qpos</td><td>script direct；axis/unit 的独立 round-trip 未做</td></tr>
+<tr><td><code>prompt</code></td><td>LIBERO task language</td><td>script direct；summary 固定了 task-0 文本</td></tr>
+<tr><td><code>actions</code></td><td><code>client.infer(...)["actions"]</code>，取前 <code>replan_steps</code> 行、前 7 维入队</td><td>script direct；server-side action tensor trace 未落档</td></tr>
+</tbody></table>
+<p>脚本默认 <code>resize_size=224</code>、<code>replan_steps=5</code>、<code>seed=7</code>，但 <code>client.log</code> 没有打印完整 <code>argv</code>，所以这些只能说明 <strong>代码默认值</strong>，不能冒充本次 run 的精确 effective config。summary 直接支持本次执行为 task 0、70 steps、model/no-op 都是 <code>0.0 reward / false success</code>。</p>
+<pre><code class="language-python">def observed_rollout_contract(obs, task_text, client, replan_steps):
+    # 1. 从 LIBERO 观测构造 agent/wrist image、8D state 与语言提示。
+    request = build_libero_request(obs, task_text)
+
+    # 2. WebSocket client 请求 action chunk；本地日志证明 server 已接受连接。
+    chunk = client.infer(request)[&quot;actions&quot;]
+
+    # 3. 只执行 chunk 的前 replan_steps × 7D，再重新请求。
+    for action in chunk[:replan_steps, :7]:
+        obs, reward, done, info = env.step(action.tolist())
+        if done:
+            break</code></pre>
+<p>伪代码是 <code>C01</code> 的紧缩映射。它不补造本次 invocation 未打印的 <code>replan_steps</code>，也不声称 client 侧的 <code>--checkpoint</code> 字段控制了 server；真正的 checkpoint 绑定来自 <code>L01</code> 的 server restore path。</p>
+<h2 id="5-same-run-binding">5. Same-run binding 强度</h2>
+<p>完整的可重复 run identity 至少需要：</p>
+<div class="formula">\[
+I_{\mathrm{run}}
+=
+(R_{\mathrm{code}}, M_{\mathrm{checkpoint}}, N_{\mathrm{stats}}, A_{\mathrm{argv}}, O_{\mathrm{request}}, E_{\mathrm{env}}, S_{\mathrm{scorer}}, Y_{\mathrm{raw}})
+\]</div>
+<p>变量解释：<code>R_code</code> 是代码 revision，<code>M_checkpoint</code> 是不可变 checkpoint manifest，<code>N_stats</code> 是 normalization asset，<code>A_argv</code> 是精确启动参数，<code>O_request</code> 是 observation/action contract，<code>E_env</code> 是环境和 init state，<code>S_scorer</code> 是成功判定，<code>Y_raw</code> 是逐步输出。当前 bundle 对 <code>N_stats</code>、部分 <code>O_request</code>、任务级 <code>E_env</code> 和 summary <code>Y_raw</code> 有直接证据；对 <code>M_checkpoint</code> 只有 path+restore、对 <code>R_code</code> 只有部署记录中的 commit、对 <code>A_argv</code> 和 server-side raw request/response 不完整。</p>
+<table><thead><tr><th>Gate</th><th>当前状态</th><th>证据</th><th>限制</th></tr></thead><tbody>
+<tr><td>checkpoint load</td><td><code>PASS WITH WARNING</code></td><td>Orbax restore 6.2 GiB、17 s、明确 params path</td><td>无逐文件 SHA / immutable manifest</td></tr>
+<tr><td>normalizer load</td><td><code>PASS WITH WARNING</code></td><td>从 checkpoint assets 明确加载</td><td>stats 内容与 SHA 未冻结</td></tr>
+<tr><td>server ready</td><td><code>PASS</code></td><td>监听 <code>0.0.0.0:8399</code></td><td>无 readiness probe latency/SLO</td></tr>
+<tr><td>client connection</td><td><code>PASS WITH WARNING</code></td><td>localhost connection opened；同目录 client log 有结果</td><td>无 shared run UUID、无带时间戳 request ID</td></tr>
+<tr><td>observation/action contract</td><td><code>PASS WITH WARNING</code></td><td>本地 script hash 与字段/切片逻辑</td><td>invocation argv 与 server response trace 缺失</td></tr>
+<tr><td>success scorer</td><td><code>WARN</code></td><td>script 以 <code>done</code> 聚合 success</td><td>无独立 scorer/version；<code>last_info={}</code></td></tr>
+<tr><td>private fine-tune lineage</td><td><code>UNVERIFIED</code></td><td>无</td><td>official <code>pi05_libero</code> 不能替代 LoRA/Qwen checkpoint</td></tr>
+<tr><td>ownership</td><td><code>PENDING</code></td><td>无候选人口述和 pre-snapshot diff</td><td>不能使用个人端到端 ownership 口径</td></tr>
+</tbody></table>
+<h2 id="6">6. 面试安全口径</h2>
+<h3 id="30">30 秒回答</h3>
+<p>“我没有把 summary 里的 checkpoint 字符串当作已经加载的证明，而是继续核对了 server/client log。server 侧 Orbax 0.11.13 确实从官方 <code>pi05_libero/params</code> 恢复了约 6.2 GiB 参数，17 秒完成，又从 checkpoint assets 加载了 LIBERO normalization stats，随后在 8399 端口接受了 localhost client。client 脚本把 agent view、wrist view、eef/gripper state 和 task prompt 发给 policy server，并执行返回 action chunk 的 7D 前缀。这个闭环能证明官方 checkpoint 的 load、serve 和 rollout 路径，但没有 checkpoint 文件级 SHA、精确 argv 和私有 LoRA lineage，所以我不会把它说成自己的 fine-tune 成绩；本次 task-0 结果也仍是 0 reward、false success。”</p>
+<h3 id="section-8">高频追问</h3>
+<ol><li><strong>如何证明 client 连接的是这次 server？</strong> 同目录 server log 记录 localhost connection，client log 紧接着保存任务 summary；这是强运行证据，但没有 shared run UUID/request ID，所以仍标 <code>PASS WITH WARNING</code>。</li><li><strong>为什么 summary 的 checkpoint 字段不够？</strong> client script 只是把 <code>--checkpoint</code> 文本写入 summary；真正控制模型的是 server 进程，因此必须看 server restore log。</li><li><strong>normalizer 是否确认？</strong> 确认了加载路径和成功事件；未冻结 stats 文件 hash/内容，故不能主张完整 immutable bundle。</li><li><strong>这能否证明私有 fine-tune？</strong> 不能。日志加载的是官方 <code>pi05_libero</code>，与 Qwen3-VL LoRA formal trainer 是不同 lineage。</li><li><strong>0 success 的根因是什么？</strong> 仍未知。action axis/unit、controller、camera preprocess、replan 参数和 scorer 需要 matched probe；本页只关闭 load/serve 疑问。</li></ol>
+<h2 id="7">7. 下一步</h2>
+<ol><li>在远端只读生成 checkpoint manifest：逐文件 path/size/SHA、norm stats SHA、OpenPI commit、processor/tokenizer revision。</li><li>启动时保存 server/client 完整 argv、effective config、UTC timestamp、run UUID，并让每个 request/summary 携带同一 ID。</li><li>做一组 matched LIBERO diagnostic probe，固定 observation keys、resize/flip、state axis/unit、7D action order、replan interval、controller 与 success scorer。</li><li>本页证据已映射到 <code>PROJ-OPENPIVLA-007</code>；该卡仍保持 <code>unseen</code>。下一切片优先补 immutable manifest，或执行 matched LIBERO failure probe。</li></ol>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Local server log：<code>C:\Users\mousongzhe\project\openpivla_deployment\artifacts\libero_franka_true_rollout_v1\serve.log</code>（L01）。</li><li>Local client log：同目录 <code>client.log</code>（L02）。</li><li>Local rollout implementation：<code>C:\Users\mousongzhe\project\openpivla_deployment\scripts\run_libero_true_rollout.py</code>（C01）。</li><li>Local deployment record：<code>C:\Users\mousongzhe\project\openpivla_deployment\DEPLOYMENT.md</code>（D01）。</li><li><a href="openpivla_runtime_rollout_artifact_gate.html">OpenPiVLA Runtime Rollout Artifact Gate</a>。</li><li><a href="openpivla_formal_json_ce_shape_contract_artifact_gate.html">OpenPiVLA formal JSON/CE artifact gate</a>，用于区分 private formal trainer 与 official deployment lineage。</li></ol>
+</article></body></html>

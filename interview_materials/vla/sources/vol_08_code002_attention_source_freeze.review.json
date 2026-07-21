@@ -1,0 +1,30 @@
+{
+  "artifact": "sources/vol_08_code002_attention_source_freeze.md",
+  "html": "sources/vol_08_code002_attention_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / CODE-VLA-002 / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "42d98e797f298403c1f04f4fe38ff6a3afdf982684c97345f1df949c826d2bfb",
+  "covered_question_ids": [
+    "CODE-VLA-002"
+  ],
+  "checks": {
+    "primary_sources": "PASS WITH WARNING (PyTorch SDPA/MultiheadAttention docs and Attention Is All You Need are linked; local audits are supporting context)",
+    "shape_scale_contract": "PASS (Q/K/V axes, Lq/Lk, head dimension and 1/sqrt(dk) scale are explicit)",
+    "mask_contract": "PASS (bool/additive, causal direction, padding and all-masked row are explicit)",
+    "test_contract": "PASS (shape, mask, dropout, dtype, complexity and autograd parity tests are specified)",
+    "vla_boundary": "PASS (attention mask, loss mask and continuous action loss are separated)",
+    "project_evidence_boundary": "PASS (no project backend/performance/ownership claim is inferred)",
+    "html_static_validation": "PASS (one H1, eight H2, tables and formula rendered)",
+    "local_links": "PASS (VOL 01/VOL 03 supporting links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "downstream_artifacts": "PASS WITH WARNING (knowledge page and one CODE-VLA-002 card synchronized; local parity/profile artifact remains missing)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep source gate WARN until a local multi-backend parity/profile artifact exists.",
+    "Keep one synchronized CODE-VLA-002 card unseen until a whiteboard drill.",
+    "Do not imply fused SDPA/FlashAttention performance or project originality."
+  ],
+  "next": "Run a CODE-VLA-002 whiteboard drill or collect one parity artifact; keep the card unseen."
+}

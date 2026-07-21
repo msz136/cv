@@ -1,0 +1,59 @@
+{
+  "artifact": "evidence/projects/opd_claim_evidence_inventory.md",
+  "html_artifact": "evidence/projects/opd_claim_evidence_inventory.html",
+  "review_date": "2026-07-19",
+  "status": "drafted_local_direct_audit_ownership_audited",
+  "verdict": "WARN",
+  "source_sha256": "C002B2275EB1F747E1E6F383CB271539F081AE8CCEE0C8D11AFC92EBABE99AFA",
+  "scope": {
+    "project": "OPD / VLM Grounding",
+    "claim_count": 12,
+    "local_direct_sources": 11,
+    "report_supported_sources": 3,
+    "raw_holdout_rows": 10000,
+    "opd5000_checkpoints": [1000, 2000, 3000, 4000, 5000],
+    "practice_state": "not_started"
+  },
+  "frozen_inputs": {
+    "muxi_head": "756e27e16adcfb3ccbfe98c2920dda42095b127f",
+    "build_expert_mixes_sha256": "19D5EF9E25D8664EA983880B79373098A77D19D5DA11D5B2AD17BEE6195C2F2C",
+    "build_opd_student_sha256": "44BCC42DE40249363DAE908314DB79BF658AAE4A5DA008732CD724389D5CD3BE",
+    "train_opd_online_sha256": "BF9120B5D88180EA4C4725C6F4934913F35FDD36ECB4BC8E6B3B089FB964D8D9",
+    "point_train_opd_online_sha256": "7103E3B28068A30978F2B14AD980E51CEC2EC60A0445B2B52243342CDA286336",
+    "audit_opd_student_sha256": "B38F92C2FE681C250D3BA61C35299935501D014BA8B34965C7ED8D529A92D6BB",
+    "muxi_report_sha256": "0EC1E16D1E15AEDC918B910775E7BFD7C769D9715DFBBB9127C09E23F44A4170",
+    "artifact_manifest_sha256": "035764A0461DEE5942AB25AF1BDFCD2514BD69AAC473B2DE8E43F3A7EC86021A",
+    "opd5000_by_format_sha256": "7D797EE1269E082AEEE6AD851EB341588CFCF3B28C939BF870307C01004B9934",
+    "opd5000_by_pool_sha256": "54CA01CAD342AC7F96C1CC0D622E102AB2C9E22E7514180213EF90A48043ADCA",
+    "raw_holdout_evalset_sha256": "200F7A8B00CDD989D4E8D19B6CD3EB5B47B75B87799394438169702F8BBF6485",
+    "raw_holdout_dedupe_sha256": "2E102BB52B925ABA5AFE9E9111C98B3FA67F7032B266B1D08EBB1164A8FFB96D",
+    "raw_holdout_report_sha256": "B4520BCA9B27CBDC8E9280E734A915972CDBBEBB213E685F33FD831EA6E0E78E",
+    "opd5000_run_summary_sha256": "2D670DE0707CD2C6A9D1D4C7EC109C86F0A3F8F87EDE5D6959367017231547CE",
+    "coldstart500_run_summary_sha256": "90FD5A0A5983FEB5673D44CA087F597F0EBCACFD63DF1305C37C297F213D5FC0"
+  },
+  "checks": {
+    "source_freeze": "PASS (source scripts, reports, manifests and SHA-256 recorded; muxi read-only)",
+    "claim_id_unique": "PASS (12 unique OPD-CL IDs)",
+    "expert_mix_mapping": "PASS (five experts, quotas, relation buckets and image-hash split mapped to source)",
+    "student_route_mapping": "PASS (target/candidate route, seen/unseen/hard, category and format metadata mapped)",
+    "training_lineage": "PASS WITH WARNING (coldstart and OPD5000 summaries present; weights, optimizer state and raw logs absent)",
+    "opd5000_checkpoint_metrics": "PASS WITH WARNING (by-format and by-pool tables are local; checkpoint/run identity is not a self-contained binary bundle)",
+    "raw_holdout_leakage": "PASS (10000 rows, 0 fingerprint/source-line/prompt-answer-image duplicates, 0 train-image leakage)",
+    "opd_final_vs_opd5000": "WARN (old OPD final and new-experts OPD5000 are separate records and must not be concatenated)",
+    "point_protocol": "WARN (original prompt, protocol-fixed strict and lenient geometry are different scorers)",
+    "aggregate_summary_boundary": "PASS WITH WARNING (prefer by-format/by-pool tables; aggregate summary can mix denominators/formats)",
+    "ablation": "FAIL (no SFT-only, single-teacher, no-synthetic or synthetic-ratio control frozen)",
+    "ownership": "PASS WITH WARNING (13-row OPD ownership ledger added; msz136/mousongzhe identity, operator, tool/collaboration and result ownership remain candidate-confirmation pending)",
+    "html_static_validation": "PASS (one H1, 12 H2, 9 H3, 6 tables, 1 code block; renderer SHA matches Markdown SHA)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static HTML validation used)"
+  },
+  "open_items": [
+    "Create one immutable lineage manifest for base, coldstart500 and OPD5000 with repo/config/data/scorer/checkpoint parent hashes.",
+    "Rerun base/SFT-only/coldstart-only/OPD on the same 10k holdout and retain raw predictions plus per-sample JSON.",
+    "Freeze prompt hashes and report original strict, protocol-fixed strict and lenient point metrics separately.",
+    "Add single-teacher, no-synthetic and synthetic-ratio ablations before making causal uplift claims.",
+    "Collect candidate answers for the 13-row ownership ledger, separating personal design, implementation, collaboration, historical scaffold, tool assistance and reading-only audit.",
+    "Do not equate static raw-holdout grounding with real robot closed-loop success."
+  ],
+  "next": "PROJ-OPD-001..009 are drafted and unseen; next run one ownership drill or collect lineage/ablation evidence."
+}

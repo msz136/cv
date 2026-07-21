@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VLA Knowledge Map：八卷知识图谱与项目挂钩</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\00_vla_knowledge_map.md">
+<meta name="aris:source-sha256" content="8f961fc77949d7fec60565594da2095b21985e21e2536a00e43926c632ff1f0b">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>8f961fc77949d7fec60565594da2095b21985e21e2536a00e43926c632ff1f0b</code>；生成自：<code>interview_materials\vla\knowledge\00_vla_knowledge_map.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 一句话总图</a></li><li><a href="#2">2. 八卷范围与完成条件</a></li><li><a href="#3-id">3. 题目 ID 空间</a></li><li><a href="#4">4. 每个模块的最小闭环</a></li><li><a href="#5">5. 跨卷连接</a></li><li><a href="#6">6. 目前状态</a></li><li><a href="#7">7. 下一步</a></li></ol></nav>
+<h1>VLA Knowledge Map：八卷知识图谱与项目挂钩</h1>
+<div class="meta">状态：<code>drafted</code> 规划日期：2026-07-16；最近同步：2026-07-21 目的：固定学习顺序、模块边界、题目 ID 和项目连接点，避免后续知识页互相重复或脱离个人经历。</div>
+<h2 id="1">1. 一句话总图</h2>
+<pre><code class="language-text"># Dependency map: arrows show the dominant learning path, not a hard sequence.
+VOL 01 Foundations
+      ↓
+VOL 02 IL / RL / Post-training ─────┐
+      ↓                              │
+VOL 03 VLA / Action                  │
+      ↓                              │
+VOL 04 World Model / Sim2Real        │
+      ↓                              │
+VOL 05 Engineering / Evaluation ←───┘
+      ↓
+VOL 06 Perception / Grounding / Nav
+      ↓
+VOL 07 Personal Project Deep Dives
+      ↓
+VOL 08 Coding / System Design + 综合模拟面</code></pre>
+<p>这不是严格线性课程：当某个项目暴露高危缺口时，可以回跳前置模块；但没有通过前置模块的基本检查，不直接进入 L3 研究/系统设计题。</p>
+<h2 id="2">2. 八卷范围与完成条件</h2>
+<table><thead><tr><th>卷</th><th>必须回答的核心问题</th><th>子模块</th><th>项目挂钩</th><th>完成条件</th></tr></thead><tbody>
+<tr><td>VOL 01 Foundations</td><td>机器人、深度学习和 RL 的共同语言是什么？</td><td>线性代数/概率、Transformer、优化、MDP、坐标系、控制频率</td><td>OpenPiVLA / UWM</td><td>每个 P0 节点有 L1 定义、L2 机制和 5 道基础题</td></tr>
+<tr><td>VOL 02 IL / RL / Post-training</td><td>从 demonstration 到 preference/online feedback 如何训练策略？</td><td>BC、covariate shift、DAgger、PPO、GRPO、SFT/DPO、offline/online RL</td><td>Harness / WAM</td><td>能解释目标函数、数据分布和何时会失败</td></tr>
+<tr><td>VOL 03 VLA / Action</td><td>VLM 如何产生可执行动作？</td><td>VLA 架构、action token、continuous head、FAST、ACT、Diffusion、Flow Matching、chunk/replan</td><td>OpenPiVLA</td><td>能对比至少三种 action head，并映射到 action shape/normalization</td></tr>
+<tr><td>VOL 04 World Model / Sim2Real</td><td>模型如何预测未来、利用价值并跨环境执行？</td><td>dynamics、latent/world rollout、value、planning、domain randomization、sim2real</td><td>WAM / UWM</td><td>能区分 offline proxy、world loss、online success 和真实泛化</td></tr>
+<tr><td>VOL 05 Engineering / Evaluation</td><td>如何把训练和评估做成可复现、可诊断、可部署的系统？</td><td>data pipeline、distributed training、checkpoint、policy server、latency、fixed-init、failure debugging</td><td>全部项目</td><td>每个指标都有 protocol、baseline、artifact 和可比性说明</td></tr>
+<tr><td>VOL 06 Perception / Grounding / Nav</td><td>视觉、语言、空间和导航信息如何进入策略？</td><td>planned <code>VLA-PER-001..020</code>：image/token、point/box/mask、grounding loss/metric、3D/multi-view、VLN/ObjectNav、SLAM/memory、robustness/safety</td><td>OPD / Harness</td><td>20/20 source；20/20 knowledge；20/20 card；四学习簇完成 fact review；至少 8 次真实 drill；保持项目 truth boundary</td></tr>
+<tr><td>VOL 07 Project Deep Dives</td><td>我的项目到底做了什么，哪些不能说？</td><td>five project evidence audit、ownership、immutable/runtime bundle gate、2 分钟叙事、追问树、bad case、claim reconciliation</td><td>Robot Harness、OPD、OpenPiVLA、WAM、UWM</td><td>每个强 claim 有证据、个人贡献边界和三档回答</td></tr>
+<tr><td>VOL 08 Coding / System Design</td><td>能否把知识落到代码、接口和系统取舍？</td><td>frozen <code>SYS-VLA-001..004</code> + <code>CODE-VLA-001..008</code>：attention/loss/normalization、transform/FK/PID/TD(0)、train platform、policy service、robot fleet、故障恢复</td><td>训练/评估工程</td><td>12/12 source+knowledge+card；4个SYS限时口述；8个CODE白板/runtime练习；保持项目truth boundary</td></tr>
+</tbody></table>
+<h2 id="3-id">3. 题目 ID 空间</h2>
+<table><thead><tr><th>前缀</th><th>范围</th></tr></thead><tbody>
+<tr><td><code>VLA-FND-*</code></td><td>VOL 01 Foundations</td></tr>
+<tr><td><code>VLA-RL-*</code></td><td>VOL 02 IL / RL / Post-training</td></tr>
+<tr><td><code>VLA-ACT-*</code></td><td>VOL 03 Action Representation</td></tr>
+<tr><td><code>VLA-ARCH-*</code></td><td>VOL 03 VLA Architecture</td></tr>
+<tr><td><code>VLA-WM-*</code></td><td>VOL 04 World Model / Sim2Real</td></tr>
+<tr><td><code>VLA-EVAL-*</code></td><td>VOL 05 Evaluation / Debugging</td></tr>
+<tr><td><code>VLA-ENG-*</code></td><td>VOL 05 Engineering / Deployment</td></tr>
+<tr><td><code>VLA-PER-*</code></td><td>VOL 06 Perception / Grounding / Navigation</td></tr>
+<tr><td><code>PROJ-HARNESS-*</code></td><td>Robot Harness</td></tr>
+<tr><td><code>PROJ-OPD-*</code></td><td>OPD / VLM Grounding</td></tr>
+<tr><td><code>PROJ-OPENPIVLA-*</code></td><td>OpenPiVLA</td></tr>
+<tr><td><code>PROJ-WAM-*</code></td><td>Cosmos / WAM</td></tr>
+<tr><td><code>PROJ-UWM-*</code></td><td>UWM / LIBERO</td></tr>
+<tr><td><code>SYS-VLA-*</code></td><td>VOL 08 系统设计</td></tr>
+<tr><td><code>CODE-VLA-*</code></td><td>VOL 08 手撕/实现题</td></tr>
+</tbody></table>
+<h2 id="4">4. 每个模块的最小闭环</h2>
+<pre><code class="language-text"># Minimum module loop: generated artifacts do not imply mastery.
+知识页
+  → 10-20 个去重后的高价值题卡
+  → 至少 2 个项目 hook
+  → 1 个公式/实现/shape 追问
+  → 1 个 trade-off 或 bad case
+  → 5-8 题逐题 drill
+  → 根据回答回写知识页或项目 claim</code></pre>
+<p>“知识页写完”只表示 <code>drafted</code>；通过来源审计、HTML 校验和一次口述训练后才进入 <code>reviewed/drilled</code>。</p>
+<h2 id="5">5. 跨卷连接</h2>
+<table><thead><tr><th>连接</th><th>面试中要能回答</th></tr></thead><tbody>
+<tr><td>Foundations → Action</td><td>为什么 action normalization、坐标系和 controller contract 会影响 VLA 成功率？</td></tr>
+<tr><td>IL/RL → VLA</td><td>BC、Diffusion/Flow Matching 和 GRPO 的监督/反馈边界分别是什么？</td></tr>
+<tr><td>Action → Eval</td><td>horizon、chunk、replan、denormalization 如何形成闭环 trade-off？</td></tr>
+<tr><td>World Model → Eval</td><td>world/value 辅助目标为什么可能帮助 action，又为什么可能干扰？</td></tr>
+<tr><td>Perception → Project</td><td>point/box/text 的格式协议、几何误差和下游可执行性如何区分？</td></tr>
+<tr><td>Engineering → Ownership</td><td>哪些是开源基础设施，哪些是我的设计判断、改动和验收？</td></tr>
+<tr><td>Project → System Design</td><td>如果任务规模、机器人数量或延迟翻倍，现有方案哪里先失效？</td></tr>
+</tbody></table>
+<h2 id="6">6. 目前状态</h2>
+<table><thead><tr><th>资产</th><th>状态</th><th>下一步</th></tr></thead><tbody>
+<tr><td>八卷边界</td><td>drafted</td><td>用户确认后不再随意扩张</td></tr>
+<tr><td>来源入口</td><td>researching</td><td>381/381 canonical生命周期已闭合；VOL 01/02 completion为candidate，VOL 03 Audit A–F与VOL 04 Audit A–E public facts已独立复核，VOL 05当前计划覆盖完成，PER-018 facts已复核；PER-019与PER-020 source/knowledge/card均已冻结并保持unseen；VOL 08 coverage contract冻结为12节点、sources/knowledge/cards 12/12/12，SYS-VLA-004三联件已同步；Robot Harness为28/40 raw、6/10 exact support、12-slot locator，17个候选0 eligible，UWM ActionHeadFix P0 audit已完成但checkpoint/fresh-load/scorer/ownership仍WARN</td></tr>
+<tr><td>Knowledge HTML</td><td>drafted / VOL 01–06 与 VOL 08 当前计划节点均已生成</td><td>VOL 01–05已完成计划内知识/题卡覆盖；VOL 04与VOL 05均为44/44且全部unseen；VOL 06 <code>VLA-PER-001..020</code> source/knowledge/card已同步且unseen；VOL 08 十二个 SYS/CODE 节点三联件已同步，所有卡均保持WARN/unseen</td></tr>
+<tr><td>Question bank</td><td>drafted</td><td>VOL 01 39 + VOL 02 40 + VOL 03 44 + VOL 04 44 + VOL 05 44 + VOL 06 20 + Project 37 + VOL 08 12，合计280题全部unseen</td></tr>
+<tr><td>Project evidence</td><td>drafted / WARN</td><td>五项目inventories/ownership ledgers均5/5；OpenPiVLA parser gate与Robot Harness aggregate/raw/recovery gates已冻结；后者证明13/13均值、28/40 primary、6/10 exact support并定位12个remote slot，但17个本地候选均不合格，不关闭统一scorer/checkpoint/ownership</td></tr>
+<tr><td>Practice state</td><td>todo</td><td>第一次真实口述后才创建 coaching state；页面生成不计训练成绩</td></tr>
+</tbody></table>
+<h2 id="7">7. 下一步</h2>
+<ol><li>VOL 01、VOL 02 与 VOL 03 card-level completion 已进入 candidate/WARN；VOL 03 Source Audit A–F 的 public paper/code facts 均已完成独立切片，下一步只做一题真实口述或补本地 runtime artifact。</li><li>ACT、Diffusion、Flow、Octo mask、openpi checkpoint/norm/transforms/broker 与 RT-2 action-token 事实已复核；local runtime 仍待取证。</li><li><code>VLA-ARCH-007..012</code> 与 <code>VLA-ACT-031..032</code> 已回填并 source-reviewed；整卷不因页面复核升级为 drilled。</li><li>保持现有 44 道 VOL 03 题卡为 unseen；真实口述后才更新 coaching state。</li><li>仓库completion audit已同步VOL 08 SYS-004 三联件、CODE-008三联件、五项目 P0 audit 与 UWM ActionHeadFix raw train→closed-loop slice：VOL 04与VOL 05均达到knowledge/cards44/44；280 cards全部<code>unseen</code>；381/381 canonical artifacts有三联件。VOL 06 planned20、source/knowledge/card20/20/20，PER-001..020三联件已同步；VOL 08 planned12、sources/knowledge/card12/12/12；reference-only probe 不计入候选 ownership；VOL 07已有28/40 raw、6/10 support与12-slot locator，但17个本地候选0 eligible，UWM strict/RoboCasa仍缺trained checkpoint/fresh-load/scorer/ownership，VOL 07/08仍不满足退出条件。</li><li>VOL 05 Phase 0 已完成44个知识节点与44张题卡；ENG-012..022与EVAL-003..022均完成来源冻结、知识页和单张题卡。强指标仍缺五项目完整paper→runtime→ownership链、timestamped monitoring、confirmed incident RCA、selection→fresh-audit、matched factorial、VLM-human bundle、真实effect-sink、capture→apply latency、offline-online panel与same-bundle sim→shadow→real canary。</li><li>OpenPiVLA parser/round-trip gate 已完成：Python JSON 只恢复 <code>15×16</code> prefix，formal generation/parser/controller 仍缺；下一 bounded slice 优先做 ownership confirmation，或补 immutable formal checkpoint/generation bundle。没有真实回答时不扩题、不升级 mastery。</li><li>VOL 06 coverage contract冻结为<code>VLA-PER-001..020</code>；<code>001..020</code>三联件已生成且unseen，source/knowledge/card覆盖为20/20/20。下一 bounded slice只做真实口述或独立fact review；不预改mastery。</li><li>VOL 08 coverage contract冻结为<code>SYS-VLA-001..004</code>与<code>CODE-VLA-001..008</code>；当前source/knowledge/card为12/12/12，<code>SYS-VLA-004</code> 三联件已同步，十二张卡全部unseen。下一 bounded slice只进行 <code>SYS-VLA-004</code> 真实系统设计口述；不修改 mastery。</li></ol>
+</article></body></html>

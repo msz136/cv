@@ -1,0 +1,202 @@
+# VLA 模块进度（内容状态，不等于口述成绩）
+
+> 更新：2026-07-21  
+> 说明：本文件只跟踪仓库内容和待练题；真实口述评分需要候选人回答后，才写入 `coaching_state.md`。
+
+## 当前模块
+
+| 模块 | 内容状态 | 题卡 | 口述状态 | 下一步 |
+| --- | --- | ---: | --- | --- |
+| VOL 01 Foundations | drafted / review WARN / 分层试点 19 张 | 39 | 39 unseen | 事实复核已收口；下一步只收集 `PROJ-WAM-001` 真实口述，或继续后续未分层题卡，不把示范答案当作 mastery |
+| VOL 02 IL / RL / Post-training | drafted / review WARN | 40 / 40 drafted | 40 unseen | 独立事实复核；后续安排逐题口述 |
+| VOL 03 VLA / Action | complete volume drafted / WARN / 44 of 44 covered | 44 drafted / 44 planned | 44 unseen | 独立事实复核与真实口述 |
+| VOL 04 World Model / Sim2Real | knowledge/cards 44/44 / Audit A–E + UWM Audit B / WM-011..014 与 WM-030..038 source frozen / WARN | 44 / 44 cards drafted | 44 unseen | 页面覆盖已收口；下一步做真实口述或补 project/action-effect artifacts，不把 drafted 当 mastered |
+| VOL 05 Engineering / Evaluation | Phase 0 44 planned / knowledge+cards 44/44 / completion audited / WARN | 44 / 44 cards drafted | 44 unseen | 页面覆盖已收口；下一步做真实口述或补 project/runtime artifacts，不把 drafted 当 mastered |
+| VOL 06 Perception / Grounding / Nav | PER-001..020 source+knowledge+card；PER-020 independent fact review 通过但仍 WARN/PASS WITH WARNING | 20 / 20 cards drafted | 20 unseen | 下一切片做真实口述；真实回答前不创建 coaching state |
+| VOL 07 Project Deep Dives | 五项目 evidence/ownership reconciliation 已完成；inventories 5/5、ownership ledgers 5/5、Robot Harness 28/40 raw + 6/10 support / WARN | 37 drafted / 37 unseen | not started | 下一切片逐题口述一个项目，或补一个 P0 immutable artifact；不因页面生成升级掌握状态 |
+| VOL 08 Coding / System Design | SYS-VLA-001..004 + CODE-VLA-001..008 三联件 / WARN | 12 drafted / 12 unseen | not started | 下一步进行 `SYS-VLA-004` 系统设计真实口述；CODE-VLA-003/007/008 仍可单独白板练习 |
+
+VOL 07 项目题卡明细：OpenPiVLA `12`（Batch 1 `8` + Batch 2 `4`）、Robot Harness `8`、OPD `9`、WAM `4`、UWM/LIBERO `4`，合计 `37`。这里的 `12` 是题卡数量，不等于题卡内的追问数或训练轮次。
+
+## 最新证据纠偏：WAM 两条运行族
+
+- 8-GPU、global batch 128、`9907`-step 1 epoch gate 仍是未闭合状态：step 1903 cgroup OOM，no-cycle smoke 通过，step 1500 `state_dict` 保存接口失败。
+- 独立单卡 full10k repro 已由原始日志冻结：step 10000 loss=`0.0543`、远端 `iter_000010000` checkpoint saved、`EXIT:0`；CoffeePressButton 1-episode smoke=`0/1`。
+- 两条 run family 不做无 key join；题卡仍 `unseen`，没有创建 `coaching_state.md`。证据入口：[WAM Run Reconciliation](../sources/vol_04_cosmos_policy_wam_full10k_run_reconciliation.html)。
+- official-HF baseline 是第三条独立评测线：24×5 raw logs 重算为 `86/120`；排除两个 CoffeeServeMug length=1 artifact success 后 trusted 为 `84/118`。它只支持 official eval harness/protocol audit，不是 1 epoch/full10k 训练成绩。证据入口：[RoboCasa Baseline P0 Audit](../evidence/projects/cosmos_policy_robocasa_baseline_p0_audit.html)。
+
+## 首轮练习队列
+
+真实口述队列已切换到项目优先；当前队首见 [`oral_drill_queue.md`](oral_drill_queue.md)：
+
+1. `PROJ-WAM-001`：如何把 CoffeePressButton diagnostic bundle 讲成可信项目经历？
+
+知识题的候选复习顺序仍保留如下，不代表已完成口述：
+
+2. `VLA-FND-030`：observation / state / proprioception / action。
+3. `VLA-FND-012`：attention 为什么除以 \(\sqrt{d_k}\)。
+4. `VLA-FND-021`：MDP 五元组如何映射机器人任务。
+5. `VLA-FND-029`：offline MSE 为什么不等于 online success。
+6. `VLA-FND-037`：控制频率、推理延迟和 action chunk。
+
+## 状态定义
+
+- `unseen`：题卡存在，尚未口述。
+- `weak`：回答有关键概念、协议或证据缺口。
+- `pass`：能在 30-90 秒内正确回答，并不越过证据边界。
+- `strong`：能补机制、trade-off、项目 hook 和追问。
+- `stale`：过去通过，但来源、项目状态或间隔要求重新复习。
+
+## 训练记录入口
+
+- 首轮逐题口述队列：[`oral_drill_queue.html`](oral_drill_queue.html)（当前队首：`PROJ-WAM-001`；可填写 [`WAM capture template`](wam_oral_capture_template.html)，回答后再参考 [`model answer`](wam_oral_model_answer.html)；尚无候选人回答，不创建 `coaching_state.md`）
+- OpenPiVLA formal trainer 示范回答：[`openpivla_oral_model_answer.html`](openpivla_oral_model_answer.html)（覆盖 `PROJ-OPENPIVLA-001` 与 Batch 2 的 `009..012`；包含 eager/证据阶梯/`H=15,D=72` shape 冲突/lineage；仅作回答后对照，题卡仍 unseen）
+- Robot Harness runtime/data/reward 示范回答：[`robot_harness_oral_model_answer.html`](robot_harness_oral_model_answer.html)（对应 `PROJ-HARNESS-001`；仅作回答后对照，题卡仍 unseen）
+- OPD 数据路由/蒸馏/评估示范回答：[`opd_oral_model_answer.html`](opd_oral_model_answer.html)（对应 `PROJ-OPD-001`；仅作回答后对照，题卡仍 unseen）
+- UWM/LIBERO 协议与 ownership 示范回答：[`uwm_oral_model_answer.html`](uwm_oral_model_answer.html)（对应 `PROJ-UWM-001`；仅作回答后对照，题卡仍 unseen）
+- 首轮队列 Readiness Audit：[`oral_drill_readiness_audit.html`](oral_drill_readiness_audit.html)（12/12 题卡与证据入口已对账；真实口述仍为 0/12）
+
+- 题卡总索引：[`../questions/00_master_question_index.html`](../questions/00_master_question_index.html)
+- VOL 01 题卡：[`../questions/vol_01_foundations.html`](../questions/vol_01_foundations.html)
+- VOL 02 题卡：[`../questions/vol_02_il_rl_posttraining.html`](../questions/vol_02_il_rl_posttraining.html)
+- VOL 03 完整题卡：[`../questions/vol_03_vla_action.html`](../questions/vol_03_vla_action.html)
+- VOL 04 Foundations + Evaluation 题卡：[`../questions/vol_04_world_model_sim2real.html`](../questions/vol_04_world_model_sim2real.html)
+- VOL 04 WM-015 知识页：[`../knowledge/vol_04_world_model_sim2real_wm015.html`](../knowledge/vol_04_world_model_sim2real_wm015.html)（UWM coupling；状态：[`review`](../knowledge/vol_04_world_model_sim2real_wm015.review.json)）
+- VOL 04 WM-015 题卡：[`../questions/vol_04_world_model_sim2real_wm015.html`](../questions/vol_04_world_model_sim2real_wm015.html)（1 张 unseen；状态：[`review`](../questions/vol_04_world_model_sim2real_wm015.review.json)）
+- VOL 04 WM-019 Metric Boundary 知识页：[`../knowledge/vol_04_world_model_sim2real_wm019.html`](../knowledge/vol_04_world_model_sim2real_wm019.html)（knowledge 21/44 节点；对应 1 张 unseen card；状态：[`review`](../knowledge/vol_04_world_model_sim2real_wm019.review.json)）
+- VOL 04 WM-019 Metric Boundary 题卡：[`../questions/vol_04_world_model_sim2real_wm019.html`](../questions/vol_04_world_model_sim2real_wm019.html)（1 张 unseen；状态：[`review`](../questions/vol_04_world_model_sim2real_wm019.review.json)）
+- VOL 04 WM-020 Failure Diagnostics Source Freeze：[`../sources/vol_04_wm020_failure_diagnostics_source_freeze.html`](../sources/vol_04_wm020_failure_diagnostics_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_04_wm020_failure_diagnostics_source_freeze.review.json)）
+- VOL 04 WM-020 Failure Diagnostics 知识页：[`../knowledge/vol_04_world_model_sim2real_wm020_failure_diagnostics.html`](../knowledge/vol_04_world_model_sim2real_wm020_failure_diagnostics.html)（knowledge 22/44；题卡已同步；状态：[`review`](../knowledge/vol_04_world_model_sim2real_wm020_failure_diagnostics.review.json)）
+- VOL 04 WM-020 Failure Diagnostics 题卡：[`../questions/vol_04_world_model_sim2real_wm020.html`](../questions/vol_04_world_model_sim2real_wm020.html)（1 张 unseen；状态：[`review`](../questions/vol_04_world_model_sim2real_wm020.review.json)）
+- VOL 04 WM-021 Dreamer Imagination Actor/Critic Source Freeze：[`../sources/vol_04_wm021_dreamer_imagination_actor_critic_source_freeze.html`](../sources/vol_04_wm021_dreamer_imagination_actor_critic_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_04_wm021_dreamer_imagination_actor_critic_source_freeze.review.json)）
+- VOL 04 WM-021 Dreamer Imagination Actor/Critic 知识页：[`../knowledge/vol_04_world_model_sim2real_wm021_dreamer_imagination_actor_critic.html`](../knowledge/vol_04_world_model_sim2real_wm021_dreamer_imagination_actor_critic.html)（knowledge 23/44；题卡已同步；状态：[`review`](../knowledge/vol_04_world_model_sim2real_wm021_dreamer_imagination_actor_critic.review.json)）
+- VOL 04 WM-021 Dreamer Imagination Actor/Critic 题卡：[`../questions/vol_04_world_model_sim2real_wm021.html`](../questions/vol_04_world_model_sim2real_wm021.html)（1 张 unseen；状态：[`review`](../questions/vol_04_world_model_sim2real_wm021.review.json)）
+- VOL 04 WM-022 MPC/CEM/MPPI/Best-of-N Source Freeze：[`../sources/vol_04_wm022_mpc_cem_mppi_best_of_n_source_freeze.html`](../sources/vol_04_wm022_mpc_cem_mppi_best_of_n_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_04_wm022_mpc_cem_mppi_best_of_n_source_freeze.review.json)）
+- VOL 04 WM-022 MPC/CEM/MPPI/Best-of-N 知识页：[`../knowledge/vol_04_world_model_sim2real_wm022_mpc_cem_mppi_best_of_n.html`](../knowledge/vol_04_world_model_sim2real_wm022_mpc_cem_mppi_best_of_n.html)（knowledge 24/44；题卡已同步；状态：[`review`](../knowledge/vol_04_world_model_sim2real_wm022_mpc_cem_mppi_best_of_n.review.json)）
+- VOL 04 WM-022 MPC/CEM/MPPI/Best-of-N 题卡：[`../questions/vol_04_world_model_sim2real_wm022.html`](../questions/vol_04_world_model_sim2real_wm022.html)（1 张 unseen；状态：[`review`](../questions/vol_04_world_model_sim2real_wm022.review.json)）
+- VOL 04 WM-023 Open-loop / Receding-horizon Source Freeze：[`../sources/vol_04_wm023_open_loop_receding_horizon_source_freeze.html`](../sources/vol_04_wm023_open_loop_receding_horizon_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_04_wm023_open_loop_receding_horizon_source_freeze.review.json)）
+- VOL 04 WM-023 Open-loop / Receding-horizon 知识页：[`../knowledge/vol_04_world_model_sim2real_wm023_open_loop_receding_horizon.html`](../knowledge/vol_04_world_model_sim2real_wm023_open_loop_receding_horizon.html)（knowledge 25/44；题卡已同步；状态：[`review`](../knowledge/vol_04_world_model_sim2real_wm023_open_loop_receding_horizon.review.json)）
+- VOL 04 WM-023 Open-loop / Receding-horizon 题卡：[`../questions/vol_04_world_model_sim2real_wm023.html`](../questions/vol_04_world_model_sim2real_wm023.html)（1 张 unseen；状态：[`review`](../questions/vol_04_world_model_sim2real_wm023.review.json)）
+- VOL 04 WM-024 Reward / Value / Success / Termination Source Freeze：[`../sources/vol_04_wm024_reward_value_success_termination_source_freeze.html`](../sources/vol_04_wm024_reward_value_success_termination_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_04_wm024_reward_value_success_termination_source_freeze.review.json)）
+- VOL 04 WM-024 Reward / Value / Success / Termination 知识页：[`../knowledge/vol_04_world_model_sim2real_wm024_reward_value_success_termination.html`](../knowledge/vol_04_world_model_sim2real_wm024_reward_value_success_termination.html)（knowledge 26/44；题卡已同步；状态：[`review`](../knowledge/vol_04_world_model_sim2real_wm024_reward_value_success_termination.review.json)）
+- VOL 04 WM-024 Reward / Value / Success / Termination 题卡：[`../questions/vol_04_world_model_sim2real_wm024.html`](../questions/vol_04_world_model_sim2real_wm024.html)（1 张 unseen；状态：[`review`](../questions/vol_04_world_model_sim2real_wm024.review.json)）
+- VOL 04 WM-025 Cosmos/WAM Slot / Mask / Loss Source Freeze：[`../sources/vol_04_wm025_cosmos_wam_slot_mask_loss_source_freeze.html`](../sources/vol_04_wm025_cosmos_wam_slot_mask_loss_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_04_wm025_cosmos_wam_slot_mask_loss_source_freeze.review.json)）
+- VOL 04 WM-025 Cosmos/WAM Slot / Mask / Loss 知识页：[`../knowledge/vol_04_world_model_sim2real_wm025_cosmos_wam_slot_mask_loss.html`](../knowledge/vol_04_world_model_sim2real_wm025_cosmos_wam_slot_mask_loss.html)（knowledge 27/44；题卡已同步；状态：[`review`](../knowledge/vol_04_world_model_sim2real_wm025_cosmos_wam_slot_mask_loss.review.json)）
+- VOL 04 WM-025 Cosmos/WAM Slot / Mask / Loss 题卡：[`../questions/vol_04_world_model_sim2real_wm025.html`](../questions/vol_04_world_model_sim2real_wm025.html)（1 张 unseen；状态：[`review`](../questions/vol_04_world_model_sim2real_wm025.review.json)）
+- VOL 04 WM-026 World/Value Auxiliary Source Freeze：[`../sources/vol_04_wm026_world_value_auxiliary_action_imitation_source_freeze.html`](../sources/vol_04_wm026_world_value_auxiliary_action_imitation_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_04_wm026_world_value_auxiliary_action_imitation_source_freeze.review.json)）
+- VOL 04 WM-026 World/Value Auxiliary 知识页：[`../knowledge/vol_04_world_model_sim2real_wm026_world_value_auxiliary_action_imitation.html`](../knowledge/vol_04_world_model_sim2real_wm026_world_value_auxiliary_action_imitation.html)（knowledge 28/44；题卡已同步；状态：[`review`](../knowledge/vol_04_world_model_sim2real_wm026_world_value_auxiliary_action_imitation.review.json)）
+- VOL 04 WM-026 World/Value Auxiliary 题卡：[`../questions/vol_04_world_model_sim2real_wm026.html`](../questions/vol_04_world_model_sim2real_wm026.html)（1 张 unseen；状态：[`review`](../questions/vol_04_world_model_sim2real_wm026.review.json)）
+- VOL 05 Batch 1 知识页：[`../knowledge/vol_05_engineering_eval.html`](../knowledge/vol_05_engineering_eval.html)（10/44；状态：[`review`](../knowledge/vol_05_engineering_eval.review.json)）
+- VOL 05 官方文档复核：[`../sources/vol_05_batch1_independent_fact_review.html`](../sources/vol_05_batch1_independent_fact_review.html)（状态：[`review`](../sources/vol_05_batch1_independent_fact_review.review.json)）
+- VOL 05 ENG-004..006 Artifact Gate：[`../sources/vol_05_local_artifact_gate_eng004_006.html`](../sources/vol_05_local_artifact_gate_eng004_006.html)（状态：[`review`](../sources/vol_05_local_artifact_gate_eng004_006.review.json)）
+- VOL 05 Batch 1 题卡：[`../questions/vol_05_engineering_eval.html`](../questions/vol_05_engineering_eval.html)（10 张全部 unseen；状态：[`review`](../questions/vol_05_engineering_eval.review.json)）
+- VOL 05 Batch 2A 知识页：[`../knowledge/vol_05_engineering_eval_batch2a.html`](../knowledge/vol_05_engineering_eval_batch2a.html)（ENG-009..011；状态：[`review`](../knowledge/vol_05_engineering_eval_batch2a.review.json)）
+- VOL 05 Batch 2A 题卡：[`../questions/vol_05_engineering_eval_batch2a.html`](../questions/vol_05_engineering_eval_batch2a.html)（3 张全部 unseen；状态：[`review`](../questions/vol_05_engineering_eval_batch2a.review.json)）
+- VOL 05 Batch 2A 官方文档复核：[`../sources/vol_05_batch2a_independent_fact_review.html`](../sources/vol_05_batch2a_independent_fact_review.html)（状态：[`review`](../sources/vol_05_batch2a_independent_fact_review.review.json)）
+- VOL 05 ENG-012 存储格式 Source Freeze：[`../sources/vol_05_eng012_storage_formats_source_freeze.html`](../sources/vol_05_eng012_storage_formats_source_freeze.html)（状态：[`review`](../sources/vol_05_eng012_storage_formats_source_freeze.review.json)；知识与题卡已完成，题卡保持 unseen）
+- VOL 05 ENG-012 知识页：[`../knowledge/vol_05_engineering_eval_eng012.html`](../knowledge/vol_05_engineering_eval_eng012.html)（知识 14/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eng012.review.json)）
+- VOL 05 ENG-012 题卡：[`../questions/vol_05_engineering_eval_eng012.html`](../questions/vol_05_engineering_eval_eng012.html)（1 张 unseen；状态：[`review`](../questions/vol_05_engineering_eval_eng012.review.json)）
+- VOL 05 ENG-013 Reproducibility Source Freeze：[`../sources/vol_05_eng013_reproducibility_source_freeze.html`](../sources/vol_05_eng013_reproducibility_source_freeze.html)（状态：[`review`](../sources/vol_05_eng013_reproducibility_source_freeze.review.json)；知识与题卡已完成，题卡保持 unseen）
+- VOL 05 ENG-013 知识页：[`../knowledge/vol_05_engineering_eval_eng013.html`](../knowledge/vol_05_engineering_eval_eng013.html)（知识 15/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eng013.review.json)；对应题卡已生成）
+- VOL 05 ENG-013 题卡：[`../questions/vol_05_engineering_eval_eng013.html`](../questions/vol_05_engineering_eval_eng013.html)（1 张 unseen；状态：[`review`](../questions/vol_05_engineering_eval_eng013.review.json)）
+- VOL 05 ENG-014 Hardware / Operator Compatibility Source Freeze：[`../sources/vol_05_eng014_hardware_operator_compatibility_source_freeze.html`](../sources/vol_05_eng014_hardware_operator_compatibility_source_freeze.html)（状态：[`review`](../sources/vol_05_eng014_hardware_operator_compatibility_source_freeze.review.json)；知识与题卡均已生成，题卡保持 unseen）
+- VOL 05 ENG-014 知识页：[`../knowledge/vol_05_engineering_eval_eng014.html`](../knowledge/vol_05_engineering_eval_eng014.html)（知识 16/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eng014.review.json)；对应题卡已生成）
+- VOL 05 ENG-014 题卡：[`../questions/vol_05_engineering_eval_eng014.html`](../questions/vol_05_engineering_eval_eng014.html)（1 张 unseen；状态：[`review`](../questions/vol_05_engineering_eval_eng014.review.json)）
+- VOL 05 ENG-015 Activation Checkpointing / Offload Source Freeze：[`../sources/vol_05_eng015_activation_offload_source_freeze.html`](../sources/vol_05_eng015_activation_offload_source_freeze.html)（状态：[`review`](../sources/vol_05_eng015_activation_offload_source_freeze.review.json)；知识与题卡已生成，题卡保持 unseen）
+- VOL 05 ENG-015 知识页：[`../knowledge/vol_05_engineering_eval_eng015.html`](../knowledge/vol_05_engineering_eval_eng015.html)（知识 17/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eng015.review.json)；对应题卡保持 unseen）
+- VOL 05 ENG-015 题卡：[`../questions/vol_05_engineering_eval_eng015.html`](../questions/vol_05_engineering_eval_eng015.html)（1 张 unseen；状态：[`review`](../questions/vol_05_engineering_eval_eng015.review.json)）
+- VOL 05 ENG-016 Student + Multiple Teachers Source Freeze：[`../sources/vol_05_eng016_multiteacher_memory_scheduling_source_freeze.html`](../sources/vol_05_eng016_multiteacher_memory_scheduling_source_freeze.html)（状态：[`review`](../sources/vol_05_eng016_multiteacher_memory_scheduling_source_freeze.review.json)；知识与题卡已生成，题卡保持 unseen）
+- VOL 05 ENG-016 知识页：[`../knowledge/vol_05_engineering_eval_eng016.html`](../knowledge/vol_05_engineering_eval_eng016.html)（知识 18/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eng016.review.json)；对应题卡保持 unseen）
+- VOL 05 ENG-016 题卡：[`../questions/vol_05_engineering_eval_eng016.html`](../questions/vol_05_engineering_eval_eng016.html)（1 张 unseen；状态：[`review`](../questions/vol_05_engineering_eval_eng016.review.json)）
+- VOL 05 ENG-017 Training Observability Source Freeze：[`../sources/vol_05_eng017_training_observability_source_freeze.html`](../sources/vol_05_eng017_training_observability_source_freeze.html)（状态：[`review`](../sources/vol_05_eng017_training_observability_source_freeze.review.json)；知识与题卡已生成，题卡保持 unseen）
+- VOL 05 ENG-017 知识页：[`../knowledge/vol_05_engineering_eval_eng017.html`](../knowledge/vol_05_engineering_eval_eng017.html)（知识 19/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eng017.review.json)；对应题卡保持 unseen）
+- VOL 05 ENG-017 题卡：[`../questions/vol_05_engineering_eval_eng017.html`](../questions/vol_05_engineering_eval_eng017.html)（1 张 unseen；状态：[`review`](../questions/vol_05_engineering_eval_eng017.review.json)）
+- VOL 05 ENG-018 Scheduler / Preemption / Retry Source Freeze：[`../sources/vol_05_eng018_scheduler_preemption_retry_source_freeze.html`](../sources/vol_05_eng018_scheduler_preemption_retry_source_freeze.html)（状态：[`review`](../sources/vol_05_eng018_scheduler_preemption_retry_source_freeze.review.json)；知识与题卡已生成，题卡保持 unseen）
+- VOL 05 ENG-018 知识页：[`../knowledge/vol_05_engineering_eval_eng018.html`](../knowledge/vol_05_engineering_eval_eng018.html)（知识 20/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eng018.review.json)；对应题卡保持 unseen）
+- VOL 05 ENG-018 题卡：[`../questions/vol_05_engineering_eval_eng018.html`](../questions/vol_05_engineering_eval_eng018.html)（1 张 unseen；状态：[`review`](../questions/vol_05_engineering_eval_eng018.review.json)）
+- VOL 05 ENG-019 Config Resolution / Run Identity Source Freeze：[`../sources/vol_05_eng019_config_resolution_run_identity_source_freeze.html`](../sources/vol_05_eng019_config_resolution_run_identity_source_freeze.html)（状态：[`review`](../sources/vol_05_eng019_config_resolution_run_identity_source_freeze.review.json)；知识与题卡已生成，题卡保持 unseen）
+- VOL 05 ENG-019 知识页：[`../knowledge/vol_05_engineering_eval_eng019.html`](../knowledge/vol_05_engineering_eval_eng019.html)（知识 21/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eng019.review.json)；对应题卡保持 unseen）
+- VOL 05 ENG-019 题卡：[`../questions/vol_05_engineering_eval_eng019.html`](../questions/vol_05_engineering_eval_eng019.html)（1 张 unseen；状态：[`review`](../questions/vol_05_engineering_eval_eng019.review.json)）
+- VOL 05 ENG-020 Secret / Permission / Logging Source Freeze：[`../sources/vol_05_eng020_secret_permission_logging_source_freeze.html`](../sources/vol_05_eng020_secret_permission_logging_source_freeze.html)（状态：[`review`](../sources/vol_05_eng020_secret_permission_logging_source_freeze.review.json)；知识与题卡已生成，题卡保持 unseen）
+- VOL 05 ENG-020 知识页：[`../knowledge/vol_05_engineering_eval_eng020.html`](../knowledge/vol_05_engineering_eval_eng020.html)（知识 22/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eng020.review.json)）
+- VOL 05 ENG-020 题卡：[`../questions/vol_05_engineering_eval_eng020.html`](../questions/vol_05_engineering_eval_eng020.html)（1 张 unseen；状态：[`review`](../questions/vol_05_engineering_eval_eng020.review.json)）
+- VOL 05 ENG-021 Model / Processor / Normalizer Source Freeze：[`../sources/vol_05_eng021_model_processor_normalizer_packaging_source_freeze.html`](../sources/vol_05_eng021_model_processor_normalizer_packaging_source_freeze.html)（状态：[`review`](../sources/vol_05_eng021_model_processor_normalizer_packaging_source_freeze.review.json)；知识与题卡已生成）
+- VOL 05 ENG-021 知识页：[`../knowledge/vol_05_engineering_eval_eng021.html`](../knowledge/vol_05_engineering_eval_eng021.html)（知识 23/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eng021.review.json)）
+- VOL 05 ENG-021 题卡：[`../questions/vol_05_engineering_eval_eng021.html`](../questions/vol_05_engineering_eval_eng021.html)（1 张 unseen；状态：[`review`](../questions/vol_05_engineering_eval_eng021.review.json)）
+- VOL 05 Phase 0：[`../questions/vol_05_engineering_eval.question_list.md`](../questions/vol_05_engineering_eval.question_list.md)（44 planned / knowledge 33 / cards 33 drafted）
+- VOL 05 EVAL-003 Success Rate / Confidence Interval Source Freeze：[`../sources/vol_05_eval003_success_rate_confidence_interval_source_freeze.html`](../sources/vol_05_eval003_success_rate_confidence_interval_source_freeze.html)（状态：[`review`](../sources/vol_05_eval003_success_rate_confidence_interval_source_freeze.review.json)；knowledge 与 card 已生成，题卡保持 unseen）
+- VOL 05 EVAL-003 知识页：[`../knowledge/vol_05_engineering_eval_eval003.html`](../knowledge/vol_05_engineering_eval_eval003.html)（知识 25/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eval003.review.json)；对应题卡 unseen）
+- VOL 05 EVAL-003 题卡：[`../questions/vol_05_engineering_eval_eval003.html`](../questions/vol_05_engineering_eval_eval003.html)（1 张 unseen；状态：[`review`](../questions/vol_05_engineering_eval_eval003.review.json)）
+- VOL 05 EVAL-004 Paired Init / Seed Source Freeze：[`../sources/vol_05_eval004_paired_init_seed_significance_source_freeze.html`](../sources/vol_05_eval004_paired_init_seed_significance_source_freeze.html)（状态：[`review`](../sources/vol_05_eval004_paired_init_seed_significance_source_freeze.review.json)；knowledge/card 已同步，项目无 matched raw pairs）
+- VOL 05 EVAL-004 知识页：[`../knowledge/vol_05_engineering_eval_eval004_paired_init_seed_significance.html`](../knowledge/vol_05_engineering_eval_eval004_paired_init_seed_significance.html)（知识 26/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eval004_paired_init_seed_significance.review.json)；对应题卡 unseen）
+- VOL 05 EVAL-004 题卡：[`../questions/vol_05_engineering_eval_eval004.html`](../questions/vol_05_engineering_eval_eval004.html)（1 张 unseen；状态：[`review`](../questions/vol_05_engineering_eval_eval004.review.json)）
+- VOL 05 EVAL-005 Aggregation Source Freeze：[`../sources/vol_05_eval005_aggregation_estimand_source_freeze.html`](../sources/vol_05_eval005_aggregation_estimand_source_freeze.html)（状态：[`review`](../sources/vol_05_eval005_aggregation_estimand_source_freeze.review.json)；knowledge/card 已同步，项目只做 arithmetic/evidence audit）
+- VOL 05 EVAL-005 知识页：[`../knowledge/vol_05_engineering_eval_eval005_macro_micro_weighted_aggregation.html`](../knowledge/vol_05_engineering_eval_eval005_macro_micro_weighted_aggregation.html)（知识 27/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eval005_macro_micro_weighted_aggregation.review.json)；对应题卡 unseen）
+- VOL 05 EVAL-005 题卡：[`../questions/vol_05_engineering_eval_eval005.html`](../questions/vol_05_engineering_eval_eval005.html)（1 张 unseen；状态：[`review`](../questions/vol_05_engineering_eval_eval005.review.json)）
+- VOL 05 EVAL-006 Versioning Source Freeze：[`../sources/vol_05_eval006_benchmark_env_controller_scorer_versioning_source_freeze.html`](../sources/vol_05_eval006_benchmark_env_controller_scorer_versioning_source_freeze.html)（状态：[`review`](../sources/vol_05_eval006_benchmark_env_controller_scorer_versioning_source_freeze.review.json)；knowledge/card已同步，五项目manifest仍缺）
+- VOL 05 EVAL-006 知识页：[`../knowledge/vol_05_engineering_eval_eval006_versioned_evaluation_manifest.html`](../knowledge/vol_05_engineering_eval_eval006_versioned_evaluation_manifest.html)（知识28/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eval006_versioned_evaluation_manifest.review.json)；对应题卡unseen）
+- VOL 05 EVAL-006 题卡：[`../questions/vol_05_engineering_eval_eval006.html`](../questions/vol_05_engineering_eval_eval006.html)（1张unseen；状态：[`review`](../questions/vol_05_engineering_eval_eval006.review.json)）
+- VOL 05 EVAL-007 Coverage / Difficulty Source Freeze：[`../sources/vol_05_eval007_init_seed_task_coverage_difficulty_source_freeze.html`](../sources/vol_05_eval007_init_seed_task_coverage_difficulty_source_freeze.html)（状态：[`review`](../sources/vol_05_eval007_init_seed_task_coverage_difficulty_source_freeze.review.json)；knowledge/card已同步，五项目raw coverage cube仍缺）
+- VOL 05 EVAL-007 知识页：[`../knowledge/vol_05_engineering_eval_eval007_coverage_difficulty_stratification.html`](../knowledge/vol_05_engineering_eval_eval007_coverage_difficulty_stratification.html)（知识29/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eval007_coverage_difficulty_stratification.review.json)；对应题卡unseen）
+- VOL 05 EVAL-007 题卡：[`../questions/vol_05_engineering_eval_eval007.html`](../questions/vol_05_engineering_eval_eval007.html)（1张unseen；状态：[`review`](../questions/vol_05_engineering_eval_eval007.review.json)）
+- VOL 05 EVAL-008 Failure Taxonomy Source Freeze：[`../sources/vol_05_eval008_perception_action_controller_recovery_failure_taxonomy_source_freeze.html`](../sources/vol_05_eval008_perception_action_controller_recovery_failure_taxonomy_source_freeze.html)（状态：[`review`](../sources/vol_05_eval008_perception_action_controller_recovery_failure_taxonomy_source_freeze.review.json)；knowledge/card已同步，五项目root-cause闭环仍缺）
+- VOL 05 EVAL-008 知识页：[`../knowledge/vol_05_engineering_eval_eval008_failure_taxonomy_recovery.html`](../knowledge/vol_05_engineering_eval_eval008_failure_taxonomy_recovery.html)（知识30/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eval008_failure_taxonomy_recovery.review.json)；对应题卡unseen）
+- VOL 05 EVAL-008 题卡：[`../questions/vol_05_engineering_eval_eval008.html`](../questions/vol_05_engineering_eval_eval008.html)（1张unseen；状态：[`review`](../questions/vol_05_engineering_eval_eval008.review.json)）
+- VOL 05 EVAL-009 Source Freeze：[`../sources/vol_05_eval009_raw_predictions_episode_trace_video_recomputable_summary_source_freeze.html`](../sources/vol_05_eval009_raw_predictions_episode_trace_video_recomputable_summary_source_freeze.html)（状态：[`review`](../sources/vol_05_eval009_raw_predictions_episode_trace_video_recomputable_summary_source_freeze.review.json)；knowledge/card已同步）
+- VOL 05 EVAL-009 知识页：[`../knowledge/vol_05_engineering_eval_eval009_recomputable_evaluation_bundle.html`](../knowledge/vol_05_engineering_eval_eval009_recomputable_evaluation_bundle.html)（知识31/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eval009_recomputable_evaluation_bundle.review.json)）
+- VOL 05 EVAL-009 题卡：[`../questions/vol_05_engineering_eval_eval009.html`](../questions/vol_05_engineering_eval_eval009.html)（1张unseen；状态：[`review`](../questions/vol_05_engineering_eval_eval009.review.json)）
+- VOL 05 EVAL-010 Regression / Golden / Canary Source Freeze：[`../sources/vol_05_eval010_regression_gate_golden_set_canary_rollout_source_freeze.html`](../sources/vol_05_eval010_regression_gate_golden_set_canary_rollout_source_freeze.html)（状态：[`review`](../sources/vol_05_eval010_regression_gate_golden_set_canary_rollout_source_freeze.review.json)；ML Test Score、Argo Rollouts、golden/gate/canary合同与五项目边界已冻结）
+- VOL 05 EVAL-010 知识页：[`../knowledge/vol_05_engineering_eval_eval010_regression_gate_golden_set_canary_rollout.html`](../knowledge/vol_05_engineering_eval_eval010_regression_gate_golden_set_canary_rollout.html)（知识32/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eval010_regression_gate_golden_set_canary_rollout.review.json)）
+- VOL 05 EVAL-010 题卡：[`../questions/vol_05_engineering_eval_eval010.html`](../questions/vol_05_engineering_eval_eval010.html)（1张unseen；状态：[`review`](../questions/vol_05_engineering_eval_eval010.review.json)）
+- VOL 05 EVAL-011 Offline–Online Correlation Source Freeze：[`../sources/vol_05_eval011_offline_metric_online_success_correlation_source_freeze.html`](../sources/vol_05_eval011_offline_metric_online_success_correlation_source_freeze.html)（状态：[`review`](../sources/vol_05_eval011_offline_metric_online_success_correlation_source_freeze.review.json)；SIMPLER、ML Test Score、SciPy与五项目panel边界已冻结）
+- VOL 05 EVAL-011 知识页：[`../knowledge/vol_05_engineering_eval_eval011_offline_online_correlation.html`](../knowledge/vol_05_engineering_eval_eval011_offline_online_correlation.html)（知识33/44；状态：[`review`](../knowledge/vol_05_engineering_eval_eval011_offline_online_correlation.review.json)）
+- VOL 05 EVAL-011 题卡：[`../questions/vol_05_engineering_eval_eval011.html`](../questions/vol_05_engineering_eval_eval011.html)（1张unseen；状态：[`review`](../questions/vol_05_engineering_eval_eval011.review.json)）
+- OpenPiVLA Batch 1 题卡：[`../questions/proj_openpivla.html`](../questions/proj_openpivla.html)（8 张全部 unseen；状态：[`review`](../questions/proj_openpivla.review.json)）
+- OpenPiVLA Batch 2 题卡：[`../questions/proj_openpivla_batch2.html`](../questions/proj_openpivla_batch2.html)（4 张全部 unseen；状态：[`review`](../questions/proj_openpivla_batch2.review.json)）
+- Robot Harness Batch 1 题卡：[`../questions/proj_robot_harness.html`](../questions/proj_robot_harness.html)（8 张全部 unseen；状态：[`review`](../questions/proj_robot_harness.review.json)）
+- OPD Batch 1 + Ownership 题卡：[`../questions/proj_opd.html`](../questions/proj_opd.html)（9 张全部 unseen；状态：[`review`](../questions/proj_opd.review.json)；ownership ledger 仍 WARN）
+- WAM Batch 1 题卡：[`../questions/proj_wam.html`](../questions/proj_wam.html)（2 张 unseen；状态：[`review`](../questions/proj_wam.review.json)；包含 diagnostic 与 ownership 两题）
+- Cosmos Policy TurnOffMicrowave Trained-Failure P0 Audit：[`../evidence/projects/cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.html`](../evidence/projects/cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.html)（canonical：[`Markdown`](../evidence/projects/cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.md)，状态：[`review`](../evidence/projects/cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.review.json)；fixed batch可负向、closed-loop `0/1`、same-input/5-frame transfer gap已冻结；PROJ-WAM题卡仍全部unseen）
+- Cosmos Policy WAM Checkpoint Save-Load Gate P0 Audit：[`../evidence/projects/cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.html`](../evidence/projects/cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.html)（canonical：[`Markdown`](../evidence/projects/cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.md)，状态：[`review`](../evidence/projects/cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.review.json)；base-load、short-smoke、formal save2k/save1500 first divergence与0 checkpoint-like binary已冻结；PROJ-WAM题卡仍全部unseen）
+- UWM / LIBERO Batch 1 + Ownership 题卡：[`../questions/proj_uwm.html`](../questions/proj_uwm.html)（2 张 unseen；状态：[`review`](../questions/proj_uwm.review.json)；checkpoint/episodes/ownership 仍 WARN）
+- VOL 08 SYS-VLA-001 Source Freeze：[`../sources/vol_08_sys001_vla_training_eval_platform_source_freeze.html`](../sources/vol_08_sys001_vla_training_eval_platform_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_08_sys001_vla_training_eval_platform_source_freeze.review.json)）
+- VOL 08 SYS-VLA-001 知识页：[`../knowledge/vol_08_sys001_vla_training_eval_platform.html`](../knowledge/vol_08_sys001_vla_training_eval_platform.html)（1 node；题卡已同步；状态：[`review`](../knowledge/vol_08_sys001_vla_training_eval_platform.review.json)）
+- VOL 08 SYS-VLA-001 题卡：[`../questions/vol_08_sys001.html`](../questions/vol_08_sys001.html)（1 张 unseen；状态：[`review`](../questions/vol_08_sys001.review.json)）
+- VOL 08 CODE-VLA-001 Source Freeze：[`../sources/vol_08_code001_softmax_source_freeze.html`](../sources/vol_08_code001_softmax_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_08_code001_softmax_source_freeze.review.json)）
+- VOL 08 CODE-VLA-001 知识页：[`../knowledge/vol_08_code001_softmax.html`](../knowledge/vol_08_code001_softmax.html)（1 node；题卡已同步；状态：[`review`](../knowledge/vol_08_code001_softmax.review.json)）
+- VOL 08 CODE-VLA-001 题卡：[`../questions/vol_08_code001.html`](../questions/vol_08_code001.html)（1 张 unseen；状态：[`review`](../questions/vol_08_code001.review.json)）
+- VOL 08 CODE-VLA-002 Source Freeze：[`../sources/vol_08_code002_attention_source_freeze.html`](../sources/vol_08_code002_attention_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_08_code002_attention_source_freeze.review.json)）
+- VOL 08 CODE-VLA-002 知识页：[`../knowledge/vol_08_code002_attention.html`](../knowledge/vol_08_code002_attention.html)（1 node；题卡已同步；状态：[`review`](../knowledge/vol_08_code002_attention.review.json)）
+- VOL 08 CODE-VLA-002 题卡：[`../questions/vol_08_code002.html`](../questions/vol_08_code002.html)（1 张 unseen；状态：[`review`](../questions/vol_08_code002.review.json)）
+- VOL 08 CODE-VLA-003 Source Freeze：[`../sources/vol_08_code003_norm_source_freeze.html`](../sources/vol_08_code003_norm_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_08_code003_norm_source_freeze.review.json)）
+- VOL 08 CODE-VLA-003 知识页：[`../knowledge/vol_08_code003_norm.html`](../knowledge/vol_08_code003_norm.html)（1 node；题卡已同步；状态：[`review`](../knowledge/vol_08_code003_norm.review.json)）
+- VOL 08 CODE-VLA-003 题卡：[`../questions/vol_08_code003.html`](../questions/vol_08_code003.html)（1 张 unseen；状态：[`review`](../questions/vol_08_code003.review.json)）
+- VOL 08 CODE-VLA-004 Source Freeze：[`../sources/vol_08_code004_masked_loss_source_freeze.html`](../sources/vol_08_code004_masked_loss_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_08_code004_masked_loss_source_freeze.review.json)）
+- VOL 08 CODE-VLA-004 知识页：[`../knowledge/vol_08_code004_masked_loss.html`](../knowledge/vol_08_code004_masked_loss.html)（1 node；题卡已同步；状态：[`review`](../knowledge/vol_08_code004_masked_loss.review.json)）
+- VOL 08 CODE-VLA-004 题卡：[`../questions/vol_08_code004.html`](../questions/vol_08_code004.html)（1 张 unseen；状态：[`review`](../questions/vol_08_code004.review.json)）
+- VOL 08 CODE-VLA-005 Source Freeze：[`../sources/vol_08_code005_transform_source_freeze.html`](../sources/vol_08_code005_transform_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_08_code005_transform_source_freeze.review.json)）
+- VOL 08 CODE-VLA-005 知识页：[`../knowledge/vol_08_code005_transform.html`](../knowledge/vol_08_code005_transform.html)（1 node；题卡已同步；状态：[`review`](../knowledge/vol_08_code005_transform.review.json)）
+- VOL 08 CODE-VLA-005 题卡：[`../questions/vol_08_code005.html`](../questions/vol_08_code005.html)（1 张 unseen；状态：[`review`](../questions/vol_08_code005.review.json)）
+- VOL 06 PER-001 Grounding / Coordinate 知识页：[`../knowledge/vol_06_per001_grounding_coordinate.html`](../knowledge/vol_06_per001_grounding_coordinate.html)（1 node；状态：[`review`](../knowledge/vol_06_per001_grounding_coordinate.review.json)）
+- VOL 06 PER-001 题卡：[`../questions/vol_06_per001.html`](../questions/vol_06_per001.html)（1 张 unseen；状态：[`review`](../questions/vol_06_per001.review.json)）
+- VOL 06 PER-002 3D Lift / Frame Source Freeze：[`../sources/vol_06_per002_3d_lift_frame_source_freeze.html`](../sources/vol_06_per002_3d_lift_frame_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_06_per002_3d_lift_frame_source_freeze.review.json)）
+- VOL 06 PER-002 3D Lift / Frame 知识页：[`../knowledge/vol_06_per002_3d_lift_frame.html`](../knowledge/vol_06_per002_3d_lift_frame.html)（1 node；题卡已同步；状态：[`review`](../knowledge/vol_06_per002_3d_lift_frame.review.json)）
+- VOL 06 PER-002 题卡：[`../questions/vol_06_per002.html`](../questions/vol_06_per002.html)（1 张 unseen；状态：[`review`](../questions/vol_06_per002.review.json)）
+- VOL 06 PER-003 Multi-view / Temporal Source Freeze：[`../sources/vol_06_per003_multiview_temporal_source_freeze.html`](../sources/vol_06_per003_multiview_temporal_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_06_per003_multiview_temporal_source_freeze.review.json)）
+- VOL 06 PER-003 Multi-view / Temporal 知识页：[`../knowledge/vol_06_per003_multiview_temporal.html`](../knowledge/vol_06_per003_multiview_temporal.html)（1 node；题卡已同步；状态：[`review`](../knowledge/vol_06_per003_multiview_temporal.review.json)）
+- VOL 06 PER-003 题卡：[`../questions/vol_06_per003.html`](../questions/vol_06_per003.html)（1 张 unseen；状态：[`review`](../questions/vol_06_per003.review.json)）
+- VOL 06 PER-004/005：对应 source freeze、knowledge 与 2 张题卡已同步（均保持 unseen；状态分别见 `../sources/vol_06_per004_vln_objectnav_source_freeze.review.json`、`../knowledge/vol_06_per004_vln_objectnav.review.json`、`../questions/vol_06_per004.review.json`、`../sources/vol_06_per005_navigation_policy_architecture_source_freeze.review.json`、`../knowledge/vol_06_per005_navigation_policy_architecture.review.json`、`../questions/vol_06_per005.review.json`）。
+- VOL 06 PER-006 Image Preprocess / Token / Camera 知识页：[`../knowledge/vol_06_per006_image_preprocess_token_camera_contract.html`](../knowledge/vol_06_per006_image_preprocess_token_camera_contract.html)（状态：[`review`](../knowledge/vol_06_per006_image_preprocess_token_camera_contract.review.json)）。
+- VOL 06 PER-006 原子题卡：[`../questions/vol_06_per006.html`](../questions/vol_06_per006.html)（1 张 unseen；状态：[`review`](../questions/vol_06_per006.review.json)）。
+- VOL 06 PER-007 Open-vocabulary Grounding Pipeline Source Freeze：[`../sources/vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.html`](../sources/vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.html)（knowledge/card已同步，card保持unseen；状态：[`review`](../sources/vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.review.json)）。
+- VOL 06 PER-007 Open-vocabulary Grounding Pipeline Knowledge：[`../knowledge/vol_06_per007_open_vocabulary_grounding_pipeline.html`](../knowledge/vol_06_per007_open_vocabulary_grounding_pipeline.html)（card synced/unseen；状态：[`review`](../knowledge/vol_06_per007_open_vocabulary_grounding_pipeline.review.json)）。
+- VOL 06 PER-007 原子题卡：[`../questions/vol_06_per007.html`](../questions/vol_06_per007.html)（1张L2/P0、unseen；状态：[`review`](../questions/vol_06_per007.review.json)）。
+- VOL 06 PER-008 Representation Choice：[`source`](../sources/vol_06_per008_representation_choice_source_freeze.html) / [`knowledge`](../knowledge/vol_06_per008_representation_choice.html) / [`card`](../questions/vol_06_per008.html)（source+knowledge+card synced、card unseen；状态：[`source review`](../sources/vol_06_per008_representation_choice_source_freeze.review.json) / [`knowledge review`](../knowledge/vol_06_per008_representation_choice.review.json) / [`card review`](../questions/vol_06_per008.review.json)）。
+- VOL 06 PER-009 Grounding Matching / Negative / Loss：[`source`](../sources/vol_06_per009_grounding_matching_negative_loss_source_freeze.html) / [`knowledge`](../knowledge/vol_06_per009_grounding_matching_negative_loss.html) / [`card`](../questions/vol_06_per009.html)（source+knowledge+card synced、card unseen；状态：[`source review`](../sources/vol_06_per009_grounding_matching_negative_loss_source_freeze.review.json) / [`knowledge review`](../knowledge/vol_06_per009_grounding_matching_negative_loss.review.json) / [`card review`](../questions/vol_06_per009.review.json)）。
+- VOL 07 Evidence Manifest：[`../evidence/evidence_manifest.html`](../evidence/evidence_manifest.html)
+- WAM Claim–Evidence Inventory：[`../evidence/projects/wam_claim_evidence_inventory.html`](../evidence/projects/wam_claim_evidence_inventory.html)
+- OpenPiVLA Claim–Evidence Inventory：[`../evidence/projects/openpivla_claim_evidence_inventory.html`](../evidence/projects/openpivla_claim_evidence_inventory.html)
+- Robot Harness Claim–Evidence Inventory：[`../evidence/projects/robot_harness_claim_evidence_inventory.html`](../evidence/projects/robot_harness_claim_evidence_inventory.html)
+- OPD Claim–Evidence Inventory：[`../evidence/projects/opd_claim_evidence_inventory.html`](../evidence/projects/opd_claim_evidence_inventory.html)
+- OpenPiVLA Batch 2 证据冻结：[`../sources/openpivla_batch2_evidence_freeze.html`](../sources/openpivla_batch2_evidence_freeze.html)（状态：[`review`](../sources/openpivla_batch2_evidence_freeze.review.json)）
+- 正式 coaching state：第一次真实口述训练后，按 interview-coach schema 创建。

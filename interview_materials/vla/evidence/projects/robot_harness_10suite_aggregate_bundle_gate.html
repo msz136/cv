@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robot Harness 五/八模型 × 十套件聚合证据门</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\robot_harness_10suite_aggregate_bundle_gate.md">
+<meta name="aris:source-sha256" content="3dfe3c413d9da4465fb42c6a6f7fbb93428f63b6a34d616703b7a8b9ae61c4e6">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>3dfe3c413d9da4465fb42c6a6f7fbb93428f63b6a34d616703b7a8b9ae61c4e6</code>；生成自：<code>interview_materials\vla\evidence\projects\robot_harness_10suite_aggregate_bundle_gate.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. 问题（Question）</a></li><li><a href="#2">2. 结论先行</a></li><li><a href="#3">3. 冻结输入与身份</a></li><li><a href="#4-builder">4. Builder 的真实计算合同</a></li><li><a href="#4-1-metric">4.1 十套件 metric 映射</a></li><li><a href="#4-2-high-is-better">4.2 为什么“每列都 high-is-better”仍不够</a></li><li><a href="#5-common-support">5. 样本数与 common-support 门</a></li><li><a href="#6-32b">6. 三条 32B 结果的协议核对</a></li><li><a href="#7-artifact-census">7. 本地 artifact census</a></li><li><a href="#7-1">7.1 已闭合</a></li><li><a href="#7-2">7.2 未闭合</a></li><li><a href="#8-overview">8. 八模型 overview 的安全解读</a></li><li><a href="#9-fail-closed">9. Fail-closed 校验伪代码</a></li><li><a href="#10-ownership">10. 项目真实性与 ownership 边界</a></li><li><a href="#section-15">可以说</a></li><li><a href="#section-16">不能说</a></li><li><a href="#11">11. 最小升级路径</a></li><li><a href="#references">参考来源（References）</a></li></ol></nav>
+<h1>Robot Harness 五/八模型 × 十套件聚合证据门</h1>
+<div class="meta">状态：<code>local-aggregate-frozen / arithmetic-reproduced / common-support-partial-6-of-10 / checkpoint-unverified / WARN</code> 审查日期：2026-07-20 证据截止：2026-07-20 外部仓库：<code>C:\Users\mousongzhe\agent\</code>，审计时 HEAD <code>3f4c8b3a11ff9512bc18ec4a331ae5ea01555f49</code>；本页只读审计，没有修改该仓库。 范围：冻结 2026-07-07 的五模型与八 checkpoint 十套件 overview、builder、可定位的旧输入和本地 metrics；2026-07-20 勘误补充隐藏 remote-sync extraction 中恢复的 28/40 primary predictions 与 6/10 common-support suite。不把跨 metric 算术平均冒充统一 benchmark，不把 partial raw bundle 冒充十套件完整恢复，不把远端 checkpoint path 冒充权重 SHA。</div>
+<h2 id="1-question">1. 问题（Question）</h2>
+<p>Robot Harness 已存在两份十套件总览：一份展示 5 个模型，另一份展示 8 个模型/checkpoint。它们能否关闭以下 P0 缺口？</p>
+<ol><li>base、SFT、GRPO 是否已经在同一 case、同一样本数、同一 scorer 与同一模板上完成 common-support 对比？</li><li><code>37.8% → 95.4% / 95.6%</code> 是否可以升级为严格、可复算的训练收益？</li><li>十套件平均值是否是一个有统一统计含义的总体准确率？</li><li>本地是否保存完整 per-sample predictions、checkpoint binary/config hash 与候选人 ownership？</li></ol>
+<p>结论：<strong>仍不能关闭这些 P0 门，但能把 overview 的展示合同、算术、metric 语义、样本数差异和本地可复核边界冻结为一个 immutable aggregate bundle；后续 raw audit 另行证明 6/10 suite 已具备四模型 exact ID support。</strong></p>
+<h2 id="2">2. 结论先行</h2>
+<ol><li>五模型 JSON 有 5 个模型，checkpoint JSON 有 8 个模型；两者共同的 5 行在 <code>suite_scores</code> 与 <code>suite_n</code> 上 5/5 精确一致。</li><li>两份 JSON 共 13 个 model rows；每行 10 个 suite，<code>D avg</code>、<code>OOD avg</code>、<code>all avg</code> 的 13/13 算术重算全部通过。</li><li>十套件并非同一个 metric：共有 <code>tool_name_accuracy</code>、<code>plausible_tool_rate</code>、<code>safe_refusal_rate</code>、<code>policy_compliance_score_mean</code>、<code>normalized_text_match</code> 五种 primary metric。十套件平均只能叫 <strong>descriptive index</strong>，不能叫总体 success/accuracy。</li><li>样本数并不统一：<code>cross_source</code> 为 1000/1820/2000，<code>sft_holdout</code> 为 1000/1333，两个 ToolACE probe 为 1000/5000。报告自己也记录“不同 run/protocol 与 row counts”。</li><li>6 个 archived 模型的 12 个 D/OOD run 目录与 60 份 primary metrics JSON 均可在本地定位；2 个新模型的 4 个 run 目录以及它们的上游 comparison JSON 均未进入本地快照。</li><li>60 份普通同步目录 metrics 包含 aggregate、分组统计与 0–80 条 failure sample；这些目录没有 full prediction/raw-output 文件。后续在隐藏 <code>.codex_tmp/remote_sync_20260626_141618/extract/</code> 恢复 28/40 个目标 primary JSONL：其中 6/10 suite 的四模型 ID set/order exact，另 12 个文件仍缺。</li><li>overview 引用的 6 个 distinct model/checkpoint path 全是远端路径；映射到当前 Windows 快照后 0/6 存在，0 个权重文件可哈希。</li><li>builder 与两个 overview 目录在 <code>agent</code> 仓库中是 untracked；当前可信 identity 来自逐文件 SHA，而不是 Git commit containment。</li></ol>
+<p>因此本页 verdict 为 <code>WARN</code>：它提升的是“聚合报表可解释性与失败边界”，不是模型因果收益、真实机器人闭环或个人 ownership。</p>
+<h2 id="3">3. 冻结输入与身份</h2>
+<table><thead><tr><th>ID</th><th>本地 artifact</th><th>状态</th><th>SHA-256</th><th>能支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td>RH10-A01</td><td><code>reports/eval_5model_10suite_overview/eval_5model_10suite_overview_20260707.json</code></td><td>local-direct / untracked</td><td><code>5D79454550C50969A1441C14DA488AE6689E773EE12252EE6B7DE2AA672BF457</code></td><td>5-model 展示数据、metric mapping、n、remote run path</td><td>新模型 raw inputs/checkpoint</td></tr>
+<tr><td>RH10-A02</td><td>同目录 HTML</td><td>local-direct / untracked</td><td><code>7950E04962D8817E073093793324D8735BF0344E7C1CCE7407CD88AA21FE2C66</code></td><td>当时展示视图</td><td>canonical 计算逻辑</td></tr>
+<tr><td>RH10-A03</td><td><code>reports/eval_checkpoint_10suite_overview/eval_checkpoint_10suite_overview_20260707.json</code></td><td>local-direct / untracked</td><td><code>23AB0A9F8CEDEDDA52C65DDD98C8AB779502EA3B6B0705DE45BB427702C18D48</code></td><td>8-model/checkpoint aggregate、10-suite 值与 n</td><td>common-support paired result</td></tr>
+<tr><td>RH10-A04</td><td>同目录 HTML</td><td>local-direct / untracked</td><td><code>C7B851E72203F914352D2A468D48EEF1A35F60F4DE25BD529EB73922262C34DA</code></td><td>当时展示视图</td><td>全量来源证据</td></tr>
+<tr><td>RH10-A05</td><td><code>tmp_remote_recovery/build_5model_eval_overview.py</code></td><td>local-direct / untracked</td><td><code>69126F6A52B094BDC3219CA3CFFC97F58F6E488990B9348969CEC1B599067D47</code></td><td>primary metric 选择、mean 与 HTML/JSON 生成逻辑</td><td>谁设计/运行/验收</td></tr>
+<tr><td>RH10-A06</td><td>旧 32B/8B comparison JSON</td><td>local-direct</td><td><code>5B5C47AF71A01D1FE10F14FCCF09BE8B1AA90B2D0251D70EDA683D9EB9DFC70B</code></td><td>archived 行的上游 aggregate</td><td>checkpoint binary、full predictions</td></tr>
+<tr><td>RH10-A07</td><td>新 122B/35B comparison JSON</td><td>remote-referenced / local-missing</td><td>—</td><td>overview 声明的输入路径</td><td>当前无法独立复算新两行</td></tr>
+</tbody></table>
+<p>A01–A05 的 Git 状态均为 <code>??</code>。因此 HEAD 只记录外部仓库背景，不能替代这些文件的内容身份；本页用 full SHA-256 固定它们。</p>
+<h2 id="4-builder">4. Builder 的真实计算合同</h2>
+<p>builder 固定五个 D suites 与五个 OOD suites，为每个 suite 指定一个 high-is-better primary metric，然后对可用值做不加权算术平均：</p>
+<div class="formula">\[
+I_m^{D}=\frac{1}{5}\sum_{j\in\mathcal{D}}s_{m,j},\qquad
+I_m^{OOD}=\frac{1}{5}\sum_{j\in\mathcal{O}}s_{m,j},\qquad
+I_m^{all}=\frac{1}{10}\sum_{j=1}^{10}s_{m,j}.
+\]</div>
+<p>变量解释：\(m\) 是展示行；\(\mathcal{D}\) 与 \(\mathcal{O}\) 分别是五个 D/OOD suite；\(s_{m,j}\) 是 suite \(j\) 自己的 primary metric。直觉上它只是“把十个 0–1 分数等权放在一个仪表盘”；实现对应 builder 的 <code>statistics.mean</code>。因为 metric 语义、样本数与 protocol 不同，\(I_m^{all}\) 不是 pooled accuracy、episode success rate 或校准概率。</p>
+<h3 id="4-1-metric">4.1 十套件 metric 映射</h3>
+<table><thead><tr><th>split</th><th>suite</th><th>primary metric</th><th>语义边界</th></tr></thead><tbody>
+<tr><td>D</td><td><code>sft_tool_call_holdout</code></td><td><code>tool_name_accuracy</code></td><td>工具名选择；不等于 argument/trajectory/physical success</td></tr>
+<tr><td>D</td><td><code>project_robot_sandbox_eval</code></td><td><code>tool_name_accuracy</code></td><td>sandbox tool proxy；不含真实机器人 effect sink</td></tr>
+<tr><td>D</td><td><code>safety_side_effect_eval</code></td><td><code>tool_name_accuracy</code></td><td>多步安全 suite 的工具名层；完整 safety 还需 forbidden/coverage/side effect</td></tr>
+<tr><td>D</td><td><code>browser_deferred_eval</code></td><td><code>tool_name_accuracy</code></td><td>deferred/format eval；不是 browser runner</td></tr>
+<tr><td>D</td><td><code>cross_source_generalization_eval</code></td><td><code>tool_name_accuracy</code></td><td>混合来源工具名层</td></tr>
+<tr><td>OOD</td><td><code>appworld_ood_api_policy_probe</code></td><td><code>plausible_tool_rate</code></td><td>API plausibility proxy</td></tr>
+<tr><td>OOD</td><td><code>toolace_schema_given_probe</code></td><td><code>tool_name_accuracy</code></td><td>给 schema 的工具名选择</td></tr>
+<tr><td>OOD</td><td><code>toolace_schema_absent_probe</code></td><td><code>safe_refusal_rate</code></td><td>无 schema 时拒绝；与 accuracy 目标不同</td></tr>
+<tr><td>OOD</td><td><code>quarantine_safety_probe</code></td><td><code>policy_compliance_score_mean</code></td><td>policy-compliance 连续分数</td></tr>
+<tr><td>OOD</td><td><code>robovlm_point_general_probe</code></td><td><code>normalized_text_match</code></td><td>文本匹配 proxy；不是 2D/3D localization metric</td></tr>
+</tbody></table>
+<h3 id="4-2-high-is-better">4.2 为什么“每列都 high-is-better”仍不够</h3>
+<p>同方向只保证“数越大在本列越好”，不保证不同列有共同 estimand。拒绝率、tool accuracy、policy score 与 text match 的一个百分点不是同一种单位；把它们等权平均是一种展示选择，不是由 benchmark 或业务成本推导出的权重。</p>
+<h2 id="5-common-support">5. 样本数与 common-support 门</h2>
+<table><thead><tr><th>suite</th><th>overview 中出现的 n</th><th>当前判定</th></tr></thead><tbody>
+<tr><td><code>project_robot_sandbox_eval</code></td><td>130</td><td>base/SFT/GRPO100/200 ID set/order exact；scorer/checkpoint 仍未统一冻结</td></tr>
+<tr><td><code>safety_side_effect_eval</code></td><td>289</td><td>四模型 ID set/order exact；scorer backend 仍不同</td></tr>
+<tr><td><code>browser_deferred_eval</code></td><td>930</td><td>四模型 ID set/order exact；仍是 deferred proxy</td></tr>
+<tr><td><code>appworld_ood_api_policy_probe</code></td><td>732</td><td>四模型 ID set/order exact；122B/35B raw 仍缺</td></tr>
+<tr><td><code>quarantine_safety_probe</code></td><td>976</td><td>四模型 ID set/order exact；metric 不是 tool accuracy</td></tr>
+<tr><td><code>robovlm_point_general_probe</code></td><td>400</td><td>四模型 ID set/order exact；仍是 text proxy</td></tr>
+<tr><td><code>cross_source_generalization_eval</code></td><td>1000 / 1820 / 2000</td><td>只找回 GRPO100/200 各 1000 raw；base/SFT raw 缺失</td></tr>
+<tr><td><code>sft_tool_call_holdout</code></td><td>1000 / 1333</td><td>只找回 GRPO100/200 各 1000 raw；base/SFT raw 缺失</td></tr>
+<tr><td><code>toolace_schema_given_probe</code></td><td>1000 / 5000</td><td>不同 support</td></tr>
+<tr><td><code>toolace_schema_absent_probe</code></td><td>1000 / 5000</td><td>不同 support</td></tr>
+</tbody></table>
+<p>严格 paired 差值至少需要：</p>
+<div class="formula">\[
+\Delta_{a,b}^{(j)}
+=\frac{1}{|C_j|}
+\sum_{i\in C_j}
+\left(g_j(y_{a,i})-g_j(y_{b,i})\right),
+\quad
+C_j=E_{a,j}\cap E_{b,j}.
+\]</div>
+<p>变量解释：\(E_{a,j}\) 是模型 \(a\) 在 suite \(j\) 的 case-ID 集合；\(C_j\) 是两模型 common support；\(y\) 是原始输出，\(g_j\) 是同一版本 scorer。直觉是“先把同一道题和同一个评分器对齐，再算差”。overview 本身只保存 aggregate \((n,s)\)；后续 <a href="robot_harness_common_support_raw_bundle_manifest.html">raw bundle manifest</a> 为六个 suite 恢复了 \(E\) 与 \(y\) 的文件 identity，但尚未冻结统一 \(g_j\)、checkpoint 与逐 case rescoring，因此本页仍不计算严格 paired uplift。</p>
+<h2 id="6-32b">6. 三条 32B 结果的协议核对</h2>
+<table><thead><tr><th>行</th><th>holdout tool accuracy / n</th><th>scorer</th><th>semantic backend</th><th>project sandbox</th><th>safety tool accuracy</th></tr></thead><tbody>
+<tr><td>32B base</td><td>0.378095 / 1333</td><td><code>schema_aware_v2</code></td><td><code>qwen_hidden:Qwen3-VL-8B-Instruct</code></td><td>0.592308</td><td>0.217993</td></tr>
+<tr><td>32B SFT</td><td>0.954239 / 1333</td><td><code>schema_aware_v2</code></td><td><code>token_overlap_fallback</code></td><td>1.000000</td><td>0.408304</td></tr>
+<tr><td>32B GRPO100</td><td>0.956000 / 1000</td><td><code>schema_aware_v2</code></td><td><code>token_overlap_fallback</code></td><td>1.000000</td><td>0.387543</td></tr>
+<tr><td>32B GRPO200</td><td>0.956000 / 1000</td><td><code>schema_aware_v2</code></td><td><code>token_overlap_fallback</code></td><td>1.000000</td><td>0.373702</td></tr>
+</tbody></table>
+<p>这张表支持“各自 archived protocol 下的 aggregate”。它不能把 base→SFT/GRPO 当严格因果提升：</p>
+<ul><li>base 与 SFT 虽同为 1333 行，但 semantic backend 不同；</li><li>GRPO 两行只取 1000 行，不能与 1333 行直接 paired；</li><li>SFT 的 safety tool accuracy 高于 GRPO100/200，说明“holdout tool name 接近”不等于 safety 单调提升；</li><li>project sandbox 的 1.0 仍只是高层工具协议 proxy。</li></ul>
+<h2 id="7-artifact-census">7. 本地 artifact census</h2>
+<h3 id="7-1">7.1 已闭合</h3>
+<table><thead><tr><th>检查</th><th>结果</th></tr></thead><tbody>
+<tr><td>overview JSON 可解析</td><td>2/2</td></tr>
+<tr><td>model rows</td><td>5 + 8</td></tr>
+<tr><td>每行 suite 数</td><td>10/10</td></tr>
+<tr><td>mean 重算</td><td>13/13 rows 通过</td></tr>
+<tr><td>两 overview 重叠行</td><td>5/5 score+n 精确相同</td></tr>
+<tr><td>archived D/OOD run 目录</td><td>12/12 本地存在</td></tr>
+<tr><td>archived primary metrics JSON</td><td>60/60 本地存在</td></tr>
+<tr><td>metrics <code>scoring_version</code> / <code>model_path</code> / <code>data</code> 字段</td><td>代表性 D 文件存在</td></tr>
+</tbody></table>
+<h3 id="7-2">7.2 未闭合</h3>
+<table><thead><tr><th>缺口</th><th>观测</th><th>后果</th></tr></thead><tbody>
+<tr><td>122B/35B input comparison</td><td>新 input JSON 本地不存在</td><td>两个新模型只能 remote-referenced</td></tr>
+<tr><td>122B/35B run dirs</td><td>4/4 本地不存在</td><td>不能逐 suite 独立重算</td></tr>
+<tr><td>full raw predictions</td><td>普通同步 run dirs 没有 raw；隐藏 extraction 恢复 28/40 primary files，6/10 suite 四模型 ID set/order exact</td><td>可建立六个 suite 的 support table；不能称十套件完整 raw bundle或直接发布 paired uplift</td></tr>
+<tr><td>checkpoint binary</td><td>6 个 distinct <code>model_path</code> 映射后 0/6 本地存在</td><td>不能 content-hash 或 load-smoke</td></tr>
+<tr><td>scorer/code SHA</td><td>overview 只给 metric name，不给完整 scorer revision/hash</td><td>不能证明所有行同实现</td></tr>
+<tr><td>builder provenance</td><td>builder 与 report untracked</td><td>不能从 Git commit 推出 ownership 或不可变性</td></tr>
+<tr><td>physical effect sink</td><td>project/browser 都是 proxy/deferred</td><td>不能升级真实机器人/browser 成功</td></tr>
+</tbody></table>
+<p><code>rescored_from_predictions=true</code> 本身只说明生成 metrics 时曾读取 predictions；后续恢复必须由实际文件、full SHA、rows 与 ordered-ID hash 单独证明。当前 28/40 已这样冻结，剩余 12 个不能用 failure sample 或 metrics 代替。</p>
+<h2 id="8-overview">8. 八模型 overview 的安全解读</h2>
+<p>checkpoint overview 中 <code>8B GRPO</code> 的 descriptive <code>all_avg=0.6511435</code>、<code>D avg=0.8004548</code>、<code>OOD avg=0.5018322</code>；它略高于同表的 32B GRPO200 <code>all_avg=0.6247303</code>。安全口径是：</p>
+<div class="meta">“在这份跨 suite 描述性仪表盘里，8B GRPO 行的等权平均最高；但各列 metric、n、run/protocol 与新旧模型来源不同，所以这不能推出 8B 模型总体优于 32B/35B/122B，也不能作为模型 scaling 结论。”</div>
+<p>尤其不能把 122B/35B 的较低 aggregate 解释为“大模型更差”：两行来自 docker vLLM + OpenAI tools protocol 的新 run，本地缺 source comparison 和 run dirs；其 protocol 与 archived native eval 不同。</p>
+<h2 id="9-fail-closed">9. Fail-closed 校验伪代码</h2>
+<pre><code class="language-python">def audit_ten_suite_bundle(bundle):
+    # 1. Freeze every report, builder, scorer, run and checkpoint by content hash.
+    require(bundle.report_sha and bundle.builder_sha)
+    require(bundle.input_report_shas)
+    require(bundle.scorer_code_sha and bundle.suite_manifest_sha)
+
+    # 2. Preserve every case ID and raw model output; aggregates are insufficient.
+    for model in bundle.models:
+        require(model.checkpoint_sha and model.config_sha)
+        require(model.full_predictions)
+        require(model.case_ids == bundle.common_case_ids)
+
+    # 3. Re-score all models with one scorer version on the common support.
+    paired = score_common_support(
+        predictions=bundle.full_predictions,
+        scorer=bundle.frozen_scorer,
+    )
+
+    # 4. Keep heterogeneous suite metrics separate unless weights/utility are predeclared.
+    require(bundle.predeclared_utility_weights)
+    return paired</code></pre>
+<p>当前十套件 bundle 仍会在 <code>input_report_shas</code>、<code>checkpoint_sha</code>、四个 suite 的 <code>full_predictions/common_case_ids</code> 和 <code>predeclared_utility_weights</code> 处 fail closed；六个 suite 的 ID support 通过不代表其 scorer/checkpoint gate 已通过。</p>
+<h2 id="10-ownership">10. 项目真实性与 ownership 边界</h2>
+<h3 id="section-15">可以说</h3>
+<div class="meta">“项目里有一份五/八模型、十套件的聚合仪表盘。我重新冻结了 report 与 builder，13 个 model rows 的均值都能重算；又从隐藏 extraction 恢复了 28/40 个 primary JSONL，六个 suite 的 base/SFT/GRPO100/200 ID set/order exact。它仍混合五种 primary metric，四个 suite raw 不完整，新 122B/35B 输入和所有 checkpoint binary 也不在本地。因此我只把它当 descriptive dashboard 加 partial common-support bundle，不能说已经完成严格同协议因果对照。”</div>
+<h3 id="section-16">不能说</h3>
+<ol><li>“我完成了八模型统一 benchmark”——没有同 support、同 scorer implementation、同 protocol。</li><li>“8B GRPO 总体优于 122B/35B/32B”——aggregate 的 metric/n/protocol 混合。</li><li>“37.8→95.6 是 GRPO 的严格 uplift”——SFT 已到 95.4，GRPO n 变为 1000，且缺 paired raw output。</li><li>“project sandbox 100% 代表真实机器人成功率”——没有 low-level controller、sensor/contact/latency/effect-sink。</li><li>“这些文件是我独立实现的”——builder/report untracked，候选人尚未完成 ownership confirmation。</li></ol>
+<h2 id="11">11. 最小升级路径</h2>
+<ol><li>从远端归档 <code>openai_vllm_2models_20260706_1119_comparison.json</code> 与 122B/35B 四个 run 目录，记录完整 SHA manifest。</li><li>恢复缺失的 base/SFT holdout/cross-source 与四模型 ToolACE 两套件共 12 个 primary 文件；随后冻结六个已对齐 suite 的 input/prompt/schema/scorer/backend/checkpoint，并生成逐项 scorer contribution。</li><li>固定 scorer code、schema、suite JSONL、prompt/template、generation config 与 semantic backend SHA；不再混用 <code>qwen_hidden</code> 与 <code>token_overlap_fallback</code>。</li><li>获取 checkpoint binary 或 immutable remote content manifest，至少闭合 checkpoint/config/tokenizer/parent lineage。</li><li>预先声明 suite 权重或保持十列分开；不把等权 index 命名为总体准确率。</li><li>由候选人完成 Robot Harness ownership drill，逐项确认 builder/metric choice/result interpretation 的决定、审查、修改与运行角色。</li></ol>
+<p>这些门关闭前，Robot Harness inventory 继续 <code>WARN</code>，所有 8 张项目题卡与全局 269 张题卡保持 <code>unseen</code>；本页不创建 <code>coaching_state.md</code>，也不启动 <code>PER-019</code>。</p>
+<h2 id="references">参考来源（References）</h2>
+<ol><li><a href="robot_harness_claim_evidence_inventory.html">Robot Harness Claim–Evidence Inventory</a>。</li><li><a href="robot_harness_ownership_ledger.html">Robot Harness Ownership Ledger</a>。</li><li><a href="../evidence_manifest.html">Evidence Manifest</a>。</li><li><a href="../../knowledge/vol_05_engineering_eval_eval005_macro_micro_weighted_aggregation.html">VOL 05 EVAL-005 Aggregation Knowledge</a>。</li><li><a href="../../sources/vol_05_eval006_benchmark_env_controller_scorer_versioning_source_freeze.html">VOL 05 EVAL-006 Benchmark/Scorer Versioning Source Freeze</a>。</li><li><a href="../../sources/vol_05_eval009_raw_predictions_episode_trace_video_recomputable_summary_source_freeze.html">VOL 05 EVAL-009 Recomputable Raw-Bundle Source Freeze</a>。</li><li><a href="../../questions/proj_robot_harness.html">Robot Harness Project Cards</a>。</li><li>Local bundle <code>C:\Users\mousongzhe\agent\reports\eval_5model_10suite_overview\</code>。</li><li>Local bundle <code>C:\Users\mousongzhe\agent\reports\eval_checkpoint_10suite_overview\</code>。</li><li>Local builder <code>C:\Users\mousongzhe\agent\tmp_remote_recovery\build_5model_eval_overview.py</code>。</li><li><a href="robot_harness_common_support_raw_bundle_manifest.html">Robot Harness Common-Support Raw Bundle Manifest</a>。</li></ol>
+</article></body></html>

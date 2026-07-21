@@ -1,0 +1,41 @@
+{
+  "artifact": "sources/openpivla_batch2_evidence_freeze.md",
+  "html": "sources/openpivla_batch2_evidence_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / local_source_frozen",
+  "verdict": "WARN",
+  "source_sha256": "20b53bb10aba19c0226a3b1c3b0868576e30378a842d1a6637ddd92458c635c1",
+  "scope": {
+    "project": "OpenPiVLA / Qwen3-VL / MACA / DROID",
+    "planned_question_ids": [
+      "PROJ-OPENPIVLA-009",
+      "PROJ-OPENPIVLA-010",
+      "PROJ-OPENPIVLA-011",
+      "PROJ-OPENPIVLA-012"
+    ],
+    "frozen_local_inputs": 12,
+    "practice_state": "not_started"
+  },
+  "checks": {
+    "source_freeze": "PASS (formal_train.py, data.py, recipes.py, three YAMLs, three smoke summaries, two local reports and DEPLOYMENT.md hashes recorded)",
+    "eager_call_graph": "PASS WITH WARNING (CLI default and from_pretrained argument are local-direct; no profiler or throughput comparison)",
+    "smoke_formal_raw_ladder": "PASS WITH WARNING (smoke is local-direct; formal completion is report-supported/remote-referenced; raw formal logs and checkpoint binaries are not local)",
+    "historical_loss_boundary": "PASS (archived recipes.py flow_matching_loss metadata is separated from current formal_train.py outputs.loss causal-LM path)",
+    "shape_contract": "WARN (recipe/smoke declare H=15,D=72, while formal JSON formatter truncates each action/state vector to limit=16)",
+    "axis_unit_parser_roundtrip": "MISSING (no frozen parser, normalizer, controller mapping or sentinel roundtrip artifact)",
+    "checkpoint_lineage_manifest": "DRAFT (field contract supplied; checkpoint_hash, processor_hash, raw_log_hash, load_smoke and eval manifest remain missing)",
+    "project_truth_boundary": "PASS (configuration, smoke, report and unverified claims are separated; no benchmark uplift or action semantics are asserted)",
+    "html_static_validation": "PASS (source SHA, one H1, 10 H2, 8 H3, 5 tables, 2 code blocks and one formula block)",
+    "local_links": "PASS (relative inventory/question links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static validation is not visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Collect immutable formal log bundles and checkpoint/processor hashes for each run.",
+    "Resolve the H=15,D=72 versus formal limit=16 representation conflict with a real DROID sentinel, parser, normalizer and controller roundtrip.",
+    "Do not merge archived flow_matching_loss metadata with the current Qwen causal-CE trainer without a shared code/checkpoint lineage.",
+    "Keep `eager` framed as compatibility/stability evidence, not a performance or benchmark uplift claim.",
+    "PROJ-OPENPIVLA-009..012 are now drafted from this freeze; keep them unseen and preserve the same explicit boundaries."
+  ],
+  "next": "Run one-question-at-a-time oral drills for PROJ-OPENPIVLA-009..012 or collect raw checkpoint/roundtrip evidence; then start Robot Harness inventory."
+}

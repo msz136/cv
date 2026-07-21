@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmos / WAM Ownership Ledger：多目标训练、RoboCasa 评测与诊断边界</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\wam_ownership_ledger.md">
+<meta name="aris:source-sha256" content="931a7fae9c6d224eac292d63eeffdfa374504318f8181e6f610f15d25f7c0d07">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>931a7fae9c6d224eac292d63eeffdfa374504318f8181e6f610f15d25f7c0d07</code>；生成自：<code>interview_materials\vla\evidence\projects\wam_ownership_ledger.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#0-self-report-artifact-ownership">0. 候选人项目范围自述（self-report，不等于 artifact/ownership 证明）</a></li><li><a href="#1-ownership">1. Ownership 证据合同</a></li><li><a href="#2-git">2. Git、上游与工作树冻结事实</a></li><li><a href="#3-per-file-per-decision-ownership-matrix">3. Per-file / per-decision ownership matrix</a></li><li><a href="#4-claim-ownership-reconciliation">4. Claim → ownership reconciliation</a></li><li><a href="#5-production-gap">5. Production gap 与最小补证据</a></li><li><a href="#6">6. 候选人确认表</a></li><li><a href="#7">7. 两分钟叙事骨架（当前安全版）</a></li><li><a href="#8-6">8. 面试前 6 题</a></li><li><a href="#references">参考文献（References）</a></li><li><a href="#9-ownership">9. Ownership 审计伪代码</a></li></ol></nav>
+<h1>Cosmos / WAM Ownership Ledger：多目标训练、RoboCasa 评测与诊断边界</h1>
+<div class="meta">状态：<code>ownership_audited / diagnostic_artifacts_partial / candidate_confirmation_pending / WARN</code> 审查日期：2026-07-19 证据截止：2026-07-19 项目范围：<code>C:\Users\mousongzhe\Project</code> 中的 Cosmos Policy / WAM 训练适配、RoboCasa rollout、Cosmos/WAM diagnostics 与当前 CoffeePressButton paired artifact。 结论先行：Cosmos Policy 的 latent slot、condition/loss mask、policy/world/value routing、32→16 action queue 和 RoboCasa controller 合同由 frozen upstream source 支持；本地 Project snapshot、训练脚本、报告和一组 CoffeePressButton base/trained action trace 可直接读取，但 checkpoint binary、metric denominator、完整 episode suite、local diff 与候选人逐项角色仍未闭合。当前可以讲“训练/评测协议迁移与失败诊断”，不能把 WAM architecture、历史 MSE/成功率或单 episode trace 说成个人原创、benchmark uplift 或已验证 checkpoint 结果。</div>
+<h2 id="0-self-report-artifact-ownership">0. 候选人项目范围自述（self-report，不等于 artifact/ownership 证明）</h2>
+<p>2026-07-21，候选人在本线程明确给出以下项目范围自述：</p>
+<div class="meta">“我复现了 Cosmos Policy 的 1 epoch fine-tune，做了 Cosmos Policy 的 eval，做了 UWM 在 LIBERO 的 fine-tune 和 eval，做了 UWM 在 RoboCasa 的尝试，协议对齐和训练评估；具体的指标与日志应该在对应项目下有落档。”</div>
+<p>这条自述用于确定面试准备的项目覆盖面和 artifact 搜索优先级；它不自动证明具体代码 ownership、checkpoint lineage、指标分母、运行者或结果归因。当前安全映射如下：</p>
+<table><thead><tr><th>自述范围</th><th>当前证据层</th><th>现在可用的安全动词</th><th>仍不能直接说</th></tr></thead><tbody>
+<tr><td>Cosmos Policy 1 epoch fine-tune</td><td><code>candidate-self-report</code> + 本地训练 gate / save-load audit 部分支持</td><td>“开展/尝试复现 1-epoch 训练链，并审计训练 gate”</td><td>已完成正式 1 epoch、拥有可加载 checkpoint、取得训练 uplift</td></tr>
+<tr><td>Cosmos Policy eval</td><td><code>candidate-self-report</code> + RoboCasa harness/diagnostic artifacts 部分支持</td><td>“运行/审计 Cosmos Policy eval harness”</td><td>个人模型 benchmark 成绩、官方 scorer 等价、相对 baseline 提升</td></tr>
+<tr><td>UWM / LIBERO fine-tune 与 eval</td><td><code>candidate-self-report</code> + UWM/LIBERO protocol inventory</td><td>“开展 LIBERO 适配、训练与评估对齐”</td><td>strict/reset 结果归因、checkpoint ownership、250 episodes 全量闭合</td></tr>
+<tr><td>UWM / RoboCasa 尝试</td><td><code>candidate-self-report</code> + RoboCasa actionheadfix / transfer diagnostics</td><td>“尝试 RoboCasa 适配并做协议/失败诊断”</td><td>已解决 root cause、完整成功率或稳定迁移结果</td></tr>
+<tr><td>协议对齐与训练评估</td><td><code>candidate-self-report</code> + 多项目 protocol/evidence pages</td><td>“对齐输入输出、normalizer、controller、评估协议并复核日志”</td><td>所有实现由候选人独立完成，或所有指标已经 result-owned</td></tr>
+</tbody></table>
+<p>在候选人逐项回答第 6 节 ownership questions 前，这五行保持 <code>candidate-self-report / role-pending</code>，不迁移为 <code>role-confirmed</code> 或 <code>result-owned</code>。</p>
+<h2 id="1-ownership">1. Ownership 证据合同</h2>
+<p>强主张“我负责并完成了 X”至少需要同时满足：文件/commit identity、可读取 artifact、设计或修改过程、运行/验收证据、个人/协作者/工具边界。Git author、项目报告、远端路径或一条 summary JSON 均不能单独证明个人 ownership。</p>
+<table><thead><tr><th>状态</th><th>含义</th><th>当前可用动词</th></tr></thead><tbody>
+<tr><td><code>upstream-verified</code></td><td>frozen Cosmos paper/repo/model card 支持的公开机制或协议</td><td>“上游定义/实现”</td></tr>
+<tr><td><code>snapshot-local</code></td><td>Project Git snapshot 中存在脚本、配置、报告或输出</td><td>“本地快照包含”</td></tr>
+<tr><td><code>artifact-local-partial</code></td><td>可读取 manifest/trace/video，但 checkpoint 或 protocol bundle 不完整</td><td>“复核到诊断 artifact”</td></tr>
+<tr><td><code>report-supported</code></td><td>只有项目报告/历史材料支持</td><td>“材料记录/项目描述”</td></tr>
+<tr><td><code>role-confirmed</code></td><td>候选人逐项确认亲手、协作、工具、运行或审查角色</td><td>“我修改/我运行/我验收”</td></tr>
+<tr><td><code>result-owned</code></td><td>checkpoint、normalizer、protocol、episode、scorer 与角色全部闭合</td><td>“我完成并得到……”</td></tr>
+</tbody></table>
+<h2 id="2-git">2. Git、上游与工作树冻结事实</h2>
+<table><thead><tr><th>检查</th><th>结果</th><th>能证明</th><th>不能证明</th></tr></thead><tbody>
+<tr><td>Project HEAD</td><td><code>6c524d9c6c6226075f100cdac395fef2fdc37671</code>，<code>Document RoboCasa actionheadfix diagnostics</code></td><td>当前提交包含 WAM/UWM 诊断报告和 loss summary</td><td>每个文件由候选人独立设计、编写或运行</td></tr>
+<tr><td>Project initial snapshot</td><td><code>c4469eb8ec4bb879bdb7d12cf9a303c8264a41ea</code></td><td>初始快照与 WAM 目录边界</td><td>pre-snapshot 来源、协作者和工具链</td></tr>
+<tr><td>Cosmos/WAM training line</td><td><code>wm/cosmos_policy_*</code> scripts、<code>cosmos_policy_deepspeed_train.py</code>、RoboCasa dataset/rollout scripts</td><td>本地存在训练/推理适配入口与参数合同</td><td>正式 1-epoch、full10k 或 checkpoint ownership</td></tr>
+<tr><td>RoboCasa evolution</td><td><code>796374c</code> → <code>57bf4ea</code> → <code>a37a386</code> → <code>2a2912d</code> → <code>1a03fe</code> → <code>8eaddf</code> → <code>6c524d9</code></td><td>actionheadfix、single-task gate、sharded eval、loss reports 经多次提交演化</td><td>每次修改由谁决定、谁在 remote 执行、谁验收</td></tr>
+<tr><td>Current worktree</td><td><code>Project</code> 当前有 recovery 文件修改；WAM outputs 在外部目录</td><td>working-tree 状态和外部 diagnostic 文件存在</td><td>dirty recovery 或远端路径不等于可复算 raw run</td></tr>
+<tr><td>Frozen upstream</td><td><code>NVlabs/cosmos-policy@18a2accadf4e7a3531e56754102af5a24d2316da</code>；论文 arXiv <code>2601.16163v1</code></td><td>latent slot、mask、routing、direct/planning、RoboCasa 32→16 合同</td><td>用户本地改动、结果、ownership 或 license 可自动继承</td></tr>
+</tbody></table>
+<h2 id="3-per-file-per-decision-ownership-matrix">3. Per-file / per-decision ownership matrix</h2>
+<table><thead><tr><th>ID</th><th>文件 / 决策</th><th>当前可核验事实</th><th>Git / artifact 事实</th><th>当前 role verdict</th><th>安全口径</th><th>升级所需证据</th></tr></thead><tbody>
+<tr><td><code>WAM-OWN-001</code></td><td>Project initial snapshot 与 WAM 目录来源</td><td><code>c4469eb</code> 是根快照；包含 <code>wm/cosmos_policy_*</code> 与 RoboCasa 适配目录</td><td>一次性 snapshot；无 pre-snapshot history</td><td><code>snapshot-local / role-pending</code></td><td>“项目快照包含 Cosmos/WAM 训练与评测材料”</td><td>pre-snapshot 来源、贡献记录、候选人确认</td></tr>
+<tr><td><code>WAM-OWN-002</code></td><td>Cosmos Policy upstream mechanism</td><td>paper/repo 支持 unified latent video sequence、action/future/value slot、sample route、condition/loss mask</td><td>frozen commit <code>18a2acc…</code>；上游 Apache-2.0；model card 另有 NSCLv1</td><td><code>upstream-verified / upstream-only</code></td><td>“我按 upstream contract 梳理/对齐”，不说原创 architecture</td><td>永远不升级为个人原创；只绑定本地 substantive diff</td></tr>
+<tr><td><code>WAM-OWN-003</code></td><td><code>wm/cosmos_policy_deepspeed_train.py</code> 训练适配</td><td>参数包含 chunk=32、action multiplier、world/value sampling、normalization、DeepSpeed 与 dataset contract；代码是 proxy/objective-compatible harness</td><td>Project snapshot 可读；未闭合 full model run</td><td><code>snapshot-local / implementation-role-pending</code></td><td>“本地有 DeepSpeed 训练适配与目标合同”</td><td>before/after diff、运行命令、effective config、load/checkpoint log</td></tr>
+<tr><td><code>WAM-OWN-004</code></td><td>RoboCasa dataset / action schema</td><td><code>uwm_robocasa_lerobot_dataset.py</code>、<code>uwm_robocasa_dataset.py</code>、tasksets 固定图像/proprio/action/normalizer 与 7D→12D controller 边界</td><td>多次 <code>796374c</code>→<code>6c524d9</code> 提交</td><td><code>snapshot-local / decision-owner-pending</code></td><td>“项目适配了 RoboCasa 数据与动作接口”</td><td>数据 manifest、schema roundtrip、候选人具体改动和 review</td></tr>
+<tr><td><code>WAM-OWN-005</code></td><td>action rollout launcher</td><td><code>run_cosmos_policy_robocasa_action_rollout_now.sh</code>、<code>cosmos_policy_robocasa_action_rollout_video.py</code> 提供 32 chunk、16 open-loop、5 denoise 与 episode output</td><td>入口脚本和日志可读取；远端 checkpoint path</td><td><code>process-supported / operator-pending</code></td><td>“项目提供可审计的 rollout launcher”</td><td>remote shell history、runtime env、完整 episode manifest、运行者</td></tr>
+<tr><td><code>WAM-OWN-006</code></td><td>official checkpoint / HF baseline eval path</td><td>wrapper、task list、controller、success predicate 与 24×5/50×3 协议在材料中可定位</td><td>上游 model card 数字不是本地运行；本地 historical 84/118 仍 claim-only</td><td><code>upstream+report-supported / result-owner-blocked</code></td><td>“我建立了 harness 验证路径”，不报历史分数为个人结果</td><td>model revision、checkpoint/config/stats hash、raw episodes、summary/videos</td></tr>
+<tr><td><code>WAM-OWN-007</code></td><td>training report / loss summary</td><td><code>uwm_robocasa_transfer_report.html</code>、<code>human300_*</code> summary 与图表记录 action/aux/lr/memory 线索</td><td><code>6c524d9</code> 加入报告与 PNG/CSV/JSON；不是独立 raw checkpoint</td><td><code>report-supported / analysis-role-pending</code></td><td>“报告记录训练诊断线索”</td><td>run manifest、metric code、原始 logs、checkpoint lineage、审查角色</td></tr>
+<tr><td><code>WAM-OWN-008</code></td><td>WAM historical MSE claim <code>0.09718→0.05349</code></td><td>只出现在旧简历/项目叙事，缺 split、prediction/label、metric script</td><td>inventory 判定 <code>C3-BLOCKED / REMOVED</code></td><td><code>local-claim-only / result-blocked</code></td><td>当前不报数；只讲应如何建立 held-out metric bundle</td><td>split manifest、metric SHA、pred/label、checkpoint/config/stats SHA</td></tr>
+<tr><td><code>WAM-OWN-009</code></td><td>historical success <code>0.90–0.95 / 0.75</code> 与 <code>84/118</code></td><td>历史材料中的 task/denominator/checkpoint 未闭合，且与 local 0-success 叙事存在 provenance conflict</td><td>inventory 判定 <code>CONFLICT / REMOVED</code></td><td><code>claim-only / protocol-blocked</code></td><td>不恢复到简历或强回答</td><td>task IDs、trial/init/seed/horizon/controller、raw episodes、invalid rule、model revision</td></tr>
+<tr><td><code>WAM-OWN-010</code></td><td>local 0-success / root-cause chain</td><td>项目页提出 gripper、high-sigma、5-frame conditioning、normalizer/slot roundtrip、OOM/state_dict 等候选原因</td><td>未发现完整 fix→paired rerun 因果链</td><td><code>inference / diagnosis-pending</code></td><td>“我列出并排序了诊断假设”，不说已定位根因</td><td>failure trace、patch、unit test、修复后同协议 rerun</td></tr>
+<tr><td><code>WAM-OWN-011</code></td><td>CoffeePressButton base/trained manifests</td><td>两个 manifest SHA：base <code>63A518…33A86</code>、trained <code>809AE4…55CC</code>；同 task/episode/seed/env_seed/max_steps/open-loop/denoise；均 success=false</td><td><code>C:\Users\mousongzhe\Project\wm\outputs</code> 可读；checkpoint 字段是远端路径</td><td><code>artifact-local-partial / checkpoint-unverified</code></td><td>“复核到一组 paired diagnostic manifest”</td><td>checkpoint binary/immutable remote hash、processor/normalizer/config SHA、完整 suite</td></tr>
+<tr><td><code>WAM-OWN-012</code></td><td>CoffeePressButton action trace 与 video</td><td>base trace SHA <code>C6A362…88525D</code>、trained trace SHA <code>9C6A4F…82CF2D</code>；300×7 policy、300×12 env、无 NaN/Inf；trained video SHA <code>591763…2877</code></td><td>action trace MAE <code>0.3100783611</code>、RMSE <code>0.3906446459</code>；两边 episode 0 均失败</td><td><code>local-direct / diagnostic-only</code></td><td>“trace 几何差异与失败字段可复核”，不称 uplift/MSE/benchmark</td><td>target/pred metric、controller roundtrip、多 episode denominator、same-checkpoint paired run</td></tr>
+<tr><td><code>WAM-OWN-013</code></td><td>iter_000010000 matched path bridge 与个人总边界</td><td>offline future metric 与 trained rollout 逐字引用同一 checkpoint path；path string SHA <code>6CAE0B…14E833</code></td><td>这是路径 fingerprint，不是 binary SHA；offline n=1，输入/seed/horizon 与 rollout 不同</td><td><code>local-direct / protocol-limited / candidate-confirmation-pending</code></td><td>“我能把 offline 与 rollout 绑定到同一路径，但不能做相关/因果结论；个人 ownership 仍按前 12 行确认”</td><td>binary hash/load smoke、matched protocol、candidate role ledger、reviewer/operator 记录</td></tr>
+</tbody></table>
+<h2 id="4-claim-ownership-reconciliation">4. Claim → ownership reconciliation</h2>
+<table><thead><tr><th>面试/简历 claim</th><th>当前证据合同</th><th>安全处理</th></tr></thead><tbody>
+<tr><td>“我设计了 action/world/value 三目标与 slot routing”</td><td>上游机制已核实，本地缺 substantive diff 与 ownership</td><td>改为“按 upstream contract 梳理/对齐”；确认本地改动后再描述修改</td></tr>
+<tr><td>“我完成了 Cosmos/WAM 后训练”</td><td>有训练适配入口与报告，但缺 immutable run/checkpoint/metric chain</td><td>说“参与/开展训练适配与评测诊断”，不说完成正式训练结果</td></tr>
+<tr><td>“MSE 下降约 45%”</td><td>split、metric code、prediction/label、checkpoint 缺失</td><td>当前移除；补齐四类 artifact 后重新判定</td></tr>
+<tr><td>“RoboCasa 达到 0.90–0.95 / 0.75 或 84/118”</td><td>task/seed/trial/checkpoint/episode provenance 未闭合且存在冲突</td><td>禁止恢复；先建立 protocol-complete raw bundle</td></tr>
+<tr><td>“trained action trace 比 base 更好/更差”</td><td>只有单 episode trace 差异，checkpoint binary 未验证，两边 success 都 false</td><td>只说 trace-level diagnostic，不做模型效果结论</td></tr>
+<tr><td>“我定位了 0-success 根因”</td><td>目前是候选假设链，无修复前后 paired rerun</td><td>说“形成诊断矩阵/优先级”，原因用“待确认”</td></tr>
+<tr><td>“Git author 证明这些代码都是我写的”</td><td>多次提交和一次性 snapshot 只能证明提交身份</td><td>必须按文件、commit、运行者和工具边界回答</td></tr>
+<tr><td>“iter_000010000 的 offline metric 解释了 rollout 失败”</td><td>只证明 path string 相同；n=1 且 episode/seed/horizon 不同</td><td>只说 checkpoint-reference bridge，不做相关或因果结论</td></tr>
+</tbody></table>
+<h2 id="5-production-gap">5. Production gap 与最小补证据</h2>
+<table><thead><tr><th>Gap</th><th>面试官追问</th><th>最小补证据</th><th>当前表达</th></tr></thead><tbody>
+<tr><td>checkpoint lineage</td><td>base/trained 的权重和 normalizer 是什么？</td><td>binary/remote content hash、processor、stats/config SHA、load smoke</td><td><code>checkpoint-unverified</code></td></tr>
+<tr><td>metric contract</td><td>MSE 对哪些 action steps/dims 求平均？</td><td>split manifest、metric script SHA、pred/label、valid denominator</td><td><code>C3-blocked</code></td></tr>
+<tr><td>episode denominator</td><td>84/118 为什么删 2 条？</td><td>预注册 invalid rule、逐 episode JSONL、视频与 scorer</td><td><code>conflict</code></td></tr>
+<tr><td>action semantics</td><td>7D policy 如何变成 12D controller action？</td><td>schema、normalizer roundtrip、controller config/hash、timestamped trace</td><td><code>diagnostic pending</code></td></tr>
+<tr><td>root cause</td><td>gripper/high-sigma/5-frame 谁被验证了？</td><td>failure trace、patch、unit test、同协议 paired rerun</td><td><code>inference</code></td></tr>
+<tr><td>ownership</td><td>哪个函数是你亲手写/改的？</td><td>before/after diff、review note、候选人逐项确认</td><td><code>role-pending</code></td></tr>
+<tr><td>offline→online bridge</td><td>PSNR/SSIM 能否预测 success？</td><td>matched task/init/seed、同 checkpoint、多样本 paired bundle</td><td>当前只能说 path bridge</td></tr>
+<tr><td>collaboration/tool boundary</td><td>Codex/同事/远端运行者分别做了什么？</td><td>contribution ledger、shell history、operator/reviewer 记录</td><td>不推断</td></tr>
+</tbody></table>
+<h2 id="6">6. 候选人确认表</h2>
+<p>真实口述或材料核对时，请逐项回答“亲手 / 协作 / 工具辅助 / 只审查 / 只运行 / 不确定”：</p>
+<ol><li><code>c4469eb</code> 初始 snapshot 中的 WAM/Cosmos 文件来自哪里？哪些是在 <code>796374c</code> 之后由你修改？</li><li><code>cosmos_policy_deepspeed_train.py</code> 的 proxy/objective-compatible 训练适配由谁设计、编写、运行和验收？</li><li>RoboCasa dataset、7D→12D action、normalizer、camera 与 taskset contract 中哪些字段是你的决策？</li><li>action rollout launcher 与 official/HF baseline harness 谁编写、谁在 remote 执行、谁检查 success predicate？</li><li>historical MSE、84/118、0.90–0.95/0.75、full10k 分别属于哪条 run？checkpoint、split、denominator 和运行者是什么？</li><li>CoffeePressButton base/trained manifest、action trace、video 是谁生成、收集、审查和保存的？</li><li>gripper、high-sigma、5-frame conditioning、normalizer/slot roundtrip、OOM/state_dict 中哪些有修复后的 paired rerun？</li><li>哪些代码来自 NVlabs upstream、哪些来自协作者或工具，哪些 substantive diff 确实由你亲手完成？</li></ol>
+<p>在候选人真实回答前，不创建 <code>coaching_state.md</code>，不把任何行升级为 <code>role-confirmed</code> 或 <code>result-owned</code>。</p>
+<h2 id="7">7. 两分钟叙事骨架（当前安全版）</h2>
+<div class="meta">Cosmos/WAM 这条线我会拆成上游机制、训练适配、评测协议和诊断四层。上游 Cosmos Policy 把 action、future、value 放进统一 latent sequence，通过 condition/loss mask 和 sample routing 切换 policy/world/value 角色；这部分属于上游，不是我的原创。我的项目材料与 Project snapshot 可以核验 DeepSpeed 训练适配、RoboCasa 数据/动作接口、32→16 open-loop rollout 和多轮 actionheadfix 诊断。现在最强的本地证据是一组 CoffeePressButton episode 0 的 base/trained manifest、300×7 action trace、失败视频和逐步差异计算；但两侧 checkpoint 仍是远端路径，只有 path fingerprint，不能证明 binary 内容或 uplift。历史 MSE 和成功率没有完整 split、denominator、episode、checkpoint 链，已从安全简历口径移除。我的个人贡献需要按 ledger 的脚本、提交、命令和验收记录逐项确认，因此当前我会把它讲成协议迁移与失败诊断，而不是已验证的 benchmark 提升。</div>
+<h2 id="8-6">8. 面试前 6 题</h2>
+<ol><li>为什么 Cosmos Policy 不能简单描述成 video backbone 后面接 action/world/value 三个独立 head？</li><li><code>mask=1</code> 在 Cosmos dataset/training contract 中表示什么？它和 attention mask 有何区别？</li><li>为什么 RoboCasa 的 7D policy action 会变成 12D controller action，且只执行 32-step chunk 的前 16 步？</li><li>单 episode base/trained action MAE/RMSE 能证明 checkpoint uplift 吗？缺哪些证据？</li><li>为什么 offline future-image metric 与 rollout success 不能直接做相关或因果解释？</li><li>请从 <code>cosmos_policy_deepspeed_train.py</code> 或 action rollout launcher 的一个函数开始，说明哪些是你亲手、协作、工具辅助、只审查或只运行的。</li></ol>
+<h2 id="references">参考文献（References）</h2>
+<ol><li><a href="wam_claim_evidence_inventory.html">Cosmos/WAM Claim–Evidence Inventory</a>：历史 claim、冲突、artifact gate 与安全口径。</li><li><a href="wm019_wam_artifact_manifest.html">WM-019 WAM Diagnostic Artifact Manifest</a>：CoffeePressButton manifest、trace、video 和 checkpoint 缺口。</li><li><a href="wm019_wam_action_trace_paired_diagnostic.html">WM-019 WAM Action-Trace Paired Diagnostic</a>：300×7/300×12 trace integrity 与 MAE/RMSE 边界。</li><li><a href="wm019_wam_matched_checkpoint_protocol_bridge.html">WM-019 Matched-Checkpoint Protocol Bridge</a>：iter_000010000 path bridge 与 n=1/协议差异。</li><li><a href="../../sources/vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos Policy / WAM Source Audit</a>：frozen upstream mechanism、slot/mask/routing 与 RoboCasa contract。</li><li><a href="../../../04_cosmos_wam_multitask_training.html">Cosmos/WAM Project Page</a>：项目叙事与历史问题树；不替代 raw evidence。</li></ol>
+<h2 id="9-ownership">9. Ownership 审计伪代码</h2>
+<pre><code class="language-python">def accept_wam_claim(claim, ledger):
+    # Upstream mechanism is not personal ownership.
+    if claim.is_upstream and not ledger.local_diff(claim):
+        return &quot;upstream_only&quot;
+    # A metric requires protocol, checkpoint and raw outputs, not a report number.
+    if claim.level &gt;= &quot;C2&quot; and not ledger.protocol_checkpoint_raw_chain(claim):
+        return &quot;downgrade_to_claim_only&quot;
+    # Personal result language waits for explicit role and verification evidence.
+    if not ledger.role_confirmed(claim) or not ledger.verification(claim):
+        return &quot;candidate_confirmation_pending&quot;
+    return &quot;claim_allowed_with_exact_scope&quot;</code></pre>
+<p>这段伪代码是本仓库的 ownership gate，不是 Cosmos/WAM 官方实现。</p>
+</article></body></html>

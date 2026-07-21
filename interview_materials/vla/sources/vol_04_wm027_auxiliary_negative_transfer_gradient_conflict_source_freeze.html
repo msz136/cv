@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-027 Source Freeze：Auxiliary Negative Transfer 与 Gradient Conflict</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm027_auxiliary_negative_transfer_gradient_conflict_source_freeze.md">
+<meta name="aris:source-sha256" content="92113dee7896f8691ddb32a89cdd69d89d57a7fd14c4b6168df583b383517f2f">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>92113dee7896f8691ddb32a89cdd69d89d57a7fd14c4b6168df583b383517f2f</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm027_auxiliary_negative_transfer_gradient_conflict_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 来源冻结</a></li><li><a href="#3">3. 两个概念必须分开</a></li><li><a href="#3-1-gradient-conflict">3.1 Gradient conflict：某一步的一阶几何</a></li><li><a href="#3-2-negative-transfer-matched">3.2 Negative transfer：matched 主任务结果</a></li><li><a href="#4-world-value-auxiliary">4. World/Value Auxiliary 负迁移的七类来源</a></li><li><a href="#5-gradient">5. Gradient 诊断合同</a></li><li><a href="#5-1">5.1 最小指标</a></li><li><a href="#5-2-cosmos-wam">5.2 Cosmos/WAM 特殊边界</a></li><li><a href="#6-pcgrad">6. PCGrad：方向冲突的投影</a></li><li><a href="#7-gradnorm">7. GradNorm：尺度与相对训练速率</a></li><li><a href="#8-matched">8. 处置顺序与 matched 验证</a></li><li><a href="#9-wam">9. WAM 真实性边界</a></li><li><a href="#10">10. 下一入口</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 WM-027 Source Freeze：Auxiliary Negative Transfer 与 Gradient Conflict</h1>
+<div class="meta">审计日期：2026-07-18 状态：source_frozen / VLA-WM-027 / knowledge_synced / card_synced / WARN 覆盖题目：VLA-WM-027 本轮边界：冻结 negative transfer 的可证伪定义、shared-gradient 诊断、PCGrad 与 GradNorm 的公式和限制；不声称某次负 cosine 已证明用户 WAM 负迁移，也不声称 gradient surgery 已在本地执行或改善闭环。</div>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>负迁移是 matched outcome，不是一个 gradient 图。</strong>只有在同初始化、同数据/算力、同 checkpoint 选择和同评测协议下，加入 world/value auxiliary 后，action 主任务或 closed-loop utility 相对 action-only 稳定变差，才能确认负迁移。</li><li><strong>gradient conflict 是局部优化诊断。</strong>PCGrad 将两个梯度的负 cosine 定义为 conflict；它描述某个模型状态、batch、参数子集上的一阶方向，不等价于跨 seed 的泛化或闭环退化。[S1]</li><li><strong>先排 contract bug，再做 gradient surgery。</strong>错 label、routing/slot/mask、empty denominator、terminal padding、normalizer、role/domain imbalance 都能制造真实退化或伪 conflict；这些问题不能靠 PCGrad/GradNorm 修好。</li><li><strong>PCGrad 管方向，GradNorm 管尺度与训练速率。</strong>PCGrad 对负内积做投影；GradNorm 动态学习 loss weight，使共享层梯度向按相对训练速率设定的目标 norm 靠近。GradNorm 不直接消除负 cosine，PCGrad 不自动平衡长期训练速率。[S1][S3]</li><li><strong>WAM 本地仍缺关键证据。</strong>当前 inventory 没有 exact local config/checkpoint、per-role gradient trace、matched action-only/+world/+value/all、跨 seed closed-loop episodes 和 ownership；因此 WM-027 只能提供方法与补证据合同。[S6]</li></ol>
+<h2 id="2">2. 来源冻结</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>冻结版本</th><th>可支持</th><th>不能支持</th><th>状态</th></tr></thead><tbody>
+<tr><td>S1</td><td>Yu et al., <em>Gradient Surgery for Multi-Task Learning</em></td><td>arXiv:2001.06782v4，2020-12-22；PDF SHA-256 <code>4b960b81a001f376e8cb551c61c5578129dd99a9d1ff147be5ea56b9e578cbdf</code></td><td>negative cosine 的 conflict 定义、tragic triad、PCGrad 投影、随机 task order、局部理论条件与实验边界</td><td>任意负 cosine 都会导致负迁移；PCGrad 对 WAM 必然有效</td><td>primary / checked</td></tr>
+<tr><td>S2</td><td><code>tianheyu927/PCGrad</code> official TensorFlow implementation</td><td>commit <code>c5fbd7c856526373828074f06875230f7f3ee79e</code>；<code>PCGrad_tf.py</code> SHA-256 <code>1bd41ed5b6ed0cb745f2b2d7892336acb318323f057c29f077be4c6ce6a4d179</code></td><td>per-task gradient、负投影系数和 projected-gradient sum 的实现映射</td><td>生产可用性、AMP/DDP/FSDP、WAM 集成或本地执行结果</td><td>official-code / checked with boundary</td></tr>
+<tr><td>S3</td><td>Chen et al., <em>GradNorm: Gradient Normalization for Adaptive Loss Balancing in Deep Multitask Networks</em></td><td>arXiv:1711.02257v4，2018-06-12；PDF SHA-256 <code>e72930c1f875396f16955748e5af9f2b14c9365c50c1e055cbc36612f326a726</code></td><td>shared-layer gradient norm、relative inverse training rate、target norm、weight update/renormalization</td><td>解决方向冲突、自动识别坏任务、WAM 必然收益</td><td>primary / checked</td></tr>
+<tr><td>S4</td><td>WM-026 Source Freeze / Knowledge</td><td>本地 canonical + review</td><td>auxiliary 可能帮助的机制、matched six-arm ablation、gradient 只是诊断</td><td>WM-026 的机制假设是本地因果结果</td><td>supporting / WARN</td></tr>
+<tr><td>S5</td><td>WM-025 Cosmos/WAM Slot / Mask / Loss</td><td>frozen Cosmos paper/code audit</td><td>unified EDM target、role routing、condition/target/metric mask、component metric 与 training loss 边界</td><td>可直接从日志 action/future/value L1 得到 exact per-objective training gradient</td><td>primary + official-code audit / WARN</td></tr>
+<tr><td>S6</td><td>WAM Claim–Evidence Inventory</td><td>2026-07-18</td><td>本地 diagnostic artifact、缺失的 checkpoint/gradient/paired ablation/ownership 和安全表达</td><td>历史 MSE、success、0-success、root cause 或 gradient conflict 已核实</td><td>local-evidence / WARN</td></tr>
+</tbody></table>
+<h2 id="3">3. 两个概念必须分开</h2>
+<h3 id="3-1-gradient-conflict">3.1 Gradient conflict：某一步的一阶几何</h3>
+<p>对 action 主任务与一个 auxiliary，在共享参数子集 \(\theta_s\) 上：</p>
+<div class="formula">\[
+g_a=\nabla_{\theta_s}\mathcal L_a,\qquad
+g_u=\nabla_{\theta_s}\mathcal L_u,
+\]</div>
+<div class="formula">\[
+c_{a,u}=
+\frac{g_a^\top g_u}
+{\lVert g_a\rVert_2\lVert g_u\rVert_2+\epsilon}.
+\]</div>
+<p>变量解释：\(\mathcal L_a\) 是 exact action-relevant training objective，\(\mathcal L_u\) 是 world 或 value objective；\(c_{a,u}&lt;0\) 是 PCGrad 意义下的局部 conflict。实现中必须记录参数子集、batch/role、loss reduction、valid target 数和 AMP/DDP 状态；zero gradient 应记为 <code>NA</code>，不能伪装成 cosine 0。</p>
+<p>令实际联合更新方向为</p>
+<div class="formula">\[
+g_{\mathrm{joint}}=g_a+\lambda_w g_w+\lambda_v g_v.
+\]</div>
+<p>一次梯度下降对 action loss 的一阶变化为：</p>
+<div class="formula">\[
+\Delta\mathcal L_a
+\approx -\eta\,g_a^\top g_{\mathrm{joint}}.
+\]</div>
+<p>变量解释：\(\eta\) 是学习率。若 \(g_a^\top g_{\mathrm{joint}}&lt;0\)，该步在一阶近似下会增加 action loss，比单独看任意一对 cosine 更直接；但高阶曲率、stochastic gradient、后续表示学习和泛化仍可能改变最终结果。[S1]</p>
+<h3 id="3-2-negative-transfer-matched">3.2 Negative transfer：matched 主任务结果</h3>
+<p>令 \(U\) 是“越高越好”的主任务 utility，例如固定协议下的 per-task success 或把 action error 取负后的 utility：</p>
+<div class="formula">\[
+\Delta U=U_{\mathrm{aux}}-U_{\mathrm{action\text{-}only}}.
+\]</div>
+<p>变量解释：只有当训练资源、数据身份、seed 计划、checkpoint selection 和 eval protocol 匹配，且 \(\Delta U&lt;0\) 在跨 seed / paired episode 的不确定性分析下稳定存在，才称 confirmed negative transfer。单次 loss spike、单层负 cosine 或一个任务下降都只产生假设。</p>
+<h2 id="4-world-value-auxiliary">4. World/Value Auxiliary 负迁移的七类来源</h2>
+<table><thead><tr><th>来源</th><th>机制</th><th>可见症状</th><th>优先检查</th></tr></thead><tbody>
+<tr><td>label / semantics</td><td>future 目标与控制无关；value return、timeout 或 success 语义错</td><td>auxiliary loss 降，rank/action/closed-loop 退化</td><td>label audit、action sensitivity、calibration</td></tr>
+<tr><td>routing / mask</td><td>role、slot、condition mask、target mask 或 denominator 错</td><td>某 role zero/huge grad；padding 段异常</td><td>role matrix、non-zero grad、empty-mask fail-fast</td></tr>
+<tr><td>role / domain imbalance</td><td>rollout auxiliary 数量、状态分布或 embodiment 压过 demo</td><td>action update 占比下降；per-source regression</td><td>effective token/update count、source holdout</td></tr>
+<tr><td>gradient-scale domination</td><td>\(\lambda_u\lVert g_u\rVert\gg\lVert g_a\rVert\)</td><td>total loss 看似正常，action 学习停滞</td><td>norm ratio、weight sweep、GradNorm-style rate</td></tr>
+<tr><td>directional conflict</td><td>\(g_a^\top g_u&lt;0\) 且频繁影响 joint update</td><td>action loss 在 auxiliary update 后上升</td><td>layer/role conflict matrix、PCGrad A/B</td></tr>
+<tr><td>capacity competition</td><td>world pixel detail/value shortcut 占用 shared trunk</td><td>auxiliary 好、action probe/闭环差</td><td>head-only、stop-gradient、width/freeze control</td></tr>
+<tr><td>padding / system artifact</td><td>terminal repeat、normalizer、AMP scale、grad clip、DDP reduction 失真</td><td>尾部/某 rank/某 dtype 冲突集中</td><td>valid-step A/B、unscale、pre/post clip、global stats</td></tr>
+</tbody></table>
+<p>负 cosine 也可能只是不同数据分布：若 action、world、value 来自不同 routed samples，两个 gradient 不一定在同一 observation 上可比。应同时报告“matched-state probe”和“真实 routed schedule”的统计，不把 domain shift 简化成纯优化冲突。</p>
+<h2 id="5-gradient">5. Gradient 诊断合同</h2>
+<h3 id="5-1">5.1 最小指标</h3>
+<p>对每个 shared layer \(\ell\) 和 role pair \((i,j)\)：</p>
+<div class="formula">\[
+c_{ij}^{(\ell)}=
+\frac{g_i^{(\ell)\top}g_j^{(\ell)}}
+{\lVert g_i^{(\ell)}\rVert\lVert g_j^{(\ell)}\rVert+\epsilon},
+\quad
+\rho_{u/a}^{(\ell)}=
+\frac{\lVert\lambda_u g_u^{(\ell)}\rVert}
+{\lVert g_a^{(\ell)}\rVert+\epsilon}.
+\]</div>
+<p>变量解释：\(c\) 看方向，\(\rho\) 看辅助梯度是否在尺度上淹没 action。不要只报全模型平均；至少保存 shared trunk、modality/slot projection 和 task-specific head 的分布，因为聚合值会掩盖层间符号反转。</p>
+<p>每个 window 同时记录：</p>
+<ul><li>conflict rate \(P(c&lt;0)\)、cosine 分位数和连续冲突时长；</li><li>per-role valid target、sample/token/update count 与 loss weight；</li><li>raw norm、weighted norm、joint-update alignment；</li><li>action loss/metric 的 next-step change、EMA 和 checkpoint-level outcome；</li><li>pre-clip 与 post-clip，AMP unscale 后统计；DDP/FSDP 下用全局一致的 per-role gradient 或 exact sharded dot/norm，不平均各 rank cosine。</li></ul>
+<h3 id="5-2-cosmos-wam">5.2 Cosmos/WAM 特殊边界</h3>
+<p>Cosmos/WAM frozen contract 的主反向项是 unified noise-weighted latent EDM loss；action/future/value component L1/MSE 是日志 metric，不天然等于三条可分离 training gradient。[S5] 若要得到 per-role/per-target gradient，必须基于 exact target mask、role-conditioned training loss 或重算的 masked EDM loss；不能对 component metric 反向后称“官方 objective gradient”。</p>
+<h2 id="6-pcgrad">6. PCGrad：方向冲突的投影</h2>
+<p>PCGrad 对 task \(i\) 的梯度按随机 task order 检查其他梯度；若 \(g_i^{\mathrm{PC}\top}g_j&lt;0\)，则：[S1]</p>
+<div class="formula">\[
+g_i^{\mathrm{PC}}
+\leftarrow
+g_i^{\mathrm{PC}}
+-\frac{g_i^{\mathrm{PC}\top}g_j}
+{\lVert g_j\rVert_2^2}
+g_j.
+\]</div>
+<p>变量解释：该投影去掉 \(g_i^{\mathrm{PC}}\) 在 \(g_j\) 上的冲突分量，使当前 pair 的内积归零；最后对 projected task gradients 求和更新。作者实现按 per-task gradient flatten、投影、unpack、sum 映射该公式。[S2]</p>
+<p>适用限制：</p>
+<ol><li>需要 per-task backward/gradient，增加显存、通信与训练时间；多任务时顺序会影响有限步结果，论文使用随机顺序使其在期望上对称。[S1]</li><li>它只处理负方向，不修 label、routing、domain、capacity 或 calibration；也不证明被投影后的方向能改善闭环。</li><li>论文理论结果依赖局部条件；“tragic triad”还包含高正曲率与 gradient magnitude 差异，不能把任何负 cosine 都解释成灾难。[S1]</li><li>action 是唯一主任务时，可以设计“只投影 auxiliary、保护 action”的非对称变体；这是任务优先级设计，不是原始 PCGrad 的无条件结论，必须单独做 A/B。</li></ol>
+<h2 id="7-gradnorm">7. GradNorm：尺度与相对训练速率</h2>
+<p>对任务 \(i\) 的 weighted loss \(w_i(t)L_i(t)\)，在选定共享参数 \(W\) 上：[S3]</p>
+<div class="formula">\[
+G_W^{(i)}(t)=
+\left\lVert\nabla_W\,w_i(t)L_i(t)\right\rVert_2,
+\quad
+\widetilde L_i(t)=\frac{L_i(t)}{L_i(0)},
+\]</div>
+<div class="formula">\[
+r_i(t)=
+\frac{\widetilde L_i(t)}
+{E_{\mathrm{task}}[\widetilde L_i(t)]},
+\quad
+G_i^*(t)=\overline G_W(t)[r_i(t)]^\alpha.
+\]</div>
+<p>变量解释：\(G_W^{(i)}\) 是 task gradient norm，\(r_i&gt;1\) 表示该任务相对学得慢，\(\alpha\) 控制拉回共同训练速率的强度。GradNorm 用</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{grad}}
+=\sum_i\left|G_W^{(i)}(t)-G_i^*(t)\right|_1
+\]</div>
+<p>更新 \(w_i\)，target 在该更新中视为常量；每步再归一化使 \(\sum_iw_i=T\)，从而与全局 learning rate 解耦。[S3]</p>
+<p>适用限制：GradNorm 不看 cosine，不能直接消除方向冲突；\(L_i(0)\) 对初始化敏感，论文建议必要时用理论初始 loss；高 \(\alpha\) 可能持续放大噪声大、不可学或错误标注的任务。对 sparse routed roles、empty mask 和不同 cadence，必须先定义可比的 loss/EMA 与有效更新单位。</p>
+<h2 id="8-matched">8. 处置顺序与 matched 验证</h2>
+<ol><li><strong>确认退化</strong>：action-only 与 auxiliary arm 做同数据、同 compute、同 seed 计划、同 checkpoint rule 的 paired comparison。</li><li><strong>修 contract</strong>：先查 label、role、slot、condition/target mask、valid count、padding、normalizer 和 protocol。</li><li><strong>再改共享方式</strong>：降低/调度 weight，改变 role ratio，stop-gradient、head-only、分层共享或增加 capacity。</li><li><strong>最后做优化器干预</strong>：方向冲突稳定存在时试 PCGrad；尺度/训练速率失衡时试 GradNorm；若组合使用，冻结运算顺序并记录 surgery 前后统计。</li><li><strong>回到主任务</strong>：至少报告 action proxy、world/value quality、per-task closed-loop、paired episode、seed/CI 和 first-failure；只有主任务稳定改善才能说 mitigation 有效。</li></ol>
+<h2 id="9-wam">9. WAM 真实性边界</h2>
+<p>WAM inventory 当前的 CoffeePressButton base/trained trace 只支持单 episode 接口/失败诊断；checkpoint binary、完整 denominator、target metric、gradient trace、matched objective ablation 和 ownership 仍缺。现有 action 几何差异和单样本 future PSNR/SSIM 不能证明 gradient conflict 或负迁移。[S6]</p>
+<p>安全口径：<strong>“我会先用 exact training loss 做逐层、逐角色 gradient audit，再用 matched action-only/+world/+value/all 与闭环 episode 判断是否负迁移；当前本地证据尚不能确认根因。”</strong></p>
+<h2 id="10">10. 下一入口</h2>
+<p>本节点把“诊断与优化器干预”冻结完成。下一 bounded slice 是 <code>VLA-WM-028</code>：sample routing、slot mask 与 loss weight 如何在数据合同层避免 action/world/value 互相污染；它应复用本页的 contract-first 结论，而不是重复 PCGrad/GradNorm。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Tianhe Yu et al., <a href="https://arxiv.org/abs/2001.06782v4">Gradient Surgery for Multi-Task Learning</a>, ICLR 2020。</li><li>Tianhe Yu et al., <a href="https://github.com/tianheyu927/PCGrad/tree/c5fbd7c856526373828074f06875230f7f3ee79e"><code>tianheyu927/PCGrad@c5fbd7c</code></a>，official TensorFlow implementation。</li><li>Zhao Chen et al., <a href="https://arxiv.org/abs/1711.02257v4">GradNorm: Gradient Normalization for Adaptive Loss Balancing in Deep Multitask Networks</a>, ICML 2018。</li><li><a href="vol_04_wm026_world_value_auxiliary_action_imitation_source_freeze.html">WM-026 World/Value Auxiliary Source Freeze</a>。</li><li><a href="vol_04_wm025_cosmos_wam_slot_mask_loss_source_freeze.html">WM-025 Cosmos/WAM Slot / Mask / Loss</a>。</li><li><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM Claim–Evidence Inventory</a>。</li></ol>
+</article></body></html>

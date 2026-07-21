@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：EVAL-019 Checkpoint Selection、Pareto Frontier 与 Holdout Overfit</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_05_engineering_eval_eval019_checkpoint_selection_pareto_holdout_overfit.md">
+<meta name="aris:source-sha256" content="f98dd026639dd69c15ea9baeab973f18f5fc7b552a32e08b02e673f20ba13481">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>f98dd026639dd69c15ea9baeab973f18f5fc7b552a32e08b02e673f20ba13481</code>；生成自：<code>interview_materials\vla\knowledge\vol_05_engineering_eval_eval019_checkpoint_selection_pareto_holdout_overfit.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-30">1. 问题与30秒框架</a></li><li><a href="#2-c-f-p-c">2. 四个集合：C、F、P、c*</a></li><li><a href="#3-metric-role-registry">3. Metric-role Registry</a></li><li><a href="#4-candidate-registry-early-stopping">4. Candidate Registry 与 Early Stopping</a></li><li><a href="#5-validation-best">5. 为什么 Validation Best 会乐观</a></li><li><a href="#6-holdout">6. Holdout 为什么会“用旧”</a></li><li><a href="#7-hard-gates">7. Hard Gates 先过滤</a></li><li><a href="#8-pareto-dominance">8. Pareto Dominance</a></li><li><a href="#9-frontier-winner">9. Frontier 不等于唯一 Winner</a></li><li><a href="#10">10. 不确定性下不要强行排序</a></li><li><a href="#11-nested-selection-fresh-audit">11. Nested Selection / Fresh Audit</a></li><li><a href="#12-method-claim-deployment-selection">12. Method Claim 与 Deployment Selection</a></li><li><a href="#13-multi-task-multi-metric">13. Multi-task / Multi-metric 细节</a></li><li><a href="#14-selection-leakage">14. 常见 Selection Leakage</a></li><li><a href="#15-artifact-pipeline">15. Artifact 与 Pipeline</a></li><li><a href="#16">16. 五项目真实性映射</a></li><li><a href="#opd">OPD</a></li><li><a href="#robot-harness">Robot Harness</a></li><li><a href="#openpivla">OpenPiVLA</a></li><li><a href="#wam">WAM</a></li><li><a href="#uwm-libero">UWM / LIBERO</a></li><li><a href="#17">17. 面试追问防线</a></li><li><a href="#18">18. 本节点状态</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：EVAL-019 Checkpoint Selection、Pareto Frontier 与 Holdout Overfit</h1>
+<div class="meta">状态：<code>drafted / VLA-EVAL-019 / knowledge_41_of_44 / card_1_of_1_unseen / review_warn</code> 更新日期：2026-07-19 难度：L2　优先级：P0 来源冻结：<a href="../sources/vol_05_eval019_checkpoint_selection_pareto_holdout_overfit_source_freeze.html">EVAL-019 Source Freeze</a> 本页建立candidate→feasible→Pareto→selected→fresh audit链路；不把每列最佳数字、反复访问的holdout或不同lineage结果拼成“最佳checkpoint”。</div>
+<h2 id="1-30">1. 问题与30秒框架</h2>
+<p>checkpoint多、metric多时，真正的问题不是“哪个数字最高”，而是：哪些checkpoint有资格参与、哪些metric只是development信号、哪些是hard gate、trade-off怎样表达、最终谁有权做selection、以及选完后用什么独立证据估计泛化。</p>
+<pre><code class="language-text">freeze candidates + metric roles
+ -&gt; development evaluation
+ -&gt; hard feasible set
+ -&gt; uncertainty-aware Pareto set
+ -&gt; frozen decision rule selects one real bundle
+ -&gt; lock SHA/threshold
+ -&gt; one-shot fresh audit</code></pre>
+<p>Pareto frontier负责保留不可互相支配的trade-offs，不负责自动产生唯一winner；final test负责估计已选流程，不负责继续挑checkpoint。</p>
+<h2 id="2-c-f-p-c">2. 四个集合：C、F、P、c*</h2>
+<table><thead><tr><th>集合</th><th>含义</th><th>典型错误</th></tr></thead><tbody>
+<tr><td>candidate <code>C</code></td><td>事前登记、完整可加载的checkpoint bundles</td><td>看完test后临时补一个更好checkpoint</td></tr>
+<tr><td>feasible <code>F</code></td><td>通过artifact/safety/latency/coverage hard gates</td><td>overall高分抵消critical failure</td></tr>
+<tr><td>Pareto <code>P</code></td><td><code>F</code>中不被其他candidate支配的集合</td><td>把frontier叫成一个“最佳点”</td></tr>
+<tr><td>selected <code>c*</code></td><td>按冻结业务规则从<code>P</code>选出的一个bundle</td><td>每个metric各拿不同checkpoint</td></tr>
+</tbody></table>
+<p>所有点必须是真实bundle：checkpoint、processor、normalizer、controller和scorer共同锁定。把ckpt3000的Box IoU与ckpt5000的Point Hit拼在一行，是不存在的Frankenstein模型。</p>
+<h2 id="3-metric-role-registry">3. Metric-role Registry</h2>
+<p>每个metric先登记角色：</p>
+<table><thead><tr><th>role</th><th>用途</th><th>是否可反复看</th></tr></thead><tbody>
+<tr><td>train</td><td>gradient/reward/online optimization</td><td>按训练协议</td></tr>
+<tr><td>development</td><td>hyperparameter、early stop、checkpoint、threshold选择</td><td>可以，但要记access</td></tr>
+<tr><td>hard gate</td><td>artifact/safety/deadline/critical coverage</td><td>按预注册判定</td></tr>
+<tr><td>audit-only</td><td>最终锁定bundle的独立泛化估计</td><td>原则上一轮一次</td></tr>
+<tr><td>monitoring</td><td>deployment后漂移/incident</td><td>不能回写旧test claim</td></tr>
+</tbody></table>
+<p>同一个metric可以有不同数据实例，但同一rows被用于selection后就不是untouched audit。scorer model、prompt、parser、threshold、aggregation和direction都要有SHA/版本。[1][2]</p>
+<h2 id="4-candidate-registry-early-stopping">4. Candidate Registry 与 Early Stopping</h2>
+<p>candidate registry至少保存：run/attempt/checkpoint/parent、step/tokens、code/data/config、processor/normalizer/controller、completion/load smoke、eligible状态和已查看metric。</p>
+<p>early stopping本身就是model selection，必须冻结：</p>
+<ul><li>metric与maximize/minimize；</li><li>cadence、patience、<code>min_delta</code>；</li><li>warmup和eligible step range；</li><li>tie-break：earlier、later或lower-cost；</li><li>NaN/missing/failure处理；</li><li>last、EMA、averaged和best的身份。</li></ul>
+<p>保存更密的checkpoint会扩大candidate set；在噪声validation上从更多点取max，winner's curse通常更严重。</p>
+<h2 id="5-validation-best">5. 为什么 Validation Best 会乐观</h2>
+<p>令真实utility为<code>U(c)</code>，validation估计为：</p>
+<div class="formula">\[
+\widehat U_v(c)=U(c)+\epsilon_c,
+\qquad
+c^*=\arg\max_{c\in\mathcal C}\widehat U_v(c).
+\]</div>
+<p>变量解释：<code>ε_c</code>来自有限样本、training seed、task mix和scorer噪声。直觉：winner既可能真实好，也更可能撞上正向噪声。实现映射：candidate count、每个candidate完整validation vector和最终audit差值必须保留，不能只保存winner。[1][3]</p>
+<p>selection optimism记为：</p>
+<div class="formula">\[
+B_{sel}=E\!\left[\widehat U_v(c^*)-U(c^*)\right].
+\]</div>
+<p>它通常随搜索空间和估计噪声增大，但不是每个有限样本都必然为正的常数。Cawley–Talbot的核心边界是：selection criterion也会被过拟合，评估必须包含完整selection procedure，而不是把选中checkpoint当预先指定。[1]</p>
+<h2 id="6-holdout">6. Holdout 为什么会“用旧”</h2>
+<p>以下都算holdout exposure：看overall/per-task、看失败视频、改parser/scorer、按结果补数据、换threshold、选下一checkpoint、让agent继续搜索。即使labels不可见，重复暴露细粒度score也会让开发过程适应该holdout。[2]</p>
+<pre><code class="language-text">holdout_access_log:
+query_id, candidate_sha, shown_fields, actor, time,
+decision, downstream_code_data_config_diff, cycle_id</code></pre>
+<p>如果audit已被用于改模型，应诚实重命名为development set并冻结新audit family。改文件名、清空日志或只隐藏raw rows不能恢复独立性。</p>
+<h2 id="7-hard-gates">7. Hard Gates 先过滤</h2>
+<p>令<code>g_k(c)≤0</code>为artifact identity、forbidden effect、safety、deadline、memory和minimum coverage约束：</p>
+<div class="formula">\[
+\mathcal F=\{c\in\mathcal C:g_k(c)\le0,\ \forall k\}.
+\]</div>
+<p>变量解释：<code>g_k</code>带unit、threshold、uncertainty与missing policy。直觉：critical failure意味着“不具备参选资格”，不是一个可以被overall平均掉的低分项。实现映射：hard-gate matrix保留PASS/FAIL/INCONCLUSIVE和输入artifact SHA；inconclusive默认不自动通过。[4]</p>
+<h2 id="8-pareto-dominance">8. Pareto Dominance</h2>
+<p>统一objective方向为“越大越好”，例如：</p>
+<pre><code class="language-text">z(c) = [macro_success, worst_slice_success,
+        -forbidden_rate, -p99_latency, -GPU_hours]</code></pre>
+<p>若<code>c,d∈F</code>满足：</p>
+<div class="formula">\[
+c\succ d
+\iff
+(\forall j,\ z_j(c)\ge z_j(d))
+\land(\exists j,\ z_j(c)&gt;z_j(d)),
+\]</div>
+<p>则<code>c</code>支配<code>d</code>。Pareto set为：</p>
+<div class="formula">\[
+\mathcal P=\{c\in\mathcal F:\nexists d\in\mathcal F\text{ s.t. }d\succ c\}.
+\]</div>
+<p>变量解释：frontier保留所有不可支配checkpoint。直觉：一个点success更高但latency更慢时，两者可能都留在frontier。实现映射：pymoo提供non-dominated sorting入口；仓库仍需自行绑定metric语义、hard gates、uncertainty和真实checkpoint bundles。[5]</p>
+<h2 id="9-frontier-winner">9. Frontier 不等于唯一 Winner</h2>
+<p>从<code>P</code>选一个bundle还需决策规则：</p>
+<ol><li>constrained：满足safety/worst-slice/latency floor后最大化primary utility；</li><li>lexicographic：safety→critical task→overall→cost；</li><li>reference/knee：按预注册业务目标选折中点；</li><li>scalarized：固定权重、方向和normalization；</li><li>多profile：只有确实发布多个独立bundle时才保留多个winner。</li></ol>
+<div class="formula">\[
+S_w(c)=\sum_{j=1}^{m}w_j\widetilde z_j(c),
+\qquad w_j\ge0,\quad\sum_jw_j=1.
+\]</div>
+<p>变量解释：<code>\widetilde z_j</code>是冻结scale后的metric。直觉：权重/归一化一变，winner可能变。实现映射：decision record保存weights、reference range、tie-break和sensitivity analysis；看结果后调权重属于新一轮selection。</p>
+<h2 id="10">10. 不确定性下不要强行排序</h2>
+<p>raw mean差0.1pp可能只是episode/task/seed噪声。对paired difference<code>Δ_j(c,d)</code>，可用本仓库工程规则：</p>
+<div class="formula">\[
+c\succ_{robust}d
+\iff
+(\forall j,\mathrm{LCB}_{1-\alpha}[\Delta_j(c,d)]\ge-\epsilon_j)
+\land
+(\exists j,\mathrm{LCB}_{1-\alpha}[\Delta_j(c,d)]&gt;\delta_j).
+\]</div>
+<p>变量解释：<code>ε_j</code>是non-inferiority margin，<code>δ_j</code>是practical superiority margin。直觉：所有目标都至少不劣、且某个目标实质更优才稳健删除对手。实现映射：CI按training seed、task/init pair、robot/site cluster；证据不足标<code>UNRESOLVED</code>，不把CI overlap机械写成相等。[3][4]</p>
+<p>该规则是source-consistent synthesis，不是NSGA-II原始显著性算法。多candidate/metric还要控制multiplicity或做confirmatory rerun。</p>
+<h2 id="11-nested-selection-fresh-audit">11. Nested Selection / Fresh Audit</h2>
+<p>nested protocol在inner data选择，在outer data估计完整选择流程：</p>
+<div class="formula">\[
+\widehat U_{nested}=\frac1K\sum_{k=1}^{K}
+U\!\left(\operatorname{Select}(D_{inner}^{(k)}),D_{outer}^{(k)}\right).
+\]</div>
+<p>变量解释：每个outer fold都重新执行selection。直觉：要评估的是“选模型的方法”，不是事后幸运winner。实现映射：scikit-learn冻结example演示nested/non-nested入口；VLA训练昂贵、episode有task/scene/time cluster时，不能直接假设IID folds。[1][6]</p>
+<p>昂贵VLA最低可信流程：只在development选→锁定bundle/threshold SHA→fresh audit仅评估该bundle→不根据audit回改。若回改，开启新cycle并换fresh audit family，原audit进入development history。</p>
+<h2 id="12-method-claim-deployment-selection">12. Method Claim 与 Deployment Selection</h2>
+<table><thead><tr><th>目标</th><th>正确统计单位</th><th>不能做</th></tr></thead><tbody>
+<tr><td>方法平均是否更好</td><td>全training seeds/recipes的分布</td><td>只报best seed</td></tr>
+<tr><td>选择部署bundle</td><td>合法candidate中的一个具体bundle</td><td>把全seed均值当可部署checkpoint</td></tr>
+<tr><td>benchmark性能</td><td>锁定selection procedure后的audit</td><td>无限leaderboard提交再报最好</td></tr>
+<tr><td>real release</td><td>audit后通过EVAL-017 canary gate</td><td>offline frontier直接上真机</td></tr>
+</tbody></table>
+<p>部署可以选一个实际checkpoint，但论文/简历里的method uplift仍要覆盖training randomness。二者不能互相替代。</p>
+<h2 id="13-multi-task-multi-metric">13. Multi-task / Multi-metric 细节</h2>
+<p>每个objective登记unit、direction、aggregation、support、scorer SHA、CI和missing policy。建议同时看：</p>
+<ul><li>per-task与macro/micro；</li><li>target-weighted与worst critical slice；</li><li>task success、forbidden/near-miss、latency/deadline；</li><li>train/serve cost、memory与coverage；</li><li>invalid/abstain/failure rate。</li></ul>
+<p>per-pool最佳点说明trade-off，但只有在weights、metric roles、candidate identity和selection history冻结后才有“global decision”。不同protocol/scorer的数字不能进入同一个Pareto向量。</p>
+<h2 id="14-selection-leakage">14. 常见 Selection Leakage</h2>
+<table><thead><tr><th>失败模式</th><th>识别问题</th><th>修复</th></tr></thead><tbody>
+<tr><td>per-column best</td><td>每列来自不同checkpoint</td><td>一行一个bundle</td></tr>
+<tr><td>test-selected epoch</td><td>test曲线决定best</td><td>dev选、fresh audit估计</td></tr>
+<tr><td>best-seed claim</td><td>只留最高seed</td><td>报全seed分布</td></tr>
+<tr><td>candidate creep</td><td>看完结果再加点</td><td>新cycle+fresh audit</td></tr>
+<tr><td>scorer drift</td><td>prompt/parser改变</td><td>versioned scorer gate</td></tr>
+<tr><td>overall洗安全</td><td>critical fail被平均</td><td>hard feasible set</td></tr>
+<tr><td>missing deletion</td><td>OOM/invalid消失</td><td>planned/failed守恒</td></tr>
+<tr><td>leaderboard loop</td><td>多次提交后报最好</td><td>exposure/submission ledger</td></tr>
+</tbody></table>
+<h2 id="15-artifact-pipeline">15. Artifact 与 Pipeline</h2>
+<pre><code class="language-text">candidate + metric-role registries
+ -&gt; same development pairs
+ -&gt; hard gate matrix
+ -&gt; paired uncertainty + dominance graph
+ -&gt; Pareto set
+ -&gt; frozen decision record
+ -&gt; selected bundle lock
+ -&gt; one-shot fresh audit
+ -&gt; selection-vs-audit report</code></pre>
+<pre><code class="language-python">def select_and_audit(spec, registry, dev_pairs, fresh_audit):
+    # Freeze real candidate bundles, metric roles and all decision rules.
+    candidates = lock_eligible_bundles(registry, spec)
+    assert_zero_prior_exposure(fresh_audit)
+
+    # Evaluate every bundle on the same development pairs and scorer revision.
+    dev_raw = evaluate_same_pairs(candidates, dev_pairs, spec.dev_scorer)
+    feasible = apply_hard_gates(dev_raw, spec.constraints)
+
+    # Preserve uncertain trade-offs rather than choosing the noisiest mean.
+    uncertainty = paired_hierarchical_intervals(feasible, spec)
+    pareto = robust_non_dominated_set(feasible, uncertainty, spec.margins)
+
+    # Choose one existing bundle using the pre-registered business rule.
+    selected = apply_frozen_rule(pareto, spec.decision_rule)
+    lock_bundle_and_thresholds(selected)
+
+    # Audit only the locked bundle; any later change starts a new cycle.
+    audit_raw = evaluate_once(selected, fresh_audit, spec.audit_scorer)
+    return persist_full_selection_history(dev_raw, pareto, selected, audit_raw)</code></pre>
+<p>这是应补做的selection system，不是五项目已有实现。[7]</p>
+<h2 id="16">16. 五项目真实性映射</h2>
+<h3 id="opd">OPD</h3>
+<p>ckpt1000–5000在同一10k raw-holdout有by-format/by-pool表，且semantic-nav、VG region/relation、keepalive、point的最佳点分散。它可靠地说明多目标trade-off；但当前没有selection/access ledger、raw predictions/CI、hard gates或冻结weights，所以不能认证ckpt5000是统计稳健global best，也不能证明10k仍是untouched final test。[7]</p>
+<h3 id="robot-harness">Robot Harness</h3>
+<p>同ladder summary里，ckpt100/200主holdout近似相同，ckpt100在列出的argument与safety均值上不低于ckpt200；这是“critical safety不能被overall洗掉”的局部观察。缺raw paired rows/CI和预注册rule，不能升级robust dominance；base→SFT还存在n/scorer差异。</p>
+<h3 id="openpivla">OpenPiVLA</h3>
+<p>official-checkpoint diagnostics、archive 97.4与formal Qwen路径lineage不同。先闭合candidate bundle/metric/scorer registry；当前不能把97.4称为formal best checkpoint或把多个lineage放进同一frontier。</p>
+<h3 id="wam">WAM</h3>
+<p>base/trained各一个episode以及5k/10k单sample future proxy只够diagnostic；缺checkpoint binary、完整metric/denominator和candidate trajectory，不能做best-step或Pareto选择。</p>
+<h3 id="uwm-libero">UWM / LIBERO</h3>
+<p>Book-Caddy、fixed-pruned-init <code>186/250</code>和reset-style <code>232/250</code>属于不同scope/protocol，且最终checkpoint/raw episodes缺。没有checkpoint trajectory、selection rule或holdout access记录，不能称“从多个checkpoints选出的最佳模型”。</p>
+<p>五项目没有C3 fresh-audit selection证据。本页不新增best checkpoint、Pareto membership、holdout independence或ownership结论。</p>
+<h2 id="17">17. 面试追问防线</h2>
+<ul><li><strong>为什么validation best会偏高？</strong> 因为在含噪估计上取max，selection也会拟合噪声。</li><li><strong>test只看几次可以吗？</strong> 关键不只是次数，而是是否根据结果做了后续decision；每次都要入access log。</li><li><strong>Pareto frontier哪个最好？</strong> frontier没有唯一最好；还需冻结constraints、risk preference和tie-break。</li><li><strong>overall最高为何不能选？</strong> 可能违反safety/deadline/worst-slice hard gate。</li><li><strong>不同metric各拿best行吗？</strong> 不行，必须选择一个真实可加载bundle。</li><li><strong>CI overlap是否无差异？</strong> 不能机械判断；给paired effect、margin和UNRESOLVED状态。</li><li><strong>best seed能部署为何不能写方法提升？</strong> 部署选择与方法平均效果是不同estimand。</li><li><strong>项目做到哪里？</strong> OPD/Harness有trade-off输入证据，但没有完整selection→fresh audit系统。</li></ul>
+<h2 id="18">18. 本节点状态</h2>
+<p>EVAL-019知识节点与一张题卡已起草并保持<code>WARN/unseen</code>。本页不把开发集最优、Pareto候选或项目summary升级为final泛化结论；没有真实口述前不创建<code>coaching_state.md</code>。下一节点是<code>VLA-EVAL-020</code>：incident timeline、root cause与bug-fix verification。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Cawley &amp; Talbot, <a href="https://www.jmlr.org/papers/v11/cawley10a.html"><em>On Over-fitting in Model Selection and Subsequent Selection Bias in Performance Evaluation</em></a>, JMLR 11, 2010。</li><li>Dwork et al., <a href="https://arxiv.org/abs/1506.02629v2"><em>Generalization in Adaptive Data Analysis and Holdout Reuse</em>, arXiv:1506.02629v2</a>。</li><li>Bouthillier et al., <a href="https://arxiv.org/abs/2103.03098v1"><em>Accounting for Variance in Machine Learning Benchmarks</em>, arXiv:2103.03098v1</a>。</li><li><a href="vol_05_engineering_eval_eval010_regression_gate_golden_set_canary_rollout.html">EVAL-010 Regression Gate</a>与<a href="vol_05_engineering_eval_eval018_factorial_ablation_matched_baseline_causal_boundary.html">EVAL-018 Factorial Boundary</a>。</li><li>Deb et al., <a href="https://repository.ias.ac.in/83498/">NSGA-II institutional copy</a>；pymoo <a href="https://github.com/anyoptimization/pymoo/blob/23110c155aa8f31b5f1b86928227fb3931ba7f00/pymoo/util/nds/non_dominated_sorting.py">non-dominated sorting</a>。</li><li>scikit-learn, <a href="https://github.com/scikit-learn/scikit-learn/blob/6d7f1f12c792bb17dd92b4bfbc86b9392e0f5ef6/examples/model_selection/plot_nested_cross_validation_iris.py">Nested versus non-nested cross-validation</a>。</li><li><a href="../sources/vol_05_eval019_checkpoint_selection_pareto_holdout_overfit_source_freeze.html">EVAL-019 Source Freeze</a>及<a href="../evidence/evidence_manifest.html">五项目inventories</a>。</li></ol>
+</article></body></html>

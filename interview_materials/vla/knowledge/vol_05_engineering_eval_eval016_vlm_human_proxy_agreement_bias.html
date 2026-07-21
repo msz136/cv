@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VLA Engineering / Evaluation：VLM / Human Proxy 一致性与偏差</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_05_engineering_eval_eval016_vlm_human_proxy_agreement_bias.md">
+<meta name="aris:source-sha256" content="71fdc5bdaddcdf225d9599469bc637a06ae01e96da0d42189f8d0258e95dbc2d">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>71fdc5bdaddcdf225d9599469bc637a06ae01e96da0d42189f8d0258e95dbc2d</code>；生成自：<code>interview_materials\vla\knowledge\vol_05_engineering_eval_eval016_vlm_human_proxy_agreement_bias.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 一页结论</a></li><li><a href="#2">2. 先定义评分任务</a></li><li><a href="#3-human-protocol">3. Human Protocol</a></li><li><a href="#4-raw-agreement-confusion-kappa">4. Raw Agreement、Confusion 与 Kappa</a></li><li><a href="#5-ordinal-partial-completion">5. Ordinal / Partial Completion</a></li><li><a href="#6-pairwise-position-tie">6. Pairwise、Position 与 Tie</a></li><li><a href="#7-correlation-ranking-agreement">7. Correlation / Ranking 不等于 Agreement</a></li><li><a href="#8-calibration-vote-abstention">8. Calibration、Vote 与 Abstention</a></li><li><a href="#9-bias-matrix">9. Bias Matrix</a></li><li><a href="#10-rubric">10. Rubric 与维度分解</a></li><li><a href="#11-matched-protocol">11. Matched Protocol</a></li><li><a href="#12-artifact-bundle">12. Artifact Bundle</a></li><li><a href="#13">13. 五项目面试边界</a></li><li><a href="#wam-cosmos">WAM / Cosmos</a></li><li><a href="#uwm-openpivla">UWM / OpenPiVLA</a></li><li><a href="#opd">OPD</a></li><li><a href="#robot-harness">Robot Harness</a></li><li><a href="#14">14. 追问防线</a></li><li><a href="#15">15. 本节点状态</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VLA Engineering / Evaluation：VLM / Human Proxy 一致性与偏差</h1>
+<div class="meta">节点：<code>VLA-EVAL-016</code> 状态：<code>drafted / knowledge_38_of_44 / card_1_of_1_unseen / WARN</code> 更新日期：2026-07-19 学习目标：能设计VLM judge与人工/objective predicate的成对验证，区分raw agreement、kappa、rank和calibration，识别位置、风格、视觉、时序、任务slice与prompt-injection偏差，并守住WorldGym/五项目证据边界。</div>
+<h2 id="1">1. 一页结论</h2>
+<pre><code class="language-text">freeze task + rubric + evidence shown
+  -&gt; blind human double labels + adjudication
+  -&gt; versioned VLM raw votes/responses
+  -&gt; confusion + kappa + rank + calibration
+  -&gt; position/visual/temporal/adversarial paired probes
+  -&gt; cluster uncertainty + abstention + state/human veto</code></pre>
+<p>面试先强调：</p>
+<ol><li>correlation、agreement、classification和calibration不是同一个问题；</li><li>human label也有噪声，需blind double-label、保留raw disagreement和独立adjudication；</li><li>五次同模型投票不是五个独立专家，必须保存raw votes和API/prompt/parser版本；</li><li>VLM只能在验证过的task/evidence slice做筛选proxy，不能直接替代simulator/real success或安全predicate。</li></ol>
+<h2 id="2">2. 先定义评分任务</h2>
+<table><thead><tr><th>任务</th><th>输出</th><th>主指标</th></tr></thead><tbody>
+<tr><td>binary success</td><td>fail/success</td><td>confusion、sensitivity/specificity、kappa</td></tr>
+<tr><td>ordinal completion</td><td>0/0.5/1、Likert</td><td>weighted kappa、MAE、within-one</td></tr>
+<tr><td>pairwise</td><td>A/B/tie</td><td>pair accuracy、swap consistency、tie</td></tr>
+<tr><td>policy ranking</td><td>policy/checkpoint序</td><td>Spearman/Kendall、top-k regret</td></tr>
+<tr><td>success probability</td><td><code>P(success)</code></td><td>Brier、reliability、ECE、coverage-risk</td></tr>
+<tr><td>failure type</td><td>perception/action/contact/...</td><td>per-class confusion、macro-F1</td></tr>
+</tbody></table>
+<p>必须冻结instruction、success/partial/failure predicate、rubric、reference、camera/frame sampling、duration、temporal order、state overlay和language。如果human看完整video+state而VLM只看稀疏frames，差异包含observability gap，不能全部归因judge能力。</p>
+<h2 id="3-human-protocol">3. Human Protocol</h2>
+<p>human不是自动正确的gold。最低合同：</p>
+<ul><li>rubric写成可执行条件，而非“整体看起来成功”；</li><li>annotator先做calibration examples并记录expertise；</li><li>隐藏policy/checkpoint/provider身份，A/B顺序随机；</li><li>每个高风险case至少两名独立标注者；</li><li>raw labels、confidence、reason、time全部保留；</li><li>disagreement由第三方按同rubric adjudicate；</li><li>adjudicated label不能覆盖原始human-human disagreement；</li><li>记录batch/order/fatigue、语言和实际看到的evidence。</li></ul>
+<p>human-human agreement反映任务含糊和rubric上限，却不是VLM的通用合格线。若接触、力、碰撞或真实终局无法从视频看到，应引入simulator state、controller event或effect sink，不让human/VLM一起共错。</p>
+<h2 id="4-raw-agreement-confusion-kappa">4. Raw Agreement、Confusion 与 Kappa</h2>
+<div class="formula">\[
+p_o=\frac{1}{N}\sum_i\mathbb{1}[v_i=h_i],
+\qquad
+p_e=\sum_c p_v(c)p_h(c),
+\qquad
+\kappa=\frac{p_o-p_e}{1-p_e}.
+\]</div>
+<p>变量解释：<code>p_o</code>是raw agreement，<code>p_e</code>是由两侧边际类别率推导的chance agreement。直觉：90%样本失败时，恒猜失败已有90% agreement；kappa会扣除这种基线。实现映射：保存完整confusion、prevalence、accuracy、success sensitivity、failure specificity、balanced accuracy、kappa和cluster CI。[1]</p>
+<p>kappa仍受prevalence和marginal分布影响，不能机械套阈值。critical safety/success minority recall必须单独报；overall kappa高不能抵消rare contact/safety漏判。</p>
+<h2 id="5-ordinal-partial-completion">5. Ordinal / Partial Completion</h2>
+<p>0/0.5/1或Likert是有序label：</p>
+<div class="formula">\[
+\kappa_w=1-
+\frac{\sum_{a,b}w_{ab}O_{ab}}
+{\sum_{a,b}w_{ab}E_{ab}}.
+\]</div>
+<p>变量解释：<code>O/E</code>是观察/期望计数，<code>w_ab</code>是事前冻结的disagreement cost。直觉：把partial错成success通常比错成failure更接近，但安全任务可能反过来需要非线性代价。实现映射：同时报告exact、within-one、MAE、linear/quadratic weighted kappa和per-class confusion；权重不能看完结果再挑。[1]</p>
+<p>MJ-Bench公开实验说明multimodal judge在不同评价维度表现不同，VLM在Likert自然语言反馈上可能比纯数值scale更稳定。[2] 这不表示Likert天然正确，仍要对robot rubric做人标校准。</p>
+<h2 id="6-pairwise-position-tie">6. Pairwise、Position 与 Tie</h2>
+<div class="formula">\[
+A_{\mathrm{pair}}=
+\frac{1}{N}\sum_i\mathbb{1}[j_i^{\mathrm{VLM}}=j_i^{\mathrm{human}}],
+\qquad j_i\in\{A,B,\mathrm{tie}\}.
+\]</div>
+<p>变量解释：tie是正式类别或由冻结margin产生。实现映射：同一pair运行<code>A,B</code>和<code>B,A</code>，报告human agreement、swap consistency、first-position win rate、tie rate和confusion。</p>
+<p>MT-Bench研究公开展示position、verbosity、self-enhancement和reasoning bias。[3] 在VLM里还要随机camera/frame order和model identity。若换序后winner翻转，不能用一次pairwise vote选policy。</p>
+<h2 id="7-correlation-ranking-agreement">7. Correlation / Ranking 不等于 Agreement</h2>
+<div class="formula">\[
+\rho_s=\operatorname{Spearman}
+\left(\{q_j^{\mathrm{VLM}}\}_{j=1}^{J},
+\{q_j^{\mathrm{human/real}}\}_{j=1}^{J}\right).
+\]</div>
+<p>变量解释：<code>j</code>是独立policy/checkpoint，不能把同一video的五次judge call当五个点。直觉：VLM若总高估20%，rank可对但absolute success错。实现映射：在相同task/init support下得到多个policy点，报Spearman/Kendall、top-k regret、per-policy uncertainty和task/policy cluster bootstrap。[1][4]</p>
+<p>WorldGym论文在其policy/support上报告world-model proxy与real success的高相关和relative ranking保持。[5] 这只支持对应实验，不证明任意WorldGym checkpoint、GPT-4o版本、任务或个人WAM；<code>J=1</code>也不能建立rank关系。</p>
+<h2 id="8-calibration-vote-abstention">8. Calibration、Vote 与 Abstention</h2>
+<p>若judge给<code>p_i=P(success)</code>：</p>
+<div class="formula">\[
+\operatorname{Brier}=\frac{1}{N}\sum_i(p_i-y_i)^2.
+\]</div>
+<p>变量解释：<code>y_i</code>是adjudicated/objective outcome。实现映射：画reliability、ECE/Brier、coverage-risk；对unparseable、vote tie、high entropy或judge disagreement显式abstain，报告coverage与selective risk。</p>
+<p>五次同一VLM同一prompt采样只表示sampling variation。WorldGym代码调用literal <code>gpt-4o</code>、<code>n=5</code>，解析0/0.5/1，并在平票时优先<code>1 &gt; 0.5 &gt; 0</code>；模型snapshot未冻结。[5] 应保存每次raw response、parsed/invalid、vote histogram、retry/cache/API metadata。majority score不能替代human-human或VLM-human agreement。</p>
+<h2 id="9-bias-matrix">9. Bias Matrix</h2>
+<table><thead><tr><th>bias</th><th>paired probe</th><th>重点读数</th></tr></thead><tbody>
+<tr><td>position</td><td>A/B swap、criteria顺序</td><td>winner flip、first-position win</td></tr>
+<tr><td>verbosity/style</td><td>加长解释、专业语气、自信措辞</td><td>state不变时score drift</td></tr>
+<tr><td>identity/self</td><td>隐去/替换model/provider名</td><td>identity-conditioned preference</td></tr>
+<tr><td>rubric/prompt</td><td>paraphrase、anchor/criteria order</td><td>decision stability</td></tr>
+<tr><td>visual quality</td><td>blur/compress/brightness/artifact</td><td>quality-vs-success confusion</td></tr>
+<tr><td>temporal</td><td>sampling、reverse、丢终局、先成后毁</td><td>temporal shortcut</td></tr>
+<tr><td>camera/view</td><td>wrist/third、crop、遮挡</td><td>per-view sensitivity</td></tr>
+<tr><td>task/prevalence</td><td>contact、partial、long-horizon、rare safety</td><td>minority recall/kappa</td></tr>
+<tr><td>adversarial</td><td>overlay text、judge instruction injection</td><td>attack success</td></tr>
+<tr><td>language</td><td>instruction/rubric翻译</td><td>cross-language agreement</td></tr>
+</tbody></table>
+<div class="formula">\[
+\Delta_g=M_g-M_{\mathrm{reference}}.
+\]</div>
+<p>变量解释：<code>M</code>必须是同一metric，例如success sensitivity或kappa。实现映射：优先paired mutation，按episode/task/policy cluster给CI，报告worst target slice；不让大量easy/visible case掩盖contact/safety盲区。</p>
+<h2 id="10-rubric">10. Rubric 与维度分解</h2>
+<p>Prometheus-Vision展示了custom rubric、reference answer和image grounding的VLM evaluator形式，并在公开数据上报告human correlation。[6] 正确借鉴是把robot criteria拆清，而非直接迁移其相关性。</p>
+<p>一个robot video rubric至少分：</p>
+<ul><li>goal completion / partial completion；</li><li>object/robot state与终局保持；</li><li>trajectory efficiency与重复动作；</li><li>collision、forbidden effect和human intervention；</li><li>evidence visibility与judge abstention reason。</li></ul>
+<p>MJ-Bench显示alignment、safety、image quality与bias维度的judge相对优劣不同。[2] 因此不能只报一个overall VLM score；每个维度要有人标/状态predicate、混淆和slice。</p>
+<h2 id="11-matched-protocol">11. Matched Protocol</h2>
+<ol><li>预注册label/rubric、primary metric、critical slice和可接受margin；</li><li>按episode/task/policy分层抽样，近重复视频group split；</li><li>human blind double-label、保存raw disagreement并独立adjudicate；</li><li>VLM冻结provider/snapshot、prompt、frame sampler、n、temperature/seed、parser/retry/cache；</li><li>human/VLM看到相同evidence，或显式设置video-only、video+state information arms；</li><li>同一raw bundle跑全部judge与position/visual/temporal/adversarial mutations；</li><li>frame/vote/annotator是嵌套重复，不是独立episode；按episode/task/policy cluster resample；</li><li>同报human-human、VLM-human、confusion/kappa、rank、calibration、bias和abstention；</li><li>release保留objective state/human critical veto；</li><li>judge升级对旧raw bundlebridge rescore，fresh holdout防调参泄漏。</li></ol>
+<h2 id="12-artifact-bundle">12. Artifact Bundle</h2>
+<pre><code class="language-text">vlm_human_agreement/
+  protocol_manifest.json
+  rubric_and_label_schema.json
+  episode_sample_manifest.json
+  evidence_shown/
+  human_raw_labels.jsonl
+  human_adjudication.jsonl
+  vlm_raw_responses.jsonl
+  scorer_runs.jsonl
+  paired_bias_mutations.jsonl
+  confusion_rank_calibration.parquet
+  summaries/by_slice.json
+  checksums/manifest-sha256.txt
+  reproduce.ps1</code></pre>
+<pre><code class="language-python">def evaluate_vlm_judge(episodes, humans, judge, protocol):
+    spec = freeze_rubric_sampling_judge_and_metrics(protocol)
+    sample = group_stratified_locked_sample(episodes, spec)
+    raw_human = humans.blind_double_label(sample, spec.rubric)
+    adjudicated = independent_adjudication(raw_human, hide_model_identity=True)
+
+    raw_vlm = judge.score(sample, spec, keep_all_votes=True)
+    mutations = run_position_visual_temporal_and_injection_pairs(sample, judge, spec)
+
+    return cluster_recompute_confusion_kappa_rank_calibration_bias_abstention(
+        raw_human, adjudicated, raw_vlm, mutations,
+        clusters=(&quot;episode&quot;, &quot;policy&quot;, &quot;task&quot;),
+    )</code></pre>
+<p>这是验证合同，不代表本地项目已执行。</p>
+<h2 id="13">13. 五项目面试边界</h2>
+<h3 id="wam-cosmos">WAM / Cosmos</h3>
+<p>可讲WorldGym公开机制，以及本地单episode三camera、300-step action/video diagnostic适合未来抽样。不能说本地跑过WorldGym/GPT-4o、人标一致性或proxy替代真实success。[5][7]</p>
+<h3 id="uwm-openpivla">UWM / OpenPiVLA</h3>
+<p>二者有environment/official rollout协议或summary，可作为未来objective predicate对照；当前没有VLM raw responses与blind human labels，不能报agreement、kappa或bias。</p>
+<h3 id="opd">OPD</h3>
+<p>point/box/text是deterministic static scorers，不是VLM video judge。可做人标geometry calibration，但当前没有paired human bundle。</p>
+<h3 id="robot-harness">Robot Harness</h3>
+<p>schema-aware text/tool scorer可复用versioning、mutation和raw bundle思想；它不是VLM judge，也没有robot video-human agreement。</p>
+<h2 id="14">14. 追问防线</h2>
+<ul><li><strong>80% agreement够吗？</strong> 不够；看prevalence、confusion、human-human、kappa、critical recall和CI。</li><li><strong>Pearson高能替代人工吗？</strong> 只能说明线性association；absolute threshold、bias和calibration可能错。</li><li><strong>五票GPT-4o是五个专家吗？</strong> 不是；同模型同prompt相关采样，只测sampling variation。</li><li><strong>majority human就是gold吗？</strong> 保存raw disagreement并adjudicate；video不可见状态仍需objective predicate。</li><li><strong>position bias怎么测？</strong> A/B与B/A成对，报告winner flip、first-position rate与tie。</li><li><strong>生成视频很逼真是否更可靠？</strong> 可能把画质当成功；需state/real paired validation。</li><li><strong>什么时候可用VLM？</strong> 在验证support内做triage/ranking，低置信abstain，critical decision保留human/state veto。</li><li><strong>项目证据？</strong> 只有公开WorldGym机制和本地可设计入口，没有个人agreement数字。</li></ul>
+<h2 id="15">15. 本节点状态</h2>
+<p>EVAL-016知识与一张题卡保持<code>WARN/unseen</code>。五项目缺<code>episode/video × raw human labels × VLM responses × objective predicate</code>四方bundle。本节点不生成agreement数字。下一节点是<code>VLA-EVAL-017</code>：simulator success、shadow mode与真机gate；没有真实口述前不创建<code>coaching_state.md</code>。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>scikit-learn, <a href="https://github.com/scikit-learn/scikit-learn/blob/6d7f1f12c792bb17dd92b4bfbc86b9392e0f5ef6/sklearn/metrics/_classification.py"><code>cohen_kappa_score@6d7f1f1</code></a>；SciPy <a href="https://github.com/scipy/scipy/tree/v1.16.3/scipy/stats"><code>stats@v1.16.3</code></a>。</li><li>Chen et al., <a href="https://arxiv.org/abs/2407.04842v1"><em>MJ-Bench</em>, arXiv:2407.04842v1</a>。</li><li>Zheng et al., <a href="https://arxiv.org/abs/2306.05685v4"><em>Judging LLM-as-a-Judge</em>, arXiv:2306.05685v4</a>与<a href="https://github.com/lm-sys/FastChat/tree/587d5cfa1609a43d192cedb8441cac3c17db105d/fastchat/llm_judge">FastChat judge</a>。</li><li><a href="vol_05_engineering_eval_eval011_offline_online_correlation.html">EVAL-011 Offline/Online Correlation</a>。</li><li>Quevedo et al., <a href="https://arxiv.org/abs/2506.00613v3"><em>WorldGym</em>, arXiv:2506.00613v3</a>；<a href="https://github.com/world-model-eval/world-model-eval/tree/709665b29f5c95124e7dbc05b0d4d47cd353de97">official repo</a>。</li><li>Lee et al., <a href="https://arxiv.org/abs/2401.06591v1"><em>Prometheus-Vision</em>, arXiv:2401.06591v1</a>。</li><li><a href="../sources/vol_05_eval016_vlm_human_proxy_agreement_bias_source_freeze.html">EVAL-016 Source Freeze</a>、<a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a>、<a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO</a>、<a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA</a>、<a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD</a>与<a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness</a> inventories。</li></ol>
+</article></body></html>

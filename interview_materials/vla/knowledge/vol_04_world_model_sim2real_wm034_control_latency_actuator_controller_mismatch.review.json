@@ -1,0 +1,36 @@
+{
+  "artifact": "knowledge/vol_04_world_model_sim2real_wm034_control_latency_actuator_controller_mismatch.md",
+  "html": "knowledge/vol_04_world_model_sim2real_wm034_control_latency_actuator_controller_mismatch.html",
+  "source_freeze": "sources/vol_04_wm034_control_latency_actuator_controller_mismatch_source_freeze.md",
+  "review_date": "2026-07-18",
+  "status": "drafted / VLA-WM-034 / knowledge_36_of_44 / card_synced",
+  "verdict": "WARN",
+  "source_sha256": "d76176a40e9ef96fc1837fb192b8b1355b2b77353065d32a02c6f445323cd7dc",
+  "covered_question_ids": ["VLA-WM-034"],
+  "checks": {
+    "single_node_scope": "PASS (control/timing/actuator/controller only; WM-035 camera, WM-036 contact and WM-038 safety methods deferred)",
+    "intuition_and_mechanism": "PASS (stale observation/execution intuition plus action-age, delay, actuator and controller equations)",
+    "formula_explanations": "PASS (variables, intuition and artifact mapping follow action-age, delayed dynamics, actuator and controller formulas)",
+    "clock_and_latency": "PASS (six clocks, critical path, tails, jitter, deadline and staleness covered)",
+    "frequency_and_action": "PASS (action-type and H/K physical-time semantics covered)",
+    "actuator_and_controller": "PASS (bounded-bandwidth actuator and controller transform/config semantics covered)",
+    "runtime_freshness": "PASS (episode/version/deadline/queue/fallback contract covered)",
+    "first_divergence": "PASS (round-trip and free-space precede contact/task attribution)",
+    "matched_evaluation": "PASS (frequency/latency/actuator/controller/K sweep with fixed checkpoint/protocol)",
+    "pseudocode": "PASS (timestamped request, freshness gate, controller transform, queue policy and apply trace)",
+    "project_evidence_boundary": "PASS (policy server/config fields not promoted to personal real-time or Sim2Real results)",
+    "html_static_validation": "PASS (canonical SHA embedded; one H1, seventeen H2 headings, three tables, formulas, commented pseudocode and MathJax rendered)",
+    "local_links": "PASS (WM-023, WM-033, WM-034 source and Evidence Manifest links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "question_card": "PASS WITH WARNING (one VLA-WM-034 atomic card synchronized and remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep VLA-WM-034 unseen until oral practice.",
+    "Collect local clocks, latency traces, actuator fit, controller parity and matched sweeps.",
+    "Do not treat inference time, control_freq or simulator rollout as real-time transfer evidence.",
+    "Do not create coaching_state.md until an actual drill."
+  ],
+  "next": "Build only VLA-WM-035 next; preserve WM-034 as the execution timing/control node."
+}
+

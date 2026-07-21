@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：Batch 2A 原子题卡</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_05_engineering_eval_batch2a.md">
+<meta name="aris:source-sha256" content="22822737360fbbc34eafe3071bdefab2ad422c1bf0733bc157d377b9cf11a9eb">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>22822737360fbbc34eafe3071bdefab2ad422c1bf0733bc157d377b9cf11a9eb</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_05_engineering_eval_batch2a.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#a-dataset-version-transform-provenance">A. Dataset / Version / Transform Provenance</a></li><li><a href="#b-multimodal-decode-cache-determinism">B. Multimodal Decode / Cache / Determinism</a></li><li><a href="#c-variable-length-dynamic-batching">C. Variable-Length / Dynamic Batching</a></li><li><a href="#section-4">参考来源</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：Batch 2A 原子题卡</h1>
+<div class="meta">状态：<code>drafted / cards_3_of_44 / WARN</code> 更新日期：2026-07-17 当前题数：3 / 44（本批新增 3 张） 覆盖范围：<code>VLA-ENG-009..011</code> 难度：L2 2 题 / L3 1 题 优先级：P0 1 题 / P1 2 题 练习状态：全部 <code>unseen</code> 前置知识：<a href="../knowledge/vol_05_engineering_eval_batch2a.html">VOL 05 Batch 2A</a>；manifest/cache/dynamic batching 的工程 A/B 证据尚未闭合，不能把设计合同讲成个人已验证结果。</div>
+<h2 id="a-dataset-version-transform-provenance">A. Dataset / Version / Transform Provenance</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-ENG-009</b> · 为什么 VLA run 只记录 Git SHA 和 dataset path 还不够？manifest 至少要冻结什么？</summary>
+<p><strong>面试意图</strong>：判断你是否理解训练输入是数据、切分、变换和统计量组成的可追溯合同，而不是一个目录字符串。</p>
+<p><strong>30 秒回答</strong>：manifest 要绑定 content/schema/split/transform/normalizer、分母和 lineage，并在 train/eval 校验。Git SHA 加路径仍会漏掉原地替换或统计量漂移；DVC pointer 有 hash 也不等于对象本地可读。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：最小链路是 <code>raw → revision/content hash → schema adapter → split/dedupe → transform graph → normalizer → run</code>。manifest 至少包含 <code>content_hash</code>、<code>schema_version</code>、<code>split_manifest_sha</code>、<code>transform_graph_sha</code>、<code>normalizer_sha</code>、分母统计和 file/episode/camera lineage。启动时写入 run bundle，eval 时重新计算；关键字段不一致就阻断。DVC 的 <code>.dvc</code> 文件能记录输出路径、hash 和依赖元数据，但不能证明远端对象已经下载、可解码或与 checkpoint 配套。</p>
+<p><strong>诊断 / 证据</strong>：对同一 run 做 JSON canonicalization 后的 manifest diff；抽 sentinel 样本比较 decode shape、dtype、颜色空间、action order 和 normalized range；保存 split、transform、normalizer 的 SHA。当前仓库有设计合同和 bad case，但没有完整项目 manifest diff A/B。</p>
+<p><strong>项目挂钩</strong>：OpenPiVLA 的 <code>H=15,D=72</code> 与 formal <code>limit=16</code> 冲突、UWM 的 normalizer/data-root 分离，都能说明 representation 和统计量必须进入 manifest；不要说这些冲突已经被项目闭环修复。</p>
+<p><strong>追问树</strong>：为什么只 hash 目录不够？normalizer 算数据还是模型的一部分？DVC pointer 文件存在能否直接启动训练？manifest 不一致时为什么要 fail closed？</p>
+<p><strong>危险答案</strong>：说“代码 commit 和路径固定就可复现”，或把 DVC 元数据存在等同于本地数据对象、checkpoint 和 controller 已验证。</p>
+<p><strong>来源</strong>：[1][7][8]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="b-multimodal-decode-cache-determinism">B. Multimodal Decode / Cache / Determinism</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P1</span> <b>VLA-ENG-010</b> · multimodal decode、cache 和 determinism 怎样一起设计？</summary>
+<p><strong>面试意图</strong>：检查你能否区分“加载更快”和“样本可重放”，并识别 worker、缓存和随机增强之间的边界。</p>
+<p><strong>30 秒回答</strong>：cache key 绑定媒体内容、decoder、transform、dtype/shape 和 seed policy；worker seed、epoch、sample key 要有明确 owner。记录命中率、decode error、fallback 和 wait；prefetch 只能隐藏等待，不能保证确定性。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：数据流是 bytes→decode→canonical layout→resize/augment→cache→collate/mask→H2D。<code>num_workers</code> 会把 dataset、collate 和 worker init 放入 worker；<code>prefetch_factor</code>、<code>persistent_workers</code>、<code>pin_memory</code> 改变生命周期和拷贝行为。cache key 可写成 <code>H(content, decoder, transform, dtype, shape, seed-policy)</code>，并在 sidecar 校验颜色空间、shape、dtype 和 transform SHA。每个 worker 的 Python/NumPy/torch RNG、epoch 和 sample key 必须可解释；否则同一 run 可能因 worker 重启或 persistent state 得到不同增强。</p>
+<p><strong>诊断 / 证据</strong>：固定 sample key 和 seed，分别做 cold decode、cache hit、worker 数变化和重跑；比较输出 hash、mask、错误/回退计数与 p95 wait。当前证据只支持 UWM DataLoader-only stall smoke 作为读取瓶颈线索，不能外推 full training 加速或所有 cache 路径确定。</p>
+<p><strong>项目挂钩</strong>：UWM 的随机读 stall 可用于说明要先定位 I/O；OpenPiVLA 的 eager/MACA 差异可作为 kernel/兼容性追问，但不能说 eager 证明 AMP、cache 或训练吞吐都稳定。</p>
+<p><strong>追问树</strong>：cache 为什么不能只用 image path？persistent workers 如何影响随机状态？decode error 应如何处理？如何证明 cache 命中没有改变 label/mask？</p>
+<p><strong>危险答案</strong>：把 <code>num_workers</code> 调大当成 determinism 保证，或让 decode 失败静默返回上一帧并继续训练。</p>
+<p><strong>来源</strong>：[2][4][6][7][8]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="c-variable-length-dynamic-batching">C. Variable-Length / Dynamic Batching</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-ENG-011</b> · variable-length VLA batch 如何减少 padding waste，同时不污染 mask 和分布式训练？</summary>
+<p><strong>面试意图</strong>：判断你是否能把动态 batch 从“调参技巧”讲成有成本账本、mask 合同和可重放 sampler 的工程设计。</p>
+<p><strong>30 秒回答</strong>：先用 <code>w_pad = 1 - ΣL_i/(B·L_max)</code> 量化浪费，再按 token/frame/action budget 分桶；同时分开 <code>attention_mask</code>、<code>valid_mask</code>、<code>loss_mask</code>，记录 bucket、drop、oversize、per-rank token 和显存。动态 batch 可能改变 sampler 顺序、梯度噪声和同步语义，不能默认提升效果。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：<code>pad_sequence</code> 只是把不同长度 Tensor 填到最长，<code>batch_first=True</code> 时输出为 <code>B×T×*</code>，不等于真实有效长度。先用确定性 <code>(length, sample_id)</code> 排序，在 token/frame/action budget 内组 batch；超长样本走显式 singleton 或拒绝路径。attention mask 控制 backbone 读取，valid mask 表示真实 observation/action/frame，loss mask 决定哪些位置计入目标，三者不能混用。报告同时给 samples/s、token(or frame)/s、平均 waste、p95 长度、GPU peak、drop/oversize 和 per-rank imbalance。</p>
+<p><strong>诊断 / 证据</strong>：对 fixed-sample 与 dynamic-bucket 做 matched A/B；保存 length histogram、mask coverage、每 rank workload、OOM 和 step time。若 loss 下降但显存或吞吐异常，先查 padding、mask 和 rank imbalance。当前仓库只有工程设计和 OpenPiVLA/UWM/OPD 的 shape bad cases，没有 dynamic-batch A/B。</p>
+<p><strong>项目挂钩</strong>：OpenPiVLA formatter 的 <code>limit</code> 冲突、UWM action window/normalizer、OPD mixed-format 输出都说明 padding/valid/loss mask 应进入 schema，而不是隐含在 collator；不能把 <code>H=15</code> 或一次 smoke shape 当成完整 controller 语义。</p>
+<p><strong>追问树</strong>：为什么只报 samples/s 会误导？<code>attention_mask</code> 能否代替 <code>loss_mask</code>？分布式下每 rank 长度不同怎么办？oversized sample 如何保证可复现？</p>
+<p><strong>危险答案</strong>：说 <code>pad_sequence</code> 会自动告诉你有效长度，或声称 dynamic batching 必然提高训练效果、不会改变梯度和同步。</p>
+<p><strong>来源</strong>：[3][5][7][8]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-4">参考来源</h2>
+<ol><li><a href="../knowledge/vol_05_engineering_eval_batch2a.html">VOL 05 Batch 2A 知识页</a>：manifest、cache key、padding/mask 与项目边界。</li><li>PyTorch 2.13 <a href="https://docs.pytorch.org/docs/2.13/data.html"><code>torch.utils.data</code></a>：worker、prefetch、persistent worker、pin memory 与 IterableDataset 语义。</li><li>PyTorch 2.13 <a href="https://docs.pytorch.org/docs/2.13/generated/torch.nn.utils.rnn.pad_sequence.html"><code>pad_sequence</code></a>：padding 输出和 <code>batch_first</code>/<code>padding_value</code>。</li><li>Hugging Face Datasets v4.8.4 <a href="https://huggingface.co/docs/datasets/v4.8.4/en/cache">Cache management</a> 与 <a href="https://huggingface.co/docs/datasets/v4.8.4/en/about_cache">Cache fingerprint</a>：cache reload 与 transform fingerprint 的 supporting 语义。</li><li>Hugging Face Transformers v5.14.0 <a href="https://huggingface.co/docs/transformers/v5.14.0/en/main_classes/data_collator">Data Collator</a>：padding/collation supporting 语义。</li><li>PyTorch 2.13 <a href="https://docs.pytorch.org/docs/2.13/notes/randomness.html">Reproducibility</a>：随机状态与确定性边界。</li><li>本仓库 <a href="../sources/openpivla_batch2_evidence_freeze.html">OpenPiVLA Batch 2 evidence freeze</a>、<a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO inventory</a> 与 <a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD inventory</a>。</li><li>本仓库 <a href="../sources/vol_05_local_artifact_gate_eng004_006.html">VOL 05 ENG-004..006 local artifact gate</a>。</li></ol>
+</article></body></html>

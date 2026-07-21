@@ -1,0 +1,635 @@
+# VOL 02 IL / RL / Post-training：核心面试题卡
+
+> 状态：`drafted`  
+> 当前题数：40 / 40  
+> 难度：L1 5 题 / L2 23 题 / L3 12 题  
+> 练习状态：全部 `unseen`  
+> 说明：题库层使用短答案；深度公式和算法边界见 `knowledge/vol_02_il_rl_posttraining.md`。
+
+## A. 模仿学习与数据分布
+
+<details class="qa">
+<summary><span class="lv lv-l1">L1</span> <span class="freq">P0</span> <b>VLA-RL-001</b> · Behavior Cloning 是什么？为什么会有 covariate shift？</summary>
+
+**答**：BC 把专家轨迹中的 observation-action 对当监督样本，直接学习 \(\pi(a\mid o)\)。问题是策略一旦偏离专家分布，就会访问训练集中没有的状态；错误动作又把系统推得更远，形成 compounding error。缓解方向包括 recovery 数据、DAgger、action chunking、数据扩增和后续 RL。
+
+**项目挂钩**：OpenPiVLA 的 action window 仍然需要考虑闭环分布偏移。
+
+**追问**：为什么数据量增加不一定消除 shift？
+
+**易错**：BC 不是只要“有很多 demo”就能保证长时序稳定。
+
+**来源**：[1][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l1">L1</span> <span class="freq">P0</span> <b>VLA-RL-002</b> · BC、DAgger、GAIL、IRL 的差异是什么？</summary>
+
+**答**：BC 直接监督专家动作；DAgger 让当前策略访问新状态并请求专家标注；GAIL 用判别器区分专家和策略轨迹，再用 RL 逼近专家分布；IRL 先从示范反推 reward，再求解策略。区别在于是否访问策略状态、是否显式建 reward，以及训练稳定性和专家成本。
+
+**项目挂钩**：你的项目可以讲 recovery/holdout 设计，但不能把普通数据清洗直接称为 DAgger。
+
+**追问**：真实机器人为什么较少直接使用 GAIL？
+
+**易错**：DAgger 不是 BC 的一个 loss trick，而是数据聚合流程。
+
+**来源**：[1][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-003</b> · DAgger 为什么能缓解 compounding error？代价是什么？</summary>
+
+**答**：它让策略在自己实际访问的状态上获得专家动作，逐轮把训练分布从纯 expert states 扩展到 policy states，因此减少“出错后没有标签”的区域。代价是需要在线 expert/oracle、额外交互和安全控制；真实机器人上人工接管成本高，专家标注也可能不一致。
+
+**项目挂钩**：少量业务样本更适合做 holdout 或 failure analysis，不能仅凭数量声称完成 DAgger。
+
+**追问**：如果没有专家在线标注，怎样近似 DAgger？
+
+**易错**：把随机噪声扩增称为完整 DAgger。
+
+**来源**：[1]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-004</b> · action chunking 为什么可能降低误差累积？</summary>
+
+**答**：一次预测多个动作可以减少策略查询次数，并让短期动作保持一致；如果只执行 chunk 的前缀后重新观测，就能在效率和闭环纠偏之间折中。预测 horizon \(H\) 与实际执行步数 \(K\) 不同：\(K\) 越长越开环，越短越耗推理和通信。
+
+**项目挂钩**：OpenPiVLA 的 horizon、action window 和 controller execution window 必须分开讲。
+
+**追问**：为什么 chunking 不是无条件稳定？
+
+**易错**：模型一次输出 H 步不代表控制器必须执行完整 H 步。
+
+**来源**：[9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-005</b> · 专家轨迹覆盖不足时，如何构造 recovery / intervention 数据？</summary>
+
+**答**：先让当前策略在安全边界内 rollout，按停滞、偏航、接触异常、低置信度等触发专家接管；同时保存接管前状态、纠正动作和恢复后的上下文。再按任务与失败类型分层采样，检查时序、动作轴和非接管负例。离线加噪可扩覆盖，但没有策略访问状态和专家重标注时不能称为完整 DAgger。
+
+**项目挂钩**：UWM 的失败轨迹可以形成 recovery taxonomy；是否存在专家接管标签仍需回到本地记录核实。
+
+**追问**：接管触发器太保守或太激进分别会怎样？
+
+**易错**：把任意失败轨迹或随机扰动都叫作 intervention data。
+
+**来源**：[1][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-006</b> · 数据质量、数量和多样性如何取舍？</summary>
+
+**答**：先保证 schema、时间同步、action 轴和标签正确，再看数量；数量解决覆盖上限，多样性决定 OOD 和 recovery 能力，质量决定监督噪声。应按任务、对象、视角、初始状态和失败类型统计，而不是只报 demo 总数。过滤规则必须通过 held-out 或 bad-case 证据验证。
+
+**项目挂钩**：OPD 的数据分布、Harness 的结构化样本和 UWM 的失败轨迹都可用这个框架解释。
+
+**追问**：suboptimal demo 应全部丢弃吗？
+
+**易错**：数据条数是 workload，不自动等于算法价值。
+
+**来源**：[1][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P1</span> <b>VLA-RL-007</b> · demonstration 中的 suboptimal action 是否应该过滤？</summary>
+
+**答**：不应按 return 一刀切。传感错位、动作轴错误、越界和不可解释停顿应清理；但可恢复失败、纠偏动作和困难状态可能正是闭环所需覆盖。可保留质量标签，用 advantage/return 加权或分层采样，再以 held-out 与 rollout ablation 比较“全量、过滤、加权”三版。
+
+**项目挂钩**：WAM 的轨迹若只有 proxy label，不能仅凭较低 proxy 分数断言动作无用。
+
+**追问**：如何避免策略把低质量动作也模仿下来？
+
+**易错**：只保留成功 episode 会同时删掉 recovery 信息，并可能改变任务分布。
+
+**来源**：[5][10][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-RL-008</b> · 如何检测 trajectory leakage、task overlap 和 train/eval contamination？</summary>
+
+**答**：先按原始 episode/task/scene/object 划分，再做 windowing 和 augmentation；为源轨迹、语言指令与场景配置保存稳定 ID/哈希，审计精确重复和语义近重复。归一化统计只用 train，checkpoint 选择不用 final test。最后输出任务—对象—场景 overlap 矩阵，并把共享技能与真正泄漏分开解释。
+
+**项目挂钩**：LIBERO、RoboCasa 和 OPD 都要核对 split unit，不能只看样本行是否重复。
+
+**追问**：同一 task template、不同 object instance 算不算泄漏？
+
+**易错**：先切成相邻窗口再随机分 train/test，会让同一 episode 同时落入两侧。
+
+**来源**：[11][9]　**练习状态**：unseen
+
+</details>
+
+## B. Policy Gradient、GAE 与 PPO
+
+<details class="qa">
+<summary><span class="lv lv-l1">L1</span> <span class="freq">P0</span> <b>VLA-RL-009</b> · REINFORCE 的目标函数和高方差来源是什么？</summary>
+
+**答**：REINFORCE 用 \(\nabla\log\pi(a_t\mid s_t)G_t\) 加权策略梯度，其中 \(G_t\) 是从 t 开始的 return。方差来自长轨迹、随机环境和 reward 稀疏；可用 baseline/value、GAE、更多 batch 或 reward shaping 降低，但每种方法都可能引入 bias 或额外假设。
+
+**项目挂钩**：GRPO 的组内相对信号仍需说明 reward 来源和 rollout 成本。
+
+**追问**：baseline 为什么不改变期望梯度？
+
+**易错**：REINFORCE 是无 critic 的策略梯度，不等于所有 actor-critic。
+
+**来源**：[2][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-010</b> · actor-critic 为什么比纯 Monte Carlo 更实用？</summary>
+
+**答**：critic 学习 value 作为 baseline，能用 TD 或 GAE 产生更低方差的 advantage，不必等整条 episode 结束才更新。代价是 critic 估计错误会引入 bias，actor 和 critic 还可能互相影响。机器人任务中要额外处理 timeout、稀疏 reward 和 value target 的终止逻辑。
+
+**项目挂钩**：WAM 的 value head 是辅助目标，不能说它自动替代 policy action head。
+
+**追问**：critic 过拟合会如何影响 actor？
+
+**易错**：value loss 降低不代表 advantage 一定准确。
+
+**来源**：[2][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-011</b> · GAE 如何在 bias 和 variance 之间插值？</summary>
+
+**答**：GAE 对 TD residual \(\delta_t\) 做 \((\gamma\lambda)^l\) 加权和。\(\lambda=0\) 接近一步 TD，方差较低但 bias 较大；\(\lambda=1\) 更接近 Monte Carlo，bias 低但方差高。实现要区分 `terminated` 与 `truncated`：真实终止通常不 bootstrap，时间截断通常仍 bootstrap，再处理 advantage normalization。
+
+**项目挂钩**：online post-training 的 reward scale 与 GAE scale 会影响更新稳定性。
+
+**追问**：GAE 是 PPO 专属吗？
+
+**易错**：把 \(\gamma\) 和 \(\lambda\) 都解释成“学习率”。
+
+**来源**：[2]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-012</b> · PPO clipped objective 如何限制策略更新？</summary>
+
+**答**：PPO 计算新旧策略概率比 \(r_t\)，对 \(r_tA_t\) 和 clip 后的结果取 min，让 ratio 远离 1 时继续获益受限。它是近似 trust-region，不是严格约束；还要看 approx KL、clip fraction、value loss、entropy 和 rollout freshness。ratio clipping 也不同于动作值 clipping。
+
+**项目挂钩**：Harness 的 online GRPO 不能因为有 clipping 就称为 PPO，要核对 exact objective。
+
+**追问**：为什么 advantage 为负时 min 的方向仍然合理？
+
+**易错**：PPO clip 约束的是策略概率比，不是直接截断机器人动作。
+
+**来源**：[3]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P1</span> <b>VLA-RL-013</b> · PPO 中 value loss、policy loss、entropy loss 如何平衡？</summary>
+
+**答**：常见总目标是 policy surrogate 加 value 系数项、减 entropy bonus，但系数没有通用常数。先标准化 advantage，再分别看三项量级、explained variance、entropy、KL 与梯度范数；value 过强会挤压 actor，entropy 过强会持续随机，过弱则早熟塌缩。必要时分离 optimizer、学习率或 value clipping。
+
+**项目挂钩**：回答 post-training 配置时应报告监控证据，不把默认 loss coefficient 当作算法贡献。
+
+**追问**：value loss 很大但 policy 仍提升，是否必须立即降权？
+
+**易错**：直接比较三项 loss 数值大小，而忽略系数、符号和共享参数。
+
+**来源**：[3]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-RL-014</b> · PPO ratio、advantage normalization 和 clipping fraction 如何诊断训练？</summary>
+
+**答**：ratio 是新旧策略对采样动作的概率比；其均值应围绕 1，但还要联合看 approx KL 和 clip fraction。advantage 标准化稳定 batch 尺度，却不会修复错误 reward。clip fraction 长期很高常指更新过猛、epoch 太多或 rollout 过旧；几乎为零且回报不涨，则查学习率、advantage 信号和梯度是否过弱。
+
+**项目挂钩**：Harness 若没有保存 ratio/KL 等日志，只能解释通用诊断，不能声称本地已据此定位。
+
+**追问**：ratio 均值接近 1，为什么仍可能有很大 KL？
+
+**易错**：把 clip fraction 当作动作越界比例或成功率。
+
+**来源**：[3]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P1</span> <b>VLA-RL-015</b> · on-policy rollout freshness 为什么影响 PPO 稳定性？</summary>
+
+**答**：PPO 的 importance ratio 以生成该 batch 的 behavior policy 为分母；策略更新越多、rollout 越旧，新旧分布越远，ratio 更易落入 clip 区，样本有效梯度下降且方差增大。一个 batch 内做有限 epoch 不等于可无限复用历史池；必须绑定 policy version，并监控 KL、clip fraction 与样本年龄。
+
+**项目挂钩**：online GRPO 也要记录 rollout 对应的 policy checkpoint，避免训练与判分错配。
+
+**追问**：为什么 replay buffer 很适合 DQN，却不能原样套进 PPO？
+
+**易错**：只要保留 old log-prob，就认为任意旧 rollout 都仍是 on-policy。
+
+**来源**：[3][7]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P2</span> <b>VLA-RL-016</b> · 连续动作 PPO 如何处理 squashed Gaussian、log-prob 和 action bounds？</summary>
+
+**答**：若实现用 \(u\sim\mathcal N(\mu,\sigma)\)、\(a=\tanh u\)，policy log-prob 必须减去 \(\sum_i\log(1-\tanh^2u_i)\) 的变量变换修正，再按各维上下界缩放。采样、评估 old log-prob 与 ratio 必须走同一变换。也有 PPO 直接高斯采样后由环境 clip；两者语义不同，必须先核对实现。
+
+**项目挂钩**：机器人动作的 normalization、tanh、环境 clipping 和 denormalization 不能重复执行。
+
+**追问**：为什么环境 clip 后仍用未 clip 动作的 log-prob 会有问题？
+
+**易错**：把数值 epsilon、动作裁剪和 PPO ratio clipping 混成同一件事。
+
+**来源**：[3][13]　**练习状态**：unseen
+
+</details>
+
+## C. Offline RL 与机器人数据
+
+<details class="qa">
+<summary><span class="lv lv-l1">L1</span> <span class="freq">P0</span> <b>VLA-RL-017</b> · offline RL 与 online RL 的核心区别是什么？</summary>
+
+**答**：offline RL 只使用固定数据集，不再与环境交互；online RL 在训练中持续采样环境反馈。offline 更安全、样本可复用，但受数据支持和 OOD action 约束；online 更贴近当前策略分布，却要承担交互成本、探索和安全风险。两者可以组合成 offline pretrain + online fine-tune。
+
+**项目挂钩**：SFT 数据、held-out 评估和 online GRPO rollout 要明确各自处于哪一类。
+
+**追问**：为什么 offline 数据质量会直接限制上限？
+
+**易错**：off-policy 与 offline 不是同义词。
+
+**来源**：[4][5]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-018</b> · offline RL 的 extrapolation error 从哪里来？</summary>
+
+**答**：critic 在数据集很少或没有覆盖的 action 上外推 Q；如果 Q 过估，actor 会选择这些虚假高价值动作，形成自我强化的错误。机器人上可能表现为动作越界、接触失败或不可恢复。CQL 的保守 Q、IQL 的行为约束和更好的 coverage/recovery 数据都是缓解方向。
+
+**项目挂钩**：UWM 的失败轨迹可用于讨论 off-distribution recovery，但不能直接说使用了 CQL/IQL。
+
+**追问**：怎么区分 critic 过估和 action parser 错？
+
+**易错**：extrapolation error 不是单纯的测试集 accuracy 下降。
+
+**来源**：[4][5]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-019</b> · CQL、IQL 如何避免过度相信 OOD action？</summary>
+
+**答**：CQL 在 Q 学习中显式惩罚数据外动作的过高价值，倾向保守；IQL 不直接对数据外动作求 max-Q，而是先用 expectile 学 value，再用优势加权 BC 提取策略。二者都不是“自动安全”，仍依赖 reward、数据支持范围和实现细节。
+
+**项目挂钩**：当被问到 UWM/WAM 是否是 offline RL 时，应先按真实训练 recipe 回答，不因使用离线轨迹就硬套 CQL/IQL。
+
+**追问**：保守性太强会损失什么？
+
+**易错**：CQL/IQL 的名字不能替代对具体 loss 的解释。
+
+**来源**：[4][5]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P1</span> <b>VLA-RL-020</b> · behavior constraint、advantage-weighted regression 和 conservatism 如何取舍？</summary>
+
+**答**：behavior constraint 最稳地留在数据支持内，但上限接近 behavior；advantage-weighted regression 只放大数据中估计更好的动作，适合覆盖尚可的高质量数据；conservative Q 主动压低 OOD action 价值，适合过估风险高的 critic。取舍看 coverage、reward 可信度与允许偏离程度，并用 BC baseline 校准。
+
+**项目挂钩**：不能因为机器人轨迹是离线收集，就声称本地策略用了这些机制。
+
+**追问**：数据很窄但行为很差时，哪一种方法最难取得真实提升？
+
+**易错**：把“更保守”直接等同于“更安全、成功率更高”。
+
+**来源**：[4][5]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P1</span> <b>VLA-RL-021</b> · 机器人 offline RL 的 reward、终止和 timeout 如何定义？</summary>
+
+**答**：先固定 success predicate，再决定稀疏成功 reward、进度/安全 shaping 与 step cost。真正 terminated 表示 MDP 终态，通常不 bootstrap；仅因时间上限 truncated 而环境仍可继续时，应保留 bootstrap。数据必须分开记录 success、failure、safety stop 与 timeout，否则 critic 会把“没来得及完成”误当失败终态。
+
+**项目挂钩**：LIBERO/RoboCasa 的 horizon 和 success 判定需按实际 wrapper 核对，不能凭 done 一个字段推断。
+
+**追问**：任务超时但最后状态接近成功，target value 应如何处理？
+
+**易错**：把所有 done 都设为零 bootstrap，或把 shaped reward 当最终 success。
+
+**来源**：[12][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-RL-022</b> · 如何判断 offline RL 失败来自 critic、数据覆盖还是 action parser？</summary>
+
+**答**：先做接口单测：把数据集动作经 parser/denormalization 回放，检查轴、范围和控制语义；再跑同数据 BC baseline。若 BC 也失败，优先查数据/接口。随后在数据内做 Q calibration、success 排序和 Bellman residual，并统计 policy action 到数据动作的距离；数据内 Q 失真偏 critic，Q 尚可但策略大量 OOD 偏 coverage/提取。
+
+**项目挂钩**：UWM 的 0-success 诊断应先排 action interface，再谈模型能力。
+
+**追问**：没有环境可回放时，怎样获得 action parser 的最小证据？
+
+**易错**：只看 critic loss 下降，就排除 critic 过估或 target 错误。
+
+**来源**：[4][5][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P2</span> <b>VLA-RL-023</b> · 如何把视觉 representation learning 与 offline RL value learning 隔离？</summary>
+
+**答**：固定数据、split、seed 和 RL head，比较随机/预训练 encoder、冻结 encoder、端到端更新与 stop-gradient 分支；同时报告 observation-only probe、数据内 value calibration 和 closed-loop success。若只改 encoder 同时又改 reward 或 action head，就无法归因。还可用独立 optimizer、梯度范数和 encoder drift 检查 critic 是否破坏表征。
+
+**项目挂钩**：VLA backbone 的视觉收益不能只用 value loss 下降证明，必须与 policy/eval 协议对齐。
+
+**追问**：冻结 encoder 提升稳定但降低上限时，下一步怎么设计？
+
+**易错**：把 linear probe 更高直接写成机器人成功率一定更高。
+
+**来源**：[4][5][9]　**练习状态**：unseen
+
+</details>
+
+## D. SFT、DPO、GRPO 与后训练
+
+<details class="qa">
+<summary><span class="lv lv-l1">L1</span> <span class="freq">P0</span> <b>VLA-RL-024</b> · SFT 在 VLA 或 tool calling 中监督什么？</summary>
+
+**答**：SFT 对给定输入条件下的目标序列做 teacher-forcing，目标可以是文本 token、工具 JSON、离散 action token 或被 mask 的连续目标。关键是明确 loss mask：哪些位置参与训练，哪些只是上下文。SFT 学的是数据提供的行为，不保证未覆盖状态的恢复或安全。
+
+**项目挂钩**：Harness 的 schema-aware SFT 可讲工具协议和参数监督；不要说 runtime 的 memory/subagent 都已被充分训练。
+
+**追问**：为什么 loss mask 错会让格式指标虚高？
+
+**易错**：SFT 不是“把所有输出 token 都无差别训练”。
+
+**来源**：[8][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-025</b> · DPO 不显式训练 reward model，如何利用 preference pair？</summary>
+
+**答**：DPO 直接比较 chosen 与 rejected 在当前 policy 相对 reference policy 的 log-prob ratio，用 sigmoid loss 让 chosen 的相对概率更高。reference 提供 KL 锚点，beta 控制偏离。它把 preference 假设写进 policy objective，不代表数据中没有隐式 reward 或 label noise。
+
+**项目挂钩**：广州皓岚经历可讲偏好样本整理和错误归因，但不虚构 reward model 或大规模 preference 训练 ownership。
+
+**追问**：chosen/rejected 质量差时为什么 DPO 会学坏？
+
+**易错**：DPO 不是简单的“chosen 做正样本、rejected 做负样本”交叉熵。
+
+**来源**：[6]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-026</b> · DPO 的 reference policy 和 KL 约束分别做什么？</summary>
+
+**答**：reference policy 是偏好优化的锚点，用来计算当前 policy 相对原始能力的 log-ratio；它隐式对应 KL-regularized 的偏好优化。没有 reference，模型可能为了局部 preference 过度偏离原有语言/视觉能力。reference 是否冻结、版本是否匹配都要写进训练合同。
+
+**项目挂钩**：DPO 实验回答中要区分数据整理、训练脚本和实际模型 ownership。
+
+**追问**：beta 太大或太小分别会怎样？
+
+**易错**：reference policy 不是 rejected 样本本身。
+
+**来源**：[6]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-027</b> · GRPO 为什么使用 group-relative reward？与 PPO 有什么关系？</summary>
+
+**答**：GRPO 对同一 prompt/task 采样一组候选，用组内 reward 的相对位置构造 advantage，减少对独立 value model 的依赖。它仍属于 policy optimization，需要处理 ratio、clip、KL 或具体实现的正则。组内相对高不等于绝对任务成功，group size 和 reward variance 会影响更新。
+
+**项目挂钩**：Harness 先要说明本地是 reward-shaped offline GRPO-style continuation；只有存在真实多候选 online rollout，才能使用“online GRPO”口径。
+
+**追问**：group 内所有样本 reward 都相同会发生什么？
+
+**易错**：GRPO 不等于“把 PPO 的 critic 删除后就完成了”。
+
+**来源**：[7]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-028</b> · online GRPO 的 rollout、group、checker 和 policy update 如何连接？</summary>
+
+**答**：标准 online GRPO 是同一条件采样多个 rollout，由环境或 checker 评分，组内相对化后更新 policy，再做独立 eval；但当前 Harness 本地脚本是 reference/合成候选的 offline reward weighting，不能冒充完整 online rollout。无论哪种实现，都要保存轨迹、checker 版本、失败原因和 checkpoint，才能区分模型与判分器变化。
+
+**项目挂钩**：Robot Harness 的贡献应落在任务约束、数据/reward/eval 设计和结果归因，不把所有工程实现说成手写。
+
+**追问**：checker 被模型钻空子时如何发现？
+
+**易错**：训练 reward 上升不等于独立 eval 上升。
+
+**来源**：[7][8][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-029</b> · schema、reward、holdout eval 为什么不能混为一谈？</summary>
+
+**答**：schema 是输出契约，规定字段、类型、scope 和可解析性；reward/checker 是训练时可程序化判分的信号；holdout eval 是独立验收协议，测试 in-domain、OOD、安全和业务分布。schema 合法不等于语义正确，checker 高分也不等于真实机器人成功。
+
+**项目挂钩**：这是 Robot Harness 最适合的核心八股转场。
+
+**追问**：哪些约束应放 schema，哪些应放 reward？
+
+**易错**：把 JSON parse success 当成 task success。
+
+**来源**：[8][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-030</b> · reward hacking 在工具调用和机器人任务中分别是什么？</summary>
+
+**答**：工具调用中可能严格满足字段/字符串规则，却选择了不解决任务的工具；机器人中可能通过投机动作提高 shaped reward，却没有完成 success predicate。发现方式是保留原始 trace，加入 adversarial/OOD holdout、人工抽查和与独立任务指标对照；修复要改 checker/数据/目标，而不只是继续训练。
+
+**项目挂钩**：Harness 的 schema-aware reward 只能证明可判分约束，不自动覆盖物理成功。
+
+**追问**：如何设计一个不容易被钻的 checker？
+
+**易错**：reward hacking 不是“模型故意作弊”的心理解释，而是目标函数漏洞。
+
+**来源**：[7][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-RL-031</b> · 多目标 reward 如何防止格式正确但语义错误？</summary>
+
+**答**：把可解析/schema 视为硬门槛或独立分量，再分别判 tool/task 选择、参数语义、执行结果与安全约束；对“格式合法但任务错误”建立对抗样本。训练中记录各分量、总体 reward 和拒绝原因，必要时用 lexicographic/constraint 而非任意加权和，最终仍以独立 holdout 的任务成功验收。
+
+**项目挂钩**：Harness 可以讲 schema-aware checker 设计，但真实覆盖范围要以 archived cases 为准。
+
+**追问**：硬门槛会不会让 early policy 几乎拿不到梯度？
+
+**易错**：只加大 semantic reward 权重，却不检查它是否可被模型投机。
+
+**来源**：[7][14][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-RL-032</b> · preference 数据质量和 label noise 如何影响 DPO/GRPO？</summary>
+
+**答**：DPO 的 pair 应在同一条件下有可解释偏好，去除重复、无差异 pair、长度/格式捷径，并统计标注一致性；错标会直接把 chosen-rejected margin 推反。GRPO 中 noisy checker 会造成组内误排序，reward 同分则 advantage 退化。应保留原始输出、标注理由和版本，按噪声类型做 holdout。
+
+**项目挂钩**：广州皓岚经历只按真实参与范围讲样本整理、实验或错误归因。
+
+**追问**：如何区分模型退化与 preference label drift？
+
+**易错**：pair 数量增长不代表有效偏好信息同比增长。
+
+**来源**：[6][7]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P2</span> <b>VLA-RL-033</b> · 如何把连续动作评价转成 policy optimization 的反馈？</summary>
+
+**答**：先用锁定的 success predicate 给 episode 级终局信号，再按可验证的进度、接触、安全或约束违规构造 dense 分量；若用 critic，可把 return 转成 action/time-step advantage。同组比较必须共享任务、初始状态或难度分层，并归一化尺度。动作 MSE 只能衡量接近示范，不能单独替代闭环反馈。
+
+**项目挂钩**：WAM 的 action/world/value proxy 与 online success 必须分层报告，不能互相代替。
+
+**追问**：稀疏成功和 dense shaping 冲突时以哪个为准？
+
+**易错**：把坐标误差最小化直接等价为任务 reward 最大化。
+
+**来源**：[2][3][7][9]　**练习状态**：unseen
+
+</details>
+
+## E. 训练稳定性、评估与项目转场
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-RL-034</b> · reward scale、advantage scale 和 gradient scale 如何共同影响训练？</summary>
+
+**答**：reward 缩放会进入 return/TD residual，进而改变 advantage；batch 内 advantage normalization 可去掉部分平移与缩放，却不能修复稀疏性、排序或跨组不一致。最终梯度还受 loss coefficient、token/action horizon、batch 和共享参数影响。应同时看 reward/advantage 分布、各 loss 梯度范数、KL 与成功率。
+
+**项目挂钩**：多目标 WAM 或 schema reward 需按分量记录尺度，不能只报 total loss。
+
+**追问**：已经做 advantage normalization，为什么 reward scale 仍可能重要？
+
+**易错**：把 reward normalization、advantage normalization 和 gradient clipping 当同一操作。
+
+**来源**：[2][3][7]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>VLA-RL-035</b> · policy loss 正常但 success 不涨时先查什么？</summary>
+
+**答**：先查评估和反馈链：reward/checker 是否正确、success predicate 是否一致、action parser/denormalization/控制频率是否匹配、rollout 是否真的来自当前 checkpoint；再看数据覆盖、视觉/状态分布和失败轨迹。loss 正常只说明优化目标在下降，不能证明目标与任务成功对齐。
+
+**项目挂钩**：WAM/UWM 的失败分析和 Harness 的 holdout 设计都应先按协议排查，再归因模型。
+
+**追问**：如何用最小实验区分 checker bug 和 policy bug？
+
+**易错**：一看到 success 不涨就调学习率或换模型。
+
+**来源**：[3][7][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P1</span> <b>VLA-RL-036</b> · SFT → preference tuning → online RL 的阶段边界如何划分？</summary>
+
+**答**：SFT 先建立可执行输出和基本行为支持；有可靠 pair、但环境交互昂贵时再做 preference tuning；只有 checker/success 稳定、rollout 可回放且安全预算允许，才进入 online RL。每阶段设退出门：SFT held-out、偏好一致性、RL 防投机/OOD/rollback。三阶段不是必经流水线，信号不足时应停在前一层。
+
+**项目挂钩**：Harness 回答要按实际完成阶段和 artifact 说，不把规划中的 online 能力写成既成事实。
+
+**追问**：什么情况下跳过 DPO，直接从 SFT 进入 online RL？
+
+**易错**：认为阶段越多越先进，忽略反馈质量和成本。
+
+**来源**：[6][7][8][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-RL-037</b> · 如何设计 SFT-only、single-teacher、OPD/GRPO ablation 支持因果归因？</summary>
+
+**答**：固定 base checkpoint、训练数据量、split、预算、seed 和 eval harness，依次比较 SFT-only、teacher-A、teacher-B、双 teacher/OPD，再从同一 SFT checkpoint 加 GRPO；至少报告多 seed、逐任务结果、置信区间与失败类型。若数据也随 teacher 改变，要把“标签来源”和“数据量”拆成因子，不能只比最终最优点。
+
+**项目挂钩**：OPD 当前缺完整 SFT-only/single-teacher 链，只能把此题回答成补实验方案。
+
+**追问**：算力只够四个 run 时，怎样保留最关键对照？
+
+**易错**：不同 checkpoint、数据量或评估协议之间的差值被写成单因素收益。
+
+**来源**：[6][7][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-RL-038</b> · 辅助目标何时帮助 policy，何时造成 gradient interference？</summary>
+
+**答**：辅助目标在共享表征、标签相关且主任务数据稀疏时可提供正则和额外监督；若 shortcut、时间尺度或最优特征冲突，或其 loss/梯度量级压过 action，则会伤害 policy。应记录共享层各任务梯度范数与余弦相似度，做单目标/组合 ablation；必要时分 head、stop-gradient、动态加权或 gradient surgery。
+
+**项目挂钩**：WAM 的 world/value loss 下降不能自动证明 action 受益，必须看同协议 policy 指标。
+
+**追问**：梯度余弦为负是否一定要用 PCGrad？
+
+**易错**：辅助 loss 总和更低，就断言多任务表示更好。
+
+**来源**：[15][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P1</span> <b>VLA-RL-039</b> · 如何设计 held-out、OOD、online rollout 三层评估？</summary>
+
+**答**：held-out 保持任务分布一致，检查过拟合与离线 proxy；OOD 明确只改变对象、场景、指令、视角或组合中的哪些轴；online rollout 锁定 success predicate、horizon、seed、trial 数、controller 和 checkpoint。模型选择不能看 final test，各层分别报告均值、逐任务分解与失败类型，不能用高离线分替代闭环成功。
+
+**项目挂钩**：UWM strict/reset-style、WAM proxy 和官方 baseline 必须按协议分栏，禁止横向偷换。
+
+**追问**：OOD 同时改变五个因素，为什么解释价值反而下降？
+
+**易错**：把 validation、OOD 和 online 三个词当作同一个“测试集”。
+
+**来源**：[11][9]　**练习状态**：unseen
+
+</details>
+
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P2</span> <b>VLA-RL-040</b> · 真实机器人交互预算只有 100 episodes，如何分配？</summary>
+
+**答**：先预注册：10 条做接口/安全 smoke test，不计主结果；40 条分四批安全探索与 recovery 收集，每批后离线更新；20 条做两次中期 gate，决定继续或回滚；30 条锁定 checkpoint 后做跨任务/seed 最终评估。replay 重用前 50 条训练侧轨迹和已有 demo，本身消耗算力而非新 episode，最终评估数据不回流训练。
+
+**项目挂钩**：UWM/真实机器人回答应先锁 success 与安全停机，再谈算法；具体比例可随风险调整。
+
+**追问**：中期 gate 用掉的 episode 能否进入 replay buffer？
+
+**易错**：边看 final evaluation 边调策略，最后仍把它当独立测试集。
+
+**来源**：[1][3][9]　**练习状态**：unseen
+
+</details>
+
+## 参考来源
+
+1. Ross, Gordon, Bagnell, [DAgger](https://arxiv.org/abs/1011.0686), 2011.
+2. Schulman et al., [GAE](https://arxiv.org/abs/1506.02438), 2016.
+3. Schulman et al., [PPO](https://arxiv.org/abs/1707.06347), 2017.
+4. Kumar et al., [CQL](https://arxiv.org/abs/2006.04779), 2020.
+5. Kostrikov et al., [IQL](https://arxiv.org/abs/2110.06169), 2022.
+6. Rafailov et al., [DPO](https://arxiv.org/abs/2305.18290), 2023.
+7. Shao et al., [DeepSeekMath / GRPO](https://arxiv.org/abs/2402.03300), 2024.
+8. [Hugging Face TRL](https://github.com/huggingface/trl).
+9. 本地项目页：`01_robot_harness_tool_training.html`、`02_opd_vlm_grounding.html`、`04_cosmos_wam_multitask_training.html`、`05_uwm_libero_eval_protocol.html`。
+10. Nair et al., [AWAC: Accelerating Online Reinforcement Learning with Offline Datasets](https://arxiv.org/abs/2006.09359), 2020.
+11. Liu et al., [LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning](https://arxiv.org/abs/2306.03310), 2023.
+12. Farama Foundation, [Handling Time Limits](https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/), Gymnasium official documentation.
+13. Haarnoja et al., [Soft Actor-Critic Algorithms and Applications](https://arxiv.org/abs/1812.05905), 2019.
+14. Amodei et al., [Concrete Problems in AI Safety](https://arxiv.org/abs/1606.06565), 2016.
+15. Yu et al., [Gradient Surgery for Multi-Task Learning](https://arxiv.org/abs/2001.06782), 2020.

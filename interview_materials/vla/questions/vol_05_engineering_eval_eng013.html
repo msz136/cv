@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：ENG-013 原子题卡</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_05_engineering_eval_eng013.md">
+<meta name="aris:source-sha256" content="433e481a094bff10c54e28fa690278308b5eb6e47102c1a8347dcbe475c58aab">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>433e481a094bff10c54e28fa690278308b5eb6e47102c1a8347dcbe475c58aab</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_05_engineering_eval_eng013.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#seed-sampler-cursor-resume">Seed、Sampler Cursor 与 Resume</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：ENG-013 原子题卡</h1>
+<div class="meta">状态：<code>drafted / cards_1_of_1 / WARN</code> 更新日期：2026-07-17 覆盖范围：<code>VLA-ENG-013</code> 难度：L2 1 题 优先级：P0 1 题 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_05_engineering_eval_eng013.html">ENG-013 Reproducibility</a>；没有 replay artifact 前，不能把 checkpoint load 说成精确续训。</div>
+<h2 id="seed-sampler-cursor-resume">Seed、Sampler Cursor 与 Resume</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-ENG-013</b> · 为什么 `seed=42` 仍不能证明 VLA 训练可精确续训？</summary>
+<p><strong>面试意图</strong>：判断你能否区分随机源控制、实验复现和 mid-epoch sampler cursor 恢复，并识别 distributed data order 的高危缺口。</p>
+<p><strong>30 秒回答</strong>：seed 只初始化部分 RNG。实验复现还需冻结代码、数据、环境、worker/sampler policy、共同 seed 与 <code>set_epoch</code>，并保存 CPU/CUDA/Python/NumPy 状态；中途续训还需 cursor、next IDs 和 replay smoke。checkpoint 能加载不等于精确 resume。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：我先分三层：固定 seed、实验 replay、精确中途续训。PyTorch DistributedSampler 要求 dataset size/order 稳定，各 rank 共享 seed，并在每个 epoch 创建 iterator 前调用 <code>set_epoch</code>；否则可能重复相同 ordering。CPU/CUDA/Python/NumPy/worker RNG 要分层保存。中途恢复受 <code>drop_last</code>、dynamic batch、过滤样本、worker prefetch 和 retry 影响，不能用 <code>step_in_epoch</code> 代替 cursor；应保存/重放 next sample IDs，并做一小步 loss/optimizer/scaler smoke。</p>
+<p><strong>诊断 / 证据</strong>：先做 epoch-boundary save/load，再做固定 request trace 的 mid-epoch save/load；比较 next sample IDs、augmentation/RNG、loss、optimizer step 和 scaler state。仅 <code>load_state_dict</code> 成功、最终 loss 接近或报告写着 resume，不足以关闭证据门。</p>
+<p><strong>项目挂钩</strong>：ENG-004..006 artifact gate 只有训练 summary、load report、normalizer、ZeRO 配置和 final-only manifest，没有 per-rank RNG、sampler cursor 或 next-sample replay。因此我会说“恢复合同已定义、精确续训证据缺失”，不会声称个人项目已经 exact resume。</p>
+<p><strong>追问树</strong>：<code>set_epoch</code> 忘了会怎样？为什么保存 CPU RNG 不够？dynamic batching 如何影响 cursor？epoch-boundary resume 与 mid-epoch 有何取舍？怎样设计 fixed request trace？</p>
+<p><strong>危险答案</strong>：说“固定 seed 就完全复现”，或把 DistributedSampler 当成自动保存 cursor、把 checkpoint 可加载当成精确续训。</p>
+<p><strong>来源</strong>：[1][2][3]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../knowledge/vol_05_engineering_eval_eng013.html">ENG-013 知识页</a>：seed ownership、DistributedSampler、RNG state、resume contract 与 replay smoke。</li><li><a href="../sources/vol_05_eng013_reproducibility_source_freeze.html">ENG-013 Source Freeze</a>：PyTorch 2.13 / NumPy 1.26 官方语义与 normalized text fingerprints。</li><li><a href="../sources/vol_05_local_artifact_gate_eng004_006.html">VOL 05 ENG-004..006 Artifact Gate</a>：当前本地 checkpoint/load/normalizer/ZeRO 证据及 sampler/RNG/replay 缺口。</li></ol>
+</article></body></html>

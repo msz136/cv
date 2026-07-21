@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 Source Audit E：Benchmark / Evidence Claim-to-Protocol</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_benchmark_evidence_claim_to_protocol.md">
+<meta name="aris:source-sha256" content="58a5636e953f44c2aa27e3acf65c621460186daf3732b916eac70e6ffab2de6a">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>58a5636e953f44c2aa27e3acf65c621460186daf3732b916eac70e6ffab2de6a</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_benchmark_evidence_claim_to_protocol.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 来源冻结与许可边界</a></li><li><a href="#3-protocol-tuple">3. 可比性的 protocol tuple</a></li><li><a href="#4-libero-frozen-default">4. LIBERO frozen default 到底是什么</a></li><li><a href="#4-1-task-initial-state">4.1 Task 与 initial state</a></li><li><a href="#4-2-libero">4.2 “官方 LIBERO”不是唯一数字协议</a></li><li><a href="#5-uwm-table-ii-repo-reset-fixed-init">5. UWM：Table II、repo reset 与项目 fixed-init 是三套协议</a></li><li><a href="#5-1-table-ii">5.1 论文 Table II</a></li><li><a href="#5-2-frozen-uwm-repo-rollout">5.2 Frozen UWM repo 的 rollout</a></li><li><a href="#5-3-claim">5.3 当前项目 claim 的正确层级</a></li><li><a href="#6-cosmos-libero-protocol">6. Cosmos LIBERO protocol</a></li><li><a href="#7-cosmos-robocasa-protocol">7. Cosmos RoboCasa protocol 与版本陷阱</a></li><li><a href="#7-1-environment-fork">7.1 Environment fork</a></li><li><a href="#7-2-runner-contract">7.2 Runner contract</a></li><li><a href="#8-worldgym-world-model-proxy-closed-loop-benchmark">8. WorldGym：world-model proxy 不等于 closed-loop benchmark</a></li><li><a href="#9-strict-reset-style-paper-proxy">9. Strict / reset-style / paper / proxy 可比矩阵</a></li><li><a href="#10-local-evidence-manifest">10. Local evidence manifest</a></li><li><a href="#10-1-run-level-manifest">10.1 Run-level manifest</a></li><li><a href="#10-2-episode-level-record">10.2 Episode-level record</a></li><li><a href="#10-3-workspace">10.3 当前 workspace 证据缺口</a></li><li><a href="#11">11. 失败分类与归因顺序</a></li><li><a href="#12-protocol-gate">12. Protocol gate 伪代码</a></li><li><a href="#13">13. 面试回答骨架</a></li><li><a href="#13-1-30-strict-eval">13.1 30 秒：什么叫 strict eval</a></li><li><a href="#13-2-90-uwm">13.2 90 秒：怎样讲当前 UWM 项目</a></li><li><a href="#13-3-robocasa-71-19">13.3 RoboCasa 71.19% 的防守口径</a></li><li><a href="#14">14. 尚未核实与下一步</a></li><li><a href="#15-references">15. 参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 Source Audit E：Benchmark / Evidence Claim-to-Protocol</h1>
+<div class="meta">审计日期：2026-07-16 状态：drafted / primary_protocols_frozen / local_artifacts_pending / independent_review_pending 覆盖题目：VLA-WM-039..044 冻结对象：LIBERO、UWM、Cosmos Policy、RoboCasa、WorldGym 的 paper/repo/eval 入口与项目 claim 边界 核心规则：任务名相同不代表 protocol 相同；只有 protocol tuple 与 artifact manifest 同时闭合，成功率才允许横向比较。</div>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>“strict”不是形容词，而是一份可重放合同。</strong>最少要固定 task/suite、initial state、warmup、camera/preprocess、action schema/normalizer、chunk/replan、controller、horizon、success predicate、seed/determinism、trial count、checkpoint/runtime。[1][2]</li><li><strong>LIBERO frozen 官方代码的默认 lifelong eval 是 20 个 fixed <code>pruned_init</code>、5 次零动作 warmup、600 policy steps。</strong>环境默认是 20 Hz、<code>OSC_POSE</code>、7D action、两路 128×128 RGB；这些是该 commit 的默认值，不是所有 LIBERO 论文的统一协议。[1]</li><li><strong>UWM Table II 的 0.79 不是上述默认 fixed-init protocol。</strong>论文 v3 在五个 LIBERO-10 任务上扩大每个物体的初始化范围 0.03、移除背景物体，按 50 个 OOD initializations、3 个 finetune seeds 报告均值与区间。[2]</li><li><strong>frozen UWM repo 没有给出 Table II 的 OOD 环境改造入口。</strong>仓库 <code>eval_robomimic.py</code> 使用 <code>env.seed(e) + env.reset()</code>，没有 <code>set_init_state</code>、没有 warmup，默认 rollout length 1000，并整段执行 model sample；<code>reset_to_state</code> 只出现在 inverse-dynamics ablation。[3]</li><li><strong>因此，当前项目页的 74.4% 只能暂记为“本地 fixed-init claim”，不能写成“与 UWM Table II strict aligned”。</strong>项目材料写的是 <code>pruned_init + 5-step zero action + 50/task</code>；论文 Table II 写的是 OOD shifted initialization。二者任务相同，但 initial-state distribution 不同。[2][3][10]</li><li><strong>92.8% reset-style 只能作为 protocol sensitivity diagnostic。</strong>当前 workspace 没有该结果的 checkpoint、episode summary、seed/init trace 或同 checkpoint paired run，不能把项目页数字升级为已核验事实。[10]</li><li><strong>Cosmos LIBERO 又是第三套协议。</strong>frozen runner 使用默认 initial states 的前 50 个、10 次带闭夹爪的 dummy action、suite-specific 220–520 step horizon、chunk 16 / open-loop 16；官方 README 要求 seeds 195/196/197。[4]</li><li><strong>Cosmos RoboCasa 使用的是一个未在安装命令中 pin 的 fork。</strong><code>ROBOCASA.md</code> 安装 <code>moojink/robocasa-cosmos-policy</code>；2026-07-16 观察到 fork HEAD 为 v0.2.0，而官方 <code>robocasa/robocasa</code> frozen HEAD 是 v1.0.1。两者不能混成一个环境版本。[5][6][7]</li><li><strong>RoboCasa 的 84/118=71.19% 是“官方 HF checkpoint 的本地 harness smoke evidence”，不是官方 paper protocol，也不是本地训练收益。</strong>当前只在项目页出现 24 tasks × 5 episodes 与两条剔除；缺少逐 episode artifact，保持待核验。[10]</li><li><strong>WorldGym 的“success rate”是 world-model rollout 上的 VLM proxy。</strong>frozen code 从真实初始帧生成视频，用 GPT-4o 五路投票打 0/0.5/1 分，默认 rollout length 40；它不能与 LIBERO/RoboCasa simulator predicate 或真实机器人成功率直接混分。[8][9]</li><li><strong>本轮只核验上游协议，不冒充本地复现。</strong>没有下载用户 checkpoint、normalizer、dataset statistics，也没有运行 GPU rollout；所有个人数字继续位于 evidence queue。</li><li><strong>Audit E 之后可以开放通用知识页，但项目数字仍受 VOL 07 证据门禁。</strong>知识答案可以讲 protocol 设计；个人回答必须区分“论文值、上游 runner、项目页 claim、已核验 artifact”。</li></ol>
+<h2 id="2">2. 来源冻结与许可边界</h2>
+<table><thead><tr><th>编号</th><th>来源与冻结版本</th><th>本页采用的证据</th><th>不能由它证明</th></tr></thead><tbody>
+<tr><td>[1]</td><td><code>Lifelong-Robot-Learning/LIBERO</code> @ <code>8f1084e3132a39270c3a13ebe37270a43ece2a01</code>，<code>master</code>，MIT</td><td>task suite、pruned init、default eval、environment/controller/camera/success wrapper</td><td>UWM/Cosmos 论文一定使用默认 config；用户本地环境版本</td></tr>
+<tr><td>[2]</td><td>UWM arXiv <code>2504.02792v3</code>，Table II 与 Appendix A</td><td>五任务数值、50 OOD init、3 seeds、+0.03 init shift、移除背景物体</td><td>frozen repo 中存在 exact OOD eval code；用户 74.4% 与论文可比</td></tr>
+<tr><td>[3]</td><td><code>WEIRDLabUW/unified-world-model</code> @ <code>b7d4067c8859775e5b08f681e76d538015cdd445</code>，无 LICENSE 文件</td><td>reset-style runner、wrapper、shape、rollout defaults、inverse ablation</td><td>代码复用许可；Google Drive checkpoint revision；Table II runtime</td></tr>
+<tr><td>[4]</td><td><code>NVlabs/cosmos-policy</code> @ <code>18a2accadf4e7a3531e56754102af5a24d2316da</code>，Apache-2.0</td><td>LIBERO/RoboCasa eval CLI、init/warmup/chunk/horizon/success/seed</td><td>HF 权重商用许可；本地 baseline 或训练结果</td></tr>
+<tr><td>[5]</td><td><code>moojink/robocasa-cosmos-policy</code> observed HEAD <code>edd9a328b3ec98050f42d194c1419307a79c4d87</code>，<code>main</code>，MIT，package 0.2.0</td><td>Cosmos 安装目标在访问日的可观察语义</td><td>Cosmos paper/runtime 实际 fork commit；安装命令未 pin</td></tr>
+<tr><td>[6]</td><td><code>robocasa/robocasa</code> @ <code>b4684e6ee37d377cc392e98302a6b916d588b415</code>，<code>main</code>，MIT，package 1.0.1</td><td>当前官方 API、controller/eval helper、determinism test 的对照</td><td>Cosmos runner 与 v1.0.1 兼容；旧 fork 结果可直接迁移</td></tr>
+<tr><td>[7]</td><td>Cosmos <code>ROBOCASA.md</code> / <code>LIBERO.md</code> frozen 于 [4]</td><td>官方命令、50 trials、3 seeds、runtime/hardware note</td><td>用户真正执行的 CLI、完整日志、paper 数值复现</td></tr>
+<tr><td>[8]</td><td>WorldGym arXiv <code>2506.00613v3</code></td><td>world model 作为 proxy environment、VLM reward 的论文主张</td><td>simulator/real success 等价；本地 checkpoint 可用</td></tr>
+<tr><td>[9]</td><td><code>world-model-eval/world-model-eval</code> @ <code>709665b29f5c95124e7dbc05b0d4d47cd353de97</code>，无 LICENSE 文件</td><td>runner、action conversion、GPT-4o scorer、aggregate</td><td>代码复用许可；Google Drive checkpoint hash；外部 API 可重放</td></tr>
+<tr><td>[10]</td><td>本地项目页、resume 和 restructure plan</td><td>待核验个人 claim queue</td><td>原始 checkpoint、episode trace、贡献 ownership</td></tr>
+</tbody></table>
+<p>冻结 commit 只解决“本页看的是哪一版源码”，不解决 dataset/checkpoint/runtime 的版本。尤其是 Cosmos 的 RoboCasa 安装命令没有 commit pin；本页记录 observed fork HEAD 只是访问证据，不反推论文环境。</p>
+<h2 id="3-protocol-tuple">3. 可比性的 protocol tuple</h2>
+<p>把一次评测写成 protocol tuple：</p>
+<div class="formula">\[
+\mathcal P = (S,I,W,O,A,K,C,H,Y,R,N,M),
+\]</div>
+<p>其中：</p>
+<table><thead><tr><th>字段</th><th>含义</th><th>最小证据</th></tr></thead><tbody>
+<tr><td>\(S\)</td><td>suite、task list、task version</td><td>task IDs、BDD/registry hash、subset</td></tr>
+<tr><td>\(I\)</td><td>initial-state distribution</td><td>init file/hash、state index、layout/object split</td></tr>
+<tr><td>\(W\)</td><td>warmup/stabilization</td><td>action vector、步数、是否计入 horizon</td></tr>
+<tr><td>\(O\)</td><td>observation contract</td><td>camera keys、resolution、flip/crop/JPEG/history</td></tr>
+<tr><td>\(A\)</td><td>action contract</td><td>dim/order/unit/frame、normalizer、clip、gripper sign</td></tr>
+<tr><td>\(K\)</td><td>chunk/execution</td><td>predicted horizon、executed steps、replan/queue</td></tr>
+<tr><td>\(C\)</td><td>controller/timing</td><td>controller config、control Hz、physics Hz、latency</td></tr>
+<tr><td>\(H\)</td><td>episode horizon</td><td>task-specific max step、timeout、early termination</td></tr>
+<tr><td>\(Y\)</td><td>success predicate</td><td>exact function、threshold、debounce、invalid episode rule</td></tr>
+<tr><td>\(R\)</td><td>randomness</td><td>train/eval/reset/sampler seed、determinism flags</td></tr>
+<tr><td>\(N\)</td><td>sampling plan</td><td>trials/task、seeds、macro/micro aggregation、CI</td></tr>
+<tr><td>\(M\)</td><td>model/runtime</td><td>checkpoint SHA、config、stats、code/env/hardware</td></tr>
+</tbody></table>
+<p>单任务成功率只是：</p>
+<div class="formula">\[
+\hat p_t=\frac{1}{N_t}\sum_{i=1}^{N_t}\mathbb 1\{Y(\tau_{t,i})=1\}.
+\]</div>
+<p>如果 \(\mathcal P_a\neq\mathcal P_b\)，\(\hat p_a-\hat p_b\) 同时混入 model effect 与 protocol effect。任务名、分母和 success 函数相同仍不足以比较；initial-state distribution、chunk 和 controller 任一项不同都可能改变闭环轨迹。</p>
+<h2 id="4-libero-frozen-default">4. LIBERO frozen default 到底是什么</h2>
+<h3 id="4-1-task-initial-state">4.1 Task 与 initial state</h3>
+<p>frozen benchmark 将 <code>LIBERO_SPATIAL</code>、<code>LIBERO_OBJECT</code>、<code>LIBERO_GOAL</code>、<code>LIBERO_90</code>、<code>LIBERO_10</code> 注册为 suite；每个 task 绑定 BDDL 文件与 <code>.pruned_init</code>。<code>get_task_init_states</code> 通过 <code>torch.load</code> 载入固定 simulator states。[1]</p>
+<p>official lifelong metric 的 default contract 是：</p>
+<table><thead><tr><th>字段</th><th>Frozen default</th><th>代码入口</th></tr></thead><tbody>
+<tr><td>suite task order</td><td>10-task suite 支持 21 种 task order；default index 0</td><td><code>benchmark/__init__.py</code></td></tr>
+<tr><td>init</td><td><code>.pruned_init</code>；按 episode index modulo state count</td><td><code>metric.py:evaluate_one_task_success</code></td></tr>
+<tr><td>trials</td><td><code>n_eval=20</code>，并行进程最多 20</td><td><code>configs/eval/default.yaml</code></td></tr>
+<tr><td>warmup</td><td>5 次全零 7D action</td><td><code>metric.py</code></td></tr>
+<tr><td>camera</td><td>agentview + eye-in-hand，128×128</td><td><code>configs/data/default.yaml</code></td></tr>
+<tr><td>low-dim</td><td>gripper qpos + joint pos</td><td><code>configs/data/default.yaml</code></td></tr>
+<tr><td>action/control</td><td>7D；<code>OSC_POSE</code>；20 Hz</td><td><code>env_wrapper.py:ControlEnv</code></td></tr>
+<tr><td>horizon</td><td>eval max 600；env default horizon 1000</td><td>eval config + env wrapper</td></tr>
+<tr><td>success record</td><td>runner 累积 environment <code>done</code>；wrapper 的 <code>check_success</code> 转发 <code>_check_success</code></td><td><code>metric.py</code> + <code>env_wrapper.py</code></td></tr>
+<tr><td>seed</td><td>global default 10000；env 行为仍需 runtime 版本核验</td><td><code>configs/config.yaml</code></td></tr>
+</tbody></table>
+<p><code>evaluate.py</code> 的独立入口也固定 20 个环境、5 次 zero step，但其 warmup 后没有把返回 observation 赋回 <code>obs</code>；<code>metric.py</code> 则正确更新 <code>obs</code>。因此只说“用了官方 evaluate.py”还不够，必须记录 exact entrypoint 与 local diff。</p>
+<h3 id="4-2-libero">4.2 “官方 LIBERO”不是唯一数字协议</h3>
+<p>LIBERO repo 提供 task、state 与 baseline helper；后续论文可以定义新的 OOD init、不同 trial count、不同 action chunk 和 horizon。合规表述是“基于 LIBERO 环境的某 protocol”，而不是把所有论文的 setting 都叫“LIBERO 官方 strict”。</p>
+<h2 id="5-uwm-table-ii-repo-reset-fixed-init">5. UWM：Table II、repo reset 与项目 fixed-init 是三套协议</h2>
+<h3 id="5-1-table-ii">5.1 论文 Table II</h3>
+<p>UWM v3 Table II 的五个 task 与数值为：[2]</p>
+<table><thead><tr><th>Task</th><th>UWM paper mean</th><th>当前项目页 claim</th><th>差值只作描述</th></tr></thead><tbody>
+<tr><td>Book-Caddy</td><td>0.91</td><td>44/50 = 0.88</td><td>-0.03</td></tr>
+<tr><td>Soup-Cheese</td><td>0.93</td><td>40/50 = 0.80</td><td>-0.13</td></tr>
+<tr><td>Bowl-Drawer</td><td>0.80</td><td>38/50 = 0.76</td><td>-0.04</td></tr>
+<tr><td>Moka-Moka</td><td>0.68</td><td>33/50 = 0.66</td><td>-0.02</td></tr>
+<tr><td>Mug-Mug</td><td>0.65</td><td>31/50 = 0.62</td><td>-0.03</td></tr>
+<tr><td>Average</td><td>0.79</td><td>186/250 = 0.744</td><td>-0.046</td></tr>
+</tbody></table>
+<p>最后一列<strong>不能解释为模型性能差距</strong>，因为 protocol 不同。论文明确写：LIBERO-90 pretrain 100K steps；五个 LIBERO-10 task 各用 50 demos finetune 10K steps；3 个 random seeds；50 个不同 OOD initializations；对象 initialization range 增加 0.03；删除背景物体造成视觉 shift。Table II 的 <code>±</code> 是跨 seed 的区间语义，不是单次 250 rollout 的 binomial CI。[2]</p>
+<h3 id="5-2-frozen-uwm-repo-rollout">5.2 Frozen UWM repo 的 rollout</h3>
+<p><code>eval_robomimic.py</code> 的实际路径是：dataset HDF5 metadata → one task env → <code>env.seed(e)</code> → <code>env.reset()</code> → observation history 重复填充 → model sample → wrapper 整段执行 action sequence → <code>check_success</code> 或 1000-step truncation。[3]</p>
+<table><thead><tr><th>字段</th><th>UWM repo runner</th><th>与 Table II 的缺口</th></tr></thead><tbody>
+<tr><td>init</td><td>random reset；wrapper seed 只调用 <code>np.random.seed</code></td><td>没有 +0.03 / background removal manifest</td></tr>
+<tr><td>trials</td><td>50</td><td>数量相同不代表 init 相同</td></tr>
+<tr><td>warmup</td><td>无</td><td>论文未由 repo entry 明示</td></tr>
+<tr><td>camera</td><td>two RGB 128，wrapper vertical flip；model resize 240</td><td>OOD visual modification未实现</td></tr>
+<tr><td>chunk</td><td>sample 返回整段，wrapper for-loop 执行到 success</td><td>action horizon/endpoint依赖 model config</td></tr>
+<tr><td>horizon</td><td>1000</td><td>Table II exact horizon 未由论文表格或 repo entry闭合</td></tr>
+<tr><td>success</td><td><code>env.check_success()</code></td><td>predicate family一致，environment version仍需固定</td></tr>
+<tr><td>checkpoint</td><td><code>models.pt</code>；README Google Drive 无 hash</td><td>不能绑定 paper seed/checkpoint</td></tr>
+</tbody></table>
+<p><code>LIBEROEnvWrapper.reset_to_state</code> 存在，但只在 inverse-dynamics trajectory-tracking ablation 中由 <code>demo["states"][0]</code> 调用。它不能证明 policy rollout 使用 fixed init。LIBERO-90 pretraining 还在 <code>maybe_collect_rollout</code> 中被直接跳过。[3]</p>
+<h3 id="5-3-claim">5.3 当前项目 claim 的正确层级</h3>
+<p>workspace 的 <a href="../../05_uwm_libero_eval_protocol.html">UWM 项目页</a> 与 <a href="../../../output/resume_restructure_plan.md">resume restructure plan</a> 写了：五任务、50/task、<code>.pruned_init</code>、5-step zero action、186/250=74.4%；另有 reset-style 232/250=92.8%。本轮没有发现对应 raw summary/checkpoint/normalizer/init index/video/action trace，所以证据层级是：</p>
+<table><thead><tr><th>Claim</th><th>当前等级</th><th>允许表述</th><th>禁止表述</th></tr></thead><tbody>
+<tr><td>74.4% fixed-init</td><td><code>CLAIM_ONLY</code></td><td>“当前项目材料记录为 186/250，待 artifact 复核”</td><td>“已严格复现 Table II”</td></tr>
+<tr><td>92.8% reset-style</td><td><code>CLAIM_ONLY / DIAGNOSTIC</code></td><td>“项目材料记录的 protocol sensitivity 对照”</td><td>“UWM 正式 benchmark 92.8%”</td></tr>
+<tr><td>0.79 Table II</td><td><code>UPSTREAM_VERIFIED</code></td><td>“UWM v3 的 OOD protocol mean”</td><td>“我的 checkpoint 官方成绩”</td></tr>
+<tr><td>74.4 vs 0.79</td><td><code>NON_COMPARABLE</code></td><td>“同任务名下的方向性上下文”</td><td>“只低 4.6pp，已接近复现”</td></tr>
+</tbody></table>
+<p>恢复可比性的两条路径二选一：复现 Table II 的 environment modifications + 3 seeds；或把本地 protocol 明确命名为 <code>fixed-pruned-init-50-v1</code>，只和同一 protocol 下的 baseline/checkpoint 做 paired comparison。</p>
+<h2 id="6-cosmos-libero-protocol">6. Cosmos LIBERO protocol</h2>
+<p>frozen Cosmos README 的 public command 使用 checkpoint <code>nvidia/Cosmos-Policy-LIBERO-Predict2-2B</code>、dataset stats、T5 embeddings、two cameras/proprio、chunk 16、open-loop 16、5 denoise steps、deterministic true、seeds 195/196/197；每 suite 10 tasks × 50 episodes。[4]</p>
+<table><thead><tr><th>字段</th><th>Frozen Cosmos LIBERO runner</th><th>边界</th></tr></thead><tbody>
+<tr><td>init</td><td>official task init states；默认取 <code>[episode_idx]</code>，50 trials</td><td>需要 state count ≥ 50；没有 modulo/bounds guard</td></tr>
+<tr><td>env seed</td><td><code>env.seed(0)</code></td><td>注释称 fixed state 下仍影响 object position</td></tr>
+<tr><td>warmup</td><td>10 次 <code>[0,0,0,0,0,0,-1]</code></td><td>与 LIBERO default 5 次全零不同；gripper语义也不同</td></tr>
+<tr><td>camera</td><td>agentview + wrist，environment 256，vertical flip，JPEG path</td><td>model resize另由 model family决定</td></tr>
+<tr><td>action</td><td>stats unnormalize；chunk 16；execute 16</td><td>config 与 train chunk有 assert</td></tr>
+<tr><td>horizon</td><td>spatial 220、object 280、goal 300、LIBERO-10 520、LIBERO-90 400</td><td>与 default 600 不同</td></tr>
+<tr><td>success</td><td>runner 把 <code>done</code> 直接标成 success；frozen LIBERO BDDL base 将 <code>done</code> 设为 <code>_check_success()</code></td><td>必须同时冻结 benchmark version，不能只看 runner</td></tr>
+<tr><td>determinism</td><td>deterministic 模式每 policy step 重置 RNG 到 0</td><td>与只固定 reset seed不同</td></tr>
+<tr><td>aggregation</td><td>50/task；README 说对 seeds 195/196/197 平均</td><td>单 seed log不能替代论文 aggregate</td></tr>
+</tbody></table>
+<p>这意味着 Cosmos-LIBERO、LIBERO default、UWM Table II、UWM repo reset-style 至少是四套 protocol。可以比较架构思想，不能直接比较成功率。</p>
+<h2 id="7-cosmos-robocasa-protocol">7. Cosmos RoboCasa protocol 与版本陷阱</h2>
+<h3 id="7-1-environment-fork">7.1 Environment fork</h3>
+<p>Cosmos <code>ROBOCASA.md</code> 明确 clone <code>moojink/robocasa-cosmos-policy</code>，但没有 SHA。访问日 observed fork HEAD <code>edd9a...</code> 的 package version 是 0.2.0、MuJoCo pin 3.2.6；官方 <code>robocasa/robocasa</code> frozen <code>b468...</code> 是 package 1.0.1、MuJoCo pin 3.3.1。官方 v1.0.1 可以解释当前 API，但不能作为 Cosmos run 的环境 provenance。[5][6][7]</p>
+<h3 id="7-2-runner-contract">7.2 Runner contract</h3>
+<table><thead><tr><th>字段</th><th>Frozen Cosmos RoboCasa</th><th>必须保存的 artifact</th></tr></thead><tbody>
+<tr><td>task set</td><td>runner列出 24 tasks</td><td>exact task list/registry hash</td></tr>
+<tr><td>trials</td><td>50/task default；README要求3 seeds</td><td>per-task per-seed summary</td></tr>
+<tr><td>scenes</td><td>5 个 <code>(layout,style)</code>；每 10 episodes 切一个</td><td>episode→scene mapping</td></tr>
+<tr><td>object split</td><td><code>B</code> held-out objects</td><td>fork commit + object registry</td></tr>
+<tr><td>env seed</td><td>deterministic 时 <code>seed = base_seed × episode_idx × 256</code></td><td>seed log；episode 0 为 0</td></tr>
+<tr><td>warmup</td><td>10 次全 0 的 environment-dimensional action</td><td>warmup是否计入视频/horizon</td></tr>
+<tr><td>camera</td><td>left/right/wrist，224×224，vertical flip，JPEG input path</td><td>raw/preprocessed frame pair</td></tr>
+<tr><td>controller</td><td>pickle <code>robocasa_controller_configs.pkl</code></td><td>pickle SHA + decoded JSON summary</td></tr>
+<tr><td>action</td><td>policy 7D；environment 12D 时追加 <code>[0,0,0,0,-1]</code> mobile base</td><td>action axis/unit/gripper/mobile schema</td></tr>
+<tr><td>chunk</td><td>predict 32，execute first 16 then requery</td><td>queue/replan trace</td></tr>
+<tr><td>horizon</td><td>task-specific 300–1000</td><td>exact task horizon</td></tr>
+<tr><td>success</td><td><code>env._check_success()</code></td><td>task class/predicate commit</td></tr>
+<tr><td>invalid episode</td><td>data collection时少于5步只是不保存，仍已计入 success list</td><td>denominator与剔除规则须另写</td></tr>
+</tbody></table>
+<p>当前 WAM 项目页写 <code>raw 86/120=71.67%</code>、<code>trusted 84/118=71.19%</code>。若“trusted”删除两个 early-success/bug episode，这已经改变分母；必须保存两条 episode ID、原始 predicate、删除理由和预注册规则。事后看视频再删 episode 只能叫 cleaned diagnostic，不能叫官方 success rate。[10]</p>
+<h2 id="8-worldgym-world-model-proxy-closed-loop-benchmark">8. WorldGym：world-model proxy 不等于 closed-loop benchmark</h2>
+<p>WorldGym v3 的目标是用 action-conditioned video world model 作为真实部署前 proxy；frozen repo runner 从一张 trial PNG 初始化 world model，policy 每步读取生成历史，world model 生成下一帧，再由 GPT-4o 对完整生成视频评分。[8][9]</p>
+<table><thead><tr><th>字段</th><th>Frozen code</th><th>风险</th></tr></thead><tbody>
+<tr><td>initial state</td><td>root 下 PNG + JSON instruction</td><td>静态帧不包含真实 dynamics state</td></tr>
+<tr><td>action</td><td>policy-specific转换后 pad到10D</td><td>conversion可能改变 scale/gripper semantics</td></tr>
+<tr><td>rollout</td><td>default 40，world model chunk size 1</td><td>error autoregressively accumulation</td></tr>
+<tr><td>reward</td><td>GPT-4o <code>n=5</code> votes；0/0.5/1</td><td>API/model version、prompt与解析会漂移</td></tr>
+<tr><td>tie break</td><td>优先 1，再 0.5，再 0</td><td>optimistic tie bias</td></tr>
+<tr><td>aggregation</td><td>trial fractional score mean</td><td>非 simulator binary predicate</td></tr>
+<tr><td>checkpoint</td><td>Google Drive约9GB，无 hash</td><td>runner commit不能绑定 tensor</td></tr>
+<tr><td>license</td><td>frozen tree无 LICENSE</td><td>暂不执行或复用代码</td></tr>
+</tbody></table>
+<p>正确关系是 <code>offline action/video metrics → WorldGym proxy → simulator closed loop → real closed loop</code> 的证据阶梯，不是四个可互换的指标。WorldGym 可以筛选候选策略与发现 failure mode，但仍需 simulator/real paired validation。</p>
+<h2 id="9-strict-reset-style-paper-proxy">9. Strict / reset-style / paper / proxy 可比矩阵</h2>
+<table><thead><tr><th>名称</th><th>Init / reset</th><th>Warmup</th><th>Trial / seed</th><th>Horizon / chunk</th><th>当前可比结论</th></tr></thead><tbody>
+<tr><td>LIBERO frozen default</td><td>first 20 pruned states</td><td>5 × zero7</td><td>20/task，default seed 10000</td><td>600，policy-specific single action</td><td>只与相同 config 比</td></tr>
+<tr><td>UWM Table II v3</td><td>50 OOD init；+0.03 range；remove background</td><td>paper未由公开 runner闭合</td><td>50/task × 3 finetune seeds</td><td>exact eval runner未提供</td><td>上游论文内部可比</td></tr>
+<tr><td>UWM repo rollout</td><td><code>env.seed(e)+reset</code></td><td>none</td><td>50/task，runner seed 0</td><td>1000，execute sampled sequence</td><td>reset-style；不等于 Table II</td></tr>
+<tr><td>项目 fixed-init claim</td><td>pruned init</td><td>5 × zero7</td><td>50/task，seed artifact缺失</td><td>chunk/horizon artifact缺失</td><td>74.4%待核；不与0.79直比</td></tr>
+<tr><td>项目 reset claim</td><td>random reset</td><td>项目页未闭合</td><td>50/task，artifact缺失</td><td>artifact缺失</td><td>92.8%仅 diagnostic</td></tr>
+<tr><td>Cosmos LIBERO</td><td>first 50 default states</td><td>10 × close-gripper noop</td><td>50/task × seeds 195/196/197</td><td>220–520，16/16</td><td>只与 Cosmos同 protocol 比</td></tr>
+<tr><td>Cosmos RoboCasa</td><td>generated scene/object split B</td><td>10 × zero12</td><td>50/task × 3 seeds</td><td>300–1000，32/16</td><td>需 frozen fork/controller</td></tr>
+<tr><td>项目 HF RoboCasa smoke</td><td>项目页称 24×5</td><td>项目页未闭合</td><td>raw120 / trusted118</td><td>artifact缺失</td><td>harness smoke；非官方 aggregate</td></tr>
+<tr><td>WorldGym</td><td>real initial PNG</td><td>none</td><td>discovered PNG trials / retries</td><td>generated 40，chunk1</td><td>VLM proxy；不与 env success 混分</td></tr>
+</tbody></table>
+<h2 id="10-local-evidence-manifest">10. Local evidence manifest</h2>
+<h3 id="10-1-run-level-manifest">10.1 Run-level manifest</h3>
+<p>每个可对外数字必须有一个 immutable run manifest：</p>
+<table><thead><tr><th>分组</th><th>必填字段</th></tr></thead><tbody>
+<tr><td>identity</td><td><code>run_id</code>、开始/结束时间、owner、purpose、git dirty diff hash</td></tr>
+<tr><td>model</td><td>upstream model ID/revision、checkpoint path、SHA-256、bytes、config SHA</td></tr>
+<tr><td>stats</td><td>action/proprio normalizer SHA、dataset stats revision、T5/tokenizer revision</td></tr>
+<tr><td>code</td><td>policy repo SHA、eval harness SHA、benchmark/fork SHA、local patch SHA</td></tr>
+<tr><td>runtime</td><td>Python、PyTorch、CUDA/MACA、MuJoCo、robosuite、driver、GPU/accelerator</td></tr>
+<tr><td>protocol</td><td>\(S,I,W,O,A,K,C,H,Y,R,N\) 的结构化值</td></tr>
+<tr><td>outputs</td><td>raw episode JSONL、summary JSON、videos、action traces、stderr/stdout SHA</td></tr>
+</tbody></table>
+<h3 id="10-2-episode-level-record">10.2 Episode-level record</h3>
+<table><thead><tr><th>字段</th><th>例子 / 说明</th></tr></thead><tbody>
+<tr><td>task identity</td><td>suite、task ID、language、BDD/task class hash</td></tr>
+<tr><td>episode identity</td><td>episode index、seed、init state index/hash、layout/style/object split</td></tr>
+<tr><td>observation</td><td>camera keys、first-frame SHA、preprocessed-frame SHA</td></tr>
+<tr><td>action</td><td>normalized/raw action、timestamp、chunk index、executed count、clip flag</td></tr>
+<tr><td>result</td><td>success bool、predicate output、step、timeout、exception</td></tr>
+<tr><td>failure</td><td>perception、action-scale、gripper、contact、recovery、protocol、infra</td></tr>
+<tr><td>artifacts</td><td>video path/SHA、trace path/SHA、checkpoint SHA</td></tr>
+</tbody></table>
+<h3 id="10-3-workspace">10.3 当前 workspace 证据缺口</h3>
+<p>本轮只扫描 <code>C:\Users\mousongzhe\cv</code>。发现 resume、project HTML 与 roadmap claim，未发现 UWM/WAM raw checkpoint、normalizer、per-episode JSON/CSV、rollout videos、exact eval config、controller dump 或 local diff。因此：</p>
+<table><thead><tr><th>项目 claim</th><th>当前证据</th><th>下一件最小补证据</th></tr></thead><tbody>
+<tr><td>UWM 186/250</td><td>resume + project page</td><td>per-task summary + 250 episode IDs + checkpoint/config/stats SHA</td></tr>
+<tr><td>UWM 232/250</td><td>project page</td><td>same checkpoint paired protocol manifest + init distribution diff</td></tr>
+<tr><td>UWM 对齐 Table II</td><td>paper task names相同</td><td>OOD env patch、50 init manifest、3 seeds；否则改名 local fixed-init</td></tr>
+<tr><td>WAM 84/118</td><td>project page</td><td>raw 120 records、2 deleted IDs、predeclared validity rule、HF revision</td></tr>
+<tr><td>WAM local 0-success</td><td>project narrative</td><td>load log、checkpoint SHA、action/gripper stats、failure videos</td></tr>
+<tr><td>MSE 0.09718→0.05349</td><td>project narrative</td><td>split/metric script、prediction/label tensors、paired checkpoint</td></tr>
+</tbody></table>
+<h2 id="11">11. 失败分类与归因顺序</h2>
+<table><thead><tr><th>Failure family</th><th>先查 artifact</th><th>可下结论前需要</th></tr></thead><tbody>
+<tr><td>protocol</td><td>init/warmup/horizon/success/denominator diff</td><td>same checkpoint paired rerun</td></tr>
+<tr><td>checkpoint</td><td>SHA、missing/unexpected keys、EMA/normalizer</td><td>load log + tensor stats</td></tr>
+<tr><td>observation</td><td>camera key、flip/crop/JPEG/history</td><td>raw/preprocessed frame pair</td></tr>
+<tr><td>action</td><td>axis/unit/frame/gripper/clip</td><td>normalize round-trip + action trace</td></tr>
+<tr><td>chunk/control</td><td>predicted vs executed、queue、controller Hz</td><td>timestamped command/state trace</td></tr>
+<tr><td>perception</td><td>target localization、occlusion、language mismatch</td><td>image overlays + policy attention/probe</td></tr>
+<tr><td>contact</td><td>grasp pose、friction、collision、gripper force</td><td>simulator state/contact trace</td></tr>
+<tr><td>recovery</td><td>first error后是否重规划、OOD state</td><td>failure timeline + counterfactual reset</td></tr>
+<tr><td>infrastructure</td><td>exception、timeout、OOM、dropped episode</td><td>stderr + exit code + denominator rule</td></tr>
+</tbody></table>
+<p>诊断顺序应先排 protocol/checkpoint/observation/action contract，再讨论模型机制。否则“world model 没学到 contact”可能只是图像上下翻转或 gripper sign 错。</p>
+<h2 id="12-protocol-gate">12. Protocol gate 伪代码</h2>
+<pre><code class="language-python"># Protocol comparison gate: compare fields before comparing scores.
+REQUIRED = [
+    &quot;suite&quot;, &quot;tasks&quot;, &quot;init&quot;, &quot;warmup&quot;, &quot;observation&quot;, &quot;action&quot;,
+    &quot;chunk&quot;, &quot;controller&quot;, &quot;horizon&quot;, &quot;success&quot;, &quot;randomness&quot;,
+    &quot;trials&quot;, &quot;checkpoint&quot;, &quot;runtime&quot;,
+]
+
+def compare_runs(run_a, run_b):
+    # Missing values are not wildcards; they block a strong comparison.
+    missing = [k for k in REQUIRED if not run_a.get(k) or not run_b.get(k)]
+    if missing:
+        return {&quot;verdict&quot;: &quot;UNKNOWN&quot;, &quot;missing&quot;: missing}
+
+    mismatches = {
+        k: (run_a[k], run_b[k])
+        for k in REQUIRED
+        if canonicalize(run_a[k]) != canonicalize(run_b[k])
+    }
+    if mismatches:
+        return {
+            &quot;verdict&quot;: &quot;NON_COMPARABLE&quot;,
+            &quot;mismatches&quot;: mismatches,
+            &quot;allowed_claim&quot;: &quot;protocol sensitivity or directional context only&quot;,
+        }
+
+    # Score comparison opens only after artifact and protocol identity checks pass.
+    assert sha256_exists(run_a[&quot;episodes&quot;])
+    assert sha256_exists(run_b[&quot;episodes&quot;])
+    return paired_or_interval_test(run_a, run_b)</code></pre>
+<p>这个 gate 故意把 unknown 当 blocker。面试中最危险的不是承认 unknown，而是把 unknown 默认为相同。</p>
+<h2 id="13">13. 面试回答骨架</h2>
+<h3 id="13-1-30-strict-eval">13.1 30 秒：什么叫 strict eval</h3>
+<p>“我不会把 strict 当成‘跑得更认真’，而是把评测写成可重放 tuple：task、init、warmup、camera、action/normalizer、chunk/replan、controller、horizon、success、seed、trials 和 checkpoint/runtime。只有这些字段相同，成功率差值才主要反映模型。以 UWM 为例，论文 Table II 是五个 LIBERO-10 任务上的 OOD 初始化，还扩大 object init range 并移除背景物体；repo 默认 runner 则是 random reset。我的 fixed-pruned-init 结果必须单独命名，不能只因任务相同就说严格复现 0.79。”</p>
+<h3 id="13-2-90-uwm">13.2 90 秒：怎样讲当前 UWM 项目</h3>
+<p>“这个项目目前最可信的贡献方向是评估协议工程，而不是宣称超过论文。项目材料记录五个任务 fixed-init 186/250，以及 random-reset 232/250；我会把后者只当 protocol sensitivity diagnostic。进一步 source audit 后，我发现论文 v3 的 0.79 使用 50 个 OOD initialization、三次 finetune seed，并做 +0.03 object-init shift 和背景物体移除，所以本地 pruned-init 不能叫 Table II strict aligned。下一步我会冻结 checkpoint、normalizer、250 条 episode trace、init index、warmup、chunk/horizon 与 harness diff；若复现论文环境改造，就报告 three-seed OOD result；否则把协议正式命名为 fixed-pruned-init-50-v1，只和同协议 baseline 做 paired comparison。”</p>
+<h3 id="13-3-robocasa-71-19">13.3 RoboCasa 71.19% 的防守口径</h3>
+<p>“71.19% 是官方 HF checkpoint 在我这套 harness 上的 smoke result，不是我的训练结果，也不是官方 50 trials × 3 seeds protocol。项目页记录 raw 86/120 和 trusted 84/118，说明我还必须给出被剔除的两条 episode、预先定义的 invalid rule、fork/controller/checkpoint revision；在这些 artifact 齐全前，我只用它证明 harness 能产出非零可信行为，不把它当正式 benchmark。”</p>
+<h2 id="14">14. 尚未核实与下一步</h2>
+<ul><li>已核实：LIBERO default eval code；UWM v3 Table II 与 Appendix OOD setting；UWM frozen reset-style runner；Cosmos LIBERO/RoboCasa frozen runners；RoboCasa official/fork version split；WorldGym frozen proxy scorer。</li><li>尚未核实：用户 local repos/runs、checkpoint tensor、normalizer、dataset revision、250/250 episode artifacts、RoboCasa 120 raw episodes、controller pickle semantic dump、browser visual QA、独立 fact review、真实口述。</li><li>当前 verdict：<code>WARN</code>。原因不是上游来源不足，而是个人数字与 runtime artifact 尚未闭合，且“Table II strict aligned”表述已被 source audit 发现 protocol mismatch。</li><li>后续动作：WM-039..044 的第一批 benchmark/evidence 知识页与 6 张题卡已完成；下一步独立事实复核并补 local run artifacts。所有题卡保持 <code>unseen</code>，项目数字不进入强答案，直到 VOL 07 evidence gate 通过。</li></ul>
+<h2 id="15-references">15. 参考文献（References）</h2>
+<ol><li>Lifelong Robot Learning, <code>LIBERO</code> frozen commit <code>8f1084e3132a39270c3a13ebe37270a43ece2a01</code>: <a href="https://github.com/Lifelong-Robot-Learning/LIBERO/blob/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/lifelong/metric.py">metric.py</a>, <a href="https://github.com/Lifelong-Robot-Learning/LIBERO/blob/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/configs/eval/default.yaml">eval config</a>, <a href="https://github.com/Lifelong-Robot-Learning/LIBERO/blob/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/envs/env_wrapper.py">environment wrapper</a>, <a href="https://github.com/Lifelong-Robot-Learning/LIBERO/blob/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/benchmark/__init__.py">benchmark registry</a>, MIT.</li><li>Zhu et al., “Unified World Models: Coupling Video and Action Diffusion for Pretraining on Large Robotic Datasets”, arXiv <code>2504.02792v3</code>, <a href="https://arxiv.org/html/2504.02792v3#S4.T2">Table II</a> and Appendix A, accessed 2026-07-16.</li><li>WEIRDLabUW, <code>unified-world-model</code> frozen commit <code>b7d4067c8859775e5b08f681e76d538015cdd445</code>: <a href="https://github.com/WEIRDLabUW/unified-world-model/blob/b7d4067c8859775e5b08f681e76d538015cdd445/experiments/uwm/eval_robomimic.py">eval_robomimic.py</a>, <a href="https://github.com/WEIRDLabUW/unified-world-model/blob/b7d4067c8859775e5b08f681e76d538015cdd445/environments/robomimic/wrappers.py">wrappers.py</a>, <a href="https://github.com/WEIRDLabUW/unified-world-model/blob/b7d4067c8859775e5b08f681e76d538015cdd445/configs/template_train_robomimic.yaml">template config</a>; no license file found in frozen tree.</li><li>NVIDIA, <code>cosmos-policy</code> frozen commit <code>18a2accadf4e7a3531e56754102af5a24d2316da</code>: <a href="https://github.com/NVlabs/cosmos-policy/blob/18a2accadf4e7a3531e56754102af5a24d2316da/cosmos_policy/experiments/robot/libero/run_libero_eval.py">LIBERO runner</a>, <a href="https://github.com/NVlabs/cosmos-policy/blob/18a2accadf4e7a3531e56754102af5a24d2316da/cosmos_policy/experiments/robot/libero/libero_utils.py">LIBERO utils</a>, <a href="https://github.com/NVlabs/cosmos-policy/blob/18a2accadf4e7a3531e56754102af5a24d2316da/cosmos_policy/experiments/robot/robocasa/run_robocasa_eval.py">RoboCasa runner</a>, Apache-2.0 code.</li><li><code>moojink/robocasa-cosmos-policy</code>, observed HEAD <code>edd9a328b3ec98050f42d194c1419307a79c4d87</code>, <a href="https://github.com/moojink/robocasa-cosmos-policy/blob/edd9a328b3ec98050f42d194c1419307a79c4d87/setup.py">setup.py</a>, <a href="https://github.com/moojink/robocasa-cosmos-policy/blob/edd9a328b3ec98050f42d194c1419307a79c4d87/robocasa/utils/eval_utils.py">eval helper</a>, MIT; observed 2026-07-16, not a verified paper pin.</li><li>RoboCasa, official repo frozen commit <code>b4684e6ee37d377cc392e98302a6b916d588b415</code>, <a href="https://github.com/robocasa/robocasa/blob/b4684e6ee37d377cc392e98302a6b916d588b415/setup.py">setup.py</a>, <a href="https://github.com/robocasa/robocasa/blob/b4684e6ee37d377cc392e98302a6b916d588b415/robocasa/utils/eval_utils.py">eval_utils.py</a>, <a href="https://github.com/robocasa/robocasa/blob/b4684e6ee37d377cc392e98302a6b916d588b415/tests/test_env_determinism.py">determinism test</a>, MIT.</li><li>NVIDIA Cosmos Policy frozen docs: <a href="https://github.com/NVlabs/cosmos-policy/blob/18a2accadf4e7a3531e56754102af5a24d2316da/LIBERO.md">LIBERO.md</a>, <a href="https://github.com/NVlabs/cosmos-policy/blob/18a2accadf4e7a3531e56754102af5a24d2316da/ROBOCASA.md">ROBOCASA.md</a>.</li><li>Quevedo et al., “WorldGym: World Model as An Environment for Policy Evaluation”, arXiv <code>2506.00613v3</code>, <a href="https://arxiv.org/abs/2506.00613v3">abstract</a>, 2025.</li><li><code>world-model-eval/world-model-eval</code> frozen commit <code>709665b29f5c95124e7dbc05b0d4d47cd353de97</code>: <a href="https://github.com/world-model-eval/world-model-eval/blob/709665b29f5c95124e7dbc05b0d4d47cd353de97/README.md">README</a>, <a href="https://github.com/world-model-eval/world-model-eval/blob/709665b29f5c95124e7dbc05b0d4d47cd353de97/src/world_model_eval/utils.py">utils.py</a>, <a href="https://github.com/world-model-eval/world-model-eval/blob/709665b29f5c95124e7dbc05b0d4d47cd353de97/src/world_model_eval/world_model.py">world_model.py</a>; no license file found in frozen tree.</li><li>本地待核验材料：<a href="../../05_uwm_libero_eval_protocol.html">UWM/LIBERO 项目页</a>、<a href="../../04_cosmos_wam_multitask_training.html">Cosmos/WAM 项目页</a>、<a href="../../../output/resume_restructure_plan.md">resume restructure plan</a>、<a href="../../../output/mousongzhe_resume_optimized.html">optimized resume</a>。</li></ol>
+</article></body></html>

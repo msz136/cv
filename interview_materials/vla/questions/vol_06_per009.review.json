@@ -1,0 +1,68 @@
+{
+  "artifact": "questions/vol_06_per009.md",
+  "html": "questions/vol_06_per009.html",
+  "question_list": "questions/vol_06_per009.question_list.md",
+  "knowledge": "knowledge/vol_06_per009_grounding_matching_negative_loss.md",
+  "source_freeze": "sources/vol_06_per009_grounding_matching_negative_loss_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / VLA-PER-009 / card_1_of_1",
+  "verdict": "WARN",
+  "source_sha256": "F426BB17C26ED349E13B83923B6B547EB0BBE8F6F77C27EA525A68230B0F4FAD",
+  "question_count": 1,
+  "covered_question_ids": [
+    "VLA-PER-009"
+  ],
+  "difficulty_distribution": {
+    "L1": 0,
+    "L2": 0,
+    "L3": 1,
+    "L4": 0,
+    "L5": 0
+  },
+  "priority_distribution": {
+    "P0": 0,
+    "P1": 1
+  },
+  "practice_distribution": {
+    "unseen": 1,
+    "weak": 0,
+    "pass": 0,
+    "strong": 0,
+    "stale": 0
+  },
+  "answer_length_chars": {
+    "short_answer_min": 175,
+    "short_answer_max": 175,
+    "short_answer_average": 175,
+    "short_answer_threshold": 180,
+    "mechanism_answer_min": 344,
+    "mechanism_answer_max": 344,
+    "mechanism_answer_average": 344,
+    "mechanism_answer_threshold": 350
+  },
+  "checks": {
+    "bounded_slice": "PASS (one PER-009 atomic card was created from the synchronized source and knowledge; no PER-010 artifact or mastery change)",
+    "details_block_well_formed": "PASS (1/1 Markdown and HTML details/summary block is balanced and foldable)",
+    "question_id_unique": "PASS (VLA-PER-009 occurs once; global registry synchronizes to 260 unique generated cards)",
+    "required_fields": "PASS (intent, short answer, mechanism, diagnosis/evidence, project hook, follow-up, easy-error, dangerous answer, sources and state are present)",
+    "answer_conciseness": "PASS (30-second answer 175 chars; mechanism answer 344 chars)",
+    "source_references": "PASS WITH WARNING (PER-009 source/knowledge, Grounding DINO, DETR, focal, GIoU, Transformers 4.57.1 and OPD inventory are cited; first-party complete criterion and local immutable eval bundle remain missing)",
+    "matching_loss_contract": "PASS (pairwise token/L1/GIoU cost and discrete one-to-one assignment are separated from the post-assignment differentiable criterion)",
+    "negative_and_reduction_contract": "PASS (unmatched-query, non-target-token, padding and dataset/hard-negative semantics remain separate; valid-token numerator, cross-worker GT denominator and auxiliary re-matching are explicit)",
+    "revision_weight_gate": "PASS WITH WARNING (paper narrative/Table 8 conflict and runtime config/weight-dictionary requirement are preserved without asserting one cross-version coefficient set)",
+    "local_objective_boundary": "PASS WITH WARNING (assistant-token CE, routed top-1 CE and online full-vocabulary KL are separated from detector matching/box loss; model-internal SFT reduction, checkpoint-bound holdout and robot evidence remain missing)",
+    "metric_truth_boundary": "PASS (the 2500-row archive is described only as a reproducible optimization trace, not as quality, causality, ownership or robot-success evidence)",
+    "html_static_validation": "PASS (ARIS academic v1; source SHA synchronized; one H1, three H2 including the TOC heading, one foldable summary, balanced inline Markdown/MathJax and zero formula-em/control-character issues)",
+    "local_links": "PASS (knowledge, source and evidence links resolve locally)",
+    "browser_visual_check": "BLOCKED (the existing in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "practice_state": "PASS (card remains unseen; no oral answer was provided and coaching_state.md is absent)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep VLA-PER-009 unseen until the candidate answers it orally.",
+    "Archive exact command/config/checkpoint/model class, raw component losses, denominators and zero-loss/dummy/retry events.",
+    "Bind the 2500-row optimization trace to immutable checkpoints and same-protocol holdout raw predictions before claiming quality uplift.",
+    "Do not create coaching_state.md until an actual oral drill is completed."
+  ],
+  "next": "Generate only the VLA-PER-010 metric/parser source freeze; do not generate its knowledge/card or change mastery in the same slice."
+}

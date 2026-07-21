@@ -1,0 +1,30 @@
+{
+  "artifact": "sources/vol_08_code003_norm_source_freeze.md",
+  "html": "sources/vol_08_code003_norm_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / CODE-VLA-003 / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "7FB677ABD34B08834B974252AB3F124ADF858D32B5E41797F425D32BAA3FD7A5",
+  "covered_question_ids": [
+    "CODE-VLA-003"
+  ],
+  "checks": {
+    "primary_sources": "PASS WITH WARNING (PyTorch LayerNorm/RMSNorm docs and RMSNorm paper are linked; local foundations are supporting context)",
+    "formula_axis_contract": "PASS (re-centering/re-scaling, normalized shape and affine parameters are separated)",
+    "dtype_epsilon_contract": "PASS (epsilon placement, fp32 accumulation and output cast are explicit)",
+    "test_contract": "PASS (constant/non-zero-mean, multi-dim, affine, train/eval and autograd parity tests are specified)",
+    "vla_boundary": "PASS (feature norm, pre/post-norm and action normalizer are separated)",
+    "project_evidence_boundary": "PASS (no project performance or ownership claim is inferred)",
+    "html_static_validation": "PASS (one H1, eight H2, table and formulas rendered)",
+    "local_links": "PASS (VOL 01 foundations and official source links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "downstream_artifacts": "PASS WITH WARNING (knowledge page and one CODE-VLA-003 card synchronized; local parity/ablation artifact remains missing)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep source gate WARN until a local forward/backward parity or norm ablation artifact exists.",
+    "Keep one synchronized CODE-VLA-003 card unseen until a whiteboard drill.",
+    "Do not imply upstream norm choices are personal innovations."
+  ],
+  "next": "Run a CODE-VLA-003 whiteboard drill or collect one parity artifact; keep the card unseen."
+}

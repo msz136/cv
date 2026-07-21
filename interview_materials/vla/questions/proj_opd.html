@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROJ-OPD：OPD / VLM Grounding 项目原子题卡（Direct-Evidence Batch 1 + Ownership）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\proj_opd.md">
+<meta name="aris:source-sha256" content="a157bc98efcfaf165c0d71dc1c4da70c95d3b9615304d15429c9c3b6f5c1dc2d">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>a157bc98efcfaf165c0d71dc1c4da70c95d3b9615304d15429c9c3b6f5c1dc2d</code>；生成自：<code>interview_materials\vla\questions\proj_opd.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#a">A. 问题定义与数据路由</a></li><li><a href="#b-coldstart-opd">B. Coldstart 与在线 OPD</a></li><li><a href="#c">C. 评估、协议与真实性边界</a></li><li><a href="#d-ownership">D. Ownership 与可抗追问边界</a></li><li><a href="#section-5">参考来源</a></li></ol></nav>
+<h1>PROJ-OPD：OPD / VLM Grounding 项目原子题卡（Direct-Evidence Batch 1 + Ownership）</h1>
+<div class="meta">状态：<code>drafted / cards_8_of_8 / WARN</code> 更新日期：2026-07-17 当前题数：8 / 8 覆盖范围：<code>PROJ-OPD-001..009</code> 难度：L2 4 题 / L3 4 题 优先级：P0 7 题 / P1 1 题 练习状态：全部 <code>unseen</code> 前置证据：<a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>；weights、raw predictions、统一 ablation 与 ownership ledger 未闭合，不得升级为强因果结论。</div>
+<h2 id="a">A. 问题定义与数据路由</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>PROJ-OPD-001</b> · OPD 这条路线要解决什么问题，为什么不是简单把五个 expert 的数据混在一起？</summary>
+<p><strong>面试意图</strong>：判断你是否能把多 expert、统一 student 和输出协议问题讲成一个可验证的训练设计，而不是只复述 OPD 名字。</p>
+<p><strong>30 秒回答</strong>：目标是让一个 8B student 同时保留 object/region/relation/point/text 能力，并根据任务输出正确格式。数据先训练五个 specialist，再用 route metadata 选择 teacher 做 coldstart 和在线 KL；直接混数据容易让能力和 <code>&lt;box&gt;/&lt;point&gt;/text</code> 格式互相污染。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：五个 expert 分别偏 reasoning、object、region、spatial relation 和 RoboPoint。student 样本保留 <code>target_expert</code>、<code>candidate_experts</code>、<code>expected_format</code>、seen/unseen/hard、boundary 和 format-conflict，训练时按 target route 选 teacher。这样把数据来源、能力边界和输出契约显式化；但 route 是 metadata 驱动，不是已验证的 learned router。组合结果也不能归因于 OPD 单一机制，因为数据配比、specialist、coldstart 和格式对齐同时变化。</p>
+<p><strong>诊断 / 证据</strong>：检查五 expert 配额、student category/format counts、route counts 和训练 summary；再做 no-route、single-teacher、无 boundary/format-conflict 的对照。当前前四项有本地证据，消融未冻结。</p>
+<p><strong>项目挂钩</strong>：个人贡献应表述为多域数据合同、route metadata、训练阶段与评估协议的设计/验收；不要把统一 student 的静态指标说成真实机器人闭环。</p>
+<p><strong>追问树</strong>：为什么要 five expert？route 是模型学出来的吗？general 数据为什么占 25%？格式冲突如何构造？</p>
+<p><strong>危险答案</strong>：说“OPD 自动学会了专家路由”，或说“只要把五个模型平均就能得到最强模型”。</p>
+<p><strong>来源</strong>：[1][2][3]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>PROJ-OPD-002</b> · 五个 expert 的数据配额和 spatial-relation 重采样如何设计？</summary>
+<p><strong>面试意图</strong>：检查你是否能从脚本解释数据分工、长尾关系和 image-level split，而不是只背 expert 名称。</p>
+<p><strong>30 秒回答</strong>：每个 expert 的目标为 train 800k、eval 20k，并按 image hash 做 5% candidate eval。reasoning 偏 keepalive，RoboPoint 偏 point，object/region/relation 提高对应池比例；spatial expert 再平衡长尾关系。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：脚本的 <code>EXPERT_TRAIN_PLAN</code> 为五个 expert 指定 source quota，<code>split_for_image</code> 用稳定 image/video key 做 train/eval candidate split，避免同图跨 split。<code>REL_BUCKET_WEIGHTS</code> 让 spatial relation 不被高频 <code>on/in</code> 淹没，并在输出 metadata 中保留 expert、source、source line、seed、relation bucket，便于追溯。它证明了数据路由规则存在，不证明每个 expert 已经独立 raw-holdout 最优；model asset table 还明确五个 200k expert 没有独立 10k 评估。</p>
+<p><strong>诊断 / 证据</strong>：复算 quota 与 eval scale、统计每个 relation bucket、检查 image/fingerprint overlap，并单独评估各 expert。当前配额和 split 是 <code>local-direct</code>，独立 expert eval 与因果比较仍缺。</p>
+<p><strong>项目挂钩</strong>：可讲“先解决数据分布和评估泄漏，再讨论 OPD”，把数据工程与模型训练分开。</p>
+<p><strong>追问树</strong>：为什么不用随机行 split？关系 bucket 会不会改变真实分布？eval 20k 是真实 held-out 吗？如何判断重采样过度？</p>
+<p><strong>危险答案</strong>：把 800k/20k 目标写成实际每个文件都精确达到，或说 relation rebalance 本身就证明关系泛化提升。</p>
+<p><strong>来源</strong>：[1][4][5]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>PROJ-OPD-003</b> · student 数据里的 seen/unseen/hard、boundary 和 format-conflict 分别解决什么问题？</summary>
+<p><strong>面试意图</strong>：判断你能否解释训练数据不是单一 iid 混合，而是带有泛化与接口边界的显式合同。</p>
+<p><strong>30 秒回答</strong>：每个 expert 过滤后前 100k 行标为 seen，domain 再拆 unseen/hard；general 防止模型“凡问必坐标”；boundary 覆盖 object/region/point/reasoning 易混边界；format-conflict 强化 tag、坐标范围、错误格式诱导和 prompt injection 下的输出契约。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：最终 train summary 是 domain 599,905、general 250,000、boundary 99,998、format-conflict 49,997，共 999,900。每行写入 target/candidate expert、expected format、source line、fingerprint 与 <code>seen_by_expert_100k</code>，使 eval 可以按 exposure 分层。格式样本不是为了制造“更难看”的 prompt，而是防止 box/point/text 之间的输出漂移。严格审计还检查 JSON、坐标、图片、重复和 train/eval image overlap；这些是数据质量 gate，不是模型成功率。</p>
+<p><strong>诊断 / 证据</strong>：按 category、subtype、exposure 和 expected format 分层报 loss/format/geometry；做去掉 boundary 或 format-conflict 的对照。当前 metadata 与硬审计已冻结，分层模型结果和 ablation 未冻结。</p>
+<p><strong>项目挂钩</strong>：可把“问题发现→数据标签→评估切片”的闭环讲成个人设计价值，避免只强调训练步数。</p>
+<p><strong>追问树</strong>：为什么 train 少 100 行？seen 定义会不会泄漏？format-conflict 会不会导致过度拒答？如何构造 hard？</p>
+<p><strong>危险答案</strong>：说“100 万行全部是 unseen”，或把无 overlap 直接说成模型没有过拟合。</p>
+<p><strong>来源</strong>：[1][2][6]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="b-coldstart-opd">B. Coldstart 与在线 OPD</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>PROJ-OPD-004</b> · coldstart500 和正式 OPD5000 的训练链路有什么区别？</summary>
+<p><strong>面试意图</strong>：检查你是否分清 teacher rollout、student rollout、KL 监督和训练起点。</p>
+<p><strong>30 秒回答</strong>：coldstart 从 8B base 出发，用五个 teacher rollout 做 500 steps 的 full-vocab KL；OPD5000 从该输出继续，让 student rollout，再让 route 对应 teacher 在同一 response 上 forward，完成 5000 steps 在线 KL。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：coldstart 是 <code>teacher</code> rollout，<code>max_new_tokens=128</code>、prefix=64，veto beta 在 100 steps 内退火；正式 OPD 是 <code>student</code> rollout，<code>max_new_tokens=64</code>、prefix=64、skip 64,000，保存 1000–5000 checkpoints。五 teacher 以 <code>preloaded_zero3</code> 常驻并按 route 选择，做 full-vocab distillation。coldstart 先处理分布与格式启动，online 阶段再覆盖 student 实际 response；缺 coldstart-only raw-holdout 对照，不能量化各阶段贡献。</p>
+<p><strong>诊断 / 证据</strong>：检查两个 run summary 的 student path、rollout source、teacher load counts、route counts、loss/entropy/top-k overlap，并保留每阶段 checkpoint 与 raw eval。当前 summaries 与 checkpoint table 有，完整权重/raw log 没有。</p>
+<p><strong>项目挂钩</strong>：回答时强调训练阶段和 artifact lineage，而不是把“5000 steps”当作算法效果本身。</p>
+<p><strong>追问树</strong>：为什么不直接 online？为什么 full-vocab KL？student rollout 的分布偏移如何处理？veto beta 是什么？</p>
+<p><strong>危险答案</strong>：把 coldstart 的 teacher rollout 说成正式 student on-policy，或说 5000 steps 自动证明收敛。</p>
+<p><strong>来源</strong>：[1][7][8]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>PROJ-OPD-005</b> · route-based teacher selection 与 learned router 有什么区别？为什么用 full-vocabulary KL？</summary>
+<p><strong>面试意图</strong>：检查你能否把实现事实、训练目标和未验证假设分层。</p>
+<p><strong>30 秒回答</strong>：当前 teacher selection 是样本 metadata 的 target route，不是单独训练的 learned router。full-vocabulary KL 在 student 实际 response 的每个 prefix 上约束完整分布，比只蒸馏 top-k 保留更多 teacher 的不确定性与格式偏好，但成本更高。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：脚本把 <code>target_expert/candidate_experts</code> 转成 route；<code>route_policy=target</code> 时每行只激活 target teacher。五 teacher 以 ZeRO-3 预加载。student rollout 后，teacher 对同一 token sequence forward，计算 full-vocab KL，并记录双方 entropy、top-k overlap、OPD loss 和 route counts。route metadata 是监督来源，不等于部署时模型会识别任务；learned router 还需要额外模型、routing loss 和同协议 ablation。</p>
+<p><strong>诊断 / 证据</strong>：做 target vs candidate route、single-teacher、random route、top-k vs full-vocab 的对照，并按格式/池统计错误。当前代码和 summary 支持实现路径，消融与 learned router 证据缺失。</p>
+<p><strong>项目挂钩</strong>：这是一个适合回答“工程实现与研究假设边界”的问题：可以准确讲当前做了什么，也能指出下一步研究空间。</p>
+<p><strong>追问树</strong>：candidate route 为什么存在？full-vocab KL 会不会过度复制 teacher 错误？为什么不做 MoE gate？如何防止 route imbalance？</p>
+<p><strong>危险答案</strong>：说“route id 就是 learned gating”，或说 full-vocab KL 一定比 top-k 更好且没有显存代价。</p>
+<p><strong>来源</strong>：[1][7][8]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="c">C. 评估、协议与真实性边界</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>PROJ-OPD-006</b> · OPD5000 的 checkpoint 应该怎么选，为什么不能只报 checkpoint-5000？</summary>
+<p><strong>面试意图</strong>：训练你根据多目标指标做 checkpoint selection，而不是把最后一个 checkpoint 当作全局最佳。</p>
+<p><strong>30 秒回答</strong>：ckpt3000 的整体 box IoU 最高 0.4761，ckpt5000 的 Box Acc@0.5=0.5238、Point Hit@50/100=0.7493/0.8729，ckpt4000 的 text exact=0.8784。按 pool 最佳点也分散，所以 ckpt5000 只能作为综合默认候选，不能说所有指标最佳。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：10k holdout 按 box 6100、point 1400、text 2500 分开计算；ckpt3000 的 VG region/relation 最好，semantic-nav box 在 ckpt2000 最好，VG object 在 ckpt1000 最好，keepalive text 在 ckpt4000 最好，point 与多个 box pool 在 ckpt5000 最好。选择取决于部署目标：若强调统一多格式和 point，5000 合理；若强调整体 IoU 或特定关系池，应保留 3000。当前表格是同一新版 OPD5000 eval line，但没有 raw predictions 和完整 checkpoint bundle。</p>
+<p><strong>诊断 / 证据</strong>：冻结 pool/format denominator、scorer 版本、checkpoint parent、每样本 prediction 与 selection rationale；报告 Pareto frontier 而不是单一排名。当前 by-format/by-pool 表已冻结，raw predictions/lineage 仍缺。</p>
+<p><strong>项目挂钩</strong>：可以把 checkpoint selection 讲成“指标与产品目标对齐”的工程决策，而不是追求最后一步数字。</p>
+<p><strong>追问树</strong>：为什么 ckpt3000 IoU 更高但 ckpt5000 point 更好？如何避免按 holdout 过拟合选点？最终部署选哪个？</p>
+<p><strong>危险答案</strong>：说“5000 一定收敛且全面最好”，或把不同 pool 的 best 拼成一个虚构 checkpoint。</p>
+<p><strong>来源</strong>：[1][9][10]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>PROJ-OPD-007</b> · raw-holdout 的 0 泄漏结论是怎样得到的，重复图片为什么仍然存在？</summary>
+<p><strong>面试意图</strong>：确认你理解 source-line、fingerprint、图片和样本重复是不同层级的 leakage gate。</p>
+<p><strong>30 秒回答</strong>：10k holdout 阻断了五 expert 前 100k、OPD train 和训练图片集合；审计显示 fingerprint、source-line、image+prompt+answer 重复均为 0，训练图片泄漏也为 0。唯一图片 8,251，不是 10k，因为同一张 VG/RefCOCO 图片可以有多个合法标注。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：evalset summary 记录每个 pool quota 和 blocklist，dedupe audit 记录 0 duplicate fingerprints、0 duplicate source lines、0 duplicate prompt-answer-image keys、0 image_seen_in_train rows。另有 1,168 个重复图片路径、2,917 行落在重复图片上，这是同图多 object/region/relation annotation，不等于同一监督样本。面试应说“样本级和训练图片级泄漏为零”，不要说“评估图片完全唯一”。</p>
+<p><strong>诊断 / 证据</strong>：复算 source-line、normalized fingerprint、image+prompt+answer key、train image set，并按 pool 输出重复图片分布；再检查近重复图或同源视频是否需要额外 block。当前三类严格重复和训练图片 gate 有本地审计，近重复/分布代表性仍可继续加强。</p>
+<p><strong>项目挂钩</strong>：这是体现评估严谨度的高价值回答：先证明 holdout 干净，再讨论模型数字。</p>
+<p><strong>追问树</strong>：为什么 image hash split 还要 blocklist？同一图片多标注会不会让 n 虚高？如何处理 near-duplicate？</p>
+<p><strong>危险答案</strong>：说“unique images=10,000”，或把重复图片路径直接等同于数据泄漏。</p>
+<p><strong>来源</strong>：[1][11][12]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>PROJ-OPD-008</b> · point strict=0 的结果如何解释？OPD 的提升能否归因于 OPD？</summary>
+<p><strong>面试意图</strong>：这是项目真实性与协议意识的高压题，要求同时处理 parser mismatch、可比性和个人 ownership。</p>
+<p><strong>30 秒回答</strong>：早期 point prompt 写 <code>[(x,y)]</code>，strict parser 却要求 <code>&lt;point&gt;[[x,y],...]&lt;/point&gt;</code>，所以 strict=0 不等于不会定位。修正 prompt 后 Qwen-122B Hit@100=0.8200；OPD ckpt5000 原 strict=0.8729，但缺消融，不能作单因果归因。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：point 需要分三种口径：original strict 看部署接口是否遵守 tag；protocol-fixed strict 看明确提示下的协议与几何能力；lenient geometry 兼容裸坐标，仅作历史能力估计。当前 OPD 训练期已对齐 <code>&lt;point&gt;</code>，因此原 strict 可读；大模型必须用 protocol-fixed strict 才公平。因果上，旧版 OPD final 与新版 OPD5000 也不是同一 run；缺 SFT-only、single-teacher、no-synthetic、synthetic-ratio 和 raw prediction bundle。ownership 方面，Git author 只是提交署名，不能替代逐文件 ledger。</p>
+<p><strong>诊断 / 证据</strong>：冻结 prompt hash、parser version、format/geometry 分项，做同 suite base→SFT→coldstart→OPD paired rerun；补逐文件 personal/collaboration/tool-assisted ledger。当前 protocol correction 和组合指标有，单因素与 ownership 仍 pending。</p>
+<p><strong>项目挂钩</strong>：推荐把“主动指出评估 bug 与因果缺口”作为项目结尾的可信度防线，比把所有结果都包装成 uplift 更有说服力。</p>
+<p><strong>追问树</strong>：为什么 OPD strict 可以直接比而 122B 不行？如果只看 box，谁更强？下一步最重要的 ablation 是什么？哪些代码是你亲手完成？</p>
+<p><strong>危险答案</strong>：说“base/instruct/大模型不会 point”，或说“OPD 比 base 高 11.5 个点，所以 uplift 全来自 OPD”。</p>
+<p><strong>来源</strong>：[1][13][14]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="d-ownership">D. Ownership 与可抗追问边界</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>PROJ-OPD-009</b> · OPD 哪些部分能说是你做的？如何处理 `msz136`、`mousongzhe`、Codex 与远端 run 的边界？</summary>
+<p><strong>面试意图</strong>：判断你是否能把 Git 署名、代码存在、设计决策、运行验收和 checkpoint/result ownership 分开，而不是把一次性快照认领成全部个人工作。</p>
+<p><strong>30 秒回答</strong>：我把数据、训练、评估、结果四条链分开。源码和报告可核验，但初始 scaffold 是 <code>msz136</code>，后续是 <code>mousongzhe</code> 提交，OPD5000 权重/raw predictions 未同步；所以 Git author 或 summary 不能替代逐文件个人 ownership。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：先绑定 artifact：数据 builder/audit/evaluator 在 <code>3ef636b</code>，manifest 指向 <code>point/train_opd_online_vl.py</code>，不能用根目录副本替代。再区分设计者、提交者、远端运行者、报告生成者和 reviewer。最后按证据降级：报告支持曲线与 protocol，manifest 排除权重、optimizer、raw holdout 和 predictions；强回答要能解释一个函数并指出 diff、load smoke、raw bundle、ablation 与工具边界仍缺。</p>
+<p><strong>诊断 / 证据</strong>：使用 <a href="../evidence/projects/opd_ownership_ledger.html">OPD Ownership Ledger</a> 的 13 行矩阵；检查 <code>git log --follow</code>、blob/SHA、manifest synced scope、run summary、checkpoint table 和 candidate confirmation。没有真实口述前保持 <code>candidate_confirmation_pending / unseen</code>，不创建 coaching state。</p>
+<p><strong>项目挂钩</strong>：这是 OPD 项目最重要的真实性题。它允许你讲清真实工程价值，同时避免把 <code>mousongzhe</code> 的 commit、<code>msz136</code> 的 scaffold、远端 summary 和自己的个人贡献混成一句“全是我做的”。</p>
+<p><strong>追问树</strong>：哪一个函数是你亲手改的？为什么 <code>point/</code> 和根目录 trainer 不同？谁在 remote 运行？checkpoint 能 load 吗？Codex/协作者做了什么？如果没有 ablation，为什么不能说 OPD uplift？</p>
+<p><strong>危险答案</strong>：说“Git author 是我，所以所有代码和指标都是我的”，或把“报告里有数字”说成“我拥有模型结果”。</p>
+<p><strong>来源</strong>：[1][15][16]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-5">参考来源</h2>
+<ol><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD / VLM Grounding Claim–Evidence Inventory</a>：五 expert、student route、训练 lineage、raw-holdout、point protocol 和 ownership 边界。</li><li><code>C:\Users\mousongzhe\muxi\build_expert_mixes_seed0_v2.py</code>：expert quota、image-hash split、relation bucket 与 metadata。</li><li><code>C:\Users\mousongzhe\muxi\build_opd_student_v1.py</code>：student category、seen/unseen/hard、boundary/format-conflict 和 fingerprint 字段。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\model_assets_eval_table.md</code>：expert 训练摘要、checkpoint 资产边界和 pool readout。</li><li><code>C:\Users\mousongzhe\muxi\report.md</code>：数据构造、严格审计、point protocol 修正与历史 OPD 说明。</li><li><code>C:\Users\mousongzhe\muxi\audit_opd_student_v1.py</code>：JSON、长度、坐标、图片、重复与 overlap 审计逻辑。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\remote_model_summaries\coldstart500_opd_online_run_summary.json</code>：coldstart rollout 与 full-vocab KL summary。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\remote_model_summaries\opd5000_opd_online_run_summary.json</code> 与 <code>train_opd_online_vl.py</code>：student rollout、route、skip、checkpoint 和 full-vocab KL。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\opd5000_ckpt_eval_by_format_table.md</code>：ckpt1000–5000 的 format-level metrics。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\opd5000_ckpt_eval_by_pool_table.md</code>：八个 eval pool 的 checkpoint selection。</li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\evalset_summary.json</code>：10k holdout quota、blocklist 和格式分布。</li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\dedupe_audit.json</code>：重复与训练图片泄漏审计。</li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\raw_holdout_eval_8models_report.md</code>：旧版 OPD final 与 point protocol context。</li><li><code>C:\Users\mousongzhe\muxi\report\openai_base64_point_protocol_qwen122_qwen35_20260603\comparison_summary_table.md</code>：protocol-fixed Qwen-122B/Qwen3-35B-VL point 结果。</li><li><a href="../evidence/projects/opd_ownership_ledger.html">OPD Ownership Ledger</a>：Git identity、point/root trainer 差异、13 行 ownership matrix 与 C3 gate。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\artifact_manifest.json</code>：OPD5000 本地同步范围与明确排除的权重、optimizer、raw predictions。</li></ol>
+</article></body></html>

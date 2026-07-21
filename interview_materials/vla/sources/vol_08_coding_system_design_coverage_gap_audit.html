@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 08 Coding / System Design：Coverage-Gap Audit</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_08_coding_system_design_coverage_gap_audit.md">
+<meta name="aris:source-sha256" content="e39aa5bad3e2e4847984be2a156b779982db82671f180a8c1d35f1f32eeab61f">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>e39aa5bad3e2e4847984be2a156b779982db82671f180a8c1d35f1f32eeab61f</code>；生成自：<code>interview_materials\vla\sources\vol_08_coding_system_design_coverage_gap_audit.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 本次审计依据</a></li><li><a href="#3">3. 当前资产盘点</a></li><li><a href="#4-stable-id">4. 整卷 Stable-ID 合同</a></li><li><a href="#5">5. 依赖主链与学习簇</a></li><li><a href="#6-vol-01-vol-05">6. 与 VOL 01 / VOL 05 的去重边界</a></li><li><a href="#6-1-vol-01-foundations-code">6.1 VOL 01 Foundations 与 CODE 题</a></li><li><a href="#6-2-vol-05-engineering-evaluation-sys">6.2 VOL 05 Engineering / Evaluation 与 SYS 题</a></li><li><a href="#7-source-queue">7. 后续 Source Queue</a></li><li><a href="#8">8. 项目挂钩与真实性边界</a></li><li><a href="#9-vol-08">9. VOL 08 退出条件</a></li><li><a href="#9-1-coverage-complete">9.1 Coverage complete</a></li><li><a href="#9-2-reviewed">9.2 Reviewed</a></li><li><a href="#9-3-drilled">9.3 Drilled</a></li><li><a href="#9-4-project-truth">9.4 Project truth</a></li><li><a href="#10">10. 缺口优先级与下一切片</a></li><li><a href="#references">参考入口（References）</a></li></ol></nav>
+<h1>VOL 08 Coding / System Design：Coverage-Gap Audit</h1>
+<div class="meta">审计日期：2026-07-20 状态：<code>coverage_contract_frozen / planned_12 / sources_12 / knowledge_12 / cards_12 / missing_sources_0 / missing_knowledge_0 / missing_cards_0 / WARN</code> 审计对象：VOL 08 已有 source/knowledge/card、早期手撕题 registry、全局 Knowledge Map、Repository Completion Audit、GitHub skeleton guidance、VOL 05 工程/评估卷与五项目 evidence inventory。 核心边界：本报告冻结整卷范围、去重边界和退出条件；<code>SYS-VLA-002..003</code> 三联件已同步但未练习，不把 VOL 05 组件知识重复包装成系统设计答案，不把公开系统方案写成个人项目成果。</div>
+<h2 id="question">问题（Question）</h2>
+<p>现有 <code>SYS-VLA-001</code> 与 <code>CODE-VLA-001..006</code> 是否足以支持“VOL 08 Coding / System Design 已完成”？如果不足，整卷应冻结为哪些不可合并的系统设计与手撕实现节点，如何与 VOL 01、VOL 05 和个人项目证据分工？</p>
+<h2 id="1">1. 结论先行</h2>
+<ol><li>VOL 08 冻结为 <strong>12 个原子节点</strong>：<code>SYS-VLA-001..004</code> 四个系统设计题，<code>CODE-VLA-001..008</code> 八个手撕实现题；其中 10 个 P0、2 个 P1。</li><li>当前 source coverage 为<code>12/12=100%</code>，knowledge coverage 为<code>12/12=100%</code>，card coverage 为<code>12/12=100%</code>：<code>SYS-VLA-004</code> source+knowledge+card 已完成；<code>CODE-VLA-008</code> 已完成 source+knowledge+card，<code>CODE-VLA-007</code> 与 <code>SYS-VLA-001..003/CODE-VLA-001..006</code> 均已有三联件。十二张题卡全部保持<code>unseen/WARN</code>。</li><li>页面三联件已完整闭合；不能把页面覆盖计为题卡掌握，四题 SYS 口述与八题 CODE 练习仍是独立退出门。</li><li>WinstonJQ 骨架支持“先题目清单、再分卷、Markdown canonical、折叠题卡、review、L1/L2/L3”的工作流，但不支持具体 VLA 系统事实、题目频次或个人项目 claim。</li><li>VOL 05 负责可复用组件机制；VOL 08 的系统设计题必须把这些组件整合成 requirements/capacity、API/schema、state ownership、SLO/deadline/backpressure、failure/degradation/rollback、scaling/cost/safety 和项目证据边界，不能只背组件名。</li><li>Coverage、review、drill 与 project truth 分开验收。即使未来达到 12/12 页面覆盖，没有四题真实系统设计口述与八题白板/runtime 练习，也不能标记为 <code>drilled/done</code>。</li></ol>
+<h2 id="2">2. 本次审计依据</h2>
+<table><thead><tr><th>依据</th><th>实际支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td><a href="00_github_guidance_and_sources.html">GitHub Source Scout</a></td><td>WinstonJQ 骨架：主索引、分卷、canonical Markdown、折叠题卡、review、L1/L2/L3 与题目前置清单</td><td>VLA 系统设计的技术事实、面试频次或个人贡献</td></tr>
+<tr><td><a href="../knowledge/00_vla_knowledge_map.html">VLA Knowledge Map</a></td><td>VOL 08 应覆盖 attention/loss/norm、geometry/FK、train pipeline、policy service、robot fleet、fault recovery</td><td>当前十一节点已有 source/knowledge，十张题卡已生成</td></tr>
+<tr><td><a href="repository_completion_audit.html">Repository Completion Audit</a></td><td>全局 274 张卡均 unseen；VOL 08 当前有十二个完整节点，SYS-004 三联件已同步</td><td>registry-only ID 或页面生成等于掌握</td></tr>
+<tr><td><a href="../questions/vol_01_foundations.question_list.md">VOL 01 Phase 0 Question List</a></td><td><code>CODE-VLA-001..008</code> 的早期手撕候选边界，含 PID 与 TD(0)</td><td>007 source 已冻结但 knowledge/card 未生成；008 仍 planned</td></tr>
+<tr><td><a href="vol_08_sys001_vla_training_eval_platform_source_freeze.html">SYS-VLA-001 Source Freeze</a></td><td>dataset/run/bundle/eval/rollout lineage 与可复现训练—评估平台合同</td><td>policy service、fleet 和 fault-recovery 三题已经覆盖</td></tr>
+<tr><td><a href="vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.html">SYS-VLA-002 Source Freeze</a></td><td>OpenPI request/response、client-side chunk/replan、deadline/backpressure、real-time boundary、14/14 probes与五项目truth boundary</td><td>knowledge 与题卡已转译；production SLO、hard real-time或个人端到端ownership仍未完成</td></tr>
+<tr><td><a href="vol_08_code001_softmax_source_freeze.html">CODE-VLA-001..006 Source Freezes</a></td><td>softmax、attention、norm、masked loss、transform、planar FK 六个实现节点各自的来源与测试边界</td><td>PID、TD(0) 或本地白板/runtime 已完成</td></tr>
+<tr><td><a href="vol_05_completion_independent_fact_review.html">VOL 05 Completion Audit</a></td><td>工程与评估组件知识的计划内覆盖和证据边界</td><td>四个端到端 system-design oral answer</td></tr>
+<tr><td>五项目 inventories / ownership ledgers</td><td>项目接口、artifact、指标与个人贡献边界</td><td>已建设统一平台、robot fleet、生产 policy service 或物理安全系统</td></tr>
+</tbody></table>
+<h2 id="3">3. 当前资产盘点</h2>
+<table><thead><tr><th>层</th><th>已有</th><th>目标</th><th>覆盖</th><th>仍开放的门</th></tr></thead><tbody>
+<tr><td>planned stable IDs</td><td>12</td><td>12</td><td>100% contract</td><td>本报告只冻结边界，不代表内容完成</td></tr>
+<tr><td>source freeze</td><td>12</td><td>12</td><td>100%</td><td>source gate 已冻结；三联件已同步</td></tr>
+<tr><td>knowledge nodes</td><td>12</td><td>12</td><td>100%</td><td>knowledge gate 已冻结；三联件已同步</td></tr>
+<tr><td>generated question cards</td><td>12</td><td>12</td><td>100%</td><td>页面覆盖完成；仍需真实系统设计/白板训练</td></tr>
+<tr><td>system-design oral drill</td><td>0</td><td>4</td><td>0%</td><td>四张 SYS 卡均已生成并保持 unseen，尚未完成限时口述</td></tr>
+<tr><td>coding whiteboard/runtime drill</td><td>0</td><td>8</td><td>0%</td><td>六张已有卡仍 unseen，007/008 未生成</td></tr>
+<tr><td>project truth gate</td><td>5 inventories + 5 ledgers</td><td>每个 system answer 都有 bounded hook</td><td>partial</td><td>不得把 interface/evidence 升级成 platform/fleet ownership</td></tr>
+</tbody></table>
+<h2 id="4-stable-id">4. 整卷 Stable-ID 合同</h2>
+<table><thead><tr><th>ID</th><th>优先级 / 难度</th><th>冻结题目</th><th>当前状态</th><th>不得合并掉的核心边界</th></tr></thead><tbody>
+<tr><td><code>SYS-VLA-001</code></td><td>P0 / L3</td><td>可复现的 VLA 训练—评估平台</td><td>source + knowledge + card / unseen</td><td>data/run/checkpoint/bundle/eval/rollout lineage 与 protocol identity</td></tr>
+<tr><td><code>SYS-VLA-002</code></td><td>P0 / L3</td><td>Policy serving 与 real-time control loop</td><td>source + knowledge + card / unseen</td><td>API/schema、session/state ownership、latency budget、deadline、backpressure、chunk/replan、fallback</td></tr>
+<tr><td><code>SYS-VLA-003</code></td><td>P1 / L3</td><td>Robot fleet 与 multi-tenant GPU scheduling</td><td>source + knowledge + card / unseen</td><td>capacity、tenant/robot/model identity、placement、fairness、cache、rollout、cost 与异构设备</td></tr>
+<tr><td><code>SYS-VLA-004</code></td><td>P0 / L3</td><td>Fault recovery、safety 与 observability</td><td>source + knowledge + card / unseen</td><td>first-divergence、SLO、degradation、cancel/e-stop 边界、rollback、replay 与 incident evidence</td></tr>
+<tr><td><code>CODE-VLA-001</code></td><td>P0 / L1</td><td>Numerically stable softmax / log-softmax</td><td>source + knowledge + card / unseen</td><td>max-shift、mask、dtype、all-masked row 与 parity</td></tr>
+<tr><td><code>CODE-VLA-002</code></td><td>P0 / L2</td><td>Scaled dot-product attention</td><td>source + knowledge + card / unseen</td><td>shape、scale、mask、dropout、complexity 与 backend parity</td></tr>
+<tr><td><code>CODE-VLA-003</code></td><td>P0 / L1</td><td>LayerNorm / RMSNorm</td><td>source + knowledge + card / unseen</td><td>axis、centering、variance/RMS、epsilon、dtype 与 train/eval</td></tr>
+<tr><td><code>CODE-VLA-004</code></td><td>P0 / L1</td><td>Masked MSE / Huber loss</td><td>source + knowledge + card / unseen</td><td>valid denominator、empty mask、weighting 与 distributed reduction</td></tr>
+<tr><td><code>CODE-VLA-005</code></td><td>P0 / L2</td><td>Homogeneous transform composition</td><td>source + knowledge + card / unseen</td><td><code>T^A_B</code> 方向、frame、单位、时间戳、point/vector/pose 与 inverse</td></tr>
+<tr><td><code>CODE-VLA-006</code></td><td>P1 / L2</td><td>2-link planar forward kinematics</td><td>source + knowledge + card / unseen</td><td>relative joint angle、analytic/matrix parity、Jacobian 与 FK/IK 边界</td></tr>
+<tr><td><code>CODE-VLA-007</code></td><td>P0 / L2</td><td>PID update with anti-windup</td><td>source + knowledge + card / unseen</td><td><code>dt</code>、derivative state、saturation、conditional integration/back-calculation 与 reset</td></tr>
+<tr><td><code>CODE-VLA-008</code></td><td>P0 / L2</td><td>Bellman TD(0) update</td><td>source + knowledge + card / unseen</td><td>reward、discount、bootstrap、terminated/truncated 与 batch mask</td></tr>
+</tbody></table>
+<p><code>registered / planned</code> 只表示 stable ID 已进入范围，不进入 272 张 generated-card 计数，也不产生 mastery。</p>
+<h2 id="5">5. 依赖主链与学习簇</h2>
+<pre><code class="language-text"># Planned nodes are scope contracts, not generated answers.
+CODE-001 softmax -&gt; CODE-002 attention
+CODE-003 norm + CODE-004 masked loss -&gt; train-time numerical correctness
+
+CODE-005 transform -&gt; CODE-006 FK -&gt; CODE-007 PID -&gt; policy/controller boundary
+VOL 01 MDP/Bellman -&gt; CODE-008 TD(0) -&gt; value/update implementation
+
+VOL 05 reproducibility/packaging/eval -&gt; SYS-001 train-eval platform
+VOL 05 policy server/latency -&gt; SYS-002 serving-control loop
+VOL 05 scheduling/retry/observability -&gt; SYS-003 fleet -&gt; SYS-004 recovery/safety</code></pre>
+<table><thead><tr><th>学习簇</th><th>IDs</th><th>当前 / 目标</th><th>主要验收方式</th></tr></thead><tbody>
+<tr><td>数值与 Transformer 实现</td><td><code>CODE-001..004</code></td><td>4 / 4</td><td>白板实现、shape/mask/dtype probes、reference parity</td></tr>
+<tr><td>几何、控制与 RL 更新</td><td><code>CODE-005..008</code></td><td>2 / 4</td><td>单位/frame/edge-case 测试、finite difference、termination semantics</td></tr>
+<tr><td>训练、服务、fleet 与恢复</td><td><code>SYS-001..004</code></td><td>1 / 4</td><td>需求澄清、容量估算、API/schema、SLO/failure/rollback 口述</td></tr>
+</tbody></table>
+<h2 id="6-vol-01-vol-05">6. 与 VOL 01 / VOL 05 的去重边界</h2>
+<h3 id="6-1-vol-01-foundations-code">6.1 VOL 01 Foundations 与 CODE 题</h3>
+<p>VOL 01 负责解释公式、概念与使用条件；VOL 08 CODE 负责在明确函数签名、shape、dtype、mask、edge case、复杂度和测试 oracle 下实现。能口述 softmax 或 PID 原理不等于能写出稳定、可测的实现。</p>
+<h3 id="6-2-vol-05-engineering-evaluation-sys">6.2 VOL 05 Engineering / Evaluation 与 SYS 题</h3>
+<p>VOL 05 的 ENG/EVAL 节点是组件知识。VOL 08 每个系统设计回答必须显式走完以下主线：</p>
+<ol><li>需求与非目标：任务类型、机器人/请求规模、控制频率、安全边界、可接受降级。</li><li>容量与延迟预算：吞吐、并发、GPU/CPU/网络、端到端 deadline 与 jitter。</li><li>API 与 schema：observation/action/model/session/run identity、版本、幂等与兼容性。</li><li>状态所有权：谁持有 session、action chunk、normalizer、checkpoint、robot lease 与 replay cursor。</li><li>正常数据流：从 observation capture 到 infer、validate、denormalize、execute、replan、record。</li><li>压力与失败：queue/backpressure、timeout、partial failure、stale observation、model/server/controller mismatch。</li><li>降级与恢复：fallback、cancel、rollback、canary、checkpoint recovery、incident replay；物理 e-stop 只能作为系统边界，不能由无证据软件 claim 替代。</li><li>扩展、成本与证据：多 tenant/robot/model 的 placement 与公平性，以及哪些设计在个人项目中真实存在。</li></ol>
+<h2 id="7-source-queue">7. 后续 Source Queue</h2>
+<p>下表只冻结检索队列；跨卷引用可以减少重复，但不能替代每个新节点自己的 claim-level source gate。</p>
+<table><thead><tr><th>ID</th><th>待冻结的来源类型</th><th>可复用入口</th><th>当前状态</th></tr></thead><tbody>
+<tr><td><code>SYS-VLA-002</code></td><td>OpenPI 8 fixed files、CPython/Triton/gRPC/ROS 2 fixed docs、3个local OpenPiVLA files、14 probes</td><td>SYS-001、VOL 03 action execution、VOL 05 ENG-022/EVAL-013</td><td><code>source + knowledge + card / unseen</code></td></tr>
+<tr><td><code>SYS-VLA-003</code></td><td>Kubernetes scheduler/quota/lease、NVIDIA device plugin、Volcano fair-share/capacity/priority、Triton rate/model config、Ray resources/placement/Serve、ROS lifecycle 与五项目 manifests</td><td>VOL 05 ENG-016/018/019/022、五项目 inventories/ledgers</td><td><code>source + knowledge + card / unseen</code></td></tr>
+<tr><td><code>SYS-VLA-004</code></td><td>ROS 2 lifecycle/controller/QoS、Kubernetes probes/rollback、OpenTelemetry signals、SYS-002/EVAL-008</td><td>VOL 05 ENG-017/018/022、EVAL-008/014/020/021、VOL 04 safety/fallback</td><td><code>source + knowledge + card synced / unseen</code></td></tr>
+<tr><td><code>CODE-VLA-007</code></td><td>ROS 2 control PID、WPILib PIDController、Feedback Systems 与 VOL 01 advanced-control review</td><td>VOL 01 <code>VLA-FND-036</code>、advanced-control fact review</td><td><code>source + knowledge + card / unseen</code></td></tr>
+<tr><td><code>CODE-VLA-008</code></td><td>Sutton–Barto TD(0)、Gymnasium terminated/truncated semantics 与 VOL 01/VOL 02 fact reviews</td><td>VOL 01 <code>VLA-FND-023/027</code>、VOL 02 fact review</td><td><code>source + knowledge + card synced / unseen</code></td></tr>
+</tbody></table>
+<h2 id="8">8. 项目挂钩与真实性边界</h2>
+<table><thead><tr><th>项目</th><th>可用 hook</th><th>当前不能说</th></tr></thead><tbody>
+<tr><td>Robot Harness</td><td>local trainer/eval/config、metrics/raw-support/recovery manifest，可用于 offline evaluation、lineage 和 failure-evidence 讨论</td><td>已部署 robot fleet、online policy service、统一生产平台或真实物理安全闭环</td></tr>
+<tr><td>OpenPiVLA</td><td>local JSON/causal-CE、shape/formatter 风险与 official parallel serving/action contract，可用于 schema/round-trip 诊断</td><td>formal checkpoint、controller round-trip、稳定 online rollout 或个人拥有完整 serving platform</td></tr>
+<tr><td>OPD</td><td>point/box/text route、scorer、data/eval boundary，可用于 typed request/result 与 evaluation contract</td><td>robot policy serving、fleet scheduling 或 closed-loop physical execution</td></tr>
+<tr><td>WAM</td><td>simulator/policy artifact 与 paired diagnostic，可用于 checkpoint/eval/rollout 失败边界</td><td>已完成真实机器人部署、生产 recovery 或安全系统</td></tr>
+<tr><td>UWM / LIBERO</td><td>simulator protocol、fixed-init 与 user-confirmed limited result，可用于 protocol identity 与 rollout schema</td><td>跨协议生产泛化、robot fleet、可复算 checkpoint/episode bundle 或未经确认 ownership</td></tr>
+</tbody></table>
+<p>面试中按 <code>public upstream design → local evidence → local inference → unverified</code> 四层作答。路径、官方 example、Git author、配置字段或局部脚本都不能自动升级为个人端到端 system ownership。</p>
+<h2 id="9-vol-08">9. VOL 08 退出条件</h2>
+<h3 id="9-1-coverage-complete">9.1 Coverage complete</h3>
+<ol><li><code>SYS-VLA-001..004</code> 与 <code>CODE-VLA-001..008</code> 全部有唯一 source/knowledge/card 三联件，卷级 registry 与索引同步。</li><li>每张卡包含 stable ID、优先级/难度、短答、机制展开、来源、项目挂钩、易错点、追问和练习状态。</li><li>新节点有 primary/official revision 与 claim boundary；跨卷链接不能单独支撑强事实。</li></ol>
+<h3 id="9-2-reviewed">9.2 Reviewed</h3>
+<ol><li>12 个节点的 canonical/HTML/review SHA、单 H1、层级、锚点、公式、代码、表格和本地链接通过。</li><li>四个 SYS 节点逐一完成独立事实/设计边界复核；两个 CODE 学习簇各至少有一次 reference-parity review。</li><li>项目 hook 只引用 evidence inventory/ownership ledger；缺 runtime、checkpoint、raw bundle 或候选人确认时保留 WARN。</li></ol>
+<h3 id="9-3-drilled">9.3 Drilled</h3>
+<ol><li><code>SYS-VLA-001..004</code> 各完成一次限时系统设计口述，记录需求澄清、容量、API、状态、failure 与 trade-off 反馈。</li><li><code>CODE-VLA-001..008</code> 各完成一次白板或 runtime 练习，记录代码、测试、复杂度、错误与复盘。</li><li>只有真实回答/实现后才创建或更新 coaching state；页面覆盖与静态校验不改变 <code>unseen/weak/pass/strong/stale</code>。</li></ol>
+<h3 id="9-4-project-truth">9.4 Project truth</h3>
+<ol><li>每个 SYS 回答至少包含一个真实项目 hook，同时明确“已做 / 参与 / 可补做 / 未验证 / 不能说”。</li><li>不要求虚构 fleet 或生产部署；没有直接证据时，允许把答案限定为设计方案和项目差距分析。</li><li>系统设计能力与个人已落地系统是两个不同 claim，必须分别表述。</li></ol>
+<h2 id="10">10. 缺口优先级与下一切片</h2>
+<table><thead><tr><th>优先级</th><th>缺口</th><th>原因</th><th>下一动作</th></tr></thead><tbody>
+<tr><td>P0-1</td><td><code>SYS-VLA-002</code> knowledge</td><td>request/schema、state、timing、backpressure、real-time与truth boundary已完成教学转译</td><td>已完成，保持WARN</td></tr>
+<tr><td>P0-2</td><td><code>SYS-VLA-002</code> card</td><td>建立在已审knowledge上，包含短答、机制、诊断、项目 hook 与危险答案</td><td>已完成一张unseen卡，保持WARN</td></tr>
+<tr><td>P0-3</td><td><code>SYS-VLA-004</code> oral drill</td><td>knowledge/card 已完成；需记录 incident/recovery 口述与项目边界</td><td>下一步进行一次真实系统设计口述</td></tr>
+<tr><td>P1</td><td><code>SYS-VLA-003</code> fleet scheduling</td><td>价值高但依赖 serving identity、state 与 SLO 合同</td><td>source+knowledge+card已同步，等待口述</td></tr>
+</tbody></table>
+<p>下一 bounded slice：<strong>只进行一次 <code>SYS-VLA-004</code> 系统设计真实口述</strong>；保持 <code>unseen</code>、不修改 mastery、不创建<code>coaching_state.md</code>，不启动其他 VOL 08 节点。</p>
+<h2 id="references">参考入口（References）</h2>
+<ol><li><a href="00_github_guidance_and_sources.md">GitHub 骨架与来源入口</a></li><li><a href="../knowledge/00_vla_knowledge_map.md">VLA Knowledge Map</a></li><li><a href="repository_completion_audit.md">Repository Completion Audit</a></li><li><a href="../questions/vol_01_foundations.question_list.md">VOL 01 Phase 0 Question List</a></li><li><a href="vol_08_sys001_vla_training_eval_platform_source_freeze.md">SYS-VLA-001 Source Freeze</a></li><li><a href="vol_08_code001_softmax_source_freeze.md">CODE-VLA-001 Softmax Source Freeze</a></li><li><a href="vol_08_code002_attention_source_freeze.md">CODE-VLA-002 Attention Source Freeze</a></li><li><a href="vol_08_code003_norm_source_freeze.md">CODE-VLA-003 Norm Source Freeze</a></li><li><a href="vol_08_code004_masked_loss_source_freeze.md">CODE-VLA-004 Masked Loss Source Freeze</a></li><li><a href="vol_08_code005_transform_source_freeze.md">CODE-VLA-005 Transform Source Freeze</a></li><li><a href="vol_08_code006_planar_fk_source_freeze.md">CODE-VLA-006 Planar FK Source Freeze</a></li><li><a href="vol_05_completion_independent_fact_review.md">VOL 05 Completion Independent Fact Review</a></li><li><a href="../evidence/evidence_manifest.md">Evidence Manifest</a></li><li><a href="vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.md">SYS-VLA-002 Policy Serving / Real-time Control Loop Source Freeze</a></li></ol>
+</article></body></html>

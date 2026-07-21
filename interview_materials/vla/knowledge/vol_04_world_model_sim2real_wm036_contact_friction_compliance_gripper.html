@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 World Model / Sim2Real：Contact、Friction、Compliance 与 Gripper Semantics（WM-036）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm036_contact_friction_compliance_gripper.md">
+<meta name="aris:source-sha256" content="cb3615587ec91ebb8d7c75f5306b0232db78e663593b9f73b90ba758ab7d2901">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>cb3615587ec91ebb8d7c75f5306b0232db78e663593b9f73b90ba758ab7d2901</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm036_contact_friction_compliance_gripper.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 面试结论</a></li><li><a href="#2-contact-mode-switch">2. Contact 是 mode switch</a></li><li><a href="#3-friction-cone">3. Friction cone</a></li><li><a href="#4-compliance-solver">4. Compliance 与 solver</a></li><li><a href="#5-friction">5. Friction 不止一个数字</a></li><li><a href="#6-geometry-margin">6. Geometry/margin 同样关键</a></li><li><a href="#7-gripper-scalar">7. Gripper scalar 到底是什么</a></li><li><a href="#8">8. 六级抓取指标</a></li><li><a href="#9-conditioned-range">9. Conditioned range</a></li><li><a href="#10-contact-micro-bench">10. Contact micro-bench</a></li><li><a href="#11-trace">11. 必须保存的 trace</a></li><li><a href="#12-first-divergence">12. First-divergence 诊断</a></li><li><a href="#13-matched-contact-ablation">13. Matched contact ablation</a></li><li><a href="#14">14. 实现伪代码</a></li><li><a href="#15">15. 项目挂钩与真实性边界</a></li><li><a href="#16">16. 实战审计清单</a></li><li><a href="#17">17. 参考来源</a></li><li><a href="#18">18. 下一节点</a></li></ol></nav>
+<h1>VOL 04 World Model / Sim2Real：Contact、Friction、Compliance 与 Gripper Semantics（WM-036）</h1>
+<div class="meta">状态：drafted / VLA-WM-036 / knowledge_38_of_44 / card_synced / WARN 更新日期：2026-07-18 核心问题：friction、contact、compliance 和 gripper semantics 为什么是 manipulation Sim2Real 的高风险点？ 前置：<a href="vol_04_world_model_sim2real_wm031_reality_gap_taxonomy.html">WM-031 Reality-gap Taxonomy</a>、<a href="vol_04_world_model_sim2real_wm034_control_latency_actuator_controller_mismatch.html">WM-034 Timing / Controller</a>、<a href="../sources/vol_04_wm036_contact_friction_compliance_gripper_source_freeze.html">WM-036 Source Freeze</a>。</div>
+<h2 id="1">1. 面试结论</h2>
+<p>contact 高风险，因为它是 hybrid/non-smooth 交叉层：</p>
+<ol><li>separated/stick/slip/roll 的模式切换会把小误差放大成抓住/滑落；</li><li>friction 有 sliding/torsional/rolling，不是全局一个 \(\mu\)；</li><li>compliance、solver、timestep、geometry/margin 一起影响 penetration/bounce/slip；</li><li>gripper scalar 需要 sign/type/unit/range/speed/force/controller/firmware 合同；</li><li>command、aperture、contact、hold、lift、task success 是不同指标；</li><li>先 free-space，再 press/slip/hold/lift micro-bench，最后 long task；</li><li>没有 force/current/contact trace 与 matched real protocol，不声称 contact Sim2Real。</li></ol>
+<h2 id="2-contact-mode-switch">2. Contact 是 mode switch</h2>
+<div class="formula">\[
+m_t\in\{\text{separated},\text{touching},\text{sticking},\text{sliding},\text{rolling}\},
+\qquad x_{t+1}=f_{m_t}(x_t,u_t;\xi_c).
+\]</div>
+<p>变量解释：\(m_t\) 是 contact mode，\(\xi_c\) 是 geometry、friction、compliance、solver、gripper/controller。实现映射：保存 contact onset/offset、pair、point/normal、force、relative/slip velocity、penetration/gap；只看 final success 无法定位 mode switch。</p>
+<h2 id="3-friction-cone">3. Friction cone</h2>
+<div class="formula">\[
+\lVert f_t\rVert_2\le\mu f_n,
+\qquad f_n\ge0.
+\]</div>
+<p>变量解释：\(f_n\) 是 normal force，\(f_t\) 是 tangential demand，\(\mu\) 是简化 sliding friction。超过 cone 后 stick 变 slip。诊断 margin：</p>
+<div class="formula">\[
+m_f=\mu f_n-\lVert f_t\rVert_2.
+\]</div>
+<p>实现映射：与 slip velocity、contact pair、object pose、normal load同步。MuJoCo 还支持 torsional/rolling friction 与 elliptic/pyramidal cone，所以 \(m_f\) 只是简化解释。[1]</p>
+<h2 id="4-compliance-solver">4. Compliance 与 solver</h2>
+<p>物理 pad/object 简化：</p>
+<div class="formula">\[
+F_n\approx k_p\delta+c_p\dot\delta.
+\]</div>
+<p>变量解释：\(\delta\) 是压缩/penetration proxy，\(k_p,c_p\) 是有效 stiffness/damping。真实材料可能 nonlinear/load/rate/temperature dependent。</p>
+<p>MuJoCo soft constraint 可抽象为：</p>
+<div class="formula">\[
+a_r=-bv-kr,
+\qquad a_c=(1-d)a_u+da_r.
+\]</div>
+<p><code>solref/solimp</code>、timestep、integrator/solver 共同决定数值 behavior；不能直接把配置值叫材料刚度。[1][2]</p>
+<h2 id="5-friction">5. Friction 不止一个数字</h2>
+<table><thead><tr><th>维度</th><th>对 manipulation 的影响</th></tr></thead><tbody>
+<tr><td>sliding</td><td>finger/object 或 object/table 平面滑动</td></tr>
+<tr><td>torsional</td><td>绕 contact normal 扭转</td></tr>
+<tr><td>rolling</td><td>球/圆柱或局部曲面滚动</td></tr>
+<tr><td>cone type</td><td>elliptic/pyramidal approximation 改变可行 force set</td></tr>
+<tr><td>condim/mixing</td><td>contact DOF 与 pair friction/priority/solmix</td></tr>
+</tbody></table>
+<p>range 要按 pad×object/surface、normal load、wear/contamination 条件化，不能单一 global uniform。[1][2]</p>
+<h2 id="6-geometry-margin">6. Geometry/margin 同样关键</h2>
+<ul><li>collision mesh 与 visual mesh 是否一致；</li><li>finger pad geometry、scale、alignment；</li><li>object thin edge/corner、COM/inertia；</li><li>margin/gap/contact pair/filter；</li><li>initial penetration、self-collision、joint limit；</li><li>rigid/deformable assumption。</li></ul>
+<p>视觉看起来接触，并不代表 collision geometry 已接触；反之也可能有 invisible margin 提前接触。</p>
+<h2 id="7-gripper-scalar">7. Gripper scalar 到底是什么</h2>
+<div class="formula">\[
+u_g=\mathcal C_{\kappa_g}
+\left(T_g(a_g),q_g,\dot q_g,i_g,f_g\right).
+\]</div>
+<p>变量解释：\(T_g\) 是 sign/range/binary-position-velocity-force mapping，\(\mathcal C\) 是 controller speed/gain/force/current/deadband/coupling/reset，\(q_g,i_g,f_g\) 是 aperture/joint、current、force feedback。实现映射：保存 scalar→controller target→finger command→actual aperture/force round-trip。</p>
+<p>robosuite Panda gripper 约定 <code>-1=open,1=closed</code>，并把一维 action 累积映射为两指控制；其他 simulator/dataset/firmware 可能相反或使用 aperture/force。[3]</p>
+<h2 id="8">8. 六级抓取指标</h2>
+<ol><li><code>command_close</code>：policy 发出闭合；</li><li><code>aperture_reached</code>：finger 到达目标；</li><li><code>contact_detected</code>：一侧/双侧 contact；</li><li><code>force_sufficient</code>：normal/tangent margin 合理；</li><li><code>object_held/lifted</code>：短时约束/离桌；</li><li><code>transport/task_success</code>：完整任务谓词。</li></ol>
+<p>低级指标不能替代高级指标；“gripper close=1”不等于抓取成功。</p>
+<h2 id="9-conditioned-range">9. Conditioned range</h2>
+<table><thead><tr><th>factor</th><th>evidence</th><th>correlation</th></tr></thead><tbody>
+<tr><td>friction(3)</td><td>push/slip/twist/roll</td><td>pad×object/surface/load/wear</td></tr>
+<tr><td>compliance</td><td>force–displacement/rate</td><td>material/temperature/speed/load</td></tr>
+<tr><td>geometry/margin</td><td>CAD/scan/contact-point residual</td><td>object/finger revision/scale</td></tr>
+<tr><td>gripper dynamics</td><td>closure/current/hold trace</td><td>controller/firmware/battery/temp</td></tr>
+<tr><td>solver/timestep</td><td>sensitivity/trace fit</td><td>sim build/integrator/iterations/cone</td></tr>
+</tbody></table>
+<p>material、friction、compliance、gripper force必须联合或条件采样，避免不可能组合。</p>
+<h2 id="10-contact-micro-bench">10. Contact micro-bench</h2>
+<p>按顺序：</p>
+<ol><li>free-space closure；</li><li>approach/touch；</li><li>normal press；</li><li>tangential push/slip；</li><li>pinch/hold；</li><li>lift；</li><li>disturbance/transport；</li><li>task。</li></ol>
+<p>free-space 未通过时，先查 WM-034 的 sign/range/controller/actuator；不要调 friction 掩盖接口错误。</p>
+<h2 id="11-trace">11. 必须保存的 trace</h2>
+<ul><li>policy/gripper command、controller target；</li><li>finger aperture/joint/velocity/current/force；</li><li>contact pair/point/normal/distance/penetration；</li><li>normal/tangent/torsional force、relative/slip velocity；</li><li>object pose/twist、COM、hold/lift predicate；</li><li>solver/timestep/integrator/iterations/cone/contact config；</li><li>saturation/limit/event/failure code与 timestamp。</li></ul>
+<h2 id="12-first-divergence">12. First-divergence 诊断</h2>
+<table><thead><tr><th>症状</th><th>首查</th></tr></thead><tbody>
+<tr><td>close command 后 finger 不动</td><td>sign/range/controller/limit/actuator</td></tr>
+<tr><td>finger 合拢但无接触</td><td>geometry/scale/pose/margin</td></tr>
+<tr><td>接触后弹开/振荡</td><td>stiffness/damping/timestep/latency/gain</td></tr>
+<tr><td>normal force 足仍滑</td><td>friction cone/tangent demand/COM/acceleration</td></tr>
+<tr><td>sim 抓稳、real 掉落</td><td>pad/material/friction/compliance/force/current</td></tr>
+<tr><td>free-space 已错</td><td>不进入 contact；回到 action/controller gate</td></tr>
+</tbody></table>
+<p>OpenAI Dexterous 明确指出 tendon-vs-torque 与 rigid-vs-deformable contact gap，说明 contact failure 常是 model/controller 跨层问题。[4]</p>
+<h2 id="13-matched-contact-ablation">13. Matched contact ablation</h2>
+<p>固定 checkpoint、data/compute/init、camera/action/timing、controller family、object/task、trials、success predicate：</p>
+<table><thead><tr><th>arm</th><th>变化</th></tr></thead><tbody>
+<tr><td>nominal</td><td>baseline contact</td></tr>
+<tr><td>friction</td><td>sliding/torsional/rolling</td></tr>
+<tr><td>compliance</td><td>stiffness/damping/softness</td></tr>
+<tr><td>geometry</td><td>collision/margin/contact pair</td></tr>
+<tr><td>gripper</td><td>sign/range/mode/speed/force/controller</td></tr>
+<tr><td>solver</td><td>timestep/integrator/iterations/cone</td></tr>
+<tr><td>combined</td><td>calibrated factors</td></tr>
+<tr><td>overwide</td><td>invalid/irrelevant stress</td></tr>
+</tbody></table>
+<p>分 free-space、press/slip、hold/lift、transport、task 报告，不能只看最终平均 success。</p>
+<h2 id="14">14. 实现伪代码</h2>
+<pre><code class="language-python">def contact_microbench(env, gripper, object_spec, contract, mode):
+    # 1. Freeze simulator, controller, gripper, object and material revisions.
+    episode = reset_with_manifest(env, gripper, object_spec, contract)
+
+    # 2. Verify command-to-aperture in free space before contact attribution.
+    free_trace = run_free_space_closure(episode, contract.gripper)
+    if not free_trace.within_tolerance:
+        return classify_failure(&quot;gripper_or_controller&quot;, free_trace)
+
+    # 3. Execute one isolated press/slip/hold/lift/transport mode with safety limits.
+    trace = execute_contact_mode(
+        episode, mode, contract.safety_limits, log_force_current=True
+    )
+
+    # 4. Analyze contact onset, force/displacement, friction margin and object drift.
+    metrics = analyze_contact_trace(trace, contract.contact_semantics)
+
+    # 5. Retain first divergence, full revisions and invalid/rejected reasons.
+    return validate_record(metrics, trace, episode.manifest, contract)</code></pre>
+<h2 id="15">15. 项目挂钩与真实性边界</h2>
+<p>当前 <a href="../evidence/evidence_manifest.html">Evidence Manifest</a>、OpenPiVLA/UWM inventories 支持 controller/rollout/grasp-contact failure hypothesis，但缺 contact/gripper/solver manifest、scalar→aperture/force round-trip、material table、micro-bench、force/current/contact trace、matched contact arms、真机结果和 ownership。</p>
+<p>面试安全回答：</p>
+<div class="meta">Contact 是 mode-switch 问题。我会先闭合 gripper sign/type/unit/range/controller 和 free-space closure，再按 pad×object/surface 条件做 press、slip、hold、lift micro-bench，保存 force/current/contact/slip/object trace；最后比较 friction、compliance、geometry、gripper、solver、combined、overwide。当前项目没有真实 contact bundle，所以不声称已提升真机抓取成功率。</div>
+<p>不能说：</p>
+<ul><li>“friction=1 就够了”；</li><li>“1 总是 close”；</li><li>“两指接触就等于 grasp success”；</li><li>“调 solref 就拟合了真实橡胶”；</li><li>“sim grasp 成功说明真机也会成功”；</li><li>“当前项目已完成 contact randomization/real transfer”。</li></ul>
+<h2 id="16">16. 实战审计清单</h2>
+<ul><li>[ ] contact/friction(3)/condim/solref/solimp/margin/solver/timestep/build 完整；</li><li>[ ] gripper sign/type/unit/range/speed/force/current/deadband/reset 完整；</li><li>[ ] collision visual/mesh/object/pad/material revision 可追溯；</li><li>[ ] scalar→controller→aperture/force round-trip；</li><li>[ ] free-space→press→slip→hold→lift→transport→task；</li><li>[ ] contact pair/force/slip/penetration/current/object trace；</li><li>[ ] conditioned range/correlation 与 invalid rejection；</li><li>[ ] factor/combined/overwide matched arms；</li><li>[ ] sim/real initial condition/protocol/denominator；</li><li>[ ] ownership 与 C0–C3 claim 对齐。</li></ul>
+<h2 id="17">17. 参考来源</h2>
+<ol><li>MuJoCo, <a href="https://mujoco.readthedocs.io/en/stable/computation/index.html#soft-contact-model">Contact model</a>。</li><li>MuJoCo, <a href="https://mujoco.readthedocs.io/en/stable/XMLreference.html">XML Reference</a>。</li><li>robosuite, <a href="https://github.com/ARISE-Initiative/robosuite/blob/51cc01785bab80ffeed20da15e67d7dd4140e76a/robosuite/models/grippers/panda_gripper.py">Panda gripper @ v1.5.1</a>。</li><li>OpenAI et al., <a href="https://arxiv.org/abs/1808.00177v5"><em>Learning Dexterous In-Hand Manipulation</em></a>。</li><li><a href="../sources/vol_04_wm036_contact_friction_compliance_gripper_source_freeze.html">WM-036 Source Freeze</a>。</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest</a>。</li></ol>
+<h2 id="18">18. 下一节点</h2>
+<p>下一节点是 <code>VLA-WM-037</code>：residual policy、online adaptation、test-time system ID 与 data aggregation 如何选择。本节点保持 WARN，题卡在真实口述前保持 unseen。</p>
+</article></body></html>

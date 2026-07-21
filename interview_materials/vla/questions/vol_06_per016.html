@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：PER-016 原子题卡</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\vol_06_per016.md">
+<meta name="aris:source-sha256" content="768ed52ec5da08d3bba1c3825381c5a1653ea30fedcf07987f74dc927798d4f7">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>768ed52ec5da08d3bba1c3825381c5a1653ea30fedcf07987f74dc927798d4f7</code>；生成自：<code>interview_materials\vla\questions\vol_06_per016.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#localization-odometry-slam-map-frame-drift">Localization、Odometry、SLAM、Map Frame 与 Drift</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：PER-016 原子题卡</h1>
+<div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-20 覆盖范围：<code>VLA-PER-016</code> 难度：L3 1 题 优先级：P1 1 题 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_06_per016_localization_odometry_slam_map_frame_drift.html">PER-016 Localization / Odometry / SLAM / Map-frame / Drift Knowledge</a>；来源边界见 <a href="../sources/vol_06_per016_localization_odometry_slam_map_frame_drift_source_freeze.html">PER-016 Source Freeze</a>。</div>
+<h2 id="localization-odometry-slam-map-frame-drift">Localization、Odometry、SLAM、Map Frame 与 Drift</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-PER-016</b> · 机器人怎样定位自己？Odometry、Localization和SLAM如何区分，map/odom、loop closure、drift与ATE/RPE怎样讲？</summary>
+<p><strong>面试意图</strong>：判断你能否从sensor/clock/calibration身份讲到state/covariance、local/global frame、verified loop与map revision，再用ATE/RPE/alignment解释评估，并在项目追问中坚持“map资产不等于SLAM runtime”。</p>
+<p><strong>30 秒回答</strong>：Odometry积累相邻运动，连续但会漂；localization在有UUID和版本的已知地图里估位姿；SLAM共同估轨迹与地图。控制用连续<code>odom→base</code>，回环或重定位更新跳变的<code>map→odom</code>。回环候选须过几何验证、相对位姿和图残差门。ATE看全局轨迹，RPE看局部漂移，并冻结时间关联、SE3/Sim3、单位与丢失段；Sim3会隐藏尺度误差。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：先固定sensor、时钟、内外参、噪声、estimator/config/checkpoint和map revision。IMU传播pose/velocity/bias与covariance，视觉或scan更新；VINS/Kimera用preintegration与滑窗，OpenVINS是EKF。前端关联、局部估计、后端因子和全局层分责。Loop按候选→几何→relative transform→robust pose graph→新map版本，false loop会毁图；relocalization恢复当前pose，map merge对齐不同session。ATE/RPE要报告alignment、delta和failure denominator，不能用一个分数代表可用性、尺度和地图质量。</p>
+<p><strong>诊断 / 证据</strong>：按first divergence检查sensor ID/packet order/clock→calibration与frame方向→initialization/scale/gravity→frontend inliers/geometry residual→local state、bias、covariance、conditioning与marginal prior→loop candidate、geometric inliers、relative transform、graph residual与map revision→timestamp association、SE3/Sim3、RPE delta、unit与lost denominator→planner/controller是否消费stale或jumped pose。确定性probe至少保留<code>map→odom=-2m</code>与<code>odom→base=10m</code>合成8m、SE2 roundtrip误差<code>6.12e-17</code>、P0=.01/Q=.04十步得到prior .41且update后.0738、ATE raw 5对齐后0、RPE .1、false-loop residual 2&gt;.5拒绝、scale 1.2经Sim3归零、map delta -1.4而odom delta .1、非单调时间拒绝和<code>runtimeReady=false/softwareOnly=true</code>不通过localization gate。</p>
+<p><strong>项目挂钩</strong>：Robot Harness有0/127/255三态occupancy、0.02m resolution、54,856点<code>x y z intensity timestamp ring</code> PCD、<code>reloc_map/poses.txt</code>、pixel/world与state bridge；fallback targeted test为<code>1 passed</code>，但明确<code>runtimeReady=false/runtimeRealApiCalls=false</code>，没有sensor bag、clock/calibration lineage、estimator config/checkpoint、live TF、pose/covariance、keyframe/pose graph、loop accept/reject或ATE/RPE bundle。OPD只有2D point/box/relation上游；OpenPiVLA只有image/state/action接口；WAM只有video/world/action诊断；UWM用sim ground-truth state。五项目都不能升级为候选人已实现SLAM、定位提升或真实robot result，Git身份、ROS目录与map资产也不能替代runtime和ownership。</p>
+<p><strong>追问树</strong>：tracking、odometry、localization、mapping与SLAM各估什么？有<code>x,y,yaw</code>为何不等于定位有效？<code>map→odom→base</code>各由谁维护？为什么map可跳而odom可漂？controller直接吃map pose有什么风险？IMU传播为何增大covariance？preintegration依赖哪些clock/bias/extrinsic合同？前端点多为何仍可能错？cost下降为何不证明frame/time正确？filter与sliding window怎样公平比较？gauge和monocular scale ambiguity是什么？keyframe/window/marginalization怎样取舍？loop candidate到graph edge有哪些门？false loop为何比不闭环更坏？relocalization、loop closure与map merge怎样区分？pose graph中的<code>Z_ij/Ω_ij</code>是什么？DROID learned为何仍有graph与BA？ATE与RPE分别回答什么？SE3与Sim3隐藏什么？lost/relocal denominator怎样定？map quality与trajectory quality为何分开？Robot Harness的PCD、reloc poses与green fallback test最多支持什么claim？</p>
+<p><strong>易错点</strong>：把tracking/odometry/localization/SLAM混成pose输出；把连续当准确、global当平滑；让controller消费global correction jump；说IMU自动消除scale/drift；把preintegration说成平均；用inlier多或cost低代替frame/time验证；把place similarity直接加图边；把relocalization等同loop、点云拼接等同map merge；无条件声称filter快、optimization准；只报ATE不报alignment、RPE、lost；用Sim3后ATE证明metric scale；把DROID说成无geometry；用PCD、occupancy、ROS路径、fallback test或Git身份证明本地SLAM与ownership。</p>
+<p><strong>危险答案</strong>：说“SLAM就是前端提特征、后端BA”“map比odom准所以控制都用map”“有IMU就不漂”“检索到相似地点就闭环”“ATE低就是定位好”“Sim3只是换坐标”“DROID端到端不需要几何”“Harness已经有PCD和reloc map，所以做了SLAM”，却不交代sensor/clock/calibration、state/covariance、frame authority、loop geometry/graph residual、map revision、alignment/delta/denominator、live estimator artifact与候选人ownership。</p>
+<p><strong>来源</strong>：[1][2][3][4][5][6][7][8][9]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../knowledge/vol_06_per016_localization_odometry_slam_map_frame_drift.html">PER-016 Localization / Odometry / SLAM / Map-frame / Drift Knowledge</a>：typed manifest、map/odom、state/covariance、loop/relocal/map merge、drift、ATE/RPE、10 probes、两档回答与五项目truth boundary。</li><li><a href="../sources/vol_06_per016_localization_odometry_slam_map_frame_drift_source_freeze.html">PER-016 Source Freeze</a>：六份完整primary PDF、六个official repositories/36文件、REP-105、10个deterministic probes与Robot Harness local-direct audit。</li><li>Campos et al., <a href="https://arxiv.org/pdf/2007.11898v2">ORB-SLAM3 v2</a>；<a href="https://github.com/UZ-SLAMLab/ORB_SLAM3/tree/4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4">official code@4452a3c</a>。</li><li>Qin et al., <a href="https://arxiv.org/pdf/1708.03852v1">VINS-Mono v1</a>；<a href="https://github.com/HKUST-Aerial-Robotics/VINS-Mono/tree/90dabb5ec79946ae42fd2e1e91d4e69aabe1e25d">official code@90dabb5</a>。</li><li>Hess et al., <a href="https://research.google.com/pubs/archive/45466.pdf">Real-Time Loop Closure in 2D LIDAR SLAM</a>；<a href="https://github.com/cartographer-project/cartographer/tree/877157a0d91788a7700221d87232d412cb3c1ef4">Cartographer code@877157a</a>。</li><li>Teed &amp; Deng, <a href="https://arxiv.org/pdf/2108.10869v2">DROID-SLAM v2</a>；<a href="https://github.com/princeton-vl/DROID-SLAM/tree/2dfd39f0dcad44012ca7bbb8aa70b55edbfa9c99">official code@2dfd39f</a>。</li><li>Geneva et al., <a href="https://pgeneva.com/downloads/papers/Geneva2020ICRA.pdf">OpenVINS ICRA 2020</a>；<a href="https://github.com/rpng/open_vins/tree/69488123ed9362dd44b6f28e7f4680abbff1442b">official code@6948812</a>。</li><li>Rosinol et al., <a href="https://arxiv.org/pdf/1910.02490v3">Kimera v3</a>；<a href="https://github.com/MIT-SPARK/Kimera-VIO/tree/ce8c59b7b273ab5ac29db7e5572e1623760e19c7">Kimera-VIO code@ce8c59b</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD</a>、<a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA</a>、<a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness</a>、<a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a> 与 <a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM</a> Claim–Evidence Inventories。</li></ol>
+</article></body></html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 03 Source Audit B：π0 / π0.5 / FAST / openpi Claim-to-Code</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_03_pi0_fast_openpi_claim_to_code.md">
+<meta name="aris:source-sha256" content="27fbb3e860864db0206dfd29e550b8e20170ba77f053c57d0c541b516e3a715f">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>27fbb3e860864db0206dfd29e550b8e20170ba77f053c57d0c541b516e3a715f</code>；生成自：<code>interview_materials\vla\sources\vol_03_pi0_fast_openpi_claim_to_code.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 证据层级与冻结边界</a></li><li><a href="#3-0-observation-action-chunk-action-expert">3. π0 的 observation、action chunk 与 action expert</a></li><li><a href="#3-1-i-o">3.1 论文 I/O 合同</a></li><li><a href="#3-2-prefix-suffix">3.2 prefix / suffix 信息流</a></li><li><a href="#3-3-backbone-action-expert">3.3 backbone 与 action expert</a></li><li><a href="#4-flow-matching">4. Flow Matching：论文约定与代码约定为什么等价</a></li><li><a href="#4-1-0">4.1 π0 论文约定</a></li><li><a href="#4-2-openpi">4.2 openpi 代码约定</a></li><li><a href="#4-3">4.3 等价变量替换</a></li><li><a href="#5-0-0-5">5. π0 与 π0.5：论文差异、代码差异和未覆盖项</a></li><li><a href="#5-1-0-5-hybrid-objective">5.1 π0.5 论文的 hybrid objective</a></li><li><a href="#5-2-state-timestep">5.2 论文中的 state 与 timestep 注入</a></li><li><a href="#5-3-paper-repo">5.3 必须保留的 paper / repo 缺口</a></li><li><a href="#6-fast-action-chunk-token">6. FAST：从连续 action chunk 到频域 token</a></li><li><a href="#6-1-normalization-hub-processor">6.1 normalization 不在 Hub processor 内</a></li><li><a href="#6-2-dct-frequency-first-flatten">6.2 DCT、量化与 frequency-first flatten</a></li><li><a href="#6-3-bpe-learned-component-compression">6.3 BPE 是 learned component，但 compression 不等于控制质量</a></li><li><a href="#6-4">6.4 三组容易混淆的默认值</a></li><li><a href="#7-pi0fast-decode-path">7. Pi0FAST：自回归训练与 decode path</a></li><li><a href="#7-1-token-layout-masks">7.1 token layout 与 masks</a></li><li><a href="#7-2-masked-next-token-ce">7.2 masked next-token CE</a></li><li><a href="#7-3-token-output-transform-action">7.3 推理先生成 token，output transform 再恢复 action</a></li><li><a href="#7-4-latency">7.4 latency 的来源</a></li><li><a href="#8-normalization-padding-slicing">8. Normalization、padding、slicing 与执行合同</a></li><li><a href="#8-1-checkpoint-matched-normalization">8.1 checkpoint-matched normalization</a></li><li><a href="#8-2-zero-padding-selection-matrix">8.2 zero-padding 与 selection matrix</a></li><li><a href="#8-3-quantile-unnormalize">8.3 quantile unnormalize</a></li><li><a href="#8-4-action-axis-unit">8.4 action axis 与 unit 不能靠维数猜</a></li><li><a href="#9-action-horizon-execution-window-replan">9. Action horizon、execution window 与 replan</a></li><li><a href="#10-action">10. 三条 action 路线对照</a></li><li><a href="#11-claim-to-code">11. Claim-to-code 总表</a></li><li><a href="#12-phase-0">12. 对 Phase 0 题目的支持状态</a></li><li><a href="#13-openpivla">13. 本地 OpenPiVLA 证据缺口</a></li><li><a href="#14">14. 风险与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 03 Source Audit B：π0 / π0.5 / FAST / openpi Claim-to-Code</h1>
+<div class="meta">审计日期：2026-07-19 状态：independent_fact_reviewed / pi05_fast_norm_rollout_checked / local_runtime_pending / WARN 论文版本：π0 arXiv 2410.24164v4；π0.5 arXiv 2504.16054v1；FAST arXiv 2501.09747v1 官方仓库：Physical-Intelligence/openpi frozen commit 15a9616a00943ada6c20a0f158e3adb39df2ccac FAST Hub：physical-intelligence/fast frozen revision ec4d7aa71691cac0b8bed6942be45684db2110f4 对应题目：VLA-ARCH-002..004、006、008、010..012；VLA-ACT-001..002、005..008、010..011、023..025、027..028、031..032 本页问题：π0 的连续 flow action expert、π0.5 的混合训练、π0-FAST 的自回归 token 路线以及 openpi 的 normalization / rollout 到底如何连接？哪些公开事实仍不能证明本地 OpenPiVLA？</div>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>π0 的公开主路径是多图 + 语言 + proprioception → 连续 action chunk</strong>。论文使用 2–3 张 RGB、语言命令与关节状态，预测长度 50 的动作块；冻结 openpi 默认配置则给出 3 个图像槽、32 维 model action space 和 H=50 的张量合同。[P1][R1]</li><li><strong>π0 的 action expert 学的是 flow velocity，不是 action token CE</strong>。论文从 noise time 0 积分到 data time 1；openpi 采用相反但等价的时间参数，从 t=1 的 noise 以负步长积分到 t=0 的 data，默认 10 步。[P1][R1]</li><li><strong>π0.5 论文不是简单的“π0 改了 state token”</strong>。论文预训练时用 FAST action token 做 autoregressive next-token prediction，post-training 再加入连续 action expert，并联合优化 token CE 与 flow loss；推理用文本自回归输出后接 10 步 flow sampling。[P2]</li><li><strong>冻结 openpi 的 Pi0(pi05=True) 只直接实现 flow loss</strong>。它确实把 state 放进离散 prompt token，并用 adaRMSNorm 注入 flow timestep，但 compute_loss 没有 π0.5 论文的 FAST action-token CE 分支。不能说该 commit 完整复现了论文的 hybrid pre-training objective。[R1]</li><li><strong>openpi 的 Pi0FAST 是另一条独立自回归路线</strong>。它把 prompt、离散 state 和 FAST actions 排成 prefix/postfix token sequence，只对 postfix 做 next-token CE，推理逐 token 生成后再通过 FAST decoder 恢复 H×D 连续动作。[R1]</li><li><strong>FAST 的算法顺序是 quantile normalization → per-dimension temporal DCT → scale-and-round → frequency-first flatten → BPE</strong>。BPE 是唯一 learned component；DCT 和反 DCT 是解析变换。官方 Hub processor 本身不做 normalization，调用者必须先把动作处理到合适尺度。[P3][H1]</li><li><strong>论文默认值、Hub tokenizer 与 model config 不是同一个“默认”</strong>。FAST 单数据集实验使用 scale=10、BPE vocab=1024；冻结 FAST+ Hub processor 是 scale=10、vocab=2048；openpi 的 Pi0FASTConfig 默认 H=32、D=32，而 LIBERO 示例配置显式改为 H=10、D=7。[P3][H1][R1]</li><li><strong>model horizon、executed prefix 与 replan interval 必须分开</strong>。openpi LIBERO client 默认每次取 chunk 的前 K=5 步执行后重新推理；ActionChunkBroker 则可把整个 action horizon 逐步消费完才请求新 chunk。H 和 K 不是同一参数。[R1]</li><li><strong>normalization stats 是 checkpoint contract，不是可选装饰</strong>。policy 构造时从 checkpoint assets 取训练期 stats；推理 pipeline 在 sample 前 normalize、sample 后 unnormalize，再做 dataset-specific output slicing。[R1]</li><li><strong>以上仍不能证明本地 OpenPiVLA 的 97.4%、Qwen JSON/token、horizon 10 或个人贡献</strong>。这些必须由本地 checkpoint、config、diff、norm stats、rollout client 与 eval summary 建立独立 artifact manifest。</li></ol>
+<h2 id="2">2. 证据层级与冻结边界</h2>
+<table><thead><tr><th>层级</th><th>冻结对象</th><th>本页能支持</th><th>本页不能支持</th></tr></thead><tbody>
+<tr><td>论文</td><td>π0 v4、π0.5 v1、FAST v1</td><td>方法定义、论文约定、公开训练/推理路线</td><td>某个未来 commit 或本地 fork 的逐行行为</td></tr>
+<tr><td>official repo</td><td>openpi commit 15a9616...，Apache-2.0</td><td>JAX model、transform、policy、LIBERO client 的当前实现</td><td>论文未发布的训练数据；本地项目实际采用情况</td></tr>
+<tr><td>official model artifact</td><td>FAST Hub revision ec4d7aa...，Apache-2.0</td><td>processor 源码、scale、vocab、DCT/BPE encode/decode</td><td>openpi checkpoint 是否固定加载了该 revision</td></tr>
+<tr><td>同源推断</td><td>paper ↔ frozen code 对照</td><td>时间约定等价、shape 流、mask 语义</td><td>local run 的 checkpoint、指标、axis/order</td></tr>
+<tr><td>本地项目材料</td><td>03_openpivla_action_modeling.html</td><td>待核对 claim 与项目口述入口</td><td>缺 raw config/log/diff 时的强归因</td></tr>
+</tbody></table>
+<p>冻结 openpi commit 的提交时间为 2026-06-16T00:14:00Z。本页所有 GitHub 代码链接都固定到该 commit；FAST Hub 链接固定到 revision ec4d7aa...。访问日期均为 2026-07-16。</p>
+<h2 id="3-0-observation-action-chunk-action-expert">3. π0 的 observation、action chunk 与 action expert</h2>
+<h3 id="3-1-i-o">3.1 论文 I/O 合同</h3>
+<p>令批大小为 B，图像数为 n，动作维数为 D，预测长度为 H。π0 论文把观测和动作块写成：</p>
+<div class="formula">\[
+o_t=[I_t^1,\ldots,I_t^n,\ell_t,q_t],\qquad
+A_t=[a_t,a_{t+1},\ldots,a_{t+H-1}].
+\]</div>
+<p>变量与直觉：每个 \(I_t^i\) 是当前时刻的一路 RGB，\(\ell_t\) 是语言 token，\(q_t\in\mathbb{R}^{D_q}\) 是 proprioceptive joint state，\(A_t\in\mathbb{R}^{H\times D}\) 是未来动作块。论文实验使用 n=2 或 3、H=50。[P1]</p>
+<p>实现映射：冻结 openpi 的 Pi0Config 默认 D=32、H=50，输入规格有 base_0_rgb、left_wrist_0_rgb、right_wrist_0_rgb 三个 image slot，state shape 为 [B,32]，action shape 为 [B,50,32]。[R1]</p>
+<p>这不是“每个机器人天然都有 32 个执行轴”。32 是 model-side unified dimension；真实机器人可使用较少维度，再通过 padding 和 output transform 恢复 dataset contract。</p>
+<h3 id="3-2-prefix-suffix">3.2 prefix / suffix 信息流</h3>
+<p>冻结代码把 π0 分成两个 token group：</p>
+<pre><code class="language-text"># Information-flow sketch: prefix is cached; suffix changes with flow time.
+prefix: image tokens from each valid view + language tokens
+    │
+    ├── cached once during sampling
+    │
+suffix: one continuous state token + H noisy-action tokens
+    │
+    └── recomputed at every flow integration step
+             ↓
+      action_out_proj → velocity [B,H,D]</code></pre>
+<p>该代码块的注释含义：prefix 提供视觉语言条件；suffix 承载随 flow time 改变的动作状态。采样时 prefix 的 KV cache 只计算一次，每个 Euler step 只重算 suffix。[R1]</p>
+<p>π0 的 image/language prefix 内部是 full attention；suffix 的 H 个 action tokens 在同一 action block 内可互相注意。论文明确称 action expert 对 action tokens 使用 full bidirectional attention，因此一次建模整个 chunk，而不是按时间步自回归生成。[P1]</p>
+<h3 id="3-3-backbone-action-expert">3.3 backbone 与 action expert</h3>
+<p>论文和冻结配置都把 PaliGemma 视觉语言模块与较小 action expert 配对：PaliGemma 侧使用 2B Gemma 变体，action expert 约 300M。冻结代码以 action_in_proj 将 D 维 noisy action 映射到 expert width，再以 action_out_proj 返回 D 维 velocity。[P1][R1]</p>
+<p>面试安全说法：</p>
+<ul><li>VLM backbone 负责把图像与语言变成条件 context。</li><li>action expert 负责在这个 context 下建模连续 H×D noisy action 的 velocity field。</li><li>controller 不在 action expert 内；output transform、axis/unit conversion、replan queue 与 env.step 属于 policy/eval interface。</li></ul>
+<h2 id="4-flow-matching">4. Flow Matching：论文约定与代码约定为什么等价</h2>
+<h3 id="4-1-0">4.1 π0 论文约定</h3>
+<p>令真实动作块为 \(A\in\mathbb{R}^{B\times H\times D}\)，高斯噪声为 \(\epsilon\sim\mathcal{N}(0,I)\)，论文时间为 \(\tau\in[0,1]\)。线性 probability path 为：</p>
+<div class="formula">\[
+A^\tau=\tau A+(1-\tau)\epsilon,\qquad
+u_{\mathrm{paper}}=A-\epsilon.
+\]</div>
+<p>变量与直觉：\(\tau=0\) 是 noise，\(\tau=1\) 是 data；沿直线路径的目标 velocity 不随 \(\tau\) 改变。π0 用网络 \(v_\theta(A^\tau,o)\) 预测该速度。[P1]</p>
+<p>训练目标为：</p>
+<div class="formula">\[
+\mathcal{L}_{\mathrm{flow}}
+=
+\mathbb{E}_{A,o,\epsilon,\tau}
+\left[
+\frac{1}{HD}
+\left\|
+v_\theta(A^\tau,o)-(A-\epsilon)
+\right\|_2^2
+\right].
+\]</div>
+<p>变量与实现含义：平方误差先作用于每个 action dimension；论文公式写总体范数，冻结 model 的 compute_loss 先在 D 维取 mean，训练脚本再对 batch 与 H 取 mean，最终等价于对有效 [B,H,D] 元素求平均。该公式只描述公开 π0 路径；若真实项目对 padding 维做 mask，则必须额外写出 mask 来源。[P1][R1]</p>
+<h3 id="4-2-openpi">4.2 openpi 代码约定</h3>
+<p>冻结代码直接写：</p>
+<div class="formula">\[
+x_t=t\epsilon+(1-t)A,\qquad
+u_{\mathrm{code}}=\epsilon-A,
+\quad t\in[0,1].
+\]</div>
+<p>代码从 t=1 的 noise 出发，以 \(dt=-1/N\) 迭代到 t=0 的 data：</p>
+<div class="formula">\[
+x_{t+dt}=x_t+dt\,v_{\theta}^{\mathrm{code}}(x_t,o),
+\qquad N=10\ \text{by default}.
+\]</div>
+<p>变量与实现映射：noise shape 为 [B,H,D]；num_steps 默认 10；prefix KV 先缓存，suffix 在每一步重算；最终返回 x_0。对应 Pi0.compute_loss 与 Pi0.sample_actions。[R1]</p>
+<h3 id="4-3">4.3 等价变量替换</h3>
+<p>令论文时间 \(s=1-t\)，则：</p>
+<div class="formula">\[
+x_{\mathrm{code}}(t)
+=t\epsilon+(1-t)A
+=sA+(1-s)\epsilon
+=x_{\mathrm{paper}}(s),
+\]</div>
+<div class="formula">\[
+u_{\mathrm{code}}=\epsilon-A=-u_{\mathrm{paper}},
+\qquad ds=-dt.
+\]</div>
+<p>因此 \(v_{\mathrm{code}}=-v_{\mathrm{paper}}\)，而 \(v_{\mathrm{code}}dt=v_{\mathrm{paper}}ds\)。直觉上，代码把时间轴和速度方向同时翻转，轨迹上的点与最终 data endpoint 不变。冻结源码还直接注释其 convention 与 π0 paper 相反。[R1]</p>
+<p>面试中不要只说“一个从 0 到 1，一个从 1 到 0”；必须补上 target velocity 也取反，否则会被追问为什么 ODE 仍然等价。</p>
+<h2 id="5-0-0-5">5. π0 与 π0.5：论文差异、代码差异和未覆盖项</h2>
+<h3 id="5-1-0-5-hybrid-objective">5.1 π0.5 论文的 hybrid objective</h3>
+<p>π0.5 论文将同一 action supervision 同时表示为：</p>
+<ul><li>FAST 离散 action tokens，由大 VLM 自回归预测；</li><li>连续 noisy action chunk，由小 action expert 做 flow matching。</li></ul>
+<p>论文联合目标可概括为：</p>
+<div class="formula">\[
+\mathcal{L}_{\pi_{0.5}}
+=
+\mathcal{H}\!\left(x_{1:M},f_\theta^\ell(o,\ell)\right)
++
+\alpha
+\left\|
+\omega-A-f_\theta^a(A^{\tau,\omega},o,\ell)
+\right\|_2^2.
+\]</div>
+<p>变量与直觉：\(\mathcal{H}\) 是 text、semantic output 与 FAST action token 的 next-token cross-entropy；\(f_\theta^a\) 是 action expert velocity；\(\alpha\) 是两项目标的权衡。论文先以 \(\alpha=0\) 做 autoregressive pre-training，再在 post-training 加入随机初始化的 action expert，并报告 \(\alpha=10\) 的联合训练。[P2]</p>
+<p>推理不需要自回归生成 FAST actions：论文描述为先生成所需 text/subtask token，再用条件 flow action expert 做 10 步采样。这正是“token route 帮助训练、flow route 保证较快连续动作推理”的设计意图。[P2]</p>
+<h3 id="5-2-state-timestep">5.2 论文中的 state 与 timestep 注入</h3>
+<p>与 π0 相比，π0.5：</p>
+<ol><li>将 proprioceptive state 离散化后放入 text/prefix token，而不是单独连续 state suffix token；</li><li>不再把 flow timestep 与每个 noisy action embedding 拼接，而是经单独 MLP 后用 adaptive RMSNorm 注入 action expert 各层。[P2]</li></ol>
+<p>冻结 openpi 对这两点有直接代码：</p>
+<ul><li>PaligemmaTokenizer 在 pi05 格式中将 normalized state 用 256 bins 离散，组成 Task: ..., State: ...; Action: prompt。</li><li>Pi0Config(pi05=True) 默认 discrete_state_input=True，max_token_len 从 48 变为 200。</li><li>Pi0.embed_suffix 在 pi05 路径不添加 continuous state token，timestep MLP 的结果作为 adarms_cond；π0 路径则把 time embedding 与每个 action token 拼接。[R1]</li></ul>
+<h3 id="5-3-paper-repo">5.3 必须保留的 paper / repo 缺口</h3>
+<table><thead><tr><th>Claim</th><th>π0.5 paper</th><th>openpi Pi0(pi05=True)</th><th>判定</th></tr></thead><tbody>
+<tr><td>state 作为离散 prompt token</td><td>direct</td><td>direct，且可由 config 关闭</td><td>implemented with config nuance</td></tr>
+<tr><td>adaRMSNorm 注入 flow timestep</td><td>direct</td><td>direct</td><td>implemented</td></tr>
+<tr><td>action expert 预测连续 chunk</td><td>direct</td><td>direct</td><td>implemented</td></tr>
+<tr><td>FAST action tokens 同时参加 CE</td><td>direct</td><td>Pi0.compute_loss 未实现该分支</td><td><strong>paper-only in this audit</strong></td></tr>
+<tr><td>联合 CE + α flow loss</td><td>direct</td><td>Pi0.compute_loss 只返回 flow MSE</td><td><strong>not reproduced by this path</strong></td></tr>
+<tr><td>论文完整 pretrain/post-train data recipe</td><td>direct overview</td><td>repo code不足以重建私有数据</td><td>unverified</td></tr>
+</tbody></table>
+<p>因此，冻结 repo 可以支持“released π0.5-style flow architecture 的 state/timestep 改造”，不能单独支持“完整复现论文 π0.5 hybrid pre-training”。独立的 Pi0FAST class 也不能自动当作 Pi0(pi05=True) 内部的 CE branch；它们是不同 ModelType、不同 loss 和不同 inference path。[R1]</p>
+<h2 id="6-fast-action-chunk-token">6. FAST：从连续 action chunk 到频域 token</h2>
+<h3 id="6-1-normalization-hub-processor">6.1 normalization 不在 Hub processor 内</h3>
+<p>令第 i 个 action dimension 的训练集 1%/99% quantile 为 \(q_i^{01},q_i^{99}\)。论文和 openpi 的 quantile normalization 形式为：</p>
+<div class="formula">\[
+\tilde a_i
+=
+2\frac{a_i-q_i^{01}}{q_i^{99}-q_i^{01}+\varepsilon}-1.
+\]</div>
+<p>变量与边界：\(\tilde a_i\) 是输入 tokenizer/model 的归一化值；openpi 的 Normalize._normalize_quantile 没有显式 clip，所以超出训练分位范围的值可能落在 [-1,1] 外。FAST paper/README 推荐预归一化到约 [-1,1]，但冻结 Hub processor 的 __call__ 从 DCT 开始，不读取 norm stats。[P3][R1][H1]</p>
+<p>这意味着正确 pipeline 是“dataset/checkpoint normalizer → FAST processor”，不是“FAST processor 自己完成所有尺度处理”。</p>
+<h3 id="6-2-dct-frequency-first-flatten">6.2 DCT、量化与 frequency-first flatten</h3>
+<p>对 \(\tilde A\in\mathbb{R}^{H\times D}\) 的每个 action dimension i，FAST 在时间轴做 DCT：</p>
+<div class="formula">\[
+C_j^i=\operatorname{DCT}(\tilde a_{1:H}^i),\qquad
+\bar C_j^i=\operatorname{round}(\gamma C_j^i).
+\]</div>
+<p>变量与直觉：j 是频率 index，低 j 表示慢变化趋势；\(\gamma\) 越大，保留的小系数越多、重建更精细但压缩更弱。论文单数据集实验使用 \(\gamma=10\)。Hub processor 对 shape [B,H,D] 在 axis=1 做 orthonormal DCT，再乘 scale 并 round。[P3][H1]</p>
+<p>随后按频率优先展开：</p>
+<div class="formula">\[
+z=
+[\bar C_0^1,\ldots,\bar C_0^D,
+\bar C_1^1,\ldots,\bar C_1^D,\ldots],
+\qquad
+y_{1:L}=\operatorname{BPE}_{\Phi}(z).
+\]</div>
+<p>变量与实现映射：z 先排列所有维度的低频 coefficient，再进入高频；BPE 字典 \(\Phi\) 合并常见整数片段和大量重复 zero。Hub 源码的 DCT 输出是 [H,D]，C-order elem.flatten() 正好实现 frequency-major flatten。[P3][H1]</p>
+<p>解码为：</p>
+<div class="formula">\[
+\hat A=
+\operatorname{IDCT}
+\left(
+\operatorname{unflatten}_{H,D}
+\left(\operatorname{BPE}^{-1}_{\Phi}(y_{1:L})\right)/\gamma
+\right).
+\]</div>
+<p>变量与边界：FAST 解码恢复的是 normalized H×D chunk，之后仍需 checkpoint-matched unnormalize 和 dataset output transform。Hub decoder 若 token 序列无法 reshape 成 [H,D]，冻结实现会退化为全零 coefficient；这类错误不应在 rollout 中静默忽略。[H1]</p>
+<h3 id="6-3-bpe-learned-component-compression">6.3 BPE 是 learned component，但 compression 不等于控制质量</h3>
+<p>FAST 的 DCT、round 与 IDCT 不需要训练；BPE vocabulary 是唯一 learned component。论文消融显示去掉 BPE 会留下大量重复 zero token、显著增加 autoregressive steps，并在其评测任务上降低 policy performance。[P3]</p>
+<p>但以下推论不成立：</p>
+<ul><li>token 更少 ⇒ 物理重建误差必然更小；</li><li>reconstruction MSE 更低 ⇒ closed-loop success 必然更高；</li><li>FAST+ 在一个 embodiment 上可用 ⇒ 不需要核对 axis、unit、frequency 与 norm stats。</li></ul>
+<p>compression、reconstruction、next-token learning signal、autoregressive latency 和 online control 是五个不同指标层。</p>
+<h3 id="6-4">6.4 三组容易混淆的默认值</h3>
+<table><thead><tr><th>对象</th><th>scale</th><th>BPE vocab</th><th>H / D</th><th>解释</th></tr></thead><tbody>
+<tr><td>FAST paper 单数据集实验</td><td>10</td><td>1024</td><td>1-second chunks，依 robot frequency</td><td>实验 recipe</td></tr>
+<tr><td>frozen FAST+ Hub processor</td><td>10</td><td>2048</td><td>decode 时显式传或缓存</td><td>发布 artifact 的 processor_config</td></tr>
+<tr><td>openpi Pi0FASTConfig 默认</td><td>由 external tokenizer</td><td>由 external tokenizer</td><td>H=32，D=32</td><td>model class default</td></tr>
+<tr><td>openpi pi0_fast_libero 示例</td><td>external tokenizer</td><td>external tokenizer</td><td>H=10，D=7</td><td>dataset-specific example config</td></tr>
+</tbody></table>
+<p>这些数值必须连同对象名称一起回答。尤其不能用 LIBERO example 的 H=10 证明本地 OpenPiVLA 也使用 horizon 10。</p>
+<h2 id="7-pi0fast-decode-path">7. Pi0FAST：自回归训练与 decode path</h2>
+<h3 id="7-1-token-layout-masks">7.1 token layout 与 masks</h3>
+<p>冻结 openpi 的 FASTTokenizer 构造：</p>
+<pre><code class="language-text"># Token-layout sketch: prefix is condition; postfix is the autoregressive target.
+prefix  = BOS + &quot;Task: ..., State: &lt;256-bin state&gt;;\\n&quot;
+postfix = &quot;Action: &quot; + &lt;FAST action tokens mapped into PaliGemma tail vocab&gt; + &quot;|&quot; + EOS</code></pre>
+<p>代码块说明：prefix token 使用 bidirectional prefix attention；postfix 使用 causal attention；loss_mask 只在 postfix 为 true。FAST action token 通过 PaliGemma vocabulary 末尾区域映射，另跳过 128 个 special-token slots。[R1]</p>
+<p>这与 OpenVLA 的逐标量 tail-vocab token 不同：</p>
+<ul><li>OpenVLA：每个当前动作维度对应一个 scalar token；</li><li>FAST：整个时间窗口先做 DCT/round/BPE，token 数 L 可变；</li><li>π0 flow：不生成离散 action token，网络每步输出 H×D velocity。</li></ul>
+<h3 id="7-2-masked-next-token-ce">7.2 masked next-token CE</h3>
+<p>令序列 token 为 \(y_{1:T}\)，postfix loss mask 为 \(m_k\in\{0,1\}\)。Pi0FAST 的训练目标是：</p>
+<div class="formula">\[
+\mathcal{L}_{\mathrm{FAST\text{-}CE}}
+=
+-\frac{\sum_{k=1}^{T-1}
+m_{k+1}\log p_\theta(y_{k+1}\mid y_{\le k},I)}
+{\max(1,\sum_{k=1}^{T-1}m_{k+1})}.
+\]</div>
+<p>变量与实现：I 是图像 token 条件；target 和 loss mask 都右移一位以匹配 next-token prediction；prefix 与 padding 不参加 loss。Pi0FAST.compute_loss 返回每个 batch example 的平均 masked CE，训练脚本再取 batch mean。[R1]</p>
+<h3 id="7-3-token-output-transform-action">7.3 推理先生成 token，output transform 再恢复 action</h3>
+<p>Pi0FAST.sample_actions 的直接返回值其实是最多 256 个 autoregressive output token，不是最终 controller action。Policy.infer 把它暂存为 actions 字段，随后 ModelTransformFactory 注册的 ExtractFASTActions 才执行：</p>
+<ol><li>从生成文本中抽取 Action: ... | 区间；</li><li>映回 FAST token IDs；</li><li>以指定 action_horizon 与 action_dim 做 FAST decode；</li><li>进入 Unnormalize；</li><li>进入 dataset-specific output transform 和 slicing。[R1]</li></ol>
+<p>因此只阅读 sample_actions 函数会误判它的返回合同。必须继续追到 policy output transform。</p>
+<h3 id="7-4-latency">7.4 latency 的来源</h3>
+<p>FAST 论文在 NVIDIA 4090 的报告值是：π0 flow 约 100 ms/chunk，而 π0-FAST 约 750 ms/chunk；其解释是 FAST 通常需要 autoregressively decode 30–60 个 action tokens，并使用完整 2B backbone，而 flow π0 使用 10 次较小 300M action expert integration。[P3]</p>
+<p>这些是论文硬件与实现下的公开测量，不是所有 deployment 的固定延迟。真实面试回答应拆成 vision encode、prefix prefill、per-token/per-step decode、network transport 与 controller queue，并用本地 timing log 证明本地数值。</p>
+<h2 id="8-normalization-padding-slicing">8. Normalization、padding、slicing 与执行合同</h2>
+<h3 id="8-1-checkpoint-matched-normalization">8.1 checkpoint-matched normalization</h3>
+<p>冻结 policy_config 明确从 checkpoint_dir/assets 加载训练时 norm stats。输入顺序是：</p>
+<pre><code class="language-text"># Policy transform order: arrows denote the exact inference data flow.
+repack → dataset input transform → normalize → model input transform
+      → sample_actions
+      → model output transform → unnormalize
+      → dataset output transform → repack output</code></pre>
+<p>代码块说明：norm stats 不是仅在数据预处理脚本里用一次，而是 train/infer 必须共享的 policy artifact；错用 asset_id、漏 unnormalize 或先 slice 再错误匹配 stats 都可能产生 offline loss 正常但 online 0-success。[R1]</p>
+<h3 id="8-2-zero-padding-selection-matrix">8.2 zero-padding 与 selection matrix</h3>
+<p>真实机器人 action \(a\in\mathbb{R}^{d}\) 可嵌入 model action \(a^{model}\in\mathbb{R}^{D}\)，其中 \(d\le D\)：</p>
+<div class="formula">\[
+a^{model}=Pa=
+\begin{bmatrix}
+I_d\\
+0
+\end{bmatrix}a,
+\qquad
+a^{env}=Sa^{model},
+\quad
+S=\begin{bmatrix}I_d&amp;0\end{bmatrix}.
+\]</div>
+<p>变量与代码映射：P 对应 PadStatesAndActions 的尾部 zero-pad，S 对应 dataset output transform 的前 d 维 slicing；理论上 \(SP=I_d\)。LIBERO output transform 返回前 7 维，Pi0Config 默认 model D=32；Pi0FAST 的 LIBERO 示例则直接把 model D 配成 7。[R1]</p>
+<p>风险边界：zero padding 不自动保证 padded dimensions 不参与 loss。公开 π0 compute_loss 对 D 维直接 mean；如果 model D 大于真实 d，是否需要 loss mask、是否训练 padding 为零，必须按具体 data/config 路径核对。不能把 output slicing 当作训练期 loss masking 的证据。</p>
+<h3 id="8-3-quantile-unnormalize">8.3 quantile unnormalize</h3>
+<p>对有统计的前 d 维，openpi 反归一化为：</p>
+<div class="formula">\[
+\hat a_i=
+\frac{\hat{\tilde a}_i+1}{2}
+\left(q_i^{99}-q_i^{01}+\varepsilon\right)+q_i^{01}.
+\]</div>
+<p>变量与实现：\(\hat{\tilde a}\) 是 flow sample 或 FAST decode 后的 normalized action。若 model 输出还有 stats 未覆盖的 padding dimensions，Unnormalize 保留这些额外维原值，随后 dataset output transform 再切片。[R1]</p>
+<p>公式中的乘法应理解为 \((\hat{\tilde a}_i+1)/2\) 乘以 quantile range；这是 normalized unit 到 dataset action unit 的恢复，仍不等于 controller-specific axis conversion 或安全裁剪。</p>
+<h3 id="8-4-action-axis-unit">8.4 action axis 与 unit 不能靠维数猜</h3>
+<p>openpi norm_stats 文档的默认 π action layout 是：</p>
+<ul><li>dim 0–5：left arm joint angles；</li><li>dim 6：left gripper；</li><li>dim 7–12：right arm joint angles；</li><li>dim 13：right gripper；</li><li>dim 14–15：mobile base x-y velocity。</li></ul>
+<p>Franka 路径使用前 7 维 joint + 第 8 维 gripper；DROID 又是前 7 维 joint velocity + 第 8 维 gripper，15 Hz。[R1]</p>
+<p>这说明同样的 8D shape 可以有 position 或 velocity 等不同语义。shape 对齐只是必要条件，不是 controller contract 完成的充分条件。</p>
+<h2 id="9-action-horizon-execution-window-replan">9. Action horizon、execution window 与 replan</h2>
+<p>令 model 预测：</p>
+<div class="formula">\[
+\hat A_t=[\hat a_t,\ldots,\hat a_{t+H-1}]
+\in\mathbb{R}^{H\times d},
+\]</div>
+<p>每次只执行前 K 步：</p>
+<div class="formula">\[
+\text{execute}\left(\hat A_t[0:K]\right),
+\qquad 1\le K\le H,
+\]</div>
+<p>然后以新观测重新 query policy。变量含义：H 是 model output horizon；K 是 execution/replan interval。K 小时闭环更强但 query 更频繁；K 大时吞吐更好但更容易沿旧计划累积误差。[R1]</p>
+<p>冻结 LIBERO example 的默认 K=5、50 trials/task、seed=7，并在每次 queue 为空时取新 chunk 的前 K 步。它还将 base/wrist 图像旋转 180°以匹配训练 preprocessing，构造 8D state，output transform 只返回前 7 action dims。[R1]</p>
+<p>另一个 ActionChunkBroker 会逐步消费整个 configured action_horizon，耗尽后才重新 infer。两种 queue policy 都是公开示例；本地项目到底采用哪一种，必须读本地 client。</p>
+<pre><code class="language-python">def rollout_step(env, client, task, replan_steps):
+    # 1. Read fresh RGB observations and proprioceptive state.
+    obs = build_libero_observation(env, task)
+
+    # 2. Policy transforms normalize state and build model-specific tokens.
+    #    Flow returns HxD normalized actions; FAST first returns tokens then decodes HxD.
+    action_chunk = client.infer(obs)[&quot;actions&quot;]
+
+    # 3. Output transforms have already unnormalized and sliced dataset dimensions.
+    assert len(action_chunk) &gt;= replan_steps
+
+    # 4. Execute only K steps, then use a new observation for the next query.
+    for action in action_chunk[:replan_steps]:
+        _, _, done, info = env.step(action.tolist())
+        if done:
+            return info
+    return info</code></pre>
+<p>伪代码映射冻结 examples/libero/main.py 与 policy transform 顺序；真实项目若在 client 外另做 denormalize、clip 或 axis reorder，必须改写并附本地源码证据。</p>
+<h2 id="10-action">10. 三条 action 路线对照</h2>
+<table><thead><tr><th>维度</th><th>OpenVLA scalar tokens</th><th>FAST / Pi0FAST</th><th>π0 flow action expert</th></tr></thead><tbody>
+<tr><td>基本单位</td><td>当前动作的每个 scalar dimension</td><td>H×D chunk 的频域/BPE token sequence</td><td>H×D continuous noisy action</td></tr>
+<tr><td>时间结构</td><td>原始旗舰单步</td><td>先压缩整个 1-second chunk</td><td>整个 chunk 联合建模</td></tr>
+<tr><td>训练目标</td><td>masked token CE</td><td>masked autoregressive token CE</td><td>velocity MSE</td></tr>
+<tr><td>推理</td><td>生成 d 个 token</td><td>生成可变 L 个 token，再 FAST decode</td><td>N 次 ODE/Euler update</td></tr>
+<tr><td>多模态连续 action</td><td>量化 token 分布</td><td>token sequence 分布</td><td>continuous generative field</td></tr>
+<tr><td>主要延迟</td><td>LM decoding</td><td>完整 VLM 的多 token AR decoding</td><td>多次较小 action expert</td></tr>
+<tr><td>normalization</td><td>dataset q01/q99 + scalar bins</td><td>external norm stats + FAST processor</td><td>external norm stats</td></tr>
+<tr><td>必查风险</td><td>token offset、bin endpoint</td><td>H/D reshape、BPE revision、truncation</td><td>time convention、solver、valid dims</td></tr>
+<tr><td>本地 OpenPiVLA 关系</td><td>只作 scalar-token 对照</td><td>可能是上游机制候选</td><td>可能是上游 action expert 候选</td></tr>
+</tbody></table>
+<p>面试选择路线时不要只谈“谁更先进”。至少同时回答：action 多模态性、控制频率、H/K、允许延迟、训练数据量、reconstruction tolerance、checkpoint assets 与 controller contract。</p>
+<h2 id="11-claim-to-code">11. Claim-to-code 总表</h2>
+<table><thead><tr><th>Claim</th><th>paper / artifact</th><th>frozen code</th><th>判定</th><th>面试口径</th></tr></thead><tbody>
+<tr><td>π0 输入多图、语言、proprio</td><td>π0 v4 direct</td><td>Pi0Config 三图 + state</td><td>direct</td><td>论文 2–3 图；repo 默认三槽</td></tr>
+<tr><td>π0 输出 H=50 action chunk</td><td>π0 v4 direct</td><td>Pi0Config default H=50</td><td>direct default</td><td>config 可覆盖，不是所有 checkpoint 固定 50</td></tr>
+<tr><td>π0 flow paper/code 时间相反</td><td>π0 v4 0→1</td><td>code 1→0</td><td>equivalent with sign change</td><td>同时报 time 和 target velocity 取反</td></tr>
+<tr><td>π0 默认 10 Euler steps</td><td>π0 v4 direct</td><td>sample_actions num_steps=10</td><td>direct default</td><td>deployment 可覆盖</td></tr>
+<tr><td>π0.5 state token + adaRMSNorm</td><td>π0.5 v1 direct</td><td>Pi0 pi05 branch</td><td>direct with config nuance</td><td>released architecture difference</td></tr>
+<tr><td>π0.5 联合 FAST CE + flow loss</td><td>π0.5 v1 direct</td><td>Pi0 compute_loss 无 CE branch</td><td>paper-only here</td><td>不得称 frozen path 完整复现</td></tr>
+<tr><td>Pi0FAST 用 FAST token CE</td><td>FAST/openpi direct</td><td>Pi0FAST.compute_loss</td><td>direct</td><td>独立 ModelType，不等于 Pi0 pi05</td></tr>
+<tr><td>FAST 是 per-scalar bins</td><td>FAST v1 rejects</td><td>Hub processor DCT/BPE</td><td>rejected</td><td>它是 window frequency tokenization</td></tr>
+<tr><td>FAST processor 自带 q01/q99 stats</td><td>README 要求预归一化</td><td>processor 从 DCT 开始</td><td>rejected</td><td>normalizer 在 processor 外</td></tr>
+<tr><td>FAST 默认 vocab 永远 1024</td><td>paper 单数据集 1024</td><td>Hub artifact 2048</td><td>rejected as universal</td><td>回答时注明对象/version</td></tr>
+<tr><td>openpi quantile normalize 会 clip</td><td>未声明</td><td>transform 无 clip</td><td>rejected</td><td>超界值可落在 [-1,1] 外</td></tr>
+<tr><td>D=32 代表 32 个真实控制轴</td><td>无</td><td>Pad/Slice path</td><td>rejected</td><td>D 是 model capacity，d 是 dataset action</td></tr>
+<tr><td>output slicing 等于 loss mask</td><td>无</td><td>loss 与 output transform 分离</td><td>rejected</td><td>训练有效维必须另核对</td></tr>
+<tr><td>H 等于 replan interval</td><td>无</td><td>LIBERO H 与 K 分离</td><td>rejected</td><td>H model output；K executed prefix</td></tr>
+<tr><td>LIBERO example 证明本地 H=10</td><td>无</td><td>只是 official example config</td><td>rejected</td><td>需本地 config/checkpoint</td></tr>
+<tr><td>upstream code 证明本地 97.4%</td><td>无</td><td>无</td><td>rejected</td><td>需 eval summary + protocol + checkpoint</td></tr>
+</tbody></table>
+<h2 id="12-phase-0">12. 对 Phase 0 题目的支持状态</h2>
+<table><thead><tr><th>Question ID</th><th>本页支持</th><th>状态</th><th>仍缺</th></tr></thead><tbody>
+<tr><td>VLA-ARCH-002</td><td>multi-view/text/state → H×D contract</td><td>source-ready</td><td>generic history/time alignment 对照</td></tr>
+<tr><td>VLA-ARCH-003</td><td>VLM context、action expert、output transform、controller 边界</td><td>source-ready</td><td>Octo / RT-2 comparison</td></tr>
+<tr><td>VLA-ARCH-004</td><td>三图槽、mask、离散/连续 state</td><td>partial</td><td>更广 multi-view alignment</td></tr>
+<tr><td>VLA-ARCH-006</td><td>π0 action expert + flow train/infer</td><td>source-ready</td><td>independent formula review</td></tr>
+<tr><td>VLA-ARCH-008</td><td>Pi0FAST prefix/postfix/AR/loss masks</td><td>source-ready</td><td>other VLA layouts</td></tr>
+<tr><td>VLA-ARCH-010</td><td>D/d、padding、slicing、loss risk</td><td>source-ready</td><td>explicit masked-loss positive example</td></tr>
+<tr><td>VLA-ARCH-011</td><td>FAST vs flow latency component</td><td>partial</td><td>local timing instrumentation</td></tr>
+<tr><td>VLA-ARCH-012</td><td>paper/repo/artifact/checkpoint audit method</td><td>source-ready</td><td>local manifest</td></tr>
+<tr><td>VLA-ACT-002</td><td>checkpoint norm stats、normalize/unnormalize</td><td>source-ready</td><td>local norm asset</td></tr>
+<tr><td>VLA-ACT-005..007</td><td>FAST motivation、algorithm、trade-off</td><td>source-ready</td><td>independent fact review</td></tr>
+<tr><td>VLA-ACT-008</td><td>H×D、P/S、valid dimension boundary</td><td>source-ready</td><td>local action_dim/mask</td></tr>
+<tr><td>VLA-ACT-011</td><td>H、K、chunk queue</td><td>source-ready</td><td>ACT temporal ensemble later</td></tr>
+<tr><td>VLA-ACT-023..025</td><td>probability path、velocity、ODE solver</td><td>source-ready for π0</td><td>foundational Flow Matching paper</td></tr>
+<tr><td>VLA-ACT-027</td><td>context/state/noisy action expert input</td><td>source-ready</td><td>PyTorch parity if needed</td></tr>
+<tr><td>VLA-ACT-028</td><td>padding pollution risk</td><td>partial / negative evidence</td><td>positive mask implementation</td></tr>
+<tr><td>VLA-ACT-031..032</td><td>decode→unnorm→slice→queue</td><td>partial</td><td>controller axis/safety tests</td></tr>
+</tbody></table>
+<p>source-ready 只表示来源足够起草知识页，不代表候选人已掌握。后续题卡创建后仍必须标为 unseen，直到真实口述训练。</p>
+<h2 id="13-openpivla">13. 本地 OpenPiVLA 证据缺口</h2>
+<p>公开 π0/FAST/openpi 可以给出上游机制，但以下 claim 必须补本地 artifact：</p>
+<table><thead><tr><th>本地 claim</th><th>需要的最小证据</th><th>当前状态</th></tr></thead><tbody>
+<tr><td>base checkpoint / backbone</td><td>load config、checkpoint manifest、startup log</td><td>pending</td></tr>
+<tr><td>是 Pi0、Pi05、Pi0FAST 还是自定义 Qwen path</td><td>model class、forward/compute_loss、local diff</td><td>pending</td></tr>
+<tr><td>action H=10</td><td>dataset target shape、model config、inference output shape</td><td>pending</td></tr>
+<tr><td>action dimension / axis / unit</td><td>dataset schema、norm stats、output transform、controller wrapper</td><td>pending</td></tr>
+<tr><td>FAST revision / scale / vocab</td><td>tokenizer config、cached revision、training log</td><td>pending</td></tr>
+<tr><td>JSON/action token supervision</td><td>formatter、labels/loss mask、decode/parser tests</td><td>pending</td></tr>
+<tr><td>replan / queue policy</td><td>local rollout client、K、control frequency</td><td>pending</td></tr>
+<tr><td>97.4%</td><td>exact checkpoint、suite/tasks、trials、seed/split、summary JSON</td><td>pending</td></tr>
+<tr><td>personal contribution</td><td>upstream/local diff、设计记录、run ledger</td><td>pending</td></tr>
+</tbody></table>
+<p>在这些证据收集完成前，最安全的项目表述是“基于 π/FAST/openpi 公开机制建立 action modeling 与 eval pipeline 的候选解释；本地具体实现和指标归因仍按 artifact 核实”，不能把 upstream design 自动写成本人创新。</p>
+<h2 id="14">14. 风险与下一步</h2>
+<ol><li><strong>核心高风险事实已独立复核</strong>：π0.5 hybrid、FAST normalization/DCT/BPE、OpenPI model split、padding/slicing、norm stats 与 LIBERO replan 已在 <a href="vol_03_pi0_fast_openpi_independent_fact_review.html">独立复核页</a> 直接核对，公共事实层为 <code>PASS WITH WARNING</code>；local checkpoint、tokenizer revision、axis/unit、H/K、controller、eval bundle 与 ownership 仍使本页整体保持 <code>WARN/PENDING</code>。</li><li><strong>π0.5 hybrid gap 是高优先级复核项</strong>：需独立确认 frozen openpi 的 released Pi05 training path 是否在其他文件另有 combined CE；当前已读主 compute_loss 和 transform factory，未见该分支。</li><li><strong>FAST artifact revision 必须固定</strong>：openpi 默认字符串没有 pin Hub revision；复现时需要 cache/lockfile 或显式 revision。</li><li><strong>normalization 无 clip 的边界需单测</strong>：测试 q01/q99 外动作、constant dimension、padding dimension 和 inverse consistency。</li><li><strong>decode failure 不应静默全零</strong>：本地部署应让 malformed FAST sequence 触发 error/telemetry，而不是无声执行零动作。</li><li><strong>视觉 QA 已完成</strong>：通过 localhost 静态服务检查桌面 <code>1440×1000</code> 与窄屏 <code>800×1000</code>；确认一处 H1、academic palette/serif、desktop sticky TOC、narrow static TOC、公式无 <code>&lt;em&gt;</code> 污染且无页面级横向溢出。</li><li><strong>下一步</strong>：优先进行一题 π0/FAST/Flow 真实口述，或收集本地 OpenPiVLA checkpoint/tokenizer/stats/controller artifact；题卡继续保持 <code>unseen</code>。</li></ol>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>[P1] Black et al., <a href="https://arxiv.org/html/2410.24164v4">π0: A Vision-Language-Action Flow Model for General Robot Control</a>, arXiv v4, 2024.</li><li>[P2] Black et al., <a href="https://arxiv.org/html/2504.16054v1">π0.5: a Vision-Language-Action Model with Open-World Generalization</a>, arXiv v1, 2025.</li><li>[P3] Pertsch et al., <a href="https://arxiv.org/html/2501.09747v1">FAST: Efficient Action Tokenization for Vision-Language-Action Models</a>, arXiv v1, 2025.</li><li>[R1] <a href="https://github.com/Physical-Intelligence/openpi/tree/15a9616a00943ada6c20a0f158e3adb39df2ccac">Physical-Intelligence/openpi</a>, frozen commit 15a9616a00943ada6c20a0f158e3adb39df2ccac, accessed 2026-07-16. 核心路径：</li></ol>
+<ul><li><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/models/pi0_config.py">pi0_config.py</a></li><li><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/models/pi0.py">pi0.py</a></li><li><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/models/pi0_fast.py">pi0_fast.py</a></li><li><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/models/tokenizer.py">tokenizer.py</a></li><li><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/transforms.py">transforms.py</a></li><li><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/training/config.py">training/config.py</a></li><li><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/policies/policy_config.py">policy_config.py</a></li><li><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/policies/libero_policy.py">libero_policy.py</a></li><li><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/examples/libero/main.py">LIBERO client</a></li><li><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/docs/norm_stats.md">normalization notes</a></li></ul>
+<ol><li>[H1] <a href="https://huggingface.co/physical-intelligence/fast/tree/ec4d7aa71691cac0b8bed6942be45684db2110f4">physical-intelligence/fast</a>, frozen revision ec4d7aa71691cac0b8bed6942be45684db2110f4, Apache-2.0, accessed 2026-07-16. <a href="https://huggingface.co/physical-intelligence/fast/blob/ec4d7aa71691cac0b8bed6942be45684db2110f4/processing_action_tokenizer.py">processor source</a> / <a href="https://huggingface.co/physical-intelligence/fast/blob/ec4d7aa71691cac0b8bed6942be45684db2110f4/processor_config.json">processor config</a>.</li><li>本地项目页：<a href="../../03_openpivla_action_modeling.html">OpenPiVLA：FAST 动作表示、Metax 迁移与策略评估复现</a>。当前仅作为 claim 入口，不作为缺失 raw artifact 的替代证据。</li></ol>
+</article></body></html>

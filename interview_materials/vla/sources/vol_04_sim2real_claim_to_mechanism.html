@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 Source Audit D：Sim2Real Claim-to-Mechanism</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_04_sim2real_claim_to_mechanism.md">
+<meta name="aris:source-sha256" content="5144cbcd871d8f2aab3d2f5a604f84f7e902f80021da0dafb21e0c053ddaca60">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>5144cbcd871d8f2aab3d2f5a604f84f7e902f80021da0dafb21e0c053ddaca60</code>；生成自：<code>interview_materials\vla\sources\vol_04_sim2real_claim_to_mechanism.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 来源与证据边界</a></li><li><a href="#3-reality-gap">3. Reality gap 六层合同</a></li><li><a href="#4-visual-domain-randomization-camera-contract">4. Visual domain randomization 与 camera contract</a></li><li><a href="#4-1">4.1 视觉随机化目标</a></li><li><a href="#4-2-camera-geometry-appearance-augmentation">4.2 Camera geometry 不能被 appearance augmentation 替代</a></li><li><a href="#4-3-camera-randomization">4.3 可审计的 camera randomization</a></li><li><a href="#5-dynamics-randomization-system-id-simopt">5. Dynamics randomization、System ID 与 SimOpt</a></li><li><a href="#5-1-dynamics-objective">5.1 分布式 dynamics objective</a></li><li><a href="#5-2-range">5.2 量测优先的 range 设计</a></li><li><a href="#5-3-simopt-real-trajectory-distribution">5.3 SimOpt：用 real trajectory 更新 distribution</a></li><li><a href="#6-control-frequency-latency-actuator">6. Control frequency、latency 与 actuator</a></li><li><a href="#6-1">6.1 多时钟合同</a></li><li><a href="#6-2-latency">6.2 为什么 latency 会放大</a></li><li><a href="#6-3-paired-sweep">6.3 最小 paired sweep</a></li><li><a href="#7-contact-friction-compliance-gripper-semantics">7. Contact、friction、compliance 与 gripper semantics</a></li><li><a href="#7-1-soft-contact">7.1 Soft-contact 参数不是装饰配置</a></li><li><a href="#7-2-manipulation">7.2 Manipulation 高风险点</a></li><li><a href="#8-adaptation">8. Adaptation 方法选择</a></li><li><a href="#9-uncertainty-aware-planning-recovery">9. Uncertainty-aware planning、安全与 recovery</a></li><li><a href="#9-1-chance-constraint">9.1 Chance constraint</a></li><li><a href="#9-2-risk-gate-recovery">9.2 Risk gate 与 recovery</a></li><li><a href="#9-3-vla">9.3 VLA 最小安全闭环</a></li><li><a href="#10-paired-test-matrix">10. Paired test matrix 与失败归因</a></li><li><a href="#11">11. 项目证据与真实性边界</a></li><li><a href="#12">12. 面试答题骨架与当前边界</a></li><li><a href="#12-1-30">12.1 30 秒回答</a></li><li><a href="#12-2">12.2 高频追问防线</a></li><li><a href="#12-3">12.3 独立复核后的开放项</a></li><li><a href="#13-references">13. 参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 Source Audit D：Sim2Real Claim-to-Mechanism</h1>
+<div class="meta">审计日期：2026-07-16 独立复核：2026-07-20 状态：drafted / primary_papers_and_official_docs_reviewed / design_test_matrix_drafted / independent_fact_reviewed / PASS WITH WARNING 覆盖题目：VLA-WM-031..038、VLA-WM-040..044 目标：把 Sim2Real 从“加随机化”拆成 visual/sensor、dynamics、control、contact、task/protocol 与 safety 六层可测合同。</div>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>Sim2Real 不是单一 distribution shift。</strong>至少要拆成视觉/传感器、刚体动力学、控制/时序、接触/柔顺、任务/初始分布与安全恢复六层；每层的可观测症状、可调参数和验证实验不同。[1][2][4][10]</li><li><strong>Domain randomization 的目标不是越宽越好。</strong>它优化的是 simulator parameter distribution 上的期望性能；SimOpt 与 Minitaur 工作都明确指出过宽范围可能包含不可解场景、压低峰值性能或产生过度保守策略。[3][4]</li><li><strong>System identification 与 dynamics randomization 互补。</strong>可测参数先围绕实测中心建范围；不可准确辨识、会漂移或强耦合的参数用分布覆盖；少量 real rollouts 可进一步更新分布，而不是盲目扩大所有区间。[3][4]</li><li><strong>控制时序是独立高风险层。</strong>policy frequency、physics timestep、zero-order hold、sensor/compute/network/actuator delay 与 low-level controller 都会改变闭环；Tan et al. 展示了遗漏 actuator model 与 latency 会导致 sim policy 到硬件振荡和失败。[4]</li><li><strong>视觉随机化必须围绕真实成像链。</strong>texture/light/background 只是 appearance；camera extrinsics、intrinsics、distortion、exposure/blur、occlusion、resize/crop/flip 与 timestamp 都可能破坏 pose/action mapping。[1][11]</li><li><strong>contact gap 不能只用一个 friction scalar 概括。</strong>滑动/扭转/滚动摩擦、contact softness、stiffness/damping、solver/integrator/timestep、compliance、backlash、gripper aperture/force 和 object deformability 均可能改变 manipulation outcome。[10][13]</li><li><strong>适配方法按 real-data authority 与风险选择。</strong>无 real data 时只能做 calibrated randomization；少量 safe rollouts 可做 SimOpt/latent search；需要快速变化时使用 history-conditioned OSI/RMA；已有可靠 controller 时 residual policy 更合适。[3][5][6][7]</li><li><strong>安全不能等价于训练时 action clipping。</strong>最小闭环需要 state/action constraints、uncertainty/risk gate、fallback/recovery controller、timeout/E-stop、事件日志和逐级 rollout gate。[8][9]</li><li><strong>Sim2Real claim 必须做 paired test。</strong>同 checkpoint、同 real initial conditions、同 controller，只改变一个 simulator-side intervention，报告 seed/trial、failure family 和置信区间；sim score 上升本身不能证明 transfer。[1][2][3]</li><li><strong>本卷不证明任何个人项目已完成真实硬件迁移。</strong>若没有 robot logs、calibration、controller config、real rollouts 与 safety record，只能写“Sim2Real 设计/诊断方案”，不能写“完成 Sim2Real 部署”。</li></ol>
+<h2 id="2">2. 来源与证据边界</h2>
+<table><thead><tr><th>编号</th><th>Primary / official source</th><th>冻结版本</th><th>本页用途</th><th>不能外推</th></tr></thead><tbody>
+<tr><td>[1]</td><td>Tobin et al., Domain Randomization</td><td>arXiv 1703.06907v1</td><td>texture/light/camera/object/distractor randomization 与 visual transfer</td><td>object localization 结果不证明任意 VLA policy transfer</td></tr>
+<tr><td>[2]</td><td>Peng et al., Dynamics Randomization</td><td>arXiv 1710.06537v3</td><td>parameter distribution、latency/noise、memory-based adaptation、real pushing</td><td>95-parameter recipe不是通用默认配置</td></tr>
+<tr><td>[3]</td><td>Chebotar et al., SimOpt</td><td>arXiv 1810.05687v4</td><td>用少量 real rollouts 更新 simulator parameter distribution</td><td>需要安全 real execution；不等于精确 system ID</td></tr>
+<tr><td>[4]</td><td>Tan et al., Minitaur Sim2Real</td><td>arXiv 1804.10332v2</td><td>measured parameter + margin、actuator model、latency、robustness/optimality trade-off</td><td>locomotion 数值不直接迁移到 manipulation</td></tr>
+<tr><td>[5]</td><td>Yu et al., UP-OSI</td><td>arXiv 1702.02453v3</td><td>history→dynamics parameter→universal policy 的显式 online SysID</td><td>论文主要 simulation；不能写成真实机器人验证</td></tr>
+<tr><td>[6]</td><td>Kumar et al., RMA</td><td>arXiv 2107.04034v1</td><td>privileged extrinsics、history-based latent adaptation、异步部署</td><td>legged policy 结构不自动适配 VLA 图像输入</td></tr>
+<tr><td>[7]</td><td>Johannink et al., Residual RL</td><td>arXiv 1812.03201v2</td><td>base controller + learned residual、contact-rich real manipulation</td><td>residual 不自动保留 base controller 的稳定性保证</td></tr>
+<tr><td>[8]</td><td>Thananjeyan et al., Recovery RL</td><td>arXiv 2010.15920v2</td><td>risk critic、task/recovery policy 分工、offline unsafe data</td><td>chance-safety 不等于 formal zero-violation guarantee</td></tr>
+<tr><td>[9]</td><td>Hewing et al., Cautious MPC</td><td>arXiv 1705.10702v4</td><td>GP residual uncertainty、chance-constrained MPC</td><td>GP/hardware racing设置不是 VLA 默认实现</td></tr>
+<tr><td>[10]</td><td>MuJoCo official docs</td><td>stable docs accessed 2026-07-16；repo HEAD 0ce5e98916d8128ddb0eeb2f17304d2d9d29eecf</td><td>contact friction、solref/solimp、timestep、actuator/contact semantics</td><td>stable docs URL 与观察到的 HEAD 不视为同一 build proof</td></tr>
+<tr><td>[11]</td><td>OpenCV calib3d official docs</td><td>4.x docs accessed 2026-07-16</td><td>pinhole intrinsics/extrinsics 与 lens distortion contract</td><td>calibration API 不证明某个项目标定正确</td></tr>
+<tr><td>[12]</td><td>robosuite controller docs</td><td>1.5 docs；repo HEAD 5ce6643f3092639d08f7b0f90ed1c6a84f50552c</td><td>OSC/joint controller、composite action split、controller config</td><td>docs defaults 不等于 LIBERO/RoboCasa local config</td></tr>
+<tr><td>[13]</td><td>OpenAI et al., Dexterous In-Hand Manipulation</td><td>arXiv 1808.00177v5</td><td>calibration + extensive randomization、contact/sensor model limits、memory</td><td>Shadow Hand recipe 不直接推广到 Panda/gripper</td></tr>
+</tbody></table>
+<p>arXiv papers [1]–[9][13] 的 abs metadata 与 ar5iv full text或官方 abstract 已核对；它们使用 arXiv non-exclusive distribution license。这里只做事实引用，不复用图表或代码。官方 docs [10]–[12] 用于参数语义，不承担任何用户项目运行证明。</p>
+<h2 id="3-reality-gap">3. Reality gap 六层合同</h2>
+<p>将 real execution 写成：</p>
+<div class="formula">\[
+o_t^{real}=h_{\psi_r}(x_{t-\tau_s}^{real})+\epsilon_t,
+\qquad
+x_{t+1}^{real}=f_{\xi_r}\!\left(x_t^{real},
+\mathcal C_{\kappa_r}(a_{t-\tau_a})\right),
+\]</div>
+<p>其中 \(h_{\psi_r}\) 是真实传感器/渲染链，\(\psi_r\) 包含 camera/exposure/noise；\(f_{\xi_r}\) 是真实 dynamics，\(\xi_r\) 包含 mass/friction/contact；\(\mathcal C_{\kappa_r}\) 是 low-level controller/actuator，\(\tau_s,\tau_a\) 是 sensor/action delay。simulation 使用另一组 \((\psi_s,\xi_s,\kappa_s,\tau_s^s,\tau_a^s)\)。Sim2Real 的目标不是让每个参数完全相等，而是让 policy 在目标分布上保持可接受的 closed-loop behavior。[2][4][10]</p>
+<table><thead><tr><th>Gap 层</th><th>典型 mismatch</th><th>首要观测</th><th>可调 intervention</th><th>必须冻结</th></tr></thead><tbody>
+<tr><td>Visual / sensor</td><td>texture、light、camera、distortion、blur、noise、timestamp</td><td>feature/pose drift、camera-specific failure</td><td>calibration、photometric/geometric DR、real fine-tune</td><td>camera serial/intrinsics/extrinsics、preprocess</td></tr>
+<tr><td>Dynamics</td><td>mass、inertia、damping、motor strength、payload</td><td>free-space trajectory error</td><td>SysID、dynamics DR、latent adaptation</td><td>URDF/MJCF、parameter distribution</td></tr>
+<tr><td>Control / timing</td><td>controller type/gain、frequency、latency、ZOH、queue</td><td>oscillation、overshoot、stale action</td><td>latency model、actuator model、replan</td><td>policy/controller/physics Hz、delay histogram</td></tr>
+<tr><td>Contact / compliance</td><td>friction、softness、solver、deformation、gripper</td><td>slip、bounce、penetration、failed grasp</td><td>contact calibration/randomization、force/compliance</td><td>geom/contact/controller/gripper config</td></tr>
+<tr><td>Task / protocol</td><td>init/object/layout/language/success/horizon</td><td>sim success only on narrow reset</td><td>task distribution alignment、strict eval</td><td>task list、reset/init、success predicate</td></tr>
+<tr><td>Safety / recovery</td><td>OOD state、uncertain action、collision</td><td>risk score、constraint event</td><td>shield/fallback/recovery/E-stop</td><td>thresholds、limits、event logs</td></tr>
+</tbody></table>
+<p>这张表是基于 [1]–[13] 的工程综合，不是某篇论文原表。诊断时一次只缩小一层：若 real observation replay 到 simulator policy 已经异常，先修 sensor contract；若 observation replay 正常但 actuation trace 不同，转向 control/dynamics，而不是继续加 texture noise。</p>
+<h2 id="4-visual-domain-randomization-camera-contract">4. Visual domain randomization 与 camera contract</h2>
+<h3 id="4-1">4.1 视觉随机化目标</h3>
+<p>令 \(\psi\sim p_\phi(\psi)\) 表示 renderer/camera 参数，visual policy/detector 的训练可写成：</p>
+<div class="formula">\[
+\theta^*=\arg\min_\theta
+\mathbb E_{\psi\sim p_\phi,\,(x,y)\sim\mathcal D_{sim}}
+\left[\ell\left(g_\theta(R_\psi(x)),y\right)\right].
+\]</div>
+<p>变量解释：\(R_\psi\) 是按 \(\psi\) 渲染/增强的 observation；\(p_\phi\) 应覆盖与任务相关的真实变化。Tobin et al. 随机化 camera position/orientation/FOV、lighting、object pose、textures 与 distractors，并用 ablation 检查哪些项影响 real test；这支持“按假设逐项验证”，不支持“任意强增强都有效”。[1]</p>
+<h3 id="4-2-camera-geometry-appearance-augmentation">4.2 Camera geometry 不能被 appearance augmentation 替代</h3>
+<p>标准 pinhole contract 为：</p>
+<div class="formula">\[
+\tilde u \propto K [R\mid t]\tilde X_w,
+\qquad
+K=\begin{bmatrix}
+f_x&amp;0&amp;c_x\\
+0&amp;f_y&amp;c_y\\
+0&amp;0&amp;1
+\end{bmatrix}.
+\]</div>
+<p>变量解释：\([R|t]\) 是 world→camera extrinsics，\(K\) 是 focal/principal-point intrinsics；真实 lens 还含 radial/tangential distortion。实现映射：OpenCV calib3d 明确定义该变换与 distortion coefficients；MuJoCo camera 可配置 focal/sensor size/FOV。若 wrist-camera extrinsics 偏移，color jitter 无法修复 action-space geometry。[10][11]</p>
+<h3 id="4-3-camera-randomization">4.3 可审计的 camera randomization</h3>
+<ol><li>先标定/测量 \(K,R,t\)，保存 reprojection error 与 calibration timestamp。</li><li>从 mounting tolerance、标定残差、robot vibration 建 \(\Delta R,\Delta t,\Delta f,\Delta c\) 分布，而不是拍脑袋给 ±20%。</li><li>appearance 分开建模：exposure、white balance、gamma、lighting direction/intensity、texture、background、JPEG、motion blur、occluder。</li><li>preprocessing 作为 contract：RGB/BGR、vertical flip、resize、crop、aspect ratio、frame stacking、timestamp。</li><li>paired test：每次只 ablate geometry、photometric、occlusion 或 compression 一组，比较 sim validation、real replay 与 closed-loop。</li></ol>
+<p>Tobin 的 camera range是其桌面 object-localization setup 的实例，不应复制为其他 robot 的默认 range。[1]</p>
+<h2 id="5-dynamics-randomization-system-id-simopt">5. Dynamics randomization、System ID 与 SimOpt</h2>
+<h3 id="5-1-dynamics-objective">5.1 分布式 dynamics objective</h3>
+<p>令 simulator 参数为 \(\xi\sim p_\phi(\xi)\)，policy objective 为：</p>
+<div class="formula">\[
+\theta^*(\phi)=\arg\max_\theta
+\mathbb E_{\xi\sim p_\phi}
+\left[J\left(\pi_\theta;f_\xi\right)\right].
+\]</div>
+<p>变量解释：\(\xi\) 可含 mass、inertia、damping、friction、controller gain、latency、observation noise、payload；\(J\) 是 simulator rollout return。Peng et al. 在 episode 起点采样大部分 dynamics 参数，并让 action timestep/noise 在 step 级变化；recurrent/history policy 用于从轨迹隐式辨识 dynamics。[2]</p>
+<p>关键边界：该目标只优化 \(p_\phi\) 内平均性能。它不证明真实 \(\xi_r\) 在 support 内，也不保证极端尾部；分布越宽会增加 robust coverage，同时可能牺牲 nominal optimality。[3][4]</p>
+<h3 id="5-2-range">5.2 量测优先的 range 设计</h3>
+<table><thead><tr><th>参数族</th><th>建议中心</th><th>range 来源</th><th>不宜做法</th></tr></thead><tbody>
+<tr><td>mass/COM/inertia</td><td>CAD、称重、摆动/trajectory fit</td><td>measurement residual + safety margin</td><td>所有 link 同比例无依据放大</td></tr>
+<tr><td>motor/actuator</td><td>current/torque/step response</td><td>fit error、battery/temp/wear</td><td>把理想 torque source 当真实 actuator</td></tr>
+<tr><td>latency/frequency</td><td>timestamp trace</td><td>p50/p95/p99 与 jitter</td><td>只随机常数 delay，不测 queue/compute</td></tr>
+<tr><td>friction/contact</td><td>slip/push/grasp experiments</td><td>surface/object-conditioned interval</td><td>单一 global friction 覆盖所有 contact</td></tr>
+<tr><td>sensor noise/bias</td><td>static/dynamic capture</td><td>bias、variance、dropout、drift</td><td>只加 i.i.d. Gaussian 忽略 bias/time correlation</td></tr>
+</tbody></table>
+<p>Tan et al. 的做法是实测 mass/motor friction/latency，以测量加小 margin 建 range；对不确定的 inertia、wear、battery、control step 和 contact 进行更强 randomization。这是“SysID 给中心、DR 给覆盖”的直接例子。[4]</p>
+<h3 id="5-3-simopt-real-trajectory-distribution">5.3 SimOpt：用 real trajectory 更新 distribution</h3>
+<p>SimOpt 可抽象为：先在 \(p_{\phi_k}(\xi)\) 上训练 policy，再用同一 policy 收集少量 real trajectory \(\tau^r\)，寻找能让 simulated behavior 接近 real behavior 的下一分布：</p>
+<div class="formula">\[
+\phi_{k+1}=\arg\min_\phi
+\mathbb E_{\xi\sim p_\phi}
+\left[D\left(\tau^r,\tau^{sim}(\xi)\right)\right]
++\lambda\,\Omega(\phi,\phi_k).
+\]</div>
+<p>变量解释：\(D\) 是可观测 trajectory discrepancy，\(\Omega\) 限制分布更新不要跳得过远；公式是对 SimOpt 迭代的审计抽象。它优化 transfer-relevant behavior match，而不是要求每个真实物理参数精确可辨识。[3]</p>
+<p>安全要求：real rollout 必须先通过 conservative controller/limit/E-stop gate；若当前 policy 会撞击或掉落，不能为了 SimOpt 直接扩大 real-data collection authority。</p>
+<h2 id="6-control-frequency-latency-actuator">6. Control frequency、latency 与 actuator</h2>
+<h3 id="6-1">6.1 多时钟合同</h3>
+<p>设 physics step 为 \(\Delta t_{sim}\)，low-level controller 周期为 \(\Delta t_c\)，policy query 周期为 \(\Delta t_p\)，action chunk 前 \(K_e\) 步以 zero-order hold/queue 执行。真实动作可写为：</p>
+<div class="formula">\[
+u(t)=\mathcal C_{\kappa_r}
+\left(a_{\lfloor(t-\tau_a)/\Delta t_p\rfloor}\right),
+\qquad
+o_t=h(x_{t-\tau_s}).
+\]</div>
+<p>变量解释：\(\tau_a\) 包含 policy compute、serialization/network、queue 与 actuator delay；\(\tau_s\) 包含 exposure/readout/transport/preprocess。相同 action vector 在 OSC_POSE、joint position、velocity 或 torque controller 下语义不同；robosuite docs 也说明 composite controller 会把统一 action vector 拆给不同 body-part controllers。[4][12]</p>
+<h3 id="6-2-latency">6.2 为什么 latency 会放大</h3>
+<p>Tan et al. 指出 simulator 的即时 actuation/observation 会人为放大 feedback stability region；真实 delay 会引起 oscillation/divergence。他们测量硬件 latency、在 simulator 用 observation history 插值 delayed observation，并加入更准确 actuator model。[4]</p>
+<p>VLA rollout 还要加上 action chunk stale risk：若一次预测 \(K\) 步而执行 \(K_e\) 步，环境变化与 model error 在 open-loop prefix 内累积。审计必须记录：</p>
+<ul><li>camera timestamp → policy start/end → packet send/receive → controller apply → next camera timestamp；</li><li>latency 的分布而非平均值；</li><li>chunk \(K\)、execute horizon \(K_e\)、replan trigger、queue flush/version；</li><li>simulator physics substeps、controller Hz、policy Hz 和 robot firmware Hz；</li><li>stale response、timeout、duplicate packet、out-of-order packet 的处理。</li></ul>
+<h3 id="6-3-paired-sweep">6.3 最小 paired sweep</h3>
+<p>固定 checkpoint 与 real trials，比较 \(K_e\in\{1,4,8,16\}\)、人工 delay bucket、nominal vs fitted actuator model。若 free-space tracking 已失配，不要先把失败归因于 world model 或视觉表征。</p>
+<h2 id="7-contact-friction-compliance-gripper-semantics">7. Contact、friction、compliance 与 gripper semantics</h2>
+<h3 id="7-1-soft-contact">7.1 Soft-contact 参数不是装饰配置</h3>
+<p>MuJoCo 把 soft constraint 的 reference acceleration 写成 spring-damper 形式，并把 constraint-space dynamics 近似写为由 impedance 插值约束作用：[10]</p>
+<div class="formula">\[
+a_r=-b v-k r,
+\qquad
+a_c=(1-d)a_u+d a_r,
+\]</div>
+<p>其中 \(r\) 是 constraint residual/penetration，\(v\) 是 constraint velocity，\(k,b\) 是 stiffness/damping，\(d\in(0,1)\) 是 impedance；&lt;code&gt;solref&lt;/code&gt; 控制 time constant/damping ratio，&lt;code&gt;solimp&lt;/code&gt; 控制 position-dependent impedance。官方 docs 还指出 time constant 相对 timestep 过小会让系统对 integrator 过硬并可能不稳定。[10]</p>
+<p>摩擦至少区分 sliding、torsional 与 rolling；contact pair 还涉及 mixing/priority、friction cone、solver 与 no-slip settings。因而“把 friction 从 0.5 随机到 1.5”没有固定完整 contact contract。[10]</p>
+<h3 id="7-2-manipulation">7.2 Manipulation 高风险点</h3>
+<ol><li>gripper action 是 position、velocity、force 还是 binary open/close；正负号、deadband、saturation 是否一致。</li><li>gripper finger geometry、pad compliance、joint backlash、closing speed/force 与 real wear。</li><li>object rigid/deformable、mass/COM、surface-conditioned friction、mesh/collision margin。</li><li>OSC/joint impedance gain、force limit、collision contact threshold。</li><li>simulator solver/timestep 的 slip、bounce、penetration artifact。</li></ol>
+<p>OpenAI dexterous manipulation工作明确承认 rigid-body contact、tendon actuation与传感器难以匹配，并依赖 calibration、randomization 与 memory；Residual RL 则用 conventional controller 处理可建模部分，让 learned residual 针对 friction/contact 未建模部分。[7][13]</p>
+<h2 id="8-adaptation">8. Adaptation 方法选择</h2>
+<table><thead><tr><th>方法</th><th>输入/authority</th><th>适用场景</th><th>主要风险</th></tr></thead><tbody>
+<tr><td>Fixed domain randomization</td><td>simulator only</td><td>无 real data、先建立 coverage</td><td>support 选错、过度保守</td></tr>
+<tr><td>SimOpt / distribution adaptation</td><td>少量 real trajectories</td><td>可安全重复 rollout、需调整 simulator distribution</td><td>real cost、trajectory metric shortcut</td></tr>
+<tr><td>Explicit UP-OSI</td><td>history→physical parameter \(\hat\mu\)</td><td>参数语义明确、可在 sim 监督</td><td>identifiability、模型假设错误；[5]未做 real robot</td></tr>
+<tr><td>Latent RMA</td><td>history→task-relevant latent \(\hat z\)</td><td>参数不可辨、环境快速变化</td><td>latent OOD、history/timing mismatch</td></tr>
+<tr><td>Recurrent implicit SysID</td><td>state/action history→policy memory</td><td>希望 end-to-end adaptation</td><td>memory shortcut、难解释/校准</td></tr>
+<tr><td>Residual policy</td><td>base control + learned correction</td><td>有可靠 controller、contact residual 局部</td><td>residual 破坏稳定性或饱和</td></tr>
+<tr><td>Real fine-tune / data aggregation</td><td>real labels/rewards</td><td>有足够安全数据与回滚机制</td><td>hardware damage、catastrophic forgetting</td></tr>
+</tbody></table>
+<p>UP-OSI 直接预测 dynamics parameters；RMA 则预测 task-relevant low-dimensional extrinsics latent，强调不必恢复“物理真值”，只需支持正确 action。RMA 的 base policy 与 adaptation module 可异步运行，提醒部署必须记录各模块频率与 stale latent 策略。[5][6]</p>
+<p>Residual policy 的核心为：</p>
+<div class="formula">\[
+u_t=\operatorname{sat}\left(u_{base}(s_t)+\alpha\,u_{res,\theta}(s_t,o_t)\right).
+\]</div>
+<p>变量解释：\(u_{base}\) 是 conventional feedback/impedance controller，\(u_{res}\) 学习未建模 contact/friction correction，\(\alpha\) 与 saturation 限制 residual authority。Johannink et al. 证明该结构可用于真实 contact-rich assembly，但其经验结果不等于对任意 neural residual 的稳定性证明；上线仍需 residual norm/rate/energy limits 与 fallback。[7]</p>
+<h2 id="9-uncertainty-aware-planning-recovery">9. Uncertainty-aware planning、安全与 recovery</h2>
+<h3 id="9-1-chance-constraint">9.1 Chance constraint</h3>
+<p>对 predicted state distribution \(x_{t+k}\sim p_\theta\)，安全规划可要求：</p>
+<div class="formula">\[
+\Pr\left(g_j(x_{t+k},a_{t+k})\le 0,
+\ \forall j,k\right)\ge 1-\delta.
+\]</div>
+<p>变量解释：\(g_j\) 可表示 joint/velocity/force/collision/workspace constraints，\(\delta\) 是允许风险。Hewing et al. 用 GP residual dynamics 的不确定性传播构造 chance-constrained MPC；VLA 中可以用 ensemble/disagreement/quantile 近似，但若 uncertainty 没有 calibration，就不能声称满足概率约束。[9]</p>
+<h3 id="9-2-risk-gate-recovery">9.2 Risk gate 与 recovery</h3>
+<p>Recovery RL 的执行逻辑可抽象为：</p>
+<div class="formula">\[
+a_t=
+\begin{cases}
+\pi_{task}(s_t), &amp; \hat Q_{risk}(s_t,a_t^{task})\le\epsilon_{risk},\\
+\pi_{rec}(s_t), &amp; \text{otherwise}.
+\end{cases}
+\]</div>
+<p>变量解释：risk critic 估计未来 constraint violation，超过阈值就把 control authority 交给 recovery policy。论文用 offline constraint-violation data 预训练 risk/recovery，并在线更新；这是 learned shield 的实例，不是 formal zero-risk guarantee。[8]</p>
+<h3 id="9-3-vla">9.3 VLA 最小安全闭环</h3>
+<pre><code class="language-python">def guarded_replan(obs, policy, safety, recovery):
+    # 1. Reject stale, malformed or out-of-range observations before policy inference.
+    assert observation_contract_ok(obs)
+
+    # 2. Generate a short action chunk and attach timestamp / checkpoint / schema metadata.
+    chunk = policy.infer(obs)
+
+    # 3. Parse, denormalize and run hard kinematic/controller limits before any execution.
+    env_actions = transform_and_clip(chunk)
+
+    # 4. Evaluate collision, force, workspace, uncertainty and learned risk gates.
+    if safety.reject(obs, env_actions):
+        return recovery.safe_action(obs)  # Hold, retreat, open gripper or E-stop by policy.
+
+    # 5. Execute only the approved prefix, re-observe, and flush stale queued actions on any event.
+    return env_actions[:approved_open_loop_steps]</code></pre>
+<p>这个伪代码是设计框架。具体 recovery action 必须由 robot/task hazard analysis 决定；“open gripper”在高处搬运时可能比 hold 更危险，不能写成通用默认。</p>
+<h2 id="10-paired-test-matrix">10. Paired test matrix 与失败归因</h2>
+<table><thead><tr><th>Test</th><th>只改变</th><th>观测指标</th><th>能回答</th><th>不能回答</th></tr></thead><tbody>
+<tr><td>Camera replay</td><td>sim/real camera transform</td><td>feature/pose/action delta</td><td>visual contract 是否先失配</td><td>real actuation</td></tr>
+<tr><td>Open-loop actuator ID</td><td>commanded trajectory</td><td>position/velocity/current delay</td><td>actuator/latency model</td><td>contact policy success</td></tr>
+<tr><td>Push/slip/grasp ID</td><td>surface/object/contact settings</td><td>slip/bounce/grasp force</td><td>contact parameter family</td><td>long-horizon task</td></tr>
+<tr><td>DR width sweep</td><td>\(p_\phi(\xi)\) width</td><td>nominal/robust sim + fixed real trials</td><td>coverage/optimality trade-off</td><td>未测 target support</td></tr>
+<tr><td>SimOpt iteration</td><td>\(\phi_k\to\phi_{k+1}\)</td><td>real/sim trajectory discrepancy + success</td><td>distribution adaptation</td><td>exact real parameters</td></tr>
+<tr><td>Chunk/replan sweep</td><td>\(K_e\)</td><td>latency、success、correction rate</td><td>stale/open-loop sensitivity</td><td>backbone quality独立贡献</td></tr>
+<tr><td>Safety gate ablation</td><td>risk/fallback gate</td><td>constraint events、recoveries、success</td><td>safety-performance trade-off</td><td>formal safety unless assumptions proven</td></tr>
+</tbody></table>
+<p>失败轨迹按如下顺序归因：observation contract → action transform → controller/timing → free-space dynamics → contact/gripper → task/success → uncertainty/recovery。每层要保存原始 timestamped trace；只看最终 success=0 无法区分根因。</p>
+<h2 id="11">11. 项目证据与真实性边界</h2>
+<table><thead><tr><th>可写 claim</th><th>最低 artifact</th><th>没有 artifact 时的安全表达</th></tr></thead><tbody>
+<tr><td>“做了视觉随机化”</td><td>randomization config/distribution、ablation、sample renders</td><td>“设计了待验证的 visual DR matrix”</td></tr>
+<tr><td>“完成 dynamics randomization”</td><td>parameter names/ranges/units/source、training config、paired result</td><td>“识别了需随机化的 dynamics 参数”</td></tr>
+<tr><td>“做了 system ID”</td><td>excitation trajectory、measurement、fit objective/residual、versioned model</td><td>“制定了 system ID 方案”</td></tr>
+<tr><td>“处理 latency”</td><td>timestamp trace、p50/p95/p99、sim delay injection、paired eval</td><td>“将 latency 列为控制合同风险”</td></tr>
+<tr><td>“实现 Sim2Real”</td><td>hardware、controller、safety、real rollout summary/videos/failures</td><td>“在 simulation benchmark 验证，尚未 real deployment”</td></tr>
+<tr><td>“安全部署”</td><td>limits、risk gate、E-stop、incident log、approval protocol</td><td>“提出安全 gate，未完成安全认证”</td></tr>
+</tbody></table>
+<p>当前五个项目页中的 LIBERO/RoboCasa simulation 不等于 Sim2Real。没有真实硬件 artifact 时，本页只能支持面试中的方法论与诊断题，不能提升个人 Truth Boundary。</p>
+<h2 id="12">12. 面试答题骨架与当前边界</h2>
+<h3 id="12-1-30">12.1 30 秒回答</h3>
+<p>“我会把 Sim2Real 拆成六层：visual/sensor、dynamics、control/timing、contact、task protocol 和 safety。先做 camera/action/controller 的接口 round-trip，再用 real measurement 给 mass、actuator、latency 和 friction 建中心与区间；可测参数做 system ID，不确定或会漂移的参数做 domain randomization。range 不是越宽越好，要通过同 checkpoint 的 paired real trials 看 robustness–optimality trade-off。快速变化可用 history-conditioned OSI/RMA，有可靠 controller 时可加 bounded residual。部署端还要有 uncertainty/risk gate、hard limits、fallback/recovery、E-stop 和完整 timestamp trace。没有真实硬件 rollout，我只会说这是迁移设计，不会说已完成 Sim2Real。”</p>
+<h3 id="12-2">12.2 高频追问防线</h3>
+<ul><li>“为什么不全随机化？”——过宽 distribution 会包含不可解/不相关场景并让 policy 过度保守；先测量再分层扩宽。[3][4]</li><li>“SysID 与 DR 二选一吗？”——不是；SysID 给 nominal center，DR 覆盖 residual uncertainty，SimOpt 可用 real behavior 迭代 distribution。[3][4]</li><li>“world model uncertainty 大怎么办？”——校准 ensemble/GP-style uncertainty，用 chance/risk gate 拒绝候选并缩短 horizon；uncalibrated variance 只算 heuristic。[8][9]</li><li>“接触失败先查什么？”——gripper semantics/force、controller impedance、friction/contact solver/timestep、object mass/COM 与 camera-action geometry；不先怪 backbone。[10][12]</li><li>“仿真 95%、真机 0%？”——按 observation→action transform→controller/timing→dynamics→contact 的 trace 顺序做 paired replay，不用更多随机化掩盖接口 bug。</li></ul>
+<h3 id="12-3">12.3 独立复核后的开放项</h3>
+<ul><li>已核实：10 份固定 PDF 共 124 页/0 空白页，MuJoCo/OpenCV/robosuite 固定源码与文档快照，六层 test matrix、12 个 deterministic probes，以及 WM-031..038 / WM-040..044 的 source→knowledge→card reconciliation；详见 <a href="vol_04_sim2real_independent_fact_review.html">Audit D 独立事实复核</a>。</li><li>仍未核实：任何用户项目的协议完整 real hardware、calibration、latency/contact measurements、安全记录、real rollout 与候选人逐文件 ownership。</li><li>当前边界：Audit A–E public facts 已完成独立 review；VOL 04 仍因 local runtime、ownership 与 oral gate 保持 <code>WARN</code>，题卡真实口述前保持 <code>unseen</code>。</li></ul>
+<h2 id="13-references">13. 参考文献（References）</h2>
+<ol><li>Tobin et al., “Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World”, arXiv 1703.06907v1, 2017. <a href="https://arxiv.org/abs/1703.06907v1">arXiv</a>。</li><li>Peng et al., “Sim-to-Real Transfer of Robotic Control with Dynamics Randomization”, arXiv 1710.06537v3, 2018. <a href="https://arxiv.org/abs/1710.06537v3">arXiv</a>。</li><li>Chebotar et al., “Closing the Sim-to-Real Loop: Adapting Simulation Randomization with Real World Experience”, arXiv 1810.05687v4, 2019. <a href="https://arxiv.org/abs/1810.05687v4">arXiv</a>。</li><li>Tan et al., “Sim-to-Real: Learning Agile Locomotion for Quadruped Robots”, arXiv 1804.10332v2, 2018. <a href="https://arxiv.org/abs/1804.10332v2">arXiv</a>。</li><li>Yu et al., “Preparing for the Unknown: Learning a Universal Policy with Online System Identification”, arXiv 1702.02453v3, 2017. <a href="https://arxiv.org/abs/1702.02453v3">arXiv</a>。</li><li>Kumar et al., “RMA: Rapid Motor Adaptation for Legged Robots”, arXiv 2107.04034v1, 2021. <a href="https://arxiv.org/abs/2107.04034v1">arXiv</a>。</li><li>Johannink et al., “Residual Reinforcement Learning for Robot Control”, arXiv 1812.03201v2, 2018. <a href="https://arxiv.org/abs/1812.03201v2">arXiv</a>。</li><li>Thananjeyan et al., “Recovery RL: Safe Reinforcement Learning with Learned Recovery Zones”, arXiv 2010.15920v2, 2021. <a href="https://arxiv.org/abs/2010.15920v2">arXiv</a>。</li><li>Hewing et al., “Cautious Model Predictive Control Using Gaussian Process Regression”, arXiv 1705.10702v4 / IEEE TCST, 2019. <a href="https://arxiv.org/abs/1705.10702v4">arXiv</a>。</li><li>MuJoCo official documentation, “Modeling” and “XML Reference”, accessed 2026-07-16. <a href="https://mujoco.readthedocs.io/en/stable/modeling.html">Modeling</a> / <a href="https://mujoco.readthedocs.io/en/stable/XMLreference.html">XML Reference</a>。</li><li>OpenCV 4.x official documentation, “Camera Calibration and 3D Reconstruction”, accessed 2026-07-16. <a href="https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html">calib3d</a>。</li><li>robosuite 1.5 official documentation, “Controllers”, accessed 2026-07-16. <a href="https://robosuite.ai/docs/modules/controllers.html">Docs</a>。</li><li>OpenAI et al., “Learning Dexterous In-Hand Manipulation”, arXiv 1808.00177v5, 2019. <a href="https://arxiv.org/abs/1808.00177v5">arXiv</a>。</li></ol>
+</article></body></html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 EVAL-004 Source Freeze：Paired Init / Seed Evaluation 与显著性</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eval004_paired_init_seed_significance_source_freeze.md">
+<meta name="aris:source-sha256" content="c89c052a630692a12a20235fa6d53278f43e4509c6e567110f81f7c2eb427313">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>c89c052a630692a12a20235fa6d53278f43e4509c6e567110f81f7c2eb427313</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eval004_paired_init_seed_significance_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、revision 与许可</a></li><li><a href="#2-pairing-unit">2. Pairing unit：配的是实验条件，不是行号</a></li><li><a href="#2-1-seed">2.1 四类 seed 必须分开</a></li><li><a href="#3-paired-binary">3. Paired binary 四格表与效应</a></li><li><a href="#4-exact-mcnemar-discordant-pairs">4. Exact McNemar：只看 discordant pairs</a></li><li><a href="#5-paired-randomization-paired-bootstrap">5. Paired randomization 与 paired bootstrap</a></li><li><a href="#5-1-randomization-permutation">5.1 Randomization / permutation</a></li><li><a href="#5-2-paired-bootstrap">5.2 Paired bootstrap</a></li><li><a href="#6-training-seed-cluster-power">6. Training seed、cluster 与 power</a></li><li><a href="#6-1-episode-training-runs">6.1 episode 不能替代 training runs</a></li><li><a href="#6-2-power-discordance">6.2 power 由 discordance 与目标效应共同决定</a></li><li><a href="#7-invalid-pairs">7. Invalid pairs、选择偏差与多重比较</a></li><li><a href="#7-1-invalid-pair-rule">7.1 invalid-pair rule 预注册</a></li><li><a href="#7-2-selection-final-holdout">7.2 selection 与 final holdout 分离</a></li><li><a href="#7-3-multiplicity">7.3 multiplicity</a></li><li><a href="#8">8. 本地项目真实性边界</a></li><li><a href="#9">9. 最小验证矩阵</a></li><li><a href="#10-source-gate">10. Source Gate 结论与下一入口</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 EVAL-004 Source Freeze：Paired Init / Seed Evaluation 与显著性</h1>
+<div class="meta">状态：<code>source_frozen / VLA-EVAL-004 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-18 证据截止：2026-07-18 本切片冻结 paired unit、binary discordant table、exact McNemar、pair 内 randomization、paired bootstrap、training-seed 层级、multiplicity 与项目真实性边界；下游只生成一张 <code>VLA-EVAL-004</code> 原子题卡，VOL 05 同步为 knowledge/cards 26/44。</div>
+<h2 id="question">问题（Question）</h2>
+<p>当面试官问“新 checkpoint 比 baseline 高 4 个点，显著吗？”时，正确入口不是把两个汇总成功率直接送入独立样本检验。先要证明 A/B 在同一个 task、同一个 initialization、同一个 environment/rollout protocol 上成对，再冻结 seed 类型、无效 pair 规则、checkpoint selection、task 权重和多重比较范围。</p>
+<p>本 source gate 固定以下最小链路：</p>
+<pre><code class="language-text">same task + same init snapshot/hash + same protocol
+        -&gt; pair_id and A/B binary outcomes
+        -&gt; n11/n10/n01/n00 + paired effect
+        -&gt; exact McNemar / paired randomization + paired CI
+        -&gt; task/training-seed hierarchy + multiplicity + practical threshold</code></pre>
+<h2 id="1-revision">1. 冻结来源、revision 与许可</h2>
+<p>以下 hash 对 2026-07-18 取得的公开响应或 pinned UTF-8 原文计算。论文响应 hash 只证明本轮取得的来源对象，没有替代论文版本号、DOI 或实验复现；官方代码只支持实现语义，不证明任何本地 VLA 结果成立。</p>
+<table><thead><tr><th>ID</th><th>来源</th><th>类型 / revision</th><th>固定入口</th><th>SHA-256</th><th>本节点支持范围</th></tr></thead><tbody>
+<tr><td>S1</td><td>McNemar (1947), correlated proportions</td><td>primary / DOI</td><td><a href="https://doi.org/10.1007/BF02295996">Psychometrika DOI</a></td><td>DOI 指纹</td><td>paired binary outcomes 只由 discordant pairs 提供差异证据</td></tr>
+<tr><td>S2</td><td>Newcombe (1998), paired proportions CI</td><td>peer-reviewed / DOI</td><td><a href="https://doi.org/10.1002/%28SICI%291097-0258%2819980501%2917%3A10%3C873%3A%3AAID-SIM779%3E3.0.CO%3B2-I">Statistics in Medicine DOI</a></td><td>DOI 指纹</td><td>paired proportion difference 的区间不能假装两臂独立</td></tr>
+<tr><td>S3</td><td>statsmodels <code>contingency_tables.py</code></td><td>official-code / <code>v0.14.6</code>, commit <code>40e6a84d26ac74623c6b94b718f0987ef0351c53</code>, BSD-3</td><td><a href="https://github.com/statsmodels/statsmodels/blob/40e6a84d26ac74623c6b94b718f0987ef0351c53/statsmodels/stats/contingency_tables.py">source</a></td><td><code>af2e5455df459abc9ced79186e16fecf38344cc630aeec1ade9e6e65b488090f</code></td><td><code>mcnemar(exact=True)</code> 使用 off-diagonal discordant counts 和 <code>p=0.5</code> binomial tail</td></tr>
+<tr><td>S4</td><td>SciPy <code>_resampling.py</code></td><td>official-code / <code>v1.16.3</code>, commit <code>b9105ccc2237f57acb1060202cd77f6dd264fb34</code>, BSD-3</td><td><a href="https://github.com/scipy/scipy/blob/b9105ccc2237f57acb1060202cd77f6dd264fb34/scipy/stats/_resampling.py">source</a></td><td><code>ad8335279281c69d4a3bbf4449100e3ac5e1f5bc7af360963133973ed2a64d7e</code></td><td><code>bootstrap(..., paired=True)</code> 共用 resampled indices；paired A/B assignment 用 <code>permutation_type="samples"</code></td></tr>
+<tr><td>S5</td><td>SciPy <code>_binomtest.py</code></td><td>official-code / <code>v1.16.3</code>, same commit, BSD-3</td><td><a href="https://github.com/scipy/scipy/blob/b9105ccc2237f57acb1060202cd77f6dd264fb34/scipy/stats/_binomtest.py">source</a></td><td><code>696ea9faf464bf7a5207cff49d37d3de4340855f08a78e00dfd1043f297d5a57</code></td><td>discordant-pair null 下的 exact binomial 计算语义</td></tr>
+<tr><td>S6</td><td>Henderson et al., <em>Deep RL That Matters</em></td><td>primary / arXiv <code>1709.06560</code></td><td><a href="https://arxiv.org/abs/1709.06560">arXiv</a></td><td>response <code>9180e8b28b30a7e013e3676786d8632190888dd82b667fce5d76216aa87cb585</code></td><td>随机种子、实现差异与统计报告会改变 RL 结论</td></tr>
+<tr><td>S7</td><td>Colas et al., <em>How Many Random Seeds?</em></td><td>primary / arXiv <code>1806.08295</code></td><td><a href="https://arxiv.org/abs/1806.08295">arXiv</a></td><td>response <code>dd230757a4eba88b99df2dbb05bfe7658ec2f8eefc7a1e282aa9f095055e6012</code></td><td>training-run variability、seed 数与 power/效应大小要共同报告</td></tr>
+<tr><td>S8</td><td>Agarwal et al., <em>Deep RL at the Edge of the Statistical Precipice</em></td><td>primary / arXiv <code>2108.13264</code></td><td><a href="https://arxiv.org/abs/2108.13264">arXiv</a></td><td>response <code>74f11076d64de0f6beb9da4a9b185dd2a42465bfde6426fb2004fd6fd9e042ac</code></td><td>多 task / 多 run 的不确定性、robust aggregate 与 bootstrap 边界</td></tr>
+<tr><td>S9</td><td><code>google-research/rliable</code></td><td>official-code / commit <code>3ccd9f4dea577a04d3d2b557f259aac08badbd81</code>, Apache-2.0</td><td><a href="https://github.com/google-research/rliable/tree/3ccd9f4dea577a04d3d2b557f259aac08badbd81">repository</a></td><td>README <code>c4d474f8a018c6faf8ab5d365bad135258a2af851e2a5672e07999438fcc6237</code>; library <code>0af084e4040fad3ae02a612b16fbcc59d9a141ac8259ad47dc1932bcc168ac14</code>; metrics <code>caf0c74e6238a12d2f59d6bcd47115e56167ea73c3b851c3f7981de17e5230cc</code>; LICENSE <code>43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1</code></td><td>run uncertainty、task stratification 与 aggregate reporting 的实现参考；不是本地 VLA scorer</td></tr>
+</tbody></table>
+<p>SciPy <code>v1.16.3</code> 的 annotated tag object 是 <code>56e567...</code>，实际 commit 是 <code>b9105ccc...</code>；本表用实际 commit 固定 blob。任何“same seed 就完全相同”的说法都不是这些来源支持的结论。</p>
+<h2 id="2-pairing-unit">2. Pairing unit：配的是实验条件，不是行号</h2>
+<p>一个 pair 至少共享：<code>task_id</code>、可验证的 <code>init_snapshot_hash</code>、环境/controller/scorer/protocol version、horizon、checkpoint role、success predicate。推荐主键：</p>
+<pre><code class="language-text">pair_id = hash(task_id, init_snapshot_hash, env_revision,
+               controller_revision, scorer_revision, protocol_hash,
+               rollout_repeat_id)</code></pre>
+<p><code>seed</code> 只能帮助重放，不能代替 init 证据。同一个整数 seed 在不同 simulator version、wrapper、进程顺序、随机调用次数或 reset path 下可能得到不同初始状态；至少保存 reset 后 state/proprio、首帧或 init snapshot/hash，并在 A/B 开始前核对。</p>
+<h3 id="2-1-seed">2.1 四类 seed 必须分开</h3>
+<table><thead><tr><th>seed</th><th>控制对象</th><th>在 paired 设计中的位置</th><th>常见误用</th></tr></thead><tbody>
+<tr><td>environment / init seed</td><td>task 初态、物体位置、场景随机化</td><td>pairing key 的候选字段，仍需 snapshot/hash 验证</td><td>只看整数相同就宣称 same init</td></tr>
+<tr><td>rollout stochastic seed</td><td>policy sampling、noise、planner sampling</td><td>可作为 common-random-number 条件或重复层</td><td>把同 seed 当作独立 episode</td></tr>
+<tr><td>model training seed</td><td>初始化、shuffle、dropout、优化轨迹</td><td>更高层 replicate；每个 checkpoint run 是统计单位</td><td>用单个训练 run 的几百个 episode 替代多个 training runs</td></tr>
+<tr><td>sampler / bootstrap seed</td><td>permutation 或 bootstrap 的 Monte Carlo 随机性</td><td>只保证分析可复算</td><td>把 resampling seed 当成实验复现 seed</td></tr>
+</tbody></table>
+<p>若 A/B 架构或执行路径不同，共用 rollout seed 未必产生同一噪声语义；此时 pairing 依赖 same init/protocol，不能把“随机数消费顺序相同”作为隐含前提。</p>
+<h2 id="3-paired-binary">3. Paired binary 四格表与效应</h2>
+<p>对每个有效 pair 记录二元结果 <code>(A_i,B_i)</code>，汇总：</p>
+<table><thead><tr><th>cell</th><th>含义</th><th>对差异的作用</th></tr></thead><tbody>
+<tr><td><code>n11</code></td><td>A 成功、B 成功</td><td>concordant；不支持方向差异</td></tr>
+<tr><td><code>n10</code></td><td>A 成功、B 失败</td><td>discordant；支持 A 优于 B</td></tr>
+<tr><td><code>n01</code></td><td>A 失败、B 成功</td><td>discordant；支持 B 优于 A</td></tr>
+<tr><td><code>n00</code></td><td>A 失败、B 失败</td><td>concordant；不支持方向差异</td></tr>
+</tbody></table>
+<p>令 <code>n=n11+n10+n01+n00</code>，paired risk difference 为：</p>
+<div class="formula">\[
+\hat\Delta=\frac{1}{n}\sum_{i=1}^{n}(A_i-B_i)=\frac{n_{10}-n_{01}}{n}.
+\]</div>
+<p>变量解释：<code>A_i-B_i</code> 只可能是 <code>1/0/-1</code>；因此相同 pair 上双方都成功或都失败时贡献为 0。实现映射是先 join pair manifest，再逐 pair 计算 <code>delta_i</code>，绝不能由两个不带 join key 的 aggregate success rate 反推四格表。</p>
+<p>报告至少包含 <code>n11/n10/n01/n00</code>、<code>Delta</code>、paired CI、p-value、alpha 与预注册 practical threshold。p-value 不是 effect size，统计显著也不自动等于工程收益。</p>
+<h2 id="4-exact-mcnemar-discordant-pairs">4. Exact McNemar：只看 discordant pairs</h2>
+<p>在“discordant pair 中两个方向等概率”的 null 下，令 <code>d=n10+n01</code>：</p>
+<div class="formula">\[
+n_{10}\mid d\sim\operatorname{Binomial}(d,0.5).
+\]</div>
+<p>变量解释：<code>d</code> 是真正对 A/B 方向差异提供信息的 pair 数。statsmodels <code>mcnemar(exact=True)</code> 取 off-diagonal 较小计数作为 statistic，并用 <code>Binomial(d,0.5)</code> 尾概率计算双侧 exact p-value。<code>n11+n00</code> 再大，也不能制造更多 discordant direction evidence。</p>
+<p>当 <code>d=0</code> 时，样本中没有观察到方向差异，不能说“两模型等价”；只能说该 protocol/样本没有提供差异证据。若目标是 non-inferiority/equivalence，需另行预注册 margin 和相应设计。</p>
+<h2 id="5-paired-randomization-paired-bootstrap">5. Paired randomization 与 paired bootstrap</h2>
+<h3 id="5-1-randomization-permutation">5.1 Randomization / permutation</h3>
+<p>对统计量 <code>mean(A-B)</code>，null 下在每个 pair 内交换 A/B 标签，而不是打乱 observation-pair 对应关系：</p>
+<pre><code class="language-python">from scipy.stats import permutation_test
+
+# &quot;samples&quot; swaps A/B assignment within each paired observation.
+result = permutation_test(
+    (a, b),
+    statistic=lambda x, y, axis: (x - y).mean(axis=axis),
+    permutation_type=&quot;samples&quot;,
+    alternative=&quot;two-sided&quot;,
+)</code></pre>
+<p>SciPy 的 <code>permutation_type="pairings"</code> 是重排样本内部的配对关系，适合 association/correlation 类 null，不是本节点 A/B paired assignment test。两者写反会检验不同假设。</p>
+<h3 id="5-2-paired-bootstrap">5.2 Paired bootstrap</h3>
+<p>paired bootstrap 必须抽 pair index，并把同一组 index 同时用于 A/B：</p>
+<pre><code class="language-python">from scipy.stats import bootstrap
+
+# paired=True reuses one resampled index vector for both arms.
+ci = bootstrap(
+    (a, b),
+    statistic=lambda x, y, axis: (x - y).mean(axis=axis),
+    paired=True,
+    confidence_level=0.95,
+)</code></pre>
+<p>若 task 是目标总体的一部分，应按预注册目标做 task-stratified 或 cluster bootstrap；不能把 frame、同 episode 的 step、重复图像路径或同 training run 下的大量 rollout 展开成 iid。<code>rliable</code> 的 stratified bootstrap 是跨 task/run 报告的实现参考，但不是“任意二维数组都自动代表正确层级”。</p>
+<h2 id="6-training-seed-cluster-power">6. Training seed、cluster 与 power</h2>
+<h3 id="6-1-episode-training-runs">6.1 episode 不能替代 training runs</h3>
+<p>若结论是“训练方法 A 优于 B”，推断单位首先是 model training run。每个 training seed 生成一对 A/B checkpoint，再在共享 task/init grid 上评估；episode 层只估计该 checkpoint pair 的 rollout noise。只有一个 A checkpoint 和一个 B checkpoint 时，即使各跑 10,000 episodes，也不能估计训练过程的 seed-to-seed variability。</p>
+<p>推荐结构：</p>
+<pre><code class="language-text">training_seed
+  -&gt; checkpoint_A / checkpoint_B
+      -&gt; task
+          -&gt; init_snapshot
+              -&gt; rollout repeat -&gt; A/B success</code></pre>
+<p>分析可在 training-run 顶层做 paired seed comparison，并在 run 内对 task/init cluster 建模或 bootstrap。若 nominal same training seed 对两方法不构成可信 common random numbers，应改用独立或层级设计并如实说明。</p>
+<h3 id="6-2-power-discordance">6.2 power 由 discordance 与目标效应共同决定</h3>
+<p>McNemar exact 的有效 trial 数是 <code>d=n10+n01</code>，不是总 <code>n</code>。规划 MDE / power 时要预估 discordant rate <code>q=(n10+n01)/n</code> 以及 discordant direction imbalance，而不是只写“跑 250 对”。若两个模型几乎总是一起成功/失败，<code>n</code> 很大但 <code>d</code> 很小，差异检验仍可能没有 power。</p>
+<p>最低报告：预期 baseline、practical effect threshold、预计 discordant rate、alpha、power、task/training-seed 层级、计划 pair 数与允许的 invalid-pair 比例。pilot 用来估计这些量时，要和 final holdout 分开。</p>
+<h2 id="7-invalid-pairs">7. Invalid pairs、选择偏差与多重比较</h2>
+<h3 id="7-1-invalid-pair-rule">7.1 invalid-pair rule 预注册</h3>
+<p>先定义 environment crash、timeout、安全终止、缺帧、scorer error、单臂服务异常分别记 failure、invalid 还是 infrastructure exclusion。观察 A/B 结果后再删 pair 会引入选择偏差；特别是单臂异常不能静默删除。必须同时报告 attempted pairs、valid pairs、每类 exclusion count、单臂/双臂异常及 sensitivity analysis。</p>
+<h3 id="7-2-selection-final-holdout">7.2 selection 与 final holdout 分离</h3>
+<p>用同一批 init 挑 checkpoint/horizon/replan K，再在同一批 init 上报最终 p-value，会低估选择带来的乐观偏差。checkpoint selection 使用 validation grid；最终结论使用预先锁定、未参与选择的 holdout grid和冻结 scorer。</p>
+<h3 id="7-3-multiplicity">7.3 multiplicity</h3>
+<p>如果同时比较多个 task、checkpoint、horizon、seed slice 或指标，单个 <code>p&lt;0.05</code> 不再代表整个搜索过程的 5% 错误率。三种安全策略：</p>
+<ol><li>预注册一个 primary endpoint 和一个 primary comparison，其余为 exploratory；</li><li>对有限 family 使用 Holm step-down 控制 family-wise error；</li><li>对多 task / 多 run 用层级模型或预注册 aggregate，同时报告 per-task effect，不从最亮眼 task 反推总体结论。</li></ol>
+<p>Holm 只处理 multiplicity，不修复错误 pairing、protocol drift 或 selection leakage。</p>
+<h2 id="8">8. 本地项目真实性边界</h2>
+<table><thead><tr><th>项目材料</th><th>当前可支持</th><th>当前不能支持</th></tr></thead><tbody>
+<tr><td><a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM inventory</a></td><td>fixed-pruned-init <code>186/250=0.744</code> 与 reset-style <code>232/250=0.928</code> 属于不同 protocol；差异可作为 protocol sensitivity 风险</td><td>没有同 checkpoint、同 normalizer/scorer、同 task/init/seed 的 250 对 raw outcomes；不能构造 <code>n10/n01</code>，不能做 McNemar，不能称 paired uplift</td></tr>
+<tr><td><a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA inventory</a></td><td>archive summary 记录 <code>97.4%</code>，并明确 denominator/trial/seed/init/lineage 缺失</td><td>不能进入 paired comparison、不能计算 paired CI/p-value、不能声称显著高于 official</td></tr>
+<tr><td><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD inventory</a></td><td>10,000-row box/point/text 静态 holdout 可按 metric/pool 设计 cluster-aware 分析</td><td>row 不是 robot episode；重复 image/path 是 cluster，不能和 rollout paired test 混用</td></tr>
+<tr><td><a href="vol_05_eval003_success_rate_confidence_interval_source_freeze.html">EVAL-003 source</a> / <a href="vol_05_eval003_local_statistical_artifact_gate.html">artifact gate</a></td><td>episode-level CI、分母、cluster 与 raw artifact 最低字段</td><td>不能从两个 aggregate CI 推导 pair table；既存 EVAL-003 hash 漂移不在本切片顺手修复</td></tr>
+</tbody></table>
+<p>UWM 若要补证据，最小 pair row 为：<code>pair_id, task_id, init_snapshot_hash, env_seed, rollout_seed, training_seed, A_checkpoint, B_checkpoint, protocol_hash, A_success, B_success, A_valid, B_valid, exclusion_reason</code>。本节点只给 artifact contract，不声称项目已经采集。</p>
+<h2 id="9">9. 最小验证矩阵</h2>
+<table><thead><tr><th>case</th><th>必须验证</th><th>当前状态</th></tr></thead><tbody>
+<tr><td>same seed / different init</td><td>对比 snapshot/hash、首帧或 reset-state</td><td>PENDING（项目未提供）</td></tr>
+<tr><td>four-cell table</td><td><code>n11+n10+n01+n00=n</code>，逐 pair 可回查</td><td>PENDING（项目无 raw pairs）</td></tr>
+<tr><td>exact McNemar</td><td>只使用 <code>n10+n01</code>，zero-discordance 明示</td><td>PASS（official-code frozen）</td></tr>
+<tr><td>paired permutation</td><td>pair 内交换 A/B，SciPy <code>samples</code></td><td>PASS（official-code frozen）</td></tr>
+<tr><td>paired bootstrap</td><td>A/B 共用 resampled indices，SciPy <code>paired=True</code></td><td>PASS（official-code frozen）</td></tr>
+<tr><td>hierarchy</td><td>training run 与 task/init/episode 不展开为 iid</td><td>PASS WITH WARNING（合同完成，本地运行缺失）</td></tr>
+<tr><td>invalid pairs</td><td>预注册并报告单臂/双臂异常</td><td>PENDING（项目规则未冻结）</td></tr>
+<tr><td>multiplicity</td><td>primary endpoint 或 Holm/层级处理</td><td>PASS WITH WARNING（方法边界完成，项目未执行）</td></tr>
+<tr><td>practical significance</td><td>effect/CI/MDE 与 p-value 分开</td><td>PASS WITH WARNING</td></tr>
+<tr><td>canonical integrity</td><td>Markdown SHA→HTML meta→review JSON</td><td>PASS（本轮渲染后核验）</td></tr>
+<tr><td>browser visual QA</td><td>in-app Browser 打开 local <code>file://</code></td><td>BLOCKED（策略限制；静态检查不替代视觉 QA）</td></tr>
+<tr><td>oral drill</td><td>真实口述后才更新 mastery</td><td>PENDING</td></tr>
+</tbody></table>
+<h2 id="10-source-gate">10. Source Gate 结论与下一入口</h2>
+<p>EVAL-004 的 source gate 为 <code>WARN</code>：paired binary 的方法、official implementation、seed 层级和最小 artifact contract 已冻结；本地 UWM/OpenPiVLA/OPD 均没有可执行的 paired raw bundle，因此不产生新的显著性结论。知识页与一张题卡保持 <code>unseen</code>，不创建 <code>coaching_state.md</code>。</p>
+<p>下一内容节点固定为 <code>VLA-EVAL-005</code>：macro / micro / per-task / weighted aggregation；只有在用户真实口述时才可另开 drill slice。</p>
+<h2 id="references">References</h2>
+<ol><li>McNemar, “Note on the Sampling Error of the Difference between Correlated Proportions or Percentages,” <a href="https://doi.org/10.1007/BF02295996">DOI</a>。</li><li>Newcombe, “Improved confidence intervals for the difference between binomial proportions based on paired data,” <a href="https://doi.org/10.1002/%28SICI%291097-0258%2819980501%2917%3A10%3C873%3A%3AAID-SIM779%3E3.0.CO%3B2-I">DOI</a>。</li><li>statsmodels <code>mcnemar</code> frozen <a href="https://github.com/statsmodels/statsmodels/blob/40e6a84d26ac74623c6b94b718f0987ef0351c53/statsmodels/stats/contingency_tables.py">source</a>。</li><li>SciPy <code>bootstrap</code> / <code>permutation_test</code> frozen <a href="https://github.com/scipy/scipy/blob/b9105ccc2237f57acb1060202cd77f6dd264fb34/scipy/stats/_resampling.py">source</a>。</li><li>Henderson et al., <a href="https://arxiv.org/abs/1709.06560"><em>Deep RL That Matters</em></a>；Colas et al., <a href="https://arxiv.org/abs/1806.08295"><em>How Many Random Seeds?</em></a>。</li><li>Agarwal et al., <a href="https://arxiv.org/abs/2108.13264"><em>Deep RL at the Edge of the Statistical Precipice</em></a>；<a href="https://github.com/google-research/rliable/tree/3ccd9f4dea577a04d3d2b557f259aac08badbd81"><code>rliable</code></a>。</li><li><a href="vol_05_eval003_success_rate_confidence_interval_source_freeze.html">EVAL-003 Success Rate / CI Source Freeze</a> 与 <a href="vol_05_eval003_local_statistical_artifact_gate.html">Local Statistical Artifact Gate</a>。</li></ol>
+</article></body></html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：多视角、时序与输入 Schema（PER-003）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per003_multiview_temporal.md">
+<meta name="aris:source-sha256" content="2af9b56c69c9a8470646ef29a3445d450aa9de6c56dc3ea858ad1822b3d3c21e">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>2af9b56c69c9a8470646ef29a3445d450aa9de6c56dc3ea858ad1822b3d3c21e</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per003_multiview_temporal.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1-30">1. 30 秒直觉：一张图必须带身份证和时间戳</a></li><li><a href="#2-per-view-schema">2. Per-view schema：把几何和时间作为数据字段</a></li><li><a href="#2-1">2.1 最小字段</a></li><li><a href="#2-2-camera-time-embedding">2.2 Camera 与 time embedding</a></li><li><a href="#3-temporal-identity-index">3. Temporal identity：index 不等于物理时间</a></li><li><a href="#4-presence-validity-mask">4. Presence 与 validity：mask 不是可选装饰</a></li><li><a href="#5-fusion-trade-off">5. Fusion 位置与 trade-off</a></li><li><a href="#6-common-frame">6. 多视角几何一致性：先 common frame，再融合</a></li><li><a href="#7-view-time-pipeline">7. 可审计的 view/time pipeline</a></li><li><a href="#8-grounding-action-chunk-observation-age">8. Grounding、action chunk 与 observation age</a></li><li><a href="#9">9. 证据阶梯与项目边界</a></li><li><a href="#10-bad-case">10. 项目映射与常见 bad case</a></li><li><a href="#opd">OPD</a></li><li><a href="#wam">WAM</a></li><li><a href="#bad-cases">Bad cases</a></li><li><a href="#11">11. 面试回答检查表</a></li><li><a href="#12">12. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：多视角、时序与输入 Schema（PER-003）</h1>
+<div class="meta">状态：<code>drafted / VLA-PER-003 / knowledge_1_of_phase / card_synced / WARN</code> 报告日期：2026-07-18 证据截止：2026-07-18 来源入口：<a href="../sources/vol_06_per003_multiview_temporal_source_freeze.html">PER-003 Multi-view / Temporal Source Freeze</a>。 前置知识：<a href="vol_06_per001_grounding_coordinate.html">PER-001 Grounding</a>、<a href="vol_06_per002_3d_lift_frame.html">PER-002 3D Lift</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>多相机、多帧输入经常被简化为“把图片 concat 后喂给模型”。这会隐藏四个关键问题：模型是否知道每张图来自哪台相机、每个像素属于哪个 frame、历史图像和动作是否时间对齐、缺失相机是否被零值误认为真实观测。</p>
+<p>本页回答：</p>
+<ol><li>per-view schema 为什么不能只有 image tensor？</li><li>camera identity、frame identity、timestamp 与 presence mask 各自解决什么问题？</li><li>early/token/late fusion 和 temporal queue 的 trade-off 是什么？</li><li>多视角预测为什么必须先变到 common frame 再融合？</li><li>如何把 view/time schema 接到 grounding、action chunk 和 closed-loop evaluation？</li></ol>
+<h2 id="section-2">知识地图位置与前置依赖</h2>
+<pre><code class="language-text">PER-001 point/box/text contract
+          ↓
+PER-002 depth/calibration/frame contract
+          ↓
+PER-003 multi-view/temporal schema + fusion
+          ↓
+PER-004 navigation / VLN / ObjectNav
+          ↓
+action chunk / planner / controller / closed-loop evaluation</code></pre>
+<p>Open X-Embodiment 和 WM-017 提供 heterogeneous schema 参照，Octo 提供 observation-group/readout/attention 的公开实现参照；这些来源不等于用户项目已经完成多视角融合。OPD/WAM 仅作为 evidence-boundary hook。</p>
+<h2 id="1-30">1. 30 秒直觉：一张图必须带身份证和时间戳</h2>
+<p>一个可用的 view/time item 不应只是 <code>image[T,C,H,W]</code>，而应像一条记录：</p>
+<pre><code class="language-text">image + camera_id + frame_id + K/T revision
+      + timestamp + valid/presence + transform_id</code></pre>
+<p><code>camera_id</code> 防止 workspace/wrist 或 left/right 顺序交换；<code>frame_id</code> 防止不同坐标系直接比较；<code>timestamp</code> 防止旧图配新 pose 或新图配旧 action；<code>presence/valid</code> 防止缺失相机被零填充伪装成真实黑图。shape 正确只说明张量能进模型，不说明语义正确。</p>
+<h2 id="2-per-view-schema">2. Per-view schema：把几何和时间作为数据字段</h2>
+<h3 id="2-1">2.1 最小字段</h3>
+<table><thead><tr><th>字段</th><th>作用</th><th>缺失时的风险</th></tr></thead><tbody>
+<tr><td><code>image</code></td><td>经过声明颜色/resize policy 的像素</td><td>预处理与 calibration space 不一致</td></tr>
+<tr><td><code>camera_id</code></td><td>稳定逻辑身份，如 workspace/wrist</td><td>camera order 交换仍能通过 shape check</td></tr>
+<tr><td><code>frame_id</code></td><td>optical/body/world frame 标识</td><td>不同 pixel/3D frame 被直接平均</td></tr>
+<tr><td><code>intrinsics_id</code></td><td><code>K/distortion/image_size</code> revision</td><td>point/box 逆投影使用错误标定</td></tr>
+<tr><td><code>extrinsics_id</code></td><td><code>T_target←camera</code> revision</td><td>视角无法变换到共同 frame</td></tr>
+<tr><td><code>timestamp</code></td><td>capture time</td><td>history/action 物理时间错位</td></tr>
+<tr><td><code>valid/presence</code></td><td>camera/depth/frame 是否有效</td><td>zero shortcut、loss/scorer 污染</td></tr>
+<tr><td><code>transform_id</code></td><td>crop/resize/letterbox metadata</td><td>输出坐标无法逆变换</td></tr>
+</tbody></table>
+<p>Open X 的 RLDS episode/step container 能统一数据容器，但不代表每个子数据集拥有相同相机、action semantics 或 horizon。WM-017 的 schema freeze 将 camera、state、action、timestamp、mask 和 normalizer 明确拆开；这比“所有数据都有 image 字段”更强。</p>
+<h3 id="2-2-camera-time-embedding">2.2 Camera 与 time embedding</h3>
+<p>在 token-level fusion 中，可以把每个 view/time 特征写成：</p>
+<div class="formula">\[
+z_{i,t}=f_\theta(x_{i,t})+e^{cam}_{i}+e^{time}_{t}+e^{frame}_{i,t},
+\]</div>
+<p>其中 <code>i</code> 是 camera identity，<code>t</code> 是物理时间或经过离散化的时间位置，<code>e_frame</code> 可编码 view 的几何/embodiment 条件。公式只是设计模板；代码还必须把 <code>valid/presence</code> 和 transform metadata 传到 attention/pooling，而不是只加 embedding。</p>
+<h2 id="3-temporal-identity-index">3. Temporal identity：index 不等于物理时间</h2>
+<p>历史窗口应保留真实时间或可解释的 control-step mapping：</p>
+<pre><code class="language-text">history = [(camera_id, frame_id, t_i, valid_i, image_i), ...]
+action_target = (t_action, horizon, control_hz, repeat, replan_policy)</code></pre>
+<p>至少区分：</p>
+<ul><li><code>history_len</code>：帧数；</li><li><code>stride</code>：采样间隔；</li><li><code>control_hz</code>：控制频率；</li><li><code>action_repeat</code>：一条 action 保持多久；</li><li><code>observation_age</code>：当前 action 使用的观测距采集时间多久；</li><li><code>replan_policy</code>：何时重新 grounding 或刷新 chunk。</li></ul>
+<p>frame drop、重复 terminal frame、异步 camera 和 action repeat 都可能让相同的数组长度对应不同物理时长。若历史帧用于训练，必须说明 causal/ordered mask，避免 future frame leakage；若历史帧用于在线推理，还要把 stale observation 纳入 action freshness gate。</p>
+<h2 id="4-presence-validity-mask">4. Presence 与 validity：mask 不是可选装饰</h2>
+<p>缺失相机、无效 depth、掉帧或不同步 frame 应显式记录：</p>
+<pre><code class="language-text">presence[i,t] ∈ {0,1}
+valid_depth[i,t] ∈ {0,1}
+timestamp_ok[i,t] ∈ {0,1}</code></pre>
+<p>如果只把缺失 view 置零而不提供 mask，模型可能学习“全零就是某个相机缺失模式”，而不是根据可用视角完成 grounding。mask 必须在以下位置保持一致：</p>
+<ol><li>token pooling/attention：无效 view 不应拥有与真实 view 相同的权重；</li><li>loss：缺失 target 或 padding 不应进入监督分母；</li><li>scorer：无效预测应有明确 reject/skip 规则；</li><li>planner/controller：高风险或 stale target 应进入 invalid/safe 分支。</li></ol>
+<h2 id="5-fusion-trade-off">5. Fusion 位置与 trade-off</h2>
+<table><thead><tr><th>方式</th><th>数据流</th><th>优点</th><th>风险</th></tr></thead><tbody>
+<tr><td>early pixel/feature concat</td><td>view features 在早期拼接</td><td>交互早、实现直观</td><td>resolution、order、显存和几何对齐复杂</td></tr>
+<tr><td>token-level attention</td><td>每个 view/time 保留 token，用 camera/time embedding 和 mask</td><td>可表达跨视角/时序依赖</td><td>attention mask、缺失 view 和计算量需要审计</td></tr>
+<tr><td>late prediction fusion</td><td>各 view 独立 grounding，再合并 box/point/score</td><td>单视角模块可复用</td><td>对象关联、重复检测、置信度校准难</td></tr>
+<tr><td>temporal queue/chunk</td><td>重用历史特征、减少重复编码</td><td>降低部分推理成本</td><td>stale action、frame drop、replan 边界</td></tr>
+<tr><td>view dropout/masking</td><td>训练时模拟缺失视角</td><td>可能提升缺失鲁棒性</td><td>没有 matched ablation 就不能声称提升</td></tr>
+</tbody></table>
+<p>Octo 的 observation groups、task prefix、readout token 和历史 attention 是一种公开实现参照：它说明 view/time 信息可以通过 token/group/mask 组织，但不证明所有 VLA 都使用相同融合方式，更不证明用户项目已经复现该行为。</p>
+<h2 id="6-common-frame">6. 多视角几何一致性：先 common frame，再融合</h2>
+<p>如果不同相机分别输出一个 point/box，不能直接对 pixel <code>(x,y)</code> 求平均，因为每个 image plane 的原点、焦距、畸变和视角不同。正确的概念链是：</p>
+<pre><code class="language-text">view_i pixel
+  → (K_i, distortion_i) → camera_i ray/3D candidate
+  → T_common←camera_i(timestamp_i)
+  → common-frame candidate + uncertainty
+  → object association / fuse / reject</code></pre>
+<p>融合前应检查：</p>
+<ul><li><code>K_i/distortion_i/image_size</code> 是否是同一 revision；</li><li>extrinsic 是否静态，或是否需要按 timestamp 查询；</li><li>timestamp skew 是否在运动误差预算内；</li><li>confidence 是否跨视角校准；</li><li>遮挡、重复检测和 object identity 如何匹配；</li><li>depth/plane hypothesis 是否一致。</li></ul>
+<p>只在二维做 late box voting 而没有 frame/association contract，仍是二维 heuristic，不应称为 3D multi-view fusion。</p>
+<h2 id="7-view-time-pipeline">7. 可审计的 view/time pipeline</h2>
+<pre><code class="language-python">def fuse_views_and_history(samples, model, contract, tf_buffer):
+    # 1. Validate identity, shape, timestamps and reversible transforms.
+    records = validate_view_time_manifest(samples, contract.schema_version)
+
+    # 2. Preprocess each view independently; retain transform metadata.
+    tokens = []
+    for rec in records:
+        if not rec.presence or not rec.timestamp_ok:
+            continue
+        image, transform = preprocess(rec.image, rec.resize_policy)
+        z = model.encode(image)
+        tokens.append(add_camera_time_frame_embedding(
+            z, rec.camera_id, rec.timestamp, rec.frame_id, transform))
+
+    # 3. Fuse only through the declared attention/missingness contract.
+    fused = masked_view_time_attention(tokens, contract.presence_mask,
+                                       contract.causal_mask)
+
+    # 4. Convert per-view predictions to a common frame before association.
+    candidates = []
+    for pred in model.ground(fused):
+        candidate = lift_and_transform(pred, tf_buffer, pred.timestamp,
+                                        contract.common_frame)
+        if candidate.valid:
+            candidates.append(candidate)
+    target = associate_fuse_or_reject(candidates, contract.association)
+
+    # 5. Emit observation age and provenance for planner/action freshness.
+    return attach_age_uncertainty_and_revision(target, records, contract)</code></pre>
+<p>伪代码的关键是先验证 manifest，再独立预处理各视角，保留 mask/transform，最后在 common frame 做 association；它是设计合同，不是 OPD/WAM 已有实现。</p>
+<h2 id="8-grounding-action-chunk-observation-age">8. Grounding、action chunk 与 observation age</h2>
+<p>多视角模型输出一个“正确”的 target，也可能因为 observation 太旧而执行错误 action。因此 planner/policy 接口应至少绑定：</p>
+<pre><code class="language-text">target_frame / target_timestamp / observation_age
+valid / uncertainty / source_views
+horizon / control_hz / action_repeat / replan_policy</code></pre>
+<p>如果 <code>observation_age</code> 超过 freshness budget，应重新 grounding、缩短执行窗口、进入 safe hold 或拒绝 action。action chunk 的长度不能只用数组 <code>H</code> 表示，还要换算为物理时间 <code>H / control_hz</code>，并与 replan policy 一起评估。</p>
+<h2 id="9">9. 证据阶梯与项目边界</h2>
+<table><thead><tr><th>层级</th><th>最小证据</th><th>不能越级支持</th></tr></thead><tbody>
+<tr><td>schema</td><td>per-view manifest、camera order、timestamp、presence mask</td><td>view fusion 正确</td></tr>
+<tr><td>geometry</td><td>per-view calibration/extrinsic、common-frame transform、roundtrip</td><td>temporal consistency</td></tr>
+<tr><td>fusion</td><td>matched multi-view target、association/uncertainty、view ablation</td><td>action/controller success</td></tr>
+<tr><td>temporal</td><td>frame-drop/jitter/replay、observation age、causal mask audit</td><td>long-horizon task success</td></tr>
+<tr><td>closed-loop</td><td>same task/init/seed/controller、episode denominator、failure trace</td><td>跨 embodiment/真机泛化</td></tr>
+</tbody></table>
+<p>OPD 当前是 static point/box/text holdout，WAM bundle 只有有限 rollout provenance；二者都没有 multi-view calibration、sync、view ablation 或 temporal replay artifact。不能把“多路 camera 字段存在”写成完成了多视角模型。</p>
+<h2 id="10-bad-case">10. 项目映射与常见 bad case</h2>
+<h3 id="opd">OPD</h3>
+<p>可用于说明 point/box/text route、strict/lenient scorer、raw-holdout 和格式冲突。它不能证明多相机 fusion、temporal consistency 或机器人闭环。</p>
+<h3 id="wam">WAM</h3>
+<p>manifest 的 camera resolution、controller、horizon 和 rollout files 可说明接口 provenance；它没有 per-camera calibration、同步记录、view association、temporal replay 或 3D target，因此不能说完成多视角/时序 grounding。</p>
+<h3 id="bad-cases">Bad cases</h3>
+<ul><li>workspace/wrist 或 left/right camera order 交换，但 shape 仍正确；</li><li>不同 image size 使用同一个 <code>K</code>，或 resize 后忘记更新 transform；</li><li>把多个 pixel frame 直接平均；</li><li>只用数组 index 表示时间，忽略 frame drop/action repeat；</li><li>缺失 camera 置零却不提供 presence mask；</li><li>将旧观察的 target 沿用到新 action chunk；</li><li>用 view dropout 后的单次指标声称鲁棒性提升；</li><li>将 Octo/Open X 的公开 schema 直接写成个人项目实现。</li></ul>
+<h2 id="11">11. 面试回答检查表</h2>
+<p>回答 PER-003 至少覆盖：</p>
+<ol><li>per-view schema：camera/frame identity、K/T revision、timestamp、presence/valid、transform；</li><li>temporal schema：history、stride、control Hz、repeat、replan、observation age；</li><li>fusion：early/token/late/queue 的取舍；</li><li>common-frame association，而不是 pixel 直接平均；</li><li>causal/missingness mask 与 action/loss/scorer 的一致性；</li><li>view/geometry/fusion/temporal/closed-loop 五层证据；</li><li>OPD/WAM 当前没有 multi-view/temporal artifact 的边界。</li></ol>
+<h2 id="12">12. 结论与下一步</h2>
+<p>多视角/时序 grounding 的难点不是输入图片数量，而是 identity、geometry、time、mask 和 fusion contract 是否保持一致。Open X/WM-017 支持 heterogeneous schema 审计，Octo 提供 observation group/readout/attention 参照；它们不能替代用户项目的 per-view calibration、sync、ablation 和 replay evidence。PER-003 保持 <code>WARN</code>，对应题卡已生成并保持 <code>unseen</code>；下一步进行 PER-001..004 真实口述或补一个本地 multi-view artifact。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_06_per003_multiview_temporal_source_freeze.html">PER-003 Multi-view / Temporal Source Freeze</a>。</li><li><a href="https://github.com/google-deepmind/open_x_embodiment/blob/9eeb68b989efbcf474e8fb9019e01d02b962a604/README.md">Open X-Embodiment frozen README</a>。</li><li><a href="../sources/vol_03_architecture_execution_claim_to_code.html">Octo architecture/execution source audit</a>。</li><li><a href="../sources/vol_04_wm017_heterogeneous_schema_source_freeze.html">WM-017 heterogeneous schema source freeze</a>。</li><li><a href="vol_06_per001_grounding_coordinate.html">PER-001 Grounding / Coordinate Knowledge</a> 与 <a href="vol_06_per002_3d_lift_frame.html">PER-002 3D Lift / Frame Knowledge</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a> 与 <a href="../evidence/projects/wm019_wam_artifact_manifest.html">WAM Artifact Manifest</a>。</li></ol>
+</article></body></html>

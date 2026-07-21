@@ -1,0 +1,36 @@
+{
+  "artifact": "evidence/projects/wm019_wam_p0_bundle_audit.md",
+  "html": "evidence/projects/wm019_wam_p0_bundle_audit.html",
+  "review_date": "2026-07-21",
+  "status": "p0_audited / partial / checkpoint-unverified / ownership-pending",
+  "verdict": "WARN",
+  "source_sha256": "C8716750BC7213FE920E7D1A8FBA1BBB8185B0AC2C78B0814931106EDA77029D",
+  "scope": {
+    "project": "Cosmos Policy / WAM / CoffeePressButton",
+    "bundle_sides": 2,
+    "episodes": 1,
+    "checkpoint_verified": false,
+    "metric_claims_promoted": 0,
+    "ownership_claims_promoted": 0,
+    "question_cards_changed": 0,
+    "coaching_state_created": false
+  },
+  "checks": {
+    "manifest_identity": "PASS (base/trained manifest and action-trace SHA are registered)",
+    "trace_integrity": "PASS (300 rows, aligned t range, 300x7 policy shape, finite values)",
+    "paired_math": "PASS WITH WARNING (MAE/RMSE are trace geometry only, not action loss)",
+    "protocol": "PASS WITH WARNING (single episode, fixed seed/env_seed; denominator and scorer remain incomplete)",
+    "checkpoint_gate": "FAIL TO PROMOTE (remote paths only; no local binary or immutable hash)",
+    "ownership_gate": "PENDING (candidate/operator/reviewer not confirmed)",
+    "truth_boundary": "PASS (diagnostic/interface evidence separated from uplift, benchmark and authorship)",
+    "renderer": "PASS (ARIS academic v1 HTML rendered from Markdown)",
+    "browser_visual_check": "PENDING (browser connector unavailable)"
+  },
+  "open_items": [
+    "Provide checkpoint hash/binary and processor/normalizer/config lineage.",
+    "Collect multi-episode denominator and success predicate under the same protocol.",
+    "Provide target/prediction scorer for action error if a metric claim is needed.",
+    "Answer OWN-WAM-001 to close the personal ownership gate."
+  ],
+  "next": "Keep this bundle PARTIAL/WARN; ask OWN-WAM-001 only and do not change PROJ-WAM-001 or general-card mastery."
+}

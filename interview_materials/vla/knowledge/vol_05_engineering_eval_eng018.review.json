@@ -1,0 +1,57 @@
+{
+  "artifact": "knowledge/vol_05_engineering_eval_eng018.md",
+  "html": "knowledge/vol_05_engineering_eval_eng018.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / VLA-ENG-018 / knowledge_20_of_44 / card_1_of_1_unseen",
+  "verdict": "WARN",
+  "source_sha256": "EA2420892B8CE4541B16E657C051BB4F5CBB2760D22591E2FB7BBC1CF10FAA6C",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 19,
+    "new_nodes": 1,
+    "total_drafted_nodes": 20,
+    "covered_ids": ["VLA-ENG-018"],
+    "drafted_cards_for_new_nodes": 1,
+    "practice_state": "unseen",
+    "difficulty": "L2",
+    "priority": "P1"
+  },
+  "source_scope": {
+    "source_freeze": "sources/vol_05_eng018_scheduler_preemption_retry_source_freeze.html",
+    "official_docs": [
+      "PyTorch 2.13 torchrun / TorchElastic Quickstart",
+      "PyTorch 2.13 Distributed Checkpoint",
+      "Kubernetes Job",
+      "Kubernetes Pod Lifecycle",
+      "DeepSpeed model checkpointing"
+    ],
+    "local_project_hooks": [
+      "sources/vol_05_local_artifact_gate_eng004_006.html",
+      "evidence/projects/opd_claim_evidence_inventory.html",
+      "evidence/projects/openpivla_claim_evidence_inventory.html"
+    ]
+  },
+  "checks": {
+    "bounded_slice": "PASS (one VLA-ENG-018 knowledge node and one atomic card are drafted; ENG-019 remains deferred)",
+    "identity_and_retry": "PASS WITH WARNING (logical run, attempt, worker group and rank/world-size separated; duplicate execution is not exactly-once)",
+    "preemption_signal": "PASS WITH WARNING (SIGTERM/grace/safe-boundary checkpoint and partial-write behavior explicit)",
+    "checkpoint_commit": "PASS WITH WARNING (multi-file DCP/DeepSpeed boundary sourced; manifest-last COMMITTED/latest promotion is an engineering contract)",
+    "recovery_drills": "PASS (clean restart, signal, crash, duplicate, world-size and storage cases have explicit pass conditions)",
+    "project_truth_boundary": "PASS (UWM/OPD/OpenPiVLA metadata/final-only/remote-path evidence separated from missing binary and drills)",
+    "formula_and_schema": "PASS (stable operation key, identity table, state machine and generation contents mapped to implementation)",
+    "pseudocode": "PASS (commented committed-load/safe-boundary-save/atomic-promotion/retryable-exit order; platform APIs remain placeholders)",
+    "minimum_module_contract": "PASS (intuition, definitions, formulas, pseudocode, trade-offs, bad cases, follow-ups and references included)",
+    "html_static_validation": "PASS (source SHA, one H1, sixteen H2, three H3, five tables, four code blocks and two formula blocks)",
+    "local_links": "PASS (ENG-018 source freeze, artifact gate, reproducibility and project inventory links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Collect checkpoint binary plus optimizer/scheduler/scaler/RNG/sampler/normalizer and per-file manifest hashes.",
+    "Run SIGTERM-at-microstep/optimizer/checkpoint, worker-crash, duplicate-attempt, storage-failure and world-size-change drills.",
+    "Measure checkpoint duration against grace budget and record lost/replayed steps, duplicate side effects and recovery time.",
+    "Keep VLA-ENG-018 unseen until a real oral answer is recorded.",
+    "Keep ENG-019 config/run-identity merge deferred."
+  ],
+  "next": "Run a one-question oral drill for VLA-ENG-018 or collect the missing checkpoint/preemption/retry artifacts; keep ENG-019 deferred."
+}

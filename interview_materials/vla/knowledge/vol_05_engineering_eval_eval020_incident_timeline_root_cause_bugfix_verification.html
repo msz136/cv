@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：EVAL-020 Incident Timeline、Root Cause 与 Bug-fix Verification</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_05_engineering_eval_eval020_incident_timeline_root_cause_bugfix_verification.md">
+<meta name="aris:source-sha256" content="49983ed5bc1ac3f37d417541febe4e344b8ae24de6140e4105ca8de6700e1e28">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>49983ed5bc1ac3f37d417541febe4e344b8ae24de6140e4105ca8de6700e1e28</code>；生成自：<code>interview_materials\vla\knowledge\vol_05_engineering_eval_eval020_incident_timeline_root_cause_bugfix_verification.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-30">1. 问题与30秒框架</a></li><li><a href="#2">2. 十一个概念不要混</a></li><li><a href="#3">3. 先保存现场，再修</a></li><li><a href="#4-timeline">4. Timeline 要区分四种时间</a></li><li><a href="#5-first-verified-divergence">5. First Verified Divergence</a></li><li><a href="#6-hypothesis-ledger">6. Hypothesis Ledger</a></li><li><a href="#7-root-cause">7. Root Cause 的最低证据门槛</a></li><li><a href="#8-git-bisect">8. `git bisect` 能做什么</a></li><li><a href="#9-verification">9. Verification 的四格矩阵</a></li><li><a href="#10-paired-effect">10. Paired Effect</a></li><li><a href="#11-mitigation-prevention">11. Mitigation 到 Prevention</a></li><li><a href="#12-flaky">12. Flaky / 无法复现时怎么办</a></li><li><a href="#13-artifact-bundle">13. Artifact Bundle</a></li><li><a href="#14">14. 五项目真实性映射</a></li><li><a href="#opd">OPD</a></li><li><a href="#uwm-libero">UWM / LIBERO</a></li><li><a href="#wam">WAM</a></li><li><a href="#openpivla">OpenPiVLA</a></li><li><a href="#robot-harness">Robot Harness</a></li><li><a href="#15">15. 面试追问防线</a></li><li><a href="#16">16. 调查伪代码</a></li><li><a href="#17">17. 本节点状态</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：EVAL-020 Incident Timeline、Root Cause 与 Bug-fix Verification</h1>
+<div class="meta">状态：<code>drafted / VLA-EVAL-020 / knowledge_42_of_44 / card_1_of_1_unseen / review_warn</code> 更新日期：2026-07-19 难度：L2　优先级：P1 来源冻结：<a href="../sources/vol_05_eval020_incident_timeline_root_cause_bugfix_verification_source_freeze.html">EVAL-020 Source Freeze</a> 本页建立incident→impact→timeline→first divergence→hypothesis→cause→fix→verification→prevention链路；不把时间先后、rollback、first bad commit或一次绿色rerun直接升级为confirmed root cause。</div>
+<h2 id="1-30">1. 问题与30秒框架</h2>
+<p>事故复盘要回答三个不同问题：发生了什么、为什么发生、怎样证明不会以相同机制复发。先冻结现场和impact，建立带时钟/provenance的timeline；再对齐known-good/bad找到first verified divergence，用可证伪hypothesis和最小干预定位原因；最后做same-protocol red→green、unaffected controls、fresh neighbors和多次/多seed复验。</p>
+<pre><code class="language-text">freeze incident bundle + bound impact
+ -&gt; clock-aware timeline + first verified divergence
+ -&gt; falsifiable hypothesis ledger
+ -&gt; targeted intervention / bisect when valid
+ -&gt; same-protocol RED -&gt; GREEN
+ -&gt; unaffected controls + fresh neighbor regression
+ -&gt; prevention gate + follow-up owner</code></pre>
+<h2 id="2">2. 十一个概念不要混</h2>
+<table><thead><tr><th>概念</th><th>核心语义</th><th>常见误写</th></tr></thead><tbody>
+<tr><td>incident</td><td>触发响应的异常事件</td><td>所有bad case都叫事故</td></tr>
+<tr><td>impact</td><td>受影响support、程度、时长与风险</td><td>“指标掉了”无denominator</td></tr>
+<tr><td>symptom</td><td>被观察到的表象</td><td>直接写成根因</td></tr>
+<tr><td>first divergence</td><td>good/bad最早可验证差异</td><td>最早告警或最后日志</td></tr>
+<tr><td>hypothesis</td><td>可被实验反驳的机制猜想</td><td>只有支持证据的故事</td></tr>
+<tr><td>contributing condition</td><td>放大概率/blast radius的条件</td><td>唯一原因</td></tr>
+<tr><td>proximate cause</td><td>直接触发异常的事件</td><td>系统性root cause终点</td></tr>
+<tr><td>root cause</td><td>目标support上经干预确认的系统因素组合</td><td>last change / human error</td></tr>
+<tr><td>mitigation/rollback</td><td>暂时控制影响或回旧版本</td><td>永久修复</td></tr>
+<tr><td>recovery</td><td>服务/机器人回安全状态</td><td>根因消失</td></tr>
+<tr><td>fix/prevention</td><td>改机制 / 防复发与早发现</td><td>一次rerun或一句action item</td></tr>
+</tbody></table>
+<p>最重要的面试边界：<code>RECOVERED != FIXED != PREVENTED</code>。</p>
+<h2 id="3">3. 先保存现场，再修</h2>
+<p>incident manifest至少绑定：</p>
+<ul><li>incident ID、trigger、severity、owner；</li><li>task/site/robot/checkpoint/model/processor/normalizer/controller/scorer；</li><li>start/detect/ack/mitigate/recover/end与clock domain；</li><li>expected/observed、support、denominator、unknown impact；</li><li>raw alert/log/trace/video/metric与完整SHA；</li><li>responder操作、restart/rollback/manual override及副作用。</li></ul>
+<p>没有不可变bundle，复盘很容易把修复后的配置当作事故配置，把curated video当作全部影响，把summary当作可重算raw evidence。[1][2]</p>
+<h2 id="4-timeline">4. Timeline 要区分四种时间</h2>
+<p>一条事件至少区分：发生时间、被观测时间、写日志时间、复盘推断时间。跨robot、policy server、simulator、GPU和scorer时，还要记录clock source、offset/error与happens-before。</p>
+<p>日志行号不是全局时间。若时钟不同步，只能说：</p>
+<pre><code class="language-text">observation captured
+ -&gt; request admitted
+ -&gt; model returned
+ -&gt; action queued
+ -&gt; controller executed
+ -&gt; scorer observed effect</code></pre>
+<p>并给每段证据来源和允许的时间误差，不能伪造毫秒级全序。[4]</p>
+<h2 id="5-first-verified-divergence">5. First Verified Divergence</h2>
+<p>沿数据到物理效果逐层对齐：</p>
+<pre><code class="language-text">input/data
+ -&gt; preprocessing/normalizer
+ -&gt; logits/action prediction
+ -&gt; decode/chunk
+ -&gt; queue/network
+ -&gt; controller command
+ -&gt; robot/sim state
+ -&gt; success/safety scorer</code></pre>
+<p>first divergence是最早“能由同输入、同bundle和aligned trace复现”的差异。例如parser首次拒绝point输出，只能证明协议层首先出现可见分叉；仍需检查上游prompt是否发出了错误格式、parser合同是否正确、scorer是否漂移。</p>
+<h2 id="6-hypothesis-ledger">6. Hypothesis Ledger</h2>
+<p>每个hypothesis写四件事：预测什么、什么能反驳、只改哪个因素、哪些controls应不变。</p>
+<table><thead><tr><th>状态</th><th>含义</th></tr></thead><tbody>
+<tr><td>proposed</td><td>只有合理性，尚无干预</td></tr>
+<tr><td>supported</td><td>预测与至少一个targeted experiment一致</td></tr>
+<tr><td>weakened</td><td>关键预测不成立，但未完全排除</td></tr>
+<tr><td>rejected</td><td>反证与稳定oracle足以排除</td></tr>
+<tr><td>partially confirmed</td><td>某support/机制成立，外推仍缺</td></tr>
+<tr><td>confirmed</td><td>reproducer、干预、red→green、controls、fresh cases闭合</td></tr>
+<tr><td>unknown</td><td>无法复现或confounding未解</td></tr>
+</tbody></table>
+<p>被拒绝的hypothesis也要保留，否则复盘会出现hindsight bias。[1][2]</p>
+<h2 id="7-root-cause">7. Root Cause 的最低证据门槛</h2>
+<p>以下只是线索：故障跟在某commit后、rollback有效、<code>git bisect</code>找到first bad、某个signal异常、patch后一次通过。confirmed root cause至少要求：</p>
+<ol><li>failure predicate、incident bundle和impact冻结；</li><li>failure可复现或概率被量化；</li><li>first divergence有same-input对齐；</li><li>targeted intervention只改候选机制；</li><li>affected exact replay由RED变GREEN；</li><li>unaffected controls保持GREEN；</li><li>fresh neighboring cases通过；</li><li>seed/task/site/flakiness不确定性有界；</li><li>替代解释被反驳或明确保留。</li></ol>
+<p>如果一次同时改checkpoint、prompt、parser、data和scorer，结论最多是bundle-level mitigation/fix，不能归因单一component。[5]</p>
+<h2 id="8-git-bisect">8. <code>git bisect</code> 能做什么</h2>
+<p><code>git bisect</code>从known-good/known-bad端点二分，使用稳定的good/bad oracle缩小区间，最终返回first bad commit；<code>run</code>可自动判定，<code>skip</code>表示revision不可测。[3]</p>
+<p>它适合：commit历史上failure近似单调、每版可构建、外部依赖锁定、oracle稳定。它不适合直接处理：flaky、多因素交互、data/checkpoint/scorer漂移、non-monotonic failure或事后改阈值。</p>
+<p>所以first bad commit回答“哪次revision首次被该测试判bad”，而root cause还要回答“哪个机制通过何种路径导致failure”。</p>
+<h2 id="9-verification">9. Verification 的四格矩阵</h2>
+<table><thead><tr><th>样本</th><th>before</th><th>after</th><th>解释</th></tr></thead><tbody>
+<tr><td>incident exact replay</td><td>RED</td><td>GREEN</td><td>原failure是否消失</td></tr>
+<tr><td>unaffected exact controls</td><td>GREEN</td><td>GREEN</td><td>正常路径是否被破坏</td></tr>
+<tr><td>fresh affected-neighbor</td><td>RED/unknown</td><td>GREEN</td><td>是否只针对事故样本过拟合</td></tr>
+<tr><td>stress/boundary/rollback</td><td>预注册预期</td><td>预注册预期</td><td>边界与恢复是否仍有效</td></tr>
+</tbody></table>
+<p>只允许target patch变化；checkpoint、data、seed/init、processor、normalizer、controller、scorer和hardware差异都要锁定或登记。否则“修复前后”其实是两个protocol。</p>
+<h2 id="10-paired-effect">10. Paired Effect</h2>
+<p>在相同episode/task-init pair上，修复前后成功indicator为<code>Y_i^-</code>与<code>Y_i^+</code>：</p>
+<div class="formula">\[
+\widehat{\Delta}_{fix}=\frac{1}{n}\sum_{i=1}^{n}(Y_i^+-Y_i^-).
+\]</div>
+<p>变量解释：<code>n</code>是完整matched pairs，invalid/missing也需守恒。直觉：让每个困难case和自己比较。实现映射：保存pair ID、两个bundle SHA、raw output；二元结果用McNemar或cluster bootstrap，连续误差报告paired difference与CI。[5]</p>
+<p>若failure是间歇性的，<code>k</code>次预注册reproduction中失败<code>r</code>次：</p>
+<div class="formula">\[
+\widehat p_{repro}=\frac{r}{k}.
+\]</div>
+<p>变量解释：<code>failure predicate</code>和<code>k</code>必须事先冻结。直觉：一次通过不代表复发率为零。实现映射：报告全部attempt、置信区间与停止规则，不重跑到出现想要的绿色结果。</p>
+<h2 id="11-mitigation-prevention">11. Mitigation 到 Prevention</h2>
+<table><thead><tr><th>阶段</th><th>例子</th><th>关闭条件</th></tr></thead><tbody>
+<tr><td>mitigation</td><td>禁用task、限流、切fallback</td><td>impact下降且副作用受控</td></tr>
+<tr><td>rollback</td><td>切known-good bundle</td><td>当前窗口恢复且bundle身份确认</td></tr>
+<tr><td>recovery</td><td>service/robot回SLO/safe state</td><td>recovery predicate满足</td></tr>
+<tr><td>corrective fix</td><td>parser/schema/guardrail patch</td><td>four-cell verification通过</td></tr>
+<tr><td>prevention</td><td>CI gate、monitor、runbook、permission</td><td>owner/deadline/test/closure evidence完整</td></tr>
+</tbody></table>
+<p>Google SRE的blameless边界是理解当时信息与contributing system conditions，而不是把“操作员犯错”写成终点。仍需明确owner、审批边界和行动项验收。[1][2]</p>
+<h2 id="12-flaky">12. Flaky / 无法复现时怎么办</h2>
+<ul><li>先验证scorer/oracle，再验证系统；</li><li>固定seed、data order、driver/dependency、resource和warmup；</li><li>把timeout/build/load failure和true negative分开；</li><li>预注册尝试次数与停止规则；</li><li>多因素漂移时构造minimal reproducer和2×2 cells；</li><li>仍无法复现就写<code>unknown/partially_confirmed</code>，补observability，不编造RCA。</li></ul>
+<p>NIST强调Detect、Respond、Recover和持续改进，但它是cybersecurity框架；本页只借用生命周期思维，不把它包装成VLA标准。[6]</p>
+<h2 id="13-artifact-bundle">13. Artifact Bundle</h2>
+<pre><code class="language-text">incident manifest + impact scope
+ -&gt; raw evidence + clock-aware timeline
+ -&gt; first divergence + hypothesis ledger
+ -&gt; minimal reproducer + bisect/experiment ledger
+ -&gt; fix patch manifest
+ -&gt; exact replay before/after
+ -&gt; unaffected controls + fresh neighbors
+ -&gt; rollback/recovery log
+ -&gt; action items + checksums + reproduce command</code></pre>
+<p><code>fix_patch_manifest</code>声明唯一允许变化；<code>action_items</code>包含owner、priority、due date、test和closure SHA。这个bundle才允许把“调好了”升级为可复核的fix claim。</p>
+<h2 id="14">14. 五项目真实性映射</h2>
+<h3 id="opd">OPD</h3>
+<p>早期point示例输出裸<code>[(x,y)]</code>，strict parser要求<code>&lt;point&gt;[[...]]&lt;/point&gt;</code>；原strict下base等为0。protocol-fixed后，Qwen-122B format <code>0.9986</code>、Hit@100 <code>0.8200</code>，Qwen3-35B-VL format <code>0.9857</code>、Hit@100 <code>0.7871</code>。这是最强的局部协议层red→green，但缺完整same-row before/after、unaffected box/text control、fresh templates和incident timeline；只能说<code>partially_confirmed / protocol-bounded</code>，不能说模型point能力整体提升。[7]</p>
+<h3 id="uwm-libero">UWM / LIBERO</h3>
+<p>zarr小chunk随机读的DataLoader-only smoke中，preload+infinite使p95 wait约<code>13.86s→0.19s</code>。它支持输入等待的局部定位/mitigation；没有matched end-to-end GPU step trace和长跑复验，不能称完整训练吞吐root cause。<code>186/250</code>仍是user-confirmed summary，raw缺。[7]</p>
+<h3 id="wam">WAM</h3>
+<p>gripper/high-sigma/conditioning/DeepSpeed/OOM/state_dict主要是hypotheses。单episode rollout diagnostic和单sample 5k/10k proxy不具备paired rerun，不能确认root cause或fix。</p>
+<h3 id="openpivla">OpenPiVLA</h3>
+<p>formal Qwen路径使用eager attention，源码/report可读；可称兼容/稳定性选择，不能称模型质量root-cause fix。还缺checkpoint binary/load smoke、same-checkpoint A/B与正式benchmark。</p>
+<h3 id="robot-harness">Robot Harness</h3>
+<p>safety telecom repair gold需5个tool steps而模型只选1个，safety tool accuracy约<code>38–44%</code>。这是明确failure case，不是修复闭环；需per-sample trace区分planner/router/runtime/scorer，再做exact replay和fresh multi-step workflows。</p>
+<h2 id="15">15. 面试追问防线</h2>
+<ul><li><strong>rollback有效是否证明最后commit是根因？</strong> 不证明；可能同时回退多个因素，只支持旧bundle在当前窗口可恢复。</li><li><strong>first divergence就是root cause吗？</strong> 不一定；它是最早可见分叉，上游机制仍可能导致它。</li><li><strong>bisect找到first bad够吗？</strong> 不够；还需稳定oracle、环境锁定和机制干预。</li><li><strong>一次rerun过了能关事故吗？</strong> 只能是弱证据；还要controls、fresh cases和复发不确定性。</li><li><strong>human error为什么不够？</strong> 要追到默认值、权限、review、guardrail和observability。</li><li><strong>不能复现怎么办？</strong> 保持unknown/partial，保存原bundle并补观测，不写确定RCA。</li><li><strong>项目最可信案例？</strong> OPD是狭窄协议层red→green；UWM是DataLoader子系统A/B；都不能外推端到端。</li></ul>
+<h2 id="16">16. 调查伪代码</h2>
+<pre><code class="language-python">def close_incident(incident, known_good, fix, spec):
+    bundle = freeze_raw_evidence_and_identity(incident)
+    impact = compute_bounded_impact(bundle, spec.impact)
+    timeline = normalize_clocks_without_faking_total_order(bundle)
+    reproducer = build_minimal_reproducer(bundle, spec.failure_predicate)
+    divergence = align_good_bad_and_find_first_verified(reproducer, known_good)
+    causes = test_competing_hypotheses(divergence, spec.interventions)
+
+    exact = same_protocol_before_after(reproducer, fix)
+    controls = run_unaffected_controls(fix, spec.controls)
+    fresh = run_fresh_neighbor_regression(fix, spec.fresh_cases)
+    return require_closure_evidence(impact, causes, exact, controls, fresh)</code></pre>
+<p>这是未来incident-response验收合同，不代表五项目已部署该系统。[7]</p>
+<h2 id="17">17. 本节点状态</h2>
+<p>EVAL-020知识节点与一张题卡已起草并保持<code>WARN/unseen</code>。本页没有把last change、rollback、bisect、单episode或一次绿色rerun升级为confirmed root cause；没有真实口述前不创建<code>coaching_state.md</code>。下一节点是<code>VLA-EVAL-021</code>：deployment drift、data shift与持续监控。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Google SRE, <a href="https://sre.google/sre-book/postmortem-culture/"><em>Postmortem Culture: Learning from Failure</em></a>。</li><li>Google SRE Workbook, <a href="https://sre.google/workbook/postmortem-culture/"><em>Postmortem Culture: Learning from Failure</em></a>。</li><li><code>git/git</code>, <a href="https://github.com/git/git/blob/41365c2a9ba347870b80881c0d67454edd22fd49/Documentation/git-bisect.adoc"><code>git-bisect</code>@<code>41365c2</code></a>。</li><li><a href="vol_05_engineering_eval_eval013_end_to_end_latency_deadline_jitter.html">EVAL-013 Clock / Latency</a>。</li><li><a href="vol_05_engineering_eval_eval018_factorial_ablation_matched_baseline_causal_boundary.html">EVAL-018 Factorial / Causal Boundary</a>。</li><li>Nelson et al., <a href="https://doi.org/10.6028/NIST.SP.800-61r3">NIST SP 800-61r3</a>, April 2025。</li><li><a href="../sources/vol_05_eval020_incident_timeline_root_cause_bugfix_verification_source_freeze.html">EVAL-020 Source Freeze</a>及<a href="../evidence/evidence_manifest.html">五项目inventories</a>。</li></ol>
+</article></body></html>

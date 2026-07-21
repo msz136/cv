@@ -1,0 +1,41 @@
+{
+  "artifact": "sources/vol_04_wm017_heterogeneous_schema_source_freeze.md",
+  "html": "sources/vol_04_wm017_heterogeneous_schema_source_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "source_frozen / VLA-WM-017 / cross-embodiment / WARN",
+  "verdict": "WARN",
+  "source_sha256": "2ADEBC2D28CA7F300BB0EBB453655363D4D86EC221D4533C7C96B3C6EA7CC2E4",
+  "covered_question_ids": ["VLA-WM-017"],
+  "source_scope": {
+    "open_x_repo": "google-deepmind/open_x_embodiment@9eeb68b989efbcf474e8fb9019e01d02b962a604",
+    "uwm_audit": "sources/vol_04_uwm_video_action_claim_to_code.html",
+    "wm016_freeze": "sources/vol_04_wm016_joint_objective_source_freeze.html",
+    "project_inventory": "evidence/projects/uwm_libero_claim_evidence_inventory.html"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one WM-017 source freeze only; no knowledge/card generated)",
+    "official_source_fingerprint": "PASS (Open X README/LICENSE fetched at frozen commit with SHA fingerprints)",
+    "schema_boundary": "PASS WITH WARNING (episode container separated from camera/action/unit/frame/horizon semantics)",
+    "camera_boundary": "PASS (workspace RGB versus wrist/depth availability explicitly separated)",
+    "action_boundary": "PASS WITH WARNING (absolute/delta/velocity, dimension and gripper semantics not collapsed)",
+    "time_horizon_boundary": "PASS WITH WARNING (timestamp, control rate, repeat, terminal padding and horizon audit listed)",
+    "loss_pollution_boundary": "PASS (presence/valid masks, normalizer, per-source reduction and per-embodiment eval required)",
+    "license_boundary": "PASS (Open X software Apache-2.0 and other materials CC-BY recorded from README)",
+    "project_truth_boundary": "PASS (no claim that local projects completed Open X-style unified conversion)",
+    "html_static_validation": "PASS (one H1, eight H2, one H3, four tables, one formula block and local links)",
+    "local_links": "PASS (UWM/WM-016/inventory references resolve)",
+    "source_sha": "PASS (canonical Markdown SHA matches HTML meta and review JSON)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "adapter_roundtrip": "PENDING",
+    "terminal_mask_ablation": "PENDING",
+    "per_embodiment_eval": "PENDING"
+  },
+  "open_items": [
+    "Build or locate dataset adapter manifests for camera/state/action/horizon/unit/frame/normalizer fields.",
+    "Run action normalize-denormalize-controller round-trip for each project schema.",
+    "Run valid-step and terminal-padding loss A/B before making world-loss claims.",
+    "Run per-embodiment and fixed/variable-horizon paired evaluations.",
+    "WM-017 knowledge/card slice is complete; keep WM-018..038 as separate bounded slices."
+  ],
+  "next": "Run a WM-015/WM-016/WM-017 oral drill; keep WM-018..038 deferred and all cards unseen."
+}

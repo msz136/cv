@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：PER-007 原子题卡</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\vol_06_per007.md">
+<meta name="aris:source-sha256" content="bf0a4ec1a54adb14b010c61e9c39bb66c1f0195ffdbdeaff7f2d71c185221634">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>bf0a4ec1a54adb14b010c61e9c39bb66c1f0195ffdbdeaff7f2d71c185221634</code>；生成自：<code>interview_materials\vla\questions\vol_06_per007.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#open-vocabulary-grounding">Open-vocabulary grounding、双阈值与生成式边界</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：PER-007 原子题卡</h1>
+<div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-19 覆盖范围：<code>VLA-PER-007</code> 难度：L2 1 题 优先级：P0 1 题 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_06_per007_open_vocabulary_grounding_pipeline.html">PER-007 Open-vocabulary Grounding Pipeline Knowledge</a>；来源边界见 <a href="../sources/vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.html">PER-007 Source Freeze</a>。</div>
+<h2 id="open-vocabulary-grounding">Open-vocabulary grounding、双阈值与生成式边界</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-PER-007</b> · Grounding DINO 式 open-vocabulary grounding 如何从文本得到带 phrase 的框？box/text threshold 与 NMS 分别做什么？</summary>
+<p><strong>面试意图</strong>：判断你能否把“文本找框”展开为 prompt/token、query–token matching、双阈值、phrase、geometry 与 optional NMS 的可复算 pipeline，并区分显式 detector 与本地生成式 grounding。</p>
+<p><strong>30 秒回答</strong>：Grounding DINO输出query对文本token的<code>Q×L</code> logits和normalized box。先按query最大sigmoid分数过box threshold，再按text threshold选token重建phrase；坐标逆变换后才可选NMS。OPD是生成式坐标路径，不能借用显式detector的score语义。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：feature enhancer→query selection→cross-modal decoder输出<code>[B,Q,L_max]</code> logits和<code>[B,Q,4]</code> normalized <code>cxcywh</code>。$s_{q,t}=z_q^\top e_t$经sigmoid；$\max_t p_{q,t}&gt;\tau_{box}$保留query，$p_{q,t}&gt;\tau_{text}$选token解码phrase，均用严格大于。<code>L_max=256</code>是token位置。box转processed <code>xyxy</code>后按PER-006 inverse回原图。官方helper无NMS；下游若添加，需冻结IoU、phrase grouping和pre/post indices。</p>
+<p><strong>诊断 / 证据</strong>：先保存 raw/normalized prompt、tokenizer 与 <code>input_ids</code>，再保存 raw <code>Q×L</code> logits、padding mask、query index、normalized box、两个 threshold、phrase token indices/text、processed/raw <code>xyxy</code>、transform revision 与 NMS trace。按 prompt/token→matching→query gate→phrase gate→geometry→NMS 顺序定位；threshold sweep 固定模型、processor、prompt、图像变换、split 与 seed，缓存 raw output 后重放。静态 probe 只证明严格 <code>&gt;</code> 和两道门的逻辑，不证明 calibration、precision/recall 或机器人成功。</p>
+<p><strong>项目挂钩</strong>：本地 OPD 证据支持 annotation→tagged <code>&lt;box&gt;/&lt;point&gt;/text</code> SFT→Qwen3-VL <code>generate</code>→parser/scorer 的生成式 grounding，可讲 prompt/schema/parser、坐标与 evidence manifest；当前静态搜索没有显式 GroundingDINO/NMS 路径。安全表述是“能审计并对比两类 pipeline”，不能说项目部署了 Grounding DINO、route metadata 是 learned detector/router、静态 IoU 等于闭环成功，或用 Git/本次审计自动证明个人贡献。</p>
+<p><strong>追问树</strong>：<code>Q</code> 和 <code>L</code> 两个轴是什么？为什么 256 不是类别数？score 等于 threshold 时保留吗？提高 <code>τ_text</code> 为什么可能让 phrase 变空却不删 box？<code>text_labels</code> 参数一定决定输出 label 吗？官方 helper 没有 NMS 意味着什么？phrase-aware NMS 如何分组？怎样做 matched threshold sweep？OPD 与显式 detector 的 raw artifact 有什么不同？</p>
+<p><strong>易错点</strong>：把 query 当 class ID；把 max-token sigmoid 当跨 prompt 已校准概率；合并 box/text threshold；把 box threshold 叫 NMS threshold；只存 decoded phrase 不存 token indices；传错 <code>(height,width)</code> 或丢失 preprocess inverse；把 frozen helper 无 NMS 说成不会有重复框；把 OPD 的 box 文本输出说成显式 detector。</p>
+<p><strong>危险答案</strong>：说“Grounding DINO 最多支持 256 类”“每个 query 只匹配一个 class”“text threshold 只改置信度”“官方默认已经做 NMS”“HF 的 <code>text_labels</code> 直接决定 phrase”，或“OPD 能输出 box，所以项目使用了 Grounding DINO并证明机器人成功”。</p>
+<p><strong>来源</strong>：[1][2][3][4][5][6]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../knowledge/vol_06_per007_open_vocabulary_grounding_pipeline.html">PER-007 Open-vocabulary Grounding Pipeline Knowledge</a>：三阶段 pipeline、query–token math、双阈值、phrase、geometry/NMS、manifest 与项目边界。</li><li><a href="../sources/vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.html">PER-007 Open-vocabulary Grounding Pipeline Source Freeze</a>：Grounding DINO v5、官方实现、Transformers 4.57.1 与本地 OPD 证据冻结。</li><li><a href="https://arxiv.org/abs/2303.05499v5">Grounding DINO v5</a>。</li><li><a href="https://github.com/IDEA-Research/GroundingDINO/tree/856dde20aee659246248e20734ef9ba5214f5e44">IDEA-Research/GroundingDINO@856dde20</a>。</li><li><a href="https://github.com/huggingface/transformers/tree/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/models/grounding_dino">Transformers 4.57.1 Grounding DINO</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>。</li></ol>
+</article></body></html>

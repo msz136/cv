@@ -1,0 +1,57 @@
+{
+  "artifact": "sources/vol_05_eng016_multiteacher_memory_scheduling_source_freeze.md",
+  "html": "sources/vol_05_eng016_multiteacher_memory_scheduling_source_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "source_frozen / VLA-ENG-016_knowledge+card_drafted / WARN",
+  "verdict": "WARN",
+  "source_sha256": "1BCEE601FD025D20AD27976A54F56E26E9F11142CE894D63F7A6BAFF66FABD2F",
+  "coverage": {
+    "knowledge_id": "VLA-ENG-016",
+    "topic": "student + multiple teachers / distillation / memory scheduling",
+    "official_pages_checked": 4,
+    "papers_checked": 1,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "pytorch_docs": "2.13 kl_div + no_grad + fsdp",
+    "deepspeed": "de1846cf6fbdd6f1c2adf046f319791ca78cc547",
+    "paper": "Hinton et al. arXiv:1503.02531",
+    "related_local_audits": [
+      "sources/vol_05_eng015_activation_offload_source_freeze.html",
+      "evidence/projects/opd_claim_evidence_inventory.html",
+      "sources/vol_05_local_artifact_gate_eng004_006.html"
+    ]
+  },
+  "normalized_main_text_sha256": {
+    "pytorch_kl_div": "c0a91e0e86816e476c8228c5b2b32c43a0ae192bb6858bad2c100f0b047cf79f",
+    "pytorch_no_grad": "29bfe53b651ec45fa25acb9efae83c8ce7d8e47a8e97868d6fdc0436eafce0f4",
+    "pytorch_fsdp": "9f14bed9d2267151f21bd7c0a61007e25f7443e877ab16a047fd29a28aa87810"
+  },
+  "raw_source_sha256": {
+    "deepspeed_zero3_rst": "e8eeb0ccfd067c371e522b494d70e0a233e7aeda4d5ccf6dd1a200d01a4b6847"
+  },
+  "checks": {
+    "bounded_slice": "PASS (source freeze plus one downstream ENG-016 knowledge node/card; ENG-017 remains deferred)",
+    "distillation_semantics": "PASS WITH WARNING (Hinton soft targets/temperature and PyTorch KL input/target/reduction semantics sourced)",
+    "teacher_memory_boundary": "PASS WITH WARNING (parameter freeze, no_grad, detach and CPU/NVMe offload kept distinct)",
+    "multi_teacher_schedule": "PASS WITH WARNING (resident/sequential/staged are engineering candidates, not performance claims)",
+    "fsdp_zero_state_boundary": "PASS WITH WARNING (FSDP/ZeRO state ownership sourced; teacher schedule and run success not inferred)",
+    "project_truth_boundary": "PASS (OPD five-teacher/preloaded_zero3/route/coldstart/online-KL hooks separated from missing ablations, weights and uplift)",
+    "formula_and_protocol": "PASS (KL, weighted multi-teacher loss, peak-memory and step-time contracts explained)",
+    "pseudocode": "PASS (commented teacher no_grad/route/mask/student-only backward order; backend APIs remain placeholders)",
+    "html_static_validation": "PASS (source SHA, one H1, eleven H2, seven H3, seven tables, one commented pseudocode block and five formula blocks)",
+    "local_links": "PASS (ENG-015, OPD inventory and artifact-gate relative links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Generate one ENG-016 knowledge node and one unseen card only after this source gate is accepted for the next bounded slice.",
+    "Collect matched single-teacher versus multi-teacher memory/latency A/B with fixed route/data/effective batch.",
+    "Collect teacher/student revision, optimizer/RNG/sampler and checkpoint bundle; verify teacher gradients remain absent.",
+    "Run SFT-only, single-teacher, no-synthetic and synthetic-ratio ablations before attributing OPD uplift to multiple teachers.",
+    "Keep metadata-driven teacher selection distinct from a learned router and keep ENG-017 deferred."
+  ],
+  "next": "Run a one-question oral drill for VLA-ENG-016 or collect single-teacher/memory/lineage artifacts; keep ENG-017 deferred."
+}

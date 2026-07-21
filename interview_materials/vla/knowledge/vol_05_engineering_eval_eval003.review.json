@@ -1,0 +1,67 @@
+{
+  "artifact": "knowledge/vol_05_engineering_eval_eval003.md",
+  "html": "knowledge/vol_05_engineering_eval_eval003.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / VLA-EVAL-003 / knowledge_25_of_44 / card_1_of_1_unseen / review_warn",
+  "verdict": "WARN",
+  "source_sha256": "2888791886cf9aa3a62541617c25eb61c33006d4b5e8e2f34c9bb625a5e9732a",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 24,
+    "new_nodes": 1,
+    "total_drafted_nodes": 25,
+    "covered_ids": ["VLA-EVAL-003"],
+    "drafted_cards_for_new_nodes": 1,
+    "practice_state": "unseen / not_orally_drilled",
+    "difficulty": "L2",
+    "priority": "P0"
+  },
+  "source_scope": {
+    "source_freeze": "sources/vol_05_eval003_success_rate_confidence_interval_source_freeze.html",
+    "official_code": [
+      "SciPy v1.16.3 scipy.stats._binomtest.py",
+      "statsmodels v0.14.6 statsmodels/stats/proportion.py"
+    ],
+    "method_papers": [
+      "Wilson 1927",
+      "Clopper-Pearson 1934",
+      "Brown-Cai-DasGupta 2001",
+      "Newcombe 1998",
+      "Kerry-Bland cluster design effect",
+      "Johari et al. always-valid inference"
+    ],
+    "local_project_hooks": [
+      "UWM/LIBERO fixed-pruned-init user-confirmed 186/250",
+      "OpenPiVLA archive-summary-only 97.4%",
+      "OPD 10,000-row metric-specific raw-holdout"
+    ]
+  },
+  "checks": {
+    "bounded_slice": "PASS (one EVAL-003 knowledge node and one atomic card; EVAL-004/EVAL-005 remain deferred)",
+    "bernoulli_contract": "PASS WITH WARNING (episode-level X_i, validity and manifest fields defined; iid is an assumption)",
+    "wilson_formula": "PASS (formula, variables, SciPy/statsmodels implementation mapping and boundary behavior)",
+    "clopper_pearson_formula": "PASS (Beta-quantile representation and exact inversion boundary)",
+    "sample_size": "PASS WITH WARNING (normal approximation planning lower bound; not a universal rollout constant)",
+    "cluster_dependence": "PASS WITH WARNING (design effect and effective sample size explained; local cluster-robust CI missing)",
+    "stopping_rules": "PASS WITH WARNING (fixed-n vs optional stopping and sequential inference boundary explicit)",
+    "project_truth_boundary": "PASS (UWM/OpenPiVLA/OPD metrics kept in separate evidence and statistical units)",
+    "pseudocode": "PASS (valid episode filtering, k/n, Wilson/exact and cluster metadata; no automatic failure deletion)",
+    "minimum_module_contract": "PASS (intuition, definitions, formulas, implementation mapping, trade-offs, bad cases, project hooks and references)",
+    "html_static_validation": "PASS (one H1, thirteen H2, nine H3, three tables, one code block, six formula blocks)",
+    "math_delimiters": "PASS (six display blocks have matched \\[/\\] delimiters; inline math retained)",
+    "local_links": "PASS (five local Markdown targets resolve)",
+    "source_sha": "PASS (normalized Markdown SHA matches HTML meta)",
+    "secret_value_handling": "PASS (only public revisions, paths, identifiers and hashes; no credential values)",
+    "card_alignment": "PASS (one corresponding VLA-EVAL-003 card uses the same source freeze and project boundary)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Obtain UWM 250 episode records, exact task/init/seed manifest, checkpoint/normalizer hashes and scorer version before claiming cluster-aware CI.",
+    "Obtain OpenPiVLA 97.4% denominator, trial/seed/init protocol, raw episodes and archive-to-checkpoint lineage before calculating a CI.",
+    "Keep OPD box/point/text metrics separate from robot rollout success; metric-specific binary intervals require their own unit and independence contract.",
+    "Use paired significance and aggregation methods only in EVAL-004/EVAL-005; do not overload this node with cross-checkpoint claims.",
+    "Do not update mastery or create coaching_state.md until a real oral answer is recorded."
+  ],
+  "next": "Run a one-question VLA-EVAL-003 oral drill or collect missing episode-level artifacts; keep the card unseen."
+}

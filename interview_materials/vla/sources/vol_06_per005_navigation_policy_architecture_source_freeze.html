@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 PER-005 Source Freeze：Navigation Policy Architecture、语义探索与 Waypoint 接口</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per005_navigation_policy_architecture_source_freeze.md">
+<meta name="aris:source-sha256" content="2d68066652bb76586d7176dcfca97449b9676e246b73ac18912d641a02392d2e">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>2d68066652bb76586d7176dcfca97449b9676e246b73ac18912d641a02392d2e</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per005_navigation_policy_architecture_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 冻结来源与指纹</a></li><li><a href="#2-taxonomy-policy">2. 架构 taxonomy：policy 的记忆和动作接口不同</a></li><li><a href="#3-planner-controller-interface">3. Planner / controller interface</a></li><li><a href="#3-1-frame-freshness">3.1 中间目标必须带 frame 和 freshness</a></li><li><a href="#3-2">3.2 延迟账本</a></li><li><a href="#3-3-stop-replan-action-repeat">3.3 Stop / replan / action repeat</a></li><li><a href="#4-semantic-exploration">4. Semantic exploration 的最小机制</a></li><li><a href="#5">5. 证据矩阵与项目边界</a></li><li><a href="#6-source-gate">6. Source gate 结论与下游范围</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 PER-005 Source Freeze：Navigation Policy Architecture、语义探索与 Waypoint 接口</h1>
+<div class="meta">状态：<code>source_frozen / VLA-PER-005 / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-18 证据截止：2026-07-18 本切片只冻结 map-free / map-based、semantic exploration、waypoint policy、planner/controller interface 与 latency 的公开机制；不把公开 baseline、论文结果或 Robot Harness 的高层工具接口写成个人导航实现。</div>
+<h2 id="question">问题（Question）</h2>
+<p>ObjectNav/VLN policy 可以直接从 observation 回归 action，也可以维护局部/全局 semantic map、预测 waypoint，再交给 planner/controller。面试中应说明这些架构如何处理 partial observability、长时域探索、stop/replan、action age 和 controller latency，而不是只说“端到端更简单”或“地图一定更可靠”。</p>
+<p>最小链路：</p>
+<pre><code class="language-text">RGB-D / language / pose / memory
+  → map-free policy OR semantic map / waypoint proposal
+  → planner / subgoal selector
+  → local controller / simulator action
+  → stop / replan / latency contract
+  → protocol-scoped navigation metrics</code></pre>
+<h2 id="1">1. 冻结来源与指纹</h2>
+<table><thead><tr><th>来源</th><th>类型 / revision</th><th>可支持的事实</th><th>不能支持的 claim</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/facebookresearch/habitat-lab/blob/0fb6f43ffe806a8088a171b036336c093bcf604e/README.md">Habitat-Lab README</a></td><td>official repo；commit <code>0fb6f43ffe806a8088a171b036336c093bcf604e</code>；2026-07-18</td><td>Habitat-Lab 提供 embodied task、训练/评估和 Habitat-Sim 接口；支持 imitation、RL、导航与 instruction-following</td><td>用户项目已使用同一 baseline、config、scene 或训练结果</td></tr>
+<tr><td><a href="https://github.com/facebookresearch/habitat-lab/blob/0fb6f43ffe806a8088a171b036336c093bcf604e/habitat-lab/habitat/tasks/nav/nav.py">Habitat-Lab navigation task/measures</a></td><td>official source；同一 commit</td><td><code>NavigationTask</code>、移动 action、<code>StopAction</code>、distance/success/SPL measure 的任务层接口</td><td>planner/controller 延迟、地图质量或真实机器人行为已由类定义证明</td></tr>
+<tr><td><a href="https://github.com/facebookresearch/habitat-sim/blob/57ee4941dc4765240f0f91f70b2c97a919bf9038/src/esp/nav/PathFinder.h">Habitat-Sim PathFinder</a></td><td>official source；commit <code>57ee4941dc4765240f0f91f70b2c97a919bf9038</code></td><td>navmesh、geodesic shortest path、isNavigable、tryStep 与 agent geometry constraints</td><td>shortest path 是实际 controller trace，或 map-free policy 已使用同一规划器</td></tr>
+<tr><td><a href="https://github.com/jacobkrantz/VLN-CE/blob/729d141b2ee10628061ada74dd3a5b9f70faeba5/README.md">VLN-CE README</a></td><td>official benchmark repo；commit <code>729d141b2ee10628061ada74dd3a5b9f70faeba5</code></td><td>连续 VLN 的 R2R/RxR 数据、Habitat 依赖、waypoint baseline 入口、action/observation 与 latency-sensitive evaluation context</td><td>README baseline 数字是当前通用 SOTA，或用户项目已复现该结果</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2007.00643">Object Goal Navigation using Goal-Oriented Semantic Exploration</a></td><td>primary paper；arXiv v2；2020</td><td>GOSE 将 episodic semantic map、目标类别语义先验和探索/规划模块组合用于 ObjectNav；论文讨论 map-based modular 与 end-to-end baseline 的差异</td><td>论文的模拟器/真机结果属于用户项目，或 semantic map 一定优于 map-free policy</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2006.13171">ObjectNav Revisited</a></td><td>primary evaluation paper；2020</td><td>ObjectNav 中探索、指标和评估解释的风险；提醒比较 map-based/end-to-end 方法时要固定 protocol</td><td>论文诊断自动覆盖用户的 scene、seed、controller 或 episode denominator</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2004.02857">Beyond the Nav-Graph: VLN in Continuous Environments</a></td><td>primary paper；ECCV 2020</td><td>VLN 从离散 nav-graph 迁移到连续环境的动作、轨迹和评估语境</td><td>连续环境下的 waypoint/controller 已被用户项目实现或获得相同结果</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2110.02207">Waypoint Models for Instruction-guided Navigation in Continuous Environments</a></td><td>primary paper；2021</td><td>waypoint prediction 作为语言/视觉到连续导航之间的中间接口；需要与低层执行和评估合同配合</td><td>waypoint prediction 本身等于闭环成功，或不需要 controller/latency/stop contract</td></tr>
+<tr><td><a href="https://arxiv.org/abs/1711.07280">R2R</a> / <a href="https://arxiv.org/abs/1904.10151">REVERIE</a></td><td>primary task papers</td><td>指令路线、referential object grounding 与导航/目标选择的任务差异</td><td>任务数据或论文 baseline 可以当作个人训练或导航 artifact</td></tr>
+</tbody></table>
+<h2 id="2-taxonomy-policy">2. 架构 taxonomy：policy 的记忆和动作接口不同</h2>
+<table><thead><tr><th>架构</th><th>典型链路</th><th>优点</th><th>主要 failure / 证据要求</th></tr></thead><tbody>
+<tr><td>map-free / reactive</td><td>image/language/pose/history → action or local waypoint</td><td>端到端、运行时简单、无需显式地图维护</td><td>partial observability、长时域探索、drift、stale observation；要有 action-age、replan 与 closed-loop trace</td></tr>
+<tr><td>semantic map-based</td><td>perception/pose → occupancy/semantic map → goal scoring/exploration → planner → action</td><td>能积累历史、做全局/长时域探索、解释子目标</td><td>mapping/calibration/pose error、显存与延迟、map stale；要有 map revision、pose/observation sync、exploration trace 与 ablation</td></tr>
+<tr><td>waypoint policy</td><td>language/visual state → next waypoint/subgoal → local controller</td><td>把长序列动作压缩为中间目标，适配连续环境</td><td>waypoint frame/scale、controller tracking、stop/replan 与 action age；需 waypoint-to-action trace</td></tr>
+<tr><td>hybrid learned + classical</td><td>learned semantic proposal → classical planner/controller</td><td>可将学习和安全/几何约束分开调试</td><td>接口 mismatch、planner latency、目标抖动和 reward/metric 归因；需 matched component ablation</td></tr>
+</tbody></table>
+<p>这些是设计家族，不是互斥的模型名称；一个系统可以用 map-free encoder 预测 waypoint，再由 classical controller 执行，也可以在 map-based explorer 中使用 learned goal scoring。</p>
+<h2 id="3-planner-controller-interface">3. Planner / controller interface</h2>
+<h3 id="3-1-frame-freshness">3.1 中间目标必须带 frame 和 freshness</h3>
+<p>waypoint 或 semantic subgoal 不应只是两个浮点数，应至少包含：</p>
+<pre><code class="language-text">subgoal_id / source_views / instruction_span
+frame_id / position-or-heading / unit
+created_at / observation_timestamp / observation_age
+uncertainty / valid / stop_allowed
+replan_policy / horizon / controller_budget</code></pre>
+<p>同一 <code>(x, y)</code> 在 agent、camera、map 或 world frame 中含义不同；旧 waypoint 继续执行可能因 agent 已转向、map 更新或目标被遮挡而失效。<code>valid=false</code>、age 超预算或 uncertainty 超阈值时，应 re-ground、replan、safe hold 或 reject，而不是静默执行。</p>
+<h3 id="3-2">3.2 延迟账本</h3>
+<p>对每个闭环周期，至少拆分：</p>
+<pre><code class="language-text">T_capture + T_transfer + T_encode/ground + T_map/planner
+  + T_policy + T_controller + T_actuation</code></pre>
+<p>若 action 在 (t_a) 生成，而 observation 在 (t_o) 捕获，action age 为 (t_a-t_o) 加上排队、通信和执行延迟。对移动目标或窄空间，平均 latency 不足以解释失败；需要 p50/p95、queue wait、replan count、stale-action rate 和 per-episode traces。</p>
+<h3 id="3-3-stop-replan-action-repeat">3.3 Stop / replan / action repeat</h3>
+<p>必须同时冻结：</p>
+<ul><li>stop predicate：距离、view-point、object grounding 或 language goal；</li><li>replan trigger：固定步数、时间、tracking error、map change、confidence/age；</li><li>action repeat / control-hz / controller timeout；</li><li>collision、safe hold、cancel、compensation 和 terminal reason。</li></ul>
+<p>只报告“每步预测 waypoint”而不报告何时重规划、何时停止和何时拒绝动作，无法复现闭环行为。</p>
+<h2 id="4-semantic-exploration">4. Semantic exploration 的最小机制</h2>
+<p>GOSE 论文的公开机制可以抽象为：</p>
+<pre><code class="language-text">RGB-D + pose
+  → local geometry / semantic observations
+  → episodic semantic map
+  → target-category prior / frontier or goal scoring
+  → exploration subgoal
+  → planner/controller
+  → update map and repeat</code></pre>
+<p>关键不只是“有一张地图”，而是：</p>
+<ol><li>map 的坐标、更新频率、pose 来源和历史窗口一致；</li><li>target category prior 只影响候选探索排序，不能伪装成已看到目标；</li><li>frontier、object candidate、stop 和 fallback 的 predicate 明确；</li><li>map error、pose drift、遮挡和 stale memory 要进入失败分析；</li><li>map-based uplift 必须通过去 map、去 semantic prior、固定 planner/controller 的 matched ablation 归因。</li></ol>
+<h2 id="5">5. 证据矩阵与项目边界</h2>
+<table><thead><tr><th>Claim 层级</th><th>最小 artifact</th><th>当前五项目状态</th></tr></thead><tbody>
+<tr><td>policy interface</td><td>observation/action/waypoint schema、frame/unit、latency fields</td><td>OpenPiVLA/Harness 可讨论接口；不等于导航实现</td></tr>
+<tr><td>map/planner mechanism</td><td>map snapshot、pose/semantic update、subgoal trace、planner config</td><td>未发现 VLN/ObjectNav map bundle</td></tr>
+<tr><td>closed-loop simulator</td><td>episode manifest、scene/navmesh revision、SR/SPL、failure trace</td><td>PER-004 navigation gate：0 local-direct bundle</td></tr>
+<tr><td>real navigation</td><td>sensor/controller/collision/safety log、matched sim protocol</td><td>未发现</td></tr>
+</tbody></table>
+<p>OPD 的 point/box/text 可以作为目标 grounding 前端，Robot Harness 的 semantic-navigation 可以作为高层工具接口；WAM/UWM/OpenPiVLA 的现有材料不能证明 map-based、waypoint 或真实导航闭环已经由个人完成。</p>
+<h2 id="6-source-gate">6. Source gate 结论与下游范围</h2>
+<p>已冻结：</p>
+<ol><li>map-free、semantic map-based、waypoint 和 hybrid policy 是不同的 memory/action interface 家族，不能只用“端到端/模块化”二分。</li><li>planner/controller 接口必须绑定 frame、unit、uncertainty、observation age、replan、stop、repeat、latency 和 failure reason。</li><li>GOSE、VLN-CE waypoint、Habitat-Sim navmesh 和 ObjectNav/VLN 论文提供机制与 protocol 参照，不支持个人项目已经实现或提升了导航结果。</li><li>map-based 或 waypoint claim 至少需要 map/subgoal/action trace、matched ablation 和 episode-level denominator；当前五项目不满足。</li></ol>
+<p>知识页已补充 map-free vs map-based 伪代码、semantic map 更新与 frontier scoring、waypoint frame/latency contract、planner/controller A/B 与 failure tree；仍待 <code>VLA-PER-005</code> 题卡。</p>
+<p>当前 verdict：<code>WARN</code>。来源足以冻结架构 taxonomy 与接口审计框架，但没有用户本地 navigation implementation/run artifact。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="https://github.com/facebookresearch/habitat-lab/blob/0fb6f43ffe806a8088a171b036336c093bcf604e/README.md">Habitat-Lab frozen README</a>、<a href="https://github.com/facebookresearch/habitat-lab/blob/0fb6f43ffe806a8088a171b036336c093bcf604e/habitat-lab/habitat/tasks/nav/nav.py">navigation measures</a>。</li><li><a href="https://github.com/facebookresearch/habitat-sim/blob/57ee4941dc4765240f0f91f70b2c97a919bf9038/src/esp/nav/PathFinder.h">Habitat-Sim PathFinder</a>。</li><li><a href="https://github.com/jacobkrantz/VLN-CE/blob/729d141b2ee10628061ada74dd3a5b9f70faeba5/README.md">VLN-CE frozen README</a>。</li><li><a href="https://arxiv.org/abs/2007.00643">GOSE</a>、<a href="https://arxiv.org/abs/2006.13171">ObjectNav Revisited</a>、<a href="https://arxiv.org/abs/2004.02857">VLN-CE paper</a>、<a href="https://arxiv.org/abs/2110.02207">Waypoint Models</a>。</li><li><a href="https://arxiv.org/abs/1711.07280">R2R</a> 与 <a href="https://arxiv.org/abs/1904.10151">REVERIE</a>。</li></ol>
+</article></body></html>

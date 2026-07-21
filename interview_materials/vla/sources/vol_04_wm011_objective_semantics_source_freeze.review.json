@@ -1,0 +1,42 @@
+{
+  "artifact": "sources/vol_04_wm011_objective_semantics_source_freeze.md",
+  "html": "sources/vol_04_wm011_objective_semantics_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-WM-011 / knowledge_synced / card_synced",
+  "verdict": "WARN",
+  "source_sha256": "7632d05497acd5170a5955a1c7eda2e68f40df39257f2d343229a61eba9d7b35",
+  "frozen_sources": {
+    "world_models": "arXiv:1803.10122 / ar5iv response SHA-256 94b1cfb329e803b6b305f574755a83478f051f268c693e445ea3a959680683aa",
+    "planet": "arXiv:1811.04551 / ar5iv response SHA-256 6a9bed11e5963626016235227ab85594ae5d42773e675860788c51a071929a97",
+    "dreamerv3": "arXiv:2301.04104 / arXiv HTML response SHA-256 7ce561853df3b35ccf0316476b3f7538b60117feb358bd562dc279f0d5067a26",
+    "perceptual_loss": "arXiv:1603.08155 / ar5iv response SHA-256 5c4923e8ce75ded7f37b317541c0297e4d7acd1df685fcd9a21012260ffddc38",
+    "lpips": "arXiv:1801.03924 / ar5iv response SHA-256 fb10022b5757b81d033dfe21a676b2acf5c6d4e7c46dab3b10a801905f1d7ac2",
+    "dreamerv3_reimplementation": "danijar/dreamerv3@e3f02248693a79dc8b0ebd62c93683888ddaccfe / rssm.py + agent.py + configs.yaml + README source hashes",
+    "local_boundary": "Source Audit A + independent fact review + WAM/UWM evidence inventories"
+  },
+  "checks": {
+    "batch_boundary": "PASS (only VLA-WM-011 frozen; WM-012..014 not generated)",
+    "primary_source_scope": "PASS (world-model, latent dynamics and perceptual claims tied to five primary papers)",
+    "repo_provenance": "PASS WITH WARNING (frozen DreamerV3 source paths checked; repository is explicitly a reimplementation, not author-official code)",
+    "objective_contract": "PASS (prediction, target, time index, mask, denominator, scale and gradient recipient explicit)",
+    "reconstruction_boundary": "PASS (observation likelihood/normalization/key/reduction and posterior-shortcut boundary explicit)",
+    "dynamics_boundary": "PASS (prior/posterior, dyn/rep stop-gradient and free-nats semantics mapped to frozen code)",
+    "overshooting_boundary": "PASS (PlaNet latent overshooting not promoted to frozen DreamerV3 implementation fact)",
+    "reward_continuation_boundary": "PASS (immediate reward, value, success, learned discount, terminal, timeout and off-by-one separated)",
+    "perceptual_boundary": "PASS WITH WARNING (frozen feature/layer/normalization contract explicit; action-critical geometry/contact not guaranteed)",
+    "reduction_and_diagnostics": "PASS (valid denominator, raw/reduced/scaled loss, gradient and matched arms covered)",
+    "project_evidence_boundary": "PASS (WAM/UWM mechanisms and protocol materials not promoted to objective-level causal uplift)",
+    "html_static_validation": "PASS (canonical SHA embedded; one H1, twenty-five H2 headings, four tables, formulas, commented pseudocode and MathJax rendered)",
+    "local_links": "PASS (Source Audit A, independent review and WAM/UWM inventories resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "independent_fact_review": "PENDING"
+  },
+  "open_items": [
+    "Collect local objective config, dataset schema, mask/reduction trace, checkpoint and gradient logs.",
+    "Run matched single-objective, combined and overwide arms with one-step, open-loop and closed-loop metrics.",
+    "Add exact reward/continuation time-index tests for timeout, terminal, reset and padding.",
+    "Test perceptual backbone/layer sensitivity on geometry, depth, contact and gripper probes.",
+    "Keep VLA-WM-011 unseen until oral practice; do not create coaching_state.md without a real drill."
+  ],
+  "next": "Build only VLA-WM-012 RSSM / Dreamer posterior, prior, KL balancing and imagined rollout; do not generate WM-013/014 in the same slice."
+}

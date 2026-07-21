@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：2D → 3D Lift 与 Frame Contract（PER-002）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per002_3d_lift_frame.md">
+<meta name="aris:source-sha256" content="64dbc11b0ac1f8748c0181067af3e3b97d1fc8a7e940d2d0d659b4850db26f49">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>64dbc11b0ac1f8748c0181067af3e3b97d1fc8a7e940d2d0d659b4850db26f49</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per002_3d_lift_frame.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1-30-3d-lift">1. 30 秒直觉：3D lift 是一条带时间戳的链</a></li><li><a href="#2-camera-model-image-size-contract">2. Camera model：内参、畸变与 image-size contract</a></li><li><a href="#2-1-pinhole-intrinsics">2.1 Pinhole intrinsics</a></li><li><a href="#2-2-distortion-rectification">2.2 Distortion / rectification</a></li><li><a href="#2-3-calibration-evidence">2.3 Calibration evidence</a></li><li><a href="#3-depth-z-3d">3. Depth：没有 Z 就没有唯一的 3D 点</a></li><li><a href="#3-1">3.1 深度来源对照</a></li><li><a href="#4-frame-transform">4. 反投影与 frame transform</a></li><li><a href="#4-1-pixel-camera-optical-frame">4.1 Pixel → camera optical frame</a></li><li><a href="#4-2-camera-target-world-frame">4.2 Camera → target/world frame</a></li><li><a href="#4-3-ros-convention">4.3 ROS convention 是参照，不是事实</a></li><li><a href="#5">5. 时间同步与不确定性账本</a></li><li><a href="#6-3d-lift-pipeline">6. 可审计 3D-lift pipeline</a></li><li><a href="#7">7. 证据阶梯：从几何到闭环</a></li><li><a href="#8">8. 项目映射与回答边界</a></li><li><a href="#opd">OPD</a></li><li><a href="#wam">WAM</a></li><li><a href="#ownership">个人 ownership</a></li><li><a href="#9-trade-off-bad-case">9. Trade-off 与高概率 bad case</a></li><li><a href="#10">10. 面试回答检查表</a></li><li><a href="#11">11. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：2D → 3D Lift 与 Frame Contract（PER-002）</h1>
+<div class="meta">状态：<code>drafted / VLA-PER-002 / knowledge_1_of_phase / card_synced / WARN</code> 报告日期：2026-07-18 证据截止：2026-07-18 来源入口：<a href="../sources/vol_06_per002_3d_lift_frame_source_freeze.html">PER-002 3D Lift / Frame Source Freeze</a>。 前置知识：<a href="vol_06_per001_grounding_coordinate.html">PER-001 Grounding / Coordinate</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>图像上的 point 或 box 只是二维观测。要让规划器或控制器使用它，需要补齐深度、相机内参/畸变、frame 变换、时间戳、单位和不确定性。缺任一项时，“模型预测了一个 3D 抓取点”可能只是把二维中心乘了一个未经验证的常数。</p>
+<p>本页回答：</p>
+<ol><li>pixel point 如何反投影到 camera optical frame？</li><li>depth、intrinsics、distortion、extrinsics 和 image size 如何绑定？</li><li>ROS 的 base/optical/map/odom convention 能否直接当作项目事实？</li><li>时间同步、invalid depth 和不确定性怎样进入 planner/controller gate？</li><li>什么证据才能把 projection math 升级为 3D execution 或闭环 success？</li></ol>
+<h2 id="section-2">知识地图位置与前置依赖</h2>
+<pre><code class="language-text">PER-001 2D point/box/text + image coordinate
+                    ↓
+PER-002 depth + calibration + frame transform
+                    ↓
+PER-003 multi-view / temporal fusion
+                    ↓
+planner goal / action head / controller / closed-loop predicate</code></pre>
+<p>OpenCV 的 calibration/depth 文档和 ROS REP-103/105 是公源机制参照；OPD/WAM 仅用于项目真实性边界。当前材料没有用户项目的 calibration、TF、depth 或 3D target bundle，因此本页不声称个人完成了 3D lift。</p>
+<h2 id="1-30-3d-lift">1. 30 秒直觉：3D lift 是一条带时间戳的链</h2>
+<pre><code class="language-text">pixel (u,v)
+  + depth Z + intrinsics/distortion
+  → camera optical point p_c
+  + timestamped extrinsic T_target←camera
+  → target/world/base point p_t
+  + uncertainty/validity gate
+  → planner/controller input</code></pre>
+<p>二维坐标没有深度；深度没有 frame 就无法解释；frame 没有时间戳就可能把运动中的旧位姿应用到新图像。一个能画出投影 overlay 的 demo，只证明部分几何链路，不证明目标被正确抓取或导航。</p>
+<h2 id="2-camera-model-image-size-contract">2. Camera model：内参、畸变与 image-size contract</h2>
+<h3 id="2-1-pinhole-intrinsics">2.1 Pinhole intrinsics</h3>
+<p>相机内参矩阵通常写为：</p>
+<pre><code class="language-text">K = [[fx,  0, cx],
+     [ 0, fy, cy],
+     [ 0,  0,  1]]</code></pre>
+<p><code>fx,fy</code> 是像素尺度焦距，<code>cx,cy</code> 是主点。它们只对特定 image size、裁剪和 resize 语义有效；如果把 640×480 的主点直接用于 224×224 的 letterboxed tensor，必须先证明 transform 如何更新 <code>K</code>。</p>
+<h3 id="2-2-distortion-rectification">2.2 Distortion / rectification</h3>
+<p>现实镜头存在径向和切向畸变。point 位于原始畸变图像还是 rectified 图像，必须写在 schema 中。两种合法路径是：</p>
+<ol><li>先对图像和 point 一起 <code>undistort/rectify</code>，再使用 rectified <code>K</code>；</li><li>保留原始 point，使用带 distortion 的反投影函数。</li></ol>
+<p>不能对畸变 pixel 直接套无畸变 pinhole 公式，并把系统偏差归因给 grounding 模型。</p>
+<h3 id="2-3-calibration-evidence">2.3 Calibration evidence</h3>
+<p>一个可复查的 calibration record 至少包括：标定板/场景、视角数量、image size、<code>K</code>、distortion coefficients、reprojection error、工具版本、时间和 revision。OpenCV 教程支持这些概念和实现入口，但不证明任何本地相机已经通过标定门。</p>
+<h2 id="3-depth-z-3d">3. Depth：没有 Z 就没有唯一的 3D 点</h2>
+<h3 id="3-1">3.1 深度来源对照</h3>
+<table><thead><tr><th>来源</th><th>适用前提</th><th>关键风险</th><th>需要记录</th></tr></thead><tbody>
+<tr><td>RGB-D aligned depth</td><td>RGB/depth 已配准且单位已知</td><td>hole、边缘混合、遮挡、时间偏移</td><td>depth unit、invalid code、registration revision</td></tr>
+<tr><td>stereo disparity</td><td>baseline、左右相机模型和对应有效</td><td>远处误差放大、遮挡无视差</td><td>baseline、disparity scale、valid mask</td></tr>
+<tr><td>multi-view triangulation</td><td>多视角 pose 和匹配可信</td><td>pose/匹配误差、动态物体</td><td>view IDs、pose timestamps、inlier rule</td></tr>
+<tr><td>plane/table hypothesis</td><td>目标落在已知平面</td><td>目标不在平面、遮挡和倾斜</td><td>plane frame、residual、valid region</td></tr>
+<tr><td>monocular depth</td><td>模型提供尺度或可校准深度</td><td>scale ambiguity、domain shift</td><td>model revision、scale calibration、uncertainty</td></tr>
+</tbody></table>
+<p>RGB 图像本身只提供射线，不提供唯一的 <code>Z</code>。<code>0</code>、NaN、饱和、边缘混合和超出 range 的值必须进入 invalid 或 uncertainty 分支，不能静默当作真实深度。</p>
+<h2 id="4-frame-transform">4. 反投影与 frame transform</h2>
+<h3 id="4-1-pixel-camera-optical-frame">4.1 Pixel → camera optical frame</h3>
+<p>对 rectified pixel <code>(u,v)</code>、深度 <code>Z</code> 和内参 <code>K</code>，相机 optical frame 中的 pinhole 反投影为：</p>
+<div class="formula">\[
+X_c=\frac{u-c_x}{f_x}Z,\qquad
+Y_c=\frac{v-c_y}{f_y}Z,\qquad
+Z_c=Z.
+\]</div>
+<p><code>u,v</code> 的原点、<code>Z</code> 的单位和 <code>K</code> 的 image-size revision 必须一致。若 point 来自 letterbox 图像，先逆 resize/padding 到 calibration image space，再采样 depth；否则 <code>u,v</code> 会带有系统偏移。</p>
+<h3 id="4-2-camera-target-world-frame">4.2 Camera → target/world frame</h3>
+<p>用齐次变换把 camera point 变到目标 frame：</p>
+<div class="formula">\[
+\begin{bmatrix}p_t\\1\end{bmatrix}
+=T_{t\leftarrow c}(\tau)\begin{bmatrix}p_c\\1\end{bmatrix},
+\qquad
+T_{t\leftarrow c}=\begin{bmatrix}R_{t\leftarrow c}&amp;t_{t\leftarrow c}\\0&amp;1\end{bmatrix}.
+\]</div>
+<p><code>R</code> 是旋转，<code>t</code> 是平移，<code>τ</code> 是图像采集时刻或明确的插值时刻。下标要能回答“变换从哪一个 frame 到哪一个 frame”；只保存一个无标签 4×4 矩阵不够复现。</p>
+<h3 id="4-3-ros-convention">4.3 ROS convention 是参照，不是事实</h3>
+<p>REP-103 提供右手系、SI 单位和 body/optical frame 的常见约定；REP-105 讨论 <code>map</code>、<code>odom</code>、<code>base_link</code> 等移动平台 frame 语义。项目可以采用自己的 convention，但必须显式写轴方向、单位、frame ID 和变换方向，不能默认所有 VLA 项目都运行 ROS TF。</p>
+<h2 id="5">5. 时间同步与不确定性账本</h2>
+<p>至少保留以下时间戳：</p>
+<pre><code class="language-text">t_image, t_depth, t_calibration, t_tf, t_robot_state, t_action</code></pre>
+<p>检查项包括：</p>
+<ul><li>RGB 与 depth 是否属于同一 capture 或经过可解释配准；</li><li><code>T_target←camera</code> 是否在 <code>t_image</code> 插值，而不是使用未来 pose 或过期 pose；</li><li>机器人/目标运动期间，时间偏差造成的空间误差是否小于 freshness budget；</li><li>depth 与 RGB 的 resolution、crop、registration 是否同源；</li><li>action 发出时，3D target 是否仍有效。</li></ul>
+<p>不确定性账本可以按来源拆分：</p>
+<table><thead><tr><th>来源</th><th>对 3D 结果的影响</th></tr></thead><tbody>
+<tr><td>pixel/parser error</td><td>深度越大，横向 <code>X/Y</code> 误差通常越大</td></tr>
+<tr><td>depth noise</td><td>直接扰动 <code>Z</code>，并通过反投影影响 <code>X/Y</code></td></tr>
+<tr><td>intrinsics/distortion</td><td>系统性投影偏差</td></tr>
+<tr><td>extrinsics/TF</td><td>整体旋转/平移偏差</td></tr>
+<tr><td>timestamp skew</td><td>运动场景中的动态偏差</td></tr>
+<tr><td>axis/unit/frame bug</td><td>可能产生大幅、非随机错误</td></tr>
+</tbody></table>
+<p>uncertainty gate 可以在 planner 前拒绝 invalid/高风险目标，或把协方差/置信度作为 planner 输入；但 gate 的阈值和 fallback 仍需与任务安全合同绑定。</p>
+<h2 id="6-3d-lift-pipeline">6. 可审计 3D-lift pipeline</h2>
+<pre><code class="language-python">def lift_grounding(point, rgb, depth, calib, tf_buffer, contract):
+    # 1. Validate image/depth size, timestamp, units and invalid-depth policy.
+    assert contract.image_size == calib.image_size
+    z = sample_depth(depth, point, contract.depth_sampling)
+    if not valid_depth(z, contract.depth_range):
+        return Invalid(reason=&quot;depth&quot;, timestamp=rgb.timestamp)
+
+    # 2. Move the point into rectified calibration pixels.
+    uv = undo_resize_crop_letterbox(point, contract.transform)
+    uv_rect = rectify_or_validate(uv, calib, contract.distortion_mode)
+
+    # 3. Back-project to the camera optical frame.
+    p_camera = backproject_pinhole(uv_rect, z, calib.K, calib.depth_unit)
+
+    # 4. Interpolate the timestamped camera-&gt;target transform.
+    T = tf_buffer.lookup(calib.camera_frame, contract.target_frame,
+                         rgb.timestamp, contract.tf_policy)
+    p_target = transform_point(T, p_camera)
+
+    # 5. Apply uncertainty/safety gate and emit full provenance.
+    uncertainty = propagate_uncertainty(point, z, calib, T)
+    if not contract.gate(uncertainty, p_target):
+        return Invalid(reason=&quot;uncertainty&quot;, timestamp=rgb.timestamp)
+    return Target3D(point=p_target, frame=contract.target_frame,
+                    timestamp=rgb.timestamp, uncertainty=uncertainty,
+                    calib_revision=calib.revision, tf_revision=T.revision)</code></pre>
+<p>伪代码把 invalid depth、逆预处理、去畸变、反投影、时间戳 TF、uncertainty 和 provenance 作为同一条链；它是面试设计合同，不是用户项目已有实现。</p>
+<h2 id="7">7. 证据阶梯：从几何到闭环</h2>
+<table><thead><tr><th>层级</th><th>最小可审计证据</th><th>不能越级支持</th></tr></thead><tbody>
+<tr><td>projection math</td><td>固定 <code>K/distortion/image_size</code> 的 pixel→camera→pixel roundtrip</td><td>深度正确、外参正确</td></tr>
+<tr><td>calibration</td><td>calibration inputs、reprojection error、版本、单位</td><td>运行时 TF 和同步正确</td></tr>
+<tr><td>frame transform</td><td><code>T_target←camera</code>、frame IDs、timestamp、逆变换 smoke</td><td>目标一定被抓取/导航</td></tr>
+<tr><td>planner interface</td><td>3D target、uncertainty gate、planner input/output trace</td><td>controller 已执行成功</td></tr>
+<tr><td>closed-loop episode</td><td>same protocol、controller trace、success predicate、failure video、完整分母</td><td>跨任务/真机泛化，除非协议一致</td></tr>
+</tbody></table>
+<p>OPD 当前是 static point/box/text holdout，缺 depth/TF/3D planner trace；WAM bundle 有 camera/controller/horizon 字段，仍缺 calibration、depth、3D target 和 checkpoint verification。因此二者都不能作为 PER-002 的个人 3D 成果证明。</p>
+<h2 id="8">8. 项目映射与回答边界</h2>
+<h3 id="opd">OPD</h3>
+<p>可以讲：2D point/box/text 的协议、route metadata、strict/lenient scorer 和 raw-holdout leakage gate。不能讲：point 已自动 lift 到 base frame、五 expert 已解决深度、或 static holdout 证明机器人抓取。</p>
+<h3 id="wam">WAM</h3>
+<p>manifest 中的 camera resolution、controller、open-loop 和 action shape 可用于说明 rollout provenance；它们不包含 calibration matrix、depth stream、TF tree、3D target 或真机 success。应把它们定位为 rollout interface evidence，而不是 3D perception evidence。</p>
+<h3 id="ownership">个人 ownership</h3>
+<p>如果没有 calibration script、TF config、roundtrip log、failure trace 或逐文件 ledger，只能说“理解并审计 3D lift 合同”，不能说“我完成了相机标定/外参标定/3D grasp pipeline”。</p>
+<h2 id="9-trade-off-bad-case">9. Trade-off 与高概率 bad case</h2>
+<table><thead><tr><th>选择</th><th>优点</th><th>风险</th></tr></thead><tbody>
+<tr><td>RGB-D</td><td>单帧可得 Z，链路短</td><td>配准、边缘 hole、单位和时间同步</td></tr>
+<tr><td>stereo</td><td>不需要主动深度</td><td>视差、baseline、遮挡和远距离误差</td></tr>
+<tr><td>plane hypothesis</td><td>桌面任务简单稳定</td><td>非平面目标和遮挡会系统偏差</td></tr>
+<tr><td>monocular depth</td><td>硬件简单</td><td>scale/domain shift/uncertainty</td></tr>
+<tr><td>static extrinsic</td><td>简单、低运行时成本</td><td>相机移动或机械臂 flex 后失效</td></tr>
+<tr><td>timestamped TF</td><td>可处理运动</td><td>需要 buffer、插值和时钟同步</td></tr>
+</tbody></table>
+<p>常见 bad case：用 2D box 中心当 3D grasp 点；把 RGB resolution 的 <code>K</code> 用到 resized tensor；畸变点直接套 pinhole；深度单位 mm/m 混淆；忽略 depth invalid code；camera→base 方向写反；使用最新 TF 而不是 capture-time TF；只看 overlay 不做 roundtrip；把 ROS frame convention 当作项目事实；把 planner trace 当作 controller success。</p>
+<h2 id="10">10. 面试回答检查表</h2>
+<p>回答 PER-002 至少覆盖：</p>
+<ol><li>深度来源和 invalid policy；</li><li><code>K/distortion/image_size</code> 与 pixel/rectified space；</li><li>(X_c,Y_c,Z_c) 反投影公式；</li><li><code>T_target←camera(timestamp)</code> 的方向、frame ID、单位和 revision；</li><li>RGB/depth/TF/robot-state 时间同步；</li><li>uncertainty gate 与 planner/controller 分层；</li><li>OPD/WAM 当前没有 3D artifact 的证据边界。</li></ol>
+<h2 id="11">11. 结论与下一步</h2>
+<p>3D lift 的关键不是记住一个反投影公式，而是把 depth、calibration、frame、timestamp、uncertainty 和 downstream predicate 绑定成可复查链路。OpenCV 和 ROS 文档支持机制与 convention；当前项目材料只能支持 2D grounding 或 rollout provenance，不能升级为个人 3D lift 或真机成果。节点保持 <code>WARN</code>，对应题卡已生成并保持 <code>unseen</code>；下一步进行 PER-001..004 真实口述或补一个本地 3D roundtrip artifact。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_06_per002_3d_lift_frame_source_freeze.html">PER-002 3D Lift / Frame Source Freeze</a>。</li><li>OpenCV，<a href="https://github.com/opencv/opencv/blob/f7dd7df170add1655de75b5e95f20f41d2a88293/doc/py_tutorials/py_calib3d/py_calibration/py_calibration.markdown">camera calibration</a> 与 <a href="https://github.com/opencv/opencv/blob/f7dd7df170add1655de75b5e95f20f41d2a88293/doc/py_tutorials/py_calib3d/py_depthmap/py_depthmap.markdown">depth/stereo</a>。</li><li>ROS <a href="https://github.com/ros-infrastructure/rep/blob/11ca24a41f31480dfb9562ba99f2a5b93d3ebda5/rep-0103.rst">REP-103</a> 与 <a href="https://github.com/ros-infrastructure/rep/blob/11ca24a41f31480dfb9562ba99f2a5b93d3ebda5/rep-0105.rst">REP-105</a>。</li><li><a href="vol_06_per001_grounding_coordinate.html">PER-001 Grounding / Coordinate Knowledge</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a> 与 <a href="../evidence/projects/wm019_wam_artifact_manifest.html">WAM Artifact Manifest</a>。</li></ol>
+</article></body></html>

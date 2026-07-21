@@ -1,0 +1,39 @@
+{
+  "artifact": "sources/vol_03_diffusion_policy_independent_fact_review.md",
+  "html": "sources/vol_03_diffusion_policy_independent_fact_review.html",
+  "review_date": "2026-07-19",
+  "status": "independent_fact_reviewed",
+  "verdict": "PASS WITH WARNING",
+  "source_sha256": "15185A898E31762BF22D4FB76BB0F56A705062DFBEBB04A85C202535D2948580",
+  "evidence_cutoff": "2026-07-19",
+  "upstream": {
+    "paper": "Diffusion Policy: Visuomotor Policy Learning via Action Diffusion",
+    "paper_revision": "arXiv 2303.04137v5",
+    "repository": "real-stanford/diffusion_policy",
+    "commit": "5ba07ac6661db573af695b419a7947ecb704690f",
+    "license": "MIT",
+    "scheduler_dependency": "diffusers v0.11.1"
+  },
+  "checks": {
+    "paper_and_frozen_code_read": "PASS",
+    "training_target": "PASS WITH WARNING (epsilon/sample only; unsupported prediction_type raises ValueError)",
+    "condition_mask_and_denominator": "PASS WITH WARNING (masked numerator but full-element mean; valid_mask is rejected)",
+    "horizon_and_action_slice": "PASS (To/Tp/Ta and start=To-1 slice mapped)",
+    "boundary_padding": "PASS WITH WARNING (sampler repeats first/last values; no valid-length mask)",
+    "sampling_steps": "PASS WITH WARNING (paper 10/16 and frozen runtime 16 are configuration/version facts)",
+    "warm_start_boundary": "PASS WITH WARNING (paper proposes it; frozen policies fresh-random-init and reject past_action)",
+    "simulation_rollout": "PASS (runner/wrapper action batch and re-observation mapped)",
+    "real_timestamp_queue": "PASS WITH WARNING (expired-action filtering and over-budget fallback checked)",
+    "synthetic_probes": "PASS (slice, mask dilution, repeat padding, v-pred branch, timestamp semantics)",
+    "html_static_validation": "PASS (one h1, MathJax, source metadata and local links)",
+    "browser_visual_check": "BLOCKED (file:// navigation restricted in current environment)",
+    "local_project_mapping": "PENDING (upstream does not prove OpenPiVLA scheduler/H/K/R/schema)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Collect local OpenPiVLA scheduler, prediction_type, normalizer, action schema, H/K/R and timestamped rollout artifacts.",
+    "Do not transfer paper latency or success numbers to the local project.",
+    "Keep VLA-ACT-017..022 unseen until real oral practice."
+  ],
+  "next": "Run one ACT/Diffusion oral drill or collect one local OpenPiVLA runtime artifact; do not generate more VOL 03 cards."
+}

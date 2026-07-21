@@ -1,0 +1,38 @@
+{
+  "artifact": "sources/vol_08_sys003_robot_fleet_multitenant_gpu_scheduling_source_freeze.md",
+  "html": "sources/vol_08_sys003_robot_fleet_multitenant_gpu_scheduling_source_freeze.html",
+  "review_date": "2026-07-20",
+  "status": "source_frozen / SYS-VLA-003 / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "d2c2abad8b0ea00990523dd67f6566d89482025c28782e6f74379c507ab534bd",
+  "source_rows": {
+    "official_public": 15,
+    "local_project_inventories": 5,
+    "local_ownership_ledgers": 5
+  },
+  "deterministic_probes": {
+    "total": 15,
+    "passed": 15,
+    "failed": 0,
+    "probe_scope": "Pinned raw source strings only; no runtime throughput, fairness, isolation, lease fencing or physical safety claim"
+  },
+  "checks": {
+    "source_gate": "PASS WITH WARNING (Kubernetes, NVIDIA device plugin, Volcano, Triton, Ray and ROS 2 fixed revisions retrieved; 15/15 deterministic probes pass)",
+    "identity_and_state_contract": "PASS (tenant/robot/model/request/placement identity and ownership boundaries are explicit design contracts)",
+    "capacity_and_placement_boundary": "PASS (resource vectors, K8s/Volcano/Ray/Triton mechanisms and VLA compatibility inference are separated)",
+    "fairness_preemption_boundary": "PASS (capacity, fair-share, priority and freshness are distinguished; no fairness result is claimed)",
+    "project_truth_boundary": "PASS (five project inventories/ledgers are hooks only; no fleet control plane or personal ownership is inferred)",
+    "html_static_validation": "PASS (one H1, valid hierarchy, 1 formula block, commented pipeline, academic template and matching SHA)",
+    "local_links": "PASS (source, prior VOL 05 gates and five project inventory links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "knowledge_downstream": "PASS WITH WARNING (downstream SYS-VLA-003 knowledge page is synchronized; runtime and ownership evidence remain open)",
+    "question_card": "PASS WITH WARNING (downstream SYS-VLA-003 card is synchronized and unseen; oral evidence remains open)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "No unified fleet service, tenant/robot/model request trace, GPU placement/fairness load test, model cache lineage, lease fencing, controller acknowledgement, canary/rollback artifact or candidate ownership confirmation is present.",
+    "Do not claim Kubernetes/Volcano/Ray/Triton mechanisms are already deployed in a personal VLA fleet.",
+    "Keep SYS-VLA-003 card unseen; run one oral drill or collect tenant/robot/model/request/placement trace before starting SYS-VLA-004/CODE-VLA-007/008."
+  ],
+  "next": "Run one SYS-VLA-003 oral drill or collect a tenant/robot/model/request/placement trace; keep the synced card unseen and do not start SYS-VLA-004."
+}

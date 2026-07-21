@@ -1,0 +1,34 @@
+{
+  "artifact": "sources/vol_03_act_independent_fact_review.md",
+  "html": "sources/vol_03_act_independent_fact_review.html",
+  "review_date": "2026-07-21",
+  "status": "independent_fact_reviewed",
+  "verdict": "PASS WITH WARNING",
+  "source_sha256": "FA7E2F654760642A6C834B0C1A48F553ED500DF725D520C8189EF0C073B8C3B0",
+  "evidence_cutoff": "2026-07-19",
+  "upstream": {
+    "paper": "Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware",
+    "paper_revision": "arXiv 2304.13705v1",
+    "repository": "tonyzhaozh/act",
+    "commit": "742c753c0d4a5d87076c8f69e5628c79a8cc5488",
+    "license": "MIT"
+  },
+  "checks": {
+    "paper_and_frozen_code_read": "PASS",
+    "cvae_input_and_zero_latent": "PASS",
+    "masked_l1_denominator": "PASS WITH WARNING (full B×H×D mean dilutes padded examples)",
+    "paper_code_mismatch": "PASS WITH WARNING (Algorithm 1 MSE vs prose/code L1; fixed/sinusoidal query vs learned embedding)",
+    "temporal_ensemble_order": "PASS WITH WARNING (oldest row has largest exponential weight)",
+    "synthetic_probes": "PASS (mask dilution, valid-length batch, weights, sentinel and query cadence)",
+    "html_static_validation": "PASS (one h1, MathJax delimiters, local links and source metadata)",
+    "browser_visual_check": "PASS WITH WARNING (localhost desktop 1440x1000 and narrow 800x1000; one H1, academic palette/serif, sticky-to-static TOC, contained tables/code/formulas, zero formula-em and no page-wide overflow)",
+    "local_project_mapping": "PENDING (ACT upstream does not prove OpenPiVLA implementation)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Run one real ACT oral drill or collect one immutable local OpenPiVLA runtime artifact as the next bounded slice.",
+    "Collect local OpenPiVLA H/K/R, action schema, normalization, controller and evaluation artifacts before making project claims.",
+    "Keep VLA-ACT-011..017 unseen until spoken practice is recorded."
+  ],
+  "next": "Run one real ACT/Diffusion oral question or audit one immutable local OpenPiVLA runtime artifact; do not batch-generate additional cards."
+}

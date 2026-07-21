@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：Segmentation、Depth、Keypoint 与 Manipulation Affordance（PER-012）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per012_segmentation_depth_keypoint_affordance.md">
+<meta name="aris:source-sha256" content="92eac7125aa585a6dc2db83f1e78de2ae5e13352d38e835aa1cfee21e2782320">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>92eac7125aa585a6dc2db83f1e78de2ae5e13352d38e835aa1cfee21e2782320</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per012_segmentation_depth_keypoint_affordance.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与边界</a></li><li><a href="#1-30-task-unit">1. 30秒直觉：先冻结Task与Unit，再谈模型</a></li><li><a href="#2-typed-dense-perception-record">2. Typed Dense Perception Record</a></li><li><a href="#2-1-schema">2.1 最小Schema</a></li><li><a href="#2-2-shape-semantics">2.2 Shape相同不等于Semantics相同</a></li><li><a href="#3-segmentation-task">3. Segmentation四类Task</a></li><li><a href="#3-1-task-metric">3.1 Task先于Metric</a></li><li><a href="#4-mask2former-query-class-mask">4. Mask2Former：Query→Class+Mask</a></li><li><a href="#4-1-pipeline">4.1 Pipeline</a></li><li><a href="#4-2-criterion-assignment-loss">4.2 Criterion：Assignment不是Loss本身</a></li><li><a href="#4-3-semantic-inference">4.3 Semantic Inference</a></li><li><a href="#5-sam-promptable-mask-candidate">5. SAM：Promptable Mask Candidate</a></li><li><a href="#5-1">5.1 输入输出合同</a></li><li><a href="#5-2-predicted-quality-robot-success">5.2 Predicted Quality不是Robot Success</a></li><li><a href="#6-depth">6. Depth四种合同</a></li><li><a href="#7-depth-anything-v2">7. Depth Anything V2代码合同</a></li><li><a href="#7-1-relative-path">7.1 Relative Path</a></li><li><a href="#7-2-metric-path">7.2 Metric Path</a></li><li><a href="#7-3-preprocess-postprocess-trap">7.3 Preprocess与Postprocess Trap</a></li><li><a href="#7-4-license-artifact">7.4 License也属于Artifact</a></li><li><a href="#8-mask-metric-depth-3d-surface">8. Mask+Metric Depth→3D Surface</a></li><li><a href="#8-1-pixel-backprojection">8.1 Pixel Backprojection</a></li><li><a href="#8-2-mask-conditioned-surface">8.2 Mask-conditioned Surface</a></li><li><a href="#8-3-weakest-link">8.3 Weakest-link反例</a></li><li><a href="#9-kpam-semantic-keypoint-task-state">9. kPAM：Semantic Keypoint是可解释Task State</a></li><li><a href="#9-1-factorization">9.1 四段Factorization</a></li><li><a href="#9-2-planning-contract">9.2 Planning Contract</a></li><li><a href="#9-3-record">9.3 最小Record</a></li><li><a href="#10-where2act-affordance">10. Where2Act：Affordance是条件成功分布</a></li><li><a href="#10-1-model-components">10.1 Model Components</a></li><li><a href="#10-2-score-semantics">10.2 Score Semantics</a></li><li><a href="#10-3-proposal-controller-action">10.3 Proposal不是Controller Action</a></li><li><a href="#11-typed-composition">11. 端到端Typed Composition</a></li><li><a href="#12-objective-metric">12. Objective与Metric对照</a></li><li><a href="#13-failure-taxonomy">13. Failure Taxonomy与诊断顺序</a></li><li><a href="#14-fail-closed-pseudocode">14. Fail-closed Pseudocode</a></li><li><a href="#15-opd-affordance-point">15. 本地OPD：名字是Affordance，输出仍是Point</a></li><li><a href="#15-1">15.1 真实链</a></li><li><a href="#15-2-audit">15.2 五文件Audit</a></li><li><a href="#16-project-truth-boundary">16. Project Truth Boundary</a></li><li><a href="#17">17. 面试回答模板、追问与危险答案</a></li><li><a href="#17-1">17.1 两分钟结构化回答</a></li><li><a href="#17-2">17.2 高频追问</a></li><li><a href="#17-3">17.3 危险答案与修正</a></li><li><a href="#18-checklist">18. 白板Checklist与练习标准</a></li><li><a href="#19">19. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：Segmentation、Depth、Keypoint 与 Manipulation Affordance（PER-012）</h1>
+<div class="meta">状态：<code>drafted / VLA-PER-012 / source_synced / card_synced / WARN</code> 更新日期：2026-07-20 前置：<code>VLA-PER-002</code> 2D→3D lift、<code>VLA-PER-008</code> representation choice、<code>VLA-PER-010</code> metric/parser；后续：<code>VLA-PER-013/014</code> 3D representation/grounding、<code>VLA-PER-015</code> perception→action gate。 来源入口：<a href="../sources/vol_06_per012_segmentation_depth_keypoint_affordance_source_freeze.html">PER-012 Segmentation / Depth / Keypoint / Affordance Source Freeze</a>；对应自测：<a href="../questions/vol_06_per012.html">PER-012 Atomic Card</a>。本页只做冻结证据的教学转译；题卡已生成并保持<code>unseen</code>，真实口述状态仍未开始。</div>
+<h2 id="question">问题（Question）</h2>
+<p>面试官问“如何把图像中的物体变成机器人可用的操作目标”时，不能只列SAM、Depth Anything或Where2Act模型名。需要讲清：segmentation task到底是semantic、instance、panoptic还是promptable；depth是relative还是metric；mask/depth怎样对齐原图、相机和时间；keypoint为何必须有semantic identity和3D frame；affordance为何绑定primitive、orientation和state；以及这些perception proposal为什么仍需planner、IK、collision和controller gate。</p>
+<p>本节点建立的主链是：</p>
+<pre><code class="language-text">RGB + camera/preprocess identity
+  -&gt; task-typed segmentation
+  -&gt; relative or metric depth + validity
+  -&gt; registered mask-conditioned 3D surface
+  -&gt; semantic keypoint + visibility/covariance/frame
+  -&gt; primitive-conditioned point/orientation proposal
+  -&gt; reachability/IK/collision/controller gate
+  -&gt; episode trace and success predicate</code></pre>
+<h2 id="section-2">知识地图位置与边界</h2>
+<table><thead><tr><th>相邻节点</th><th>该节点负责</th><th>PER-012负责</th></tr></thead><tbody>
+<tr><td>PER-001</td><td>point/box/text schema与coordinate protocol</td><td>dense mask/depth/keypoint/affordance方法产生链</td></tr>
+<tr><td>PER-002</td><td>pinhole lift、intrinsics、depth validity、TF/time</td><td>depth model输出怎样满足metric lift前置条件</td></tr>
+<tr><td>PER-006</td><td>generic resize/crop/letterbox与camera lineage</td><td>SAM/Mask2Former/Depth Anything specific preprocess/postprocess</td></tr>
+<tr><td>PER-008</td><td>为什么选择point/box/mask/keypoint/affordance</td><td>五种代表方法的architecture/output/composition</td></tr>
+<tr><td>PER-009</td><td>Hungarian、negative、loss/reduction</td><td>只解释Mask2Former mask criterion，不重讲通用loss课</td></tr>
+<tr><td>PER-010</td><td>metric/denominator/protocol comparability</td><td>方法输出的task-specific metric字段</td></tr>
+<tr><td>PER-011</td><td>pseudo-label/calibration/leakage</td><td>Depth Anything teacher/pseudo-data只作来源，不重讲可靠性</td></tr>
+<tr><td>PER-013/014</td><td>point cloud/voxel/occupancy与3D grounding</td><td>本页止于depth surface/keypoint/affordance接口</td></tr>
+<tr><td>PER-015</td><td>reachability、collision、uncertainty、controller</td><td>本页不从proposal推出可执行或robot success</td></tr>
+</tbody></table>
+<h2 id="1-30-task-unit">1. 30秒直觉：先冻结Task与Unit，再谈模型</h2>
+<p>一个可靠的30秒回答是：</p>
+<div class="meta">我先冻结输出合同：semantic、instance、panoptic和promptable mask不等价；relative depth不能当米制深度。mask和metric depth对齐原图、内参及时间后才能反投影。操作层的keypoint必须带semantic ID、visibility和3D frame，affordance还绑定point、orientation、primitive与state。即使proposal高分，也必须经过reachability、IK、collision和controller；因此单模块mIoU、depth图或actionability都不能直接代表robot success。</div>
+<p>这段回答封住五种常见偷换：</p>
+<ol><li>一个<code>mask</code>字段被默认同时具备类别、实例和时间身份；</li><li>relative depth可视化被默认当真实米制距离；</li><li>无名point被默认当semantic keypoint；</li><li>“actionable”文本被默认当动作条件化affordance；</li><li>perception score被默认当closed-loop success。</li></ol>
+<h2 id="2-typed-dense-perception-record">2. Typed Dense Perception Record</h2>
+<h3 id="2-1-schema">2.1 最小Schema</h3>
+<pre><code class="language-json">{
+  &quot;sample_id&quot;: &quot;...&quot;,
+  &quot;image_id&quot;: &quot;...&quot;,
+  &quot;camera_id&quot;: &quot;...&quot;,
+  &quot;timestamp&quot;: &quot;...&quot;,
+  &quot;model_revision&quot;: &quot;checkpoint-sha256:...&quot;,
+  &quot;preprocess_revision&quot;: &quot;sha256:...&quot;,
+  &quot;task&quot;: &quot;semantic | instance | panoptic | promptable | relative_depth | metric_depth | semantic_keypoint | affordance&quot;,
+  &quot;prompt_or_primitive&quot;: null,
+  &quot;payload&quot;: &quot;mask | depth | keypoints | action_proposals&quot;,
+  &quot;coordinate_space&quot;: &quot;original_pixel | resized_pixel | camera_3d | target_3d&quot;,
+  &quot;unit&quot;: &quot;class_id | instance_id | relative | meter | normalized&quot;,
+  &quot;score_semantics&quot;: &quot;class | mask_quality | depth_uncertainty | visibility | success_likelihood&quot;,
+  &quot;validity_mask&quot;: null,
+  &quot;frame_transform_revision&quot;: null,
+  &quot;age_ms&quot;: 0
+}</code></pre>
+<h3 id="2-2-shape-semantics">2.2 Shape相同不等于Semantics相同</h3>
+<p>同一个<code>H×W</code>数组可能是class ID、instance ID、binary mask、relative depth或meter depth；同一个<code>[x,y]</code>可能是无名point、<code>mug_handle</code> semantic keypoint或<code>pull</code> contact proposal。只有payload而没有task、unit、frame和score semantics，接口一定会静默漂移。</p>
+<h2 id="3-segmentation-task">3. Segmentation四类Task</h2>
+<table><thead><tr><th>Task</th><th>预测单元</th><th>输出</th><th>两个同类物体</th><th>Stuff</th><th>操作系统常见用途</th></tr></thead><tbody>
+<tr><td>semantic</td><td>pixel→class</td><td>class score/map</td><td>合并</td><td>支持</td><td>区域语义、scene layout</td></tr>
+<tr><td>instance</td><td>object instance</td><td>mask+class+score</td><td>分开</td><td>通常非主目标</td><td>选定具体目标、crop/tracking seed</td></tr>
+<tr><td>panoptic</td><td>non-overlap segment</td><td>segment ID+category/isthing</td><td>thing分开</td><td>全覆盖</td><td>完整scene decomposition</td></tr>
+<tr><td>promptable</td><td>prompt-conditioned region</td><td>one/multiple binary masks+quality</td><td>取决于prompt</td><td>可返回</td><td>language/point/box驱动轮廓</td></tr>
+</tbody></table>
+<p>两个mug在semantic map里都可标成<code>mug</code>，但操作“拿左边那个”需要instance identity；panoptic还需处理thing/stuff与segment merge；SAM prompt mask可能边界很好，却没有category label或跨帧instance ID。</p>
+<h3 id="3-1-task-metric">3.1 Task先于Metric</h3>
+<p>问“分割准确率多少”时，先反问：semantic mIoU、instance mask AP、panoptic PQ还是prompt-conditioned mask IoU？dataset、class set、thing/stuff、candidate policy、threshold、matching和denominator不同，数字不能横比。</p>
+<h2 id="4-mask2former-query-class-mask">4. Mask2Former：Query→Class+Mask</h2>
+<h3 id="4-1-pipeline">4.1 Pipeline</h3>
+<pre><code class="language-text">image -&gt; normalized/padded batch
+  -&gt; backbone + pixel decoder
+  -&gt; transformer queries with masked attention
+  -&gt; pred_logits [B,Q,C+1] + pred_masks [B,Q,H&#x27;,W&#x27;]
+  -&gt; Hungarian responsibility
+  -&gt; class + sigmoid-mask + Dice supervision
+  -&gt; semantic / instance / panoptic postprocess</code></pre>
+<p>固定代码允许同一架构打开三类inference分支，但并不意味着输出合同统一。semantic输出是class per pixel；instance输出保留ranked masks/instances；panoptic输出是non-overlap segment IDs与<code>category_id/isthing</code>。</p>
+<h3 id="4-2-criterion-assignment-loss">4.2 Criterion：Assignment不是Loss本身</h3>
+<div class="formula">\[
+\mathcal L_{\mathrm{seg}}
+=\lambda_{\mathrm{cls}}\mathcal L_{\mathrm{cls}}
++\lambda_{\mathrm{mask}}\mathcal L_{\mathrm{sigmoid}}
++\lambda_{\mathrm{dice}}\mathcal L_{\mathrm{dice}}.
+\]</div>
+<p>变量解释：classification监督matched query类别；sigmoid mask CE监督采样pixel；Dice关注区域overlap；λ来自runtime weight dictionary。直觉上，Hungarian先确定query负责哪个GT，再计算可微loss。实现映射：固定Mask2Former criterion明确调用sigmoid CE与Dice；它与OPD assistant-token CE完全不同。</p>
+<h3 id="4-3-semantic-inference">4.3 Semantic Inference</h3>
+<div class="formula">\[
+P_{c,h,w}=\sum_{q=1}^{Q}
+\operatorname{softmax}(l_q)_c\,
+\sigma\!\left(m_q(h,w)\right).
+\]</div>
+<p>变量解释：\(l_q\)是query class logits，\(m_q\)是mask logits，\(Q\)是query数量。每个query用“属于哪个类×覆盖哪些pixel”对semantic map投票。instance/panoptic还要冻结top-k、object threshold、overlap threshold、metadata与resize/postprocess顺序。</p>
+<h2 id="5-sam-promptable-mask-candidate">5. SAM：Promptable Mask Candidate</h2>
+<h3 id="5-1">5.1 输入输出合同</h3>
+<pre><code class="language-text">original image -&gt; image embedding
+point(+/- labels) OR box OR mask_input
+  -&gt; prompt encoder + mask decoder
+  -&gt; C original-resolution masks
+  -&gt; C predicted quality scores
+  -&gt; C x 256 x 256 low-resolution logits</code></pre>
+<p><code>multimask_output=true</code>意味着一个ambiguous click可返回多个合理candidate。因此SAM integration至少冻结：</p>
+<ul><li>prompt坐标在original还是resized image；</li><li>positive/negative point label；</li><li>box corner convention；</li><li>multimask选择policy；</li><li>mask threshold、component与hole policy；</li><li>category/instance/language binding；</li><li>temporal ID、observation age和resegment条件。</li></ul>
+<h3 id="5-2-predicted-quality-robot-success">5.2 Predicted Quality不是Robot Success</h3>
+<p>SAM score用于候选mask质量排序，不自动等于语义正确、接触面安全或机器人成功概率。若用它触发动作，需在独立task validation上验证calibration与risk–coverage，并继续过PER-015的reachability/collision/controller gate。</p>
+<h2 id="6-depth">6. Depth四种合同</h2>
+<table><thead><tr><th>类型</th><th>Unit/Ambiguity</th><th>可否直接Lift</th><th>必须记录</th></tr></thead><tbody>
+<tr><td>relative monocular</td><td>near/far结构，无meter contract</td><td>否</td><td>checkpoint、alignment policy、range</td></tr>
+<tr><td>metric monocular</td><td>训练域/range定义的metric output</td><td>有条件</td><td>unit、max depth、dataset、validity</td></tr>
+<tr><td>RGB-D/stereo sensor</td><td>设备unit、invalid code与noise</td><td>有条件</td><td>scale、intrinsics、registration、timestamp</td></tr>
+<tr><td>aligned relative</td><td>reference拟合scale/shift</td><td>仅fit域内</td><td>fit split、scale/shift、residual</td></tr>
+</tbody></table>
+<p>若用reference将relative prediction对齐：</p>
+<div class="formula">\[
+\hat d_m(u,v)=s\,\hat d_r(u,v)+t.
+\]</div>
+<p>变量解释：\(s,t\)是从合法reference拟合的scale/shift，\(\hat d_r\)是relative prediction，\(\hat d_m\)只是aligned metric candidate。直觉上，排序正确不等于距离正确。实现映射：Depth Anything relative code不会自动执行该对齐，必须保存fit split、reference和residual。</p>
+<h2 id="7-depth-anything-v2">7. Depth Anything V2代码合同</h2>
+<h3 id="7-1-relative-path">7.1 Relative Path</h3>
+<p>固定代码为DINOv2 intermediate features→DPT fusion head→ReLU dense depth。<code>infer_image</code>默认518；保持aspect ratio、lower-bound resize、保证14的倍数、ImageNet normalize，最后双线性插值回original \(H\times W\)。README把主模型称为relative depth models，因此“输出shape与原图相同”不等于“单位为米”。</p>
+<h3 id="7-2-metric-path">7.2 Metric Path</h3>
+<p>固定metric path使用单独代码与checkpoint：head末端Sigmoid，forward乘<code>max_depth</code>，默认20.0。对同一raw head output 0.8，<code>max_depth=20/80</code>会得到16/64；所以checkpoint family、训练dataset、range与unit必须进入artifact identity。把relative checkpoint塞入metric code或手动乘常数不构成metric calibration。</p>
+<h3 id="7-3-preprocess-postprocess-trap">7.3 Preprocess与Postprocess Trap</h3>
+<p>把prediction resize回原图只恢复array shape，不会自动修复：</p>
+<ul><li>relative scale/shift；</li><li>resized image与camera intrinsics关系；</li><li>RGB-depth registration；</li><li>thin structure的双线性混合；</li><li>transparent/reflective surface；</li><li>invalid/uncertainty mask；</li><li>temporal staleness。</li></ul>
+<h3 id="7-4-license-artifact">7.4 License也属于Artifact</h3>
+<p>固定README声明Small model为Apache-2.0，Base/Large/Giant models为CC-BY-NC-4.0；code LICENSE为Apache-2.0。部署或分发必须分别冻结source、checkpoint hash与checkpoint license。</p>
+<h2 id="8-mask-metric-depth-3d-surface">8. Mask+Metric Depth→3D Surface</h2>
+<h3 id="8-1-pixel-backprojection">8.1 Pixel Backprojection</h3>
+<p>对original pixel \((u,v)\)、metric depth \(d\)与intrinsics \(K\)：</p>
+<div class="formula">\[
+X_c=d\,K^{-1}
+\begin{bmatrix}u\\v\\1\end{bmatrix}.
+\]</div>
+<p>变量解释：\(X_c\)是camera-frame 3D point，\(d\)必须与该original pixel、camera、timestamp和intrinsics匹配。直觉上，depth unit或pixel transform错一点，3D位置会沿ray整体漂移。实现映射：Depth Anything output还需unit/range/validity，随后才进入PER-002的TF与target frame。</p>
+<h3 id="8-2-mask-conditioned-surface">8.2 Mask-conditioned Surface</h3>
+<div class="formula">\[
+\mathcal P_M=\left\{
+d(u,v)K^{-1}[u,v,1]^\top
+\mid M(u,v)=1,\ d(u,v)\ \mathrm{valid}
+\right\}.
+\]</div>
+<p>变量解释：\(M\)是选定instance/prompt mask，只有valid depth pixel进入surface。边界pixel若混入background depth会产生飞点；应记录erode policy、boundary band、robust statistic、outlier removal与保留比例。</p>
+<h3 id="8-3-weakest-link">8.3 Weakest-link反例</h3>
+<p>若mask完全正确，但depth整体scale×2，则所有3D surface point沿ray距离×2；2D IoU仍可满分，机器人接触点却完全错误。这说明“segmentation高分”不能替代3D和action evaluation。</p>
+<h2 id="9-kpam-semantic-keypoint-task-state">9. kPAM：Semantic Keypoint是可解释Task State</h2>
+<h3 id="9-1-factorization">9.1 四段Factorization</h3>
+<pre><code class="language-text">instance segmentation
+  -&gt; semantic 3D keypoint detection
+  -&gt; optimization-based robot action planning
+  -&gt; local dense-geometry execution</code></pre>
+<p>kPAM不是把物体压成若干无名点，而是用<code>mug_handle</code>、<code>rim</code>等semantic anchors表达category-level task geometry。相同坐标若semantic ID不同，规划含义就不同。</p>
+<h3 id="9-2-planning-contract">9.2 Planning Contract</h3>
+<div class="formula">\[
+T^*=\arg\min_T\sum_j w_j c_j(Tk_j)
+\quad\mathrm{s.t.}\quad g_r(Tk_{1:J})\le 0.
+\]</div>
+<p>变量解释：\(k_j\in\mathbb R^3\)是semantic keypoint，\(T\)是candidate transform，\(c_j\)是几何cost，\(g_r\)是关系/可行性constraint，\(w_j\)可结合visibility/covariance。实现映射：具体detector、private dependency、planner和execution需逐revision审计；公式只表达已冻结的几何合同。</p>
+<h3 id="9-3-record">9.3 最小Record</h3>
+<pre><code class="language-json">{
+  &quot;semantic_id&quot;: &quot;mug_handle&quot;,
+  &quot;instance_id&quot;: &quot;...&quot;,
+  &quot;category&quot;: &quot;mug&quot;,
+  &quot;coordinates&quot;: [0.1, -0.2, 0.7],
+  &quot;frame&quot;: &quot;camera | base | object&quot;,
+  &quot;visibility&quot;: true,
+  &quot;covariance&quot;: [[0.0, 0.0, 0.0]],
+  &quot;timestamp&quot;: &quot;...&quot;
+}</code></pre>
+<p>只有<code>[[x,y]]</code>无法支持category-level 3D planning。</p>
+<h2 id="10-where2act-affordance">10. Where2Act：Affordance是条件成功分布</h2>
+<h3 id="10-1-model-components">10.1 Model Components</h3>
+<p>固定3D model包含：</p>
+<ul><li>PointNet++ point feature；</li><li>ActionScore：每点actionability；</li><li>Actor：给定point feature提出6D orientation/action；</li><li>Critic：评估point+orientation interaction success；</li><li>simulation interaction与online sampling，面向articulated object的push/pull。</li></ul>
+<h3 id="10-2-score-semantics">10.2 Score Semantics</h3>
+<div class="formula">\[
+A(p,R\mid \pi,s,e)
+=\Pr(\mathrm{success}\mid p,R,\pi,s,e).
+\]</div>
+<p>变量解释：\(p\)是contact point，\(R\)是orientation，\(\pi\)是primitive，\(s\)是object/environment state，\(e\)是训练/eval protocol。直觉上，同一点对push与pull、不同gripper或door state的actionability可相反。实现映射：固定score不自动跨robot/primitive/domain校准。</p>
+<h3 id="10-3-proposal-controller-action">10.3 Proposal不是Controller Action</h3>
+<p>从affordance proposal到执行仍缺：3D frame、tool/end-effector transform、IK、reachability、collision、force/trajectory、controller rate、replan与recovery。PER-012止于proposal；PER-015负责action gate。</p>
+<h2 id="11-typed-composition">11. 端到端Typed Composition</h2>
+<pre><code class="language-text">language / point / box prompt
+  -&gt; SAM candidate masks OR Mask2Former task-specific segments
+  -&gt; explicit instance/category selection
+  -&gt; metric Depth Anything checkpoint OR registered sensor depth
+  -&gt; valid mask-conditioned 3D surface
+  -&gt; semantic keypoint detector + covariance/frame
+  -&gt; primitive-conditioned contact/orientation proposals
+  -&gt; planner/IK/collision/controller
+  -&gt; episode success/failure trace</code></pre>
+<p>每个artifact都要保存upstream ID：mask必须能追到prompt/model，surface能追到mask/depth/camera，keypoint能追到surface/semantic model，affordance能追到primitive/state，action能追到planner/controller revision。否则无法定位first divergence。</p>
+<h2 id="12-objective-metric">12. Objective与Metric对照</h2>
+<table><thead><tr><th>输出</th><th>训练/预测单元</th><th>代表Metric</th><th>不等价于</th></tr></thead><tbody>
+<tr><td>semantic mask</td><td>class per pixel/query mixture</td><td>mIoU/pixel accuracy</td><td>instance AP、PQ、robot contact</td></tr>
+<tr><td>instance mask</td><td>ranked instance masks</td><td>mask AP/AR</td><td>semantic mIoU、tracking</td></tr>
+<tr><td>panoptic</td><td>non-overlap segments</td><td>PQ/SQ/RQ</td><td>arbitrary overlap proposals</td></tr>
+<tr><td>promptable mask</td><td>prompt-conditioned candidate</td><td>mask IoU/quality</td><td>semantic/task success</td></tr>
+<tr><td>relative depth</td><td>aligned/rank structure</td><td>aligned AbsRel/δ1，绑定alignment</td><td>meter error</td></tr>
+<tr><td>metric depth</td><td>valid metric pixels</td><td>AbsRel/RMSE/δ threshold</td><td>3D/robot success</td></tr>
+<tr><td>semantic keypoint</td><td>named visible anchors</td><td>PCK/3D distance，绑定frame</td><td>naked point hit</td></tr>
+<tr><td>affordance</td><td>point+orientation+primitive</td><td>interaction success/ranking</td><td>objectness、reachability</td></tr>
+</tbody></table>
+<p>任何数字都继承PER-010 protocol identity：dataset/split、checkpoint、preprocess、task、postprocess、matching、valid denominator、threshold、aggregation和sample unit。</p>
+<h2 id="13-failure-taxonomy">13. Failure Taxonomy与诊断顺序</h2>
+<table><thead><tr><th>Failure</th><th>表面症状</th><th>首查字段</th><th>最小Probe</th></tr></thead><tbody>
+<tr><td>task mismatch</td><td>同类对象被合并</td><td>semantic/instance/panoptic</td><td>two-mug case</td></tr>
+<tr><td>prompt ambiguity</td><td>SAM候选不稳定</td><td>prompt+multimask policy</td><td>same-click candidates</td></tr>
+<tr><td>boundary leakage</td><td>surface出现飞点</td><td>mask edge/depth discontinuity</td><td>erode vs raw surface</td></tr>
+<tr><td>depth scale</td><td>方向对、距离错</td><td>relative/metric/checkpoint/range</td><td>known-distance plane</td></tr>
+<tr><td>registration</td><td>RGB对、depth偏</td><td>camera IDs/extrinsics/timestamp</td><td>RGB-depth edge overlay</td></tr>
+<tr><td>keypoint swap</td><td>rim/handle互换</td><td>semantic ID/category mapping</td><td>same-coordinate labels</td></tr>
+<tr><td>keypoint uncertainty</td><td>planner抖动</td><td>visibility/covariance</td><td>occlusion sweep</td></tr>
+<tr><td>primitive mismatch</td><td>pull点用于push</td><td>primitive/state/model ID</td><td>same-point push/pull</td></tr>
+<tr><td>frame/time</td><td>proposal正确、执行偏移</td><td>TF/timestamp/age</td><td>roundtrip+latency trace</td></tr>
+<tr><td>controller reject</td><td>高score但不可达</td><td>IK/collision/tool limits</td><td>planner rejection reasons</td></tr>
+</tbody></table>
+<p>推荐顺序：task/schema→pre/postprocess→model/checkpoint→depth unit/validity→camera/frame/time→semantic identity→primitive/state→planner/controller→episode metric。不要在depth unit未知时先调IK。</p>
+<h2 id="14-fail-closed-pseudocode">14. Fail-closed Pseudocode</h2>
+<pre><code class="language-python">def propose_action(image, camera, prompt, primitive, models, policy):
+    # 1. Every model and transform must have an immutable identity.
+    assert models.segmenter.sha256 and models.depth.sha256
+    assert camera.intrinsics_sha256 and camera.timestamp is not None
+
+    # 2. Keep segmentation task semantics; never collapse all outputs into &quot;mask&quot;.
+    segments = models.segmenter.predict(image, prompt=prompt)
+    target = select_segment(segments, task=policy.segmentation_task)
+    if target is None or target.score &lt; policy.mask_threshold:
+        return reject(&quot;no_valid_segment&quot;)
+
+    # 3. 3D lift requires metric depth, valid pixels and matching original-image geometry.
+    depth = models.depth.predict(image)
+    assert depth.unit == &quot;meter&quot; and depth.checkpoint_family == &quot;metric&quot;
+    valid = target.mask &amp; depth.validity_mask
+    if valid.sum() &lt; policy.min_surface_pixels:
+        return reject(&quot;insufficient_metric_surface&quot;)
+
+    # 4. Backproject and transform at the same camera timestamp.
+    surface = backproject(valid, depth.values, camera.intrinsics)
+    surface = transform_at_timestamp(surface, camera.tf_revision, camera.timestamp)
+
+    # 5. Semantic keypoints keep identity, visibility and covariance.
+    keypoints = models.keypoint.predict(target, surface)
+    if any((not k.visible) or k.covariance &gt; policy.max_cov for k in keypoints):
+        return reject(&quot;uncertain_semantic_keypoint&quot;)
+
+    # 6. Affordance proposals are conditioned on primitive and current state.
+    proposals = models.affordance.propose(surface, primitive, camera.robot_state)
+
+    # 7. Perception scores never bypass reachability, IK, collision or controller gates.
+    feasible = planner_filter(proposals, keypoints, camera.robot_state)
+    return feasible if feasible else reject(&quot;no_feasible_action&quot;)</code></pre>
+<p>这段是目标合同，不是本地实现事实。真实系统还需checkpoint/license、depth uncertainty、mask candidate policy、tool geometry、planner/IK/controller revision与episode logger。</p>
+<h2 id="15-opd-affordance-point">15. 本地OPD：名字是Affordance，输出仍是Point</h2>
+<h3 id="15-1">15.1 真实链</h3>
+<pre><code class="language-text">ShareRobot affordance {x,y} / trajectory points
+  -&gt; scale to 0..1000
+  -&gt; prompt: actionable affordance location
+  -&gt; target: &lt;point&gt;[[x,y], ...]&lt;/point&gt;
+  -&gt; point/box/text parser and static metric</code></pre>
+<h3 id="15-2-audit">15.2 五文件Audit</h3>
+<ol><li><code>build_prompt_pool.py</code>把<code>affordance.x/y</code>变成单个<code>gt_points</code>与<code>task_type=affordance_pointing</code>；无primitive/orientation/state/success head。</li><li><code>point_data_only.py</code>最终调用<code>point_answer(scaled)</code>；prompt语义不改变representation。</li><li><code>build_expert_mixes_seed0.py</code>与<code>eval_qwen_vl_raw_holdout.py</code>只有point/box/text route/parser/metric。</li><li>五个固定文件对<code>keypoint/segment_anything/sam_model/mask_rle/polygon/&lt;mask&gt;/depth</code>均为0匹配。</li></ol>
+<p>静态zero-match只覆盖选定路径，不排除远端、历史或未归档artifact。但在证据出现前，安全结论是“affordance-labelled point supervision”，不是dense perception stack。</p>
+<h2 id="16-project-truth-boundary">16. Project Truth Boundary</h2>
+<table><thead><tr><th>项目</th><th>当前可以挂钩</th><th>当前不能说</th><th>补强Artifact</th></tr></thead><tbody>
+<tr><td>OPD</td><td>affordance-labelled point、point/box parser/static holdout</td><td>mask/depth/keypoint/dense affordance/robot result</td><td>model/checkpoint/raw dense outputs、3D/episode bundle</td></tr>
+<tr><td>WAM</td><td>可讨论future frame是否保存contact geometry</td><td>已训练seg/depth auxiliary或其提升</td><td>local head/config/loss curve/matched eval</td></tr>
+<tr><td>Robot Harness</td><td>typed perception result可进入tool/scope/cancel gate</td><td>已运行视觉模型或真实3D controller</td><td>perception server、controller trace、episodes</td></tr>
+<tr><td>OpenPiVLA</td><td>end-to-end image→action可比较显式dense intermediate</td><td>已集成SAM/depth/keypoint</td><td>code/checkpoint/ablation/rollout</td></tr>
+<tr><td>UWM</td><td>future observation可作为geometry diagnostic</td><td>learned affordance map或real transfer</td><td>raw predictions/checkpoints/episodes</td></tr>
+</tbody></table>
+<p>公共方法只能证明机制可解释，不证明已被个人项目集成。Git文件存在也不能替代候选人逐文件ownership确认。</p>
+<h2 id="17">17. 面试回答模板、追问与危险答案</h2>
+<h3 id="17-1">17.1 两分钟结构化回答</h3>
+<div class="meta">我把操作感知拆成task-typed segmentation、metric geometry、semantic anchors和action-conditioned proposal。Mask2Former可统一semantic/instance/panoptic architecture，但各分支postprocess与metric不同；SAM给prompt-conditioned mask candidates和quality，不自带类别或robot-success校准。Depth Anything V2的relative路径是ReLU dense map，metric路径是独立Sigmoid×max-depth代码和checkpoint，resize回原图不等于恢复米制几何。只有metric depth与mask、内参、时间对齐后才能形成3D surface。kPAM式keypoint还要semantic ID、visibility、frame；Where2Act式affordance绑定point、orientation、primitive和state。最后必须过IK、collision和controller。本地OPD目前只是affordance-labelled point target，不能称完整感知栈。</div>
+<h3 id="17-2">17.2 高频追问</h3>
+<ol><li>semantic、instance、panoptic和promptable mask分别解决什么？</li><li>Mask2Former为什么能用同一架构做三种task，但metric仍不同？</li><li>Hungarian assignment与mask loss怎样分工？</li><li>SAM multimask该怎样选？predicted quality代表什么？</li><li>relative depth为何不能直接反投影？</li><li><code>max_depth</code>改变会怎样影响metric output？</li><li>resize回原图为何不等于几何对齐？</li><li>mask边界为何容易产生3D飞点？</li><li>semantic keypoint比普通point多哪些字段？</li><li>kPAM如何把keypoint变成planning cost/constraint？</li><li>Where2Act的ActionScore、Actor和Critic各负责什么？</li><li>affordance为何必须绑定primitive和state？</li><li>proposal高分为何仍不能执行？</li><li>OPD的affordance point和Where2Act有什么本质差别？</li></ol>
+<h3 id="17-3">17.3 危险答案与修正</h3>
+<table><thead><tr><th>危险答案</th><th>问题</th><th>安全修正</th></tr></thead><tbody>
+<tr><td>“有mask就知道是哪个物体”</td><td>prompt mask未必有class/instance ID</td><td>冻结task与binding</td></tr>
+<tr><td>“SAM quality高就能抓”</td><td>score未对robot success校准</td><td>加task validation和action gate</td></tr>
+<tr><td>“Depth Anything输出就是米”</td><td>relative/metric路径混用</td><td>绑定metric checkpoint、range和unit</td></tr>
+<tr><td>“resize回原图就对齐相机”</td><td>array shape≠camera registration</td><td>对齐intrinsics/extrinsics/time</td></tr>
+<tr><td>“一个point就是keypoint”</td><td>缺semantic ID/frame/visibility</td><td>用typed keypoint record</td></tr>
+<tr><td>“actionable point就是affordance model”</td><td>缺primitive/orientation/state/success</td><td>明确point supervision边界</td></tr>
+<tr><td>“affordance score高就执行”</td><td>无IK/collision/controller</td><td>fail-closed planner gate</td></tr>
+<tr><td>“我实现了完整OPD操作感知”</td><td>selected code只有point/box/text</td><td>只陈述直接文件证据与ownership缺口</td></tr>
+</tbody></table>
+<h2 id="18-checklist">18. 白板Checklist与练习标准</h2>
+<p>能够不看材料完成：</p>
+<ul><li>segmentation四类task与输出/metric；</li><li>Mask2Former class+mask query、assignment和三项loss；</li><li>SAM prompt/multimask/quality边界；</li><li>relative/metric/sensor/aligned depth四类合同；</li><li>Depth Anything V2 relative与metric代码差异；</li><li>mask+metric depth反投影与边界飞点；</li><li>semantic keypoint record和kPAM planning公式；</li><li>Where2Act ActionScore/Actor/Critic与条件score；</li><li>完整typed composition和failure诊断顺序；</li><li>OPD point-only真实性边界；</li><li>两分钟回答与至少六个追问。</li></ul>
+<p><code>drafted</code>不等于掌握。只有真实口述、追问与纠错后才能改变题卡状态；本轮不创建<code>coaching_state.md</code>。</p>
+<h2 id="19">19. 结论与下一步</h2>
+<p>Dense perception对机器人有价值的前提不是“模型更强”，而是task、unit、frame、time、score和downstream gate全都可追溯。Segmentation提供区域，metric depth提供几何，semantic keypoint提供可解释task state，primitive-conditioned affordance提供候选交互；任何一层语义或坐标漂移都会让后续模块失效。</p>
+<p>本地OPD当前最准确的结论仍是affordance-labelled point supervision和point/box/text静态评估；没有证据支持SAM/Mask2Former、relative/metric depth、semantic keypoint、Where2Act式head或robot闭环。</p>
+<p><code>VLA-PER-012</code> source/knowledge/card已在独立bounded slices同步，题卡保持<code>unseen</code>。下一bounded slice只冻结<code>VLA-PER-013</code> point-cloud/voxel/BEV/occupancy representation source；不生成knowledge/card，不创建<code>coaching_state.md</code>，不改变任何mastery。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_06_per012_segmentation_depth_keypoint_affordance_source_freeze.html">PER-012 Segmentation / Depth / Keypoint / Affordance Source Freeze</a>：固定论文/代码revision、SHA、license、本地OPD audit与deterministic probes。</li><li>Cheng et al., <a href="https://arxiv.org/abs/2112.01527v3">Mask2Former v3</a>；<a href="https://github.com/facebookresearch/Mask2Former/tree/9b0651c6c1d5b3af2e6da0589b719c514ec0d69a">official repository@9b0651c</a>。</li><li>Kirillov et al., <a href="https://arxiv.org/abs/2304.02643v1">Segment Anything v1</a>；<a href="https://github.com/facebookresearch/segment-anything/tree/dca509fe793f601edb92606367a655c15ac00fdf">official repository@dca509f</a>。</li><li>Yang et al., <a href="https://arxiv.org/abs/2406.09414v2">Depth Anything V2 v2</a>；<a href="https://github.com/DepthAnything/Depth-Anything-V2/tree/a561b849ebae10a6f5ef49e26c83cbbcd36c71bf">official repository@a561b84</a>。</li><li>Gao &amp; Tedrake, <a href="https://arxiv.org/abs/1903.06684v2">kPAM v2</a>；<a href="https://github.com/weigao95/kPAM/tree/7214936b619527aee3b02d5306ada15decb95140">official repository@7214936</a>。</li><li>Mo et al., <a href="https://arxiv.org/abs/2101.02692v2">Where2Act v2</a>；<a href="https://github.com/daerduoCarey/where2act/tree/1daf1a24f7a372599b211108fa851f7ec3581330">official repository@1daf1a2</a>。</li><li><a href="vol_06_per002_3d_lift_frame.html">PER-002 3D Lift / Frame</a>、<a href="vol_06_per008_representation_choice.html">PER-008 Representation Choice</a>、<a href="vol_06_per010_grounding_metric_parser_protocol.html">PER-010 Metric / Parser</a> 与 <a href="vol_06_per011_pseudo_label_teacher_noise_calibration_leakage.html">PER-011 Teacher Noise / Calibration / Leakage</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>。</li></ol>
+</article></body></html>

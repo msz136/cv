@@ -1,0 +1,39 @@
+{
+  "artifact": "knowledge/vol_06_per008_representation_choice.md",
+  "html": "knowledge/vol_06_per008_representation_choice.html",
+  "source_freeze": "sources/vol_06_per008_representation_choice_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / VLA-PER-008 / source_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "5ACBDCDEE6C46476C8847F6DF31DB09891C1B2EAB3B3E3033053325830ED7DAE",
+  "question_ids": [
+    "VLA-PER-008"
+  ],
+  "checks": {
+    "source_gate": "PASS WITH WARNING (RoboPoint v1, Segment Anything v1, kPAM v2, Where2Act v2, four pinned repositories and five local OPD files are frozen; Where2Act pinned commit lacks a LICENSE file and local runtime evidence remains incomplete)",
+    "minimum_sufficient_decision": "PASS (representation choice starts from downstream required fields and jointly considers labeling, inference, conversion, staleness and downstream loss rather than ranking output density)",
+    "representation_contracts": "PASS (point set, box, mask, semantic keypoints and action-conditioned affordance have distinct required fields, uncertainty and validity semantics)",
+    "point_keypoint_affordance_boundary": "PASS (semantic ID/frame/covariance and primitive/tool/state/direction/horizon fields prevent coordinate-shape equivalence claims)",
+    "box_mask_non_equivalence": "PASS (half-open mask-to-box formula, 5x5 deterministic probe and box-to-mask new-prediction boundary are explicit)",
+    "uncertainty_and_multimodality": "PASS (point modes, pre-NMS boxes, SAM multimask, keypoint visibility/covariance and affordance score semantics are retained with fail-closed validity)",
+    "typed_manifest_and_pseudocode": "PASS (shared image/camera/time/revision/score fields, type-specific payloads, conversion provenance and a consumer-first selection gate are specified)",
+    "public_method_interfaces": "PASS WITH WARNING (RoboPoint, SAM, kPAM and Where2Act native inputs/outputs are compared without treating their paper metrics as matched representation evidence)",
+    "local_opd_boundary": "PASS WITH WARNING (five local files support affordance-labelled point supervision and point/box/text generation/scoring; no local mask, semantic-keypoint, dense actionability, controller calibration or robot episode is asserted)",
+    "matched_evaluation_design": "PASS (task/data/compute/consumer controls, native parser evaluation, conversion loss, systems cost, invalid cases and downstream outcomes are separated; metric details remain assigned to PER-010)",
+    "failure_and_interview_readiness": "PASS (task sufficiency, semantic collapse, geometry, ambiguity, conversion, temporal, score, parser and project-claim failures lead to a source-first diagnostic order and oral answer template)",
+    "cross_volume_dedup": "PASS (PER-001 coordinate/parser, PER-002 3D lift/frame, PER-006 image lineage, PER-007 detection, PER-009 loss, PER-010 metrics, PER-012 concrete methods and PER-015 action gate remain separate)",
+    "project_truth_boundary": "PASS (public method contracts, local static evidence and absent controller/runtime evidence are clearly separated)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, twenty H2 including the TOC heading, seventeen H3, ten tables, seven code blocks, four formula blocks, canonical/HTML/review SHA synchronized, required palette/serif/sticky 260px TOC/900px breakpoint/print rules present, and zero formula-em or control-character issues)",
+    "browser_visual_check": "BLOCKED (the previously confirmed in-app Browser file:// policy restriction remains; static checks do not substitute for desktop and narrow visual QA)",
+    "question_card": "PASS WITH WARNING (one VLA-PER-008 atomic card is synchronized and counted globally; it remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized VLA-PER-008 atomic card unseen until a real oral drill.",
+    "Archive any actual local mask, semantic-keypoint or dense affordance head/schema/parser artifact before claiming that pipeline exists.",
+    "Add primitive, tool/gripper, state, direction, horizon and score-calibration fields before calling an affordance point executable.",
+    "Run a matched downstream representation comparison and archive controller/reachability evidence before claiming superiority or robot success.",
+    "Do not create coaching_state.md or change mastery before a real oral drill."
+  ],
+  "next": "PER-009 source+knowledge+card are synchronized and unseen; generate only the PER-010 metric/parser source freeze next."
+}

@@ -1,0 +1,50 @@
+{
+  "artifact": "sources/vol_05_eval008_perception_action_controller_recovery_failure_taxonomy_source_freeze.md",
+  "html": "sources/vol_05_eval008_perception_action_controller_recovery_failure_taxonomy_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-EVAL-008 / knowledge_drafted / card_1_of_1_unseen / WARN",
+  "verdict": "WARN",
+  "source_sha256": "580ac70922472453c8806265b2fd4bae8dad7881bad3da2e8f211c870e1f37b0",
+  "coverage": {
+    "knowledge_id": "VLA-EVAL-008",
+    "topic": "perception, action-interface, controller and recovery failure taxonomy",
+    "public_source_groups_checked": 6,
+    "project_inventories_checked": 5,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "nasa_fmeca": "GSFC-HDBK-8004 Baseline / change 0 / 2024-08-20",
+    "sentinel": "arXiv 2410.04640 / commit 6dc89ca4cb30f75ce834811c2d1b31f7ffadf7b5",
+    "aha": "arXiv 2410.00371 / commit 0d39c0591566ddaf997be5822f3dead8e08501aa",
+    "reflect": "arXiv 2306.15724 / commit 0ac7458735fba606151df851491124486dc8b489",
+    "recovery_rl": "arXiv 2010.15920v2 / commit 084c968538850e82776564e07b9dcdffca369936",
+    "ros2_control": "commit e4ebcc352d9aeb69969308428b051bdd3105b88f"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one EVAL-008 source freeze, one knowledge node and one unseen atomic card; EVAL-009 deferred)",
+    "source_freeze": "PASS (paper/official-code revisions, raw response/blob hashes and licenses recorded)",
+    "fmea_boundary": "PASS (failure mode/effect/risk ledger used as method, not VLA-specific truth)",
+    "first_verified_divergence": "PASS (earliest verified deviation separated from root cause)",
+    "taxonomy": "PASS (perception, policy/action, action interface, controller/execution, recovery and protocol/scorer layers separated)",
+    "runtime_detection": "PASS (erratic action and no-progress detectors are complementary; alarm is not cause)",
+    "causal_attribution": "PASS (verified-state replacement, sentinel roundtrip, identical-command replay and fix/rerun gates)",
+    "recovery_boundary": "PASS (detect, trigger, recovery action, verification and outcome separated)",
+    "metrics": "PASS (precision, recall, delay, false alarms and eligible/triggered/recovered denominators covered)",
+    "project_truth_boundary": "PASS (all five projects retain symptom/trace limits; no root cause or recovery result promoted)",
+    "canonical_sha": "PASS (Markdown SHA matches HTML metadata and review JSON)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, twelve H2, five H3, three tables, three code blocks and three formula blocks)",
+    "math_delimiters": "PASS (three display blocks matched; zero formula em nodes)",
+    "local_links": "PASS (all relative local references resolve after downstream render)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Collect layer-aligned raw traces and matched interventions before confirming any project root cause.",
+    "For WAM, recover checkpoint binaries, targets, controller semantics and fix/rerun episodes before confirming gripper or high-sigma hypotheses.",
+    "For OpenPiVLA and OPD, close parser/normalizer/scorer bridges before labeling failures as policy or perception capability.",
+    "Do not create coaching_state.md until a real oral response is recorded."
+  ],
+  "next": "Proceed only to VLA-EVAL-009 raw predictions, episode trace, video and recomputable summary; keep VLA-EVAL-008 WARN/unseen."
+}

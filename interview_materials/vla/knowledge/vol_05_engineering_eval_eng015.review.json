@@ -1,0 +1,52 @@
+{
+  "artifact": "knowledge/vol_05_engineering_eval_eng015.md",
+  "html": "knowledge/vol_05_engineering_eval_eng015.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / VLA-ENG-015 / knowledge_17_of_44 / card_1_of_1_unseen",
+  "verdict": "WARN",
+  "source_sha256": "7B14B98A021F86C08F1B86DAE9A3FBFC9FED4615B6530200082345978665CEDD",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 16,
+    "new_nodes": 1,
+    "total_drafted_nodes": 17,
+    "covered_ids": ["VLA-ENG-015"],
+    "drafted_cards_for_new_nodes": 1,
+    "practice_state": "unseen",
+    "difficulty": "L2",
+    "priority": "P1"
+  },
+  "source_scope": {
+    "source_freeze": "sources/vol_05_eng015_activation_offload_source_freeze.html",
+    "official_docs": [
+      "PyTorch 2.13 torch.utils.checkpoint",
+      "PyTorch 2.13 FSDP",
+      "DeepSpeed activation-checkpointing.rst at de1846cf6fbdd6f1c2adf046f319791ca78cc547",
+      "DeepSpeed zero3.rst at de1846cf6fbdd6f1c2adf046f319791ca78cc547"
+    ],
+    "papers": ["ZeRO-Offload arXiv:2101.06840", "ZeRO-Infinity arXiv:2104.07857"],
+    "local_project_hooks": ["sources/vol_05_local_artifact_gate_eng004_006.html"]
+  },
+  "checks": {
+    "bounded_slice": "PASS (one VLA-ENG-015 knowledge node and one atomic card are drafted; ENG-016 remains deferred)",
+    "mechanism_separation": "PASS WITH WARNING (activation recompute, FSDP CPU offload, ZeRO CPU offload and ZeRO-Infinity are kept as separate state/lifecycle contracts)",
+    "activation_checkpointing": "PASS WITH WARNING (memory trade-off, RNG preservation, non-reentrant recommendation and purity risk sourced)",
+    "offload_semantics": "PASS WITH WARNING (FSDP parameter/gradient CPU ownership and DeepSpeed CPU/NVMe state hierarchy sourced; project execution not inferred)",
+    "formula_and_protocol": "PASS (memory ledger, step-time decomposition, relative-error metric and matched A/B fields explained as engineering contracts)",
+    "pseudocode": "PASS (commented A/B and fixed-next-batch verification order; backend APIs remain placeholders)",
+    "project_truth_boundary": "PASS (UWM/OPD config/report/binary/resume/throughput boundaries preserved)",
+    "minimum_module_contract": "PASS (intuition, definitions, formulas, implementation mapping, trade-offs, bad cases, project hook and follow-ups included)",
+    "html_static_validation": "PASS (source SHA, one H1, fifteen H2, twelve H3, three tables, two commented pseudocode blocks and four formula blocks)",
+    "local_links": "PASS (source freeze and ENG-004..006 artifact gate relative links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Collect matched activation-checkpoint/offload A/B with fixed effective batch, profiler wait buckets and peak memory timeline.",
+    "Collect checkpoint binary plus optimizer/scheduler/scaler/RNG/sampler lineage and fixed-next-batch resume smoke.",
+    "Keep CPU/NVMe bandwidth, overlap and throughput as workload-level measurements; do not infer from config or paper claims.",
+    "Keep VLA-ENG-015 card unseen until a real oral answer is recorded.",
+    "Keep ENG-016 student + multiple teachers deferred."
+  ],
+  "next": "Run a one-question oral drill for VLA-ENG-015 or collect the missing local A/B and resume artifacts."
+}

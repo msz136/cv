@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 Cosmos Policy 1 Epoch：本地证据冻结</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_04_cosmos_policy_1epoch_evidence_freeze.md">
+<meta name="aris:source-sha256" content="7c9c4ea2b317a00df72b1cb29457b1acd112066c01aa25bc6e750f8d0de91aa6">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>7c9c4ea2b317a00df72b1cb29457b1acd112066c01aa25bc6e750f8d0de91aa6</code>；生成自：<code>interview_materials\vla\sources\vol_04_cosmos_policy_1epoch_evidence_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2-run-contract">2. 运行合同（Run Contract）</a></li><li><a href="#3-run-ledger">3. Run ledger：两条主线与一个保存接口失败</a></li><li><a href="#3-1-save-2k-cpu-cgroup-oom-step-1903">3.1 save-2k 主线：CPU cgroup OOM，中断于 step 1903</a></li><li><a href="#3-2-no-cycle-step-1500">3.2 no-cycle 修复主线：step 1500 保存阶段失败</a></li><li><a href="#4">4. 指标与评估边界</a></li><li><a href="#4-1">4.1 可以写进面试回答的事实</a></li><li><a href="#4-2-1-epoch">4.2 不可以写成这次 1 epoch 结果的数字</a></li><li><a href="#5-evidence-classification">5. Evidence classification 与面试叙事</a></li><li><a href="#6">6. 下一步闭环条件</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 04 Cosmos Policy 1 Epoch：本地证据冻结</h1>
+<div class="meta">状态：<code>local_evidence_freeze / 1epoch_gate_not_closed / WARN</code> 复核日期：2026-07-21 证据来源：<code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval</code>（只读审计） Bounded slice：本页只冻结 Cosmos Policy / Predict2 RoboCasa 1 epoch 训练 gate 的运行合同、可观测指标、失败原因、checkpoint 与评估边界；不把远端路径、训练中间指标或官方 baseline 升格为完整本地结果，不改变题卡 <code>unseen</code> 或 ownership。</div>
+<h2 id="1">1. 结论先行</h2>
+<p>当前证据不能支持“完成了可加载的 1 epoch finetune checkpoint”这一表述。可支持的面试口径是：我按官方风格 Predict2 + T5 + RoboCasa 合同搭建了 8 卡 1 epoch gate，先定位到训练 loop 的 CPU 内存增长，再修复 dataloader 回卷；修复后的正式 run 能到第一个保存点，但在 DeepSpeed 调用 Cosmos <code>DiffusionModel.state_dict(destination=...)</code> 时因签名不兼容退出，因此没有可用于后续 eval 的完整 checkpoint。</p>
+<p>这一区分很重要：</p>
+<ol><li>训练合同和输入数据统计是 <code>local-direct</code>，可复核；</li><li>step 1900/1500 的 loss 是中断前快照，不是 epoch 终点指标；</li><li>1 epoch 训练的 checkpoint identity、终点 eval denominator 与本轮 rollout 都没有闭合；</li><li>已存在的官方 HF baseline <code>84/118</code> 和历史 1k/5k ablation 属于其他 run，不能拼接成这次 1 epoch 的结果。</li></ol>
+<h2 id="2-run-contract">2. 运行合同（Run Contract）</h2>
+<table><thead><tr><th>字段</th><th>证据</th><th>冻结值</th><th>边界</th></tr></thead><tbody>
+<tr><td>experiment</td><td><code>muxi_deepspeed_1epoch_20260623/run_contract.json</code></td><td><code>cosmos_predict2_2b_480p_robocasa_50_demos_per_task</code></td><td>官方风格实验名；不等于官方训练已完成</td></tr>
+<tr><td>base model</td><td><code>base_load_summary.json</code></td><td><code>hf://nvidia/Cosmos-Predict2-2B-Video2World/model-480p-16fps.pt</code>；715 keys，missing 0，unexpected 0</td><td>本地记录了 load summary；权重 binary 仍是远端路径引用</td></tr>
+<tr><td>data</td><td><code>dataset_runtime_summary.json</code></td><td>dataset_len <code>1,267,980</code>；demo episodes <code>1,199</code>；rollout episodes <code>1,291</code>；rollout steps <code>343,635</code>；unique commands <code>242</code></td><td>数据统计可复核；不替代 dataset revision/license manifest</td></tr>
+<tr><td>parallelism</td><td><code>run_contract.json</code></td><td>8 GPU DDP，batch/GPU <code>16</code>，global batch <code>128</code>，grad accumulation <code>1</code></td><td>由 world size 与 batch 合同推出 global batch</td></tr>
+<tr><td>optimization</td><td><code>run_contract.json</code></td><td>AdamW (<code>fused=False</code>)，<code>action_loss_multiplier=1</code>，<code>p_world_model=0.5</code></td><td>optimizer 合同已冻结</td></tr>
+<tr><td>sequence</td><td><code>run_contract.json</code></td><td>conditional frames <code>[5,5]</code></td><td>与官方 RoboCasa query contract 对齐</td></tr>
+<tr><td>gate</td><td><code>run_contract.json</code></td><td><code>max_steps=9907</code>，<code>steps_per_epoch_gate=9907</code></td><td>只有达到该 gate 且保存/加载成功，才可称完整 1 epoch</td></tr>
+</tbody></table>
+<h2 id="3-run-ledger">3. Run ledger：两条主线与一个保存接口失败</h2>
+<h3 id="3-1-save-2k-cpu-cgroup-oom-step-1903">3.1 save-2k 主线：CPU cgroup OOM，中断于 step 1903</h3>
+<p>运行目录：<code>muxi_deepspeed_1epoch_20260623/remote_outputs_20260629/ds_8gpu_bs16_1epoch_save2k_20260623_2040</code>。日志显示：</p>
+<ul><li><code>max_steps=9907</code>、<code>save_every_steps=2000</code>；</li><li>最后一条可信 metric 为 step <code>1900</code>，随后 step <code>1903</code> 后 launcher 返回 <code>EXIT=247</code>，rank 7 返回 <code>-9</code>；</li><li>没有 <code>step_002000</code> checkpoint，且没有可加载的 checkpoint directory；</li><li><code>eval_summary.md</code> 与 <code>status_save2k_20260624_0951.log</code> 将根因定位为 <code>itertools.cycle(dataloader)</code> 缓存已迭代 batch，最终触发 memory cgroup OOM，而不是 GPU OOM；</li><li>该 run 的终点只能写成“中断前 step-1900 snapshot”，不能写成 1 epoch final。</li></ul>
+<p>step 1900 的中间指标如下：</p>
+<table><thead><tr><th>metric</th><th>value</th><th>解释</th></tr></thead><tbody>
+<tr><td>total loss</td><td><code>0.2945038</code></td><td>训练中间快照</td></tr>
+<tr><td>EDM loss</td><td><code>0.0294504</code></td><td>主 denoising loss 的中间快照</td></tr>
+<tr><td>demo action MSE</td><td><code>0.0463352</code></td><td>teacher-forced 诊断项，不是闭环 success</td></tr>
+<tr><td>future image MSE</td><td><code>0.0562584</code></td><td>world-model 诊断项</td></tr>
+<tr><td>value MSE</td><td><code>0.0142408</code></td><td>value 分支诊断项</td></tr>
+<tr><td>teacher-forced gripper dim MSE</td><td><code>0.0761347</code></td><td>第 7 action 维；不等于 rollout gripper</td></tr>
+<tr><td>GT negative gripper 下预测 <code>&lt;-0.5</code> 比例</td><td><code>95.17%</code></td><td>仅 teacher-forced gate，不能外推到 eval</td></tr>
+</tbody></table>
+<h3 id="3-2-no-cycle-step-1500">3.2 no-cycle 修复主线：step 1500 保存阶段失败</h3>
+<p>修复目录：<code>muxi_deepspeed_1epoch_20260623/nocycle_fix_20260624</code>；正式 run contract 为 <code>formal1420_run_contract.json</code>，远端对应目录为 <code>ds_8gpu_bs16_1epoch_nocycle_save1500_20260624_1420</code>。</p>
+<ul><li>先用 8 卡、5 steps、<code>SAVE_EVERY=0</code> 的 smoke 验证普通 <code>iter(dataloader)</code> + <code>StopIteration</code> 重建 iterator，<code>EXIT=0</code>；</li><li>正式 run 仍为 <code>max_steps=9907</code>，保存间隔 <code>1500</code>；</li><li>训练可到 step <code>1500</code>，但 <code>exit_code=1</code>；</li><li>失败栈为 DeepSpeed <code>engine.save_checkpoint</code> 调用 <code>DiffusionModel.state_dict(destination=..., prefix=..., keep_vars=...)</code>，而 Cosmos <code>DiffusionModel.state_dict()</code> 不接受 <code>destination</code> 参数；</li><li><code>checkpoints/step_001500</code> 目录出现但没有可用权重文件；不能当作 checkpoint、不能触发 gripper gate、不能跑本轮 1 epoch eval。</li></ul>
+<p>因此本轮的修复结论是“数据迭代器内存问题已被定位并通过 smoke 修复；保存接口兼容性仍未闭合”，而不是“1 epoch 训练成功”。</p>
+<h2 id="4">4. 指标与评估边界</h2>
+<h3 id="4-1">4.1 可以写进面试回答的事实</h3>
+<p>可以说：</p>
+<ul><li>我保留了官方 Predict2/T5/RoboCasa 的 action chunk <code>[32,7]</code>、proprio <code>[9]</code> 与 conditional frames=5 合同；</li><li>我用 <code>dataset_runtime_summary.json</code> 固化了 1,199 demo episodes、1,291 rollout episodes、343,635 rollout steps 和 242 条 command；</li><li>我从 step-1900 日志发现 CPU batch 缓存增长，并从 no-cycle smoke 验证修复方向；</li><li>我进一步把失败推进到 checkpoint 保存接口，能指出具体的 Python method-signature 不兼容，而不是泛泛说“训练 OOM”。</li></ul>
+<h3 id="4-2-1-epoch">4.2 不可以写成这次 1 epoch 结果的数字</h3>
+<table><thead><tr><th>数字/结果</th><th>实际归属</th><th>不能如何表述</th></tr></thead><tbody>
+<tr><td><code>84/118</code>、<code>86/120</code></td><td>官方 HF baseline 的 24×5 RoboCasa eval，见 <code>eval_summary.md</code></td><td>不能说是本地 1 epoch checkpoint 的 success</td></tr>
+<tr><td>1k/5k ablation 的 <code>0/1</code> 或 gripper gate</td><td>其他本地小子集/ablation run</td><td>不能与 1 epoch 中间 loss 拼成一条训练曲线</td></tr>
+<tr><td>step 1900 loss <code>0.2945</code></td><td>save-2k run 的中断前快照</td><td>不能称 final loss、epoch loss 或 best checkpoint</td></tr>
+<tr><td>step 1500 loss / teacher-forced gate</td><td>no-cycle run 的保存失败前快照</td><td>不能称可加载模型或 closed-loop eval</td></tr>
+<tr><td>远端 <code>/data/msz/...</code> checkpoint path</td><td>path reference</td><td>不能当作 binary identity 或本地 artifact</td></tr>
+</tbody></table>
+<h2 id="5-evidence-classification">5. Evidence classification 与面试叙事</h2>
+<table><thead><tr><th>层级</th><th>本页允许的说法</th><th>仍缺什么</th></tr></thead><tbody>
+<tr><td><code>local-direct</code></td><td>run contract、dataset runtime summary、base load summary、step 日志、exit code、错误栈</td><td>保存后的权重、immutable manifest、完整 eval bundle</td></tr>
+<tr><td><code>remote-referenced</code></td><td>远端输出目录名、远端 checkpoint path、远端运行命令</td><td>权重内容、SHA、下载/加载记录</td></tr>
+<tr><td><code>local-inference</code></td><td>cycle 导致 batch 保留、state_dict 签名导致保存失败的因果解释</td><td>在同一环境修复后重跑并通过 save/load 验证</td></tr>
+<tr><td><code>unverified</code></td><td>完整 9907 step、1 epoch final metric、1 epoch closed-loop success</td><td>需要成功保存并重新加载 checkpoint，再固定 eval denominator</td></tr>
+</tbody></table>
+<p>建议口述结构：先说目标和合同，再说可观测失败，再说修复和新的失败点，最后明确“没有把中间指标冒充最终 benchmark”。这比只报一个 loss 数字更能体现训练系统排障能力。</p>
+<h2 id="6">6. 下一步闭环条件</h2>
+<p>要把该 run 从 <code>WARN</code> 升级为可用于项目题卡的 <code>local-direct checkpoint + eval</code>，至少需要：</p>
+<ol><li>修复 <code>DiffusionModel.state_dict</code> 与 DeepSpeed/PyTorch 标准签名的兼容层，并用 1-step save/load smoke 验证权重可重载；</li><li>重新运行 <code>max_steps=9907</code>，记录所有 checkpoint 的路径、文件列表、大小和 SHA-256；</li><li>固定数据 revision、normalizer/stats、代码 commit、seed、denoising steps、open-loop horizon 和 action execution bridge；</li><li>对同一 checkpoint 记录 eval task、trial、success predicate、invalid/error policy、raw episode manifest；</li><li>只有在上述字段齐全后，才把结果写进 WAM P0 audit 和项目题卡的“最终结果”段。</li></ol>
+<h2 id="references">References</h2>
+<ol><li>本地主报告：<code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\eval_summary.md</code>（Windows 工作区中的只读外部证据；HTML/Markdown 报告保留完整 run ledger）。</li><li>本地运行合同：<code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\muxi_deepspeed_1epoch_20260623\run_contract.json</code>、<code>dataset_runtime_summary.json</code>、<code>base_load_summary.json</code>。</li><li>save-2k 日志：<code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\muxi_deepspeed_1epoch_20260623\status_save2k_20260624_0951.log</code> 与 <code>remote_outputs_20260629\ds_8gpu_bs16_1epoch_save2k_20260623_2040\launch.log</code>。</li><li>no-cycle 修复与保存失败：<code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\muxi_deepspeed_1epoch_20260623\nocycle_fix_20260624\formal1420_run_contract.json</code>、<code>status_save1500_20260625_003645.log</code>、<code>smoke5_exit_code.txt</code>。</li><li>上游机制与协议边界：<a href="vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos/WAM Claim-to-Code Audit</a>；本页不重复冻结 upstream 结构。</li></ol>
+</article></body></html>

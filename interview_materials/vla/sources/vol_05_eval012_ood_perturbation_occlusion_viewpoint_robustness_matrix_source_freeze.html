@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 EVAL-012 Source Freeze：OOD、扰动、遮挡、视角与鲁棒性矩阵</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_eval012_ood_perturbation_occlusion_viewpoint_robustness_matrix_source_freeze.md">
+<meta name="aris:source-sha256" content="7360b1ae5eadef08620f91c510df9b98a958f0992a153c59c49de0577f821478">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>7360b1ae5eadef08620f91c510df9b98a958f0992a153c59c49de0577f821478</code>；生成自：<code>interview_materials\vla\sources\vol_05_eval012_ood_perturbation_occlusion_viewpoint_robustness_matrix_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、Revision 与边界</a></li><li><a href="#2-robustness-estimand">2. 先定义 Robustness Estimand</a></li><li><a href="#2-1">2.1 三种边界必须分开</a></li><li><a href="#3-perturbation-taxonomy">3. Perturbation Taxonomy</a></li><li><a href="#4-matrix-cell-schema">4. 每个 Matrix Cell 的最小 Schema</a></li><li><a href="#5-clean-perturbed">5. Clean–Perturbed 配对</a></li><li><a href="#6-severity-1-5">6. Severity 不是随便编号 1–5</a></li><li><a href="#7-occlusion-solvability-gate">7. Occlusion 与 Solvability Gate</a></li><li><a href="#8-retention-worst-cell">8. 指标：曲线、Retention 与 Worst Cell</a></li><li><a href="#9-one-factor-composed-stress">9. One-factor 与 Composed Stress</a></li><li><a href="#10-release-gate">10. 统计与 Release Gate</a></li><li><a href="#11-simpler-imagenet-c">11. SIMPLER 与 ImageNet-C 如何正确使用</a></li><li><a href="#12-evidence-mapping">12. 五项目 Evidence Mapping</a></li><li><a href="#13-artifact-bundle">13. 最小 Artifact Bundle</a></li><li><a href="#14">14. 评估伪代码</a></li><li><a href="#15-source-gate">15. Source Gate 结论与下一入口</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 EVAL-012 Source Freeze：OOD、扰动、遮挡、视角与鲁棒性矩阵</h1>
+<div class="meta">状态：<code>source_frozen / VLA-EVAL-012 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-19 证据截止：2026-07-19 本切片冻结 perturbation taxonomy、target-envelope / stress-only 边界、clean–perturbed 配对、severity、visibility / solvability gate、分格指标与可复算 artifact；只生成一张 <code>VLA-EVAL-012</code> 原子题卡，VOL 05 同步为 knowledge/cards 34/44。</div>
+<h2 id="question">问题（Question）</h2>
+<p>怎样证明 VLA 在 OOD、视觉扰动、遮挡与视角变化下仍然鲁棒？出现 <code>OOD</code> suite、数据增强、多相机字段或两种 protocol 的成功率都不够。可信评估要先定义部署目标范围，把一个 checkpoint 在同 task/init/controller/predicate 下的 clean episode 与可核验 perturbation 成对，再按 family × severity × slice 展开，而不是用一个 overall success 掩盖局部崩溃。</p>
+<h2 id="1-revision">1. 冻结来源、Revision 与边界</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>类型 / revision / license</th><th>SHA-256</th><th>支持范围</th><th>不支持</th></tr></thead><tbody>
+<tr><td>S1</td><td>Hendrycks &amp; Dietterich, <em>Benchmarking Neural Network Robustness to Common Corruptions and Perturbations</em></td><td>primary paper；arXiv <code>1903.12261v1</code>，2019-03-28；论文许可未断言</td><td>arXiv API <code>b2eeb8443e7c9277655b7ec4d44c20afeeb7a0254298b93b2a18b28effb78b12</code>；ar5iv HTML <code>d3c445b259eb3af5381f0bba396d902bc28923fb8f743ce95107df734e33381f</code></td><td>15 类 corruption、noise/blur/weather/digital 四组、每类五个 severity、clean anchor、per-corruption 与 aggregate error 思想</td><td>VLA action/closed-loop robustness；物理可解性；真实相机范围；机器人 OOD 结论</td></tr>
+<tr><td>S2</td><td><code>hendrycks/robustness</code></td><td>official-code；commit <code>8190fe329f5f072a06e3a2aea02bb5dda69aed9f</code>（2022-08-24）；Apache-2.0</td><td>README <code>718d37a53a84615961dcdf519602cfaf1467b192bb691f8e880fbadf9e92de0d</code>；ImageNet-C generator <code>3868a670617f6b931ad09d5613bf372962a47d17c2de4f15ccaec28feb9fa479</code>；LICENSE <code>c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4</code></td><td>corruption implementation入口与 severity-indexed generation</td><td>用户项目已运行；VLA label 仍保持；target capture envelope</td></tr>
+<tr><td>S3</td><td>Li et al., SIMPLER</td><td>primary paper；arXiv <code>2405.05941v1</code>，2024-05-09；论文许可未断言</td><td>arXiv API <code>a20cd969be3c4a310fbdc719d695873d0f541501eb8b023ee5bf6b9ea5baa79d</code>；ar5iv HTML <code>19db19183e0c55e2d41358fc8f290d2d6326ad86ef62ecae8c17ae5b8521e97d</code></td><td>background、lighting、distractor、table texture、robot camera pose 五轴的 controlled distribution shifts；paired sim-real behavior</td><td>任意 simulator 都能替代 real；用户项目已有同等矩阵</td></tr>
+<tr><td>S4</td><td><code>simpler-env/SimplerEnv</code></td><td>official-code；commit <code>06accaca93535902d408da4855f21cece12bceb7</code>（2025-12-20）；MIT</td><td>README <code>81aaa39d59e41c6b60d6ccdf09c17b1f0ca284ce7cb780b62b908afac6c0dc28</code>；metrics <code>ee8596be6997d41295bf5b25f90c9b5b3ba47ef2bd92296b8c45e7ffc5606dc6</code>；LICENSE <code>c28645822e5cdadf816144773ee153332449ae04aa6f0b6a6393e5611092f878</code></td><td>可追溯机器人评估实现与指标入口</td><td>本页设计已经在五项目运行</td></tr>
+<tr><td>S5</td><td>WM-032 / WM-035 / PER-003</td><td>canonical local prerequisites</td><td>WM-032 <code>9086b6072047f3578cb731f48f08c48b509d7d38924b801728039b83d6245710</code>；WM-035 <code>50918b15cb279159a48e5526393164a866f3061a56ff202273f9a18aa505ad75</code>；PER-003 <code>a62fbea8507ff46c9636f0cb3280516546f4f01a3d02ebe777b55877f9338e19</code></td><td>factor/range/label contract、camera/sensor/occlusion、multi-view/time identity 与 dropout</td><td>新增项目证据；closed-loop 成功数字</td></tr>
+<tr><td>S6</td><td>EVAL-003/005/006/007/009/010/011</td><td>canonical local prerequisites</td><td>EVAL-003 <code>3d00ba8ac8345b1bf08e7530a0e681048fd01b64abfbadf9fab4ca60ab4d490f</code>；EVAL-005 <code>16b6a4c7c8e284ca8bd8a7cc831c3fc553405668ea87a071c23147f8f804ff46</code>；EVAL-006 <code>8a2ccfbc382537d13e95feefe4ec146342d7478432a9a645344a64b302ccd054</code>；EVAL-007 <code>66800fd21d8d2ebb786b0f8d3234c2613b427a986f41432f93cba99c3596e278</code>；EVAL-009 <code>be6945d2475585f65cd74417070fbd4fee1b148660b35c139370935413b13dea</code>；EVAL-010 <code>512d9e16b392e7258358c0092dff6ff5049890040d8d5efd1fdadfe7048b2911</code>；EVAL-011 <code>c4a085e96e8ae6ed4d22660b49d26d8faad0b338e8990b132ae3288ee28eb0dd</code></td><td>k/n uncertainty、aggregation、protocol/coverage、recomputable bundle、release gate与proxy边界</td><td>五项目已有 robustness matrix</td></tr>
+<tr><td>S7</td><td>五项目 inventories + WAM manifest</td><td>local-evidence</td><td>Robot Harness <code>66acc52c685d5ace6926a42976b7ba59b6f889d6848f74bfd8216cad92aa291e</code>；OPD <code>0a68251de06bc8494b7d2be5e6dc169fc860a629c2f312e623db69ed29db12bb</code>；OpenPiVLA <code>a3c644f949295d72889b2acf6456bfd050e05c147b14381bbb067504a34ce293</code>；WAM <code>078c86b1484fe38fdd136428123c9529c6b750dfea5e031ec506cf617517772d</code>；UWM <code>728b8326dc345072886d0909fe2b8d81dfde3993771e7febed446d471bd3674d</code>；WAM manifest <code>1ab8709201e2e75f580cb0aa0f8465defb546d63b2aab70a1752239a7da8f697</code></td><td>当前 OOD / view / protocol 字段与缺口</td><td>真实 perturbation episode、severity curve 或系统鲁棒性结论</td></tr>
+</tbody></table>
+<p>S1/S2 是分类 benchmark：它证明了多 corruption × 多 severity 的标准化测试思想，但它的 severity 不是用户相机的物理单位，top-1 error 也不是 VLA success。S3/S4 是机器人主锚点：SIMPLER 在 background、lighting、distractor、table texture、camera pose 五轴比较 policy behavior，并强调 simulation 仍是 real evaluation 的补充。以下统一矩阵是 source-consistent engineering synthesis，不冒充论文原始 schema。</p>
+<h2 id="2-robustness-estimand">2. 先定义 Robustness Estimand</h2>
+<p>鲁棒性不是“在 OOD 集上还有一个分数”，而是固定 policy 与任务协议后，对受控环境变化的条件性能：</p>
+<div class="formula">\[
+p_{f,s,g}=\Pr(Y=1\mid \pi,\mathcal{T}_g,\mathcal{P},F=f,S=s),
+\]</div>
+<p>其中 <code>π</code> 是 checkpoint，<code>T_g</code> 是 task/slice，<code>P</code> 绑定 env/controller/success predicate，<code>f</code> 是 perturbation family，<code>s</code> 是 severity。变量解释：只允许扰动轴变化；实现映射：每一格都要回到 manifest、paired episode rows 与 <code>k/n</code>。若同时换 checkpoint、reset、controller 或 scorer，差值不再识别 robustness。</p>
+<h3 id="2-1">2.1 三种边界必须分开</h3>
+<table><thead><tr><th>区域</th><th>来源</th><th>用途</th><th>可以说</th><th>不能说</th></tr></thead><tbody>
+<tr><td>target envelope</td><td>部署 capture / calibration / incident / site survey 的分位数或物理上限</td><td>发布主结论</td><td>目标范围内 retention / worst-cell</td><td>超出已采样任务与硬件的保证</td></tr>
+<tr><td>diagnostic OOD</td><td>one-factor、可解、故意超出训练分布但仍接近任务</td><td>找 failure mode</td><td>在该冻结测试格上的性能变化</td><td>等于真实世界频率</td></tr>
+<tr><td>stress-only</td><td>blackout、极端遮挡、组合最坏情况或未知频率</td><td>fallback / safety gate</td><td>系统是否拒绝、停机或恢复</td><td>作为 nominal success 平均的一部分</td></tr>
+</tbody></table>
+<p>训练分布之外不自动等于部署 OOD；部署中常见但训练没覆盖的值可能在 target envelope 内。反过来，ImageNet-C severity-5 可以是 stress reference，却不能替代 target capture survey。[S1][S5]</p>
+<h2 id="3-perturbation-taxonomy">3. Perturbation Taxonomy</h2>
+<table><thead><tr><th>family</th><th>典型 factor</th><th>severity / unit</th><th>标签与有效性关键点</th></tr></thead><tbody>
+<tr><td>photometric / appearance</td><td>brightness、contrast、exposure、WB、gamma、noise、blur、compression、texture</td><td>lux / exposure / SNR / blur px，或冻结 stress index</td><td>color/material instruction 可能 semantic-changing</td></tr>
+<tr><td>geometry / viewpoint</td><td>camera translation/rotation、height、FOV、intrinsics/extrinsics、crop</td><td>mm、degree、pixel、FOV degree</td><td>同一 task geometry；检查 target 仍在 frame 与 reachability</td></tr>
+<tr><td>occlusion / visibility</td><td>hand/object/self-occlusion、container、人、镜头污渍、blackout</td><td>target visible fraction、duration、camera count</td><td>区分 task-natural、environmental、sensor obstruction 与 failure</td></tr>
+<tr><td>sensor / missing-view</td><td>dropout、stale frame、timestamp jitter、packet loss、compression</td><td>missing mask、ms、Hz、loss rate</td><td>保留 camera identity；多视角相关性与共同缺失单列</td></tr>
+<tr><td>scene / object / layout</td><td>object instance、background、table texture、layout、distractor、clutter</td><td>instance/split ID、distance、count、density</td><td>任务目标与 success predicate 不变；不可解 layout 拒收</td></tr>
+<tr><td>semantic / language</td><td>paraphrase、referent ambiguity、distractor instruction、color/relational cue</td><td>template/family/ambiguity level</td><td>语义等价与任务改变分开；不能只改 prompt 不改 target</td></tr>
+<tr><td>dynamics / timing</td><td>mass/friction/compliance、latency、control rate</td><td>SI units、ms、Hz</td><td>本页仅登记矩阵槽位；详细 latency 归 EVAL-013，动力学前置见 WM-033/034/036</td></tr>
+</tbody></table>
+<p>一个 transform 可能跨层：camera pose 同时改变投影、可见率和 reachable workspace；它不能简单记作“图像增强”。</p>
+<h2 id="4-matrix-cell-schema">4. 每个 Matrix Cell 的最小 Schema</h2>
+<pre><code class="language-text">matrix_id, revision, policy_checkpoint_sha,
+task_id, task_slice, init_id, seed, controller_sha, predicate_sha,
+family, factor, unit, severity_id, value_or_range,
+range_source, cadence, temporal_correlation, cross_view_correlation,
+clean_anchor_id, pair_id, perturbation_seed,
+label_mode, target_transform, target_envelope_or_stress,
+validity_status, solvability_status, rejection_reason,
+perturbation_code_sha, asset_sha, render_proof_uri,
+episode_uri, trace_uri, video_uri, outcome, critical_failure, fallback</code></pre>
+<p>字段直觉：<code>family/factor/severity</code>回答改了什么，<code>range_source</code>回答为什么取这个范围，<code>pair_id</code>回答和哪个 clean episode 对比，<code>label/solvability</code>防止任务被偷偷改掉，<code>code/asset/render proof</code>证明扰动真的生效。</p>
+<h2 id="5-clean-perturbed">5. Clean–Perturbed 配对</h2>
+<p>对 task/init pair <code>i</code>、family <code>f</code>、severity <code>s</code>：</p>
+<div class="formula">\[
+\Delta_{i,f,s}=Y^{\mathrm{pert}}_{i,f,s}-Y^{\mathrm{clean}}_i.
+\]</div>
+<p>变量解释：<code>Y∈{0,1}</code>使用同一 success predicate；<code>Δ=-1</code>表示 clean 成功而 perturbed 失败，<code>+1</code>表示相反。实现映射：同 checkpoint、task、init、controller、predicate、episode budget；随机性无法完全相同时绑定 seed/initial-state serialization，并保存配对失败原因。</p>
+<p>不应把一批容易 clean init 与一批更难 perturbed init 比较。若 simulator determinism 不足，至少按 task/init strata 做 matched allocation，并在 task 或 scene cluster 层统计不确定性。[S6]</p>
+<h2 id="6-severity-1-5">6. Severity 不是随便编号 1–5</h2>
+<p>ImageNet-C 用每类五个 severity，覆盖 noise、blur、weather、digital 共 15 类 corruption。[S1][S2] VLA 可借用“同类多强度、画曲线”的思想，但机器人矩阵还要记录：</p>
+<ol><li>物理单位或目标 capture quantile；</li><li><code>target-derived</code>、<code>diagnostic</code> 或 <code>stress reference</code> 来源；</li><li>每 episode 固定、每 step 采样或连续相关过程的 cadence；</li><li>多 camera 独立、共同或条件相关；</li><li>实际生效值与 rejection；</li><li>severity monotonicity sanity check。</li></ol>
+<p>不同 family 的 <code>severity=3</code> 没有共同物理尺度，不能直接平均后称“平均三档 OOD”。若 range 后续扩展，增加 revision，不静默覆盖旧曲线。</p>
+<h2 id="7-occlusion-solvability-gate">7. Occlusion 与 Solvability Gate</h2>
+<p>目标可见率：</p>
+<div class="formula">\[
+r_{\mathrm{vis}}=\frac{|M_t\cap M_v|}{|M_t|+\epsilon}.
+\]</div>
+<p>变量解释：<code>M_t</code> 是未遮挡 target mask，<code>M_v</code> 是实际可见区域；实现映射：保存 occluder ID、depth order、每相机 <code>r_vis</code>、持续时间和 overlay。单个矩形贴片不是所有遮挡的充分代理。[S5]</p>
+<p>每个 perturbed episode 必须经过：</p>
+<ol><li>target/referent 是否仍存在且语义一致；</li><li>至少一条允许的感知路径是否可见；</li><li>目标/容器/抓取位姿是否仍可达；</li><li>collision 与物理初始化是否合法；</li><li>success predicate 是否未被扰动代码影响。</li></ol>
+<p>不可解样本进入 rejected ledger；若故意测 blackout/failure，进入 stress/safety cell，并把安全停机、fallback 或 recovery 作为目标，不能把“无法完成原任务”与普通 robustness 混成一个 success drop。</p>
+<h2 id="8-retention-worst-cell">8. 指标：曲线、Retention 与 Worst Cell</h2>
+<p>每格先报告 <code>k/n</code> 与区间，再与 clean anchor 比较。定义：</p>
+<div class="formula">\[
+\operatorname{Retention}_{f,s}
+=\frac{p_{f,s}}{\max(p_0,\epsilon)}.
+\]</div>
+<p>变量解释：<code>p_0</code> 是同支持 clean success，<code>p_f,s</code> 是扰动成功率；实现映射：同时展示 absolute drop，因为 clean 很低时 retention 会失真。若 <code>p0=0</code>，retention 标 <code>not interpretable</code>。</p>
+<p>对目标范围 <code>Ω_target</code>：</p>
+<div class="formula">\[
+R_{\mathrm{worst}}=\min_{(f,s,g)\in\Omega_{\mathrm{target}}}p_{f,s,g}.
+\]</div>
+<p>变量解释：最差 family × severity × critical slice；实现映射：预注册 critical cells，给每格 <code>k/n/CI</code>，避免后验搜索最差点后只报裸值。还应报告 per-severity curve / AUC、paired discordant counts、critical failure、fallback activation 与 recovery。overall average 只能作辅助，不能掩盖 camera-pose 或 occlusion 崩溃。</p>
+<h2 id="9-one-factor-composed-stress">9. One-factor 与 Composed Stress</h2>
+<p>先做 one-factor 诊断，定位 brightness、viewpoint、visibility、instance 或 distractor 的独立敏感性；再做符合部署共现结构的 composed cells。任意笛卡尔积会产生大量不真实或不可解场景，也无法解释 failure 来源。</p>
+<p>组合扰动需额外冻结 joint distribution / correlation 与 interaction 对照。例如低照度和高 sensor noise 可以相关；多相机同时 blackout 与单相机 dropout 是不同系统事件。composed stress 不能反向冒充单因素因果结论。</p>
+<h2 id="10-release-gate">10. 统计与 Release Gate</h2>
+<ul><li>使用相同 episode pair 时，报告 paired success drop / discordant pairs；</li><li>task、scene、object instance 或 robot-day 重复时按 cluster 聚合/重采样；</li><li>多 cell 探索与预注册 critical gate 分开；</li><li>同时看 absolute success、drop、retention、worst target cell 与 uncertainty；</li><li>target-envelope gate 与 stress-only fallback gate 分开；</li><li>clean regression、critical safety veto、robustness floor 共同进入 EVAL-010 release gate；</li><li>offline corruption 或 simulator robustness 不替代必要的真实 closed-loop canary。[S3][S6]</li></ul>
+<h2 id="11-simpler-imagenet-c">11. SIMPLER 与 ImageNet-C 如何正确使用</h2>
+<p>SIMPLER 直接展示了 background、lighting、distractors、table texture、robot camera pose 五个 distribution-shift 轴，并在多 policy 的 sim-real evaluation 中比较行为；论文观察到 camera pose 与 table texture 等轴会产生不同敏感性。[S3] 可借鉴的是“控制轴、保持任务、分轴比较、真实对应验证”，不是复制其结果到另一机器人。</p>
+<p>ImageNet-C 给出 15 corruption × 5 severity 和 corruption-wise aggregation。[S1][S2] 可借鉴的是 factorized severity curve 与 clean anchor；不能把 top-1 mCE 当 VLA success，也不能假定其 pixel transform 符合真实相机噪声、遮挡或任务语义。</p>
+<h2 id="12-evidence-mapping">12. 五项目 Evidence Mapping</h2>
+<table><thead><tr><th>项目</th><th>已有线索</th><th>缺失</th><th>当前结论 / 安全表述</th></tr></thead><tbody>
+<tr><td>Robot Harness</td><td><code>OOD/D</code> suite 名称；tool/safety/browser 指标</td><td>视觉/相机/控制 perturbation、severity、paired episode；base/SFT/GRPO 的 n/scorer 不同；browser 为 format-only</td><td>只能讲 suite 分层；不能称系统 robustness matrix</td></tr>
+<tr><td>OPD</td><td><code>seen/unseen/hard</code>、<code>boundary/format_conflict</code>、raw-holdout、by-pool/checkpoint curve</td><td>物理 severity、matched clean/perturbed pair、closed-loop outcome</td><td>是静态 grounding slice，不是 VLA closed-loop robustness</td></tr>
+<tr><td>OpenPiVLA</td><td>parser/roundtrip/format robustness 待补；97.4 summary</td><td>raw eval bundle、checkpoint-bound occlusion/view/OOD matrix</td><td>只能列补证据合同；不能报 robustness</td></tr>
+<tr><td>WAM</td><td>CoffeePressButton episode 0 manifest 有三路 <code>224×224</code> camera、<code>obj_instance_split=B</code>、单个 <code>layout/style=[1,1]</code>；base/trained 均失败</td><td>多场景、多 episode、受控 view/layout/style cells、checkpoint 核验</td><td>多 camera 字段不等于 viewpoint robustness；两个失败不能形成曲线</td></tr>
+<tr><td>UWM</td><td>fixed-pruned-init <code>186/250</code>；reset-style <code>232/250</code></td><td>与论文 Table II 一致的 OOD protocol、raw episode、checkpoint-bound paired matrix</td><td>strict/reset 改变 protocol，是 confound，不是校准扰动</td></tr>
+</tbody></table>
+<p>出现 <code>OOD</code> 标签、不同协议数字、train augmentation 或 camera list 都不能替代可复算 perturbation evidence。本节点不新增任何项目结果。</p>
+<h2 id="13-artifact-bundle">13. 最小 Artifact Bundle</h2>
+<pre><code class="language-text">robustness_eval/
+  matrix_spec.yaml             # families, factors, units, ranges, source, cadence
+  protocol_manifest.json       # policy/task/init/controller/predicate revisions
+  paired_episode_index.parquet # clean_id, perturbed_id, pair validity
+  accepted_rejected.jsonl      # validity, solvability, actual values, reasons
+  perturbation_proofs/         # sample render, mask/overlay, calibration checks
+  raw/{traces,videos,outcomes}/
+  summaries/per_cell.parquet
+  summaries/severity_curves.json
+  summaries/critical_gate.json
+  checksums/manifest-sha256.txt
+  reproduce.ps1</code></pre>
+<h2 id="14">14. 评估伪代码</h2>
+<pre><code class="language-python">def evaluate_robustness(policy, matrix_spec, protocol):
+    # Freeze policy, task/init/controller/predicate and derive ranges from named sources.
+    spec = validate_target_and_stress_envelopes(matrix_spec, protocol)
+
+    # Generate a clean anchor and perturbation with identical task/init allocation.
+    pairs = materialize_clean_perturbed_pairs(spec, protocol)
+
+    # Prove the perturbation took effect and reject invalid or unsolvable episodes.
+    pairs = render_label_visibility_solvability_gate(pairs, spec)
+
+    # Run immutable episodes and retain raw traces, videos, masks and outcomes.
+    bundle = execute_and_store(policy, pairs, protocol)
+
+    # Summarize every cell before macro views; preserve paired and cluster structure.
+    stats = per_cell_k_n_ci_drop_retention_curve(bundle, spec)
+    stats[&quot;worst_target&quot;] = preregistered_worst_cell(stats, spec.target)
+    stats[&quot;stress_fallback&quot;] = score_stress_safety_behavior(bundle, spec.stress)
+    return write_recomputable_bundle(bundle, stats, spec)</code></pre>
+<p>这是 evaluation contract，不是五项目已有实现。</p>
+<h2 id="15-source-gate">15. Source Gate 结论与下一入口</h2>
+<p>EVAL-012 保持 <code>WARN</code>：ImageNet-C 冻结了 corruption × severity 的外部方法参考，SIMPLER 冻结了机器人 distribution-shift 的一手案例，WM-032/035 与 PER-003 提供 label/camera/visibility/view 前置。本页完成 target vs stress、paired cell、severity provenance、solvability、指标和 artifacts 的工程闭环；五项目均缺可核验的 closed-loop robustness matrix。</p>
+<p>下一节点固定为 <code>VLA-EVAL-013</code>：端到端 latency、control frequency 与实时性评估。真实口述前不创建 <code>coaching_state.md</code>。</p>
+<h2 id="references">References</h2>
+<ol><li>Hendrycks &amp; Dietterich, <a href="https://arxiv.org/abs/1903.12261v1"><em>Benchmarking Neural Network Robustness to Common Corruptions and Perturbations</em></a>, ICLR 2019；<a href="https://ar5iv.labs.arxiv.org/html/1903.12261">ar5iv HTML</a>。</li><li><code>hendrycks/robustness</code> commit <a href="https://github.com/hendrycks/robustness/tree/8190fe329f5f072a06e3a2aea02bb5dda69aed9f"><code>8190fe3</code></a>，<a href="https://github.com/hendrycks/robustness/blob/8190fe329f5f072a06e3a2aea02bb5dda69aed9f/ImageNet-C/create_c/make_imagenet_c.py">ImageNet-C generator</a>，Apache-2.0。</li><li>Li et al., <a href="https://arxiv.org/abs/2405.05941v1"><em>Evaluating Real-World Robot Manipulation Policies in Simulation</em></a>, 2024；<code>simpler-env/SimplerEnv</code> commit <a href="https://github.com/simpler-env/SimplerEnv/tree/06accaca93535902d408da4855f21cece12bceb7"><code>06accaca</code></a>，MIT。</li><li><a href="vol_04_wm032_visual_domain_randomization_relevance_source_freeze.html">WM-032 Visual DR</a>、<a href="vol_04_wm035_camera_sensor_modeling_source_freeze.html">WM-035 Camera/Sensor</a>、<a href="vol_06_per003_multiview_temporal_source_freeze.html">PER-003 Multi-view/Temporal</a>。</li><li><a href="vol_05_eval003_success_rate_confidence_interval_source_freeze.html">EVAL-003</a>、<a href="vol_05_eval005_aggregation_estimand_source_freeze.html">EVAL-005</a>、<a href="vol_05_eval006_benchmark_env_controller_scorer_versioning_source_freeze.html">EVAL-006</a>、<a href="vol_05_eval007_init_seed_task_coverage_difficulty_source_freeze.html">EVAL-007</a>、<a href="vol_05_eval009_raw_predictions_episode_trace_video_recomputable_summary_source_freeze.html">EVAL-009</a>、<a href="vol_05_eval010_regression_gate_golden_set_canary_rollout_source_freeze.html">EVAL-010</a>、<a href="vol_05_eval011_offline_metric_online_success_correlation_source_freeze.html">EVAL-011</a>。</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest</a>与五项目 inventories。</li></ol>
+</article></body></html>

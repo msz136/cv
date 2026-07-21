@@ -1,0 +1,67 @@
+{
+  "artifact": "sources/vol_05_eng019_config_resolution_run_identity_source_freeze.md",
+  "html": "sources/vol_05_eng019_config_resolution_run_identity_source_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "source_frozen / VLA-ENG-019_planned / WARN",
+  "verdict": "WARN",
+  "source_sha256": "6A2934512295CDF5ECDCDE3EF8E9B2D597BC2F3AF529D7C6F053A16DF3ACEB54",
+  "coverage": {
+    "knowledge_id": "VLA-ENG-019",
+    "topic": "config / CLI / env resolution, field provenance, secret-safe canonicalization and run identity",
+    "official_pages_checked": 6,
+    "local_project_paths_checked": 3,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "hydra": "7ef3acab78b46bf82370e7931f748aef5fd80e5f / v1.3.2",
+    "pydantic_settings": "1d0ea26f9e04ec9e20767d70e4508bb33c8708e7 / 2.14.1",
+    "cpython": "ebf955df7a89ed0c7968f79faec1de49f61ed7cb / 3.14.0",
+    "pytorch_docs": "2.13 elastic run (reused from ENG-018 freeze)",
+    "rfc": "RFC 8785"
+  },
+  "raw_or_normalized_source_sha256": {
+    "hydra_defaults_list": "2be5eed7f90a3ee690b7df3fd8d3c0dc228a8378c48c9bfdb6782e39974d8082",
+    "hydra_override_grammar": "bd3348440a57e7f9e8a63d2e64848cfd5934e22f850887048efc94624bb381a4",
+    "pydantic_settings_docs": "569a3398f65c99f3f72c73b891f633f1767c79992110ebb0a90b136cc95205b9",
+    "cpython_argparse": "46c9dc41aa479d4f068b644149ca4cb12c4076ef25ddd2e547e50becb611c40a",
+    "pytorch_torchrun_normalized_main_text": "77d82a42359b5f76a07260cdd9c44abd3a5002a8fff4fd54b59f64a43342560e",
+    "rfc8785": "63d52294eb0e3f0014174288186d388b4ddbf2c67d1ce8af1d9726eb0c3ab240"
+  },
+  "local_evidence_sha256": {
+    "uwm_launcher": "E5B6DCB03FD6612B996AB9DFD3227CB2426E0A147F21FACEE383BBF56EC29D92",
+    "uwm_deepspeed_effective_config": "2BF8216F04391CE4323FC79AE74AAE9728E8B13F8D4057F281734A0A4DA54642",
+    "openpivla_formal_train": "51B67D3E04496E68076BF6461506141EBCDDF9A82E6C30AF1FDC0F1F2CCC6F94",
+    "opd_train": "BF9120B5D88180EA4C4725C6F4934913F35FDD36ECB4BC8E6B3B089FB964D8D9",
+    "opd_zero2": "C2F2E295B3F2E8E67CBCDF1052710D7ED7A1AD9D95F4C44C9EC40AF178A50BA9",
+    "opd_zero3": "CA5C4030CCEC5DAE16B3614ED072035E6BB05CFD3BF411C92CC51D411D6C655F"
+  },
+  "checks": {
+    "bounded_slice": "PASS (source freeze plus one downstream ENG-019 knowledge node/card; ENG-020 remains deferred)",
+    "framework_precedence": "PASS WITH WARNING (Hydra and pydantic-settings ordering/override rules sourced; no universal cross-framework order inferred)",
+    "cli_type_contract": "PASS (CPython argparse default/type boundary separated from file/env merge)",
+    "runtime_identity": "PASS WITH WARNING (torchrun runtime env and rank instability separated from semantic run identity)",
+    "canonicalization": "PASS WITH WARNING (RFC 8785 supports canonical JSON bytes; semantic field selection and hashing remain engineering contract)",
+    "secret_boundary": "PASS WITH WARNING (allowlist/redaction/reference-only design explicit; no claim of implemented no-secret-log gate)",
+    "project_truth_boundary": "PASS (UWM/OpenPiVLA/OPD direct config/args/mutation evidence separated from missing field provenance and canonical lineage)",
+    "uwm_evidence": "PASS WITH WARNING (env defaults, Hydra overrides and DeepSpeed effective subset exist; full resolved config/source map missing)",
+    "openpivla_evidence": "PASS WITH WARNING (argparse snapshot/formal plan exist; three metadata YAMLs are not consumed as formal trainer config)",
+    "opd_evidence": "PASS WITH WARNING (argparse and WORLD_SIZE-driven DeepSpeed mutation exist; run summary is partial)",
+    "formula_and_schema": "PASS (effective-config resolution and semantic run-key formulas plus field provenance schema explained)",
+    "pseudocode": "PASS (commented resolve/trace/validate/redact/canonicalize/persist order; APIs remain placeholders)",
+    "html_static_validation": "PASS (source SHA, one H1, fifteen H2, four tables, five code blocks and two formula blocks)",
+    "local_links": "PASS (ENG-004..006, ENG-009/013/018 and local source-index links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the generated ENG-019 card unseen until a real oral answer is recorded.",
+    "Persist a full typed effective config plus per-field winning source and overridden candidates before training starts.",
+    "Separate semantic run key, logical run ID, scheduler attempt ID and runtime rank/restart fields.",
+    "Add env allowlist, secret redaction tests and no-secret-log scanning without storing raw secret hashes.",
+    "Bind code/data/model/config hashes to checkpoint and eval manifests for UWM, OpenPiVLA and OPD.",
+    "Keep ENG-020 secret/token/data-permission content deferred to its own source gate."
+  ],
+  "next": "Run a one-question ENG-019 oral drill or collect resolver/provenance/secret-canary artifacts; keep ENG-020 deferred."
+}

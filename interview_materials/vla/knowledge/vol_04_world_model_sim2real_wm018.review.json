@@ -1,0 +1,53 @@
+{
+  "artifact": "knowledge/vol_04_world_model_sim2real_wm018.md",
+  "html": "knowledge/vol_04_world_model_sim2real_wm018.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / VLA-WM-018 / knowledge_20_of_44 / card_deferred / review_warn",
+  "verdict": "WARN",
+  "source_sha256": "C83544AC45397112243D764A4CF33DAFDE83358C4673D0FC689D37B450466D84",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 19,
+    "new_nodes": 1,
+    "total_drafted_nodes": 20,
+    "covered_ids": ["VLA-WM-018"],
+    "drafted_cards_for_new_nodes": 0,
+    "practice_state": "card_deferred / no_oral_drill",
+    "difficulty": "L2",
+    "priority": "P1"
+  },
+  "source_scope": {
+    "horizon_freeze": "sources/vol_04_wm018_prediction_horizon_source_freeze.html",
+    "diffusion_policy": "sources/vol_03_diffusion_policy_claim_to_code.html",
+    "act": "sources/vol_03_act_claim_to_code.html",
+    "cosmos_wam": "sources/vol_04_cosmos_policy_wam_claim_to_code.html",
+    "world_model": "sources/vol_04_world_model_foundations_claim_to_code.html",
+    "uwm": "sources/vol_04_uwm_video_action_claim_to_code.html"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one WM-018 knowledge node only; no card generated)",
+    "horizon_taxonomy": "PASS (observation, prediction, execution, replan and imagination horizons separated)",
+    "physical_time_mapping": "PASS WITH WARNING (control frequency, action repeat, timestamp and latency included)",
+    "method_boundary": "PASS (Diffusion Policy/ACT/Cosmos/UWM code contracts kept separate)",
+    "tradeoff_analysis": "PASS (short/long horizon benefits and failure modes linked to measurable artifacts)",
+    "formula_and_variables": "PASS (step-to-physical-time equations define variables and implementation mapping)",
+    "experiment_matrix": "PASS WITH WARNING (matched sweeps specified but not run)",
+    "pseudocode": "PASS (comments separate prediction, execution prefix and replan loop)",
+    "metric_boundary": "PASS (per-offset error, latency, open-loop and closed-loop success separated)",
+    "project_truth_boundary": "PASS (public recipe not upgraded to personal horizon or uplift claim)",
+    "html_static_validation": "PASS (one H1, eight H2, one H3, three tables, one formula block and one commented code block)",
+    "local_links": "PASS (all repository-local audit/source links resolve)",
+    "source_sha": "PASS (canonical Markdown SHA matches HTML meta and review JSON)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "matched_horizon_ablation": "PENDING",
+    "closed_loop_trace": "PENDING",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Run matched prediction/execution/replan horizon sweeps with fixed checkpoint, data, controller and protocol.",
+    "Report per-offset error, valid target count, memory/step time, action age and closed-loop success.",
+    "Freeze personal OpenPiVLA/UWM/WAM horizon and controller settings from config/checkpoint/eval artifacts.",
+    "Keep WM-018 card deferred until a separate card slice; do not create coaching_state.md."
+  ],
+  "next": "Generate one VLA-WM-018 unseen atomic card or run a WM-015/016/017 oral drill; keep WM-019..038 deferred."
+}

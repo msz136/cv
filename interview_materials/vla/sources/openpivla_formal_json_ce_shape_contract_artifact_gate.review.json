@@ -1,0 +1,49 @@
+{
+  "artifact": "sources/openpivla_formal_json_ce_shape_contract_artifact_gate.md",
+  "html": "sources/openpivla_formal_json_ce_shape_contract_artifact_gate.html",
+  "review_date": "2026-07-19",
+  "status": "local_direct_audit / formatter_probe_passed / full_sequence_ce_corrected / parser_gate_linked / WARN",
+  "verdict": "WARN",
+  "source_sha256": "7C8B6D350D63DD9ED95CACD7605AF3C3E57191EB622D79252F18EF4AE6D3D7DE",
+  "evidence_cutoff": "2026-07-19",
+  "local_sources": {
+    "project_root": "C:\\Users\\mousongzhe\\Project\\openpivla_deployment",
+    "formal_train_sha256": "51B67D3E04496E68076BF6461506141EBCDDF9A82E6C30AF1FDC0F1F2CCC6F94",
+    "recipes_sha256": "397D1B384A2BD93D9DC81B7003E6AB7BFAC3FC458EA04008197C3F503F9D780E",
+    "data_sha256": "32C6AA76929D941C4832D2EB4C2550527D3E607E31C2A9F5507CC76EEEDBC2EC",
+    "smoke_summaries": [
+      "20260305_122516-akpdp2to_smoke_summary.json",
+      "20260310_125200-c6665s5x_smoke_summary.json",
+      "20260311_114400-nodm49pk_smoke_summary.json"
+    ]
+  },
+  "checks": {
+    "formal_source_read": "PASS (dataset, formatter, collator, Qwen/LoRA and loss path)",
+    "recipe_contract": "PASS (action_horizon=15, action_dim=72, proprio_dim=72)",
+    "smoke_shape": "PASS (public robot batch [2,15,72]; private_data_deployed=false)",
+    "actual_formatter_probe": "PASS (15 rows, each width 16, tail repeats last row)",
+    "representation_boundary": "PASS WITH WARNING (local JSON/CE is not proven FAST DCT/BPE)",
+    "shape_semantics": "WARN (72D recipe/smoke conflicts with limit=16; follow-up gate quantifies 840/1080 dropped positions and parser absence)",
+    "loss_mask_correction": "WARN (labels mask only padding; objective covers full chat, not assistant tokens only)",
+    "parser_roundtrip_followup": "PASS WITH WARNING (negative-evidence gate linked; retained 15x16 prefix round-trips but controller contract is missing)",
+    "checkpoint_and_eval_lineage": "PENDING (no immutable formal checkpoint/raw eval bundle in local artifact)",
+    "ownership": "PENDING (snapshot/ledger exists; candidate role confirmation and pre-snapshot diff missing)",
+    "html_static_validation": "PASS (one h1, MathJax, source metadata and no broken local links)",
+    "browser_visual_check": "BLOCKED (file:// navigation restricted in current environment)",
+    "oral_drill": "PENDING"
+  },
+  "claim_updates": {
+    "OPV-CL-002": "local-direct / PASS WITH WARNING",
+    "OPV-CL-003": "REPRESENTATION-CONFLICT",
+    "OPV-CL-004": "local-direct / SEMANTICS-OPEN",
+    "OPV-CL-005": "local-direct (recipe/smoke only)",
+    "OPV-CL-007": "archive-summary-only"
+  },
+  "open_items": [
+    "Implement strict generation/parser/72D axis-unit-normalizer-controller assertions; current gate proves they are absent from the frozen formal package.",
+    "Resolve whether fast_tokenizer fields are metadata or an actually called frozen FAST processor.",
+    "Obtain checkpoint/load smoke and formal eval lineage before any C3 result claim.",
+    "Confirm candidate per-file ownership and collaboration/tool-assistance boundaries."
+  ],
+  "next": "Run ownership confirmation or collect one immutable formal checkpoint/generation bundle; do not upgrade benchmark or mastery claims."
+}

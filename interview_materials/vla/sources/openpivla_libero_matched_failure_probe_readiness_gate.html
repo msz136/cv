@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenPiVLA / LIBERO Matched Failure Probe Readiness Gate</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\openpivla_libero_matched_failure_probe_readiness_gate.md">
+<meta name="aris:source-sha256" content="adafcd8b6defa33a943d3e41f2135dda5301b62b97d0d844b4342ff1d0504c9b">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>adafcd8b6defa33a943d3e41f2135dda5301b62b97d0d844b4342ff1d0504c9b</code>；生成自：<code>interview_materials\vla\sources\openpivla_libero_matched_failure_probe_readiness_gate.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. Question 与边界</a></li><li><a href="#2-immutable-evidence-freeze">2. Immutable evidence freeze</a></li><li><a href="#3-local-preflight-audit">3. Local preflight audit</a></li><li><a href="#4-what-the-local-script-fixes">4. What the local script fixes</a></li><li><a href="#4-1-observation-contract">4.1 Observation contract</a></li><li><a href="#4-2-action-and-execution-contract">4.2 Action and execution contract</a></li><li><a href="#5-matched-failure-probe-matrix">5. Matched failure probe matrix</a></li><li><a href="#probe-acceptance-criteria">Probe acceptance criteria</a></li><li><a href="#6-interview-safe-boundary">6. Interview-safe boundary</a></li><li><a href="#30">30 秒回答</a></li><li><a href="#section-11">禁止的强结论</a></li><li><a href="#7">7. 下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>OpenPiVLA / LIBERO Matched Failure Probe Readiness Gate</h1>
+<div class="meta">状态：<code>local-summary-consistent / probe-not-rerun / raw-trace-missing / WARN</code> 审查日期：2026-07-21 范围：<code>C:\Users\mousongzhe\Project\openpivla_deployment\artifacts\libero_franka_true_rollout_v1</code> 的 summary、server/client log、rollout script 与已生成视频/指标图。 结论先行：本轮对现有 LIBERO model/no-op bundle 做了可重算的 preflight audit，9/9 项一致性检查通过；但本地没有逐步 observation/action 数组、effective argv、server response trace 或独立 scorer，因此还不能把它称作 matched failure rerun，也不能仅凭 <code>0 reward / false success</code> 归因于某一个 preprocess、axis/unit、controller 或 checkpoint 原因。</div>
+<h2 id="1-question">1. Question 与边界</h2>
+<p>前两页已经冻结了官方 <code>pi05_libero</code> 的 load/serve/client lineage 与本地 checkpoint 文件缺口。本页只回答：</p>
+<ol><li>已归档的 model/no-op rollout 是否在同一个 task/episode/horizon 上可重算；</li><li>哪些 observation/action/termination contract 可以从本地 script 直接恢复；</li><li>还缺哪些原始 trace，才能执行一个真正的 matched failure probe。</li></ol>
+<p>“matched”在本页中不是“两个 summary 看起来相似”，而是至少固定以下 tuple：</p>
+<div class="formula">\[
+P_{mathrm{match}}=(T, I, S, O, A, N, R, C, G)
+\]</div>
+<p>其中 <code>T</code> 是 task suite/id，<code>I</code> 是 init-state/episode，<code>S</code> 是 seed，<code>O</code> 是 observation keys 与图像变换，<code>A</code> 是 action order/dimension/unit，<code>N</code> 是 normalizer/checkpoint assets，<code>R</code> 是 replan/warm-up，<code>C</code> 是 controller/environment step，<code>G</code> 是 success scorer。变量与代码映射：<code>T/I/S</code> 来自 <code>run_libero_true_rollout.py</code> 的 benchmark/task/init-state/seed 入口，<code>O/A/R</code> 来自 <code>_policy_action</code> 与 <code>deque</code> 逻辑，<code>C/G</code> 来自 <code>_run_episode</code> 的 <code>env.step</code> 与 <code>done</code> 聚合；当前 bundle 只完整落档了部分 tuple，未满足全部 matched 条件。</p>
+<p>本页不重新启动远端 server，不复制 checkpoint，不把静态 preflight 当作失败根因，也不更新题卡 mastery。</p>
+<h2 id="2-immutable-evidence-freeze">2. Immutable evidence freeze</h2>
+<table><thead><tr><th>ID</th><th>本地对象</th><th>SHA-256</th><th>直接支持</th></tr></thead><tbody>
+<tr><td>S01</td><td><code>artifacts/libero_franka_true_rollout_v1/summary.json</code></td><td><code>341E77110D75E50B601A078923F51EF8FA39AAA045FA491843A1003B0320E1DB</code></td><td>task tuple、70-step runs、reward/success、norm summary、artifact names</td></tr>
+<tr><td>S02</td><td><code>artifacts/libero_franka_true_rollout_v1/serve.log</code></td><td><code>FF0B39D7B87D604D86486A0088E7CF7FD2D3EA99CB151B99FD5D9B9E60AACD2A</code></td><td>Orbax restore、checkpoint path、norm-stats load、8399 listen/connection</td></tr>
+<tr><td>S03</td><td><code>artifacts/libero_franka_true_rollout_v1/client.log</code></td><td><code>BC1B7FE6E54735B4623062D151D47667BD418F4F7A46B6CC471EC1F961869572</code></td><td>client-side summary/log warnings；没有完整 argv</td></tr>
+<tr><td>C01</td><td><code>scripts/run_libero_true_rollout.py</code></td><td><code>1C7F74DE83FD373A27FEDC70D863D5F0BF164B4512ED63E1D76552A0F22C3016</code></td><td>observation transform、state/action contract、episode loop、scorer wiring</td></tr>
+<tr><td>V01</td><td><code>artifacts/libero_franka_true_rollout_v1/zero_reference/zero_reference_rollout.mp4</code></td><td><code>27BFAB393ECF92E3092D768A6294759287D6F779527EEEB2CE6160F26E7063FA</code></td><td>no-op visual rollout artifact</td></tr>
+<tr><td>V02</td><td><code>artifacts/libero_franka_true_rollout_v1/model_policy/model_policy_rollout.mp4</code></td><td><code>B8C14912B1202085581286B05949D8957A5AA77E040AE52AB91FFC0F67A60ED6</code></td><td>model visual rollout artifact</td></tr>
+<tr><td>V03</td><td><code>artifacts/libero_franka_true_rollout_v1/zero_reference_vs_model.mp4</code></td><td><code>226953734221483E03B509C03AE997B98C256722B9281A78A39C86D226D2ECE1</code></td><td>paired visualization，不等于 paired causal experiment</td></tr>
+</tbody></table>
+<h2 id="3-local-preflight-audit">3. Local preflight audit</h2>
+<p>使用 Python 标准库读取 <code>S01</code>，按脚本相对目录规则检查结果引用；没有修改项目文件。审计结果如下：</p>
+<table><thead><tr><th>Check</th><th>Result</th><th>Evidence</th></tr></thead><tbody>
+<tr><td><code>status == ok</code></td><td><code>PASS</code></td><td><code>summary.json</code></td></tr>
+<tr><td>task tuple</td><td><code>PASS</code></td><td><code>libero_spatial / task_id=0 / episode_idx=0</code></td></tr>
+<tr><td>run labels</td><td><code>PASS</code></td><td>exactly <code>zero_reference</code> and <code>model_policy</code></td></tr>
+<tr><td>matched horizon</td><td><code>PASS</code></td><td>both <code>steps_executed=70</code></td></tr>
+<tr><td>reward consistency</td><td><code>PASS</code></td><td>both <code>total_reward=0.0</code> and <code>mean_reward=0.0</code></td></tr>
+<tr><td>termination boundary</td><td><code>PASS</code></td><td>both <code>success=false</code>, <code>done=false</code></td></tr>
+<tr><td>finite scalar metrics</td><td><code>PASS</code></td><td>action norm/state norm fields finite</td></tr>
+<tr><td>success-rate recomputation</td><td><code>PASS</code></td><td><code>success_rate=0.0</code> equals mean of run success flags</td></tr>
+<tr><td>referenced artifacts</td><td><code>PASS</code></td><td>per-run video/plot and comparison video paths exist</td></tr>
+</tbody></table>
+<p>这 9/9 只证明归档 summary 与本地文件引用自洽。它没有检查视频帧内的真实动作数组，也没有重新调用 policy server。</p>
+<h2 id="4-what-the-local-script-fixes">4. What the local script fixes</h2>
+<h3 id="4-1-observation-contract">4.1 Observation contract</h3>
+<p><code>C01</code> 的 <code>_policy_action</code> 直接固定：</p>
+<table><thead><tr><th>Field</th><th>Local implementation</th><th>Remaining uncertainty</th></tr></thead><tbody>
+<tr><td><code>observation/image</code></td><td><code>agentview_image[::-1, ::-1]</code>，<code>resize_with_pad</code>，<code>convert_to_uint8</code></td><td>本次 invocation 的原始图像 hash 与实际 resize 参数未写入 summary</td></tr>
+<tr><td><code>observation/wrist_image</code></td><td><code>robot0_eye_in_hand_image[::-1, ::-1]</code>，同样的 resize/uint8</td><td>同上</td></tr>
+<tr><td><code>observation/state</code></td><td>eef position + quaternion-to-axis-angle + flattened gripper qpos</td><td>axis convention/unit 的 round-trip 未做；逐步 state 未落档</td></tr>
+<tr><td><code>prompt</code></td><td><code>str(task_description)</code></td><td>server 收到的最终文本未落档</td></tr>
+</tbody></table>
+<h3 id="4-2-action-and-execution-contract">4.2 Action and execution contract</h3>
+<p>脚本将 <code>client.infer(element)["actions"]</code> 转成 <code>float32</code>，在空 <code>action_plan</code> 时取 <code>action_chunk[:replan_steps, :7]</code>，再通过 <code>env.step(action.tolist())</code> 执行。默认 <code>replan_steps=5</code>、<code>resize_size=224</code>、<code>seed=7</code>、<code>max_steps=80</code>、<code>wait_steps=10</code> 写在 argparse 中，但本次 <code>client.log</code> 没有完整 argv；summary 的 70 steps 说明实际 effective config 与默认值不能直接等同。</p>
+<pre><code class="language-python">def local_contract(obs, client, task_description, action_plan, replan_steps):
+    # 1. 只在 action queue 为空时构造双视角图像、state 和 prompt。
+    request = {
+        &quot;observation/image&quot;: resize_uint8(flip_both_axes(obs[&quot;agentview_image&quot;])),
+        &quot;observation/wrist_image&quot;: resize_uint8(flip_both_axes(obs[&quot;robot0_eye_in_hand_image&quot;])),
+        &quot;observation/state&quot;: state_from_obs(obs),
+        &quot;prompt&quot;: str(task_description),
+    }
+    # 2. 请求 action chunk；本地 bundle 没有保存原始 response tensor。
+    chunk = np.asarray(client.infer(request)[&quot;actions&quot;], dtype=np.float32)
+    # 3. 执行前 replan_steps 行、前 7 维，再重新请求。
+    action_plan.extend(chunk[:replan_steps, :7])
+    return action_plan.popleft()</code></pre>
+<p><code>_run_episode</code> 将 <code>success = success or bool(done)</code>，把 <code>done</code> 同时作为 success flag 与 break 条件；<code>last_info</code> 仅以字符串形式写入 summary，本次为 <code>{}</code>。因此目前的 scorer 不是独立 task-success evaluator，而是脚本层面的 <code>done</code> 聚合。</p>
+<h2 id="5-matched-failure-probe-matrix">5. Matched failure probe matrix</h2>
+<table><thead><tr><th>Hypothesis</th><th>Required matched intervention</th><th>Current local evidence</th><th>Status</th></tr></thead><tbody>
+<tr><td>checkpoint/normalizer mismatch</td><td>同一个 <code>params/assets</code> manifest，fresh server load，两次 run 共用 manifest ID</td><td>server log 只有 path+restore；binary manifest 不在本地</td><td><code>OPEN</code></td></tr>
+<tr><td>image flip/resize mismatch</td><td>固定同一 init state，保存 raw image hash，A/B 只切换 flip/resize</td><td>script 固定代码路径，但 raw image 未保存</td><td><code>OPEN</code></td></tr>
+<tr><td>state axis/unit mismatch</td><td>保存 quaternion、axis-angle、eef/gripper 原始数组与 round-trip probe</td><td>只有最终 state norm，无 raw state</td><td><code>OPEN</code></td></tr>
+<tr><td>action order/unit/dimension</td><td>保存 server response shape、前 7D slice、denormalized action 与 env action</td><td>仅能看到 <code>:7</code> 代码，未保存 response/action trace</td><td><code>OPEN</code></td></tr>
+<tr><td>replan/warm-up</td><td>把 effective <code>wait_steps/replan_steps/max_steps</code> 写入 run manifest，做 paired sweep</td><td>summary 只显示最终 70 steps</td><td><code>OPEN</code></td></tr>
+<tr><td>controller/termination scorer</td><td>固定 controller、独立 success predicate、逐 step <code>info</code>/termination reason</td><td><code>last_info={}</code>，脚本用 <code>done</code></td><td><code>OPEN</code></td></tr>
+<tr><td>task/init-state confound</td><td>同一个 task/init-state/seed，独立 server restart 后重复</td><td>task/episode 已在 summary；seed/argv 未绑定</td><td><code>PARTIAL</code></td></tr>
+</tbody></table>
+<h3 id="probe-acceptance-criteria">Probe acceptance criteria</h3>
+<p>只有同时满足以下条件，才允许把下一次结果标成 matched probe：</p>
+<ol><li><code>run_id</code>、checkpoint manifest ID、OpenPI commit、processor/tokenizer revision、effective argv 全部落档；</li><li>两个条件只改变一个 intervention，task/init-state/seed、camera bytes、normalizer、controller、scorer 与 horizon 完全一致；</li><li>每步 raw observation、raw response action、post-transform env action、reward、done、info 和 timestamp 可重放；</li><li>model/no-op 或 A/B 两侧各有独立 summary，且 success predicate 不由视频后验推断；</li><li>结果先经过 shape/finite/unit/axis audit，再讨论根因。</li></ol>
+<h2 id="6-interview-safe-boundary">6. Interview-safe boundary</h2>
+<h3 id="30">30 秒回答</h3>
+<p>“我先没有把 LIBERO 的 <code>0 reward / false success</code> 直接归因。我对现有 bundle 做了 preflight：同一 <code>libero_spatial/task-0/episode-0</code> 有 zero-reference 和 model 两条 70-step run，reward、done、success-rate 重算和所有结果文件引用都一致。然后我检查脚本，确认 image 双轴翻转与 resize、eef quaternion 到 axis-angle、gripper state、action chunk 前 7 维和 <code>done</code> 聚合逻辑。但本地没有 effective argv、逐步 observation/action、server response 或独立 scorer，所以目前只能说 rollout 结果可复核、失败根因未定位；下一步必须做固定 protocol 的 matched A/B probe。”</p>
+<h3 id="section-11">禁止的强结论</h3>
+<ul><li>不能说“模型一定输出了错误的 action order/unit”，因为原始 response 和 env action 没保存。</li><li>不能说“必然是 checkpoint 或 normalizer 错误”，因为官方 checkpoint restore/load 只证明可加载，不证明其他协议层正确。</li><li>不能把 zero-reference 当作 GT demonstration，也不能把 paired video 当作 causal ablation。</li><li>不能把脚本作者、远端 deployment 或 official <code>pi05_libero</code> 归为个人端到端 ownership。</li></ul>
+<h2 id="7">7. 下一步</h2>
+<ol><li>若原远端可访问，优先按 acceptance criteria 生成 fresh matched bundle：manifest ID、effective argv、raw request/response、post-transform action 与独立 scorer。</li><li>若远端不可访问，先补本地可执行的 trace-export patch，再进行一次新的 rollout；没有 trace 时不升级 <code>0/1</code> 的根因结论。</li><li>保持 <code>PROJ-OPENPIVLA-007/008</code> 与全局 280 张卡 <code>unseen</code>，不创建 <code>coaching_state.md</code>。</li></ol>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Local summary：<code>artifacts/libero_franka_true_rollout_v1/summary.json</code>（S01）。</li><li>Local server/client logs：同目录 <code>serve.log</code>、<code>client.log</code>（S02–S03）。</li><li>Local rollout implementation：<code>scripts/run_libero_true_rollout.py</code>（C01）。</li><li>Local rollout videos：<code>zero_reference_rollout.mp4</code>、<code>model_policy_rollout.mp4</code>、<code>zero_reference_vs_model.mp4</code>（V01–V03）。</li><li><a href="openpivla_libero_checkpoint_load_lineage_gate.html">OpenPiVLA / LIBERO Checkpoint Load–Serve–Client Lineage Gate</a>。</li><li><a href="openpivla_official_checkpoint_immutable_manifest_gate.html">OpenPiVLA Official Checkpoint Immutable Manifest Gate</a>。</li></ol>
+</article></body></html>

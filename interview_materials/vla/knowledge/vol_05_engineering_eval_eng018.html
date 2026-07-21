@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：Scheduler、Preemption、Retry 与幂等训练任务（ENG-018）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eng018.md">
+<meta name="aris:source-sha256" content="ea2420892b8ce4541b16e657c051bb4f5cbb2760d22591e2fb7bbc1cf10faa6c">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>ea2420892b8ce4541b16e657c051bb4f5cbb2760d22591e2fb7bbc1cf10faa6c</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eng018.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1-retry">1. 短答：retry 只重新启动，不能替你恢复状态</a></li><li><a href="#2">2. 直觉：把训练当成可恢复事务</a></li><li><a href="#3-identity-rank-owner">3. 四层 identity：不要把 rank 当永久 owner</a></li><li><a href="#4-retry">4. Retry 与幂等副作用</a></li><li><a href="#5-preemption-checkpoint">5. Preemption：信号到安全 checkpoint</a></li><li><a href="#6-checkpoint-generation-dcp-deepspeed">6. Checkpoint generation 与 DCP/DeepSpeed</a></li><li><a href="#7-torchelastic-restart">7. TorchElastic restart 的边界</a></li><li><a href="#8-recovery-drill">8. Recovery drill 矩阵</a></li><li><a href="#9">9. 本地项目映射与真实性边界</a></li><li><a href="#10-upstream">10. 验证伪代码（工程合同，不是 upstream 实现）</a></li><li><a href="#11-trade-off-bad-case">11. Trade-off、bad case 与追问</a></li><li><a href="#11-1-trade-off">11.1 Trade-off</a></li><li><a href="#11-2-bad-case">11.2 高概率 bad case</a></li><li><a href="#11-3">11.3 面试追问</a></li><li><a href="#12">12. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：Scheduler、Preemption、Retry 与幂等训练任务（ENG-018）</h1>
+<div class="meta">状态：<code>drafted / knowledge_20_of_44 / card_1_of_1_unseen / review_warn</code> 报告日期：2026-07-17 证据截止：2026-07-17 当前节点：<code>VLA-ENG-018</code>；来源已冻结，单张题卡同步生成并保持 <code>unseen</code>。 来源入口：<a href="../sources/vol_05_eng018_scheduler_preemption_retry_source_freeze.html">ENG-018 Scheduler / Preemption / Retry Source Freeze</a>。 核心边界：scheduler retry 只负责再次启动，不能自动保证 checkpoint 完整、optimizer/RNG/sampler 恢复、exact resume 或副作用 exactly-once。</div>
+<h2 id="question">问题（Question）</h2>
+<p><code>VLA-ENG-018</code>：训练被抢占、worker 失败或 scheduler 重试时，如何设计 run identity、checkpoint generation、信号处理和幂等副作用，避免重复训练、半写 checkpoint 或错误续训？</p>
+<p>面试回答应先区分：</p>
+<ol><li><strong>谁在重试</strong>：logical run、attempt、worker group、rank；</li><li><strong>恢复什么</strong>：restart-from-scratch、weights-only、epoch-boundary 还是 exact mid-epoch；</li><li><strong>如何提交 artifact</strong>：临时目录、manifest、校验、<code>COMMITTED</code>、latest/final promotion；</li><li><strong>如何证明</strong>：注入 SIGTERM、worker crash、duplicate attempt、storage failure 和 world-size change。</li></ol>
+<h2 id="section-2">知识地图位置与前置依赖</h2>
+<pre><code class="language-text">ENG-006 checkpoint lineage + ENG-013 RNG/sampler replay
+                 ↓
+logical run / attempt / worker group / rank identity
+                 ↓
+preemption signal → safe-boundary checkpoint → committed generation
+                 ↓
+retry/dedupe/idempotent side effects → recovery drill → closed-loop eval</code></pre>
+<p>前置：</p>
+<ul><li><code>VLA-ENG-006/013</code>：checkpoint bundle、RNG、sampler cursor、next-batch replay。</li><li><code>VLA-ENG-015</code>：offload、checkpoint write time、固定 A/B。</li><li><code>VLA-ENG-017</code>：事件、rank trace、first-failure 与 lineage schema。</li><li><a href="../sources/vol_05_local_artifact_gate_eng004_006.html">ENG-004..006 Artifact Gate</a>：本地 binary/resume 缺口。</li></ul>
+<h2 id="1-retry">1. 短答：retry 只重新启动，不能替你恢复状态</h2>
+<p><strong>30 秒回答</strong>：我把 logical run、attempt、worker group 和 rank 分开；retry 每次用新 attempt ID，checkpoint 写到临时 generation，所有 rank 完成 shard/manifest/hash/load smoke 后才标记 <code>COMMITTED</code> 并更新 latest。SIGTERM 只设置 preempt flag，训练在安全边界保存；Kubernetes/TorchElastic 可能重复启动或改变 rank/world-size，所以用稳定 operation key 去重。当前项目没有 binary、full-state bundle 或 preemption drill，不能说 exact resume。</p>
+<h2 id="2">2. 直觉：把训练当成可恢复事务</h2>
+<p>一个训练任务像长事务：</p>
+<ul><li>logical run 是业务目标；attempt 是一次执行尝试；</li><li>checkpoint generation 是事务快照；<code>COMMITTED</code> 是提交标记；</li><li>retry 是重新执行尝试，不是把上一次进程的内存直接复活；</li><li>latest/final 只能指向已经校验和可读的 committed generation。</li></ul>
+<p>如果进程在写 shard 的中途被杀死，目录存在不代表状态可读；如果两个 attempt 同时写 <code>latest</code>，最后完成的 attempt 也不一定是正确或最新的。因此保存和发布要采用“临时写入 → 校验 → 原子 promote”的事务思路。</p>
+<h2 id="3-identity-rank-owner">3. 四层 identity：不要把 rank 当永久 owner</h2>
+<table><thead><tr><th>Identity</th><th>作用</th><th>retry/restart 后是否稳定</th><th>典型字段</th></tr></thead><tbody>
+<tr><td><code>logical_run_id</code></td><td>同一个实验/训练目标</td><td>稳定</td><td>dataset/config/base model/预算 hash</td></tr>
+<tr><td><code>attempt_id</code></td><td>scheduler 的一次执行</td><td>变化</td><td>start time、failure reason、retry index</td></tr>
+<tr><td><code>worker_group_id</code></td><td>同时工作的进程集合</td><td>可重建</td><td>rendezvous/run ID、membership</td></tr>
+<tr><td><code>rank/world_size</code></td><td>当前通信身份</td><td>可能变化</td><td>rank、local rank、world-size、node</td></tr>
+</tbody></table>
+<p>TorchElastic 文档明确 <code>RANK</code> 不稳定，elastic job 中 <code>WORLD_SIZE</code> 也可能变化；<code>TORCHELASTIC_RESTART_COUNT</code> 和 <code>TORCHELASTIC_RUN_ID</code> 可用于记录重启上下文。故 artifact owner 应使用 <code>logical_run_id + generation</code>，而不是 <code>rank0</code> 路径或某次 attempt 的本地目录。</p>
+<h2 id="4-retry">4. Retry 与幂等副作用</h2>
+<p>Kubernetes Job 文档说明，同一程序可能启动两次，甚至出现并发 Pod；<code>backoffLimit</code> 控制失败尝试边界，但不提供 exactly-once 训练语义。</p>
+<p>可用稳定 operation key 表示副作用：</p>
+<div class="formula">\[
+k=\operatorname{hash}(logical\_run\_id, operation\_type, generation\_or\_request\_id)
+\]</div>
+<p>如果相同 (k) 的操作被重复执行，系统应返回同一已提交结果或安全地发现冲突，而不是覆盖未知状态。训练 optimizer step 本身不是天然幂等；因此 retry 只能从明确 committed state 和 sampler/RNG cursor 恢复，不能盲目重跑已消费 batch。</p>
+<table><thead><tr><th>副作用</th><th>可靠模式</th><th>不能做</th></tr></thead><tbody>
+<tr><td>checkpoint</td><td><code>attempt/tmp/generation</code> → hash/manifest/load smoke → <code>COMMITTED</code> → latest</td><td>直接覆盖 <code>latest</code></td></tr>
+<tr><td>metrics/logs</td><td>attempt-scoped event key，按 logical step 聚合</td><td>把两次 attempt 的 step 直接拼接</td></tr>
+<tr><td>eval</td><td><code>checkpoint_hash + protocol_hash</code> 去重，结果 immutable</td><td>同路径覆盖不同 scorer/协议</td></tr>
+<tr><td>cache/data generation</td><td>content hash、临时写、原子 rename</td><td>读取未完成 cache</td></tr>
+<tr><td>final publish</td><td>只从 committed generation 经过 gate promote</td><td>任意 retry 直接覆盖 final</td></tr>
+</tbody></table>
+<h2 id="5-preemption-checkpoint">5. Preemption：信号到安全 checkpoint</h2>
+<p>Kubernetes Pod lifecycle 文档描述了 TERM/SIGTERM、termination grace period 和超时后的 KILL；<code>preStop</code> 也占用 grace budget。训练进程不能假设收到信号后一定有足够时间写完整 checkpoint。</p>
+<p>推荐状态机：</p>
+<pre><code class="language-text">PENDING → RUNNING → CHECKPOINT_REQUESTED → WRITING → COMMITTED → EXIT
+                      └──────────────→ FAILED_PARTIAL
+RUNNING → FAILURE → RETRY_WAIT → new ATTEMPT</code></pre>
+<p>信号 handler 只做三件事：记录 signal/deadline、设置 <code>preempt_requested</code>、让主循环在安全边界协调保存。保存应优先在 micro/optimizer step 边界执行，避免一个 rank 已退出而其他 rank 卡在 barrier；如果剩余 grace 不够，要留下 <code>FAILED_PARTIAL</code>/retryable marker，而不是把半写目录公开为 latest。</p>
+<h2 id="6-checkpoint-generation-dcp-deepspeed">6. Checkpoint generation 与 DCP/DeepSpeed</h2>
+<p>PyTorch DCP 支持多 rank 并行保存/加载，checkpoint 由多文件组成，并支持 load-time resharding；这适合大模型，但也意味着完整性不能由单个路径存在判断。一个 generation 至少包含：</p>
+<pre><code class="language-text">model / optimizer / scheduler / scaler
+CPU/CUDA/Python/NumPy RNG / sampler epoch+cursor
+data/transform/normalizer/processor manifest
+world-size / sharding strategy / code+config+environment
+expected next sample IDs / logical step / attempt lineage
+per-file size+SHA / global manifest / COMMITTED</code></pre>
+<p>写入顺序：</p>
+<ol><li>创建 attempt-scoped temp generation；</li><li>所有 rank 写 shard，收集错误；</li><li>barrier 后生成 manifest、文件 hash 和 metadata；</li><li>用独立 load/read smoke 检查 shape、optimizer、scaler、normalizer 和 next-batch；</li><li>最后写 <code>COMMITTED</code> 并原子更新 latest。</li></ol>
+<p>DeepSpeed frozen checkpointing source 提供 save/load、ZeRO fp32 recovery，并说明 Universal Checkpoints 仍 under development；因此跨 world-size/3D parallelism 的恢复仍需显式验证。</p>
+<h2 id="7-torchelastic-restart">7. TorchElastic restart 的边界</h2>
+<p><code>torchrun --max-restarts</code> 和 rendezvous 可以重新拉起 worker group；官方建议训练脚本采用 <code>load_checkpoint → initialize → train → save_checkpoint</code> 结构。但 restart 不自动保存/恢复：</p>
+<ul><li>optimizer、scheduler、scaler、RNG、sampler cursor；</li><li>latest generation 是否完整、是否来自同一 logical run；</li><li>world-size 改变后的 effective batch 和 data partition；</li><li>外部 metric/eval/cache 的重复副作用；</li><li>checkpoint 后到 failure 前的样本是否重复或丢失。</li></ul>
+<p>因此恢复结论必须标注强度：</p>
+<table><thead><tr><th>结论</th><th>最小证据</th></tr></thead><tbody>
+<tr><td>restart-from-scratch</td><td>新 attempt 能启动</td></tr>
+<tr><td>weights-only warm start</td><td>model weights hash + load smoke</td></tr>
+<tr><td>epoch-boundary resume</td><td>optimizer/scheduler/scaler/RNG + 下一 epoch sample IDs</td></tr>
+<tr><td>mid-epoch exact replay</td><td>sampler cursor、所有 RNG、worker/prefetch、fixed next-batch diff</td></tr>
+</tbody></table>
+<h2 id="8-recovery-drill">8. Recovery drill 矩阵</h2>
+<table><thead><tr><th>Case</th><th>注入点</th><th>通过条件</th></tr></thead><tbody>
+<tr><td>clean restart</td><td>committed checkpoint 后退出</td><td>load、next IDs、loss、optimizer/scaler 一致</td></tr>
+<tr><td>SIGTERM preemption</td><td>micro step、optimizer step、checkpoint write 中</td><td>grace 内 safe save；partial 不可见；retryable exit</td></tr>
+<tr><td>worker crash</td><td>forward/backward/collective</td><td>group restart、无 deadlock、rank remap 可记录</td></tr>
+<tr><td>duplicate attempt</td><td>两个相同 logical run 同时启动</td><td>temp 隔离、side effect 去重、single final promotion</td></tr>
+<tr><td>world-size change</td><td>N→M ranks load</td><td>DCP/框架 reshard、effective batch/sampler 语义明确</td></tr>
+<tr><td>storage failure</td><td>shard/manifest/upload 中断</td><td>last committed 不变；retry 不读 partial、不覆盖已验证结果</td></tr>
+</tbody></table>
+<p>结果至少报告 recovery time、lost/replayed steps、duplicate side effects、checkpoint bytes/write time、failure reason 和 resumed numerical diff；“Job 最终成功”不等于恢复正确。</p>
+<h2 id="9">9. 本地项目映射与真实性边界</h2>
+<p>本仓库证据支持：</p>
+<ul><li>UWM 有 save summary、checkpoint load report、normalizer 和 effective config，但 snapshot 没有 checkpoint binary，不能验证 generation 完整、optimizer/RNG/sampler cursor 或 preemption continuation。</li><li>OPD 有 ZeRO-2/3 配置、checkpoint selection table 和 <code>final_model_only_no_intermediate_checkpoints</code> / <code>final_weights_no_optimizer_state</code> manifest；这是 final/weights-only 边界，不是 exact resume。</li><li>OpenPiVLA 有 formal trainer、report、远端 log/checkpoint path 引用和 smoke/diagnostic artifact，但缺 immutable checkpoint hash/load smoke、attempt ledger、SIGTERM/retry trace。</li></ul>
+<p>安全回答：</p>
+<div class="meta">“我会把 logical run、attempt、worker group、rank 分开。retry 可能重复启动，因此 checkpoint、eval 和 final publish 都用稳定 key 去重；checkpoint 写到 attempt 临时 generation，所有 rank 完成 shard/manifest/hash/load smoke 后才 COMMITTED/latest。当前项目能证明保存/load metadata 和 final-only 配置，但没有 binary、optimizer/RNG/sampler bundle 或 preemption drill，所以我不会说已实现无损弹性续训。”</div>
+<table><thead><tr><th>口径</th><th>证据等级</th><th>面试安全表达</th></tr></thead><tbody>
+<tr><td>UWM save/load metadata</td><td>local-direct/report-supported</td><td>有保存/load 摘要，binary 缺失</td></tr>
+<tr><td>OPD final-only/no-optimizer-state</td><td>local-direct manifest</td><td>weights-only continuation，不是 exact resume</td></tr>
+<tr><td>OpenPiVLA remote checkpoint path</td><td>remote-referenced</td><td>报告中有路径引用，未做 immutable load smoke</td></tr>
+<tr><td>scheduler/retry/preemption/idempotency</td><td>unverified</td><td>当前没有 attempt/signal/duplicate/world-size drill</td></tr>
+</tbody></table>
+<h2 id="10-upstream">10. 验证伪代码（工程合同，不是 upstream 实现）</h2>
+<pre><code class="language-python">def run_attempt(logical_run_id, attempt_id, cfg):
+    # 1. Resolve only a committed generation and restore the full training state.
+    state = load_full_state(resolve_latest_committed(logical_run_id), cfg)
+    preempt = install_signal_flag_and_deadline()
+
+    for batch in restore_sampler_and_iter(state):
+        train_one_step(batch, state)
+
+        # 2. Save only at a safe boundary, using an attempt-scoped temp directory.
+        if should_checkpoint(state) or preempt.requested:
+            tmp = create_temp_generation(logical_run_id, attempt_id, state.step)
+            save_all_rank_shards(tmp, state)
+            write_manifest_and_hashes(tmp, state)
+            verify_load_and_next_batch(tmp, state)
+            atomically_commit_and_promote_latest(tmp)
+
+        # 3. Exit retryably after a committed generation, never from a partial path.
+        if preempt.requested:
+            return retryable_exit(&quot;preempted_after_commit&quot;)
+
+    # 4. Final publication is keyed by immutable checkpoint/protocol hashes.
+    promote_final_once(state.checkpoint_hash, cfg.protocol_hash)</code></pre>
+<p>伪代码表达 committed-only load、safe-boundary save、manifest-last、atomic promotion 和 retryable exit；signal/barrier/DCP/DeepSpeed/object-store API 必须由部署环境实现，代码本身不是 exact resume 证明。</p>
+<h2 id="11-trade-off-bad-case">11. Trade-off、bad case 与追问</h2>
+<h3 id="11-1-trade-off">11.1 Trade-off</h3>
+<ul><li>checkpoint 越频繁，lost work 越少，但写入/同步开销越高。</li><li>grace budget 越短，越需要轻量增量/异步保存或提前 checkpoint；不能把大 checkpoint 写入时间假设为零。</li><li>retry 上限越高，短暂故障更能恢复，但重复副作用和总成本也会上升。</li><li>world-size elastic 提高资源弹性，却要求重新验证 sampler、effective batch、optimizer state 和 metrics continuity。</li></ul>
+<h3 id="11-2-bad-case">11.2 高概率 bad case</h3>
+<ol><li>把 <code>rank0/checkpoint.pt</code> 当成跨 retry 永久路径。</li><li>retry attempt 直接覆盖 <code>latest</code>，导致旧 checkpoint 被半写目录污染。</li><li>捕获 SIGTERM 后每个 rank 独自保存，最终 barrier deadlock 或 shard 不一致。</li><li>只保存 model weights，却把结果说成 optimizer/RNG/sampler exact resume。</li><li>Job 最终成功就忽略 duplicate eval、重复数据生成或不同 attempt 的日志混合。</li><li>world-size 变化后仍复用旧 rank、batch 和 sampler 假设。</li></ol>
+<h3 id="11-3">11.3 面试追问</h3>
+<ol><li>logical run 和 attempt 为什么不能用同一个 ID？</li><li><code>COMMITTED</code> 应在什么时候写？</li><li>如果 SIGTERM 发生在 checkpoint write 中间怎么办？</li><li>Kubernetes retry 和 TorchElastic restart 各自保证什么？</li><li>如何证明下一批 sample IDs 没有重复或丢失？</li><li>如果 checkpoint 写入时间超过 grace period，系统如何降级？</li></ol>
+<h2 id="12">12. 结论与下一步</h2>
+<p>可靠训练任务必须把 scheduler、signal、checkpoint 和 side effect 设计成一条恢复合同：logical run 保持稳定，attempt 可重试，rank 可变化；checkpoint 先写临时 generation，完成全 rank 校验和 load smoke 后再 <code>COMMITTED</code>；final/eval/cache 用稳定 key 去重。TorchElastic/Kubernetes/DCP/DeepSpeed 官方语义支持这些机制的边界，但不自动证明本地 exact resume 或 exactly-once。</p>
+<p>当前节点已完成知识页和一张 <code>unseen</code> 题卡；仍保持 <code>WARN</code>。下一步可进行 ENG-018 一题口述，或补 binary、attempt、signal、duplicate 和 world-size recovery artifacts；ENG-019 继续后置。</p>
+<h2 id="references">References</h2>
+<ol><li>PyTorch 2.13，<a href="https://docs.pytorch.org/docs/2.13/elastic/run.html">Elastic Run / torchrun</a>：worker group、restart、run/restart count、rank/world-size instability。</li><li>PyTorch 2.13，<a href="https://docs.pytorch.org/docs/2.13/elastic/quickstart.html">TorchElastic Quickstart</a>：fault-tolerant/elastic launch 与 <code>--max-restarts</code>。</li><li>PyTorch 2.13，<a href="https://docs.pytorch.org/docs/2.13/distributed.checkpoint.html">Distributed Checkpoint</a>：multi-rank save/load、多文件与 load-time resharding。</li><li>Kubernetes，<a href="https://kubernetes.io/docs/concepts/workloads/controllers/job/">Jobs</a>：backoff、replacement、duplicate/concurrent execution 边界。</li><li>Kubernetes，<a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/">Pod Lifecycle</a>：preStop、TERM/SIGTERM、grace period 与 KILL。</li><li>Microsoft DeepSpeed，<a href="https://github.com/microsoft/DeepSpeed/blob/de1846cf6fbdd6f1c2adf046f319791ca78cc547/docs/code-docs/source/model-checkpointing.rst">Model Checkpointing</a>：save/load、ZeRO recovery 与 Universal Checkpoints under development。</li><li>本仓库，<a href="../sources/vol_05_eng018_scheduler_preemption_retry_source_freeze.html">ENG-018 Source Freeze</a>、<a href="../sources/vol_05_local_artifact_gate_eng004_006.html">ENG-004..006 Artifact Gate</a>、<a href="../sources/vol_05_eng013_reproducibility_source_freeze.html">ENG-013 Reproducibility</a> 与项目 inventory。</li></ol>
+</article></body></html>

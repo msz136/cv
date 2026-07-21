@@ -1,0 +1,29 @@
+{
+  "artifact": "sources/vol_04_wm023_open_loop_receding_horizon_source_freeze.md",
+  "html": "sources/vol_04_wm023_open_loop_receding_horizon_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-WM-023 / WARN",
+  "verdict": "WARN",
+  "source_sha256": "7f37930bf857614a3275228887fcf35382bd1823f3ca87c78e0555875519aa3c",
+  "covered_question_ids": ["VLA-WM-023"],
+  "checks": {
+    "primary_sources": "PASS (PlaNet arXiv v5, Diffusion Policy arXiv v5, ACT arXiv v1 checked)",
+    "official_code": "PASS WITH WARNING (diffusion_policy commit 5ba07ac and ACT commit 742c753 frozen; code contract checked without claiming local execution)",
+    "horizon_contract": "PASS (T_o/T_p/T_a, H/K, control period and observation age are separated)",
+    "latency_contract": "PASS (end-to-end timestamps, queue underflow, synchronous/asynchronous/event-trigger cases are explicit)",
+    "matched_sweep": "PASS (H/K sweep, latency injection, perturbation and overlap consistency matrix specified)",
+    "project_evidence_boundary": "PASS (Cosmos/WAM public chunk and hardware latency are not promoted to local results)",
+    "html_static_validation": "PASS (one H1, tables, formulas and canonical SHA rendered)",
+    "local_links": "PASS (WM-019, WM-022 and Cosmos audit links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "downstream_artifacts": "PASS WITH WARNING (knowledge page and one unseen atomic card are synchronized; local planning artifacts remain missing)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the WM-023 atomic card unseen until a real oral drill.",
+    "Collect local planning runtime, matched H/K curves, latency trace, perturbation episodes and ownership artifacts before any personal robustness or latency claim.",
+    "Do not treat Cosmos 16-step/32-to-16 protocol or specified hardware wall-clock as a universal optimum or local result.",
+    "Do not create coaching_state.md before an actual drill."
+  ],
+  "next": "Choose one WM-023 oral drill or collect one horizon/latency artifact; keep WM-024..038 deferred."
+}

@@ -1,0 +1,47 @@
+{
+  "artifact": "sources/vol_05_eval015_reward_scorer_hacking_adversarial_evaluation_source_freeze.md",
+  "html": "sources/vol_05_eval015_reward_scorer_hacking_adversarial_evaluation_source_freeze.html",
+  "review_date": "2026-07-19",
+  "status": "source_frozen / VLA-EVAL-015 / knowledge_drafted / card_1_of_1_unseen / WARN",
+  "verdict": "WARN",
+  "source_sha256": "9136d4de46b2c754ba4ed23c6ac0515f2239d2031e246c7479876fb6baf5d872",
+  "coverage": {
+    "knowledge_id": "VLA-EVAL-015",
+    "public_source_groups_checked": 4,
+    "project_inventories_checked": 5,
+    "local_reward_scorer_implementations_checked": 1,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "concrete_problems": "arXiv 1606.06565v2 / PDF SHA-256 a3ac7eda67026d6d95f2182b1202ac371b7d9feabcc10a48dc90e417fbac023e",
+    "ai_safety_gridworlds": "arXiv 1711.09883v2 + google-deepmind/ai-safety-gridworlds commit c43cb31143431421b5d2b661a2458efb301da9a3 / Apache-2.0",
+    "reward_tampering": "arXiv 1908.04734v5 / PDF SHA-256 9710aad1b99df97617b46b5ef69fa9ba126be8b913ff2d11df94b795af980d59",
+    "reward_overoptimization": "arXiv 2210.10760v1 / PDF SHA-256 c793c551a1b027402f758cce0fbf6b400cf66d0df57d2875d275e73cfd58bfc9",
+    "robot_harness": "read-only HEAD 3f4c8b3a11ff9512bc18ec4a331ae5ea01555f49 / dirty worktree / file hashes frozen"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one EVAL-015 source, knowledge node and unseen card; EVAL-016 deferred)",
+    "source_freeze": "PASS (reward hacking, hidden performance function, reward tampering and proxy overoptimization versions/hashes frozen)",
+    "concept_boundary": "PASS (reward/scorer hacking, tampering, specification gaming and ordinary failure separated)",
+    "oracle_independence": "PASS (data, signal, implementation, reviewer and access dimensions explicit)",
+    "proxy_gap_metrics": "PASS (high-proxy/low-audit indicator, k/N/CI and continuous gap boundary)",
+    "optimizer_budget": "PASS (RL, best-of-N, checkpoint/prompt search and audit access curves)",
+    "mutation_adversarial": "PASS (parser, semantic judge, reward process, trajectory, selection, safety, contamination and version families)",
+    "artifact_contract": "PASS (objective/scorer/split/case/raw/matrix/budget/human/failure/checksum/recompute bundle)",
+    "project_truth_boundary": "PASS (Harness proxy gaps and four no-locked-audit boundaries explicit)",
+    "canonical_sha": "PASS (Markdown, HTML metadata and review SHA match)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, eighteen H2, five tables, three code blocks, six formula blocks, zero formula em; serif/sticky/900px rules present)",
+    "local_links": "PASS",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Build a locked audit whose data, scorer and raw-state channels do not reuse the optimized proxy.",
+    "Run optimizer-budget and mutation sweeps before claiming robustness to scorer exploitation.",
+    "Do not infer intentional hacking from a proxy gap before excluding bugs, shift and label errors.",
+    "Do not create coaching_state.md before a real oral response."
+  ],
+  "next": "Proceed only to VLA-EVAL-016 VLM/human proxy agreement and bias; keep VLA-EVAL-015 WARN/unseen."
+}

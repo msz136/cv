@@ -1,0 +1,59 @@
+{
+  "artifact": "evidence/projects/uwm_robocasa_actionheadfix_30epoch_train_eval_p0_audit.md",
+  "html": "evidence/projects/uwm_robocasa_actionheadfix_30epoch_train_eval_p0_audit.html",
+  "review_date": "2026-07-21",
+  "status": "p0_audited / remote-snapshot-raw-rollouts / checkpoint-path-only / protocol-bounded / ownership-pending / WARN",
+  "verdict": "WARN",
+  "source_sha256": "41B9CDDDB95163A369719E007EA11AD3A7776E79F0901F80DCACD34FAA83F117",
+  "scope": {
+    "project": "UWM RoboCasa actionheadfix 30-epoch train-to-closed-loop",
+    "run_id": "target_atomic_seen_official12_task_30epoch_muxi_20260628_openpi_state_3view_phase_30ep",
+    "train_steps": 3930,
+    "train_epochs": 30,
+    "tasks": 18,
+    "scenarios_per_setting": 54,
+    "rollout_settings": 8,
+    "raw_rollout_records": 432,
+    "checkpoint_binaries_local": 0,
+    "candidate_transcripts": 0,
+    "mastery_changes": 0,
+    "coaching_state_created": false
+  },
+  "frozen_inputs": {
+    "train_out_sha256": "4C56A7181A912156C482D7982B7568FBAB1FE597DC25702B318D615BD3588B80",
+    "train_summary_sha256": "88EDF9D28C7EF5D40316A7C71DE0C8E932492257A50383397C497974568C8E93",
+    "deepspeed_config_sha256": "2BF8216F04391CE4323FC79AE74AAE9728E8B13F8D4057F281734A0A4DA54642",
+    "normalizer_sha256": "27D2E8E24B3FDD43A841597D0CF3CF9CF322829FB28A26B663012338B1E48500",
+    "sweep_summary_sha256": "F4426789264BD5165363AD3F416B574C4C4ADB463D434C7C2182D428B835371F",
+    "verified_summary_sha256": "3AD967659D8208C2B67F0AE421E29353317BF067792878AEA14EF883B853BFC6",
+    "checkpoint_smoke_sha256": "BC95D7EEFC162D7A0BEE432424FF80B982B05562A5D6755A44EC8528B99C39F4",
+    "dataset_smoke_sha256": "63A6DF7EE65C59560F2A58B2E73B13C8B52FBA91837FD1E3A7DE8B2D6681E681",
+    "save_smoke_sha256": "5132415BA944C4DB7BC0E8FA992B537675FC73EB6DC51E598340A5073FCD9442"
+  },
+  "checks": {
+    "run_family_boundary": "PASS (one 30-epoch openpi-state-3view-phase run only; Human300, 100-epoch, strict/direct and LIBERO results are excluded)",
+    "training_completion": "PASS (3930 steps, 30 epochs, 8/8 rank exits successful, no traceback or CUDA OOM found)",
+    "training_metric_boundary": "PASS WITH WARNING (41 printed metric points independently parse; val_ratio=0 and eval_every=0; complete 3930-record train.jsonl absent)",
+    "base_load_contract": "PASS WITH WARNING (446 matched, 8 reset action-head keys skipped, 32 missing new-module keys, 0 unexpected; base binary not locally hashed)",
+    "dataset_contract": "PASS (18 tasks, 9126 episodes, 133457 sequences, three views, 16D state and reordered 12D action)",
+    "raw_rollout_recount": "PASS (8 JSON files x 54 records; 18 tasks x 3 trials; field and record success counts agree)",
+    "scenario_pairing": "PASS (the same 54 scenario/task/seed tuples appear in all eight settings)",
+    "environment_health": "PASS (0 environment errors in all eight raw rollout files)",
+    "success_boundary": "PASS WITH WARNING (0-2/54 per setting; successes occur only on TurnOnElectricKettle or TurnOnMicrowave; no benchmark or uplift claim)",
+    "contact_boundary": "PASS WITH WARNING (full-h4 has 45/54 robot-env contact episodes but 0/54 success; contact is treated only as a proxy)",
+    "checkpoint_boundary": "PASS WITH WARNING (all evals reference one remote models.pt path; local snapshot contains zero checkpoint-like binaries and no fresh-load parity)",
+    "normalizer_boundary": "PASS WITH WARNING (local 12D normalizer is hashable and path-aligned; one reordered dimension is constant with std=0)",
+    "ablation_boundary": "PASS (one-episode differences are not promoted to prompt/right-view/state causality)",
+    "ownership_boundary": "PASS WITH WARNING (candidate/operator/reviewer and tool-generated evidence roles remain unconfirmed)",
+    "html_static_validation": "PENDING",
+    "browser_visual_check": "PENDING"
+  },
+  "open_items": [
+    "Freeze the produced models.pt binary or immutable remote SHA/ETag and run fresh-process load parity.",
+    "Sync the complete train.jsonl and add a held-out or fixed teacher-forced evaluation.",
+    "Freeze RoboCasa, MuJoCo, controller and success-predicate revisions and retain episode videos or locators.",
+    "Repeat the paired 54-scenario sweep across checkpoint seeds before making ablation claims.",
+    "Confirm candidate/operator/reviewer/tool ownership for train, rollout, dataset and evidence collection."
+  ],
+  "next": "Sync this audit into the UWM inventory, P0 bundle page, VOL 05 evidence freeze and PROJ-UWM-004 source list; keep all cards unseen until a real candidate answer."
+}

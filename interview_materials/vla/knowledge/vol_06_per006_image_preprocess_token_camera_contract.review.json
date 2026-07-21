@@ -1,0 +1,36 @@
+{
+  "artifact": "knowledge/vol_06_per006_image_preprocess_token_camera_contract.md",
+  "html": "knowledge/vol_06_per006_image_preprocess_token_camera_contract.html",
+  "source_freeze": "sources/vol_06_per006_image_preprocess_token_camera_contract_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / VLA-PER-006 / source_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "FD923E666474A599E73A013FBD5F80615B708CF027A77BEFFB79A1D4DF30BE99",
+  "question_ids": [
+    "VLA-PER-006"
+  ],
+  "checks": {
+    "source_gate": "PASS WITH WARNING (Qwen3-VL/Transformers/qwen-vl-utils revisions, local OPD/OpenPiVLA paths and deterministic probes are frozen; per-run processor artifacts remain missing)",
+    "four_space_contract": "PASS (raw image, processed image, patch grid and language-side image-token spaces are separated with required metadata)",
+    "smart_resize": "PASS (aspect-preserving smart resize, integer factor and pixel-budget constraints are derived without claiming crop or letterbox in the frozen Qwen path)",
+    "patch_grid_token_formula": "PASS (patch=16, merge=2, factor=32 and N_img=prod(image_grid_thw)/merge^2 are stated and applied to the frozen probes)",
+    "pixel_range_normalization": "PASS WITH WARNING (rescale and x_norm=2x/255-1 contract is explicit; exact per-run input range/config still requires archived artifacts)",
+    "coordinate_inverse": "PASS (direct-resize, crop and letterbox forward/inverse mappings plus round-trip sentinel requirements are separated)",
+    "opd_double_resize": "WARN (factor28-to-factor32 two-stage resize is shown as a static contract risk, not a measured performance root cause)",
+    "openpivla_lineage": "PASS WITH WARNING (formal MindCube, image-free DROID action and square-224 dry-run adapter lineages are separated; no path substitution is allowed)",
+    "camera_identity_manifest": "PASS WITH WARNING (camera/order/frame/timestamp/original/processed/grid/inverse manifest is specified but not yet present in local run bundles)",
+    "pseudocode": "PASS (auditable preprocessing trace, token-count assertion, placeholder alignment and inverse-coordinate sentinel are executable in structure)",
+    "project_truth_boundary": "PASS (upstream mechanisms, local static observations, missing evidence and personal contribution boundaries remain distinct)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, nineteen H2, thirteen H3, nine tables, eight code blocks, seven local links, canonical/HTML/review SHA and anchors valid; zero formula-em/control-character issues)",
+    "browser_visual_check": "BLOCKED (file:// navigation restricted in current environment)",
+    "question_card": "PASS WITH WARNING (one VLA-PER-006 atomic card is synchronized and counted globally; it remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized VLA-PER-006 atomic card unseen until a real oral drill.",
+    "Archive exact local model/processor configuration and the original/resized/grid/token/camera manifest for each relevant run.",
+    "Run coordinate round-trip and matched preprocessing A/B checks before claiming any performance effect.",
+    "Do not create coaching_state.md or change mastery before a real oral drill."
+  ],
+  "next": "PER-009 source+knowledge+card are synchronized and unseen; generate only the PER-010 metric/parser source freeze next."
+}

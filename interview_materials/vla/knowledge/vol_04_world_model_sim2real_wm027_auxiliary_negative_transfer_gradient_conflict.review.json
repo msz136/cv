@@ -1,0 +1,35 @@
+{
+  "artifact": "knowledge/vol_04_world_model_sim2real_wm027_auxiliary_negative_transfer_gradient_conflict.md",
+  "html": "knowledge/vol_04_world_model_sim2real_wm027_auxiliary_negative_transfer_gradient_conflict.html",
+  "source_freeze": "sources/vol_04_wm027_auxiliary_negative_transfer_gradient_conflict_source_freeze.md",
+  "review_date": "2026-07-18",
+  "status": "drafted / VLA-WM-027 / knowledge_29_of_44 / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "14fa82be94ceb2e0722d29be646cd0be890dbeb4aaf106c15a208c879590ed93",
+  "question_ids": ["VLA-WM-027"],
+  "checks": {
+    "source_gate": "PASS WITH WARNING (PCGrad/GradNorm primary sources and WAM evidence boundary linked)",
+    "evidence_layers": "PASS (optimization geometry, training outcome and system outcome separated)",
+    "formula_and_variables": "PASS (cosine, joint first-order change, norm ratio, PCGrad and GradNorm map to exact losses/parameters)",
+    "diagnostic_contract": "PASS (layer/role, valid target, AMP, clipping, DDP/FSDP and routed-domain boundaries covered)",
+    "root_cause_tree": "PASS (label, routing/mask, padding, role/domain, scale, direction and capacity included)",
+    "method_selection": "PASS (PCGrad direction conflict and GradNorm scale/rate are not conflated)",
+    "pseudocode": "PASS (commented instrumentation uses exact role loss and global gradient statistics)",
+    "matched_evaluation": "PASS (action-only/+world/+value/all, mitigation arms, seeds, paired episodes and protocol fields included)",
+    "cosmos_exact_boundary": "PASS (component L1/MSE is not promoted to official per-objective training gradient)",
+    "project_evidence_boundary": "PASS (no local mitigation or negative-transfer result claimed)",
+    "html_static_validation": "PASS (canonical SHA, one H1, thirteen H2 headings, three tables, formulas, code and MathJax rendered)",
+    "local_links": "PASS (WM-025/026, source freeze and WAM inventory links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "question_card": "PASS WITH WARNING (one VLA-WM-027 atomic card synchronized and remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep VLA-WM-027 unseen until oral practice.",
+    "Collect local exact-loss gradient traces and matched multi-seed closed-loop evidence.",
+    "Do not call a local optimization signal a confirmed project root cause or benefit.",
+    "Do not create coaching_state.md until an actual drill."
+  ],
+  "next": "Build only VLA-WM-028 routing/slot-mask/loss-weight contract next; preserve WM-027 as the gradient-interference node."
+}
+

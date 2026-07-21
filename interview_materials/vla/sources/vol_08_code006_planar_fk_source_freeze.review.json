@@ -1,0 +1,30 @@
+{
+  "artifact": "sources/vol_08_code006_planar_fk_source_freeze.md",
+  "html": "sources/vol_08_code006_planar_fk_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / CODE-VLA-006 / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "eca384055243ede293753f54bca55fb330f00d693eeb81a1df6a46d4d7035e12",
+  "covered_question_ids": [
+    "CODE-VLA-006"
+  ],
+  "checks": {
+    "primary_sources": "PASS WITH WARNING (Modern Robotics, ROS REP-103 and local foundations/CODE-005 are linked)",
+    "fk_contract": "PASS (relative joint angle, analytic FK, homogeneous chain, endpoint pose and units are explicit)",
+    "frame_unit_contract": "PASS (base/joint convention, radian/degree, length unit, zero/positive direction and tool offset are explicit)",
+    "test_contract": "PASS (zero/90/folded/negative, matrix parity, finite-difference Jacobian and unit mismatch tests are specified)",
+    "robot_boundary": "PASS (FK is separated from IK, dynamics, collision, controller and real success)",
+    "project_evidence_boundary": "PASS (no project calibration/controller/ownership claim is inferred)",
+    "html_static_validation": "PASS (one H1, five H2, table and formulas rendered)",
+    "local_links": "PASS (VOL 01/CODE-005 and official source links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "downstream_artifacts": "PASS WITH WARNING (knowledge page and one unseen hand-coding card are synchronized)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep source gate WARN until a local URDF/joint calibration/FK roundtrip artifact exists.",
+    "Keep the synchronized CODE-VLA-006 knowledge page and unseen card linked in all indexes.",
+    "Do not infer controller or robot success from analytic FK."
+  ],
+  "next": "Run one CODE-VLA-006 whiteboard drill or collect a local FK/URDF artifact; keep the card unseen until then."
+}

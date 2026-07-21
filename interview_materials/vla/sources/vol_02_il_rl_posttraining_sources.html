@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 02 IL / RL / Post-training：来源计划</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_02_il_rl_posttraining_sources.md">
+<meta name="aris:source-sha256" content="b9476798e485231768cd4b11bb929daed305c762ac8c61a877c1f3ecda0876b7">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>b9476798e485231768cd4b11bb929daed305c762ac8c61a877c1f3ecda0876b7</code>；生成自：<code>interview_materials\vla\sources\vol_02_il_rl_posttraining_sources.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-primary-papers">1. Primary papers</a></li><li><a href="#2-official-documentation-implementations">2. Official documentation / implementations</a></li><li><a href="#3">3. 本地项目映射</a></li><li><a href="#4-registry-reconciliation">4. Registry reconciliation</a></li><li><a href="#5-bounded-slice">5. 下一 bounded slice</a></li></ol></nav>
+<h1>VOL 02 IL / RL / Post-training：来源计划</h1>
+<div class="meta">调研日期：2026-07-16；registry reconciliation：2026-07-19 状态：<code>source_registry_reconciled / seven_core_methods_independently_reviewed / supporting_sources_registered / local_gates_warn</code> 目标：为 IL、PPO、offline RL、DPO、GRPO 和 schema-aware reward 建立 primary-source ledger。 边界：七个核心方法与 Gymnasium/PyTorch 文档已独立复核；AWAC、LIBERO、SAC、AI Safety、PCGrad 仍是 supporting registry，不宣称达到相同 review 深度。Robot Harness 本地实现是 reward-shaped offline GRPO-style continuation，不是 canonical online GRPO。</div>
+<h2 id="1-primary-papers">1. Primary papers</h2>
+<table><thead><tr><th>主题</th><th>来源</th><th>计划支持的 claim</th><th>状态</th></tr></thead><tbody>
+<tr><td>DAgger</td><td><a href="https://arxiv.org/abs/1011.0686">A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning</a></td><td>expert relabeling、covariate shift 缓解和在线数据聚合</td><td>independently reviewed / WARN</td></tr>
+<tr><td>GAE</td><td><a href="https://arxiv.org/abs/1506.02438">High-Dimensional Continuous Control Using Generalized Advantage Estimation</a></td><td>bias/variance、\(\lambda\)、advantage estimator</td><td>independently reviewed；terminated/truncated boundary patched / WARN</td></tr>
+<tr><td>PPO</td><td><a href="https://arxiv.org/abs/1707.06347">Proximal Policy Optimization Algorithms</a></td><td>ratio、clipping、trust-region 近似</td><td>independently reviewed / WARN</td></tr>
+<tr><td>CQL</td><td><a href="https://arxiv.org/abs/2006.04779">Conservative Q-Learning for Offline Reinforcement Learning</a></td><td>OOD action、conservative Q、offline extrapolation</td><td>independently reviewed；regularizer≠full objective / WARN</td></tr>
+<tr><td>IQL</td><td><a href="https://arxiv.org/abs/2110.06169">Offline Reinforcement Learning with Implicit Q-Learning</a></td><td>advantage-weighted policy extraction、避免显式 OOD action evaluation</td><td>independently reviewed / WARN</td></tr>
+<tr><td>AWAC</td><td><a href="https://arxiv.org/abs/2006.09359">Accelerating Online Reinforcement Learning with Offline Datasets</a></td><td>advantage-weighted regression、offline-to-online policy extraction</td><td>URL verified</td></tr>
+<tr><td>DPO</td><td><a href="https://arxiv.org/abs/2305.18290">Direct Preference Optimization</a></td><td>preference pair、reference policy、KL-regularized objective</td><td>independently reviewed / WARN</td></tr>
+<tr><td>GRPO</td><td><a href="https://arxiv.org/abs/2402.03300">DeepSeekMath</a></td><td>group-relative reward、critic-free/relative advantage 叙事边界</td><td>independently reviewed；local implementation separated / WARN</td></tr>
+<tr><td>LIBERO</td><td><a href="https://arxiv.org/abs/2306.03310">Benchmarking Knowledge Transfer for Lifelong Robot Learning</a></td><td>task/suite split、机器人评估与 contamination 审计语境</td><td>registered/supporting；VOL 04/05 protocol pages carry deeper review</td></tr>
+<tr><td>SAC</td><td><a href="https://arxiv.org/abs/1812.05905">Soft Actor-Critic Algorithms and Applications</a></td><td>tanh-squashed Gaussian 与 log-prob 变量变换；仅作连续动作分布机制来源</td><td>registered/supporting</td></tr>
+<tr><td>AI Safety</td><td><a href="https://arxiv.org/abs/1606.06565">Concrete Problems in AI Safety</a></td><td>reward hacking / reward gaming 的目标错配边界</td><td>registered/supporting</td></tr>
+<tr><td>PCGrad</td><td><a href="https://arxiv.org/abs/2001.06782">Gradient Surgery for Multi-Task Learning</a></td><td>多目标 gradient interference 的诊断与一种缓解方法</td><td>registered/supporting；VOL 04 auxiliary-gradient pages carry deeper review</td></tr>
+</tbody></table>
+<h2 id="2-official-documentation-implementations">2. Official documentation / implementations</h2>
+<table><thead><tr><th>来源</th><th>用途</th><th>状态</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/huggingface/trl">Hugging Face TRL</a></td><td>SFT、DPO、GRPO trainer 的 API 和配置边界</td><td>registered only；exact version/API call 未绑定本地项目</td></tr>
+<tr><td><a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.KLDivLoss.html">PyTorch KLDivLoss</a></td><td>KL input/target/reduction 语义</td><td>official docs independently reviewed</td></tr>
+<tr><td><a href="https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/">Gymnasium: Handling Time Limits</a></td><td>terminated / truncated 与 value bootstrap 语义</td><td>official docs independently reviewed</td></tr>
+<tr><td><a href="https://github.com/openvla/openvla">OpenVLA</a></td><td>VLA imitation / fine-tuning context</td><td>frozen/reviewed in VOL 03；只作跨卷语境</td></tr>
+<tr><td><a href="https://github.com/Physical-Intelligence/openpi">Physical Intelligence openpi</a></td><td>policy fine-tuning / action expert context</td><td>frozen/reviewed in VOL 03；不证明 Harness 实现</td></tr>
+<tr><td><a href="https://github.com/NVlabs/cosmos-policy">NVlabs/cosmos-policy</a></td><td>action/world/value multi-objective context</td><td>frozen/reviewed in VOL 04；不证明本地 WAM run</td></tr>
+</tbody></table>
+<h2 id="3">3. 本地项目映射</h2>
+<table><thead><tr><th>VOL 02 主题</th><th>本地材料</th><th>不能直接推出的结论</th></tr></thead><tbody>
+<tr><td>SFT / GRPO / schema-aware reward</td><td><a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness Inventory</a> + <a href="../evidence/projects/robot_harness_ownership_ledger.html">Ownership Ledger</a></td><td>local trainer 为 offline grouped reward weighting；tool proxy 不等于机器人 success；scorer/n/checkpoint/ownership 仍 WARN</td></tr>
+<tr><td>action/world/value</td><td><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM Inventory</a> + <a href="../evidence/projects/wam_ownership_ledger.html">Ownership Ledger</a></td><td>proxy MSE 不等于 online gain；checkpoint/denominator/ownership 未闭合</td></tr>
+<tr><td>OPD / teacher ablation</td><td><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Inventory</a></td><td>缺 matched SFT-only/single-teacher raw ablation，不能单因果归因</td></tr>
+<tr><td>DeepSeek 数据/偏好样本</td><td><code>output/mousongzhe_resume_optimized.html</code></td><td>只能讲有证据的样本整理、实验与错误归因；不虚构规模、结果与 ownership</td></tr>
+</tbody></table>
+<h2 id="4-registry-reconciliation">4. Registry reconciliation</h2>
+<table><thead><tr><th>闭环项</th><th>当前证据</th><th>状态</th></tr></thead><tbody>
+<tr><td>DAgger/GAE/PPO/CQL/IQL/DPO/GRPO 核心机制</td><td><a href="vol_02_il_rl_posttraining_independent_fact_review.html">独立事实复核</a></td><td><code>checked / WARN</code></td></tr>
+<tr><td>terminated/truncated、CQL partial objective、local GRPO boundary</td><td>knowledge/questions + independent review</td><td><code>patched and checked</code></td></tr>
+<tr><td>VOL 02 knowledge / cards</td><td>consolidated knowledge + <code>VLA-RL-001..040</code></td><td><code>40/40 / all unseen</code></td></tr>
+<tr><td>AWAC/LIBERO/SAC/AI Safety/PCGrad</td><td>primary URLs 与跨卷 supporting usage</td><td><code>registered/supporting</code></td></tr>
+<tr><td>TRL exact API/version 与本地调用</td><td>未绑定 local code/revision</td><td><code>pending</code></td></tr>
+<tr><td>Harness same-scorer base/SFT/GRPO causal comparison</td><td>n/scorer/checkpoint/raw bundle 不齐</td><td><code>WARN</code></td></tr>
+<tr><td>candidate ownership 与口述</td><td>ownership ledger 未确认；无真实回答</td><td><code>PENDING</code></td></tr>
+</tbody></table>
+<h2 id="5-bounded-slice">5. 下一 bounded slice</h2>
+<ol><li>不再生成 VOL 02 题卡；40 张保持 <code>unseen</code>。</li><li>优先进行 <code>VLA-RL-011</code>、<code>VLA-RL-027</code> 或 <code>VLA-RL-028</code> 单题口述；有真实回答后才创建 coaching state。</li><li>无候选人回答时，按相同流程闭合 VOL 04 source registry，消除最后一个 registry-only 例外。</li><li>后续若需要提高 VOL 02 source depth，再单独复核 supporting sources 与 TRL exact version，不在本 registry closure 中伪造完成。</li></ol>
+</article></body></html>

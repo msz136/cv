@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 PER-014 Source Freeze：3D Grounding、Spatial Relation 与 Open-vocabulary 3D Scene</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per014_3d_grounding_spatial_relation_open_vocabulary_source_freeze.md">
+<meta name="aris:source-sha256" content="e96b9f950e46f86ba3fcc96498d55ac13fe820eb0c3db7dc22daf10a30a37ca3">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>e96b9f950e46f86ba3fcc96498d55ac13fe820eb0c3db7dc22daf10a30a37ca3</code>；生成自：<code>interview_materials\vla\sources\vol_06_per014_3d_grounding_spatial_relation_open_vocabulary_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-paper">2. Primary Paper 冻结矩阵</a></li><li><a href="#3-official-repository">3. Official Repository 冻结矩阵</a></li><li><a href="#4">4. 相邻节点边界</a></li><li><a href="#5-typed-3d-grounding-manifest">5. Typed 3D Grounding Manifest</a></li><li><a href="#6-task-output-taxonomy">6. Task / Output Taxonomy</a></li><li><a href="#7-scanrefer-proposal-conditioned-3d-box-grounding">7. ScanRefer：Proposal-conditioned 3D Box Grounding</a></li><li><a href="#8-referit3d-segmented-candidate-listener-spatial-distractor">8. ReferIt3D：Segmented Candidate Listener 与Spatial Distractor</a></li><li><a href="#9-openscene-per-point-open-vocabulary-semantics">9. OpenScene：Per-point Open-vocabulary Semantics</a></li><li><a href="#10-openmask3d-class-agnostic-mask-open-vocabulary-instance">10. OpenMask3D：Class-agnostic Mask → Open-vocabulary Instance</a></li><li><a href="#11-lerf-continuous-multi-scale-language-field">11. LERF：Continuous Multi-scale Language Field</a></li><li><a href="#12-conceptfusion-queryable-semantic-3d-map">12. ConceptFusion：Queryable Semantic 3D Map</a></li><li><a href="#13-spatial-relation-reference-frame-arity-threshold">13. Spatial Relation：Reference Frame、Arity 与Threshold</a></li><li><a href="#14-prompt-score-normalization-negative-calibration">14. Prompt、Score、Normalization 与Negative Calibration</a></li><li><a href="#15-metric-proposal-bottleneck">15. Metric 与Proposal Bottleneck</a></li><li><a href="#16-deterministic-probes">16. Deterministic Probes</a></li><li><a href="#17-audit">17. 本地五项目 Audit</a></li><li><a href="#18-opd-direct-exception-2d-image-relation-3d-grounding">18. OPD Direct Exception：2D Image Relation 不是3D Grounding</a></li><li><a href="#19-robot-harness-direct-exception-non-semantic-pcd-occupancy">19. Robot Harness Direct Exception：Non-semantic PCD/Occupancy</a></li><li><a href="#20-project-truth-boundary">20. Project Truth Boundary</a></li><li><a href="#21-fail-closed-pipeline">21. Fail-closed Pipeline 伪代码</a></li><li><a href="#22-source-gate">22. Source Gate 与下一切片</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 PER-014 Source Freeze：3D Grounding、Spatial Relation 与 Open-vocabulary 3D Scene</h1>
+<div class="meta">状态：<code>source_frozen / VLA-PER-014 / primary_official_checked / 2d_spatial_relation_not_3d_grounding / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本切片只冻结3D referring localization、候选对象识别、空间关系参考系与元数、逐点开放词表语义、开放词表3D实例mask、连续语言场、可查询语义3D地图及其score/prompt/metric/proposal边界；不生成knowledge/card，不重讲PER-007的2D open-vocabulary detector、不重讲PER-013的point/voxel/BEV/occupancy内部表示，也不进入PER-015的reachability、IK、collision或controller gate。</div>
+<h2 id="question">问题（Question）</h2>
+<p>面试官问“3D grounding怎样做，open-vocabulary 3D scene与spatial relation怎样落地”时，怎样区分从场景中生成3D候选框、在已分割对象中做指代分类、给每个3D点赋开放词表feature、查询3D实例mask、查询连续语言场和查询语义地图；怎样冻结参考系、prompt、normalization、negative、proposal与metric，使结果可复算；以及本地五项目到底具备了哪一层证据。</p>
+<h2 id="1">1. 结论先行</h2>
+<ol><li>“3D grounding”不是单一输出。ScanRefer是<code>point cloud + utterance → proposal-language score → 3D box</code>；ReferIt3D是<code>segmented candidate objects + utterance → candidate top-1</code>；二者的候选假设、loss与metric不能互换。</li><li>OpenScene把2D开放词表feature融合/蒸馏到3D point feature，支持逐点语义查询；OpenMask3D先生成class-agnostic 3D instance masks，再用可见视图、SAM crop和CLIP形成per-mask embedding。逐点semantic field不自动得到instance identity，instance proposal错误也不会被文本相似度修复。</li><li>LERF学习per-scene、multi-scale连续language field；ConceptFusion把pixel-aligned multimodal feature在depth/intrinsics/pose约束下增量融合进3D point map。它们能返回relevance/query heatmap，但不自动返回稳定object ID、3D box、可达抓取姿态或controller target。</li><li>left/right/front/behind必须绑定observer/world/object frame；near可是一元相对阈值或二元metric relation，between至少是三元关系。没有frame、arity、anchor IDs、单位、阈值与时间戳的“空间关系”不可复算。</li><li>cosine相似度只有在encoder、checkpoint、prompt template、tokenization、normalization、negative prompts、temperature、candidate set和threshold固定时才是一个metric identity。dot product、cosine、softmax probability与relative relevance不可混称“置信度”。</li><li>proposal recall是grounding硬上界：target不在候选集合时，listener再强也无法选中。ScanRefer的<code>ref_acc</code>、3D box <code>Acc@0.25/0.5 IoU</code>、ReferIt3D top-1、semantic mIoU和instance AP不是同一指标。</li><li>本地OPD只有Visual Genome来源的2D image spatial relationship与0–1000 box/point输出；Robot Harness只有2D tri-state occupancy、非语义PCD与bridge；OpenPiVLA/WAM/UWM只有image/language/action或video/world-model证据。当前没有local 3D semantic grounding head、map、checkpoint、raw query result、matched evaluation或候选人ownership闭环，因此保持<code>WARN</code>。</li></ol>
+<h2 id="2-primary-paper">2. Primary Paper 冻结矩阵</h2>
+<table><thead><tr><th>来源</th><th>固定版本 / 完整性</th><th>PDF SHA-256</th><th>本页实际支持</th><th>不支持</th></tr></thead><tbody>
+<tr><td>Chen et al., <a href="https://arxiv.org/abs/1912.08830v3">ScanRefer</a></td><td>arXiv <code>1912.08830v3</code>；35页；PDF完整解析；method视觉检查p7</td><td><code>3E53CD18B4266A16B679DFA7108FE1124F3DED6CA56D2BEE9845CEE8E5B5DB1D</code></td><td>3D proposals、language encoding、proposal-language matching、3D referring box与IoU评估</td><td>已分割对象listener、开放词表逐点/实例语义、本地结果</td></tr>
+<tr><td>Achlioptas et al., <a href="https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123460409.pdf">ReferIt3D</a></td><td>ECCV 2020 ECVA official PDF；19页；完整解析；method视觉检查p10</td><td><code>DA32FBD3EC426A097B99F3E1334A63B2312FC2EDC232697C3D50A4296BB9DBFA</code></td><td>已分割3D对象中的fine-grained identification、Nr3D/Sr3D、distractor与spatial language</td><td>box proposal/detection、任意open-vocabulary scene map</td></tr>
+<tr><td>Peng et al., <a href="https://arxiv.org/abs/2211.15654v2">OpenScene</a></td><td>arXiv <code>2211.15654v2</code>；24页；完整解析；method视觉检查p4</td><td><code>31A4C88491FA9B38180E251B64422107C7D3028EF21B1C9E01581501B7868F0E</code></td><td>2D feature fusion、3D distillation、per-point open-vocabulary semantics</td><td>instance identity、3D referring box、robot execution</td></tr>
+<tr><td>Takmaz et al., <a href="https://arxiv.org/abs/2306.13631v2">OpenMask3D</a></td><td>arXiv <code>2306.13631v2</code>；24页；完整解析；method视觉检查p4</td><td><code>DAD614EC86CB8F3778E61E30F0A0142085EDC27CCDD318BFDF75B201427FA42C</code></td><td>class-agnostic 3D masks、top-view selection、SAM-assisted multi-scale CLIP mask feature、open-vocabulary instance query</td><td>proposal-free identity、pose/depth免疫、控制目标</td></tr>
+<tr><td>Kerr et al., <a href="https://arxiv.org/abs/2303.09553v1">LERF</a></td><td>arXiv <code>2303.09553v1</code>；15页；完整解析；method视觉检查p3</td><td><code>FDFFCCB93E88999FD3258990FF98E3DC902CC0B1B67A4A5CA046AB3DD78A84C9</code></td><td>per-scene multi-scale language field、volume-rendered feature、query relevance</td><td>universal pretrained 3D map、object ID/box、控制闭环</td></tr>
+<tr><td>Jatavallabhula et al., <a href="https://arxiv.org/abs/2302.07241v3">ConceptFusion</a></td><td>arXiv <code>2302.07241v3</code>；19页；完整解析；method视觉检查p4</td><td><code>5E46DD735FC953C367800ED761AE57A46B158DBE166FAB33D5F4200CD0F7FF5A</code></td><td>global/local feature、pixel alignment、metric 3D fusion与multimodal query</td><td>SLAM正确性、instance segmentation、robot success</td></tr>
+</tbody></table>
+<p>六份PDF都检查了<code>%PDF</code>、<code>%%EOF</code>并用<code>pypdf</code>读取全部页面；上表的method page另行渲染为PNG并确认公式、图与正文清晰。曾被误指向ReferIt3D的arXiv <code>2003.01199</code>实际是材料科学论文，未进入本冻结；ReferIt3D使用ECVA官方论文PDF。</p>
+<h2 id="3-official-repository">3. Official Repository 冻结矩阵</h2>
+<table><thead><tr><th>官方仓库</th><th>固定revision / date / license</th><th>直接读取文件与SHA-256</th><th>支持边界</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/daveredrum/ScanRefer/tree/9d7483053e8d29acfd4db4eb1bc28f1564f5dddb">daveredrum/ScanRefer</a></td><td><code>9d7483053e8d29acfd4db4eb1bc28f1564f5dddb</code>；2023-02-10；CC BY-NC-SA 3.0，含非商业限制</td><td><code>README 62EBAB6225F79ECD673F5B6F344358AFD1AF8BBA7A8DAC233E2407D896F1EDBD</code>；<code>LICENSE 65696FBDBF8B1EEE2F75A0D8491FB3E5B7CB012D1FB3EB91BFDAB4DF8C5C68CE</code>；<code>refnet.py 8E7A806537ECF9F19BCEE3421A1AA73BD9EBA0C97325634D5A35FBBB77E919BA</code>；<code>match_module.py 1CB9034CE6D13487ACB204E515CB1FC4C5150831F1A4D2A256BF568973AD60A5</code>；<code>loss_helper.py 87E7B83F744D8E7F9AADDCE7173B4750B319AF526F1358DC925FB4C8E953DAD4</code>；<code>eval_helper.py 7D054ED6EF853FCB282FF4F92D80C9842623D5E099DCD319003E01BFC269E11B</code></td><td>VoteNet-style proposal、language/proposal fusion、<code>SoftmaxRankingLoss</code>、<code>ref_acc</code>与box IoU路径；不支持商业部署许可或本地复现</td></tr>
+<tr><td><a href="https://github.com/referit3d/referit3d/tree/725a5d31b8ff3647b6fb5342304093e9568d1341">referit3d/referit3d:eccv</a></td><td><code>725a5d31b8ff3647b6fb5342304093e9568d1341</code>；2021-06-29；MIT</td><td><code>README DAB689176A19C530FBC3DCAB89A66B3DD0555A401BA6A2625B8E551FF73B51E8</code>；<code>LICENSE 4029A1BCEA794DE7C4C2D336C6749A877BC13AD17B819BE1601E5B94FFD2B46B</code>；<code>referit3d_net.py 16E95B3F79080C04524845B573420D132A0C1FA8D2DEC5CD5AB6F385FD286B45</code>；<code>listening_dataset.py E31C2037D6150BE4F1281C461EC67436D588FBAE99CFFC76EAF9B727FACA7D37</code>；<code>sr3d/reference.py 79E746E115490571D97BFD7BA55F825E539A3AFCC899C7CDBB4C5C02E4C0E111</code>；<code>train_referit3d.py 5F10D56D3C90D37F8AF0B6F29034126978946590AEBEC36B84219C21135210CF</code></td><td>segmented object PointNet++ features、language feature、DGCNN graph、candidate logits与CE、Sr3D relation生成；不是detector</td></tr>
+<tr><td><a href="https://github.com/pengsongyou/openscene/tree/0f369bc73d0724ae24b5e46bbada193f8ee9d193">pengsongyou/openscene</a></td><td><code>0f369bc73d0724ae24b5e46bbada193f8ee9d193</code>；2023-10-27；Apache-2.0</td><td><code>README 720F7674BB6653FFD9EC868E8E37C805F50EDAF7A8F39053687F2BC78B5A118D</code>；<code>LICENSE 1EB85FC97224598DAD1852B5D6483BBCF0AA8608790DCC657A5A2A761AE9C8C6</code>；<code>fusion_util.py 9657C8735769933EEE5673B46D959C85288562398C25C5B8FAFB1195D7480D0F</code>；<code>disnet.py 737A981E9A038CECC8C10C6DED8A60DC05904E91211CEFD23F1656CA99BCF2DE</code>；<code>distill.py 05935DE28576589AFD542EBFAC68CEF781FC7E63B34AB977D12C86C174457076</code>；<code>evaluate.py 2E2C5CD533F228882E74D4A3704219AF0B678AD7B4D2514BC10C59145DFF8A04</code></td><td>2D→3D feature fusion、sparse 3D distillation、cosine loss、text-feature scoring与semantic metrics</td></tr>
+<tr><td><a href="https://github.com/OpenMask3D/openmask3d/tree/3bc3fc52693b25668d0e91d55a2ea714544a4749">OpenMask3D/openmask3d</a></td><td><code>3bc3fc52693b25668d0e91d55a2ea714544a4749</code>；2023-12-15；MIT</td><td><code>README 7C1638C43D8760DFD94D5AD5EF306D9402233FF26720E77418B49C53417882AF</code>；<code>LICENSE DC14432D818F2017B2007AC617253716480EDE5C88468C7612E8BB8176FDBB6A</code>；<code>features_extractor.py D8DD7BC0F9AC44A81690A551DCE1D795C2B64999B0D7FB1FBA9BBC99FD37DEF2</code>；<code>compute_features_single_scene.py F396C7424518BFBC4FBFC6BB57B01504870F9B459BE71B916DFB9526D35B7ACB</code>；<code>openmask3d_inference.yaml EE26FC055C853331960678A9FF878FCAA09F96135674D25FEBF4512AAC85D2BF</code>；<code>evaluate_semantic_instance.py 7D9F68C4BAA5D8D0CE11A4258DE2C2FB460917EBAB2093C7ECCF0B5036E34BDF</code></td><td>top-k view visibility、SAM mask crop、多尺度CLIP、view mean与instance eval；不消除mask proposal瓶颈</td></tr>
+<tr><td><a href="https://github.com/kerrj/lerf/tree/db08d578038d884542688511bd9ad7b489a65673">kerrj/lerf</a></td><td><code>db08d578038d884542688511bd9ad7b489a65673</code>；2024-03-13；MIT</td><td><code>README 355B5E357B55CDF907AAC320511783AB372C69248AE0C40597921FB65F7517BF</code>；<code>LICENSE C9C4304E58E5BADCE9E50833B68648B67B80715B706407F07CEC868E7D5032BE</code>；<code>lerf.py 445D1FF1DD6D9BB46E23F7343CD1635A667D2511B00441A61C3C55C4BCCBEDA6</code>；<code>lerf_field.py 012F381AB5902DDB63C17CF9875C775C5681D0B66A3E6E7315981647A59CC73F</code>；<code>openclip_encoder.py 7C3066E36A42437C661FF962F8385A6159EE787342FA2A5B4FCC9F3DDB4C6222</code>；<code>pyramid_embedding_dataloader.py E6DC84FFF9D4D0A57EE5A2E4A3E4D8B9B55313D2FEBE09E362E1290C02879D05</code></td><td>field、scale、fixed negatives、relative relevance；fixed code的CLIP Huber与DINO MSE须与论文表述分开</td></tr>
+<tr><td><a href="https://github.com/concept-fusion/concept-fusion/tree/4457c1f718a5612c2efc57b93a2dc152fed8a03d">concept-fusion/concept-fusion</a></td><td><code>4457c1f718a5612c2efc57b93a2dc152fed8a03d</code>；2023-05-23；MIT</td><td><code>README 6A44E7BB89D24A8C97E1C52B5F579531A18FA594686E3CD431225671664A109F</code>；<code>LICENSE 28B3C2B50C1AFE54E5080B599610E3F780D27791B0E8820C74CF19F444349184</code>；<code>dino_feature_extractor.py 9CB2267CC9AD90D251DEBF1F777697CBA5B02DA9580677BF5E85B051620591E6</code>；<code>run_feature_fusion_and_save_map.py 4138B633F814BB2297CDBF9559E3B2D44732B716E4F673EDF9677DEC90F3D0E1</code>；<code>demo_text_query.py 90C67114756CCED18A92B9B45F12AEDB94D3881E33CE955A478D6973A97B3438</code>；<code>models_common.py 0F48145F482067DD41FA6E5C58A241C201DD56AF8BE5F801532FF890F9CC6314</code></td><td>RGB-D/intrinsics/pose fusion、map embeddings、normalized text/map cosine与top-k/threshold query</td></tr>
+</tbody></table>
+<p>36个文件的SHA-256按固定commit工作树原始字节计算。仓库license不自动覆盖dataset、模型权重、ScanNet/CLIP/SAM依赖或商业使用；尤其ScanRefer仓库的CC BY-NC-SA 3.0非商业限制必须单独进入部署审计。</p>
+<h2 id="4">4. 相邻节点边界</h2>
+<pre><code class="language-text">PER-007: 2D open-vocabulary grounding
+        +
+PER-013: point / voxel / BEV / occupancy representation
+        |
+        v
+PER-014: 3D entity-language-spatial binding
+        |
+        v
+PER-015: reachability / IK / collision / controller gate</code></pre>
+<table><thead><tr><th>节点</th><th>已负责</th><th>PER-014只新增</th></tr></thead><tbody>
+<tr><td>PER-007</td><td>2D detector/segmenter、region-text score、prompt/threshold基础</td><td>把language绑定到3D candidate、point、mask、field或map</td></tr>
+<tr><td>PER-013</td><td>point/voxel/BEV/occupancy的坐标、量化、sampling、aggregation</td><td>表示上的entity identity、language feature与spatial relation</td></tr>
+<tr><td>PER-002/003/016</td><td>2D→3D lift、multi-view/time、SLAM/localization/drift</td><td>只消费并核验pose/frame/time，不宣称修复几何或漂移</td></tr>
+<tr><td>PER-015</td><td>reachability、IK、collision、controller</td><td>本页输出至多是semantic target/proposal，不是可执行action</td></tr>
+</tbody></table>
+<p>已核验桥接入口：<a href="vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.html">PER-007 source</a>、<a href="vol_06_per013_pointcloud_voxel_bev_occupancy_source_freeze.html">PER-013 source</a>与<a href="../evidence/projects/per004_navigation_artifact_gate.html">PER-004 Navigation Artifact Gate</a>。</p>
+<h2 id="5-typed-3d-grounding-manifest">5. Typed 3D Grounding Manifest</h2>
+<p>任何可比较的3D grounding/query artifact至少应冻结：</p>
+<pre><code class="language-json">{
+  &quot;sample_id&quot;: &quot;scene/query pair&quot;,
+  &quot;scene_artifact&quot;: &quot;point | voxel | mesh | radiance_field | point_map&quot;,
+  &quot;scene_revision&quot;: &quot;sha256:...&quot;,
+  &quot;query_text&quot;: &quot;the chair left of the table&quot;,
+  &quot;query_language&quot;: &quot;en&quot;,
+  &quot;entity_candidates&quot;: {
+    &quot;source&quot;: &quot;detector | segmented_objects | class_agnostic_masks | points | continuous_field&quot;,
+    &quot;revision&quot;: &quot;sha256:...&quot;,
+    &quot;count&quot;: 0,
+    &quot;target_present&quot;: true
+  },
+  &quot;output_type&quot;: &quot;3d_box | candidate_id | point_scores | instance_mask | field_heatmap | map_points&quot;,
+  &quot;coordinate_frame&quot;: &quot;camera | base | map | scene&quot;,
+  &quot;axis_unit&quot;: &quot;x-forward/y-left/z-up, meter&quot;,
+  &quot;pose_depth_intrinsics_revision&quot;: &quot;sha256:...&quot;,
+  &quot;relation&quot;: {
+    &quot;predicate&quot;: &quot;left_of&quot;,
+    &quot;arity&quot;: 2,
+    &quot;reference_frame&quot;: &quot;observer | world | anchor_object&quot;,
+    &quot;entity_ids&quot;: [&quot;target&quot;, &quot;anchor&quot;],
+    &quot;threshold_meter&quot;: null
+  },
+  &quot;encoder&quot;: &quot;name/checkpoint/revision&quot;,
+  &quot;prompt_template&quot;: &quot;a photo of {}&quot;,
+  &quot;negative_prompts&quot;: [&quot;object&quot;, &quot;things&quot;, &quot;stuff&quot;, &quot;texture&quot;],
+  &quot;feature_normalization&quot;: &quot;l2&quot;,
+  &quot;score&quot;: &quot;cosine | dot | relative_softmax | learned_logit&quot;,
+  &quot;temperature_threshold_topk&quot;: [1.0, 0.5, 1],
+  &quot;metric_protocol&quot;: &quot;top1 | Acc@IoU | semantic_mIoU | instance_AP&quot;,
+  &quot;metric_revision&quot;: &quot;sha256:...&quot;,
+  &quot;timestamp_and_age&quot;: [&quot;t&quot;, &quot;age_ms&quot;]
+}</code></pre>
+<p>只有一句query与一张彩色heatmap，没有候选集合、frame、encoder/prompt、score与metric revision，无法判断模型在“理解关系”还是利用类别/位置偏差，也无法复算阈值或比较两个run。</p>
+<h2 id="6-task-output-taxonomy">6. Task / Output Taxonomy</h2>
+<table><thead><tr><th>任务</th><th>输入假设</th><th>输出原子</th><th>典型方法</th><th>主要瓶颈</th><th>合适指标</th></tr></thead><tbody>
+<tr><td>3D referring localization</td><td>raw/encoded scene + utterance，可含proposal generator</td><td>3D box</td><td>ScanRefer</td><td>proposal recall、box geometry、language matching</td><td>Acc@3D IoU 0.25/0.5、proposal oracle</td></tr>
+<tr><td>candidate-object identification</td><td>已分割对象集合 + utterance</td><td>candidate ID/top-1</td><td>ReferIt3D</td><td>segmentation、distractor、relation/reference frame</td><td>top-1 accuracy，按easy/hard/view-dependent分层</td></tr>
+<tr><td>open-vocabulary point semantics</td><td>3D point + language-aligned feature</td><td>per-point label/score</td><td>OpenScene</td><td>view coverage、feature distillation、label prompt</td><td>semantic mIoU/mAcc/allAcc、seen/unseen split</td></tr>
+<tr><td>open-vocabulary 3D instance</td><td>class-agnostic masks + views</td><td>mask ID/class/score</td><td>OpenMask3D</td><td>mask proposal、visibility、view/crop</td><td>instance AP/AP50/AP25、class split</td></tr>
+<tr><td>continuous language field</td><td>posed images + per-scene field</td><td>3D relevance/heatmap</td><td>LERF</td><td>per-scene optimization、scale、negative calibration</td><td>localization/relevancy protocol、qualitative query</td></tr>
+<tr><td>queryable semantic map</td><td>RGB-D + intrinsics + pose + features</td><td>scored map points/regions</td><td>ConceptFusion</td><td>pose/depth drift、fusion/correspondence、threshold</td><td>retrieval/localization/map-quality protocol</td></tr>
+</tbody></table>
+<p>“open-vocabulary”描述query/label空间，不等于“无需冻结候选、prompt或阈值”，也不等于zero-shot机器人执行。</p>
+<h2 id="7-scanrefer-proposal-conditioned-3d-box-grounding">7. ScanRefer：Proposal-conditioned 3D Box Grounding</h2>
+<p>固定代码先生成3D proposals，再把每个proposal feature与language feature拼接，经过matching module输出<code>cluster_ref</code>。可抽象为：</p>
+<div class="formula">\[
+s_j=g_\theta\!\left([\mathbf p_j,\mathbf e_q]\right),
+\qquad
+\mathcal L_{\mathrm{ref}}
+=-\sum_j y_j\log\operatorname{softmax}(s)_j.
+\]</div>
+<p>变量解释：\(\mathbf p_j\)是第\(j\)个3D proposal feature，\(\mathbf e_q\)是utterance embedding，\(s_j\)是候选匹配logit，\(y_j\)标记与GT box最匹配的proposal。直觉是“先找到可能的对象，再让语言从中排序”。实现映射：固定<code>match_module.py</code>对proposal与language做concat并屏蔽invalid objectness；<code>loss_helper.py</code>实际调用<code>SoftmaxRankingLoss</code>，所以该CE式是通用候选分类表达，不宣称与代码逐行等价。</p>
+<p>必须区分三条链：proposal/objectness与box regression、reference ranking、language auxiliary classification。target proposal缺失时，ranking head无法恢复；因此至少报告proposal oracle recall与end-to-end grounding，而不是只报listener accuracy。</p>
+<p>固定<code>eval_helper.py</code>中的<code>ref_acc</code>检查选中的proposal index是否是reference label；3D IoU阈值再检查预测box与GT box的几何重叠。两者可以出现“候选index选对但IoU 0.5失败”，不得互换。</p>
+<h2 id="8-referit3d-segmented-candidate-listener-spatial-distractor">8. ReferIt3D：Segmented Candidate Listener 与Spatial Distractor</h2>
+<p>ReferIt3D的输入已经是segmented 3D objects，不承担从raw scene生成3D boxes。固定模型对每个对象用共享object encoder提feature，对utterance编码，再由DGCNN建object graph，按配置在graph前/后融合language，最终为每个候选产生logit；训练脚本使用cross entropy：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{listener}}
+=-\log
+\frac{\exp s_{j^*}}
+{\sum_{j\in\mathcal C}\exp s_j}.
+\]</div>
+<p>变量解释：\(\mathcal C\)是当前scan的候选对象集合，\(j^*\)是被指代对象。候选集合、padding/mask、distractor composition与object segmentation revision都属于metric identity。固定代码还可含object-class与language auxiliary CE；不能只看到总loss就说它训练了detector。</p>
+<p>Sr3D通过模板化spatial relation生成指代表达，Nr3D来自自然语言。它们能用于诊断relation、distractor与view dependence，但“在候选中选对”不等于输出准确3D box，也不等于open-vocabulary instance segmentation。</p>
+<h2 id="9-openscene-per-point-open-vocabulary-semantics">9. OpenScene：Per-point Open-vocabulary Semantics</h2>
+<p>OpenScene先把2D视觉-语言feature按几何对应融合到3D，或用3D sparse network从点/voxel输入蒸馏该feature。固定代码的cosine distillation为：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{distill}}
+=1-cos\!\left(\mathbf f_i^{2D},\mathbf f_i^{3D}\right).
+\]</div>
+<p>变量解释：\(\mathbf f_i^{2D}\)是投影到第\(i\)个3D点的2D teacher feature，\(\mathbf f_i^{3D}\)是3D network输出。直觉是把开放词表embedding geometry搬到3D。实现映射：固定<code>distill.py</code>在mask后的3D feature与fused feature间调用<code>CosineSimilarity</code>；<code>evaluate.py</code>再与text features相乘并计算mIoU/mAcc/allAcc。</p>
+<p>per-point feature支持“哪些点像chair”的语义查询，但两个相邻chair可共享相同class feature；没有instance partition、tracking与relation graph时，不能可靠回答“左边那把chair是哪一个”。无2D feature覆盖的points也必须显式标unknown或另设policy，不能默认为background。</p>
+<h2 id="10-openmask3d-class-agnostic-mask-open-vocabulary-instance">10. OpenMask3D：Class-agnostic Mask → Open-vocabulary Instance</h2>
+<p>OpenMask3D把两件事分开：先产生class-agnostic 3D masks，再为每个mask选择top-k可见视图、把投影点用于SAM-assisted crop、在多尺度crop上提CLIP feature并跨view聚合。固定<code>features_extractor.py</code>对image feature做L2 normalize，最后对selected views取mean。</p>
+<p>对mask \(m\)与文本query \(q\)，基本score可写为：</p>
+<div class="formula">\[
+s_{m,q}=
+\frac{\mathbf f_m^\top\mathbf t_q}
+{\|\mathbf f_m\|_2\,\|\mathbf t_q\|_2}.
+\]</div>
+<p>变量解释：\(\mathbf f_m\)是per-mask multi-view embedding，\(\mathbf t_q\)是text embedding。实现必须冻结CLIP model、crop levels、SAM revision、top-k、visibility rule、view aggregation与prompt。若class-agnostic proposal把两个objects合并或漏掉target，text score无法凭空拆分/恢复实例。</p>
+<p>简单平均还可能发生view cancellation：相反或低质embedding会使norm接近0。应保留per-view score、visibility、occlusion与aggregation诊断，而不是只存最终mean vector。</p>
+<h2 id="11-lerf-continuous-multi-scale-language-field">11. LERF：Continuous Multi-scale Language Field</h2>
+<p>LERF把不同物理scale的CLIP supervision嵌入per-scene radiance field。沿ray \(r\)对scale \(s\)的rendered feature可写为：</p>
+<div class="formula">\[
+\hat{\mathbf f}(r,s)
+=\sum_i w_i(r)F_\theta(\mathbf x_i,s).
+\]</div>
+<p>变量解释：\(F_\theta(\mathbf x_i,s)\)是在3D sample与scale处的language feature，\(w_i\)由volume rendering权重给出。直觉是用相机射线监督连续3D field，并允许query在多尺度上找最相关区域。输出是relevance field，不天然是object ID或box。</p>
+<p>固定<code>openclip_encoder.py</code>把positive query与negatives <code>object/things/stuff/texture</code>形成二类softmax并选最保守的negative comparison；<code>lerf.py</code>跨scale求高relevance。negative集合、temperature与scale search因此属于结果身份。</p>
+<p>论文目标与当前fixed repo实现必须分层：当前代码对CLIP输出使用weight 0.1、delta 1.25的Huber loss，对DINO使用MSE。不能把论文中的feature alignment描述写成“代码逐行就是负余弦”。</p>
+<h2 id="12-conceptfusion-queryable-semantic-3d-map">12. ConceptFusion：Queryable Semantic 3D Map</h2>
+<p>ConceptFusion将global image feature与local region feature结合为pixel-aligned embedding，再利用depth、intrinsics与camera pose把像素提升到3D，并对已有map point做增量feature fusion。一个抽象更新为：</p>
+<div class="formula">\[
+\mathbf f_{k,t}
+=\frac{\bar c_k\mathbf f_{k,t-1}+\alpha\mathbf f_{u,v,t}}
+{\bar c_k+\alpha},
+\qquad
+\bar c_k\leftarrow\bar c_k+\alpha.
+\]</div>
+<p>变量解释：\(\mathbf f_{k,t}\)是map point \(k\)在时刻\(t\)的feature，\(\mathbf f_{u,v,t}\)是当前像素feature，\(\alpha\)是correspondence/confidence权重，\(\bar c_k\)是累计权重。该式表达论文的增量融合逻辑；固定example代码通过RGB-D、intrinsics、pose与GradSLAM/Pointclouds执行map fusion，具体邻域与权重以固定revision为准。</p>
+<p>固定<code>demo_text_query.py</code>L2-normalize text与map embeddings后计算cosine，并支持top-k或min-max relative threshold可视化。min-max相对分数依赖当前scene与candidate range，不是跨scene calibrated probability。pose/depth漂移会把正确semantic feature写入错误3D位置；map query成功不能反证SLAM正确。</p>
+<h2 id="13-spatial-relation-reference-frame-arity-threshold">13. Spatial Relation：Reference Frame、Arity 与Threshold</h2>
+<p>以reference frame旋转\(R\)表示坐标轴，left relation可写为：</p>
+<div class="formula">\[
+r_{\mathrm{left}}(a,b;R)
+=\mathbf 1\!\left[
+\left(R^\top(\mathbf p_a-\mathbf p_b)\right)_x&lt;0
+\right].
+\]</div>
+<p>变量解释：\(a\)是target，\(b\)是anchor，\(R\)可来自observer/world/object frame。相同两点在yaw 0与yaw 180°参考系中会从left翻为right；只存predicate不存frame是不完整标注。</p>
+<table><thead><tr><th>Relation</th><th>最小元数</th><th>必须冻结</th><th>常见坏例</th></tr></thead><tbody>
+<tr><td>left/right/front/behind</td><td>2</td><td>target、anchor、observer/world/object frame、axis</td><td>用image left替代map-frame left</td></tr>
+<tr><td>above/below</td><td>2</td><td>gravity/up axis、centroid/box/support definition</td><td>相机roll后仍按pixel y判断</td></tr>
+<tr><td>near/far</td><td>2</td><td>metric、单位、threshold或rank policy</td><td>每个scene动态min-max却称固定距离</td></tr>
+<tr><td>inside/on/supporting</td><td>2</td><td>geometry primitive、tolerance/contact policy</td><td>bbox overlap当真实support/contact</td></tr>
+<tr><td>between</td><td>3</td><td>target与两个anchors、segment/corridor tolerance</td><td>只给一个anchor仍叫between</td></tr>
+<tr><td>closest/farthest</td><td>set-valued</td><td>candidate set、distance metric、tie rule</td><td>改candidate set后仍比较accuracy</td></tr>
+</tbody></table>
+<p>空间语言benchmark可能含observer-dependent与view-independent表达；必须分层报告，不能把类别识别或绝对位置shortcut当relation reasoning。</p>
+<h2 id="14-prompt-score-normalization-negative-calibration">14. Prompt、Score、Normalization 与Negative Calibration</h2>
+<p>开放词表query至少有四种不同量：raw dot、cosine、temperature-scaled logits、positive-vs-negative relative probability。对positive score \(s^+\)与negative \(s^-\)：</p>
+<div class="formula">\[
+p^+
+=\frac{\exp(s^+/\tau)}
+{\exp(s^+/\tau)+\exp(s^-/\tau)}.
+\]</div>
+<p>变量解释：\(\tau\)是temperature。即使raw positive cosine为0.55，只要negative为0.60，\(\tau=1\)时relative positive probability约0.4875，并不通过0.5。相似度高不等于绝对置信度高。</p>
+<p>必须冻结：text/image encoder与checkpoint、tokenizer、prompt template/ensemble、大小写与复数、positive/negative集合、feature L2 normalization、temperature、candidate set、top-k、threshold、unknown policy、scene-level min-max以及score是否经过softmax。prompt change可改变ranking；这属于model-query interface，不应被包装为物理场景发生变化。</p>
+<h2 id="15-metric-proposal-bottleneck">15. Metric 与Proposal Bottleneck</h2>
+<p>对axis-aligned 3D boxes，IoU为：</p>
+<div class="formula">\[
+\operatorname{IoU}_{3D}(B_p,B_g)
+=\frac{\operatorname{Vol}(B_p\cap B_g)}
+{\operatorname{Vol}(B_p\cup B_g)}.
+\]</div>
+<p>两个unit cube只在x方向错开0.5时，intersection volume为0.5、union为1.5，IoU为1/3：通过0.25却失败0.5。报告<code>Acc@0.25</code>时不能省略阈值或暗示<code>Acc@0.5</code>也成立。</p>
+<table><thead><tr><th>层</th><th>应报告</th><th>不能替代</th></tr></thead><tbody>
+<tr><td>proposal</td><td>target-present recall、oracle IoU、proposal count</td><td>listener top-1</td></tr>
+<tr><td>referring box</td><td>Acc@IoU 0.25/0.5、unique/multiple split</td><td><code>ref_acc</code>或semantic mIoU</td></tr>
+<tr><td>candidate listener</td><td>top-1、distractor/easy-hard/view split</td><td>detector recall/box IoU</td></tr>
+<tr><td>point semantics</td><td>per-class IoU、mIoU/mAcc/allAcc、seen/unseen</td><td>instance AP</td></tr>
+<tr><td>instance semantics</td><td>AP/AP50/AP25、mask proposal oracle</td><td>point mIoU</td></tr>
+<tr><td>field/map query</td><td>localization/retrieval protocol、threshold calibration、pose quality</td><td>robot success</td></tr>
+</tbody></table>
+<p>若GT target ID 7不在候选<code>[2,4,5]</code>中，则该sample的最大top-1为0。任何end-to-end提升都要拆成proposal、matching与geometry来源，否则无法定位收益。</p>
+<h2 id="16-deterministic-probes">16. Deterministic Probes</h2>
+<table><thead><tr><th>Probe</th><th>固定输入</th><th>结果</th><th>只证明</th></tr></thead><tbody>
+<tr><td>3D box IoU threshold</td><td>两个unit cube，x错开0.5</td><td>IoU=<code>1/3</code>；过0.25、不过0.5</td><td>metric threshold改变结论</td></tr>
+<tr><td>dot vs cosine</td><td>query <code>[1,0]</code>；feature <code>[10,0]</code>,<code>[1,0]</code></td><td>dot <code>[10,1]</code>；cosine <code>[1,1]</code></td><td>normalization属于score identity</td></tr>
+<tr><td>candidate bottleneck</td><td>GT 7；candidates <code>[2,4,5]</code></td><td>最大top-1=<code>0</code></td><td>target absent无法由listener恢复</td></tr>
+<tr><td>relation frame</td><td>同两点；yaw 0/180°</td><td>left翻为right</td><td>predicate必须绑定frame</td></tr>
+<tr><td>semantic vs instance</td><td>两个同class chair，仅一个在左</td><td>class相同；instance ID可区分</td><td>per-point semantic不自动给identity</td></tr>
+<tr><td>multi-view cancellation</td><td>embeddings <code>[1,0]</code>,<code>[-1,0]</code>均值</td><td><code>[0,0]</code>，cosine undefined</td><td>view mean需norm/quality gate</td></tr>
+<tr><td>view selection</td><td>top view <code>[1,0]</code>；加orthogonal view</td><td>top-1 score 1；两视图均值cosine <code>0.70710678</code></td><td>top-k/aggregation改变score</td></tr>
+<tr><td>negative calibration</td><td>positive .55；negative .60；temperature 1</td><td>\(p^+=0.4875026\)</td><td>raw positive score不是relative pass</td></tr>
+<tr><td>synthetic prompt identity</td><td>q1 scores <code>[.8,.6]</code>；q2 <code>[.6,.8]</code></td><td>q1选1；q2选2</td><td>embedding identity可改ranking；不声称真实CLIP必然如此</td></tr>
+</tbody></table>
+<p>所有probe是机制级sanity check，不是论文benchmark复现，也不证明任一方法在本地机器人任务更好。</p>
+<h2 id="17-audit">17. 本地五项目 Audit</h2>
+<p>五份canonical Claim–Evidence Inventory固定为：</p>
+<table><thead><tr><th>Inventory</th><th>Canonical SHA-256</th><th>当前安全结论</th></tr></thead><tbody>
+<tr><td><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD</a></td><td><code>C002B2275EB1F747E1E6F383CB271539F081AE8CCEE0C8D11AFC92EBABE99AFA</code></td><td>有2D region/point/box与image relation数据构造，不支持3D grounding</td></tr>
+<tr><td><a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA</a></td><td><code>13023578D1B7343083BEB588C7F8CE7B1BDC267E2BC834204D309106E8EA132A</code></td><td>image/language/action policy evidence，不含local 3D semantic head/map</td></tr>
+<tr><td><a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness</a></td><td><code>71C3B62F52204574C1B854B554258DABC1856F5D9044EB9628280A32500A797F</code></td><td>direct repo有2D occupancy/PCD/bridge exception，但没有semantic query字段</td></tr>
+<tr><td><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a></td><td><code>2362311B8D90A5B82D9D2D6333F5D376625CF2311DD7A3921F42B339BB55AFB4</code></td><td>camera/video/world-model evidence，不自动含3D language field</td></tr>
+<tr><td><a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM</a></td><td><code>C35C41D6248E3B072E9181F4AD3AAFA423631D74604207CB5AB65352105DD8A9</code></td><td>image/action/video与LIBERO evidence，不含3D semantic map/query eval</td></tr>
+</tbody></table>
+<p>Inventory是已归档claim的证据，不是“历史与远端所有文件绝对不存在”的证明；因此还对OPD与Robot Harness做了direct exception检查。</p>
+<h2 id="18-opd-direct-exception-2d-image-relation-3d-grounding">18. OPD Direct Exception：2D Image Relation 不是3D Grounding</h2>
+<p><code>C:\Users\mousongzhe\muxi@756e27e16adcfb3ccbfe98c2920dda42095b127f</code>直接核验：</p>
+<table><thead><tr><th>文件</th><th>SHA-256</th><th>直接支持</th><th>不支持</th></tr></thead><tbody>
+<tr><td><code>build_expert_mixes_seed0_v2.py</code></td><td><code>19D5EF9E25D8664EA983880B79373098A77D19D5DA11D5B2AD17BEE6195C2F2C</code></td><td><code>spatial_rel_expert</code>来自Visual Genome 2D relationship；prompt写明“spatial relationship ... in the image”</td><td>3D reference frame、object graph、3D box/mask、language field</td></tr>
+<tr><td><code>point/point_data_only.py</code></td><td><code>F650CB1F1B4A37566E11FA30C47A855DD59B74052588799839DF28F71EEC5787</code></td><td>2D annotation points经x/y几何变成box；输出可为0–1000 <code>&lt;box&gt;/&lt;point&gt;</code>或true/false</td><td>z、metric unit、camera/map frame、3D instance identity</td></tr>
+</tbody></table>
+<p>因此安全表述是“构造过2D image spatial-relation与point/box supervision”；危险表述是“实现了3D spatial grounding/open-vocabulary scene”。要升级后者，至少需要3D scene/entity schema、frame/pose、语言query输出、checkpoint与raw metric bundle。</p>
+<h2 id="19-robot-harness-direct-exception-non-semantic-pcd-occupancy">19. Robot Harness Direct Exception：Non-semantic PCD/Occupancy</h2>
+<p>固定Robot Harness direct evidence显示：2D occupancy JSON/PNG使用0/127/255 tri-state；PCD有54,856 points，字段为<code>x y z intensity timestamp ring</code>；bridge暴露occupancy/pointcloud path与URL。PCD header没有semantic label、instance ID、language embedding、query score或relation edge。</p>
+<p>这支持“系统能引用地图与点云资产，并把路径/URL暴露给上层”；不支持“已运行OpenScene/OpenMask3D/ScanRefer/ReferIt3D/LERF/ConceptFusion”“地图可按语言查询”或“语义grounding提高了planner/robot success”。第三方目录中的感知/地图代码也不能自动归为候选人实现。</p>
+<h2 id="20-project-truth-boundary">20. Project Truth Boundary</h2>
+<table><thead><tr><th>项目</th><th>当前可以讲</th><th>当前不能说</th><th>补强artifact</th></tr></thead><tbody>
+<tr><td>OPD</td><td>2D Visual Genome relation、point/box监督与image-frame prompt</td><td>3D relation frame、3D grounding或semantic map</td><td>typed 3D entities/relations、frame/pose、model head/checkpoint/raw eval</td></tr>
+<tr><td>Robot Harness</td><td>2D tri-state occupancy、non-semantic PCD schema、bridge/interface</td><td>language-queryable 3D map、instance grounding、robot收益或个人ownership</td><td>semantic/instance fields、query server、pose lineage、episodes、ownership ledger</td></tr>
+<tr><td>OpenPiVLA</td><td>end-to-end image/language/action，可讨论显式3D intermediate的trade-off</td><td>已集成3D grounding或其导致97.4</td><td>module/config/checkpoint、same-protocol ablation与rollouts</td></tr>
+<tr><td>WAM</td><td>future-image/world-model output可作为geometry/semantic consistency诊断候选</td><td>LERF/OpenScene式field或semantic-map收益</td><td>3D head/loss/data、query artifacts、matched metric</td></tr>
+<tr><td>UWM</td><td>image/action/video world model与LIBERO协议</td><td>3D semantic map、spatial listener或3D泛化结果</td><td>exact model diff、3D data、checkpoint、raw query/rollout bundle</td></tr>
+</tbody></table>
+<p>面试回答应明确分层：<code>public method</code>、<code>local inventory</code>、<code>local-direct file</code>、<code>same-source inference</code>、<code>missing evidence</code>、<code>candidate ownership</code>。只有前两层时不能说“我实现并验证了该方法”。</p>
+<h2 id="21-fail-closed-pipeline">21. Fail-closed Pipeline 伪代码</h2>
+<pre><code class="language-python">def grounded_3d_query(scene, query, manifest):
+    # 1. 拒绝缺少坐标、版本与时间身份的场景；semantic score不能修复错误几何。
+    require(scene.frame, scene.axis_unit, scene.revision)
+    require(manifest.pose_depth_intrinsics_revision)
+
+    # 2. 固定query interface；encoder/prompt/negative/normalization改变就视为新协议。
+    require(manifest.encoder, manifest.prompt_template)
+    require(manifest.feature_normalization, manifest.score)
+    require(manifest.temperature_threshold_topk)
+
+    # 3. 按任务选择候选原子，不能把point、box、mask、field混成同一输出。
+    candidates = build_candidates(scene, manifest.entity_candidates)
+    if manifest.entity_candidates.target_present is False:
+        return {&quot;status&quot;: &quot;proposal_miss&quot;, &quot;score&quot;: None}
+
+    # 4. 关系query必须有正确元数、anchor IDs与reference frame。
+    validate_relation_arity(query.relation)
+    require(query.relation.reference_frame)
+
+    # 5. 计算冻结score并保留per-candidate/per-view raw evidence，避免只存heatmap。
+    raw = score_candidates(candidates, query, manifest)
+    audit_zero_norm_and_view_coverage(raw)
+
+    # 6. 用与output type匹配的metric；top-1、IoU、mIoU、AP不可互换。
+    result = apply_frozen_decision(raw, manifest.temperature_threshold_topk)
+    result[&quot;metric_protocol&quot;] = manifest.metric_protocol
+
+    # 7. 到semantic target为止；交给PER-015再检查reachability/collision/controller。
+    result[&quot;executable&quot;] = False
+    return result</code></pre>
+<p>该流程的核心不是多加一个CLIP相似度，而是在任何身份缺失时拒绝给出强结论，并让proposal miss、geometry/frame错、semantic mismatch、relation错与action gate失败可分别定位。</p>
+<h2 id="22-source-gate">22. Source Gate 与下一切片</h2>
+<p>本轮已关闭：</p>
+<ul><li>六篇primary paper固定版本、完整PDF SHA与method-page视觉检查；</li><li>六个official repository固定commit/date/license，36个关键文件逐字节SHA；</li><li>box localization、candidate listener、per-point semantics、instance mask、continuous field与semantic map的输入/输出合同分离；</li><li>reference frame/arity、prompt/negative/normalization、proposal bottleneck与metric identity显式化；</li><li>九个deterministic probe固定输入与结果；</li><li>五份项目inventory、OPD direct exception与Robot Harness non-semantic PCD/occupancy边界完成。</li></ul>
+<p>仍为<code>WARN</code>：本地没有3D semantic grounding model/config/checkpoint、typed candidate/scene manifest、semantic/instance map、pose-aligned raw query、proposal oracle、same-protocol metrics、robot execution trace或候选人逐文件ownership确认；浏览器<code>file://</code>视觉QA仍受环境策略限制。</p>
+<p><code>VLA-PER-001..014</code> source/knowledge/card已在独立bounded slices同步；265张题卡全部<code>unseen</code>，不创建<code>coaching_state.md</code>，不改变mastery。下一bounded slice只冻结<code>VLA-PER-015</code> perception→action/reachability/uncertainty/failure-gate source，不生成knowledge/card。</p>
+<h2 id="references">References</h2>
+<ol><li>Chen et al., <a href="https://arxiv.org/abs/1912.08830v3">ScanRefer: 3D Object Localization in RGB-D Scans using Natural Language, v3</a>；<a href="https://github.com/daveredrum/ScanRefer/tree/9d7483053e8d29acfd4db4eb1bc28f1564f5dddb">official code@9d74830</a>。</li><li>Achlioptas et al., <a href="https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123460409.pdf">ReferIt3D: Neural Listeners for Fine-Grained 3D Object Identification in Real-World Scenes, ECCV 2020</a>；<a href="https://github.com/referit3d/referit3d/tree/725a5d31b8ff3647b6fb5342304093e9568d1341">official code eccv@725a5d3</a>。</li><li>Peng et al., <a href="https://arxiv.org/abs/2211.15654v2">OpenScene: 3D Scene Understanding with Open Vocabularies, v2</a>；<a href="https://github.com/pengsongyou/openscene/tree/0f369bc73d0724ae24b5e46bbada193f8ee9d193">official code@0f369bc</a>。</li><li>Takmaz et al., <a href="https://arxiv.org/abs/2306.13631v2">OpenMask3D: Open-Vocabulary 3D Instance Segmentation, v2</a>；<a href="https://github.com/OpenMask3D/openmask3d/tree/3bc3fc52693b25668d0e91d55a2ea714544a4749">official code@3bc3fc5</a>。</li><li>Kerr et al., <a href="https://arxiv.org/abs/2303.09553v1">LERF: Language Embedded Radiance Fields, v1</a>；<a href="https://github.com/kerrj/lerf/tree/db08d578038d884542688511bd9ad7b489a65673">official code@db08d57</a>。</li><li>Jatavallabhula et al., <a href="https://arxiv.org/abs/2302.07241v3">ConceptFusion: Open-set Multimodal 3D Mapping, v3</a>；<a href="https://github.com/concept-fusion/concept-fusion/tree/4457c1f718a5612c2efc57b93a2dc152fed8a03d">official code@4457c1f</a>。</li><li><a href="vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.html">PER-007 Open-vocabulary Grounding Pipeline</a>、<a href="vol_06_per013_pointcloud_voxel_bev_occupancy_source_freeze.html">PER-013 Point/Voxel/BEV/Occupancy</a> 与 <a href="../evidence/projects/per004_navigation_artifact_gate.html">PER-004 Navigation Artifact Gate</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD</a>、<a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA</a>、<a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness</a>、<a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a> 与 <a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM</a> Claim–Evidence Inventories。</li></ol>
+</article></body></html>

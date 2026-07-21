@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 VLA-WM-022 原子题卡：MPC、CEM/MPPI 与 Best-of-N</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_04_world_model_sim2real_wm022.md">
+<meta name="aris:source-sha256" content="6fa30007db8c0263d3ba6ea7ad10c033113525518c805fade35982821322267c">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>6fa30007db8c0263d3ba6ea7ad10c033113525518c805fade35982821322267c</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_04_world_model_sim2real_wm022.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#mpc-cem-mppi-best-of-n">MPC、CEM/MPPI 与 best-of-N 的共同点和差异是什么？</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 04 VLA-WM-022 原子题卡：MPC、CEM/MPPI 与 Best-of-N</h1>
+<div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-18 覆盖范围：<code>VLA-WM-022</code> 难度：L2 1 题 优先级：P0 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_04_world_model_sim2real_wm022_mpc_cem_mppi_best_of_n.html">WM-022 Knowledge</a>；来源边界见 <a href="../sources/vol_04_wm022_mpc_cem_mppi_best_of_n_source_freeze.html">WM-022 Source Freeze</a>。</div>
+<h2 id="mpc-cem-mppi-best-of-n">MPC、CEM/MPPI 与 best-of-N 的共同点和差异是什么？</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-WM-022</b> · MPC、CEM/MPPI 与 best-of-N trajectory selection 的共同点和差异是什么？</summary>
+<p><strong>面试意图</strong>：判断你能否区分闭环执行范式、proposal optimizer 和 scorer selector，并说明 N/H/K、latency、model/scorer bias 与证据边界。</p>
+<p><strong>30 秒回答</strong>：共同流程是候选生成、评分、选择/更新、执行 prefix。MPC 是 receding-horizon 闭环；CEM 用 elite 更新分布；MPPI 用带噪轨迹和 cost 权重更新；best-of-N 只按 scorer 取 top，可组合前三者。N/H 增大会放大 optimism 和 latency，要做 paired eval。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：MPC 优化有限 horizon，只执行 (K) 步再观测；CEM 采样、保留 elite、更新分布；MPPI 围绕 nominal control 加噪声并按 cost 权重更新；best-of-N 只排序 N 条候选，不是完整 planner。冻结 checkpoint、seed、N/H/K、controller、scorer、reset、latency 和分母。N 增大可能选中 value/model hallucination，要做 N/H sweep、rank calibration 与 selected/unselected trace。</p>
+<p><strong>诊断 / 证据</strong>：记录 proposal、selected/unselected、checkpoint/scorer revision、normalizer、control Hz、p50/p95 latency、action age、replan、fallback 和 episode success；检查 CEM elite entropy、MPPI cost/temperature、best-of-N rank correlation，以及同 checkpoint 的 imagined/open-loop/sim/real 对照。公开分数不能替代本地 planner artifact。</p>
+<p><strong>项目挂钩</strong>：Cosmos/WAM 可连接 action/future/value slots、best-of-N 与 LIBERO/RoboCasa protocol；UWM 可连接 horizon、normalizer、fixed/reset；OpenPiVLA/OPD/Harness 可连接 action schema、scorer、timeout 与 episode trace。安全表达是“我能解释并审计 planning contract”，不把公开代码、离线 proxy 或未核验 checkpoint 写成个人 MPC/CEM/MPPI 成果。</p>
+<p><strong>追问树</strong>：MPC 和 CEM 是同一层概念吗？MPPI 与 CEM 的 proposal/update 差异？best-of-N 是否需要 world model？为什么 N 越大可能越差？H 与 execution prefix K 如何拆？scorer 不校准怎么办？CEM 早熟如何发现？MPPI temperature/noise 错配如何定位？如何把 planning latency 计入 success？</p>
+<p><strong>易错点</strong>：把 MPC 当 optimizer；把 CEM 当闭环执行；把 MPPI 公式当所有实现的默认；把 best-of-N top score 当真实 success；忽略 selected/unselected、N/H sweep、controller、latency、reset 和 denominator；把公开 Cosmos 分数写成个人 planning uplift。</p>
+<p><strong>危险答案</strong>：说“best-of-N 一定提高成功率”“N 越大越好”“CEM/MPPI 不需要 scorer”“只要 world model 预测好就能控制”“MPC 执行完整 horizon 不用 replan”“benchmark best-of-N 就证明项目闭环”。</p>
+<p><strong>来源</strong>：[1][2][3][4]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../sources/vol_04_wm022_mpc_cem_mppi_best_of_n_source_freeze.html">WM-022 Source Freeze</a>：方法差异、协议和失败边界。</li><li><a href="../sources/vol_04_world_model_foundations_claim_to_code.html">World Model Foundations Audit A</a>：CEM、latent planning、receding horizon 与 model bias。</li><li><a href="../sources/vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos Policy / WAM claim-to-code audit</a>：best-of-N、action/future/value routing 与评估边界。</li><li><a href="../knowledge/vol_04_world_model_sim2real_wm019.html">WM-019 Metric Boundary</a>：imagined/open-loop/simulator/real metric ladder。</li></ol>
+</article></body></html>

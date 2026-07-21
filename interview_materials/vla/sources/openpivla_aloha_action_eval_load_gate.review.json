@@ -1,0 +1,38 @@
+{
+  "artifact": "sources/openpivla_aloha_action_eval_load_gate.md",
+  "html": "sources/openpivla_aloha_action_eval_load_gate.html",
+  "review_date": "2026-07-21",
+  "status": "local_direct / log_hash_frozen / official_action_eval / task_success_not_proven / WARN",
+  "verdict": "WARN",
+  "source_sha256": "AE425706E5D0B5507C99AED0176380431D5B87551EE0F9F787C0E4766E44F7A2",
+  "evidence_cutoff": "2026-07-21",
+  "local_sources": {
+    "project_root": "C:\\Users\\mousongzhe\\project\\openpivla_deployment",
+    "serve_log_sha256": "F02D0E4D08D6879C2F080B3DA905B4EA11A73B7510B7D8867785FFD1384A0868",
+    "summary_sha256": "D367885AFB621469C81CB885C53FD36A87F02F06B8F4ED9B854F32BDB6663BAC",
+    "evaluator_script_sha256": "B1B7FB9B7A86355B9C1843CDE971B38FD26A2DAB1F18550128671F79F1AB4F39",
+    "launcher_sha256": "61DFE972B20722CF08B3FA139D68B29B6C1B52286671A7705000AE3738A8BF60",
+    "deployment_sha256": "C0A3DD0C0DA8C1C0D36023046D5337900A71680B413657BC9B1062EEF2EEA14E"
+  },
+  "checks": {
+    "server_restore_log": "PASS WITH WARNING (pi0_aloha_sim restored 6.0 GiB in 17.31 s; per-file checkpoint manifest absent)",
+    "normalizer_load": "PASS WITH WARNING (checkpoint assets/lerobot/aloha_sim_transfer_cube_human loaded; asset SHA absent)",
+    "server_client_connection": "PASS WITH WARNING (8020 listen and localhost open/close recorded; shared run UUID absent)",
+    "action_eval_summary": "PASS (4 samples, horizon 50, dimension 14, mean/std and four per-sample records frozen)",
+    "metric_recomputation": "PASS WITH WARNING (script formula/shape path read; raw parquet not copied or independently re-run locally)",
+    "task_success_boundary": "PASS (offline action L1 is not reported as reward, success rate or closed-loop benchmark)",
+    "fine_tune_lineage": "UNVERIFIED (official pi0_aloha_sim load does not establish private Qwen3-VL checkpoint lineage)",
+    "ownership": "PENDING (candidate per-file role and pre-snapshot diff not confirmed)",
+    "html_static_validation": "PASS (full repository validator: 384 canonical triplets, zero missing/sha/template/math/link/reconciliation failures; 280 unique cards remain unseen)",
+    "browser_visual_check": "PASS WITH WARNING (rechecked 2026-07-21 at localhost narrow 800x1000: one H1, TOC static at 753px, zero page-wide overflow, tables/code/formula contained with overflow:auto, zero formula em nodes, zero broken anchors; desktop 1440x1000 was previously verified with sticky 260px TOC)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Generate per-file pi0_aloha_sim params/assets SHA and bind OpenPI, processor and tokenizer revisions.",
+    "Record exact server/client argv, effective config, UTC timestamp, shared run UUID and request IDs.",
+    "Recompute the four sample losses from immutable parquet/prediction arrays if those artifacts become locally available.",
+    "Run a matched closed-loop probe with axis/order/unit, normalizer, controller and scorer fixed.",
+    "Keep PROJ-OPENPIVLA-007 unseen until a real oral response is recorded."
+  ],
+  "next": "Collect the immutable official-checkpoint manifest or run one matched LIBERO failure probe; keep action L1 separate from task success."
+}

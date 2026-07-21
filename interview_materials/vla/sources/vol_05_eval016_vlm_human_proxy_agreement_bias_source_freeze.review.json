@@ -1,0 +1,46 @@
+{
+  "artifact": "sources/vol_05_eval016_vlm_human_proxy_agreement_bias_source_freeze.md",
+  "html": "sources/vol_05_eval016_vlm_human_proxy_agreement_bias_source_freeze.html",
+  "review_date": "2026-07-19",
+  "status": "source_frozen / VLA-EVAL-016 / knowledge_drafted / card_1_of_1_unseen / WARN",
+  "verdict": "WARN",
+  "source_sha256": "74a05d86958cfa3b620c363e34452597b453e3a3b8b0bc75b635bf5b987b6490",
+  "coverage": {
+    "knowledge_id": "VLA-EVAL-016",
+    "public_source_groups_checked": 5,
+    "project_inventories_checked": 5,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "worldgym": "arXiv 2506.00613v3 + world-model-eval/world-model-eval commit 709665b29f5c95124e7dbc05b0d4d47cd353de97 / no LICENSE found",
+    "mt_bench_judge": "arXiv 2306.05685v4 + lm-sys/FastChat commit 587d5cfa1609a43d192cedb8441cac3c17db105d / Apache-2.0",
+    "prometheus_vision": "arXiv 2401.06591v1 + kaistAI/prometheus-vision commit fe668b5e7e120e5bea8a3821eeb468ddf719c23c / Apache-2.0",
+    "mj_bench": "arXiv 2407.04842v1 / PDF SHA-256 89cadf93084abcb7c117bb67d813a6c2e012d211efbaafa5b49902893b46eaee",
+    "agreement_stats": "scikit-learn commit 6d7f1f12c792bb17dd92b4bfbc86b9392e0f5ef6 + SciPy v1.16.3"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one EVAL-016 source, knowledge node and unseen card; EVAL-017 deferred)",
+    "source_freeze": "PASS (WorldGym, judge bias/rubric/multimodal benchmark and agreement statistics revisions/hashes frozen)",
+    "estimand_boundary": "PASS (binary, ordinal, pairwise, ranking, probability and taxonomy tasks separated)",
+    "human_protocol": "PASS (blind double labels, raw disagreement, adjudication, evidence and annotator metadata)",
+    "agreement_metrics": "PASS (confusion, raw/chance agreement, un/weighted kappa, rank and calibration)",
+    "bias_matrix": "PASS (position, style, identity, rubric, visual, temporal, viewpoint, task, injection and language)",
+    "worldgym_boundary": "PASS (literal gpt-4o, n=5, 0/0.5/1 parsing, optimistic tie-break and no snapshot explicit)",
+    "artifact_contract": "PASS (protocol/rubric/sample/evidence/human/VLM/mutation/matrix/checksum/recompute bundle)",
+    "project_truth_boundary": "PASS (five projects correctly marked as lacking paired VLM-human-objective bundle)",
+    "canonical_sha": "PASS (Markdown, HTML metadata and review SHA match)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, eighteen H2, five tables, two code blocks, six formula blocks, zero formula em; serif/sticky/900px rules present)",
+    "local_links": "PASS",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Collect paired episode/video, raw human labels, VLM responses and objective state predicates.",
+    "Do not promote correlation or same-model vote stability to absolute agreement or deployment validity.",
+    "Do not report project agreement, kappa, calibration or bias numbers without the four-way bundle.",
+    "Do not create coaching_state.md before a real oral response."
+  ],
+  "next": "Proceed only to VLA-EVAL-017 simulator success, shadow mode and real-robot gate; keep VLA-EVAL-016 WARN/unseen."
+}

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WM-019 WAM Matched-Checkpoint Protocol Bridge（iter_000010000）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\wm019_wam_matched_checkpoint_protocol_bridge.md">
+<meta name="aris:source-sha256" content="648f4d3180bf99299dfb5c6e826592bf861b372416dc4bbcea5854dad263cce3">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>648f4d3180bf99299dfb5c6e826592bf861b372416dc4bbcea5854dad263cce3</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\wm019_wam_matched_checkpoint_protocol_bridge.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-identity">1. Identity 结论</a></li><li><a href="#2">2. 冻结输入</a></li><li><a href="#3-protocol-bridge">3. Protocol bridge</a></li><li><a href="#4">4. 两侧观测</a></li><li><a href="#offline-future-image-side">Offline future-image side</a></li><li><a href="#action-rollout-side">Action-rollout side</a></li><li><a href="#5">5. 能说与不能说</a></li><li><a href="#6">6. 下一步最小闭环</a></li><li><a href="#section-9">参考来源</a></li></ol></nav>
+<h1>WM-019 WAM Matched-Checkpoint Protocol Bridge（iter_000010000）</h1>
+<div class="meta">状态：<code>matched-checkpoint-path / offline-to-rollout bridge / binary-unverified / WARN</code> 审查日期：2026-07-18 证据截止：2026-07-18 范围：只证明离线 future-image metric 与 trained CoffeePressButton rollout 引用了完全相同的 checkpoint path；不把 path equality 当 checkpoint hash，不把离线视觉指标与 rollout success 直接相关或因果化。</div>
+<h2 id="1-identity">1. Identity 结论</h2>
+<p>离线 <code>iter_000010000/0000_metrics.json</code> 的 <code>checkpoint_path</code> 与 trained action-rollout <code>manifest.json</code> 的 <code>checkpoint</code> 字段逐字节相同：</p>
+<pre><code class="language-text">/data/msz/wm/outputs/cosmos_policy_online_text_formal_20260605/
+cosmos_policy/cosmos_v2_finetune/
+cosmos_policy_online_text_formal_20260605/checkpoints/iter_000010000</code></pre>
+<p>UTF-8 path string SHA-256 为：</p>
+<pre><code class="language-text">6CAE0B6BAA4378F25A0AF92720303922B709F7B8A21994684E6F77B6ED14E833</code></pre>
+<p>这是路径字符串 fingerprint，不是 checkpoint binary SHA。当前 Windows 工作区没有该 checkpoint binary，不能独立验证权重内容、processor、normalizer 或 config。</p>
+<h2 id="2">2. 冻结输入</h2>
+<table><thead><tr><th>role</th><th>local artifact</th><th>SHA-256</th></tr></thead><tbody>
+<tr><td>offline protocol manifest</td><td><code>cosmos_policy_eval_like_dreamdojo_20260605/manifest.json</code></td><td><code>8C4872F711897F718621C7AE8A6DF49EEDDE759CBECEDE530A3D82ABA819EC71</code></td></tr>
+<tr><td>offline iter-10000 metrics</td><td><code>iter_000010000/0000_metrics.json</code></td><td><code>C9AB7F04AFD9C9057CC548BF0176285E001BA778BCD37DC4FB7D857E29BAEC9D</code></td></tr>
+<tr><td>trained rollout manifest</td><td><code>cosmos_policy_robocasa_action_rollout_20260605/.../manifest.json</code></td><td><code>809AE4F879C9421F954C7BFC26C70005B94387412449039F9FA8B6E479EF55CC</code></td></tr>
+<tr><td>trained action trace</td><td>paired rollout <code>actions.jsonl</code></td><td><code>9C6A4F00DA8107EB0C1FDDDC642D1986CD510D92F7F6E3A68ADE834E8B82CF2D</code></td></tr>
+<tr><td>trained raw video</td><td>paired rollout failure video</td><td><code>59176353B1E069C6F3A3A20BDF13EE6A9FFD969537C5501B685293D87802877E</code></td></tr>
+</tbody></table>
+<h2 id="3-protocol-bridge">3. Protocol bridge</h2>
+<table><thead><tr><th>field</th><th>offline future-image metric</th><th>trained action rollout</th><th>是否相同</th></tr></thead><tbody>
+<tr><td>checkpoint path</td><td><code>.../iter_000010000</code></td><td><code>.../iter_000010000</code></td><td>exact match</td></tr>
+<tr><td>task semantics</td><td>prompt：press the button on the coffee machine to serve coffee</td><td>task=<code>CoffeePressButton</code>，description 同 prompt</td><td>semantic match</td></tr>
+<tr><td>input episode</td><td>successful regen-demo HDF5，relative indices 0..62</td><td>RoboCasa env episode 0</td><td>不同</td></tr>
+<tr><td>seed</td><td>7</td><td>policy seed 195 / env seed 0</td><td>不同</td></tr>
+<tr><td>horizon</td><td>chunk 32；4 denoising steps；12 future frames</td><td>300 env steps；open-loop 16；5 action denoising steps</td><td>不同</td></tr>
+<tr><td>output</td><td>future-image PSNR/SSIM</td><td>action trace、raw video、success predicate</td><td>不同证据层</td></tr>
+<tr><td>denominator</td><td>sample_count=1</td><td>episode_count=1</td><td>都过小且单位不同</td></tr>
+</tbody></table>
+<p>这张表完成的是 checkpoint-reference bridge，不是 protocol equivalence。offline sample 与 rollout episode 不同，不能做逐样本 proxy-success correlation。</p>
+<h2 id="4">4. 两侧观测</h2>
+<h3 id="offline-future-image-side">Offline future-image side</h3>
+<ul><li><code>sample_count=1</code>，<code>future_frame_count=12</code>；</li><li>future-only <code>PSNR=8.2140051576</code>、<code>SSIM=0.0428580477</code>；</li><li>with-condition <code>PSNR=15.1975432224</code>、<code>SSIM=0.1164843517</code>；</li><li>SSIM implementation 标记为 <code>skimage</code>，LPIPS 为 <code>null</code>。</li></ul>
+<h3 id="action-rollout-side">Action-rollout side</h3>
+<ul><li>300 条 action rows，<code>policy_action7</code> shape <code>300×7</code>，<code>env_action</code> shape <code>300×12</code>；</li><li>无非有限 policy value；</li><li><code>max_steps=300</code>、<code>num_open_loop_steps=16</code>、<code>num_denoising_steps_action=5</code>；</li><li>episode-level <code>success=false</code>，逐 step <code>success_after_step=True</code> 次数为 0；</li><li>trained raw video 已本地哈希，但 checkpoint 仍未本地验证。</li></ul>
+<h2 id="5">5. 能说与不能说</h2>
+<p>可以说：</p>
+<div class="meta">“离线 future-image metric 和一条 CoffeePressButton rollout 确实引用同一个 <code>iter_000010000</code> checkpoint path；我能分别复核 metrics JSON、rollout manifest、action trace 和视频。但离线与 rollout 的 episode、seed、horizon 和统计单位不同，所以我只把它当 checkpoint-reference bridge，不把 PSNR/SSIM 与 success 做相关或因果结论。”</div>
+<p>不能说：</p>
+<ol><li>“checkpoint 已被本地 hash/加载验证”——当前只有路径字符串相同。</li><li>“PSNR/SSIM 低导致 rollout 失败”——n=1、输入不同、无 matched sample。</li><li>“iter 10000 比 iter 5000 成功率更差”——iter 5000 没有同协议 rollout denominator。</li><li>“episode 0 失败证明 WAM 0-success”——没有完整任务/seed/init ledger。</li></ol>
+<h2 id="6">6. 下一步最小闭环</h2>
+<ol><li>获取 <code>iter_000010000</code> checkpoint binary 或 immutable remote content hash，并绑定 processor/normalizer/config SHA。</li><li>对相同 task/init/seed，保存 future metric、action trace、controller、predicate 和 episode outcome。</li><li>对 <code>iter_000005000</code> 补同协议 rollout，或对 <code>iter_000010000</code> 扩展多 sample/multi-seed；再计算 proxy-success correlation。</li><li>在完成 matched protocol 前，WAM 历史 MSE/success/uplift 继续保持 <code>WARN/REMOVED</code>。</li></ol>
+<h2 id="section-9">参考来源</h2>
+<ol><li><a href="wm019_wam_future_metric_paired_diagnostic.html">WAM Future-Metric Paired Diagnostic</a>。</li><li><a href="wm019_wam_action_trace_paired_diagnostic.html">WAM Action-Trace Paired Diagnostic</a>。</li><li><a href="wm019_wam_artifact_manifest.html">WAM Artifact Manifest</a>。</li><li><a href="../../sources/vol_04_wm019_project_metric_artifact_gate.html">WM-019 Project Metric Artifact Gate</a>。</li></ol>
+</article></body></html>

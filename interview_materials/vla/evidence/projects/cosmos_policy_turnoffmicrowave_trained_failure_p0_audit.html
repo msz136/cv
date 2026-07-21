@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmos Policy TurnOffMicrowave 本地训练失败：P0 First-Divergence 审计</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.md">
+<meta name="aris:source-sha256" content="80789c958cbdbbef9fededba13d6bafbecab64fae1a45e5aff0c3470fff57cab">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>80789c958cbdbbef9fededba13d6bafbecab64fae1a45e5aff0c3470fff57cab</code>；生成自：<code>interview_materials\vla\evidence\projects\cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2-question">2. 问题（Question）</a></li><li><a href="#3-p0-promotion">3. P0 promotion 结论</a></li><li><a href="#4-frozen-inputs-sha-256">4. Frozen inputs 与 SHA-256</a></li><li><a href="#5-run-delta">5. Run 总账与相邻 Delta</a></li><li><a href="#6">6. 动作、采样与评测合同</a></li><li><a href="#7-online-rollout-first-divergence">7. Online Rollout 与 First-Divergence 定位</a></li><li><a href="#7-1-closed-loop">7.1 Closed-loop 症状</a></li><li><a href="#7-2-same-input-official-vs-local-probe">7.2 Same-input official-vs-local probe</a></li><li><a href="#8-5-frame-exact-observation-transfer">8. 负样本、5-frame 与 Exact-Observation Transfer</a></li><li><a href="#8-1">8.1 不是简单的“没有负样本”</a></li><li><a href="#8-2-debug-sampler-conditioning">8.2 历史 debug sampler 漏了关键 conditioning 字段</a></li><li><a href="#8-3-corrected-overfit-transfer-gap">8.3 Corrected overfit 揭示 transfer gap</a></li><li><a href="#9-0-success">9. 0-Success 假设审计</a></li><li><a href="#10">10. 面试可用口径</a></li><li><a href="#30">30 秒版本</a></li><li><a href="#2">2 分钟版本</a></li><li><a href="#section-18">高压追问：所以是因为训练集负样本太少吗？</a></li><li><a href="#root-cause">高压追问：你定位并修复了 root cause 吗？</a></li><li><a href="#11-ownership">11. 公源、本地证据与 Ownership 边界</a></li><li><a href="#12-p0">12. 关闭 P0 的最小动作</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>Cosmos Policy TurnOffMicrowave 本地训练失败：P0 First-Divergence 审计</h1>
+<div class="meta">状态：<code>p0_audited / local-artifact-backed / checkpoint-remote-referenced / root-cause-partial / ownership-pending / WARN</code> 审计日期：2026-07-21 证据截止：2026-06-23 范围：只审计 local negative-only 1k checkpoint 在 TurnOffMicrowave 上的 fixed-batch gate、<code>0/1</code> closed-loop、同输入 official-vs-local query probe、5-frame conditioning 对照、eval-state mining 与 corrected single-batch overfit；不把该 checkpoint 与 8-GPU 1-epoch gate、独立 full10k run 或 official-HF <code>84/118</code> 合并。</div>
+<h2 id="1">1. 结论先行</h2>
+<p>这批本地归档已经把失败定位到一个更窄、但仍未完全闭合的边界：<strong>训练链路和单个负向 batch 可学习，local checkpoint 也能在缺省 debug conditioning 下采出负向夹爪；但一旦对齐 official 的 5-frame conditioning，输出在同一 HDF5 batch 和 exact eval observation 上都转为小正值。</strong> 因此不能把失败简化成“源数据没有负样本”“第 7 维符号或 normalization 错了”“action slot 没梯度”，也不能把 <code>num_conditional_frames</code> 的缺失本身直接称为唯一 root cause。</p>
+<p>关键证据链如下：</p>
+<pre><code class="language-text">negative-only 1k fixed batch
+  sampled first gripper = -0.827738
+  sampled negative fraction = 100%
+  trajectory final clean first = -0.827517
+              |
+              | same remote-referenced checkpoint
+              v
+TurnOffMicrowave closed-loop
+  success = 0/1, episode length = 500
+  32 queries, each action chunk = 32x7
+  gripper min/max/mean = +0.064589 / +0.561399 / +0.220511
+  negative fraction below -0.5 = 0
+              |
+              | exact same initial observation hashes
+              v
+official-HF first gripper = -1.015586
+local first gripper       = +0.142931
+best-of-8 local first range = +0.105245 .. +0.221671
+all eight candidates: no gripper value below -0.5</code></pre>
+<p>目前最安全的技术结论是：<strong>first divergence 出现在 official 5-frame conditioning 下从 observation-conditioned sampler 到 7D action chunk 的映射，而不是 action tensor 的 shape、slot-5 roundtrip、stats 路径或单 batch 可学习性。</strong> 这仍是 <code>partially confirmed</code> 的边界，不是完整因果闭环；缺少 immutable local checkpoint binary/hash、matched patch→rerun、更多 task/episode、完整 scorer/version 与候选人 ownership。</p>
+<h2 id="2-question">2. 问题（Question）</h2>
+<p>为什么 negative-only 1k checkpoint 在固定负向 batch 上能产生 <code>&lt; -0.5</code> 的夹爪动作，到了 TurnOffMicrowave closed-loop 却是 <code>0/1</code> 且 32 次 query 全正？失败是负样本缺失、动作接口错误、采样随机性、5-frame conditioning、还是训练 observation 到 exact eval observation 的迁移问题？现有证据能确认到哪一层，面试中又应怎样避免过度归因？</p>
+<h2 id="3-p0-promotion">3. P0 promotion 结论</h2>
+<pre><code class="language-text">P0 status = PARTIAL
+eligible local failure claims = PRESENT
+eligible first-divergence claims = PRESENT
+eligible root-cause claims = PARTIAL
+eligible fixed claims = 0
+eligible causal-uplift claims = 0
+eligible ownership claims = 0</code></pre>
+<table><thead><tr><th>P0 字段</th><th>当前证据</th><th>状态</th><th>安全解释</th></tr></thead><tbody>
+<tr><td>local checkpoint identity</td><td>所有 summary 指向同一个远端 <code>iter_000001000</code> path</td><td><code>REMOTE-REFERENCED</code></td><td>可绑定 run name/path；没有本地 binary/full SHA 或新进程 load parity</td></tr>
+<tr><td>fixed-batch learnability</td><td>sampled first <code>-0.827738</code>，trajectory final clean <code>-0.827517</code></td><td><code>PRESENT</code></td><td>证明该 batch 和链路可输出负向，不证明 eval-domain transfer</td></tr>
+<tr><td>closed-loop symptom</td><td>TurnOffMicrowave <code>0/1</code>，length <code>500</code>，32 次 query 全正</td><td><code>PRESENT / ONE-EPISODE</code></td><td>可讲最小失败复现；不是 benchmark success rate</td></tr>
+<tr><td>same-input comparison</td><td>official first <code>-1.015586</code>，local <code>+0.142931</code>，observation/T5/proprio hashes 对齐</td><td><code>PRESENT</code></td><td>可讲 same-state first divergence；两个模型的 denoise steps 不同，结果是诊断而非公平性能排名</td></tr>
+<tr><td>sampling variance</td><td>local best-of-8 first gripper <code>0.105245–0.221671</code>，无 <code>&lt;-0.5</code></td><td><code>PRESENT</code></td><td>排除该 state 上“单次倒霉 seed”；不能概括全部 states</td></tr>
+<tr><td>source negative support</td><td>52 个 HDF5、11230 states；top-24 GT first-action negative rate <code>37.5%</code></td><td><code>PRESENT</code></td><td>排除“相似成功数据完全没有负向 first action”</td></tr>
+<tr><td>5-frame conditioning effect</td><td>缺省 debug path 为全负；补齐 official 5 frames 后为全正</td><td><code>PRESENT / COUNTERFACTUAL</code></td><td>证明 conditioning contract 会改变输出；不能单独证明模型为何没有学会该条件分布</td></tr>
+<tr><td>corrected overfit transfer</td><td>ordinary loss 能拟合 fixed batch，但 exact eval first 仍 <code>+0.315938</code></td><td><code>PRESENT</code></td><td>证明 parameter/update/action path 可学；暴露 observation-conditioned transfer gap</td></tr>
+<tr><td>repaired final result</td><td>没有 patch 后的 matched multi-episode success rerun</td><td><code>MISSING</code></td><td>不得称 root cause fixed 或成功率恢复</td></tr>
+<tr><td>ownership</td><td>run/operator/code author/reviewer 未由候选人逐项确认</td><td><code>PENDING</code></td><td>路径、日志和 Git author 不自动等于个人贡献</td></tr>
+</tbody></table>
+<h2 id="4-frozen-inputs-sha-256">4. Frozen inputs 与 SHA-256</h2>
+<table><thead><tr><th>本地证据</th><th>SHA-256</th><th>本页用途</th></tr></thead><tbody>
+<tr><td><code>negative_only_gate_iter1000_summary.json</code></td><td><code>87E46164CA21BC302298505E08CF8D15492CBAA16BD75FD30126D7B4B31E9039</code></td><td>训练配置、fixed-batch gate、trajectory final clean 与 run exits</td></tr>
+<tr><td><code>eval_action_debug_summary.json</code></td><td><code>7BA5101928FDF089404E033A9C915BEFD678D1D140338A726AE6D1E27531F1C0</code></td><td><code>0/1</code> closed-loop、500 steps、32 次 query 的 gripper 统计</td></tr>
+<tr><td><code>query_probe_comparison_summary.json</code></td><td><code>C73FF213B6F584BEF73975BA07E621E26BEEDB294F7C5BF656E80207268C280E</code></td><td>同一 initial observation 的 official-vs-local first action</td></tr>
+<tr><td><code>best_of_8_query_probe_summary.json</code></td><td><code>1EA9C2A74B569DDD6811D6DAD41A27C438D17DDEB5FC27E2DDBBF71A5B0EAC49</code></td><td>8 个 denoising seeds 的 local query 分布</td></tr>
+<tr><td><code>eval_state_mining_summary.json</code></td><td><code>0A989EB0A59947156A42A6853785D826F277D0EF52F08F8E92FD3CDCAAB65726</code></td><td>52-file/11230-state mining、top-24 标签与早期 overfit 摘要</td></tr>
+<tr><td><code>eval_vs_hdf5_query_compare.json</code></td><td><code>3548EB7ECECFB5689091E596CCA164A5A3268405009D104D7FB0E06D23A6B52D</code></td><td>HDF5 nearest state、conditioning-frame counterfactual、exact queries</td></tr>
+<tr><td>ordinary-loss overfit summary</td><td><code>E8F10210D1542F5B52BF6CFB527F97F93946967268A3CA3BDBCE628B676EEE9D</code></td><td>corrected fixed-batch learnability 与 exact-eval non-transfer</td></tr>
+<tr><td>negative-only strong-reg overfit summary</td><td><code>2FF4545E75B83BAA83BC39AFDECCE64106FD01842EF485396B627D4E6E85C407</code></td><td>strong auxiliary 的 clean/sample/exact-eval 三层对照</td></tr>
+</tbody></table>
+<p>上表冻结的是 Windows 本地归档文件。checkpoint 本身仍只由远端 path 引用：</p>
+<pre><code class="language-text">/data/msz/wm/outputs/cosmos_policy_predict2_official_repro_20260621/
+imaginaire_runs/cosmos_policy_repro/predict2_robocasa_official_t5/
+train1k_full1199_sampler_gripper_aux_w20_sig200_first8_negonly_neg64/
+checkpoints/iter_000001000</code></pre>
+<p>本页没有把该 path 当作 immutable checkpoint hash，也没有独立复算远端权重内容。</p>
+<h2 id="5-run-delta">5. Run 总账与相邻 Delta</h2>
+<table><thead><tr><th>Run / probe</th><th>相较上一阶段的改造</th><th>数据/输入</th><th>Checkpoint / steps</th><th>输出产物</th><th>结果</th><th>能证明 / 不能证明</th></tr></thead><tbody>
+<tr><td><code>negonly_1k_gate</code></td><td>full1199、action-only、balanced sampler、first8 negative-only aux</td><td>fixed negative/positive batch，<code>32×7</code> action</td><td>local <code>iter_000001000</code>，train 1000，sample 35 steps</td><td>gate/chain/trajectory JSON</td><td>sampled first <code>-0.8277</code>，gate pass</td><td>能输出负向；不能证明 closed-loop</td></tr>
+<tr><td><code>turnoff_1ep_smoke</code></td><td>从 fixed batch 进入 RoboCasa online rollout</td><td>TurnOffMicrowave initial state，5-frame official contract</td><td>同一 local path</td><td>eval log、JSONL、2 视频、summary</td><td><code>0/1</code>，length 500，32 queries 全正</td><td>closed-loop 症状；单 episode 不是 benchmark</td></tr>
+<tr><td><code>exact_query_official</code></td><td>截断到 initial observation 单次 query</td><td>相同 camera/proprio/T5 hashes</td><td>official HF，5 denoise steps</td><td>comparison JSON</td><td>first gripper <code>-1.0156</code></td><td>official 能在该 state 输出负向；不是本地训练对照成绩</td></tr>
+<tr><td><code>exact_query_local</code></td><td>checkpoint 替换为 local，denoise 35 steps</td><td>同上</td><td>local 1k</td><td>comparison JSON</td><td>first gripper <code>+0.1429</code></td><td>first divergence；不同 denoise steps 不支持性能排名</td></tr>
+<tr><td><code>best_of_8_local</code></td><td>seeds 195–202</td><td>同一 exact eval state</td><td>local 1k</td><td>summary JSON</td><td>first <code>0.1052–0.2217</code>；global min <code>-0.0372</code></td><td>排除单 seed；不排除其他 state 能负向</td></tr>
+<tr><td><code>eval_state_mining</code></td><td>从 52 HDF5 搜索 eval-like success states</td><td>11230 states，top-24</td><td>无新训练</td><td>neighbors/mining JSON</td><td>top-24 first negative <code>37.5%</code>；nearest GT first <code>-1</code></td><td>相似数据存在负向；不是 exact observation 等价</td></tr>
+<tr><td><code>conditioning_counterfactual</code></td><td>只补 <code>num_conditional_frames=5</code></td><td>同一 nearest HDF5 batch</td><td>local 1k</td><td>compare JSON</td><td>缺省为全负；5 frames 后全正</td><td>conditioning contract 是高影响变量；不是唯一 root cause</td></tr>
+<tr><td><code>corrected_overfit_none</code></td><td>official 5-frame eval-like contract，ordinary loss 单 batch 1000 steps</td><td>nearest negative + positive samples</td><td>in-memory overfit</td><td>summary/JSONL</td><td>fixed clean <code>-1.0154</code>、sampled <code>-1.0259</code>；exact eval <code>+0.3159</code></td><td>单 batch可学但不迁移 exact observation</td></tr>
+<tr><td><code>corrected_overfit_negonly</code></td><td>加 sampler negative-only strong-reg</td><td>同上</td><td>in-memory overfit 1000 steps</td><td>summary/JSONL</td><td>clean <code>-0.9001</code>、fixed sample <code>+0.5002</code>、exact eval <code>+0.3279</code></td><td>aux 有梯度但未修复 sampler/eval transfer</td></tr>
+</tbody></table>
+<p>以上 run 只构成诊断序列，不是递增性能曲线。相邻阶段的 Δ 主要落在 observation contract、sampler seed 与 in-memory objective；checkpoint、task set、denoise steps、episode denominator 并非全部 matched，因此禁止把数值差写成 uplift。</p>
+<h2 id="6">6. 动作、采样与评测合同</h2>
+<p>每次 policy query 产生一个动作块 \(A_q\in\mathbb{R}^{H\times D}\)，当前归档中 \(H=32\)、\(D=7\)，第 7 维是 gripper。令 \(g_{q,h}=A_q[h,6]\)，本页使用的负向比例为：</p>
+<div class="formula">\[
+r^-_q=\frac{1}{H}\sum_{h=0}^{H-1}\mathbf{1}[g_{q,h}&lt;-0.5].
+\]</div>
+<p>变量解释：\(q\) 是 policy query，\(h\) 是 chunk 内 action index，阈值 <code>-0.5</code> 来自这些本地 gate/summary 的判定合同。实现映射：<code>eval_action_debug_summary.json</code> 对 32 个 query 分别统计 chunk 维度和 gripper 分布；closed-loop 中所有 \(r^-_q=0\)。这是本地证据阈值，不应扩写成 RoboCasa 官方统一成功条件。</p>
+<p>同一 initial observation 的 first-action gripper 差异可写为：</p>
+<div class="formula">\[
+\Delta_g=g^{\mathrm{local}}_{0,0}-g^{\mathrm{official}}_{0,0}
+=0.142931-(-1.015586)=1.158517.
+\]</div>
+<p>变量解释：两侧共享 task label、三路 camera、raw/normalized proprio、T5 embedding 与 constructed data batch 的短 SHA；official 使用 5-step action denoise，local 使用 35-step。直觉上这是第一个可观测 action divergence，不是训练提升或同超参模型质量差。实现映射：数字来自 <code>query_probe_comparison_summary.json</code>，因此只支持该 state、该 seed 和各自记录的 sampler 配置。</p>
+<p>conditioning 对照把 sampler 写成：</p>
+<div class="formula">\[
+\hat A=f_\theta(o, c, z; C),\qquad C\in\{1,5\},
+\]</div>
+<p>其中 \(o\) 是图像与 proprio observation，\(c\) 是 T5 task condition，\(z\) 是 denoising noise，\(C\) 是 conditional-frame count。缺省 debug path（实质为 \(C=1\)）在 nearest HDF5 batch 上 first gripper 为 <code>-0.961349</code>、全 chunk 负向率 <code>1.0</code>；对齐 official \(C=5\) 后 first gripper 为 <code>+0.129789</code>、负向率 <code>0.0</code>。实现映射：两项来自 <code>eval_vs_hdf5_query_compare.json</code> 的 <code>hybrid_sampling</code>；它证明 \(C\) 改变了模型条件分布，却没有证明“把 \(C\) 改回 1”能修复 official closed-loop。</p>
+<h2 id="7-online-rollout-first-divergence">7. Online Rollout 与 First-Divergence 定位</h2>
+<pre><code class="language-python">def audit_turnoffmicrowave_rollout(env, policy, checkpoint, task):
+    # 1. Reset one TurnOffMicrowave episode and retain exact initial observation hashes.
+    obs = env.reset(task=task, seed=195)
+
+    # 2. Build the official Predict2 contract: three cameras, proprio, T5 and 5 conditional frames.
+    model_batch = build_predict2_batch(obs, task, num_conditional_frames=5)
+
+    # 3. Query a 32x7 action chunk and record the seventh gripper dimension before execution.
+    action_chunk = policy.sample(model_batch, checkpoint=checkpoint, denoise_steps=35)
+    record_query(action_chunk, shape=(32, 7), gripper_index=6)
+
+    # 4. Execute only the configured open-loop prefix, then replan until success or horizon 500.
+    for action in action_chunk[:16]:
+        obs, _, done, info = env.step(action)
+        if done or info.get(&quot;success&quot;, False):
+            return info
+
+    # 5. Repeat queries and preserve JSONL/video/episode length for first-divergence analysis.
+    return continue_until_horizon(env, policy, max_steps=500)</code></pre>
+<p>这段伪代码重建归档中的 control flow，不声称函数名逐字存在于项目。直接证据是 <code>num_open_loop_steps=16</code>、chunk <code>32×7</code>、5-frame slot contract、seed 195、500-step episode 与 action-debug JSONL；环境 success predicate 的具体源码 revision 仍未冻结。</p>
+<h3 id="7-1-closed-loop">7.1 Closed-loop 症状</h3>
+<p><code>eval_action_debug_summary.json</code> 记录：1 个有效 episode、success <code>0/1</code>、length <code>500</code>、32 次 action query。把全部 query 的第 7 维汇总后，最小值 <code>+0.064589</code>、最大值 <code>+0.561399</code>、query mean 的均值 <code>+0.220511</code>，所有 query 的 <code>&lt;-0.5</code> 比例都是 <code>0</code>。first-row gripper 甚至只落在 <code>+0.131084..+0.145603</code>。</p>
+<p>这说明“第一个动作恰好为正”不足以解释失败：在整个 episode 的记录 query 中，没有一次进入本地 gate 定义的负向区间。但它仍然只有 1 episode；不能把 <code>0/1</code> 写成任务族 success rate。</p>
+<h3 id="7-2-same-input-official-vs-local-probe">7.2 Same-input official-vs-local probe</h3>
+<p>comparison summary 冻结了 primary/secondary/wrist image、raw proprio、constructed video batch、T5 embedding 与 normalized proprio 的短 SHA。官方 checkpoint 在同一 initial observation 上 first gripper 为 <code>-1.015586</code>；local 1k 为 <code>+0.142931</code>。local 的 best-of-8 seeds 195–202 全部为正，first range <code>+0.105245..+0.221671</code>，所有 chunk 元素的最小值也只有 <code>-0.037203</code>。</p>
+<p>因此，在这个 state 上可以排除“local 只是碰到一个倒霉 denoising seed”以及“只有 best-of-N value selection 选错候选”。不能排除的是：其他 states、其他 checkpoint step、不同训练 distribution 或 matched denoise setting 下可能出现不同结果。</p>
+<h2 id="8-5-frame-exact-observation-transfer">8. 负样本、5-frame 与 Exact-Observation Transfer</h2>
+<h3 id="8-1">8.1 不是简单的“没有负样本”</h3>
+<p>state mining 扫描 52 个 HDF5、11230 个 states。按图像/proprio 相似度选出的 top-24 中，GT first gripper <code>&lt;-0.5</code> 的比例为 <code>37.5%</code>；最近邻 first gripper 是 <code>-1.0</code>，其 chunk 同时包含负/正动作。这证明 eval-like success data 中存在关闭夹爪方向的监督信号。</p>
+<p>同时，full1199 stats 中 gripper action 的 min/max 是 <code>-1/+1</code>，full1199 与 subset8 stats 的最大绝对差为 <code>0.0</code>。因此“源 gripper 第 7 维只有正值”与“eval 误用了另一套 subset stats”都被现有 structured summaries 反驳。</p>
+<h3 id="8-2-debug-sampler-conditioning">8.2 历史 debug sampler 漏了关键 conditioning 字段</h3>
+<p>早期 fixed-batch/debug path 没有显式传入 <code>num_conditional_frames</code>。在 nearest HDF5 batch 上，它可以得到全负 chunk；一旦设置为 official contract 的 5 frames，同一 checkpoint 的 chunk 变为全正。这不是无关紧要的参数变化，而是改变 observation information flow 的输入合同差异。</p>
+<p>但安全结论不是“5 frames 是 bug”。official checkpoint 在相同 5-frame eval contract 上能输出 <code>-1.0156</code>；真正的问题更接近 local model 没有把训练监督迁移到 official 5-frame conditioned exact observation。要确认根因，仍需 matched training/eval：训练期显式固定相同 \(C=5\)，保存 immutable checkpoint，再对同一 state 与多 episode 做 patch 前后 rerun。</p>
+<h3 id="8-3-corrected-overfit-transfer-gap">8.3 Corrected overfit 揭示 transfer gap</h3>
+<p>在对齐 5-frame 的 eval-like overfit 中，ordinary action loss 训练 1000 steps 后：</p>
+<table><thead><tr><th>层级</th><th>ordinary loss</th><th>negative-only strong-reg</th><th>解释</th></tr></thead><tbody>
+<tr><td>fixed-batch clean first</td><td><code>-1.015420</code></td><td><code>-0.900114</code></td><td>两种目标都能把 clean prediction 拉负</td></tr>
+<tr><td>fixed-batch sampled first</td><td><code>-1.025936</code></td><td><code>+0.500155</code></td><td>ordinary loss 在该 seed/batch 可过 sampler；strong-reg 反而未过</td></tr>
+<tr><td>exact eval first</td><td><code>+0.315938</code></td><td><code>+0.327874</code></td><td>两者都没有迁移到 exact eval observation</td></tr>
+<tr><td>exact eval negative frac</td><td><code>0</code></td><td><code>0</code></td><td>没有形成 <code>&lt;-0.5</code> action</td></tr>
+</tbody></table>
+<p>ordinary loss 的 final base loss 是 <code>0.267922</code>；strong-reg 的 base/aux/total 是 <code>1.138504 / 0.039185 / 1.922204</code>，第 7 维 target gradient L2 为 <code>7.924779</code>。这说明 auxiliary 不是“写了但没有梯度”，却也没有保证 full sampler 或 exact observation 的正确条件映射。</p>
+<p>本页不画跨 run loss curve：这些 summary 只有少量 step snapshots，且目标函数不同，把它们连接成平滑曲线会制造可比性。可复核的做法是保留 step-level JSONL，并把上述终点作为诊断表，而不是伪造训练趋势。</p>
+<h2 id="9-0-success">9. 0-Success 假设审计</h2>
+<table><thead><tr><th>假设</th><th>支持/反驳证据</th><th>当前动作</th><th>再评估结果</th><th>状态</th></tr></thead><tbody>
+<tr><td>源数据没有负向 gripper</td><td>52 HDF5/11230 states；top-24 first negative <code>37.5%</code>；stats min <code>-1</code></td><td>mining + stats 对照</td><td>找到 eval-like negative windows</td><td><code>REJECTED</code></td></tr>
+<tr><td>第 7 维 action shape/order 已断</td><td>action chunk 始终 <code>32×7</code>；gripper index 6；slot-5 roundtrip error <code>1.19e-7</code></td><td>chain trace</td><td>fixed batch 可输出 <code>-0.8277</code></td><td><code>REJECTED FOR BASIC PATH</code></td></tr>
+<tr><td>normalization/stats path 错配</td><td>full1199 vs subset8 stats max diff <code>0.0</code>；dataset/manual normalize error <code>5.96e-8</code></td><td>stats/roundtrip audit</td><td>basic mismatch 未发现</td><td><code>REJECTED FOR ARCHIVED CASE</code></td></tr>
+<tr><td>单个 denoising seed 倒霉</td><td>best-of-8 全部 first 为正，无 <code>&lt;-0.5</code></td><td>seeds 195–202</td><td>仍全正</td><td><code>REJECTED FOR THIS STATE</code></td></tr>
+<tr><td>debug sampler 与 official eval 输入合同不同</td><td>缺省 conditional frames 时全负；5 frames 后全正</td><td>补齐 <code>num_conditional_frames=5</code></td><td>counterfactual 稳定复现</td><td><code>CONFIRMED CONTRACT DIFFERENCE</code></td></tr>
+<tr><td>训练链路/参数完全不可学</td><td>ordinary overfit clean/sample 达 <code>-1.015/-1.026</code></td><td>corrected 1000-step single-batch overfit</td><td>fixed batch 学会</td><td><code>REJECTED</code></td></tr>
+<tr><td>exact eval observation 没有被模型正确条件化</td><td>fixed batch 学会，但 exact eval 仍 <code>+0.316</code>；official 同 state 为 <code>-1.016</code></td><td>same-input + overfit</td><td>gap 仍存在</td><td><code>PARTIALLY CONFIRMED</code></td></tr>
+<tr><td>negative-only strong-reg 已修复</td><td>clean 为负但 fixed sample <code>+0.500</code>、exact eval <code>+0.328</code></td><td>1000-step corrected overfit</td><td>未修复</td><td><code>REJECTED</code></td></tr>
+<tr><td>gripper 是 <code>0/1</code> 的唯一原因</td><td>当前只有 action/debug 与单 episode；未冻结完整 state/video causal trace</td><td>需要 patch→rerun</td><td>尚无成功恢复</td><td><code>OPEN</code></td></tr>
+</tbody></table>
+<p>这里的“rejected”都带作用域：例如 basic action path 通过，不代表 controller axis semantics、environment success predicate 或所有 episode 都已核验。</p>
+<h2 id="10">10. 面试可用口径</h2>
+<h3 id="30">30 秒版本</h3>
+<div class="meta">我把 local 1k checkpoint 的 fixed-batch gate 和 closed-loop 结果分开。它在负向 fixed batch 上确实能采出 first gripper <code>-0.8277</code>，但 TurnOffMicrowave 1-episode eval 是 <code>0/1</code>，500 steps 的 32 次 query 第 7 维全为正。对同一个 initial observation，official-HF first gripper 是 <code>-1.0156</code>，local 是 <code>+0.1429</code>，best-of-8 local 也没有 <code>&lt;-0.5</code>。进一步发现早期 debug sampler 没带 official 的 5-frame conditioning：补齐后同一 HDF5 batch 会从全负转成全正。corrected overfit 说明单 batch 和参数链路可学，但 exact eval observation 仍不迁移，所以我把结论定为 observation-conditioned sampler transfer gap，尚不称唯一 root cause 或已修复。</div>
+<h3 id="2">2 分钟版本</h3>
+<div class="meta">我先固定身份：这是 full1199 上 negative-only auxiliary 的 local 1k checkpoint，不是 8-GPU 1-epoch gate、独立 full10k，也不是 official-HF <code>84/118</code>。固定 batch 的动作 shape 是 <code>32×7</code>，slot-5 roundtrip 和 normalization 都通过，35-step sampler first gripper 能到 <code>-0.8277</code>，所以基础链路不是完全学不会。真正进入 TurnOffMicrowave closed-loop 后，1 episode 跑满 500 steps 仍是 <code>0/1</code>；32 次 query 的 gripper min 都在正区间，整体最小值是 <code>+0.0646</code>。  为了找 first divergence，我截取同一个 initial observation，对齐三路图像、proprio、T5 和 batch hash。official-HF 输出 <code>-1.0156</code>，local 输出 <code>+0.1429</code>；local 换 8 个 seed，first 仍在 <code>0.1052–0.2217</code>。数据侧也不是完全没负样本：52 个 HDF5、11230 states 的 top-24 eval-like neighbors 中有 <code>37.5%</code> GT first action 为负。  最关键的 protocol bug 是历史 debug sampler 缺 <code>num_conditional_frames</code>；缺省时同一 HDF5 batch 可全负，按 official 的 5 frames 后转成全正。但我不把它直接叫唯一根因，因为 official 模型在 5-frame contract 下工作正常，而且 corrected single-batch overfit 虽然能把 fixed clean/sample 拉到约 <code>-1.02</code>，exact eval first 仍是 <code>+0.316</code>。所以已确认的是 conditioning contract 差异和 exact-observation transfer gap；未确认的是哪种训练数据/条件建模改动能恢复 multi-episode success。</div>
+<h3 id="section-18">高压追问：所以是因为训练集负样本太少吗？</h3>
+<p><strong>强回答：</strong></p>
+<div class="meta">不能这样归因。数据不平衡可能是背景风险，但现有证据已经找到 eval-like negative windows：top-24 first-action negative rate 是 <code>37.5%</code>，nearest GT first 是 <code>-1</code>；ordinary single-batch overfit 也能把 fixed sampled first 拉到 <code>-1.026</code>。失败发生在 5-frame conditioned exact eval observation 上，所以“没有负样本”不足以解释。下一步应做 matched (C=5) 训练、immutable checkpoint、同 state probe 和多 episode rerun，而不是只加负样本权重。</div>
+<h3 id="root-cause">高压追问：你定位并修复了 root cause 吗？</h3>
+<p><strong>强回答：</strong></p>
+<div class="meta">我定位了两个可复核边界：历史 debug sampler 与 official eval 的 5-frame contract 不一致；local checkpoint 从 fixed batch 到 exact eval observation 存在 first-action gripper divergence。还没有修复后的 matched success rerun，所以我不会说 root cause 已修复。negative-only strong-reg 的 corrected overfit 也失败了，这反而说明单纯加强夹爪 auxiliary 不是充分解。</div>
+<h2 id="11-ownership">11. 公源、本地证据与 Ownership 边界</h2>
+<table><thead><tr><th>层级</th><th>本页如何使用</th><th>不能越界到</th></tr></thead><tbody>
+<tr><td>公有上游</td><td>Cosmos Policy Predict2/RoboCasa 的 5-frame、action chunk 与 official checkpoint path</td><td>个人提出模型架构、个人训练 official 权重</td></tr>
+<tr><td>本地证据</td><td>JSON summaries、logs、JSONL、视频、mining/overfit outputs</td><td>checkpoint binary 已 hash、本地结果可严格复现</td></tr>
+<tr><td>本地推断</td><td>first divergence 位于 5-frame observation-conditioned sampler transfer</td><td>唯一 root cause、gripper 必然导致所有 success failure</td></tr>
+<tr><td>未核实</td><td>operator、code author、reviewer、checkpoint lineage、scorer revision、controller semantics</td><td>个人主导、修复已上线、benchmark uplift</td></tr>
+</tbody></table>
+<p>候选人可以认领哪些具体脚本、运行、分析和结论，仍需 ownership ledger 的人工确认；本页不从 Windows 用户名、远端路径或文件作者自动推断。</p>
+<h2 id="12-p0">12. 关闭 P0 的最小动作</h2>
+<ol><li>把 local <code>iter_000001000</code> checkpoint、config、stats、T5 与代码 revision 形成 immutable manifest，并在新进程做 load/query parity。</li><li>用同一 training/eval contract 显式固定 <code>num_conditional_frames=5</code>；保留 patch、训练日志和 step-level sampler diagnostics。</li><li>对 patch 前后 checkpoint 跑 matched exact-state query：同 task、初始 state、三路图像/proprio/T5 hash、denoise steps、seed set 和 output transform。</li><li>把 TurnOffMicrowave 从 1 episode 扩到预注册 seeds/episodes，冻结 success predicate、controller、horizon、JSONL 与视频，并报告 denominator。</li><li>对 first divergence 做逐层 trace：condition tensor、slot mask、action latent、denoising trajectory、denormalized 7D action 与 controller input；不要只看 final gripper histogram。</li><li>由候选人逐文件确认 run operator、脚本/patch author、分析者和 reviewer；工具生成与人工判断分开记录。</li></ol>
+<p>在这些字段闭合前，本页保持 <code>PARTIAL/WARN</code>。允许讲“我复现了一个可审计的 0/1 failure，并把 first divergence 收窄到 official 5-frame conditioned exact-observation transfer”；不允许讲“我修好了 Cosmos Policy 的 gripper root cause”、训练提升或本地 checkpoint benchmark 成绩。</p>
+<h2 id="references">References</h2>
+<ol><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\negative_only_aux_gate_20260622\train1k_full1199_sampler_gripper_aux_w20_sig200_first8_negonly_neg64\negative_only_gate_iter1000_summary.json</code>。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\negative_only_aux_gate_20260622\eval_1k_TurnOffMicrowave_1ep_cudaenv\eval_action_debug_summary.json</code>。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\query_probe_20260622\query_probe_comparison_summary.json</code>。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\query_probe_20260622\best_of_8_query_probe_summary.json</code>。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\eval_state_mining_20260622\eval_state_mining_summary.json</code>。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\eval_state_compare_20260622\eval_vs_hdf5_query_compare.json</code>。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\eval_state_mining_20260622\eval_like_overfit_none_steps1000_w0_sig200\single_batch_overfit_none_summary.json</code>。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\eval_state_mining_20260622\eval_like_overfit_sampler_negonly_strong_reg_steps1000_w20_sig200\single_batch_overfit_sampler_negonly_strong_reg_summary.json</code>。</li><li><a href="cosmos_policy_robocasa_baseline_p0_audit.html">Cosmos Policy RoboCasa Official-HF Baseline P0 Audit</a>。</li><li><a href="wam_claim_evidence_inventory.html">Cosmos / WAM Claim–Evidence Inventory</a>。</li><li><a href="../../practice/wam_oral_model_answer.html">Cosmos / WAM 口述 Model Answer</a>。</li></ol>
+</article></body></html>

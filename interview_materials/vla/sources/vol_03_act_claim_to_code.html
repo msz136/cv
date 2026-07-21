@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 03 Source Audit C：ACT CVAE、Action Chunk 与 Temporal Ensemble Claim-to-Code</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_03_act_claim_to_code.md">
+<meta name="aris:source-sha256" content="6c3c40330d13b1bb186b09ea744006667630cd4bd6ae1651ec1fdc38e8dc5a2a">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>6c3c40330d13b1bb186b09ea744006667630cd4bd6ae1651ec1fdc38e8dc5a2a</code>；生成自：<code>interview_materials\vla\sources\vol_03_act_claim_to_code.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 证据层级、冻结对象与适用边界</a></li><li><a href="#3-i-o">3. 任务 I/O 与数据构造</a></li><li><a href="#3-1-real-robot-contract">3.1 论文中的 real-robot contract</a></li><li><a href="#3-2">3.2 一条训练样本怎样产生</a></li><li><a href="#3-3-normalization">3.3 normalization 与执行前反归一化</a></li><li><a href="#4-cvae-encoder-style-latent">4. CVAE encoder：style latent 如何训练、如何消失</a></li><li><a href="#4-1-posterior-observation">4.1 posterior 输入不是完整 observation</a></li><li><a href="#4-2-z-0">4.2 推理为什么固定 $z=0$</a></li><li><a href="#5-cvae-decoder-qpos-latent-action-queries">5. CVAE decoder：相机、qpos、latent 和 action queries 怎样汇合</a></li><li><a href="#5-1-observation-encoder">5.1 observation encoder</a></li><li><a href="#5-2-h-query-slot">5.2 $H$ 个 query slot 是并行输出槽</a></li><li><a href="#5-3-is-pad-head">5.3 `is_pad_head` 不能被讲成已训练终止头</a></li><li><a href="#6-padding-mask-paper-code">6. 训练目标、padding mask 与 paper/code 差异</a></li><li><a href="#6-1-frozen-code-reconstruction-loss">6.1 frozen code 的 reconstruction loss</a></li><li><a href="#6-2-kl-loss">6.2 KL 与总 loss</a></li><li><a href="#6-3-algorithm-1-mse">6.3 论文 Algorithm 1 的 MSE 不等于实际代码</a></li><li><a href="#7-horizon-replan-temporal-ensemble">7. Horizon、执行窗口、replan 与 temporal ensemble</a></li><li><a href="#7-1">7.1 四个容易混淆的量</a></li><li><a href="#7-2-a">7.2 模式 A：整段执行</a></li><li><a href="#7-3-b-overlapping-chunk-ensemble">7.3 模式 B：每步查询 + overlapping-chunk ensemble</a></li><li><a href="#7-4-rollout">7.4 rollout 伪代码</a></li><li><a href="#8-chunk-trade-off">8. Chunk 长短、闭环性、延迟与吞吐的 trade-off</a></li><li><a href="#8-1-h">8.1 $H$ 太短</a></li><li><a href="#8-2-h">8.2 $H$ 太长</a></li><li><a href="#8-3-temporal-ensemble">8.3 temporal ensemble 的额外取舍</a></li><li><a href="#9-act-token-diffusion-flow">9. ACT 与 token、Diffusion / Flow 路线的归纳偏置</a></li><li><a href="#10-claim-to-code">10. Claim-to-code 总表</a></li><li><a href="#11-vla-act-011-017">11. 对 `VLA-ACT-011..017` 的支持状态</a></li><li><a href="#12">12. 与个人项目的真实性边界</a></li><li><a href="#13">13. 面试安全口径与危险答案</a></li><li><a href="#13-1-30">13.1 30 秒安全骨架</a></li><li><a href="#13-2">13.2 高危说法</a></li><li><a href="#14">14. 风险、未决项与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 03 Source Audit C：ACT CVAE、Action Chunk 与 Temporal Ensemble Claim-to-Code</h1>
+<div class="meta">审计日期：2026-07-19 状态：<code>independent_fact_reviewed / cvae_loss_mask_query_ensemble_checked / local_runtime_pending / WARN</code> 论文版本：<em>Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware</em>，arXiv <code>2304.13705v1</code> 官方仓库：<code>tonyzhaozh/act</code> frozen commit <code>742c753c0d4a5d87076c8f69e5628c79a8cc5488</code> License：MIT 对应题目：<code>VLA-ACT-011..017</code> 本页问题：ACT 到底如何用 CVAE-Transformer 一次预测 action chunk？训练期 latent、padding 和 loss 如何实现？不使用 / 使用 temporal ensemble 时，prediction horizon、执行窗口、查询频率和闭环性分别是什么？</div>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>ACT 是连续 action-chunk policy，不是 action tokenizer，也不是带语言输入的 VLA。</strong>论文与 frozen code 的主合同是多视角 RGB + 当前双臂关节位置 → 未来 $H$ 步绝对目标关节位置；该 commit 把 state/action dimension 都硬编码为 14。[1][2]</li><li><strong><code>chunk_size</code>、<code>num_queries</code> 和模型 prediction horizon 在这份实现里是同一个配置 $H$，但它不自动等于执行窗口。</strong>不开 temporal aggregation 时，代码每 $H$ 步查询一次并顺序执行整段，等价于 $K=H$；开启后每一步查询并融合覆盖当前时刻的多个 chunk，等价于 $K=1$。[2]</li><li><strong>训练期 CVAE encoder 只看当前 qpos 与目标 action chunk，不看图像。</strong>输入顺序是 <code>[CLS] + qpos + H actions</code>，长度 $H+2$；<code>[CLS]</code> 输出产生 posterior 的 <code>mu/logvar</code>，再用 reparameterization 得到 32D style latent。[1][2]</li><li><strong>推理期不是“从 prior 随机采样风格”。</strong>CVAE encoder 被丢弃，frozen code 把 $z$ 固定为全零，即单位高斯 prior 的均值，因此同一 observation 的输出是确定的。[1][2]</li><li><strong>decoder 用一个共享 ResNet18 逐相机提特征，将各相机 feature map 沿宽度拼接，再把 $z$ 与 qpos 作为额外 encoder tokens。</strong>$H$ 个 query slot 经 Transformer decoder 和线性 action head 并行输出 $[B,H,14]$，不是逐步自回归生成。[2]</li><li><strong>实际优化目标是 masked elementwise L1 + <code>kl_weight × KL</code>。</strong>但源码用 mask 乘零后对完整 $B\times H\times D$ 张量 <code>.mean()</code>，分母仍包含 padded slots；它不是按有效元素数重新归一化。<code>is_pad_head</code> 虽被定义并前向计算，却没有进入该 commit 的 loss。[2]</li><li><strong>论文内部存在 reconstruction loss 表述差异。</strong>Algorithm 1 写 <code>MSE</code>，方法正文明确写使用 L1，frozen code 也是 <code>F.l1_loss</code>；面试中应以“正文 + 官方实现为 L1，并说明算法框误写/版本差异”为安全口径。[1][2]</li><li><strong>temporal ensemble 只融合“不同查询对同一物理时刻的预测”，不是对相邻时刻动作做低通滤波。</strong>论文与代码都把 oldest prediction 排在权重序列首位，并用 $\exp(-mi)$ 使较老预测权重更大；它换来更平滑的动作，但需要每个控制步都做一次 policy inference。[1][2]</li><li><strong>ACT 不能替代本地 OpenPiVLA 证据。</strong>ACT 的 14D 绝对 joint target、$H=100$ 示例、50 Hz、CVAE、temporal aggregation 和公开成功率都不能迁移成个人项目的 action schema、horizon、replan 或指标。[1][2]</li></ol>
+<h2 id="2">2. 证据层级、冻结对象与适用边界</h2>
+<table><thead><tr><th>层级</th><th>本页使用方式</th><th>能支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td>arXiv v1</td><td>方法 Section 4、Algorithms 1/2、Appendix architecture 与 ablation</td><td>ACT 的公开动机、CVAE/action-chunk/temporal-ensemble 定义、论文实验</td><td>frozen commit 的精确 tensor/mask 行为；个人项目事实</td></tr>
+<tr><td>frozen official repo</td><td>commit <code>742c753...</code> 的 <code>detr_vae.py</code>、<code>policy.py</code>、<code>imitate_episodes.py</code>、<code>utils.py</code></td><td>张量布局、loss、normalization、query/execute 分支</td><td>论文未归档的真实机器人外部 <code>aloha_scripts</code> 全路径</td></tr>
+<tr><td>同源推断</td><td>从上述论文与代码联合推导 $H/K$、有效 loss 分母和 row ordering</td><td>implementation contract 与安全面试口径</td><td>未运行的性能、未给出的 controller 语义</td></tr>
+<tr><td>本地项目</td><td>本页不读取个人项目 raw artifact</td><td>只能提出取证清单</td><td>OpenPiVLA checkpoint、axis order、97.4%、个人贡献</td></tr>
+</tbody></table>
+<p>冻结信息：</p>
+<ul><li>arXiv API 返回唯一版本 <code>2304.13705v1</code>，published/updated 为 <code>2023-04-23T19:10:53Z</code>。[1]</li><li>官方 repo <code>HEAD</code> 已核对为 <code>742c753c0d4a5d87076c8f69e5628c79a8cc5488</code>，commit date <code>2024-01-28</code>；根目录 <code>LICENSE</code> 为 MIT。[2]</li><li>本页审计的是上述历史 commit，不把 2026 年可能存在的 fork、后续 ACT++/ALOHA 2 或第三方重实现混入同一实现结论。</li></ul>
+<h2 id="3-i-o">3. 任务 I/O 与数据构造</h2>
+<h3 id="3-1-real-robot-contract">3.1 论文中的 real-robot contract</h3>
+<p>论文 Section 4 将 observation 写成当前 follower joint positions 加 4 路 RGB，相机为 top、front、left wrist、right wrist；action 是下一时刻两个 leader arms 的绝对目标关节位置，共 14D。policy 在当前观测下预测未来 action sequence：[1]</p>
+<div class="formula">$$
+\pi_\theta(a_{t:t+H-1}\mid o_t,z),
+\qquad
+o_t=(I_t^{1:C},q_t),
+\qquad
+a_t\in\mathbb{R}^{14}.
+$$</div>
+<p>变量与直觉：$C$ 是相机数，$q_t\in\mathbb{R}^{14}$ 是当前双臂 joint positions，$H$ 是 chunk/prediction horizon，$z$ 是 CVAE style latent。模型不是只猜 $a_t$，而是一次输出 $H\times14$ 的连续目标关节序列。实现映射：<code>state_dim=14</code> 和 <code>num_queries=chunk_size</code> 在 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/imitate_episodes.py#L49-L68"><code>imitate_episodes.py#L49-L68</code></a>，输出 head 在 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/detr/models/detr_vae.py#L47-L54"><code>detr_vae.py#L47-L54</code></a> 与 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/detr/models/detr_vae.py#L131-L139"><code>#L131-L139</code></a>。</p>
+<p><strong>边界</strong>：paper 的 real setup 是 4 cameras；frozen repo 自带的 simulation task configs 只有 <code>camera_names=['top']</code>，见 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/constants.py#L5-L32"><code>constants.py#L5-L32</code></a>。真实机器人 task config 来自仓库外部 <code>aloha_scripts</code>，因此不能把“此 repo 所有运行默认 4 相机”写成源码事实。</p>
+<h3 id="3-2">3.2 一条训练样本怎样产生</h3>
+<p><code>EpisodicDataset.__getitem__</code> 随机选择 <code>start_ts</code>，只读取该时刻各相机图像和 qpos，并读取从该时刻起的所有 action；尾部不足 episode length 的位置补零并生成 <code>is_pad</code>。[2]</p>
+<table><thead><tr><th>Tensor</th><th>frozen code 语义</th><th>进入 policy 前的 shape</th></tr></thead><tbody>
+<tr><td><code>image_data</code></td><td>当前时刻、按 <code>camera_names</code> 堆叠、像素除以 255</td><td><code>[C,3,H_img,W_img]</code></td></tr>
+<tr><td><code>qpos_data</code></td><td>当前关节位置，dataset mean/std 标准化</td><td><code>[14]</code></td></tr>
+<tr><td><code>action_data</code></td><td>从 <code>start_ts</code> 起的绝对目标 joint positions，补到 episode length 后标准化</td><td><code>[T_episode,14]</code></td></tr>
+<tr><td><code>is_pad</code></td><td>真实 target 为 <code>False</code>，尾部补零为 <code>True</code></td><td><code>[T_episode]</code></td></tr>
+</tbody></table>
+<p>随后 <code>ACTPolicy</code> 只截前 <code>num_queries=H</code> 个 action 与 mask，所以监督 target 是 <code>[B,H,14]</code>，见 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/policy.py#L18-L35"><code>policy.py#L18-L35</code></a>。完整数据读取、padding 与 normalization 在 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/utils.py#L23-L76"><code>utils.py#L23-L76</code></a>。</p>
+<h3 id="3-3-normalization">3.3 normalization 与执行前反归一化</h3>
+<p>令训练集每维均值和标准差为 $\mu_q,\sigma_q,\mu_a,\sigma_a$，代码使用：</p>
+<div class="formula">$$
+\tilde q_t=\frac{q_t-\mu_q}{\max(\sigma_q,10^{-2})},
+\qquad
+\tilde a_{t:t+H-1}=\frac{a_{t:t+H-1}-\mu_a}{\max(\sigma_a,10^{-2})}.
+$$</div>
+<p>变量与实现：所有量均按 14 个 action/state dimensions 独立统计；标准差下界防止近常数维除零。统计在 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/utils.py#L79-L108"><code>utils.py#L79-L108</code></a>。该函数在 train/val split 后仍对全部 <code>num_episodes</code> 计算统计，见 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/utils.py#L111-L128"><code>utils.py#L111-L128</code></a>；这是此 commit 的数据边界，不应泛化为严格 holdout normalization recipe。</p>
+<p>推理时再做：</p>
+<div class="formula">$$
+\hat a_t=\hat{\tilde a}_t\odot\sigma_a+\mu_a.
+$$</div>
+<p>代码将反归一化结果直接命名为 <code>target_qpos</code> 并传入 <code>env.step</code>，见 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/imitate_episodes.py#L267-L273"><code>imitate_episodes.py#L267-L273</code></a>。这证明当前实现目标是 joint-position control，不证明任何本地 VLA 的坐标轴、单位或 gripper 语义。</p>
+<h2 id="4-cvae-encoder-style-latent">4. CVAE encoder：style latent 如何训练、如何消失</h2>
+<h3 id="4-1-posterior-observation">4.1 posterior 输入不是完整 observation</h3>
+<p>训练时 encoder 输入序列为：</p>
+<pre><code class="language-text">[CLS] learned token       [B, 1, D]
+current qpos projection   [B, 1, D]
+target action projection  [B, H, D]
+             concatenate → [B, H+2, D]
+                              │
+                              v
+                 Transformer encoder
+                              │ take CLS output
+                              v
+                mu, logvar ∈ R^[B,32]</code></pre>
+<p>论文明确说明为加速训练，CVAE encoder 不输入图像，只条件于 proprioception 和 target action sequence；Appendix 又给出 <code>[CLS] + joints + actions</code> 的 $H+2$ 布局。[1] 代码逐行对应 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/detr/models/detr_vae.py#L66-L110"><code>detr_vae.py#L66-L110</code></a>。源码的局部 shape comment 写过 <code>seq+1</code>，但实际 <code>cat</code> 和 position table 都是 <code>H+2</code>；面试应以操作和论文附录为准。</p>
+<p>posterior 写为：</p>
+<div class="formula">$$
+q_\phi(z\mid q_t,a_{t:t+H-1})
+=\mathcal N\!\left(\mu_\phi,\operatorname{diag}(\exp(\ell_\phi))\right),
+\qquad z=\mu_\phi+\exp(\!\tfrac12\ell_\phi)\odot\epsilon,
+\quad\epsilon\sim\mathcal N(0,I).
+$$</div>
+<p>变量与直觉：$\ell_\phi$ 是 <code>logvar</code>，$z\in\mathbb{R}^{32}$。target action chunk 帮助 encoder 把人类 demonstration 的风格/多模态因素压进 latent；reparameterization 让梯度通过采样。代码映射：<a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/detr/models/detr_vae.py#L17-L20"><code>reparametrize#L17-L20</code></a> 与 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/detr/models/detr_vae.py#L85-L110"><code>DETRVAE.forward#L85-L110</code></a>。</p>
+<p><code>is_pad</code> 在 posterior encoder 中作为 <code>src_key_padding_mask</code>，并在前面补两个恒为 <code>False</code> 的 CLS/qpos mask，因此 padded future actions 不参与 self-attention，见 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/detr/models/detr_vae.py#L97-L105"><code>detr_vae.py#L97-L105</code></a>。</p>
+<h3 id="4-2-z-0">4.2 推理为什么固定 $z=0$</h3>
+<p>当 <code>actions is None</code> 时，代码不运行 posterior encoder，而是：</p>
+<div class="formula">$$
+z_{test}=0=\mathbb E_{p(z)}[z],
+\qquad p(z)=\mathcal N(0,I).
+$$</div>
+<p>变量与直觉：$z_{test}$ 是 prior mean，不是一次随机 sample。这样部署输出可重复，但训练期 CVAE 的“能表达多种 demonstration style”不等于测试时会主动探索多模态轨迹。论文 Appendix 明确称该选择使 evaluation deterministic；代码在 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/detr/models/detr_vae.py#L111-L115"><code>detr_vae.py#L111-L115</code></a> 和 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/policy.py#L36-L38"><code>policy.py#L36-L38</code></a> 对齐。</p>
+<p><strong>面试防线</strong>：不要说“ACT 推理时从 CVAE 随机采样多个 action chunk 再选一个”；此 frozen path 只用一个零 latent、一次 deterministic forward。</p>
+<h2 id="5-cvae-decoder-qpos-latent-action-queries">5. CVAE decoder：相机、qpos、latent 和 action queries 怎样汇合</h2>
+<h3 id="5-1-observation-encoder">5.1 observation encoder</h3>
+<p>每个相机图像先经过同一个 <code>backbones[0]</code>；得到的 feature maps 和 2D position embeddings 沿 width 维拼接。然后将 projected latent 与 projected qpos 作为两个额外 token 放在图像 tokens 前面：</p>
+<pre><code class="language-python">def act_decode(images, qpos, z, action_queries):
+    # All cameras reuse the same ResNet18 weights in this frozen commit.
+    camera_features = [shared_resnet(img) for img in images]
+
+    # Concatenate camera feature maps along the spatial-width axis.
+    visual_memory = concat_width(camera_features)
+
+    # Prepend projected style and proprioception as two encoder tokens.
+    memory_input = prepend(project(z), project(qpos), visual_memory)
+
+    # Decode H learned query slots in parallel; no autoregressive token loop.
+    hidden = transformer(memory_input, queries=action_queries)
+    return linear_action_head(hidden)  # [B, H, 14]</code></pre>
+<p>实现链：相机共享 backbone 与 width concat 在 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/detr/models/detr_vae.py#L116-L131"><code>detr_vae.py#L116-L131</code></a>；latent/qpos prepend 与图像 flatten 在 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/detr/models/transformer.py#L49-L77"><code>transformer.py#L49-L77</code></a>。图像在 dataset 先除 255，进入 policy 后再做 ImageNet mean/std normalize，见 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/policy.py#L18-L23"><code>policy.py#L18-L23</code></a>。</p>
+<h3 id="5-2-h-query-slot">5.2 $H$ 个 query slot 是并行输出槽</h3>
+<p>模型定义 <code>query_embed = nn.Embedding(num_queries, hidden_dim)</code>；decoder 的零初始 target 叠加这些 learned query positions，并对 encoder memory 做 cross-attention。最终 <code>action_head</code> 对每个 query 输出一个 14D action，因此：</p>
+<div class="formula">$$
+\operatorname{ACT}_\theta(o_t,z)
+=\left(\hat a_t^{(t)},\hat a_{t+1}^{(t)},\ldots,
+\hat a_{t+H-1}^{(t)}\right)
+\in\mathbb R^{H\times14}.
+$$</div>
+<p>变量与记号：上标 $(t)$ 表示“在 query time $t$ 做出的预测”，下标表示它要执行的物理时刻。实现映射：query/action heads 在 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/detr/models/detr_vae.py#L47-L54"><code>detr_vae.py#L47-L54</code></a>，Transformer decoder 的 self-/cross-attention 在 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/detr/models/transformer.py#L204-L250"><code>transformer.py#L204-L250</code></a>。</p>
+<p><strong>paper/code boundary</strong>：论文正文/Appendix 把 query 描述为 fixed position / sinusoidal embeddings；此 commit 明确使用可学习 <code>nn.Embedding</code>。二者不能在实现面试中混成“代码使用固定正弦 action queries”。</p>
+<h3 id="5-3-is-pad-head">5.3 <code>is_pad_head</code> 不能被讲成已训练终止头</h3>
+<p>模型同时定义 <code>is_pad_head = nn.Linear(hidden_dim,1)</code> 并返回 <code>is_pad_hat</code>，但 <code>ACTPolicy</code> 不计算它的 BCE/CE，也不在推理使用它。因而本 commit 的 chunk 长度由固定 <code>H=num_queries</code> 决定；有效尾部依赖 dataset <code>is_pad</code> mask 训练，而不是由模型预测动态停止。[2]</p>
+<h2 id="6-padding-mask-paper-code">6. 训练目标、padding mask 与 paper/code 差异</h2>
+<h3 id="6-1-frozen-code-reconstruction-loss">6.1 frozen code 的 reconstruction loss</h3>
+<p>令 $p_{b,h}\in\{0,1\}$ 表示 target slot 是否为 padding，$D_a=14$。源码的精确 L1 为：</p>
+<div class="formula">$$
+\mathcal L_{L1}^{code}
+=\frac{1}{BHD_a}
+\sum_{b=1}^{B}\sum_{h=1}^{H}\sum_{d=1}^{D_a}
+(1-p_{b,h})\left|a_{b,h,d}-\hat a_{b,h,d}\right|.
+$$</div>
+<p>变量与直觉：mask 确实让 padded target 的 numerator 为零；但随后 <code>.mean()</code> 仍除以完整 $BHD_a$，而不是 $D_a\sum_{b,h}(1-p_{b,h})$。所以靠近 episode 尾部、valid slots 较少的样本，其 reconstruction contribution 会被额外缩小。直接证据是 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/policy.py#L23-L34"><code>policy.py#L23-L34</code></a>。</p>
+<p>这与常见的 valid-count normalization 不同：</p>
+<div class="formula">$$
+\mathcal L_{L1}^{valid}
+=\frac{
+\sum_{b,h,d}(1-p_{b,h})|a_{b,h,d}-\hat a_{b,h,d}|
+}{D_a\sum_{b,h}(1-p_{b,h})+\epsilon}.
+$$</div>
+<p>此式只作为对照，并不是 frozen code。它说明“有 loss mask”与“按有效 token/action 数无偏归一化”是两个独立问题；面试中不能看到 <code>~is_pad</code> 就默认后者成立。</p>
+<h3 id="6-2-kl-loss">6.2 KL 与总 loss</h3>
+<p>posterior 对单位高斯 prior 的 KL 实现为：</p>
+<div class="formula">$$
+\mathcal L_{KL}
+=\frac{1}{B}\sum_{b=1}^{B}\frac12
+\sum_{j=1}^{32}
+\left(\mu_{b,j}^2+\exp(\ell_{b,j})-1-\ell_{b,j}\right),
+$$</div>
+<div class="formula">$$
+\mathcal L_{ACT}
+=\mathcal L_{L1}^{code}+\beta\mathcal L_{KL}.
+$$</div>
+<p>变量与实现：$j$ 遍历 32D latent，$\ell$ 是 <code>logvar</code>，$\beta$ 对应 CLI/config 的 <code>kl_weight</code>。KL 在 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/policy.py#L71-L84"><code>policy.py#L71-L84</code></a>，总 loss 在 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/policy.py#L27-L35"><code>policy.py#L27-L35</code></a>。README 示例和论文 hyperparameter table 都使用 <code>kl_weight/beta=10</code>、<code>chunk_size=100</code>，但它们是公开 recipe，不是跨任务最优常数。[1][2]</p>
+<h3 id="6-3-algorithm-1-mse">6.3 论文 Algorithm 1 的 MSE 不等于实际代码</h3>
+<table><thead><tr><th>位置</th><th>reconstruction 表述</th><th>判定</th></tr></thead><tbody>
+<tr><td>Paper Algorithm 1</td><td><code>MSE(a_hat, a)</code></td><td>论文算法框原文</td></tr>
+<tr><td>Paper Section 4.3 / line after architecture</td><td>“We use L1 loss ... instead of L2”</td><td>论文方法正文</td></tr>
+<tr><td>Frozen <code>policy.py</code></td><td><code>F.l1_loss(..., reduction='none')</code></td><td>实际审计实现</td></tr>
+</tbody></table>
+<p>因此安全表述是：“ACT v1 论文算法框存在 MSE/L1 不一致；方法正文和 commit <code>742c753...</code> 的训练路径使用 masked L1，再加 beta-weighted KL。”不要只背算法框，也不要删掉版本差异。</p>
+<h2 id="7-horizon-replan-temporal-ensemble">7. Horizon、执行窗口、replan 与 temporal ensemble</h2>
+<h3 id="7-1">7.1 四个容易混淆的量</h3>
+<table><thead><tr><th>量</th><th>本页记号</th><th>ACT frozen code</th><th>含义</th></tr></thead><tbody>
+<tr><td>Prediction horizon / chunk size</td><td>$H$</td><td><code>policy_config['num_queries']</code></td><td>一次 forward 输出多少个未来 action slots</td></tr>
+<tr><td>Execution window</td><td>$K$</td><td>无独立 CLI 参数</td><td>一次 query 后实际连续执行多少步才使用新观测重新规划</td></tr>
+<tr><td>Query/replan interval</td><td>$R$</td><td><code>query_frequency</code></td><td>两次 policy inference 相隔多少 control steps</td></tr>
+<tr><td>Control period</td><td>$\Delta t$</td><td>sim <code>DT=0.02</code></td><td>环境/机器人执行一步的物理周期；不是模型 horizon</td></tr>
+</tbody></table>
+<p>此 commit 中 $K$ 与 $R$ 被 rollout 分支绑在一起，但概念上仍应分开：不开 ensemble 时 $K=R=H$；开 ensemble 时 $K=R=1$。模型 $H$ 在两种模式中不变。</p>
+<h3 id="7-2-a">7.2 模式 A：整段执行</h3>
+<p>默认 <code>temporal_agg=False</code> 时：</p>
+<pre><code class="language-python"># Query once at t = 0, H, 2H, ...
+if t % H == 0:
+    chunk = policy(qpos_t, image_t)  # [1, H, 14]
+
+# Execute every predicted action in order before the next policy query.
+raw_action = chunk[:, t % H]</code></pre>
+<p>这对应 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/imitate_episodes.py#L191-L194"><code>imitate_episodes.py#L191-L194</code></a> 与 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/imitate_episodes.py#L246-L261"><code>#L246-L261</code></a>。它不是“一次输出 H 步，因此整个 episode 永远 open-loop”；更准确地说，<strong>每个 chunk 内不吸收新 observation，chunk 边界重新闭环</strong>。只有 $H=T_{episode}$ 时才退化为整条 episode open-loop。</p>
+<h3 id="7-3-b-overlapping-chunk-ensemble">7.3 模式 B：每步查询 + overlapping-chunk ensemble</h3>
+<p>开启 <code>temporal_agg=True</code> 后，<code>query_frequency</code> 被改为 1。query time $q$ 产生对未来时刻 $t$ 的预测 $\hat a_t^{(q)}$；对当前时刻 $t$，有效 query 集为：</p>
+<div class="formula">$$
+\mathcal Q_t
+=\{q\mid \max(0,t-H+1)\le q\le t\}.
+$$</div>
+<p>变量与直觉：最多有 $H$ 个历史 chunk 覆盖当前时刻，且它们都在预测<strong>同一个 $a_t$</strong>。代码将每次输出写入 <code>all_time_actions[q, q:q+H]</code>，再读取 column <code>t</code>，见 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/imitate_episodes.py#L217-L254"><code>imitate_episodes.py#L217-L254</code></a>。</p>
+<p>按 oldest-to-newest 排序 $q_0&lt;q_1&lt;\cdots&lt;q_{n-1}$ 后：</p>
+<div class="formula">$$
+w_i=\exp(-mi),
+\qquad
+a_t^{exec}
+=\frac{\sum_{i=0}^{n-1}w_i\hat a_t^{(q_i)}}
+{\sum_{i=0}^{n-1}w_i}.
+$$</div>
+<p>变量与实现：$m$ 是 decay rate；论文明确 $w_0$ 对应 oldest action，代码 row 过滤后仍保持 query-time 升序，并固定 <code>m/k=0.01</code>，见 <a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/imitate_episodes.py#L251-L259"><code>imitate_episodes.py#L251-L259</code></a>。因此较旧预测权重最大；$m$ 越小权重越平，新的 observation 相对占比越高。</p>
+<p><strong>不是相邻时刻平滑</strong>：它没有把 $a_{t-1},a_t,a_{t+1}$ 混在一起，而是把多个 <code>query time</code> 对同一 target time $t$ 的估计做 ensemble，避免普通时域 smoothing 引入时间偏移。</p>
+<h3 id="7-4-rollout">7.4 rollout 伪代码</h3>
+<pre><code class="language-python">def act_rollout(env, policy, stats, horizon, temporal_agg):
+    # Reset environment; qpos and images are the current observation only.
+    ts = env.reset()
+    prediction_table = {}  # target_time -&gt; predictions ordered oldest to newest
+
+    for t in range(env.max_steps):
+        # Normalize qpos/images exactly as in training.
+        qpos_t, images_t = preprocess(ts.observation, stats)
+
+        if temporal_agg:
+            # Replan every control step while keeping model horizon H unchanged.
+            chunk = policy(qpos_t, images_t)  # deterministic z=0, [H, 14]
+            for offset, pred in enumerate(chunk):
+                prediction_table.setdefault(t + offset, []).append(pred)
+
+            # Fuse predictions for the same physical target time, oldest first.
+            normalized_action = exponential_ensemble(prediction_table[t], m=0.01)
+        else:
+            # Query every H steps, then execute the entire cached chunk.
+            if t % horizon == 0:
+                chunk = policy(qpos_t, images_t)
+            normalized_action = chunk[t % horizon]
+
+        # Recover absolute target joint positions and execute one control step.
+        target_qpos = denormalize_action(normalized_action, stats)
+        ts = env.step(target_qpos)</code></pre>
+<p>这段伪代码表达 frozen rollout 的信息流，不声称是逐行可运行复制。真实代码还以全零 tensor 作为“尚未填充”的 sentinel，并通过 <code>torch.all(action != 0)</code> 判断有效行；若模型恰好输出含精确零分量的 normalized action，该行可能被误判为空。它是此 commit 的实现风险，不等于论文方法必须如此设计。[2]</p>
+<h2 id="8-chunk-trade-off">8. Chunk 长短、闭环性、延迟与吞吐的 trade-off</h2>
+<h3 id="8-1-h">8.1 $H$ 太短</h3>
+<ul><li>$H=1$ 是单步 policy：每个控制步都要查询，反馈最及时，但长任务的有效决策 horizon 最大，行为更容易受局部预测噪声和 compounding error 影响。[1]</li><li>inference 次数约为 $T/H$；无 temporal ensemble 时 $H$ 越小，单位 episode 的 policy calls 越多，吞吐压力越高。</li><li>单步输出缺少 chunk-level sequence coherence，难以利用一个 demonstration 片段中持续动作/暂停等 temporal structure。</li></ul>
+<h3 id="8-2-h">8.2 $H$ 太长</h3>
+<ul><li>不 replanning 时，新的 observation 最多要等 $H$ 个 control steps 才被吸收；环境扰动或早期 action error 会让 chunk 后半段 stale。</li><li>长序列更难建模，decoder query 数增加；可推断地，query self-attention 与 cross-attention 的计算/显存负担也会随 $H$ 增加，但本页没有做 runtime benchmark。</li><li>论文在四个 simulation/data settings、关闭 temporal ensemble 的 ablation 中报告：平均 success 从 $H=1$ 的 1% 升到 $H=100$ 的 44%，更长的 200/400 又轻微下降；作者归因于反应性不足与长序列建模困难。[1] <strong>这不是“100 对所有机器人最优”的证据。</strong></li></ul>
+<h3 id="8-3-temporal-ensemble">8.3 temporal ensemble 的额外取舍</h3>
+<table><thead><tr><th>收益</th><th>代价 / 风险</th></tr></thead><tbody>
+<tr><td>每步吸收新 observation，避免只在 chunk 边界突变</td><td>policy inference 从每 $H$ 步一次变为每步一次</td></tr>
+<tr><td>融合相同 target time 的多次估计，减少模型噪声</td><td>oldest prediction 权重最大，快速变化场景可能保留 stale plan</td></tr>
+<tr><td>不增加训练成本</td><td>需要维护 overlapping prediction buffer；实现 sentinel/mask 要可靠</td></tr>
+<tr><td>动作更平滑且无相邻时刻平均的 phase bias</td><td>平滑不等于安全，仍可能把多个一致但错误的预测融合</td></tr>
+</tbody></table>
+<p>论文报告 temporal ensemble 对 ACT 的平均增益约 3.3%，但相应实验 separately tuned；因此它是该论文协议内的 ablation，不应直接迁移为本地成功率预期。[1]</p>
+<h2 id="9-act-token-diffusion-flow">9. ACT 与 token、Diffusion / Flow 路线的归纳偏置</h2>
+<table><thead><tr><th>路线</th><th>Action 表示 / 目标</th><th>生成方式</th><th>主要归纳偏置</th><th>本页边界</th></tr></thead><tbody>
+<tr><td>ACT</td><td>标准化连续 $H\times D_a$；masked L1 + CVAE KL</td><td>$H$ 个 learned queries 一次并行回归；test $z=0$</td><td>chunk coherence、低 inference step 数、训练期 latent regularization</td><td>本页 paper/code verified</td></tr>
+<tr><td>OpenVLA scalar token</td><td>每个 action scalar 离散为 token；next-token CE</td><td>自回归生成一个当前动作的各维 token</td><td>复用 LM vocabulary/objective，量化连续值</td><td>见 <a href="vol_03_openvla_claim_to_code.html">OpenVLA audit</a></td></tr>
+<tr><td>FAST token</td><td>action window 频域变换、量化、BPE；masked token CE</td><td>自回归生成压缩后的 action tokens</td><td>利用机器人轨迹的时频结构和重复模式</td><td>见 <a href="vol_03_pi0_fast_openpi_claim_to_code.html">π0/FAST/openpi audit</a></td></tr>
+<tr><td>π0 flow action</td><td>noisy continuous action chunk 上的 velocity MSE</td><td>多步 ODE/Euler integration</td><td>连续多模态生成、VLM context + action expert</td><td>见 <a href="vol_03_pi0_fast_openpi_claim_to_code.html">π0/FAST/openpi audit</a></td></tr>
+<tr><td>Diffusion Policy</td><td>noisy continuous action trajectory 的 epsilon/sample MSE</td><td>scheduler 多步去噪；$T_o/T_p/T_a$ 分离</td><td>见 <a href="vol_03_diffusion_policy_claim_to_code.html">Diffusion Policy audit</a></td><td>source-ready / WARN</td></tr>
+</tbody></table>
+<p>选择时不能只问“谁更先进”，而应问：</p>
+<ol><li>action 是否需要离散 token 与语言模型统一接口；</li><li>是否需要显式多模态生成，还是允许 deterministic prior-mean deployment；</li><li>一次 forward 的低延迟是否比 iterative generation 更重要；</li><li>$H$、$K$、controller frequency 和 observation latency 如何共同决定闭环；</li><li>数据量、动作平滑性、action axes 与 normalization 是否和该表示匹配。</li></ol>
+<h2 id="10-claim-to-code">10. Claim-to-code 总表</h2>
+<table><thead><tr><th>Claim</th><th>论文证据</th><th>frozen code 证据</th><th>判定</th><th>面试口径</th></tr></thead><tbody>
+<tr><td>ACT 输入 language instruction</td><td>无</td><td>无 text encoder/input</td><td>rejected</td><td>ACT 本身是 visuomotor imitation policy，不是 VLA</td></tr>
+<tr><td>一次输出未来 $H$ 步连续 joint targets</td><td>Section 4.3</td><td><code>num_queries</code> + <code>action_head</code></td><td>direct</td><td><code>[B,H,14]</code>，并行 query slots</td></tr>
+<tr><td>$H$ 自动等于执行窗口</td><td>论文区分 naive chunk 与 per-step ensemble</td><td>rollout 有两分支</td><td>rejected</td><td>模型 horizon 与执行/重规划分开报</td></tr>
+<tr><td>posterior encoder 输入 RGB</td><td>Section 4.2 明确省略 image</td><td>只 project qpos/actions</td><td>rejected</td><td>encoder 看 <code>[CLS]+qpos+target chunk</code></td></tr>
+<tr><td>推理从 prior 随机采样 $z$</td><td>Appendix 明确设零</td><td>zero tensor</td><td>rejected</td><td>test $z=0$，deterministic</td></tr>
+<tr><td>代码用固定正弦 action queries</td><td>paper 如此描述</td><td><code>nn.Embedding</code></td><td>paper/code mismatch</td><td>此 commit 是 learned queries</td></tr>
+<tr><td>实际 reconstruction 是 MSE</td><td>Algorithm 1 写 MSE；正文写 L1</td><td><code>F.l1_loss</code></td><td>mismatch, code=L1</td><td>报版本差异，训练路径按 L1</td></tr>
+<tr><td>padded targets 完全按有效数归一化</td><td>未给实现分母</td><td>mask 后完整 <code>.mean()</code></td><td>rejected</td><td>numerator masked，denominator 含 padded slots</td></tr>
+<tr><td><code>is_pad_head</code> 是训练好的 stop head</td><td>无此 claim</td><td>head 返回但不进 loss</td><td>rejected</td><td>固定长度 chunk；不要称动态 stop</td></tr>
+<tr><td>temporal ensemble 平均相邻时刻动作</td><td>明确否定</td><td>读取 prediction table 同一 column</td><td>rejected</td><td>融合不同 query 对同一 target time 的预测</td></tr>
+<tr><td>新预测权重最大</td><td>paper $w_0$ oldest</td><td>row 旧→新，exp 衰减</td><td>rejected</td><td>oldest prediction 权重最大</td></tr>
+<tr><td>不开 ensemble 就完全不是闭环</td><td>chunk boundary 接收新 observation</td><td>每 $H$ 步 query</td><td>rejected</td><td>chunk 内 open-loop、边界闭环</td></tr>
+<tr><td>开 ensemble 不增加成本</td><td>仅称无额外 training cost</td><td>inference 每步一次</td><td>rejected</td><td>training 不变，inference 更贵</td></tr>
+<tr><td>论文 4 cameras 是 sim repo 默认</td><td>real paper 4 view</td><td>sim config top-only</td><td>rejected as universal</td><td>报具体 task/config</td></tr>
+<tr><td>ACT 公开结果证明本地 OpenPiVLA</td><td>无</td><td>无</td><td>rejected</td><td>另做本地 artifact contract</td></tr>
+</tbody></table>
+<h2 id="11-vla-act-011-017">11. 对 <code>VLA-ACT-011..017</code> 的支持状态</h2>
+<table><thead><tr><th>Question ID</th><th>本页覆盖</th><th>状态</th><th>仍缺</th></tr></thead><tbody>
+<tr><td>VLA-ACT-011</td><td>$H/K/R/\Delta t$ 定义与两个 rollout 分支</td><td>source-ready</td><td>本地 OpenPiVLA 的实际 H/K/config</td></tr>
+<tr><td>VLA-ACT-012</td><td>CVAE encoder、decoder、queries、shape 与 loss</td><td>source-ready</td><td>独立事实审查</td></tr>
+<tr><td>VLA-ACT-013</td><td>posterior/reparameterization、test $z=0$</td><td>source-ready</td><td>真实口述训练</td></tr>
+<tr><td>VLA-ACT-014</td><td>same-target-time exponential ensemble、weight ordering</td><td>source-ready with warning</td><td>sentinel edge-case test</td></tr>
+<tr><td>VLA-ACT-015</td><td>chunk 内/边界闭环、per-step replan 与 ensemble</td><td>source-ready</td><td>更一般 rollout abstraction 的项目映射</td></tr>
+<tr><td>VLA-ACT-016</td><td>$H$ 长短、calls、staleness、论文 ablation</td><td>source-ready</td><td>本地 latency/profile 与控制频率</td></tr>
+<tr><td>VLA-ACT-017</td><td>ACT 对 OpenVLA/FAST/π0 的归纳偏置</td><td>partial/source-ready</td><td>Diffusion Policy 独立 source batch</td></tr>
+</tbody></table>
+<p><code>source-ready</code> 只表示可据来源写后续题卡，不表示候选人已掌握；题卡生成后仍必须保持 <code>unseen</code>，直到真实口述。</p>
+<h2 id="12">12. 与个人项目的真实性边界</h2>
+<table><thead><tr><th>ACT 上游事实</th><th>可以怎样帮助 OpenPiVLA 面试</th><th>不能怎样迁移</th></tr></thead><tbody>
+<tr><td>$H=num_queries$ 输出 chunk</td><td>用作区分 model horizon / execution prefix / replan 的反例</td><td>不能证明本地 <code>horizon=10</code> 或执行几步</td></tr>
+<tr><td>mean/std action normalization</td><td>提醒 checkpoint、stats 与 controller 必须匹配</td><td>不能替代本地 q01/q99 / norm asset</td></tr>
+<tr><td>14D absolute joint targets</td><td>作为 action schema 需要显式报告的例子</td><td>不能推断本地 axis/order/unit</td></tr>
+<tr><td>temporal aggregation $K=1$</td><td>帮助解释“chunk policy 仍可逐步闭环”</td><td>不能声称本地使用 ACT ensemble</td></tr>
+<tr><td>masked L1 + KL</td><td>训练 objective 的对照</td><td>不能证明本地 token CE / flow loss</td></tr>
+<tr><td>paper ablation / public success</td><td>说明方法在特定协议的观察</td><td>不能支撑本地 97.4% 或个人贡献</td></tr>
+</tbody></table>
+<p>进入项目强回答前仍需本地取证：model class/checkpoint、action dimension 与 axis order、normalization stats、model horizon $H$、执行前缀 $K$、policy query 条件、controller frequency、rollout task/trial/split/seed、success predicate 与 eval summary。</p>
+<h2 id="13">13. 面试安全口径与危险答案</h2>
+<h3 id="13-1-30">13.1 30 秒安全骨架</h3>
+<p>“ACT 把单步行为克隆改成连续 action chunk 预测。训练时，一个 CVAE encoder 用当前 qpos 和未来动作段推断 style latent，decoder 再结合多视角图像、qpos 和 latent，用 $H$ 个 Transformer queries 并行回归 $H\times14$ 的绝对 joint targets；loss 在官方实现里是 masked L1 加 beta-KL。推理时 encoder 丢弃并固定 $z=0$。不开 temporal ensemble 时每 $H$ 步重规划；开启后每步查询，并对不同 chunk 预测的同一时刻动作做指数加权，所以 prediction horizon 与 execution/replan interval 不能混为一谈。”</p>
+<h3 id="13-2">13.2 高危说法</h3>
+<ul><li>“ACT 就是把 action token 一次生成 100 个。”——它输出连续向量，不是 token。</li><li>“CVAE 推理时随机采样，所以每次轨迹不同。”——此官方路径固定 $z=0$。</li><li>“chunk size 100 就代表机器人 100 步都不看图。”——只适用于不开 temporal ensemble 的整段执行分支。</li><li>“temporal ensemble 对最近预测权重最大。”——论文与代码的序列约定恰好是 oldest 最大。</li><li>“mask 后 loss 就严格只除 valid slots。”——源码 denominator 仍含 padded slots。</li><li>“论文说 MSE，所以代码也是 MSE。”——正文和 frozen code 是 L1。</li><li>“ACT 的 80M、50Hz、4 相机、14D 都是所有 action-chunk policy 的定义。”——这些是特定论文/实现配置。</li><li>“ACT 证明我的 OpenPiVLA 采用了 action chunking 并得到 97.4%。”——缺本地 artifact。</li></ul>
+<h2 id="14">14. 风险、未决项与下一步</h2>
+<ol><li><strong>核心高风险事实已独立复核</strong>：ACT CVAE、L1/KL、padding denominator、learned query、temporal ensemble ordering、sentinel 与 H/K/R 已在 <a href="vol_03_act_independent_fact_review.html">独立复核页</a> 直接核对，公共事实层为 <code>PASS WITH WARNING</code>；local project artifacts、controller、ownership 与 oral drill 仍使本页整体保持 <code>WARN/PENDING</code>。</li><li><strong>视觉 QA 已完成</strong>：通过 localhost 静态服务检查桌面 <code>1440×1000</code> 与窄屏 <code>800×1000</code>；确认一处 H1、academic palette/serif、desktop sticky TOC、narrow static TOC、公式无 <code>&lt;em&gt;</code> 污染且无页面级横向溢出。</li><li><strong>paper/code mismatch 必须保留</strong>：MSE/L1、fixed/sinusoidal query vs learned embedding 都不应被“统一润色”掉。</li><li><strong>mask 需要测试</strong>：可用不同 valid lengths 的合成 batch 验证 <code>.mean()</code> 缩放；本页当前是逐行确定的代码结论，尚未执行单元测试。</li><li><strong>temporal table sentinel 需要测试</strong>：精确零 action component 的有效行可能被 <code>torch.all(... != 0)</code> 过滤；不把它夸大为公开论文失败原因。</li><li><strong>VLA-ACT-017 仍有缺口</strong>：Diffusion Policy 已完成 source freeze；仍需基础 Flow Matching 独立审计，才能完成 ACT / token / diffusion / flow 的严格对比。</li><li><strong>本地项目仍待取证</strong>：ACT upstream 只进入知识与面试对照，不进入个人贡献或指标证明。</li></ol>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Zhao et al., <a href="https://arxiv.org/html/2304.13705v1">Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware</a>, arXiv <code>2304.13705v1</code>, 2023；<a href="https://arxiv.org/abs/2304.13705v1">arXiv abs/API version entry</a>。</li><li>Tony Z. Zhao et al., <a href="https://github.com/tonyzhaozh/act/tree/742c753c0d4a5d87076c8f69e5628c79a8cc5488">tonyzhaozh/act</a>, frozen commit <code>742c753c0d4a5d87076c8f69e5628c79a8cc5488</code>, MIT License；核心路径：<a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/detr/models/detr_vae.py"><code>detr/models/detr_vae.py</code></a>、<a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/detr/models/transformer.py"><code>detr/models/transformer.py</code></a>、<a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/policy.py"><code>policy.py</code></a>、<a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/imitate_episodes.py"><code>imitate_episodes.py</code></a>、<a href="https://github.com/tonyzhaozh/act/blob/742c753c0d4a5d87076c8f69e5628c79a8cc5488/utils.py"><code>utils.py</code></a>。</li><li><a href="vol_03_openvla_claim_to_code.html">VOL 03 OpenVLA Action Token 与 I/O Claim-to-Code</a>，本仓库 Source Audit A，2026-07-16。</li><li><a href="vol_03_pi0_fast_openpi_claim_to_code.html">VOL 03 π0 / π0.5 / FAST / openpi Claim-to-Code</a>，本仓库 Source Audit B，2026-07-16。</li><li><a href="vol_03_diffusion_policy_claim_to_code.html">VOL 03 Diffusion Policy 条件扩散、Horizon 与 Receding-Horizon Claim-to-Code</a>，本仓库 Source Audit D，2026-07-16。</li><li><a href="vol_03_act_independent_fact_review.html">VOL 03 ACT CVAE / Action Chunk / Temporal Ensemble 独立事实复核</a>，本仓库二次 paper/frozen-code 复核与 synthetic probes，2026-07-19。</li></ol>
+</article></body></html>

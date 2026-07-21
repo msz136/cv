@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-020 Source Freeze：Posterior Collapse、Action Ignoring 与 Shortcut Diagnostics</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm020_failure_diagnostics_source_freeze.md">
+<meta name="aris:source-sha256" content="4053bb051296bcc785a3e1b7f7ddf0a0c75339dcb4f8c84aed755b49888c06dd">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>4053bb051296bcc785a3e1b7f7ddf0a0c75339dcb4f8c84aed755b49888c06dd</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm020_failure_diagnostics_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 问题与结论边界</a></li><li><a href="#2">2. 来源冻结</a></li><li><a href="#3-failure">3. 四类 failure 的最小定义</a></li><li><a href="#4">4. 诊断合同</a></li><li><a href="#5">5. 最小测试矩阵</a></li><li><a href="#6">6. 伪代码边界</a></li><li><a href="#7">7. 项目证据边界</a></li><li><a href="#8-source-gate">8. Source gate 结论与下一步</a></li><li><a href="#section-9">参考来源</a></li></ol></nav>
+<h1>VOL 04 WM-020 Source Freeze：Posterior Collapse、Action Ignoring 与 Shortcut Diagnostics</h1>
+<div class="meta">审计日期：2026-07-18 状态：<code>source_frozen / VLA-WM-020 / knowledge_synced / card_synced / WARN</code> 覆盖题目：<code>VLA-WM-020</code> 本轮边界：冻结四类 failure mode 的定义、可观测信号与最小诊断矩阵；不把未运行的 probe、world-model loss 或项目结果写成已验证结论。</div>
+<h2 id="1">1. 问题与结论边界</h2>
+<p>题目：<strong>怎样发现 posterior collapse、action ignoring、future leakage 与 background shortcut？</strong></p>
+<p>冻结结论：</p>
+<ol><li>posterior collapse 是 latent posterior 不再携带有用信息、趋近 prior 或 decoder 主要依赖 deterministic/context path 的训练失败；不能只凭 KL 低或 reconstruction 好下结论。[S1][S2]</li><li>action ignoring 是模型在预测未来时对 action 条件不敏感，可能表现为 action swap、magnitude sweep 后预测变化很小；“action-conditioned”字段存在不等于真正可干预。[S1][S3]</li><li>future leakage 是训练/评估输入通过 terminal frame、未来轨迹、错位 history、label shift 或非因果 mask 获得了本不该可见的信息；teacher-forced accuracy 高不能排除它。[S4][S5]</li><li>background shortcut 是模型用背景、相机、光照、桌面或数据采集批次等与标签相关但非任务因果的特征做预测；需要 counterfactual background、camera/domain split 或 object/action masking 才能定位。[S1][S3]</li><li>四类 failure 必须分开做 intervention、control、split 和 rollout tests；单一 pixel/latent/action loss 不能区分 representation、causal action、leakage 与 shortcut。</li></ol>
+<h2 id="2">2. 来源冻结</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>可支持</th><th>不能支持</th><th>状态</th></tr></thead><tbody>
+<tr><td>S1</td><td><a href="vol_04_world_model_foundations_claim_to_code.html">World Model Foundations Audit A</a></td><td>action-conditioned world-model contract、one-step/open-loop gap、model exploitation、action sensitivity 与长期 rollout 的诊断边界</td><td>用户项目已经发现某种 failure、任意 probe 的数值阈值</td><td>checked / WARN</td></tr>
+<tr><td>S2</td><td><a href="vol_04_world_model_foundations_independent_fact_review.html">DreamerV3 independent fact review</a> 与 <code>danijar/dreamerv3@e3f0224</code></td><td>RSSM posterior/prior、dyn/rep KL、stop-gradient、free-nats 与 latent information 的实现语义</td><td>DreamerV3 repo 是论文作者官方代码、未运行的 collapse 结果</td><td>official-code-checked / WARN</td></tr>
+<tr><td>S3</td><td><a href="vol_03_act_claim_to_code.html">VOL 03 ACT claim-to-code audit</a></td><td>CVAE posterior/prior、KL、action chunk、latent train/infer gap 与 temporal aggregation 的 failure hooks</td><td>ACT 或用户项目一定存在 posterior collapse、latent quality 已量化</td><td>checked / WARN</td></tr>
+<tr><td>S4</td><td><a href="vol_03_architecture_execution_claim_to_code.html">VOL 03 Architecture / execution audit</a></td><td>sequence layout、causal attention、loss mask、action suffix 与 off-by-one/future visibility 边界</td><td>某项目一定使用正确 mask、没有数据泄漏</td><td>checked / WARN</td></tr>
+<tr><td>S5</td><td><a href="../knowledge/vol_06_per003_multiview_temporal.html">VOL 06 PER-003 Multi-view / Temporal</a></td><td>camera/time identity、presence/missingness、observation age、causal/ordered mask 与 replay leakage 诊断</td><td>多视角项目已完成 calibration/sync 或 leakage audit</td><td>supporting / WARN</td></tr>
+<tr><td>S6</td><td><a href="vol_04_wm019_metric_boundary_source_freeze.html">VOL 04 WM-019 Metric Boundary</a></td><td>per-offset/open-loop、action sensitivity、proxy/simulator/real metric ladder 与 paired protocol</td><td>proxy 或 loss 已证明 causal action / closed-loop success</td><td>supporting / WARN</td></tr>
+</tbody></table>
+<h2 id="3-failure">3. 四类 failure 的最小定义</h2>
+<table><thead><tr><th>failure</th><th>典型症状</th><th>首要干预</th><th>不能误判为</th></tr></thead><tbody>
+<tr><td>posterior collapse</td><td>KL/latent usage 长期接近零、不同样本 posterior 相同、decoder/context 单独已能重建</td><td>posterior-vs-prior probe、latent ablation、free-bits/KL balance A/B</td><td>任何低 KL 都是 collapse；高 reconstruction 就代表 latent 有用</td></tr>
+<tr><td>action ignoring</td><td>action swap/zero/perturbation 后 future delta 几乎不变；action gradient 或 mutual information 很低</td><td>固定 observation 做 action intervention、magnitude sweep、action head/gradient probe</td><td>action MSE 低、action token 存在就代表模型使用动作</td></tr>
+<tr><td>future leakage</td><td>打乱未来/terminal/history 后指标突然坍塌；label shift 与 causal mask 对不上</td><td>temporal split、causal mask visualization、future-frame removal、replay audit</td><td>teacher-forced accuracy 高；长度相同就没有泄漏</td></tr>
+<tr><td>background shortcut</td><td>换桌面/相机/颜色/采集批次后性能坍塌；遮挡背景后任务预测变化大</td><td>background swap/inpainting、camera/domain holdout、object-centric crop</td><td>domain randomization 一次就证明没有 shortcut</td></tr>
+</tbody></table>
+<h2 id="4">4. 诊断合同</h2>
+<p>任何结果都要记录：checkpoint、data split、observation/history window、action schema/normalizer、seed、intervention、future horizon、metric script、valid mask、episode denominator 和 protocol revision。动作敏感性要固定观测、只改变动作；shortcut probe 要固定任务/动作、只改变背景；leakage probe 要明确训练输入在时间 (t) 允许看到哪些字段。</p>
+<p><code>WARN</code> 边界：本仓库当前没有 WM-020 专用的 latent-usage log、action-swap trace、future-removal replay 或 background-domain holdout，因此以下矩阵是 interview-ready diagnostic design，不是用户项目已完成实验。</p>
+<h2 id="5">5. 最小测试矩阵</h2>
+<table><thead><tr><th>测试</th><th>控制变量</th><th>观察量</th><th>可能结论</th></tr></thead><tbody>
+<tr><td>posterior/prior probe</td><td>同一 history、不同 observation/posterior sample</td><td>KL、latent entropy、decoder/reward delta</td><td>latent 是否携带额外观测信息</td></tr>
+<tr><td>latent ablation</td><td>replace posterior latent with prior/mean/zero</td><td>reconstruction、reward、action、rollout</td><td>decoder 是否绕过 stochastic latent</td></tr>
+<tr><td>action swap</td><td>固定 observation/history，交换 action</td><td>future delta、latent delta、reward/continue delta</td><td>action condition 是否可干预</td></tr>
+<tr><td>action magnitude sweep</td><td>固定方向，改变幅度/符号</td><td>response curve、gradient norm</td><td>action sensitivity 是否单调/饱和/为零</td></tr>
+<tr><td>future removal</td><td>删除 terminal/future frame、右移 label</td><td>teacher/open-loop gap、loss</td><td>是否依赖不应可见信息</td></tr>
+<tr><td>causal mask audit</td><td>可见性矩阵、position/label shift</td><td>attention visibility、loss positions</td><td>future token 是否进入输入或梯度</td></tr>
+<tr><td>background domain holdout</td><td>固定 task/action，替换背景/相机/光照</td><td>task/action/rollout metrics</td><td>是否依赖采集 shortcut</td></tr>
+<tr><td>counterfactual object/action</td><td>固定背景，替换物体状态或动作</td><td>future/contact/task predicate</td><td>是否抓住真正任务因果</td></tr>
+</tbody></table>
+<h2 id="6">6. 伪代码边界</h2>
+<pre><code class="language-python">def diagnose_world_model(model, batch, protocol):
+    # 1. Freeze the observation/history and record the exact protocol revision.
+    baseline = model.rollout(batch.obs, batch.action, protocol)
+
+    # 2. Probe latent usage without claiming that a low KL alone proves collapse.
+    latent = posterior_prior_probe(model, batch, protocol)
+
+    # 3. Change only action values and measure future/actionable deltas.
+    action_probe = action_swap_and_sweep(model, batch, protocol)
+
+    # 4. Remove future/terminal fields and verify causal visibility and label shift.
+    leakage_probe = future_removal_and_mask_audit(model, batch, protocol)
+
+    # 5. Hold task/action fixed while swapping background/camera/domain.
+    shortcut_probe = background_domain_holdout(model, batch, protocol)
+    return baseline, latent, action_probe, leakage_probe, shortcut_probe</code></pre>
+<p>代码只表达诊断流程，不产生任何项目指标；每个 probe 必须绑定 matched checkpoint、seed、mask、normalizer 和原始 trace。</p>
+<h2 id="7">7. 项目证据边界</h2>
+<ul><li>UWM/LIBERO：可以讨论 action/image conditional slices、normalizer/action shape、fixed/reset protocol 与 future/action mask；当前没有 WM-020 专用 action-swap 或 shortcut artifact。</li><li>WAM/Cosmos：可以讨论 world/value/action slot、offline proxy 与 closed-loop boundary；不能把离线 MSE 或历史 0-success 直接解释为某个 failure mode 的因果诊断。</li><li>OpenPiVLA/OPD/Robot Harness：可作为 sequence mask、point/box/text schema、timeout/episode trace 的接口挂钩，但不支持 world-model latent collapse 或 background shortcut 的个人实验 claim。</li></ul>
+<h2 id="8-source-gate">8. Source gate 结论与下一步</h2>
+<p>本 source freeze 为 <code>WARN</code>：定义、primary/official-code 边界和最小诊断矩阵已冻结；本地 latent/action/future/background probe、raw traces 与 ownership 仍缺。下游 knowledge 与单张题卡已同步，题卡保持 <code>unseen</code>；下一步进行真实口述或补一个诊断 artifact。</p>
+<h2 id="section-9">参考来源</h2>
+<ol><li><a href="vol_04_world_model_foundations_claim_to_code.html">World Model Foundations Audit A</a>。</li><li><a href="vol_04_world_model_foundations_independent_fact_review.html">DreamerV3 independent fact review</a>。</li><li><a href="vol_03_act_claim_to_code.html">ACT claim-to-code audit</a>。</li><li><a href="vol_03_architecture_execution_claim_to_code.html">Architecture / execution audit</a>。</li><li><a href="../knowledge/vol_06_per003_multiview_temporal.html">PER-003 Multi-view / Temporal</a>。</li><li><a href="vol_04_wm019_metric_boundary_source_freeze.html">WM-019 Metric Boundary</a>。</li></ol>
+</article></body></html>

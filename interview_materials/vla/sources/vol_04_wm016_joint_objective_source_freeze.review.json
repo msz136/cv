@@ -1,0 +1,44 @@
+{
+  "artifact": "sources/vol_04_wm016_joint_objective_source_freeze.md",
+  "html": "sources/vol_04_wm016_joint_objective_source_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "source_frozen / VLA-WM-016 / UWM-and-Cosmos-boundary / WARN",
+  "verdict": "WARN",
+  "source_sha256": "B7881D8DC0F1876DB8C551F6DD06C999CFCED00263A559048DB85C780343B598",
+  "covered_question_ids": ["VLA-WM-016"],
+  "source_scope": {
+    "uwm_audit": "sources/vol_04_uwm_video_action_claim_to_code.html",
+    "uwm_independent_review": "sources/vol_04_uwm_independent_fact_review.html",
+    "cosmos_wam_audit": "sources/vol_04_cosmos_policy_wam_claim_to_code.html",
+    "project_evidence": [
+      "evidence/projects/uwm_libero_claim_evidence_inventory.html",
+      "evidence/projects/wam_claim_evidence_inventory.html"
+    ]
+  },
+  "checks": {
+    "bounded_slice": "PASS (one WM-016 source freeze only; no knowledge/card generated)",
+    "source_provenance": "PASS (UWM frozen commit, Cosmos frozen commit, papers, official pages and local inventories linked)",
+    "implementation_boundary": "PASS (UWM shared DiT/dual timestep separated from Cosmos/WAM latent-slot/EDM/routing implementation)",
+    "prediction_target_boundary": "PASS WITH WARNING (UWM epsilon-MSE and Cosmos x_0/EDM target are not treated as interchangeable)",
+    "condition_mask_boundary": "PASS WITH WARNING (clean-condition mask distinguished from target-loss mask and sample-level action_mask)",
+    "loss_reduction_boundary": "PASS WITH WARNING (reduction, denominator, weight and config flags remain runtime checks)",
+    "metric_boundary": "PASS (component loss, proxy metrics, direct success and planning uplift kept separate)",
+    "project_truth_boundary": "PASS (no upstream method or project score upgraded to personal contribution)",
+    "evidence_queue": "PASS (P0/P1/P2 gradient, mask A/B, paired ablation, scheduler and parity checks listed)",
+    "html_static_validation": "PASS (one H1, six H2, one H3, four tables, four formula/code-free sections and local links)",
+    "local_links": "PASS (all repository-local source and inventory targets resolve)",
+    "source_sha": "PASS (canonical Markdown SHA matches HTML meta and this review JSON)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "runtime_gradient_check": "PENDING",
+    "paired_ablation": "PENDING",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Run UWM action-free gradient and explicit target-mask A/B with a pinned runtime/checkpoint.",
+    "Freeze the exact Cosmos/WAM experiment config before interpreting optional target-mask flags.",
+    "Obtain immutable checkpoint/normalizer/episode artifacts before connecting joint-objective claims to personal scores.",
+    "Run action-only versus action+video/value paired ablations with closed-loop success and component metrics.",
+    "Keep WM-016 knowledge/card generation as a separate next bounded slice."
+  ],
+  "next": "Either run the WM-015 oral drill or generate one WM-016 knowledge node from this source freeze; do not batch WM-016..038."
+}

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 World Model / Sim2Real：Dynamics Randomization 与 System Identification（WM-033）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm033_dynamics_randomization_system_identification.md">
+<meta name="aris:source-sha256" content="dc1e9d6eaa757bbb688481eac6996936193b02e79030e353a28d29d3447f7dff">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>dc1e9d6eaa757bbb688481eac6996936193b02e79030e353a28d29d3447f7dff</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm033_dynamics_randomization_system_identification.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 面试结论</a></li><li><a href="#2">2. 直觉：准星与散布</a></li><li><a href="#3">3. 数学合同</a></li><li><a href="#4">4. 二者怎样互补</a></li><li><a href="#5">5. 参数先分型</a></li><li><a href="#6-range">6. Range 怎样确定</a></li><li><a href="#6-1">6.1 五类来源</a></li><li><a href="#6-2-support">6.2 初始 support</a></li><li><a href="#6-3">6.3 正值与分布形状</a></li><li><a href="#7">7. 不要默认独立采样</a></li><li><a href="#8-cadence-dynamics">8. 采样 cadence 是 dynamics 的一部分</a></li><li><a href="#9-fit">9. Fit 好为什么仍可能错</a></li><li><a href="#10-explicit-osi-implicit-adaptation-simopt">10. Explicit OSI、implicit adaptation 与 SimOpt</a></li><li><a href="#11-range">11. Range 扩展与回滚</a></li><li><a href="#12-matched-ablation">12. 最小 matched ablation</a></li><li><a href="#13">13. 实现伪代码</a></li><li><a href="#14">14. 项目挂钩与真实性边界</a></li><li><a href="#15">15. 实战审计清单</a></li><li><a href="#16">16. 参考来源</a></li><li><a href="#17">17. 下一节点</a></li></ol></nav>
+<h1>VOL 04 World Model / Sim2Real：Dynamics Randomization 与 System Identification（WM-033）</h1>
+<div class="meta">状态：drafted / VLA-WM-033 / knowledge_35_of_44 / card_synced / WARN 更新日期：2026-07-18 核心问题：dynamics randomization 与 system identification 如何互补，参数范围怎样确定？ 前置：<a href="vol_04_world_model_sim2real_wm031_reality_gap_taxonomy.html">WM-031 Reality-gap Taxonomy</a>、<a href="vol_04_world_model_sim2real_wm032_visual_domain_randomization_relevance.html">WM-032 Visual DR</a>、<a href="../sources/vol_04_wm033_dynamics_randomization_system_identification_source_freeze.html">WM-033 Source Freeze</a>。</div>
+<h2 id="1">1. 面试结论</h2>
+<p>一句话：<strong>SysID 把 simulator 拉到真实系统附近，DR 覆盖仍然存在的误差、变化与漂移；range 从 measurement/fit uncertainty/population/drift/structural residual 来，不从论文百分比或“越宽越好”来。</strong></p>
+<p>一个强回答应同时包含：</p>
+<ol><li>参数合同：name/unit/site/nominal/range/distribution/source/correlation/cadence/validity；</li><li>SysID：real excitation、fit、held-out residual、uncertainty 与 identifiability；</li><li>DR：围绕 calibrated center 覆盖 residual，而不是替代建模；</li><li>range：测量、拟合、跨设备/物体、漂移和结构误差；</li><li>evaluation：baseline / SysID-only / DR-only / combined / overwide 的 matched arms；</li><li>truth boundary：没有本地 artifact 就只讲设计，不讲个人 transfer 结果。</li></ol>
+<h2 id="2">2. 直觉：准星与散布</h2>
+<p>可以把 SysID 看成“把准星校到靶心附近”，DR 看成“训练时覆盖仍可能出现的散布”。只有 SysID，policy 可能对 fit dataset 很准，但换 payload、surface、battery、temperature 或 queue delay 就失败；只有 DR，中心偏差很大时会浪费训练容量，甚至把不物理/不可解场景混进训练。</p>
+<p>Tan et al. 的 quadruped 案例同时使用 system identification、actuator model、latency simulation 与 randomization；SimOpt 则明确提醒 overly wide distribution 可能 infeasible 或 conservative。[1][2]</p>
+<h2 id="3">3. 数学合同</h2>
+<p>真实/模拟 dynamics 可写为：</p>
+<div class="formula">\[
+x_{t+1}=f(x_t,u_t;\xi)+\varepsilon_t.
+\]</div>
+<p>变量解释：\(x_t\) 是状态，\(u_t\) 是 controller 实际接收的动作，\(\xi\) 是 mass、inertia、friction、actuator、latency 等参数，\(\varepsilon_t\) 是未建模扰动与噪声。实现映射：必须先确认 controller/action/timestamp contract，否则 fit 到的“参数”可能只是在吸收接口错误。</p>
+<p>SysID 用真实数据 \(D_r\) 得到 nominal 或 posterior：</p>
+<div class="formula">\[
+q(\xi\mid D_r)\propto p(D_r\mid\xi)p_0(\xi).
+\]</div>
+<p>变量解释：\(p_0\) 来自 CAD、datasheet、称重/标定或历史平台，likelihood/fit loss 衡量 simulator 与真实轨迹差异。实现映射：保存 train/held-out trajectory、multi-start、bootstrap 和 parameter correlation；只有点估计时也要报告残差。</p>
+<p>DR 训练目标为：</p>
+<div class="formula">\[
+\xi_e\sim p_\phi(\xi),\qquad
+\theta^*=\arg\max_\theta
+\mathbb E_{\xi_e\sim p_\phi}[J(\pi_\theta;f_{\xi_e})].
+\]</div>
+<p>变量解释：\(p_\phi\) 是训练参数分布，\(e\) 是 episode。实现映射：sampler 必须把 source、seed、draw、accept/reject、cadence 和 revision 写入 ledger。这个式子只保证训练分布期望，不保证真实参数在 support 内。</p>
+<h2 id="4">4. 二者怎样互补</h2>
+<table><thead><tr><th>只做什么</th><th>得到什么</th><th>典型失败</th></tr></thead><tbody>
+<tr><td>nominal simulator</td><td>一个方便训练的模型</td><td>系统性偏差未校准</td></tr>
+<tr><td>SysID only</td><td>更接近 real trace 的中心/模型</td><td>residual、跨设备差异与漂移未覆盖</td></tr>
+<tr><td>DR only</td><td>对指定分布更鲁棒</td><td>中心错、分布过宽、无关/不可行样本</td></tr>
+<tr><td>SysID + calibrated DR</td><td>bias reduction + residual coverage</td><td>仍需验证 support、相关性与真实闭环</td></tr>
+</tbody></table>
+<p>Peng et al. 在模拟中随机化多类 dynamics，并用 recurrent history 隐式适应；UP-OSI 则显式用 recent state/action history 估计 dynamics parameter，再条件化 universal policy。两者都不意味着任意宽 DR 可以替代真实测量。[3][4]</p>
+<h2 id="5">5. 参数先分型</h2>
+<table><thead><tr><th>类型</th><th>例子</th><th>怎么处理</th></tr></thead><tbody>
+<tr><td>可测且近似固定</td><td>mass、geometry、gear ratio</td><td>测量/CAD 设中心，小范围覆盖误差</td></tr>
+<tr><td>可通过激励拟合</td><td>damping、motor response、latency</td><td>offline SysID + held-out residual</td></tr>
+<tr><td>population variation</td><td>object mass/COM、surface friction、不同 robot unit</td><td>条件化或分层 distribution</td></tr>
+<tr><td>time-varying</td><td>battery、temperature、wear、queue jitter</td><td>time/context-conditioned range；必要时 adaptation</td></tr>
+<tr><td>难辨识/强耦合</td><td>contact、compliance、backlash</td><td>equivalence set、task-relevant latent、bounded DR</td></tr>
+<tr><td>结构/离散</td><td>controller mode、gripper semantics、solver model</td><td>分支/protocol gate，不用连续噪声掩盖</td></tr>
+</tbody></table>
+<h2 id="6-range">6. Range 怎样确定</h2>
+<h3 id="6-1">6.1 五类来源</h3>
+<p>对每个参数分开记录：</p>
+<div class="formula">\[
+\delta_j=delta_j^{measure}+delta_j^{fit}+delta_j^{population}+delta_j^{drift}+delta_j^{model}.
+\]</div>
+<ul><li><code>measure</code>：仪器、称重、标定、datasheet tolerance；</li><li><code>fit</code>：trajectory fit residual、bootstrap spread；</li><li><code>population</code>：不同 robot、payload、object、surface；</li><li><code>drift</code>：temperature、battery、wear、latency jitter；</li><li><code>model</code>：未建模 actuator/contact/solver effect 的 bounded proxy。</li></ul>
+<p>这里的“+”是来源分解，不是无条件把最大误差相加。每一项要保留样本、方法和置信度。</p>
+<h3 id="6-2-support">6.2 初始 support</h3>
+<div class="formula">\[
+[l_j,u_j]=Q_{\alpha/2,1-\alpha/2}(q(\xi_j\mid D_r))
+\oplus\Delta_j^{population}
+\oplus\Delta_j^{drift}
+\oplus m_j^{safety}.
+\]</div>
+<p>变量解释：\(Q\) 是 posterior/bootstrap 分位数，\(\oplus\) 是有依据的 bounded expansion，\(m_j^{safety}\) 是审批过的 margin。实现映射：manifest 要保存各边界的 source，不只保存最终数字。</p>
+<h3 id="6-3">6.3 正值与分布形状</h3>
+<p>正参数不能被无界 Gaussian 采成负值。可用 truncated distribution，或在 log space 采样：</p>
+<div class="formula">\[
+\log\xi_j\sim\mathcal U(\log l_j,\log u_j),\quad 0&lt;l_j&lt;u_j.
+\]</div>
+<p>Peng et al. 的部分参数采用 logarithmic sampling，但其 95-parameter 和具体 range 只属于 Fetch pushing case，不是模板。[3]</p>
+<h2 id="7">7. 不要默认独立采样</h2>
+<p>错误写法是 \(p(\xi)=\prod_j p(\xi_j)\) 然后对所有参数独立 uniform。常见相关性包括：</p>
+<ul><li>mass、COM、inertia 来自同一个 body-property sample；</li><li>battery/temperature 与 motor strength、response、current limit 相关；</li><li>control period、network/queue 与 effective latency 相关；</li><li>object identity 与 mass/COM/friction/compliance 相关；</li><li>surface identity 与 friction/contact 相关。</li></ul>
+<p>若数据不足以拟合 joint distribution，至少使用条件规则、correlation matrix、copula/low-rank latent 或 rejection constraints，不能装作独立盒子就是现实分布。</p>
+<h2 id="8-cadence-dynamics">8. 采样 cadence 是 dynamics 的一部分</h2>
+<table><thead><tr><th>cadence</th><th>例子</th><th>审计点</th></tr></thead><tbody>
+<tr><td>robot/build-level</td><td>link geometry、gear ratio</td><td>一个 robot unit 内保持一致</td></tr>
+<tr><td>episode-level</td><td>payload、object、constant friction regime</td><td>reset 时采样并写 episode manifest</td></tr>
+<tr><td>segment/event-level</td><td>grasp 后 payload、surface transition</td><td>记录切换事件和可观测线索</td></tr>
+<tr><td>step-level</td><td>sensor noise、small timing jitter、disturbance</td><td>保留时间相关性，避免全 i.i.d.</td></tr>
+</tbody></table>
+<p>Peng et al. 区分 episode-level physical parameters 与 step-level timestep/noise；把 mass 每 step 随机改变会生成非物理系统。[3]</p>
+<h2 id="9-fit">9. Fit 好为什么仍可能错</h2>
+<p>定义 sensitivity matrix：</p>
+<div class="formula">\[
+S_{ij}=\frac{\partial y_i}{\partial \xi_j}\Big|_{\hat\xi},
+\]</div>
+<p>其中 \(y\) 是可观测 trajectory feature。某列近零说明当前 excitation 看不到该参数；多列共线说明多个参数组合效果相似。实现映射：做 multi-start fit、bootstrap、parameter correlation、held-out trajectory 和单参数 intervention。</p>
+<p>因此必须区分：</p>
+<ul><li><code>prediction fit</code>：轨迹预测误差小；</li><li><code>parameter identification</code>：参数在当前实验下可辨识；</li><li><code>task-relevant equivalence</code>：参数不唯一，但对 policy 行为足够；</li><li><code>transfer</code>：在 matched real protocol 下闭环成功。</li></ul>
+<p>四者不能互相替代。</p>
+<h2 id="10-explicit-osi-implicit-adaptation-simopt">10. Explicit OSI、implicit adaptation 与 SimOpt</h2>
+<table><thead><tr><th>方式</th><th>输入→输出</th><th>结论边界</th></tr></thead><tbody>
+<tr><td>UP-OSI</td><td>recent state/action history→\(\hat\xi_t\)→universal policy</td><td>参数必须有定义且可从 history 识别；论文主要 simulation</td></tr>
+<tr><td>recurrent implicit SysID</td><td>history→memory/latent→action</td><td>latent 可 task-relevant，但不一定对应物理真值</td></tr>
+<tr><td>SimOpt</td><td>real/sim observation trajectory discrepancy→更新 \(p_\phi\)</td><td>学 distribution，不要求 exact replication；需要 safe real rollout</td></tr>
+</tbody></table>
+<p>WM-033 只说明它们与参数分布的关系；online adaptation 的系统选择留给 WM-037。</p>
+<h2 id="11-range">11. Range 扩展与回滚</h2>
+<p>扩展 range 需要至少一种证据：真实 trace 超出 support、held-out boundary failure、新设备/负载/表面/温度数据，或可验证的结构残差。以下情况要 reject/rollback：</p>
+<ul><li>物理约束或相关性被破坏；</li><li>simulator/controller unstable 或 task 不可解；</li><li>nominal performance 下降但 target gate 无收益；</li><li>discrepancy 下降来自 time alignment/scaling shortcut；</li><li>update 超出 policy trust region 或 real safety authority。</li></ul>
+<p>nominal 与 stress 可用 mixture 分开：</p>
+<div class="formula">\[
+p_{train}=(1-\rho)p_{cal}+\rho p_{stress}.
+\]</div>
+<p>变量解释：\(p_{cal}\) 是 target-supported calibrated distribution，\(p_{stress}\) 是边界测试，\(\rho\) 是明确记录的比例。实现映射：nominal score 和 stress score 分栏报告，不能混成一个成功率。</p>
+<h2 id="12-matched-ablation">12. 最小 matched ablation</h2>
+<p>固定 data、compute、network、init、seed、controller、task、rollout count、success predicate 和 checkpoint lineage：</p>
+<table><thead><tr><th>Arm</th><th>目的</th></tr></thead><tbody>
+<tr><td>baseline</td><td>未校准中心、无 DR</td></tr>
+<tr><td>SysID-only</td><td>测 bias reduction</td></tr>
+<tr><td>DR-only</td><td>测宽分布是否硬扛中心误差</td></tr>
+<tr><td>SysID+DR</td><td>测互补收益</td></tr>
+<tr><td>fitted+overwide</td><td>测 conservative/optimization cost</td></tr>
+</tbody></table>
+<p>分层报告 nominal sim、one-factor sweep、correlated holdout、real replay/free-space；只有具备安全 authority 才进入 contact/task closed-loop，并报告 success/CI、first failure 和 safety events。</p>
+<h2 id="13">13. 实现伪代码</h2>
+<pre><code class="language-python">def calibrated_dr_pipeline(real_data, contract, base_config):
+    # 1. Check units, controller semantics, timestamps and excitation coverage.
+    dataset = validate_sysid_data(real_data, contract)
+
+    # 2. Fit nominal dynamics with multi-start and evaluate held-out trajectories.
+    fit = fit_dynamics(dataset.train, multistart=True)
+    residual = evaluate_fit(fit, dataset.holdout)
+
+    # 3. Estimate uncertainty and preserve correlations/cadence from the contract.
+    uncertainty = bootstrap_uncertainty(fit, dataset, residual)
+    distribution = build_bounded_distribution(
+        fit.parameters,
+        uncertainty,
+        contract.population_and_drift,
+        contract.correlations,
+        contract.sampling_cadence,
+    )
+
+    # 4. Reject negative, inconsistent, unstable or task-unsolvable samples.
+    sampler_audit = audit_samples(distribution, contract.validity_rules)
+
+    # 5. Run matched baseline/SysID/DR/combined/overwide arms before any claim.
+    return run_matched_arms(base_config, distribution, sampler_audit)</code></pre>
+<h2 id="14">14. 项目挂钩与真实性边界</h2>
+<p>当前 <a href="../evidence/evidence_manifest.html">Evidence Manifest</a>、OpenPiVLA inventory 与 WAM artifact manifest 没有组成 WM-033 所需 bundle：缺 parameter manifest、real excitation、fit/identifiability report、sampler audit、matched arms、真机闭环和 ownership。</p>
+<p>面试时可以说：</p>
+<div class="meta">我会先确认 action/controller/timestamp contract，再用测量和 excitation trajectory 做 SysID，报告 held-out residual 与 parameter correlation。随机化围绕 fitted center 覆盖 measurement、population、drift 和 structural residual，并保留 correlation/cadence/validity。最后做 baseline、SysID-only、DR-only、combined、overwide 的 matched ablation。当前项目没有这套真机 artifact，所以我只把它作为可执行设计，不声称已提升真机成功率。</div>
+<p>不能说：</p>
+<ul><li>“把 mass/friction 随机 ±50% 就完成了 dynamics randomization”；</li><li>“simulation loss/return 更好就证明 Sim2Real”；</li><li>“trajectory match 说明每个参数都辨识正确”；</li><li>“有 randomization config 就是我的 C2 优化”；</li><li>“我已经通过 SysID+DR 提升真机成功率”。</li></ul>
+<h2 id="15">15. 实战审计清单</h2>
+<ul><li>[ ] 参数 name/unit/site/nominal/range/distribution/source 完整；</li><li>[ ] controller/action/timestamp contract 先闭合；</li><li>[ ] excitation、train/held-out split、fit residual 可追溯；</li><li>[ ] bootstrap/sensitivity/correlation/identifiability 有报告；</li><li>[ ] positive support、correlation、cadence、validity 有测试；</li><li>[ ] sampler draw/reject/boundary cases 有 ledger；</li><li>[ ] baseline/SysID/DR/combined/overwide matched；</li><li>[ ] nominal、stress、real replay、closed-loop 分层；</li><li>[ ] real trial 有 limits/E-stop/trace authority；</li><li>[ ] ownership 与 C0–C3 claim 对齐。</li></ul>
+<h2 id="16">16. 参考来源</h2>
+<ol><li>Tan et al., <a href="https://arxiv.org/abs/1804.10332v2"><em>Sim-to-Real: Learning Agile Locomotion for Quadruped Robots</em></a>。</li><li>Chebotar et al., <a href="https://arxiv.org/abs/1810.05687v4"><em>SimOpt</em></a>。</li><li>Peng et al., <a href="https://arxiv.org/abs/1710.06537v3"><em>Dynamics Randomization</em></a>。</li><li>Yu et al., <a href="https://arxiv.org/abs/1702.02453v3"><em>Universal Policy with Online System Identification</em></a>。</li><li><a href="../sources/vol_04_wm033_dynamics_randomization_system_identification_source_freeze.html">WM-033 Source Freeze</a>。</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest</a>。</li></ol>
+<h2 id="17">17. 下一节点</h2>
+<p>下一节点是 <code>VLA-WM-034</code>：control frequency、action latency、actuator dynamics 与 controller mismatch 如何破坏 Sim2Real。本节点保持 WARN，题卡在真实口述前保持 unseen。</p>
+</article></body></html>

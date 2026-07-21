@@ -1,0 +1,45 @@
+{
+  "artifact": "sources/vol_08_sys004_fault_recovery_safety_observability_source_freeze.md",
+  "html": "sources/vol_08_sys004_fault_recovery_safety_observability_source_freeze.html",
+  "review_date": "2026-07-20",
+  "status": "source_frozen / SYS-VLA-004 / knowledge_synced / card_pending / WARN",
+  "verdict": "WARN",
+  "source_sha256": "2ba63d3f2f05ce74c9c508f0aec88a232158a94cef53db0df641f4f85654d6e2",
+  "covered_question_ids": ["SYS-VLA-004"],
+  "source_rows": {
+    "official_public": 6,
+    "local_contracts": 2,
+    "deterministic_probes_specified": 12,
+    "sre_source_checked": false
+  },
+  "frozen_revisions": {
+    "ros2_lifecycle": "ros2/design@93a415bf928751d37fce6f83215c521658e20c93",
+    "ros2_control": "ros-controls/ros2_control@e4ebcc352d9aeb69969308428b051bdd3105b88f",
+    "kubernetes_deployment": "kubernetes/website@d19aacebe8061a6ef5dcc1e68904aaefe35c5445",
+    "ros_qos": "Rolling docs response / accessed 2026-07-20",
+    "kubernetes_probes": "official docs response / accessed 2026-07-20",
+    "opentelemetry_signals": "official docs response / accessed 2026-07-20"
+  },
+  "checks": {
+    "bounded_slice": "PASS (only SYS-VLA-004 source freeze was added; no knowledge/card, PER-019 or coaching state)",
+    "official_source_refetch": "PASS WITH WARNING (ROS 2 lifecycle/controller/QoS, Kubernetes probes/rollback and OpenTelemetry signals were fetched and narrow probes pass; SRE monitoring was not checked because TLS was unstable)",
+    "license_boundary": "PASS (ROS 2/ros2_control Apache-2.0, Kubernetes CC BY 4.0, and OpenTelemetry documentation are kept as source links; no copied source code is redistributed)",
+    "fault_state_contract": "PASS (HEALTHY/DEGRADED/QUIESCING/HOLD/STOPPED/RECOVERY/QUARANTINED and ownership/exit evidence are explicit design contracts)",
+    "safety_boundary": "PASS WITH WARNING (software cancel, controller hold/stop and independent e-stop are separated; no physical-stop success is claimed)",
+    "rollback_replay_boundary": "PASS (revision/schema/normalizer compatibility, drain, acknowledgement, canary and immutable replay requirements are explicit)",
+    "project_truth_boundary": "PASS (five projects are bounded hooks only; no fault supervisor, safety system, recovery result or ownership is inferred)",
+    "deterministic_probes": "PASS (12/12 source-order/presence/negative-boundary probes specified)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, valid hierarchy, one formula block, commented pipeline and matching SHA)",
+    "local_links": "PASS (SYS-002, EVAL-008, VOL 05 gates and official links resolve)",
+    "browser_visual_check": "PASS (localhost QA at 1280x720 and 800x1000; 260px sticky desktop TOC becomes static narrow TOC, six tables remain contained, one H1 and no page-wide overflow)",
+    "knowledge_downstream": "PASS WITH WARNING (SYS-VLA-004 knowledge is generated and SHA-synchronized; atomic card remains deferred)",
+    "question_card": "PENDING (atomic card intentionally deferred)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "No unified fault supervisor, controller/e-stop acknowledgement, fault-injection matrix, immutable replay bundle, rollback compatibility gate or candidate ownership confirmation is present.",
+    "Keep software readiness/liveness, controller hold/stop and independent e-stop as separate claims.",
+    "Keep SYS-VLA-004 atomic card deferred and unseen until a real system-design drill; do not infer mastery from the knowledge page."
+  ],
+  "next": "Generate only the SYS-VLA-004 atomic card from the synchronized knowledge; keep it unseen and do not create coaching_state.md."
+}

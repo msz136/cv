@@ -1,0 +1,56 @@
+{
+  "artifact": "knowledge/vol_05_engineering_eval_eng016.md",
+  "html": "knowledge/vol_05_engineering_eval_eng016.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / VLA-ENG-016 / knowledge_18_of_44 / card_1_of_1_unseen",
+  "verdict": "WARN",
+  "source_sha256": "D9F1783DD64A659A2A48EA17BE2696F9CA441E8C7B2AB0A79BDA812877E64ABF",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 17,
+    "new_nodes": 1,
+    "total_drafted_nodes": 18,
+    "covered_ids": ["VLA-ENG-016"],
+    "drafted_cards_for_new_nodes": 1,
+    "practice_state": "unseen",
+    "difficulty": "L3",
+    "priority": "P1"
+  },
+  "source_scope": {
+    "source_freeze": "sources/vol_05_eng016_multiteacher_memory_scheduling_source_freeze.html",
+    "official_docs": [
+      "PyTorch 2.13 torch.nn.functional.kl_div",
+      "PyTorch 2.13 torch.no_grad",
+      "PyTorch 2.13 FSDP",
+      "DeepSpeed zero3.rst at de1846cf6fbdd6f1c2adf046f319791ca78cc547"
+    ],
+    "paper": "Hinton et al. arXiv:1503.02531",
+    "local_project_hooks": [
+      "evidence/projects/opd_claim_evidence_inventory.html",
+      "sources/vol_05_eng015_activation_offload_source_freeze.html"
+    ]
+  },
+  "checks": {
+    "bounded_slice": "PASS (one VLA-ENG-016 knowledge node and one atomic card are drafted; ENG-017 remains deferred)",
+    "teacher_graph_boundary": "PASS WITH WARNING (parameter freeze, no_grad and detach are separated; teacher residency remains a memory question)",
+    "kl_semantics": "PASS WITH WARNING (log-probability input, target shape, batchmean/mean, temperature, mask and T^2 are explicit)",
+    "multi_teacher_schedule": "PASS WITH WARNING (resident/sequential/staged schedules are engineering candidates, not performance claims)",
+    "memory_latency_protocol": "PASS (peak-memory and step-time ledgers plus matched single/multi-teacher A/B fields defined)",
+    "project_truth_boundary": "PASS WITH WARNING (OPD five-teacher/preloaded_zero3/route/coldstart/online-KL chain retained; uplift/learned-router/weights remain unverified)",
+    "formula_and_shapes": "PASS (KL, weighted multi-teacher loss, peak memory and step-time formulas explained with implementation mapping)",
+    "pseudocode": "PASS (commented no_grad/route/mask/student-only-backward order; backend scheduling APIs remain placeholders)",
+    "minimum_module_contract": "PASS (intuition, definitions, formulas, schedule comparison, A/B, project hook, trade-offs, bad cases and follow-ups included)",
+    "html_static_validation": "PASS (source SHA, one H1, fourteen H2, eight H3, four tables, two commented pseudocode blocks and five formula blocks)",
+    "local_links": "PASS (source freeze, ENG-015 and OPD inventory relative links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Collect matched single-teacher versus multi-teacher memory/latency A/B with fixed route/data/effective batch.",
+    "Collect teacher/student revision, optimizer/RNG/sampler and checkpoint bundle; verify teacher gradients remain absent.",
+    "Run SFT-only, single-teacher, no-synthetic and synthetic-ratio ablations before attributing OPD uplift to multiple teachers.",
+    "Keep metadata-driven teacher selection distinct from a learned router.",
+    "Keep VLA-ENG-016 unseen until a real oral answer is recorded."
+  ],
+  "next": "Run a one-question oral drill for VLA-ENG-016 or collect single-teacher/memory/lineage artifacts; keep ENG-017 deferred."
+}

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 08 SYS-003：Robot Fleet 与 Multi-tenant GPU Scheduling</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_08_sys003_robot_fleet_multitenant_gpu_scheduling.md">
+<meta name="aris:source-sha256" content="ccf73b74022399bfc2fef80b344e596b6c1931690ef87ef545144f35c4ecbef5">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>ccf73b74022399bfc2fef80b344e596b6c1931690ef87ef545144f35c4ecbef5</code>；生成自：<code>interview_materials\vla\knowledge\vol_08_sys003_robot_fleet_multitenant_gpu_scheduling.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 直觉与专业定义</a></li><li><a href="#1-1-fleet-scheduler">1.1 Fleet scheduler</a></li><li><a href="#1-2-multi-tenancy-capacity-fairness-priority-freshness">1.2 Multi-tenancy、capacity、fairness、priority、freshness</a></li><li><a href="#1-3-logical-resource-physical-resource">1.3 Logical resource 与 physical resource</a></li><li><a href="#2-fleet-identity">2. Fleet identity 与状态所有权</a></li><li><a href="#2-1-identity-schema">2.1 最小 identity/schema 合同</a></li><li><a href="#2-2-state-ownership">2.2 State ownership 表</a></li><li><a href="#3-capacity-placement">3. Capacity 与 placement 数学</a></li><li><a href="#3-1-resource-vector-admission">3.1 Resource vector admission</a></li><li><a href="#3-2">3.2 多目标调度代价</a></li><li><a href="#4-queue-fairness-preemption">4. Queue、Fairness 与 Preemption</a></li><li><a href="#4-1-queue">4.1 Queue 层级</a></li><li><a href="#4-2-freshness-fairness">4.2 Freshness 不是 fairness</a></li><li><a href="#4-3">4.3 抢占与降级</a></li><li><a href="#5-heterogeneous-gpu-replica-cache">5. Heterogeneous GPU、Replica 与 Cache</a></li><li><a href="#5-1-gpu-placement">5.1 GPU placement</a></li><li><a href="#5-2-replica-named-resource">5.2 Replica 与 named resource</a></li><li><a href="#6-robot-lease-lifecycle-fencing">6. Robot Lease、Lifecycle 与 Fencing</a></li><li><a href="#7-rollout-canary-cost">7. Rollout、Canary、Cost 与观测</a></li><li><a href="#7-1">7.1 正常路径</a></li><li><a href="#7-2-canary-gate">7.2 Canary gate</a></li><li><a href="#7-3-cost-slo">7.3 Cost 与 SLO</a></li><li><a href="#8">8. 面试级伪代码</a></li><li><a href="#9">9. 实现映射与项目真实性边界</a></li><li><a href="#10-60">10. 60 秒回答与禁说清单</a></li><li><a href="#10-1-60">10.1 60 秒回答模板</a></li><li><a href="#10-2-claim">10.2 不能说的强 claim</a></li><li><a href="#11">11. 结论与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 08 SYS-003：Robot Fleet 与 Multi-tenant GPU Scheduling</h1>
+<div class="meta">状态：<code>drafted / SYS-VLA-003 / knowledge_9_of_phase / card_1_of_1_unseen / WARN</code> 报告日期：2026-07-20 证据截止：2026-07-20 来源入口：<a href="../sources/vol_08_sys003_robot_fleet_multitenant_gpu_scheduling_source_freeze.html">SYS-003 Source Freeze</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>当机器人数量、模型 revision、租户和 GPU 类型同时增长时，怎样把“一个 policy server”扩展成可控的 robot fleet？本页把 Kubernetes/Volcano/Ray/Triton/NVIDIA/ROS 2 的公开机制转译成面试系统设计语言，同时明确哪些只是 design inference，哪些没有个人项目证据。</p>
+<p>不要把 fleet 设计理解成“加一个 scheduler”。真正的合同需要同时覆盖 tenant/robot/model identity、资源向量、placement、queue/fairness、preemption、model replica/cache、robot lease、rollout/canary、成本和 action freshness。</p>
+<h2 id="1">1. 直觉与专业定义</h2>
+<h3 id="1-1-fleet-scheduler">1.1 Fleet scheduler</h3>
+<p>通俗地说，fleet scheduler 决定“哪个机器人请求、哪个模型副本、哪块 GPU、什么时候执行”。它必须同时考虑资源够不够、请求是否兼容、租户是否超额、机器人 lease 是否有效，以及动作返回时是否已经过期。</p>
+<p>专业地说，scheduler 是从请求集合 (mathcal{Q})、节点/副本集合 (mathcal{N}) 和资源向量 (R) 到 placement 与 admission 决策的控制平面。Kubernetes 官方 scheduler 暴露 QueueSort、Filter、Score、Reserve/Permit、Bind 等阶段；这些阶段描述 Pod placement，不自动理解 VLA 的 camera schema、normalizer、action age 或 controller safety。</p>
+<h3 id="1-2-multi-tenancy-capacity-fairness-priority-freshness">1.2 Multi-tenancy、capacity、fairness、priority、freshness</h3>
+<p>这四个词不能混用：</p>
+<ul><li><strong>capacity</strong>：一个 tenant/queue 最多能占多少 GPU、MIG 或其他资源；</li><li><strong>fairness</strong>：长期资源占用或 queue share 是否按权重平衡；</li><li><strong>priority</strong>：关键请求在冲突时谁先服务；</li><li><strong>freshness</strong>：机器人动作是否仍在 deadline 和 action-age 合同内。</li></ul>
+<p>Volcano 的 fair-share/capacity/queue-priority 设计分别提供 weight、guarantee/capability/deserved、priority/reclaim 机制；它们不能自动推出 VLA 的 deadline fairness。让高优先级离线训练抢占 serving GPU，可能改善训练等待，却恶化动作新鲜度。</p>
+<h3 id="1-3-logical-resource-physical-resource">1.3 Logical resource 与 physical resource</h3>
+<p>Kubernetes device plugin、Ray logical/custom resources 和 Triton named resources 都能表达“需要某类资源”。但逻辑 reservation 不等于显存/带宽隔离；NVIDIA time-slicing 或 MIG 还要配合 workload、driver、memory、tail latency 和 failure 观测，不能只看 GPU utilization。</p>
+<h2 id="2-fleet-identity">2. Fleet identity 与状态所有权</h2>
+<h3 id="2-1-identity-schema">2.1 最小 identity/schema 合同</h3>
+<table><thead><tr><th>类别</th><th>字段示例</th><th>面试时要回答的边界</th></tr></thead><tbody>
+<tr><td>tenant</td><td><code>tenant_id</code>, <code>quota_class</code>, <code>priority</code>, <code>budget</code></td><td>配额、优先级、公平性、成本如何归属</td></tr>
+<tr><td>robot</td><td><code>robot_id</code>, <code>robot_type</code>, <code>capability_set</code>, <code>lease_epoch</code>, <code>controller_endpoint</code></td><td>能力匹配、fencing、controller 路由</td></tr>
+<tr><td>policy</td><td><code>model_revision</code>, <code>processor_revision</code>, <code>normalizer_revision</code>, <code>action_schema_version</code></td><td>warm cache 与 action 语义兼容</td></tr>
+<tr><td>request</td><td><code>request_id</code>, <code>session_id</code>, <code>capture_ts</code>, <code>deadline_abs</code>, <code>H</code>, <code>D</code>, <code>valid_until</code></td><td>queue、batch、action age、幂等与 stale-response</td></tr>
+<tr><td>placement</td><td><code>gpu_type</code>, <code>mig_profile</code>, <code>memory_budget</code>, <code>network_zone</code>, <code>replica_id</code></td><td>Filter/Score、locality、异构设备和成本</td></tr>
+</tbody></table>
+<p><code>robot_id</code> 不能仅凭 WebSocket 连接获得永久控制权。lease epoch、model/schema revision 和 controller acknowledgement 必须共同进入执行边界；这是 fleet 设计推断，不是当前 OpenPI 或五个项目已有字段。</p>
+<h3 id="2-2-state-ownership">2.2 State ownership 表</h3>
+<table><thead><tr><th>状态</th><th>owner</th><th>失效/恢复动作</th><th>证据边界</th></tr></thead><tbody>
+<tr><td>tenant quota / queue</td><td>scheduler control plane</td><td>reject、requeue、reclaim、downgrade</td><td>Kubernetes/Volcano 机制；无 VLA local implementation</td></tr>
+<tr><td>model replica / GPU reservation</td><td>orchestrator + inference runtime</td><td>warm/cold、drain、reschedule、load smoke</td><td>Ray/Triton/Kubernetes mechanism；不证明 checkpoint lineage</td></tr>
+<tr><td>robot lease</td><td>fleet control plane + controller</td><td>renew、epoch bump、fence、hold/stop</td><td>Lease/ROS lifecycle 启发的设计合同</td></tr>
+<tr><td>action chunk</td><td>policy client/broker</td><td>expiry、stale drop、replan、fallback</td><td>SYS-002 OpenPI evidence；无 fleet-wide fencing proof</td></tr>
+<tr><td>rollout/canary</td><td>release controller</td><td>promotion、per-tenant gate、rollback</td><td>design inference；项目只有局部 eval/rollout hooks</td></tr>
+</tbody></table>
+<h2 id="3-capacity-placement">3. Capacity 与 placement 数学</h2>
+<h3 id="3-1-resource-vector-admission">3.1 Resource vector admission</h3>
+<p>将一个请求抽象为资源向量 (R=(g,m,c,n,s))，分别表示 GPU/accelerator、显存、CPU、网络和模型/缓存空间；节点剩余容量为 (C)。必要的 admission 条件可写为：</p>
+<div class="formula">\[
+R_{\mathrm{req}}\preceq C_{\mathrm{node}},
+\qquad
+\mathrm{compatible}(M,S,N,\Gamma)=1.
+\]</div>
+<p>其中 (M) 是 model revision，(S) 是 action/schema，(N) 是 normalizer，(Gamma) 是 controller contract。逐维容量约束来自 Kubernetes/Ray/Triton 的资源机制；compatibility 是 VLA 系统设计推断，用来防止不同 shape、normalizer 或 controller mode 被错误合批。</p>
+<h3 id="3-2">3.2 多目标调度代价</h3>
+<p>单独最小化 GPU 空闲率是不够的。一个可用于面试澄清的设计目标是：</p>
+<div class="formula">\[
+J=\alpha W_q+\beta L_{tail}+\gamma A_{action}+\delta M_{deadline}+\eta F_{fair}+\lambda C_{run}.
+\]</div>
+<p>(W_q) 是 queue wait，(L_{tail}) 是 inference tail latency，(A_{action}) 是 action age，(M_{deadline}) 是 deadline miss rate，(F_{fair}) 是 tenant share 偏差，(C_{run}) 是运行成本。权重不是上游默认值，必须由 task criticality、tenant SLA 和安全边界决定；应在固定 workload matrix 上做 matched A/B，而不是凭单次 utilization 报公平或性能提升。</p>
+<h2 id="4-queue-fairness-preemption">4. Queue、Fairness 与 Preemption</h2>
+<h3 id="4-1-queue">4.1 Queue 层级</h3>
+<p>Kubernetes ResourceQuota 限制 namespace 的 aggregate resource/object consumption；PriorityClass/Preemption 允许高优先级 Pod 驱逐低优先级 Pod；Volcano queue 机制可表达 weight、capacity、guarantee、deserved 和 reclaim。面试回答应说明四个层级的组合：</p>
+<ol><li>admission 先检查 tenant quota 与 robot/model compatibility；</li><li>queue order 再考虑 priority、fair-share deficit 和 deadline budget；</li><li>placement 通过 Filter/Score 选择 GPU 类型、MIG profile、network zone 和 warm replica；</li><li>preemption 前先判断被抢占的是 offline job、可重试 inference，还是带物理 side effect 的 controller path。</li></ol>
+<h3 id="4-2-freshness-fairness">4.2 Freshness 不是 fairness</h3>
+<p>旧 observation 可以丢弃，已确认要执行的 action 不能无条件 latest-wins。一个 tenant 获得“公平 GPU share”并不保证它的机器人动作在 deadline 内返回；相反，一个安全 critical robot 可能需要保留 capacity，但仍要受到 lease、controller ack 和 independent stop 的约束。</p>
+<h3 id="4-3">4.3 抢占与降级</h3>
+<p>推荐的 fail-closed 顺序是：拒绝新请求 → 复用仍新鲜的 action chunk → 切换已验证 fallback → drain/terminate 无副作用的 offline replica → 最后才考虑抢占；任何涉及 controller side effect 的请求都要先丢弃 stale response、提升 lease epoch，并由 controller 完成 hold/stop。Kubernetes preemption 和 Volcano reclaim 只提供调度机制，不证明这个安全顺序已由上游或个人项目实现。</p>
+<h2 id="5-heterogeneous-gpu-replica-cache">5. Heterogeneous GPU、Replica 与 Cache</h2>
+<h3 id="5-1-gpu-placement">5.1 GPU placement</h3>
+<p>NVIDIA device plugin 支持 GPU discovery/health、MIG 与 CUDA time-slicing 入口；Ray 可用 logical/custom resource 和 placement group 表达 accelerator、memory、PACK/SPREAD 或 gang scheduling；Triton model configuration 以 <code>max_batch_size</code>、batch dimension、instance group 等约束 batching shape。</p>
+<p>应把以下字段纳入 placement key：GPU 型号/MIG profile、显存预算、模型 revision、processor/normalizer revision、camera/prompt/action shape、network locality 和 controller mode。GPU 可见不代表模型能加载；加载成功也不代表 capture→apply tail latency 达标。</p>
+<h3 id="5-2-replica-named-resource">5.2 Replica 与 named resource</h3>
+<p>Triton rate limiter 的 named resource/count 适合表达“某 model instance 执行时占用多少份资源”；Ray Serve 的 Controller/Proxy/Replica 结构适合表达请求队列、replica 数量和 per-replica GPU reservation。两者都不能自动提供 tenant fairness、robot lease 或 physical safety。</p>
+<p>模型 cache 至少应绑定 <code>model_revision + processor_revision + normalizer_revision + action_schema_version</code>，并区分 warm hit、cold load、OOM、driver mismatch 和 stale bundle。cache hit 只能改善启动或吞吐的一个环节，不能替代 checkpoint hash、load smoke 或 closed-loop evaluation。</p>
+<h2 id="6-robot-lease-lifecycle-fencing">6. Robot Lease、Lifecycle 与 Fencing</h2>
+<p>Kubernetes Lease 文档支持 lock、heartbeat 和 single-instance coordination；ROS 2 managed-node lifecycle 支持资源 acquisition/release 与 supervisory state。将其组合为 robot fleet lease 时，应额外冻结：</p>
+<ul><li><code>lease_epoch</code> 单调递增，旧 epoch 的 action 回包必须拒绝；</li><li>renew 失败进入 <code>EXPIRED</code>，不能继续发送新 action；</li><li>model revision、normalizer 和 controller endpoint 与 lease 绑定；</li><li>controller acknowledgement、hold/stop 和 independent e-stop 由机器人侧拥有；</li><li>reconnect 必须重新握手，不能复用旧 session 或旧 action chunk。</li></ul>
+<p>这是一套 fail-closed 设计要求。当前五个项目的 inventory/ledger 没有统一 robot lease、epoch fencing、controller ack 或多机器人 replay artifact，不能说已经实现。</p>
+<h2 id="7-rollout-canary-cost">7. Rollout、Canary、Cost 与观测</h2>
+<h3 id="7-1">7.1 正常路径</h3>
+<pre><code class="language-text"># Design path; not an existing user fleet implementation.
+request(identity + observation + deadline)
+  → tenant quota / queue admission
+  → compatible schema + model-revision grouping
+  → Filter / Score / reserve GPU or placement group
+  → warm replica + named rate-limiter resources
+  → infer + parse + denormalize + safety boundary
+  → robot lease/epoch + controller acknowledgement
+  → per-tenant metrics, canary gate, replay and rollback record</code></pre>
+<h3 id="7-2-canary-gate">7.2 Canary gate</h3>
+<p>模型 promotion 至少要绑定 model/processor/normalizer/action-schema revision、tenant/robot cohort、fixed task/seed、episode artifact、capture→apply tail latency、deadline miss、fallback、lease conflict 和 success predicate。不能只用 offline loss、GPU utilization 或一条 summary JSON 作为 fleet canary。</p>
+<h3 id="7-3-cost-slo">7.3 Cost 与 SLO</h3>
+<p>成本账本应分 GPU reservation、cold-start、network、storage/cache、preemption/retry 和机器人空闲时间；SLO 应分 queue wait、inference tail、action age、deadline miss、lease availability、fallback 和 task success。Ray Serve 的 replica queue、Triton rate limiter、Volcano queue 和 Kubernetes quota 是机制入口，不是本地 SLO 结果。</p>
+<h2 id="8">8. 面试级伪代码</h2>
+<pre><code class="language-python">def schedule_fleet_request(req, cluster, registry, clock):
+    # 1. Reject stale or malformed identity before touching GPU or robot state.
+    validate_identity(req.tenant_id, req.robot_id, req.model_revision)
+    validate_schema_and_normalizer(req)
+
+    # 2. Check quota, lease epoch, deadline budget, and side-effect class.
+    if not quota_allows(req) or not lease_is_current(req):
+        return reject_or_fallback(req, reason=&quot;admission&quot;)
+
+    # 3. Keep only resources and replicas compatible with the VLA contract.
+    candidates = filter_nodes(cluster, req.gpu_type, req.mig_profile, req.shape)
+    candidates = score_for_locality_fairness_freshness(candidates, req)
+    placement = reserve_or_queue(candidates, req.resource_vector)
+    if placement is None:
+        return reject_or_fallback(req, reason=&quot;capacity&quot;)
+
+    # 4. Route to a warm model replica; the limiter controls instance occupancy.
+    replica = acquire_replica(registry, req.model_revision, req.normalizer_revision)
+    result = replica.infer(req, deadline_abs=req.deadline_abs)
+
+    # 5. Fence old results and require controller acknowledgement at the edge.
+    if result.lease_epoch != current_lease_epoch(req.robot_id):
+        return discard_stale_result(req, result)
+    action = denormalize_and_limit(result.action_chunk, req.normalizer_revision)
+    return controller_apply_with_ack(req.robot_id, action, req.valid_until)</code></pre>
+<p>伪代码中的 <code>filter_nodes</code>、<code>reserve_or_queue</code>、<code>acquire_replica</code> 和 <code>controller_apply_with_ack</code> 需要具体系统实现后才能成为 local-direct。它展示的是面试设计顺序，不是 Kubernetes、Ray 或任何一个个人项目的现成函数。</p>
+<h2 id="9">9. 实现映射与项目真实性边界</h2>
+<table><thead><tr><th>证据层</th><th>可用映射</th><th>不可升级的 claim</th></tr></thead><tbody>
+<tr><td>official upstream</td><td>Kubernetes scheduler/quota/Lease、NVIDIA device plugin、Volcano queue、Triton limiter、Ray placement/Serve、ROS lifecycle</td><td>用户已部署 VLA fleet、SLO、公平性或 physical safety</td></tr>
+<tr><td>local evidence</td><td>五项目 inventory/ownership ledger 的 trainer/eval/timeout/rollout hooks</td><td>统一 control plane、multi-tenant load test、GPU placement、lease fencing</td></tr>
+<tr><td>design inference</td><td>identity/schema、multi-objective scheduler、cache key、canary、fencing</td><td>已有 runtime、checkpoint lineage、candidate end-to-end ownership</td></tr>
+<tr><td>unverified</td><td>p99/p999、tenant fairness、cold-start uplift、robot fleet success</td><td>任何 production/hard-real-time/多机器人安全强结论</td></tr>
+</tbody></table>
+<p>五项目具体 hook：</p>
+<ul><li>OpenPiVLA：offline WebSocket、in-process broker、normalizer/action shape/parser 风险；没有 fleet scheduler 或 lease。</li><li>Robot Harness：tool scope、lock、timeout、compensation、训练/eval route；不是 VLA inference scheduler。</li><li>OPD：multi-expert route、teacher schedule、ZeRO/config、holdout；不是 multi-tenant serving。</li><li>WAM：simulator launcher、chunk/controller schema、diagnostic trace；不是 heterogeneous GPU fleet。</li><li>UWM/LIBERO：launcher、task mapping、fixed protocol、loader diagnosis；不是 production fleet 或 cross-robot serving。</li></ul>
+<h2 id="10-60">10. 60 秒回答与禁说清单</h2>
+<h3 id="10-1-60">10.1 60 秒回答模板</h3>
+<p>“我会把 fleet 拆成 identity、admission/queue、placement、replica、robot lease 和 rollout 六层。请求必须带 tenant、robot、model/processor/normalizer、schema、deadline 和 lease epoch；先检查 quota、兼容性和 freshness，再按 GPU/MIG、显存、network locality 与 warm replica 做 Filter/Score。fair-share、priority、capacity 和 freshness 分开衡量，不能只看 GPU utilization。模型 promotion 要绑定 cohort、episode、tail latency、deadline miss、fallback 和 success predicate。Lease 失效时提升 epoch、丢弃旧 action，controller 自己负责 ack/hold/stop/e-stop。Kubernetes、Volcano、Ray、Triton 只能作为机制来源；我当前项目只有局部 eval/timeout/rollout hooks，不能称作已经上线的 production fleet。”</p>
+<h3 id="10-2-claim">10.2 不能说的强 claim</h3>
+<ul><li>“Kubernetes/Volcano/Ray/Triton 已经构成我的 production VLA fleet。”</li><li>“GPU utilization 高就说明租户公平、动作 deadline 满足。”</li><li>“GPU time-slicing、MIG 或 Pod preemption 天然提供显存隔离和物理安全。”</li><li>“Lease renew 成功就等于 controller 已安全执行 action。”</li><li>“Ray placement group、Triton rate limiter 或 Volcano fair-share 证明我的项目有 multi-robot load test。”</li><li>“五个项目的局部脚本、配置或 Git author 等于我完成了 fleet control plane。”</li></ul>
+<h2 id="11">11. 结论与下一步</h2>
+<p>fleet 系统设计的高分点是把资源调度和机器人语义连接起来：capacity 约束 GPU，fairness 约束长期 share，priority 决定冲突顺序，freshness 约束动作可执行性，lease/fencing 保护 robot ownership，canary/replay 保护 revision promotion。当前 source freeze 已核对 15 个公开机制和五项目证据缺口；尚未证明统一 fleet service、tenant/robot/model trace、GPU fairness A/B、model cache lineage、lease fencing、controller ack 或个人 ownership。</p>
+<p>下一步：保持 <code>SYS-VLA-003</code> 题卡未生成；先用本页 60 秒模板做一次口述，或补一个 tenant/robot/model/request/placement trace artifact。未取得真实回答前不创建 <code>coaching_state.md</code>，不启动 <code>SYS-VLA-004</code>。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li><a href="../sources/vol_08_sys003_robot_fleet_multitenant_gpu_scheduling_source_freeze.html">SYS-003 Source Freeze</a>：15 个 pinned sources、local evidence SHA 与 15/15 probes。</li><li>Kubernetes <a href="https://github.com/kubernetes/website/blob/d19aacebe8061a6ef5dcc1e68904aaefe35c5445/content/en/docs/concepts/scheduling-eviction/kube-scheduler.md">scheduler</a>、<a href="https://github.com/kubernetes/website/blob/d19aacebe8061a6ef5dcc1e68904aaefe35c5445/content/en/docs/concepts/scheduling-eviction/pod-priority-preemption.md">Priority/Preemption</a>、<a href="https://github.com/kubernetes/website/blob/d19aacebe8061a6ef5dcc1e68904aaefe35c5445/content/en/docs/concepts/policy/resource-quotas.md">ResourceQuota</a>、<a href="https://github.com/kubernetes/website/blob/d19aacebe8061a6ef5dcc1e68904aaefe35c5445/content/en/docs/concepts/architecture/leases.md">Lease</a>。</li><li>NVIDIA <a href="https://github.com/NVIDIA/k8s-device-plugin/tree/248164727d5d8bac7024a8e12a13e69246cf0969">Kubernetes device plugin</a> 与 Volcano <a href="https://github.com/volcano-sh/volcano/tree/329f91d73dc75e4b7f29a55e8c29fa6ea67cd6b0">fair-share/capacity/priority</a>。</li><li>NVIDIA Triton <a href="https://github.com/triton-inference-server/server/tree/d1e6320698eda052ea2c3deaba4069958171caa5">model configuration/rate limiter</a>。</li><li>Ray <a href="https://github.com/ray-project/ray/tree/6623e6b1e71fcdb7161d6ec0b190e345665d5ba3">resources/placement groups/Serve</a> 与 ROS 2 <a href="https://github.com/ros2/design/blob/93a415bf928751d37fce6f83215c521658e20c93/articles/node_lifecycle.md">node lifecycle</a>。</li><li>本仓库 <a href="../sources/vol_05_eng016_multiteacher_memory_scheduling_source_freeze.html">ENG-016</a>、<a href="../sources/vol_05_eng018_scheduler_preemption_retry_source_freeze.html">ENG-018</a>、<a href="../sources/vol_05_eng019_config_resolution_run_identity_source_freeze.html">ENG-019</a>、<a href="../sources/vol_05_eng022_policy_server_resilience_source_freeze.html">ENG-022</a> 与 <a href="../evidence/projects/openpivla_claim_evidence_inventory.html">五项目 evidence inventories</a>。</li></ol>
+</article></body></html>

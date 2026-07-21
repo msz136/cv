@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROJ-WAM：Cosmos Policy / WAM 项目原子题卡（Training Failure + Diagnostic + Ownership Batch 1）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\proj_wam.md">
+<meta name="aris:source-sha256" content="90b5afb60fd57d59580db4276d3fd2a959ec458dc51a1adf9359f2c39153e142">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>90b5afb60fd57d59580db4276d3fd2a959ec458dc51a1adf9359f2c39153e142</code>；生成自：<code>interview_materials\vla\questions\proj_wam.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#a-1-epoch-gate">A. 1 epoch gate 与两类训练系统失败</a></li><li><a href="#b-checkpoint-save-load-gate-base-load">B. Checkpoint save/load gate 与 base-load 边界</a></li><li><a href="#c-ownership">C. 上游、运行角色、诊断与个人 ownership</a></li><li><a href="#d-eval-run-provenance-raw-trusted-denominator">D. Eval run provenance 与 raw / trusted denominator</a></li><li><a href="#section-5">参考来源</a></li></ol></nav>
+<h1>PROJ-WAM：Cosmos Policy / WAM 项目原子题卡（Training Failure + Diagnostic + Ownership Batch 1）</h1>
+<div class="meta">状态：<code>drafted / cards_4_of_4 / WARN</code> 更新日期：2026-07-21 当前题数：4 / 4 覆盖范围：<code>PROJ-WAM-001..004</code> 难度：L3 4 题 优先级：P0 4 题 练习状态：<code>unseen</code> 前置证据：<a href="../sources/vol_04_cosmos_policy_1epoch_evidence_freeze.html">Cosmos Policy 1 Epoch Evidence Freeze</a>、<a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM Claim–Evidence Inventory</a>、<a href="../evidence/projects/wam_ownership_ledger.html">WAM Ownership Ledger</a>、<a href="../evidence/projects/wm019_wam_artifact_manifest.html">WM-019 Artifact Manifest</a>。</div>
+<h2 id="a-1-epoch-gate">A. 1 epoch gate 与两类训练系统失败</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>PROJ-WAM-001</b> · 你是否完成了 Cosmos Policy 1 epoch finetune？如何把两次中断讲成可信项目经历？</summary>
+<p><strong>面试意图</strong>：判断你是否有明确的训练完成门槛，能否从 exit code、资源证据和 error stack 定位 first divergence，并避免把中间 loss、空目录或其他 run 的 baseline 拼成结果。</p>
+<p><strong>30 秒回答</strong>：<code>9907</code>-step、8卡/batch128 gate未完成1 epoch：step1903因<code>cycle(dataloader)</code>缓存触发cgroup CPU OOM；改iterator后5-step smoke通过，但step1500又因DeepSpeed/Cosmos <code>state_dict</code>签名不兼容保存失败，因而无checkpoint/eval。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：完成定义是 <code>9907</code> steps→保存→新进程加载→同协议 eval。save-2k run 在 step 1903 后 <code>EXIT=247</code>、rank <code>-9</code>，无 GPU OOM 栈且 cgroup 证据指向 CPU memory；<code>cycle</code> 会缓存已 yield batch。改为普通 iterator、耗尽后重建，8 卡 5-step smoke <code>EXIT=0</code>。正式 run 到 step 1500 时，DeepSpeed 传 <code>destination/prefix/keep_vars</code>，Cosmos override 不接收，目录无可用权重。因此只认领合同、根因和 smoke，不认领 epoch 结果。</p>
+<p><strong>诊断 / 证据</strong>：先展示 <code>run_contract.json</code> 的 8×16、global batch 128 和 <code>max_steps=9907</code>，再把两条 run 分开：step 1900 loss <code>0.2945</code> 是中断前快照；<code>step_001500</code> 是空目录，不是 checkpoint。下一步让 <code>state_dict</code> 兼容并正确转发 PyTorch 标准签名，做 1-step train→save→退出→新进程 load smoke，核对参数 key/shape、optimizer/scheduler、global step、文件 SHA 和固定输入 forward parity；通过后才重跑长任务。</p>
+<p><strong>项目挂钩</strong>：可讲 C1/C2 的 run contract、数据统计、cgroup OOM 分析、no-cycle smoke 和保存接口定位。CoffeePressButton manifest、300-step trace、失败视频、PSNR/SSIM proxy 是另一层诊断 bundle；它们不能补出本轮 checkpoint 或 success。C3 禁止讲完整 1 epoch、final loss、closed-loop success、uplift 与官方 baseline ownership。</p>
+<p><strong>追问树</strong>：<code>cycle(dataloader)</code> 为什么缓存 batch？如何证明 cgroup CPU OOM 而非 GPU OOM？<code>EXIT=247</code> 与 rank <code>-9</code> 是什么关系？为什么 5-step smoke 不等于训练成功？<code>state_dict(destination=...)</code> 兼容层如何设计？save/load smoke 验收什么？<code>84/118</code> 为什么不是本轮结果？</p>
+<p><strong>危险答案</strong>：说“step 1900 就算完成 1 epoch”“loss <code>0.2945</code> 是 final”“5-step smoke 证明训练成功”“有 <code>step_001500</code> 目录就是 checkpoint”或“<code>84/118</code> 是我的 1 epoch eval”。</p>
+<p><strong>来源</strong>：[1][2][3]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="b-checkpoint-save-load-gate-base-load">B. Checkpoint save/load gate 与 base-load 边界</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>PROJ-WAM-003</b> · base_load_summary 有 715 个 key，为什么仍不能说 checkpoint 可加载？请给出 save/load gate 的最低验收协议。</summary>
+<p><strong>面试意图</strong>：判断你是否区分 base model 初始化、短训练 smoke、长跑、checkpoint save、fresh-process reload 与同 checkpoint eval，能否把“key 对齐”与“训练产物可复现”拆开。</p>
+<p><strong>30 秒回答</strong>：715-key base-load 与1/5-step smoke均通过，但save2k为rank <code>-9</code>/<code>EXIT=247</code>，save1500为<code>state_dict(destination=...)</code> TypeError/<code>EXIT=1</code>；归档无checkpoint binary，所以不能称checkpoint可加载。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：完成门是 <code>base load → smoke → 9907 steps → save → 销毁进程 → fresh load → fixed-input parity → eval</code>。715 keys 只代表 HF base snapshot；smoke 没覆盖保存。save2k 是长跑资源线，save1500 是 DeepSpeed 传标准 <code>destination/prefix/keep_vars</code> 而 Cosmos override 不接收的 API first divergence。修复后应在配置下跑 1 step save，退出并新进程 load，核对 shard、optimizer/scheduler、global step、文件 SHA 与固定 batch 输出，再重跑 formal gate。</p>
+<p><strong>诊断 / 证据</strong>：展示 <a href="../evidence/projects/cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.html">Checkpoint Save-Load Gate P0 Audit</a> 的 65-file inventory、13 份 base-load summary、<code>smoke5_exit_code=0</code>、save2k <code>EXIT=247</code>、save1500 TypeError 与 checkpoint-like binary <code>0</code>。不要把 HF cache snapshot、<code>step_001500</code> 目录、early loss 或 official <code>84/118</code> 当成 produced checkpoint 证据。</p>
+<p><strong>项目挂钩</strong>：可讲你如何定义验收门、拆分 run family、定位保存接口和设计 fresh-process parity；不能讲“1 epoch 已完成”“checkpoint 已保存”“loss 下降带来 closed-loop uplift”或从远端路径推断 ownership。</p>
+<p><strong>追问树</strong>：715 keys 检查的对象到底是什么？为什么 5-step smoke 不覆盖 save？<code>EXIT=247</code> 与 <code>EXIT=1</code> 是否同一个根因？<code>state_dict</code> 兼容层哪些参数必须转发？为什么必须销毁进程再 load？除了模型权重，还要校验哪些 DeepSpeed 状态？</p>
+<p><strong>危险答案</strong>：说“missing=0 就是 checkpoint 可加载”“有 step 目录就是权重”“5-step smoke 证明 epoch 成功”“把 save2k OOM 和 save1500 TypeError 合成一个错误”或“官方 baseline 就是我的训练结果”。</p>
+<p><strong>来源</strong>：[1][3][7]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="c-ownership">C. 上游、运行角色、诊断与个人 ownership</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>PROJ-WAM-002</b> · Cosmos/WAM 哪些部分能说是你做的？如何区分 upstream、训练排障、远端运行和个人 ownership？</summary>
+<p><strong>面试意图</strong>：判断你能否把上游机制、Project 快照、训练系统改动、operator/reviewer、诊断 artifact 和结果归属拆开，而不是把 Git author、远端目录或报告当作全部个人贡献。</p>
+<p><strong>30 秒回答</strong>：Predict2/WAM architecture是upstream；本地能核验8卡<code>9907</code>合同、两类失败和CoffeePressButton诊断。个人贡献必须绑定文件/函数/命令/验收和角色；Git author、远端路径、官方<code>84/118</code>都不能自动归我。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：分五层：上游 latent slot/mask/routing；Project 的训练、动作与 rollout 快照；step 1903 cgroup OOM、no-cycle smoke 和 step 1500 保存签名错误；CoffeePressButton manifest/trace/video/proxy；最后才是个人角色。前三层能证明项目与运行发生过，不能证明逐行原创；诊断 bundle 也不证明 benchmark。现场只认领本人能解释的 diff、命令和验收，远端 8 卡运行、review、协作与工具辅助分别记录。</p>
+<p><strong>诊断 / 证据</strong>：用 ownership ledger 逐项回答：谁设定 8×16/<code>9907</code> 合同，谁修改 iterator，谁发起远端 run，谁读取 cgroup/launcher 证据，谁定位 <code>state_dict</code> stack，谁验收 smoke。升级为“我负责并取得训练结果”还需要 candidate-confirmed diff、operator/reviewer 记录、完整 <code>9907</code>-step log、immutable checkpoint/normalizer/config 和 protocol-complete episode/scorer bundle。</p>
+<p><strong>项目挂钩</strong>：当前安全表达是“参与或负责训练协议迁移、系统失败定位和证据审计”，具体动词由候选人逐文件确认。CoffeePressButton 的 7D→12D trace geometry、offline visual proxy 与 path bridge可讲诊断层级；不能把 policy RMSE 当 action-label loss、把单 episode <code>success=false</code> 当 benchmark、把 path equality 当 binary verification。</p>
+<p><strong>追问树</strong>：哪个函数是你亲手改的？<code>cycle</code> 修复由谁提出、实现和验收？谁运行远端 8 卡？保存接口方案是否已落地？谁是 reviewer？CoffeePressButton 的 checkpoint binary 在哪？Codex/协作者做了什么？若没有完整 checkpoint，为什么简历能写 finetune？</p>
+<p><strong>危险答案</strong>：说“Git author 证明所有代码是我写的”“WAM architecture 是我设计的”“OOM 修了就等于 1 epoch 成功”“官方 <code>84/118</code> 是我的结果”或“远端目录存在就等于 checkpoint 归我”。</p>
+<p><strong>来源</strong>：[1][4][5][6]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="d-eval-run-provenance-raw-trusted-denominator">D. Eval run provenance 与 raw / trusted denominator</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>PROJ-WAM-004</b> · Cosmos Policy eval 中 full10k 的 raw 2/120、trusted 0/118 与 official-HF 的 raw 86/120、trusted 84/118 如何解释？为什么不能说本地训练达到 71.19%？</summary>
+<p><strong>面试意图</strong>：判断你能否按 checkpoint lineage、run family、scorer 与 invalid policy 管理结果，而不是把同一评估环境下的数字错误 join 成个人模型 uplift。</p>
+<p><strong>30 秒回答</strong>：独立full10k trained run为raw<code>2/120</code>、trusted<code>0/118</code>；official-HF另一checkpoint为raw<code>86/120</code>、trusted<code>84/118=71.19%</code>。我能讲harness和重算，不能把官方成绩写成本地训练；8-GPU<code>9907</code>仍未完成。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：先冻结 join key：checkpoint/revision、stats/T5、task/init、seed、denoise/chunk、controller、predicate、invalid policy 和 denominator。full10k 是单卡 batch 1 的独立训练线，不能与 8-GPU <code>9907</code> gate 合并；其 24×5 只有两个 length=1 immediate success，所以报告 raw <code>2/120</code> 与 trusted <code>0/118</code>。official-HF 使用另一模型 path，重算为 <code>86/120</code> 和 <code>84/118</code>；缺 matched checkpoint、scorer 与 raw episode bundle时不能计算 uplift。</p>
+<p><strong>诊断 / 证据</strong>：full10k <code>eval_summary_conservative.json</code> 明确记录 <code>raw_successes=2</code>、artifact=2、trusted=0、eligible=118；official baseline audit 从 24 个 task log 重算 <code>86/120</code>，排除同类两个 CoffeeServeMug length=1 后为 <code>84/118</code>，并验证 24 个 action-debug 文件共 2692 行、shape <code>32×7</code>、finite。<code>length&lt;5</code> 是当前本地审计规则，不应冒充 RoboCasa 官方统一定义；checkpoint binary/hash、完整 episode JSONL 和 scorer version 仍缺。</p>
+<p><strong>项目挂钩</strong>：可讲我如何把 trained、official baseline、8-GPU gate、1k ablation 与 TurnOffMicrowave 单 episode分开管理，复算 raw/trusted denominator 并保留 invalid policy；不可说“本地训练达到 71.19%”“full10k 比 1 epoch 提升”“官方 baseline 是我的模型成绩”。</p>
+<p><strong>追问树</strong>：为什么 denominator 从 120 变 118？排除 invalid episode 后为什么不是 <code>84/120</code>？<code>exit_code=0</code> 是否等于 success？如何证明两个 eval 使用相同 scorer？checkpoint path 为什么不足以做 paired comparison？若要报告 uplift，最小 matched bundle 是什么？</p>
+<p><strong>危险答案</strong>：说“71.19% 是我的 full10k 成绩”“两个 length=1 success 证明 trained model 有能力”“raw 与 trusted 选更高的报”“同为 24×5 就能直接比”或“官方 checkpoint path 等于我持有并验证了权重”。</p>
+<p><strong>来源</strong>：[1][3][8][9][10]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-5">参考来源</h2>
+<ol><li><a href="../sources/vol_04_cosmos_policy_1epoch_evidence_freeze.html">Cosmos Policy 1 Epoch Evidence Freeze</a>：8 卡 run contract、<code>9907</code>-step gate、step 1903 cgroup OOM、no-cycle smoke、step 1500 保存签名失败与结果边界。</li><li><a href="../sources/vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos Policy / WAM Claim-to-Code Audit</a>：upstream latent slot、mask/routing 与公开 contract。</li><li><a href="../practice/wam_oral_model_answer.html">PROJ-WAM-001 Evidence-Bounded Model Answer</a>：五个高压问题的危险/可过/强三档回答与 save/load smoke。</li><li><a href="../evidence/projects/wam_claim_evidence_inventory.html">Cosmos / WAM Claim–Evidence Inventory</a>：claim 等级、C0–C3 证据门与结果升级条件。</li><li><a href="../evidence/projects/wam_ownership_ledger.html">Cosmos / WAM Ownership Ledger</a>：per-file/per-decision ownership、operator/reviewer 与工具边界。</li><li><a href="../evidence/projects/wm019_wam_artifact_manifest.html">WM-019 Artifact Manifest</a>、<a href="../evidence/projects/wm019_wam_action_trace_paired_diagnostic.html">Action-Trace Diagnostic</a>、<a href="../evidence/projects/wm019_wam_future_metric_paired_diagnostic.html">Future-Metric Diagnostic</a> 与 <a href="../evidence/projects/wm019_wam_matched_checkpoint_protocol_bridge.html">Matched-Checkpoint Bridge</a>：CoffeePressButton 诊断证据层。</li><li><a href="../evidence/projects/cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.html">Checkpoint Save-Load Gate P0 Audit</a>：13 份 base-load summary、短 smoke、formal save2k/save1500 first divergence 与 checkpoint/reload 边界。</li><li><a href="../evidence/projects/cosmos_policy_robocasa_baseline_p0_audit.html">Cosmos Policy RoboCasa Official-HF Baseline P0 Audit</a>：official path 下 raw <code>86/120</code>、trusted <code>84/118</code>、24×5 status、action-debug integrity 与 ownership 边界。</li><li><a href="../sources/vol_04_cosmos_policy_wam_full10k_run_reconciliation.html">WAM 1 epoch / full10k Run Reconciliation</a>：8-GPU <code>9907</code> gate、独立单卡 full10k 与最小 eval 的 run-family 分离。</li><li><a href="../evidence/projects/cosmos_policy_full10k_trained_eval_p0_audit.html">Cosmos Policy full10k trained eval P0 audit</a>：trained <code>iter_000010000</code> path 下24×5、raw <code>2/120</code>、local-policy trusted <code>0/118</code>、4066行 action-debug 与 checkpoint/scorer边界。</li></ol>
+</article></body></html>

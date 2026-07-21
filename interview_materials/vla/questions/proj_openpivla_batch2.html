@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROJ-OPENPIVLA：OpenPiVLA 项目原子题卡（Direct-Evidence Batch 2）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\proj_openpivla_batch2.md">
+<meta name="aris:source-sha256" content="be95b4f4561f971b926d4ce3c2a2732bb31561a11a14b4d05398ab9b529a7135">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>be95b4f4561f971b926d4ce3c2a2732bb31561a11a14b4d05398ab9b529a7135</code>；生成自：<code>interview_materials\vla\questions\proj_openpivla_batch2.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#a">A. 稳定性与证据阶梯</a></li><li><a href="#b-lineage-shape">B. Lineage 与动作 shape</a></li><li><a href="#section-3">参考来源</a></li></ol></nav>
+<h1>PROJ-OPENPIVLA：OpenPiVLA 项目原子题卡（Direct-Evidence Batch 2）</h1>
+<div class="meta">状态：<code>drafted / cards_4_of_4 / WARN</code> 更新日期：2026-07-17 当前题数：4 / 4 覆盖范围：<code>PROJ-OPENPIVLA-009..012</code> 难度：L2 2 题 / L3 2 题 优先级：P0 3 题 / P1 1 题 练习状态：全部 <code>unseen</code> 前置证据：<a href="../sources/openpivla_batch2_evidence_freeze.html">Batch 2 evidence freeze</a>；未闭合的 checkpoint、parser、axis/unit 和 ownership gate 不得升级为强结论。</div>
+<h2 id="a">A. 稳定性与证据阶梯</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>PROJ-OPENPIVLA-009</b> · 为什么 local formal trainer 默认使用 eager attention？</summary>
+<p><strong>面试意图</strong>：判断你能否把硬件/依赖兼容性处理讲成可验证的稳定性决策，而不是性能神话。</p>
+<p><strong>30 秒回答</strong>：历史 co-train 记录指向 Qwen3-VL flash-attention/position-id 失败；current formal CLI 默认 eager，并把它传给 Qwen loader。它证明兼容路径可执行，不证明吞吐或 benchmark 提升。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：<code>formal_train.py</code> 的 <code>--attn-implementation</code> 默认值是 <code>eager</code>，随后传入 <code>Qwen3VLForConditionalGeneration.from_pretrained</code>。训练仍走 processor/chat template、padding label <code>-100</code>、<code>outputs.loss</code> 和 LoRA 更新。eager 的证据是“避开已记录失败点并让路径可诊断”；没有同 recipe、同硬件的 flash/eager profiler、显存、step time 或结果对照，不能说它更快、更准或带来 uplift。</p>
+<p><strong>诊断 / 证据</strong>：固定 recipe、seed、数据和 batch，分别跑 eager/flash smoke；记录 import、显存、step time、OOM/position-id traceback、loss 是否可比，并保存完整 stdout。当前只有 eager call graph 和报告转述，flash 对照与 profiler 缺失。</p>
+<p><strong>项目挂钩</strong>：可讲我在 MACA/C500 迁移中优先关闭已知 attention 崩溃面，再建立可复查的训练路径；不要把硬件适配写成算法创新。</p>
+<p><strong>追问树</strong>：为什么不直接修 flash？eager 会牺牲什么？如何证明不是数据变化造成稳定？同一 checkpoint 的输出是否应一致？</p>
+<p><strong>危险答案</strong>：说“eager 一定比 flash 更稳定/更快”，或把 <code>complete @ 100000</code> 直接归因于 eager 带来的 benchmark 提升。</p>
+<p><strong>来源</strong>：[1][2][3]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>PROJ-OPENPIVLA-010</b> · smoke summary、formal report 和 raw log/checkpoint 的证据等级有什么区别？</summary>
+<p><strong>面试意图</strong>：检查你能否把“工程链路跑通”“报告记录完成”和“权重可复核”拆成三件事。</p>
+<p><strong>30 秒回答</strong>：smoke JSON 只证明公开数据的 schema、shape 和 tiny step；formal report 记录三条 <code>complete @ 100000</code> 及远端路径；raw log、checkpoint、load smoke 不在本地，不能称模型已验证。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：smoke summaries 标记 <code>private_data_deployed=false</code>，给出 public roots、batch shapes 和 tiny optimizer step，属于 local-direct。formal report 是本地 HTML 对历史/远端运行的转述，属于 report-supported；<code>/data/msz/...</code> 只是 remote-referenced 路径。只有能读取 immutable raw log、checkpoint/processor hash、load stdout、eval script 和 episode manifest，run 可从“报告记录”升级为 <code>checkpoint lineage verified</code>。</p>
+<p><strong>诊断 / 证据</strong>：每条 run 建 manifest，校验 trainer/config/base-model/data/checkpoint/log/eval 的 SHA；执行同一 checkpoint 的 load smoke，再重算一个最小 eval。当前 smoke 与 report 有，raw formal log、checkpoint binary 和 load smoke 仍缺。</p>
+<p><strong>项目挂钩</strong>：简历和面试可说“搭建 public smoke 与 formal training path”；应主动说明 completion 是 report-supported，不能说三条最终模型已加载并完成 benchmark。</p>
+<p><strong>追问树</strong>：为什么 smoke loss 不能代表 full run？报告里的 checkpoint path 算不算 checkpoint？怎样防止日志与权重错配？</p>
+<p><strong>危险答案</strong>：把 <code>tiny_train_step</code> 当作私有数据训练结果，或只凭 report 的 <code>complete</code> 行声称可 rollout。</p>
+<p><strong>来源</strong>：[1][4][5]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="b-lineage-shape">B. Lineage 与动作 shape</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>PROJ-OPENPIVLA-011</b> · 如何设计一份可审计的 OpenPiVLA checkpoint lineage manifest？</summary>
+<p><strong>面试意图</strong>：看你是否能把训练、数据、权重和评估连接成可恢复链路，而不是只记一个 run id。</p>
+<p><strong>30 秒回答</strong>：lineage manifest 要把 run_id、trainer/config SHA、base model、adapter、checkpoint/processor hash、data manifest、raw log、load smoke 和 eval harness 绑成一条链；当前只是字段设计，hash 与 load evidence 仍缺。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：最小链路是 <code>recipe/config → launch script → trainer → data manifest → base model/LoRA → checkpoint + processor → raw log → load smoke → eval harness → episode manifest</code>。每项记录 SHA、版本、路径、时间，并区分 public smoke、remote-referenced、archive-only。<code>complete @ 100000</code> 只填 <code>steps_reached</code>；缺 checkpoint/processor hash 或 load stdout，manifest 保持 <code>lineage-open</code>，不能把路径当权重证明。</p>
+<p><strong>诊断 / 证据</strong>：为三条 run 生成 manifest，先检查脚本/配置/源代码 SHA，再核对 checkpoint 目录、adapter config、processor 文件、log step 和 eval 输入是否一一对应；最后运行只读 load smoke。当前模板已写入 Batch 2 审计，但真实 checkpoint/processor/raw log 字段仍为 missing。</p>
+<p><strong>项目挂钩</strong>：这是我把训练迁移从“能跑”提升到“能复查”的工程抓手；个人 ownership 仍需另做 per-file ledger，不能由 manifest 自动推断。</p>
+<p><strong>追问树</strong>：为什么 processor 也要 hash？base model 没有 binary 怎么记录？如何处理远端不可访问的 artifact？</p>
+<p><strong>危险答案</strong>：只保存 <code>run_id</code> 和最终 step，或把 manifest 模板写成已经完成的 checkpoint 证据。</p>
+<p><strong>来源</strong>：[1][3][6][7]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>PROJ-OPENPIVLA-012</b> · `H=15,D=72` 与 formal formatter 的 `limit=16` 冲突时，应该怎样解释？</summary>
+<p><strong>面试意图</strong>：检查你能否发现 shape 看似一致、语义却未闭合的动作表示风险。</p>
+<p><strong>30 秒回答</strong>：recipe 是 <code>H=15,D=72</code>，formatter 每步只保留 16 个数；probe 丢 840/1080 positions，formal package 又没有 action parser。Python JSON 只恢复 <code>15×16</code> 前缀，不是 controller round-trip。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：令 \(\mathbf{A}\in\mathbb{R}^{H\times D}\)，其中 <code>H=15,D=72</code>。formal formatter 只把每行前 16 个数写入 JSON，再重复尾行补满 horizon；<code>dumps→loads</code> 只能恢复 lossy prefix。empty window/row 还会产生 <code>15×1/15×0</code>，NaN 未被拒绝。没有 strict parser、valid mask、axis/unit、normalizer 与 controller trace，shape 和执行语义都未闭合。</p>
+<p><strong>诊断 / 证据</strong>：已用 72D sentinel 冻结 retained/dropped positions、tail-repeat、empty/ragged/NaN 与 collator label mask；还要记录 immutable Qwen generation、strict parser、normalizer/denormalizer、axis/unit 和 controller 输入，做逐维 round-trip。项目中 7D/4-step official WebSocket eval 使用 <code>pi0_aloha_sim</code> checkpoint，是平行 lineage，不能替 formal Qwen 补证据。</p>
+<p><strong>项目挂钩</strong>：安全表达是“我用 probe 量化了 72→16 的 77.78% schema loss，并确认 formal text route 缺 parser/controller；当前这是可信 bad case，不是已修复上线结果”。</p>
+<p><strong>追问树</strong>：为什么 smoke 要 pad/repeat？<code>limit=16</code> 是临时占位还是正式设计？如何判断截断丢的是哪类关节？loss 下降能否证明 shape 正确？</p>
+<p><strong>危险答案</strong>：说“配置写 72 所以模型已经预测 72 维控制量”，或把 public smoke 的重复动作当成真实 DROID 未来窗口。</p>
+<p><strong>来源</strong>：[1][2][4][6][9]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-3">参考来源</h2>
+<ol><li><a href="../sources/openpivla_batch2_evidence_freeze.html">OpenPiVLA Batch 2 evidence freeze</a>：eager、evidence ladder、lineage、<code>H=15,D=72</code>/<code>limit=16</code> 冲突的冻结审计。</li><li>本地 <code>C:\Users\mousongzhe\Project\openpivla_deployment\repro_train\openpi_src\src\openpi\training\vla_qwen3_repro\formal_train.py</code>：eager 参数、JSON formatter、Qwen <code>outputs.loss</code>，SHA <code>51b67d3e04496e68076bf6461506141ebcddf9a82e6c30af1fdc0f1f2ccc6f94</code>。</li><li>本地 <code>C:\Users\mousongzhe\Project\openpivla_deployment\artifacts\vla_formal_reproduction_report_20260617.html</code>：report-supported formal completion 与 attention 边界，SHA <code>d74126a3896f68ad44b75c7a88f1b7b9a90cb55df0c6c6beb90a5748e9e8e074</code>。</li><li>本地 <code>artifacts/vla_train_repro/*_smoke_summary.json</code>：public smoke shape、tiny train step 与 <code>private_data_deployed=false</code>。</li><li>本地三份 <code>repro_train/configs/*.yaml</code> 与 <code>recipes.py</code>：run mode、shape 字段、历史 metadata，SHA <code>397d1b384a2bd93d9dc81b7003e6ab7bfac3fc458ea04008197c3f503f9d780e</code>。</li><li>本地 <code>data.py</code>：public smoke 的 <code>(H,D)</code> padding/repeat 逻辑，SHA <code>32c6aa76929d941c4832d2eb4c2550527d3e607e31c2a9f5507cc76eeedbc2ec</code>。</li><li><a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA Claim–Evidence Inventory</a>：项目 claim、证据等级与 ownership 边界。</li><li><a href="../../03_openpivla_action_modeling.html">OpenPiVLA 项目页</a>：安全口述口径与项目 hook。</li><li><a href="../sources/openpivla_action_json_parser_roundtrip_artifact_gate.html">OpenPiVLA Action JSON Parser / Round-trip Artifact Gate</a>：deterministic probes、full-sequence CE 与 parallel official-eval lineage。</li></ol>
+</article></body></html>

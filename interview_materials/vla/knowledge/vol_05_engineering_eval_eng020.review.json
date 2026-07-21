@@ -1,0 +1,61 @@
+{
+  "artifact": "knowledge/vol_05_engineering_eval_eng020.md",
+  "html": "knowledge/vol_05_engineering_eval_eng020.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / VLA-ENG-020 / knowledge_22_of_44 / card_1_of_1_unseen",
+  "verdict": "WARN",
+  "source_sha256": "D29698EA1DEB0659E88129A7273D682E369E8F5AB4E7185F82B0D64AA2E85514",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 21,
+    "new_nodes": 1,
+    "total_drafted_nodes": 22,
+    "covered_ids": ["VLA-ENG-020"],
+    "drafted_cards_for_new_nodes": 1,
+    "practice_state": "unseen",
+    "difficulty": "L2",
+    "priority": "P1"
+  },
+  "source_scope": {
+    "source_freeze": "sources/vol_05_eng020_secret_permission_logging_source_freeze.html",
+    "official_docs": [
+      "OWASP Secrets Management Cheat Sheet",
+      "OWASP Logging Cheat Sheet",
+      "OWASP Authorization Cheat Sheet",
+      "Kubernetes Secrets and Good Practices",
+      "NIST SP 800-53 Rev.5 AC-3/AC-6/AU-9/IA-5",
+      "pydantic-settings 2.14.1"
+    ],
+    "local_project_hooks": [
+      "Robot Harness request scope, tool filtering, __access_token mask and dedup exclusion",
+      "UWM launcher/path exposure",
+      "OpenPiVLA args snapshot exposure",
+      "OPD partial summary path exposure",
+      "WAM unverified inventory"
+    ]
+  },
+  "checks": {
+    "bounded_slice": "PASS (one VLA-ENG-020 knowledge node and one atomic card are drafted; ENG-021 remains deferred)",
+    "security_contract": "PASS WITH WARNING (secret lifecycle, deny-by-default authorization, purpose manifest, allowlist/redaction logging and audit/negative-test contract explicit)",
+    "secret_boundary": "PASS WITH WARNING (short-lived reference-only secret handling and canary checks explicit; provider/rotation/revoke implementation unverified)",
+    "data_permission_boundary": "PASS WITH WARNING (purpose/retention/export inheritance schema explicit; project policy and legal evidence absent)",
+    "logging_boundary": "PASS WITH WARNING (allowlist-first and nested redaction contract explicit; local generic registry not proven)",
+    "project_truth_boundary": "PASS (Robot Harness hook and UWM/OpenPiVLA/OPD exposure evidence are not upgraded to a security closure claim)",
+    "formula_and_schema": "PASS (authorization and allowlist/redaction formulas plus permission/secret schemas mapped)",
+    "pseudocode": "PASS (authorize→lease→redact→run→revoke/zeroize→canary order shown; APIs remain engineering contracts)",
+    "verification_matrix": "PASS (hardcoded/CLI/env/nested/expiry/over-privilege/wrong-purpose/tamper/incident cases have expected outcomes)",
+    "minimum_module_contract": "PASS (intuition, definitions, lifecycle, trade-offs, bad cases, project hooks, boundaries and references included)",
+    "html_static_validation": "PASS (source SHA, one H1, eighteen H2, eight H3, six tables, five code/schema blocks and two formula blocks)",
+    "local_links": "PASS (ENG-020 source freeze, project inventories and ENG-019 links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Add real secret lease/rotation/revocation and nested-redaction artifacts before upgrading the verdict.",
+    "Add data purpose/retention/export approval and derived-artifact inheritance evidence.",
+    "Run full repository/history/image/runtime/tracker/artifact canary scans; selected-file smoke is not a no-leak proof.",
+    "Keep VLA-ENG-020 unseen until a real oral answer is recorded.",
+    "Do not generate ENG-021 in this increment."
+  ],
+  "next": "Run a one-question oral drill for VLA-ENG-020 or collect lease/redaction/purpose/audit artifacts; keep ENG-021 deferred."
+}

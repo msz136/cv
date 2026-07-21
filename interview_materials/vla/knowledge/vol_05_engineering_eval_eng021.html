@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：Model / Processor / Normalizer Packaging 与版本兼容（ENG-021）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eng021.md">
+<meta name="aris:source-sha256" content="3c0f99effeff8be3e3b170b6ff9d3dcb715974cc2594615d1612aedd341dee13">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>3c0f99effeff8be3e3b170b6ff9d3dcb715974cc2594615d1612aedd341dee13</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eng021.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1-30-bundle">1. 30 秒直觉：交付的是 bundle，不是权重文件</a></li><li><a href="#2-immutable-bundle-schema">2. Immutable bundle schema</a></li><li><a href="#3-model-config">3. Model config 与权重：严格加载不等于忽略错误</a></li><li><a href="#3-1-transformers">3.1 Transformers 语义</a></li><li><a href="#3-2-safetensors">3.2 Safetensors 边界</a></li><li><a href="#4-processor-preprocessing">4. Processor：多模态 preprocessing 也是模型的一部分</a></li><li><a href="#5-normalizer-transform">5. Normalizer 与 transform：统计和顺序必须可追溯</a></li><li><a href="#5-1-normalizer">5.1 Normalizer</a></li><li><a href="#5-2-ordered-transforms">5.2 Ordered transforms</a></li><li><a href="#6-action-schema-shape">6. Action schema：shape 相同也可能语义不同</a></li><li><a href="#7-revision-lineage-branch-immutable-identity">7. Revision 与 lineage：branch 不是 immutable identity</a></li><li><a href="#8-openpi-params-assets-shape-transforms">8. OpenPI 对照：params、assets、shape、transforms 分离</a></li><li><a href="#9">9. 本地项目证据与真实性边界</a></li><li><a href="#10">10. 验证伪代码（工程合同）</a></li><li><a href="#11-compatibility-matrix">11. Compatibility matrix</a></li><li><a href="#12-trade-off-bad-case">12. Trade-off、bad case 与追问</a></li><li><a href="#12-1-trade-off">12.1 Trade-off</a></li><li><a href="#12-2-bad-case">12.2 高概率 bad case</a></li><li><a href="#12-3">12.3 面试追问</a></li><li><a href="#13">13. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：Model / Processor / Normalizer Packaging 与版本兼容（ENG-021）</h1>
+<div class="meta">状态：<code>drafted / knowledge_23_of_44 / card_1_of_1_unseen / review_warn</code> 报告日期：2026-07-17 证据截止：2026-07-17 当前节点：<code>VLA-ENG-021</code>；来源已冻结，单张题卡同步生成并保持 <code>unseen</code>。 来源入口：<a href="../sources/vol_05_eng021_model_processor_normalizer_packaging_source_freeze.html">ENG-021 Model / Processor / Normalizer Packaging Source Freeze</a>。 核心边界：官方文档支持加载/保存与 revision 语义；OpenPI 展示 params/assets/transforms/shape 的分离；本地 OpenPiVLA/UWM/OPD 仍缺统一 immutable bundle、processor/normalizer hash binding、formal binary、round-trip 和 backend A/B。</div>
+<h2 id="question">问题（Question）</h2>
+<p>训练完成后，怎样把 VLA 的 model、processor、normalizer、action schema、transform、checkpoint lineage 和 runtime 打成一个可独立加载、可回滚、可验证的 bundle？如果“模型能加载”，为什么仍可能在图像 resize、chat template、action axis/unit、归一化统计或 controller 上失败？</p>
+<p>回答时要分开：</p>
+<ol><li>model config/architecture 与权重 shard；</li><li>tokenizer、image/video processor、special token 和 preprocessing；</li><li>action shape、horizon/dim、axis/unit/frame、parser/controller；</li><li>normalizer stats 与 valid dimensions；</li><li>ordered transforms、dataset/model revision、runtime/backend；</li><li>strict load、fixed-batch diff、action round-trip 和 rollback evidence。</li></ol>
+<h2 id="section-2">知识地图位置与前置依赖</h2>
+<pre><code class="language-text">ENG-006 checkpoint lineage + ENG-019 config/revision identity
+                         ↓
+model/config/weights ── processor/tokenizer/image ── action schema
+                         ↓
+normalizer stats ── ordered transforms ── runtime/backend manifest
+                         ↓
+strict load → fixed batch → denorm/parser/controller round-trip
+                         ↓
+immutable release / rollback / compatibility matrix</code></pre>
+<p>前置：<a href="vol_05_engineering_eval.html">ENG-006 Checkpoint Lineage</a>、<a href="vol_05_engineering_eval_eng018.html">ENG-018 Retry/Checkpoint</a>、<a href="vol_05_engineering_eval_eng019.html">ENG-019 Run Identity</a>。</p>
+<h2 id="1-30-bundle">1. 30 秒直觉：交付的是 bundle，不是权重文件</h2>
+<p>面试中可以先说：一个 VLA release 至少包含 model config/权重、processor、action schema、normalizer、transform revision、lineage 和 runtime manifest；所有文件有 SHA，revision 固定到 commit。加载时严格检查 key/shape/dtype 与 processor/action/normalizer 兼容，加载后做 fixed-batch 输出 diff 和 action/controller round-trip。<code>safetensors</code> 只解决 tensor serialization，不自动保存 tokenizer、normalizer 或 controller 语义。</p>
+<h2 id="2-immutable-bundle-schema">2. Immutable bundle schema</h2>
+<table><thead><tr><th>层</th><th>最低字段</th><th>典型检查</th></tr></thead><tbody>
+<tr><td>model</td><td><code>model_type</code>、architecture、config JSON、weight shard/index、dtype、key schema</td><td>config 与 key/shape/dtype 对齐；无 missing/unexpected key 被静默忽略</td></tr>
+<tr><td>processor</td><td>tokenizer、image/video processor、chat template、special tokens、resize/pixel range、revision</td><td>相同 modality 输入产生相同 token/image tensor</td></tr>
+<tr><td>action</td><td><code>horizon</code>、<code>dim</code>、axis/unit/frame、absolute/delta、padding/mask、parser/controller</td><td><code>(B,H,D)</code> 与 denorm、parser、controller round-trip</td></tr>
+<tr><td>normalizer</td><td>method、stats SHA、mean/std 或 q01/q99、valid dims、clip/quantile policy</td><td>train/serve 使用同一 stats 和有效维掩码</td></tr>
+<tr><td>transforms</td><td>ordered input/output transforms、参数、code/schema revision</td><td>顺序与参数 hash 稳定；没有隐式 default</td></tr>
+<tr><td>lineage</td><td>base/parent revision、dataset manifest、run/attempt/checkpoint id、file SHA</td><td>结果可追溯到唯一 artifact</td></tr>
+<tr><td>runtime</td><td>framework/backend/dtype/operator/compiler/controller/protocol</td><td>同步 numerical parity、latency 与 rollback gate</td></tr>
+</tbody></table>
+<p>可将加载定义为：</p>
+<div class="formula">\[
+\text{usable} = \text{schema}\land\text{config}\land\text{weights}\land\text{processor}\land\text{norm}\land\text{transform}\land\text{runtime}\land\text{smoke}
+\]</div>
+<p><code>usable</code> 不是 Python 函数不抛异常，而是所有 compatibility gate 通过。</p>
+<h2 id="3-model-config">3. Model config 与权重：严格加载不等于忽略错误</h2>
+<h3 id="3-1-transformers">3.1 Transformers 语义</h3>
+<p>冻结的 Transformers <code>PreTrainedModel</code> 文档和 <code>modeling_utils.py</code> 表明：<code>save_pretrained</code> 把 config 与权重写入目录；<code>from_pretrained</code> 可从本地目录或 Hub revision 解析 config、safetensors/分片 index、dtype 和 checkpoint。目录、revision、权重 shard 与 config 必须作为同一 bundle 记录。</p>
+<p>应显式记录：</p>
+<ul><li><code>model_type</code>、architecture class、library/commit、config JSON SHA；</li><li>weight file/index SHA、dtype、shard count 和 expected key set；</li><li><code>revision</code> 是 commit hash 还是可移动 branch/tag；</li><li><code>missing_keys</code>、<code>unexpected_keys</code>、<code>mismatched_keys</code> 以及是否允许 adapter-only load。</li></ul>
+<p><code>ignore_mismatched_sizes=True</code> 或宽松 partial load 可以帮助迁移实验，但不能作为生产 release gate；否则一个“能加载”的模型可能随机初始化关键层或丢失 action head。</p>
+<h3 id="3-2-safetensors">3.2 Safetensors 边界</h3>
+<p>Safetensors header 保存 tensor name、dtype、shape、offset，支持安全读取和 lazy/部分加载；它不保存 model class、tokenizer、processor、normalizer、action axis/unit、controller 或运行时代码。因此正确说法是“权重文件格式可安全读取”，不是“VLA bundle 已兼容”。</p>
+<h2 id="4-processor-preprocessing">4. Processor：多模态 preprocessing 也是模型的一部分</h2>
+<p>Transformers <code>ProcessorMixin</code> 将 tokenizer、image processor、audio/video feature extractor 等子处理器作为 attributes 保存和加载。VLA 需把以下字段纳入 processor manifest：</p>
+<pre><code class="language-text">processor_revision / tokenizer files / vocabulary size
+chat_template / special_tokens / padding-truncation
+image resize/crop/pixel range/channel order
+modality names / camera key mapping / frame sampling</code></pre>
+<p>model revision 为 A、processor revision 为 <code>main</code> 时，即使 embedding shape 相同，也可能出现 chat template、special token、resize、pixel normalization 或 camera key 漂移。processor 的 <code>from_pretrained</code> 成功只能证明子组件可解析，不能证明 action/controller 语义正确。</p>
+<h2 id="5-normalizer-transform">5. Normalizer 与 transform：统计和顺序必须可追溯</h2>
+<h3 id="5-1-normalizer">5.1 Normalizer</h3>
+<p>OpenPI frozen code 将 <code>NormStats</code> 单独序列化为 asset，并区分 z-score 与 quantile 归一化。VLA manifest 至少记录：</p>
+<pre><code class="language-text">stats_sha / data_revision / method / mean / std / q01 / q99
+valid_dims / clip_policy / action_schema / producer_code_revision</code></pre>
+<p>以 z-score 为例：</p>
+<div class="formula">\[
+z_d = \frac{x_d-\mu_d}{\max(\sigma_d,\epsilon)},\qquad
+\hat{x}_d=z_d\cdot\sigma_d+\mu_d
+\]</div>
+<p><code>d</code> 只对 valid action dimension 生效；padding、未观测维、gripper 或 delta/absolute 切换不能隐式共享统计。<code>normalizer.json</code> 的存在不证明它绑定到某个 checkpoint。</p>
+<h3 id="5-2-ordered-transforms">5.2 Ordered transforms</h3>
+<p>OpenPI 的 data loader 把 repack、data、Normalize、model transforms 组合成有序 pipeline，policy 再组合 input/output transforms。训练和 serving 必须保存相同的 transform sequence、参数和 code/schema revision；调整 resize→normalize→tokenize 的顺序就可能改变输入分布，即使每个函数单独都“正确”。</p>
+<h2 id="6-action-schema-shape">6. Action schema：shape 相同也可能语义不同</h2>
+<p>需要同时冻结：</p>
+<pre><code class="language-text">B: batch      H: action horizon/chunk length      D: action dimension
+axis order / unit / coordinate frame / absolute-vs-delta
+padding mask / gripper convention / parser grammar
+controller rate / queue / replan / denormalization</code></pre>
+<p><code>(B,15,72)</code> 与 <code>(B,16,72)</code>、<code>(B,50,32)</code> 都是合法 tensor shape，但不代表同一 action contract。OpenPI <code>Pi0Config</code> 的 <code>action_dim=32</code>、<code>action_horizon=50</code> 是该 frozen config 的默认值，不能外推为所有 VLA 的标准。</p>
+<p>最小 round-trip 是：</p>
+<pre><code class="language-text">raw action → normalize → model input/target → model output
+          → denormalize → serialize/parse → controller frame</code></pre>
+<p>每一段都要记录 axis、unit、frame、clip 和 tolerance；仅比较 tensor shape 不够。</p>
+<h2 id="7-revision-lineage-branch-immutable-identity">7. Revision 与 lineage：branch 不是 immutable identity</h2>
+<p>Hub <code>snapshot_download</code> 的 <code>revision</code> 可以是 branch、tag 或 commit；branch/tag 会移动，稳定 bundle 应保存 resolved commit hash、每个文件 SHA 和 allow/ignore pattern。lineage 最小字段为：</p>
+<pre><code class="language-text">bundle_id / parent_model_revision / model_config_sha / weight_shards_sha
+processor_revision / norm_stats_sha / transform_code_sha
+dataset_manifest_sha / run_id / attempt_id / checkpoint_id
+runtime_manifest_sha / eval_protocol_sha / release_pointer</code></pre>
+<p><code>checkpoint-5000</code>、<code>main</code>、远端 path 或实验名都不能单独充当 lineage。</p>
+<h2 id="8-openpi-params-assets-shape-transforms">8. OpenPI 对照：params、assets、shape、transforms 分离</h2>
+<p>OpenPI frozen source 提供清晰的 engineering reference：</p>
+<ol><li><code>BaseModelConfig</code> 显式提供 <code>action_dim</code>、<code>action_horizon</code>、<code>max_token_len</code> 和 <code>inputs_spec</code>；</li><li>checkpoint manager 分开保存 <code>assets</code>、<code>train_state</code>、<code>params</code>；</li><li>norm stats 作为 asset 单独保存/加载；</li><li>data loader 组合 Normalize 与其他 transforms；</li><li>policy 在推理前后应用 input/output transforms。</li></ol>
+<p>这不是“本仓库项目已采用 OpenPI checkpoint contract”的证明，而是说明为什么 model weights、optimizer/train state、normalizer、shape 和 transform 应作为不同 gate 管理。</p>
+<h2 id="9">9. 本地项目证据与真实性边界</h2>
+<table><thead><tr><th>项目</th><th>local-direct 可说</th><th>不能升级为</th></tr></thead><tbody>
+<tr><td>OpenPiVLA</td><td><code>formal_train.py</code> 有 processor/collator/chat-template、LoRA/causal-CE；<code>data.py</code>/<code>recipes.py</code> 有 action formatter、三类 recipe；DEPLOYMENT 记录远端 official checkpoint/path</td><td>formal Qwen checkpoint 本地可加载、processor/norm hash binding、DROID <code>H=15,D=72</code> 与 formal <code>limit=16</code> 已统一、round-trip 或 formal rollout 已验证</td></tr>
+<tr><td>UWM</td><td>artifact gate 有 action normalizer JSON、checkpoint load report、effective config；normalizer SHA 可复核</td><td>normalizer 与 checkpoint/processor/controller immutable binding；snapshot 没有 binary</td></tr>
+<tr><td>OPD</td><td>ZeRO-2/3 config 和 final-only/no-optimizer-state manifest</td><td>完整 model/processor/normalizer bundle、可恢复 optimizer lineage 或 load smoke</td></tr>
+<tr><td>WAM</td><td>当前 inventory 没有 local runtime/config/log/checkpoint bundle</td><td>任何 packaging/compatibility claim，保持 <code>UNVERIFIED</code></td></tr>
+</tbody></table>
+<p>当前 strongest statement：项目源码和 metadata 暴露了 loader/formatter/path；但 release gate 需要实际 bundle、hash、strict load、fixed-batch diff 与 action round-trip。</p>
+<h2 id="10">10. 验证伪代码（工程合同）</h2>
+<pre><code class="language-python">def verify_vla_bundle(manifest, runtime):
+    # 1. Resolve immutable revisions and verify every file before import.
+    verify_manifest_files(manifest.files, manifest.sha256)
+    assert manifest.model_revision and manifest.processor_revision
+
+    # 2. Strict model/processor load; do not hide key or shape mismatches.
+    config = load_config(manifest.model_config, revision=manifest.model_revision)
+    model, report = load_model(manifest.weights, config=config, strict=True)
+    processor = load_processor(manifest.processor, revision=manifest.processor_revision)
+    assert not report.missing_keys and not report.unexpected_keys
+
+    # 3. Bind normalizer/action schema/transforms to the same bundle.
+    stats = load_norm_stats(manifest.normalizer.path)
+    assert sha256(stats) == manifest.normalizer.sha256
+    assert schema_compatible(model, processor, stats, manifest.action_schema)
+
+    # 4. Fixed-batch equality plus denorm/parser/controller round-trip.
+    before = forward(model, processor, manifest.fixed_batch)
+    after = reload_and_forward(manifest, manifest.fixed_batch, runtime)
+    assert close_enough(before, after, manifest.tolerance)
+    assert action_round_trip(after, stats, manifest.action_schema, manifest.controller)
+
+    # 5. Runtime/backend is part of the release verdict; no silent fallback.
+    assert runtime_compatible(manifest.runtime, runtime)
+    return &quot;verified&quot;</code></pre>
+<p>伪代码是验收合同，不是 OpenPiVLA、UWM 或 OPD 已有实现。</p>
+<h2 id="11-compatibility-matrix">11. Compatibility matrix</h2>
+<table><thead><tr><th>Case</th><th>检查</th><th>通过条件</th></tr></thead><tbody>
+<tr><td>missing processor</td><td>删除 tokenizer/image config</td><td>manifest/loader fail closed，不从环境默认值补齐</td></tr>
+<tr><td>revision drift</td><td>model commit A + processor <code>main</code></td><td>拒绝或显式兼容矩阵；不能静默混用</td></tr>
+<tr><td>key/shape mismatch</td><td>action head/config/shard 不一致</td><td>strict load fail；不以 <code>ignore_mismatched_sizes</code> 过 gate</td></tr>
+<tr><td>normalizer drift</td><td>train 与 serving stats SHA/method/valid dims 不同</td><td>gate fail，fixed action round-trip 不通过</td></tr>
+<tr><td>transform reorder</td><td>resize/normalize/tokenize/denorm 顺序变化</td><td>transform revision/property test fail</td></tr>
+<tr><td>shard omission</td><td>缺 safetensors shard/index</td><td>file manifest/load smoke fail，禁止 partial release</td></tr>
+<tr><td>dtype/backend</td><td>BF16/FP16/CUDA/MACA/ROCm 改变</td><td>finite/numerical parity、operator matrix、同步 latency gate</td></tr>
+<tr><td>controller semantics</td><td>radians/degrees、absolute/delta、world/robot frame 混用</td><td>parser/controller round-trip fail</td></tr>
+<tr><td>remote path only</td><td>report 有 path，snapshot 无 binary</td><td>只标 <code>report-supported/remote-referenced</code></td></tr>
+<tr><td>rollback</td><td>新 processor/norm 与旧 checkpoint 不兼容</td><td>immutable previous-good pointer 可恢复</td></tr>
+</tbody></table>
+<h2 id="12-trade-off-bad-case">12. Trade-off、bad case 与追问</h2>
+<h3 id="12-1-trade-off">12.1 Trade-off</h3>
+<ul><li>把所有组件打进单 bundle，回滚和复现更稳，但更新 tokenizer/processor 的成本更高；用 manifest 版本化和兼容矩阵缓解。</li><li>strict load 会拒绝部分迁移实验；生产发布应 strict，研究迁移另存 <code>partial-load</code> evidence，不能共用 verdict。</li><li>safetensors 降低任意代码执行和部分加载风险，但仍需外部 config/processor/action manifest。</li><li>保存每步 transform/config/hash 增加存储和审核成本，却能定位“模型变了还是 preprocessing 变了”。</li></ul>
+<h3 id="12-2-bad-case">12.2 高概率 bad case</h3>
+<ol><li>只上传 <code>model.safetensors</code>，遗漏 config/tokenizer/image processor。</li><li>processor 跟随 Hub <code>main</code>，checkpoint 固定在旧 commit。</li><li>normalizer JSON 从另一个 dataset/run 复制，未记录 stats SHA。</li><li><code>ignore_mismatched_sizes=True</code> 掩盖 action head shape mismatch。</li><li><code>H/D</code> shape 对了，但 frame、unit、absolute/delta 或 gripper convention 错。</li><li>训练和 serving 的 transform 顺序、pixel range 或 camera key 不同。</li><li>把 OpenPI 默认 <code>32×50</code> 当成所有 VLA 的通用 action contract。</li><li>report 中远端 checkpoint path 被写成“本地验证过的模型”。</li></ol>
+<h3 id="12-3">12.3 面试追问</h3>
+<ol><li>model config、processor config 和 normalizer stats 为什么要分开 hash？</li><li><code>from_pretrained</code> 能加载但 action 仍然错，最先查哪三层？</li><li>safetensors 解决了什么，没解决什么？</li><li>branch/tag/revision/commit hash 在发布时如何取舍？</li><li>如何证明 train/serve normalization 与 transform sequence 一致？</li><li><code>(B,15,72)</code> 与 <code>(B,16,72)</code> 怎样定位是 horizon、padding 还是 semantics conflict？</li><li>strict load 与研究迁移的 partial load 如何分开记录？</li><li>OpenPiVLA 当前哪些证据是 path/report，哪些才算 bundle-verified？</li></ol>
+<h2 id="13">13. 结论与下一步</h2>
+<p>可靠的 VLA 发布合同把 model config/weights、processor、action schema、normalizer、ordered transforms、lineage 和 runtime manifest 绑定为 immutable bundle；revision 固定到 commit；加载严格检查 key/shape/dtype；safetensors 只作为 tensor 层；最后用 fixed-batch、action/controller round-trip、backend parity 和 rollback smoke 关闭兼容性。</p>
+<p>OpenPiVLA 当前有 processor/collator、recipe、远端 checkpoint/path；UWM 有 normalizer/load metadata；OPD 有 final-only/no-optimizer-state manifest。它们不能证明统一 bundle、formal binary、processor/norm hash binding 或 round-trip 已闭合。因此本节点保持 <code>WARN</code>，题卡保持 <code>unseen</code>；下一步可口述 <code>VLA-ENG-021</code> 或补 bundle/hash/round-trip artifact，<code>VLA-ENG-022</code> 继续后置。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_05_eng021_model_processor_normalizer_packaging_source_freeze.html">ENG-021 Source Freeze</a>：官方 revision/SHA、本地 evidence 与 compatibility gate。</li><li>Hugging Face Transformers <a href="https://github.com/huggingface/transformers/blob/150eb7c9ed4091294c829fa0e9466b090cb0f87f/src/transformers/modeling_utils.py"><code>modeling_utils.py@150eb7c</code></a>、<a href="https://github.com/huggingface/transformers/blob/150eb7c9ed4091294c829fa0e9466b090cb0f87f/src/transformers/processing_utils.py"><code>processing_utils.py@150eb7c</code></a> 与 <a href="https://github.com/huggingface/transformers/blob/150eb7c9ed4091294c829fa0e9466b090cb0f87f/src/transformers/configuration_utils.py"><code>configuration_utils.py@150eb7c</code></a>。</li><li>Hugging Face Hub <a href="https://github.com/huggingface/huggingface_hub/blob/b2ae5b6a898d5303e55c256aa714f9f9a1f4bd70/src/huggingface_hub/_snapshot_download.py"><code>snapshot_download@b2ae5b6</code></a> 与 <a href="https://github.com/huggingface/safetensors/blob/6eb4dc9a28ebce297606e0f4836bbf28839cacef/README.md"><code>safetensors@6eb4dc9</code></a>。</li><li>Physical Intelligence <a href="https://github.com/Physical-Intelligence/openpi/tree/15a9616a00943ada6c20a0f158e3adb39df2ccac"><code>openpi@15a9616</code></a>：model/checkpoint/config/normalize/transforms/data loader/policy frozen files。</li><li>本仓库 <a href="../sources/vol_05_local_artifact_gate_eng004_006.html">ENG-004..006 Artifact Gate</a>、<a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA Inventory</a>、<a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM Inventory</a> 与 <a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Inventory</a>。</li></ol>
+</article></body></html>

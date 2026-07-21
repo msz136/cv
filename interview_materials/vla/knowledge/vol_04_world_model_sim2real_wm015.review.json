@@ -1,0 +1,51 @@
+{
+  "artifact": "knowledge/vol_04_world_model_sim2real_wm015.md",
+  "html": "knowledge/vol_04_world_model_sim2real_wm015.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / VLA-WM-015 / knowledge_17_of_44 / card_1_of_1_unseen / review_warn",
+  "verdict": "WARN",
+  "source_sha256": "E838BCED670328EFA7CB13C3F80B1083A112E295BE694E02DAAF8D9FCB09428A",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 16,
+    "new_nodes": 1,
+    "total_drafted_nodes": 17,
+    "covered_ids": ["VLA-WM-015"],
+    "drafted_cards_for_new_nodes": 1,
+    "practice_state": "unseen / not_orally_drilled",
+    "difficulty": "L3",
+    "priority": "P0"
+  },
+  "source_scope": {
+    "canonical_audit": "sources/vol_04_uwm_video_action_claim_to_code.html",
+    "independent_review": "sources/vol_04_uwm_independent_fact_review.html",
+    "upstream": "WEIRDLabUW/unified-world-model@b7d4067c8859775e5b08f681e76d538015cdd445",
+    "local_project_hook": "evidence/projects/uwm_libero_claim_evidence_inventory.html"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one WM-015 knowledge node and one unseen atomic card; WM-016..038 deferred)",
+    "robot_video_tuple": "PASS (robot tuple and action-free video tuple separated)",
+    "dual_timestep": "PASS (independent action/video timesteps and shared transformer mapped to frozen code)",
+    "shared_architecture": "PASS (action MLP, 3D patchifier, registers, shared AdaLN blocks and separate decoders)",
+    "objective": "PASS WITH WARNING (full-tensor action/video MSE matches frozen code; no invented weighting or masking)",
+    "action_mask_boundary": "PASS WITH WARNING (max action timestep distinguished from sample loss masking and gradient exclusion)",
+    "inference_modes": "PASS WITH WARNING (policy/forward/inverse/video/joint modes mapped; scheduler endpoint numerical smoke pending)",
+    "shape_and_config_boundary": "PASS (action_len and diffusion-step defaults labeled config-specific, not method constants)",
+    "metric_boundary": "PASS (action/image MSE kept separate from closed-loop success)",
+    "project_truth_boundary": "PASS (UWM scores, checkpoint provenance and personal ownership remain in evidence layer)",
+    "pseudocode": "PASS (commented tuple/noise/timestep/shared-transformer/loss flow; no masked-loss claim)",
+    "html_static_validation": "PASS (one H1, fourteen H2, nine H3, two tables, three formula blocks and two commented code/diagram blocks)",
+    "local_links": "PASS (eight local/external references; repository-local targets resolve)",
+    "source_sha": "PASS (canonical Markdown SHA matches HTML meta and review JSON)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Pin the diffusers runtime and verify timesteps[0]/[-1] endpoint semantics numerically.",
+    "Run action-free sample gradient and explicit masked-loss A/B if upstream runtime/checkpoint becomes available.",
+    "Obtain checkpoint/config/normalizer/runtime bundle before connecting method claims to personal UWM scores.",
+    "Do not update mastery or create coaching_state.md until a real oral answer is recorded.",
+    "Keep WM-016..038 deferred to later bounded slices."
+  ],
+  "next": "Run a one-question VLA-WM-015 oral drill or generate the separate WM-016 unseen card; keep WM-017..038 deferred."
+}

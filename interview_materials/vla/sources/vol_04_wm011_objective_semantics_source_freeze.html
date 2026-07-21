@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-011 Source Freeze：World-model Objective Semantics</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm011_objective_semantics_source_freeze.md">
+<meta name="aris:source-sha256" content="7632d05497acd5170a5955a1c7eda2e68f40df39257f2d343229a61eba9d7b35">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>7632d05497acd5170a5955a1c7eda2e68f40df39257f2d343229a61eba9d7b35</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm011_objective_semantics_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 冻结结论</a></li><li><a href="#2">2. 一手来源与冻结快照</a></li><li><a href="#3-objective-contract">3. 先写 objective contract</a></li><li><a href="#4">4. 总目标只是容器</a></li><li><a href="#5-reconstruction">5. Reconstruction 监督什么</a></li><li><a href="#6-reconstruction">6. Reconstruction 的典型误读</a></li><li><a href="#7-latent-dynamics">7. Latent dynamics 监督什么</a></li><li><a href="#8-dynamics-representation-kl">8. Dynamics / representation KL 的梯度边界</a></li><li><a href="#9-latent-dynamics">9. Latent dynamics 的失效模式</a></li><li><a href="#10-reward">10. Reward 监督什么</a></li><li><a href="#11-continuation">11. Continuation 监督什么</a></li><li><a href="#12-continuation-timeout">12. Continuation 的时间索引与 timeout 陷阱</a></li><li><a href="#13-perceptual-loss">13. Perceptual loss 监督什么</a></li><li><a href="#14-perceptual-loss">14. Perceptual loss 的机器人边界</a></li><li><a href="#15-mask-reduction-effective-weight">15. Mask、reduction 与 effective weight</a></li><li><a href="#16-loss">16. Loss 大小不能直接比较</a></li><li><a href="#17">17. 最小实现伪代码</a></li><li><a href="#18-matched-objective-audit">18. Matched objective audit</a></li><li><a href="#19-failure-first">19. Failure-first 诊断</a></li><li><a href="#20">20. 项目真实性边界</a></li><li><a href="#21-claim-ledger">21. Claim ledger</a></li><li><a href="#22">22. 仍待独立复核与补证据</a></li><li><a href="#23">23. 参考来源</a></li><li><a href="#24">24. 下一节点</a></li></ol></nav>
+<h1>VOL 04 WM-011 Source Freeze：World-model Objective Semantics</h1>
+<div class="meta">冻结日期：2026-07-18 状态：source_frozen / VLA-WM-011 / knowledge_synced / card_synced / WARN 覆盖题目：VLA-WM-011 本轮边界：只冻结 reconstruction、latent dynamics、reward、continuation 与 perceptual objective 的监督对象、实现合同、失效模式和 matched audit；不把 loss 下降写成控制收益，也不把公开 Dreamer/PlaNet 机制写成本地 WAM/UWM 成果。</div>
+<h2 id="1">1. 冻结结论</h2>
+<ol><li>一个 loss 的名字不能定义它；必须说明 prediction、target、时间索引、mask、reduction、scale 和 gradient path。</li><li>reconstruction 约束 decoder 从 latent 恢复 observation；latent dynamics 约束 action-conditioned prior 与 observation posterior 对齐，二者监督对象不同。</li><li>reward head 预测一步即时 reward；continuation head 预测 episode 是否继续或折扣因子。它们不等于 value、success classifier 或 task completion。</li><li>perceptual loss 比较冻结或明确更新的 feature-space representation；它可能更符合感知相似度，也可能忽略接触、位姿、深度等 action-critical 细节。</li><li>DreamerV3 frozen repo 将 dyn/rep KL、reward、continuation 和各 observation reconstruction 分开计算，再按 <code>loss_scales</code> 聚合；raw scalar 大小在不同 reduction 下不可直接比较。</li><li><code>loss ↓</code> 只说明训练目标在当前样本/聚合下下降；要说“对 policy 有帮助”，必须做 matched objective ablation、gradient/representation diagnostics 与 closed-loop evaluation。</li></ol>
+<h2 id="2">2. 一手来源与冻结快照</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>冻结版本与响应 SHA-256</th><th>本节点支持</th><th>不能外推</th></tr></thead><tbody>
+<tr><td>S1</td><td>Ha &amp; Schmidhuber, <em>World Models</em></td><td>arXiv <code>1803.10122</code>；ar5iv response <code>94b1cfb329e803b6b305f574755a83478f051f268c693e445ea3a959680683aa</code></td><td>VAE reconstruction、MDN-RNN latent prediction、controller 分工</td><td>现代 RSSM exact loss、机器人 objective uplift</td></tr>
+<tr><td>S2</td><td>Hafner et al., <em>PlaNet</em></td><td>arXiv <code>1811.04551</code>；ar5iv response <code>6a9bed11e5963626016235227ab85594ae5d42773e675860788c51a071929a97</code></td><td>latent dynamics、observation/reward likelihood、multi-step latent consistency</td><td>PlaNet overshooting 是 DreamerV3 实现机制</td></tr>
+<tr><td>S3</td><td>Hafner et al., <em>DreamerV3</em></td><td>arXiv <code>2301.04104</code>；arXiv HTML response <code>7ce561853df3b35ccf0316476b3f7538b60117feb358bd562dc279f0d5067a26</code></td><td>prediction/dynamics/representation loss、reward/continue/decoder heads、free bits</td><td>frozen reimplementation 的所有默认值或本地项目结果</td></tr>
+<tr><td>S4</td><td>Johnson et al., <em>Perceptual Losses for Real-Time Style Transfer and Super-Resolution</em></td><td>arXiv <code>1603.08155</code>；ar5iv response <code>5c4923e8ce75ded7f37b317541c0297e4d7acd1df685fcd9a21012260ffddc38</code></td><td>frozen loss network 的 feature reconstruction 目标</td><td>任意视觉 backbone 都适合机器人接触/几何</td></tr>
+<tr><td>S5</td><td>Zhang et al., <em>The Unreasonable Effectiveness of Deep Features as a Perceptual Metric</em></td><td>arXiv <code>1801.03924</code>；ar5iv response <code>fb10022b5757b81d033dfe21a676b2acf5c6d4e7c46dab3b10a801905f1d7ac2</code></td><td>deep-feature perceptual distance、layer normalization/calibration</td><td>LPIPS 分数等于 dynamics/actionability</td></tr>
+<tr><td>S6</td><td><code>danijar/dreamerv3</code> frozen code</td><td>commit <code>e3f02248693a79dc8b0ebd62c93683888ddaccfe</code>；<code>rssm.py</code> <code>d6d50166914e94fb8bd17a5d5dbda9d42cdd37b85819bb1e9fff3a64d4ad2eb6</code>；<code>agent.py</code> <code>adce8e4274bc098c218bf9a20fd3327545f0ad7d850b5fe328597382e91b5269</code>；<code>configs.yaml</code> <code>9dff9c7062e3e33951cb54c6dd4b598aaf7e56e18e2cff39c812eaa797bcfcfc</code>；README <code>a4d8e77c07a876a7f528aa204fbc910812c5ca96bcfb67709b366f8ff0d3ed6b</code></td><td><code>observe/imagine/loss</code>、target/mask/reduction/scale 的具体实现映射</td><td>论文作者官方代码、checkpoint reproduction、个人贡献</td></tr>
+<tr><td>S7</td><td><a href="vol_04_world_model_foundations_claim_to_code.html">Source Audit A</a> 与 <a href="vol_04_world_model_foundations_independent_fact_review.html">独立事实复核</a></td><td>canonical SHA <code>bb48af7605688132ddd589109c8417dd0ebfe65f504a98cf5ab660f01e34ba7b</code> / <code>da16c172179cae926d329259e76955a55555fe53a15233f265d1f74a3d421ae4</code></td><td>允许 WM-011..014 逐节点生成；repo provenance 与 overshooting 边界</td><td>本地 objective ablation</td></tr>
+<tr><td>S8</td><td><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a>、<a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO</a> inventories</td><td>canonical SHA <code>078c86b1484fe38fdd136428123c9529c6b750dfea5e031ec506cf617517772d</code> / <code>728b8326dc345072886d0909fe2b8d81dfde3993771e7febed446d471bd3674d</code></td><td>项目可讲的训练/协议边界与缺失 artifact</td><td>reconstruction/perceptual/dynamics 对 success 的个人因果收益</td></tr>
+</tbody></table>
+<p><strong>Provenance warning：</strong>S6 的 README 明确称其为 DreamerV3 reimplementation，并与 Google/DeepMind 无关。本页只能说“该 frozen reimplementation 的代码路径”，不能说“论文作者官方实现”。</p>
+<h2 id="3-objective-contract">3. 先写 objective contract</h2>
+<p>每一项至少写成：</p>
+<p><code>prediction + target + time index + valid mask + reduction denominator + scale + gradient recipients</code>。</p>
+<p>例如“用了 reconstruction loss”仍缺少：重建哪路 camera/proprio、像素是 <code>[0,255]</code> 还是 <code>[0,1]</code>、是 MSE 还是 likelihood、padding/缺帧如何 mask、对时间/像素怎样平均、decoder loss 是否回传 encoder/dynamics。没有这些字段，loss 名称不能复现实验。</p>
+<h2 id="4">4. 总目标只是容器</h2>
+<p>一个最小 world-model objective 可抽象为：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{wm}}
+=\lambda_{\mathrm{rec}}\mathcal L_{\mathrm{rec}}
++\lambda_{\mathrm{dyn}}\mathcal L_{\mathrm{dyn}}
++\lambda_{\mathrm{rep}}\mathcal L_{\mathrm{rep}}
++\lambda_r\mathcal L_r
++\lambda_c\mathcal L_c
++\lambda_p\mathcal L_{\mathrm{perc}}.
+\]</div>
+<p>变量解释：每个 \(\mathcal L\) 是一类监督信号，\(\lambda\) 是有效权重；具体系统可以没有某一项，也可把 observation 分成多个 key。直觉是把“看得见、推得动、知道回报、知道何时结束”拆成不同约束。实现映射：必须保存各项 unreduced/valid-count/reduced/scaled loss、梯度范数和总 loss；不能只保存一个总标量。</p>
+<h2 id="5-reconstruction">5. Reconstruction 监督什么</h2>
+<p>对 observation key \(k\)，可写负对数似然：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{rec}}^{(k)}
+=-\frac{1}{N_k}\sum_{t,i}m_{t,i}^{(k)}
+\log p_\theta\!\left(o_{t,i}^{(k)}\mid h_t,z_t\right),
+\qquad
+N_k=\sum_{t,i}m_{t,i}^{(k)}.
+\]</div>
+<p>变量解释：\(o^{(k)}\) 是某个 camera/proprio observation，\((h_t,z_t)\) 是 latent feature，\(m\) 是有效元素 mask，\(N_k\) 是有效 denominator。直觉是让 latent 保留 decoder 能恢复的 observation 信息。实现映射：固定 camera key、resize/crop、dtype/range、likelihood/MSE、mask 与 per-key reduction。</p>
+<p>S6 的 <code>Agent.loss</code> 对 image target 做 <code>/255</code>，对每个 decoder output key 调用 <code>recon.loss(stop_gradient(target))</code>；<code>rec</code> scale 会复制到各 decoder space。这里 stop-gradient 作用于 target，不表示 decoder/representation 都停止更新。</p>
+<h2 id="6-reconstruction">6. Reconstruction 的典型误读</h2>
+<ul><li>pixel MSE/NLL 低，可能只说明背景、光照和低频纹理重建好；小物体位姿、接触点和遮挡状态仍可能错。</li><li>posterior decoder 可借助当前 observation 编码后的 latent 重建，却不证明 action-conditioned prior 能 open-loop rollout。</li><li>多 camera 直接求和会让高分辨率/高 valid-count 的 key 主导；先按 key 平均或全局按元素平均是不同 objective。</li><li>padding、missing camera、episode boundary 若未 mask，会把无效帧当成监督。</li></ul>
+<h2 id="7-latent-dynamics">7. Latent dynamics 监督什么</h2>
+<p>Dreamer 风格 RSSM 区分 observation posterior 与 action-conditioned prior：</p>
+<div class="formula">\[
+q_\phi(z_t\mid h_t,o_t),
+\qquad
+p_\theta(z_t\mid h_t),
+\qquad
+h_t=f_\theta(h_{t-1},z_{t-1},a_{t-1}).
+\]</div>
+<p>变量解释：posterior \(q\) 读取当前 observation，prior \(p\) 只能依赖历史 latent/action；\(h_t\) 是 deterministic memory。直觉是 posterior 用真实观测校正 belief，prior 学会在没有未来 observation 时预测。实现映射：S6 中分别对应 <code>RSSM.observe</code> 与 <code>RSSM.imagine</code>。</p>
+<h2 id="8-dynamics-representation-kl">8. Dynamics / representation KL 的梯度边界</h2>
+<p>S6 的 frozen <code>RSSM.loss</code> 计算：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{dyn}}
+=D_{\mathrm{KL}}\!\left[\operatorname{sg}(q_\phi)\,\|\,p_\theta\right],
+\qquad
+\mathcal L_{\mathrm{rep}}
+=D_{\mathrm{KL}}\!\left[q_\phi\,\|\,\operatorname{sg}(p_\theta)\right].
+\]</div>
+<p>变量解释：<code>sg</code> 是 stop-gradient。dyn 主要训练 prior 追 posterior；rep 主要约束 posterior 靠近 prior，防止 encoder 任意编码当前 observation。直觉是双向“对齐目标”相同但梯度接受者不同。实现映射：分别保存 dyn/rep loss、prior/posterior entropy、KL histogram 和 encoder/dynamics gradient norm。</p>
+<p>该实现用 <code>free_nats=1.0</code> 对两项逐元素下限截断。free nats 给小 KL 一个不继续压缩的区间，不是把 KL 从总目标删除，也不保证避免 collapse。</p>
+<h2 id="9-latent-dynamics">9. Latent dynamics 的失效模式</h2>
+<ul><li><strong>posterior collapse</strong>：posterior 几乎不使用 observation，latent 无信息；看 KL、entropy、decoder quality、latent intervention。</li><li><strong>action ignoring</strong>：prior 主要靠惯性/背景预测，换 action 结果不变；做 action-swap、zero/random action、finite-difference sensitivity。</li><li><strong>one-step only</strong>：单步 prior 对齐但 rollout 漂移；分 teacher-forced 与 open-loop horizon curve。</li><li><strong>跨方法误归因</strong>：PlaNet latent overshooting 是 S2 的机制，当前证据不能把它写成 S6 DreamerV3 repo 的实现事实。</li></ul>
+<h2 id="10-reward">10. Reward 监督什么</h2>
+<div class="formula">\[
+\mathcal L_r
+=-\frac{1}{N_r}\sum_t m_t^r
+\log p_\theta(r_t\mid h_t,z_t).
+\]</div>
+<p>变量解释：\(r_t\) 是数据合同中的一步即时 reward，\(m_t^r\) 是有效 mask。直觉是让 imagined state 能给 planner/actor 提供一步任务信号。实现映射：S6 <code>Agent.loss</code> 用 <code>self.rew(...).loss(obs['reward'])</code>；要固定 reward shaping、scale/symlog、sparse/dense、时间索引和 terminal transition。</p>
+<p>reward 不是 value：value 依赖 policy、discount 与未来 return；reward 也不是 success classifier，后者可能只在 episode 末按任务 predicate 标记。一个 reward head 拟合好不能证明 cumulative return 或 binary success 正确。</p>
+<h2 id="11-continuation">11. Continuation 监督什么</h2>
+<p>令 continuation target \(c_t\in\{0,1\}\) 表示 episode 是否在该 transition 后继续：</p>
+<div class="formula">\[
+\mathcal L_c
+=-\frac{1}{N_c}\sum_t m_t^c
+\left[c_t\log \hat c_t+(1-c_t)\log(1-\hat c_t)\right].
+\]</div>
+<p>变量解释：\(\hat c_t\) 是 predicted continuation probability，\(m_t^c\) 是有效 mask。直觉是控制 imagined return 何时停止 bootstrap。实现映射：S6 用 <code>con = ~obs['is_terminal']</code>；启用 <code>contdisc</code> 时还乘 <code>(1 - 1/horizon)</code>，因此其 target 更接近 learned discount，而不是纯 done classifier。</p>
+<h2 id="12-continuation-timeout">12. Continuation 的时间索引与 timeout 陷阱</h2>
+<ul><li>必须说明 <code>is_terminal[t]</code> 指 transition \(t-1\to t\) 还是 \(t\to t+1\)；错一位会让终止前后都学错。</li><li>time-limit truncation 与 true terminal 不应自动等价：前者常允许 value bootstrap，后者通常不允许。</li><li>padding、reset frame、absorbing state 和 dataset <code>is_last/is_terminal</code> 字段必须分别处理。</li><li>continuation 与 success 可同时为 0/1 的组合取决于任务：失败终止、成功终止、超时截断语义不同。</li></ul>
+<h2 id="13-perceptual-loss">13. Perceptual loss 监督什么</h2>
+<p>给定预训练 feature extractor \(\phi_l\)，一个 feature reconstruction objective 可写为：[S4][S5]</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{perc}}
+=\sum_{l\in\mathcal S}\alpha_l
+\frac{1}{N_l}\left\|
+\operatorname{norm}(\phi_l(\hat o_t))
+-\operatorname{norm}(\phi_l(o_t))
+\right\|_2^2.
+\]</div>
+<p>变量解释：\(\mathcal S\) 是选定 layer 集合，\(\alpha_l\) 是 layer weight，<code>norm</code> 表示约定的 channel/spatial normalization。直觉是比较深层 feature，而非要求每个像素精确相等。实现映射：记录 backbone/revision、是否冻结、输入归一化、layer、spatial resize、mask、weight 和 reduction。</p>
+<p>S4 直接使用预训练并固定的 loss network 做 feature reconstruction；S5 说明深层 feature distance 与人类感知相似度有较强对应，并讨论 feature normalization 与线性校准。它们不支持“LPIPS/perceptual loss 自动提升机器人 actionability”。</p>
+<h2 id="14-perceptual-loss">14. Perceptual loss 的机器人边界</h2>
+<ul><li>ImageNet/感知相似度 feature 可能对纹理稳健，却不敏感于毫米级位姿、深度、gripper aperture 和接触状态。</li><li>feature extractor 若与 generator 联合更新，target space 会漂移；必须明确 frozen/trainable 和梯度路径。</li><li>LPIPS 本质是度量定义/校准方案之一；将其作为 training loss 仍需说明输入 domain、layer 与权重。</li><li>perceptual loss 可与 pixel loss 互补，但两者都不能替代 action-swap、rollout、reward/termination 和 closed-loop success。</li></ul>
+<h2 id="15-mask-reduction-effective-weight">15. Mask、reduction 与 effective weight</h2>
+<p>同一个 nominal \(\lambda_k\) 不代表相同训练影响。若第 \(k\) 项先对 valid elements 平均：</p>
+<div class="formula">\[
+\bar{\mathcal L}_k
+=\frac{\sum_i m_{k,i}\ell_{k,i}}
+{\max(1,\sum_i m_{k,i})},
+\qquad
+\mathcal L=\sum_k\lambda_k\bar{\mathcal L}_k.
+\]</div>
+<p>变量解释：\(m_{k,i}\) 是 mask，denominator 是有效样本数。直觉是避免 padding/route 比例改变 raw sum；但 per-sample、per-token、per-pixel、per-key 平均仍有不同含义。实现映射：日志同时记录 numerator、valid count、reduced loss、scaled loss 与 route count。</p>
+<h2 id="16-loss">16. Loss 大小不能直接比较</h2>
+<p><code>reconstruction=0.1</code> 与 <code>reward=1.0</code> 不能推出 reconstruction 更不重要，原因包括：</p>
+<ul><li>单位/likelihood family 不同；</li><li>pixel、token、sequence、batch denominator 不同；</li><li>free-nats/clipping/symlog 改变标度；</li><li>scale 相同但梯度范数、共享参数投影不同；</li><li>sparse reward/terminal 的有效样本与 class imbalance 不同。</li></ul>
+<p>最低限度要画 raw/reduced/scaled loss、valid count、per-module gradient norm、cosine/conflict、head calibration 和 downstream metric。</p>
+<h2 id="17">17. 最小实现伪代码</h2>
+<pre><code class="language-python">def world_model_objective(batch, model, scales):
+    # 1. Posterior reads observations; prior only uses past latent and actions.
+    post, prior, feat = model.rssm.observe(batch.obs, batch.prev_action)
+
+    # 2. Keep the two KL directions separate because stop-gradient recipients differ.
+    dyn = kl(stop_gradient(post), prior).clamp_min(model.free_nats)
+    rep = kl(post, stop_gradient(prior)).clamp_min(model.free_nats)
+
+    # 3. Build each target from its own schema and time-index contract.
+    rec = masked_loss(model.decoder(feat), batch.obs, batch.obs_mask)
+    rew = masked_loss(model.reward(feat), batch.reward, batch.reward_mask)
+    con_target = build_continuation(batch.is_terminal, batch.is_timeout)
+    con = masked_loss(model.continue_head(feat), con_target, batch.valid_mask)
+    perc = perceptual_loss(model.decoder(feat), batch.obs, frozen_features=True)
+
+    # 4. Log denominators and gradients; a total scalar alone cannot diagnose influence.
+    terms = dict(rec=rec, dyn=dyn, rep=rep, rew=rew, con=con, perc=perc)
+    return sum(scales[k] * terms[k].mean() for k in terms), audit(terms)</code></pre>
+<p>伪代码是 S1–S8 的工程综合，不是 S6 的逐行复制；<code>build_continuation</code> 必须按具体 environment/dataset 定义。</p>
+<h2 id="18-matched-objective-audit">18. Matched objective audit</h2>
+<p>固定 data split/sampler、seed、steps/tokens、optimizer/schedule、batch、architecture、checkpoint init、augmentation、eval protocol 和 compute budget：</p>
+<table><thead><tr><th>arm</th><th>目的</th></tr></thead><tbody>
+<tr><td>base</td><td>action/policy 或最小 world-model baseline</td></tr>
+<tr><td>+rec</td><td>observation reconstruction 的增量</td></tr>
+<tr><td>+dyn/rep</td><td>latent prior/posterior consistency 的增量</td></tr>
+<tr><td>+reward</td><td>immediate reward prediction 的增量</td></tr>
+<tr><td>+continue</td><td>termination/discount modeling 的增量</td></tr>
+<tr><td>+perceptual</td><td>feature-space reconstruction 的增量</td></tr>
+<tr><td>combined</td><td>交互作用</td></tr>
+<tr><td>overwide/overweight</td><td>容量与 auxiliary domination 反例</td></tr>
+</tbody></table>
+<p>报告 one-step、open-loop horizon curve、action sensitivity、reward/continue calibration、closed-loop success、latency/compute 和 seed CI。若只比较 <code>base</code> 与 <code>combined</code>，无法归因某一 objective。</p>
+<h2 id="19-failure-first">19. Failure-first 诊断</h2>
+<table><thead><tr><th>症状</th><th>首查</th></tr></thead><tbody>
+<tr><td>rec 下降、rollout 仍漂</td><td>posterior shortcut、prior/open-loop、action sensitivity、horizon</td></tr>
+<tr><td>dyn/rep 卡在 free nats</td><td>clipping proportion、entropy、scale、梯度路径</td></tr>
+<tr><td>KL 很低、decoder 模糊</td><td>collapse、decoder capacity、posterior usage</td></tr>
+<tr><td>reward 好、success 差</td><td>shaping/时间索引、value/continue、policy OOD、success predicate</td></tr>
+<tr><td>continuation 全预测继续</td><td>class imbalance、timeout/terminal、off-by-one、padding</td></tr>
+<tr><td>perceptual 好、接触失败</td><td>feature domain、geometry/contact sensitivity、camera/depth key</td></tr>
+<tr><td>combined 比单项差</td><td>gradient conflict、effective weight、route/mask、capacity competition</td></tr>
+</tbody></table>
+<h2 id="20">20. 项目真实性边界</h2>
+<p>WAM inventory 支持讲 upstream action/future/value slot、condition/loss mask 与 objective audit 设计，但 local code/config/gradient trace 和 action-only/+world/+value/all matched result 缺失；历史 MSE/成功率已降级，不能借 WM-011 恢复。</p>
+<p>UWM/LIBERO inventory 支持 shared diffusion 的 action/video 输出、finetune/eval protocol 与 user-confirmed protocol-bound result；它不提供 reconstruction/dynamics/reward/continuation/perceptual 单项消融，也不能证明某一 objective 带来 74.4% 或任何 uplift。</p>
+<p>安全口径：</p>
+<div class="meta">我能把每个 objective 落到 prediction、target、mask、reduction、scale 和 gradient path，并设计 matched ablation；当前个人材料没有完整 objective-level 因果实验，所以我只讲机制和审计方案，不声称某项 loss 已提升项目成功率。</div>
+<h2 id="21-claim-ledger">21. Claim ledger</h2>
+<table><thead><tr><th>Claim</th><th>来源</th><th>等级</th><th>状态</th></tr></thead><tbody>
+<tr><td>reconstruction 约束 latent 保留可解码 observation 信息</td><td>S1–S3/S6</td><td>primary + frozen code</td><td>checked</td></tr>
+<tr><td>dyn/rep KL 以不同 stop-gradient 方向对齐 prior/posterior</td><td>S3/S6</td><td>paper + frozen code</td><td>checked</td></tr>
+<tr><td>reward、continue、value、success 语义不同</td><td>S3/S6/S7</td><td>primary + code</td><td>checked</td></tr>
+<tr><td>perceptual objective 比较深层 feature，不保证 action-critical geometry</td><td>S4/S5 + analysis</td><td>primary + bounded synthesis</td><td>checked with warning</td></tr>
+<tr><td>matched arms 可识别 objective 的局部贡献</td><td>S1–S8</td><td>engineering design</td><td>WARN / needs execution</td></tr>
+<tr><td>WAM/UWM 已证明某项 auxiliary objective 提升 success</td><td>S8</td><td>missing local ablation</td><td>rejected</td></tr>
+</tbody></table>
+<h2 id="22">22. 仍待独立复核与补证据</h2>
+<ol><li>本节点的 primary/source-code 映射已复核，独立事实复核仍标 <code>PENDING</code>。</li><li>需要 local objective config、dataset schema、mask/reduction trace、checkpoint、gradient log 和 matched ablation。</li><li>需要 reward/continuation 的 exact time-index test，尤其 timeout、reset、padding 与 terminal transition。</li><li>需要 perceptual backbone/layer/domain sensitivity test，包含 contact/geometry probes。</li><li>浏览器 <code>file://</code> visual QA 受策略阻断，只能做 renderer/static/link validation。</li><li>没有真实口述，不创建 <code>coaching_state.md</code>，题卡保持 <code>unseen</code>。</li></ol>
+<h2 id="23">23. 参考来源</h2>
+<ol><li>Ha and Schmidhuber, <a href="https://arxiv.org/abs/1803.10122"><em>World Models</em></a>, 2018.</li><li>Hafner et al., <a href="https://arxiv.org/abs/1811.04551"><em>Learning Latent Dynamics for Planning from Pixels</em></a>, 2019.</li><li>Hafner et al., <a href="https://arxiv.org/abs/2301.04104"><em>Mastering Diverse Domains through World Models</em></a>, 2023/2025.</li><li>Johnson et al., <a href="https://arxiv.org/abs/1603.08155"><em>Perceptual Losses for Real-Time Style Transfer and Super-Resolution</em></a>, 2016.</li><li>Zhang et al., <a href="https://arxiv.org/abs/1801.03924"><em>The Unreasonable Effectiveness of Deep Features as a Perceptual Metric</em></a>, 2018.</li><li><code>danijar/dreamerv3@e3f02248693a79dc8b0ebd62c93683888ddaccfe</code>: <a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/README.md">README</a>, <a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/dreamerv3/rssm.py"><code>rssm.py</code></a>, <a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/dreamerv3/agent.py"><code>agent.py</code></a>, <a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/dreamerv3/configs.yaml"><code>configs.yaml</code></a>.</li><li><a href="vol_04_world_model_foundations_claim_to_code.html">VOL 04 Source Audit A</a> 与 <a href="vol_04_world_model_foundations_independent_fact_review.html">独立事实复核</a>。</li><li><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a> 与 <a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO</a> evidence inventories。</li></ol>
+<h2 id="24">24. 下一节点</h2>
+<p>完成本节点后，VOL 04 进入 41/44；下一 bounded slice 只做 <code>VLA-WM-012</code>（RSSM / Dreamer 的 posterior、prior、KL balancing 与 imagined rollout 如何推导），不跨到 WM-013/014。</p>
+</article></body></html>

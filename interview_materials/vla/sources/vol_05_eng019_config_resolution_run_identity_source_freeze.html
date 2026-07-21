@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 ENG-019 Source Freeze：Config / CLI / Env 合并、Provenance 与 Run Identity</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eng019_config_resolution_run_identity_source_freeze.md">
+<meta name="aris:source-sha256" content="6a2934512295cdf5ecdcde3ef8e9b2d597bc2f3af529d7c6f053a16df3aceb54">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>6a2934512295cdf5ecdcde3ef8e9b2d597bc2f3af529d7c6f053a16df3aceb54</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eng019_config_resolution_run_identity_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-source-freeze">1. Source Freeze 总表</a></li><li><a href="#2-revision">2. 冻结 revision、原文指纹与许可</a></li><li><a href="#3">3. 官方语义：覆盖顺序不是跨框架常量</a></li><li><a href="#4-engineering-contract-resolve-validate-redact-canonicalize">4. Engineering Contract：resolve → validate → redact → canonicalize</a></li><li><a href="#5-semantic-config-execution-config-secret">5. Semantic Config、Execution Config 与 Secret</a></li><li><a href="#6-canonical-run-identity">6. Canonical Run Identity</a></li><li><a href="#7-local-evidence-uwm">7. Local Evidence：UWM</a></li><li><a href="#8-local-evidence-openpivla">8. Local Evidence：OpenPiVLA</a></li><li><a href="#9-local-evidence-opd">9. Local Evidence：OPD</a></li><li><a href="#10-resolver-manifest">10. Resolver 与 Manifest 伪代码（工程合同）</a></li><li><a href="#11-gate">11. Gate 与不能使用的口径</a></li><li><a href="#12-source-gate">12. Source Gate 结论</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 ENG-019 Source Freeze：Config / CLI / Env 合并、Provenance 与 Run Identity</h1>
+<div class="meta">状态：<code>source_frozen / VLA-ENG-019_planned / WARN</code> 冻结日期：2026-07-17 证据截止：2026-07-17 本切片只冻结 <code>VLA-ENG-019</code> 的官方语义、工程合同和项目证据边界；不生成知识页、题卡或口述成绩。 前置：<a href="../knowledge/vol_05_engineering_eval_batch2a.html">ENG-009 Manifest / Provenance</a>、<a href="../knowledge/vol_05_engineering_eval_eng013.html">ENG-013 Reproducibility</a>、<a href="../knowledge/vol_05_engineering_eval_eng018.html">ENG-018 Scheduler / Retry</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>训练参数同时来自代码默认值、YAML/JSON、Hydra Defaults、CLI、环境变量、scheduler 注入和运行时推导时，怎样得到唯一、类型安全、可脱敏、可复算的 effective config，并把它绑定到 logical run、attempt、checkpoint 和评估结果？</p>
+<p>本节点要回答：</p>
+<ol><li>不同框架的覆盖顺序分别是什么，为什么不能假设存在通用的“CLI 一定最高”规则？</li><li>怎样记录每个字段的最终值、类型、来源、旧值和覆盖原因？</li><li><code>RANK</code>、<code>LOCAL_RANK</code>、<code>WORLD_SIZE</code>、restart count 等 runtime 字段应进入 semantic run identity 还是 attempt identity？</li><li>config hash 为什么必须基于解析、验证、脱敏、规范化后的对象，而不是原始 YAML 文本或命令字符串？</li><li>UWM、OpenPiVLA、OPD 当前分别留下了哪些 config/args/manifest，哪些 lineage 仍无法证明？</li></ol>
+<h2 id="1-source-freeze">1. Source Freeze 总表</h2>
+<table><thead><tr><th>来源</th><th>冻结版本 / revision</th><th>source type</th><th>许可</th><th>本节点可支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td>Hydra Defaults List</td><td><code>hydra@7ef3acab</code> / v1.3.2</td><td>official-code/docs</td><td>MIT</td><td>depth-first composition、同 key 后者覆盖、<code>_self_</code> 位置</td><td>用户项目采用 Hydra、环境变量优先级、自动 run hash</td></tr>
+<tr><td>Hydra Override Grammar</td><td><code>hydra@7ef3acab</code> / v1.3.2</td><td>official-code/docs</td><td>MIT</td><td>config group 与 config object override；<code>+</code>/<code>++</code>/<code>~</code> 语义</td><td>shell quoting 正确、每次 override 已落盘</td></tr>
+<tr><td>pydantic-settings</td><td><code>1d0ea26f</code> / 2.14.1</td><td>official-code/docs</td><td>MIT</td><td>默认 field priority、deep update、source customization、debug secret warning</td><td>任意项目默认采用该顺序；debug 日志天然安全</td></tr>
+<tr><td>CPython <code>argparse</code></td><td><code>cpython@ebf955df</code> / 3.14.0</td><td>official-code/docs</td><td>PSF-2.0</td><td>CLI default、<code>type</code> 转换与 <code>choices</code> 等 parser 合同</td><td>config file/env 合并、字段 provenance、semantic run identity</td></tr>
+<tr><td>PyTorch <code>torchrun</code></td><td>docs 2.13</td><td>official docs</td><td>BSD-style</td><td><code>LOCAL_RANK/RANK/WORLD_SIZE/TORCHELASTIC_*</code> 等 runtime context 与 rank 不稳定边界</td><td>自动配置 lineage、stable semantic ID、exact resume</td></tr>
+<tr><td>RFC 8785 JSON Canonicalization Scheme</td><td>RFC 8785</td><td>primary standard</td><td>IETF Trust</td><td>JSON canonical representation 可用于可重复 hash/signature 输入</td><td>自动选择哪些字段属于 semantic config、自动脱敏 secret</td></tr>
+<tr><td>本地项目 artifacts</td><td>2026-07-17 snapshot</td><td>local-evidence</td><td>local/private</td><td>UWM shell/Hydra overrides、OpenPiVLA argparse/args snapshot、OPD argparse/DeepSpeed mutation/summary</td><td>完整 source map、统一 schema、secret-safe canonical hash、跨项目 run lineage</td></tr>
+</tbody></table>
+<p>官方来源只定义各自框架/标准的机制。把 defaults、file、env、CLI、runtime-derived 值合成同一个可审计训练合同，是本节点的工程设计，不是 Hydra、Pydantic、argparse 或 torchrun 自动完成的功能。</p>
+<h2 id="2-revision">2. 冻结 revision、原文指纹与许可</h2>
+<table><thead><tr><th>Artifact</th><th>URL</th><th>SHA-256</th><th>核验点</th></tr></thead><tbody>
+<tr><td>Hydra <code>defaults_list.md</code></td><td><a href="https://github.com/facebookresearch/hydra/blob/7ef3acab78b46bf82370e7931f748aef5fd80e5f/website/versioned_docs/version-1.3/advanced/defaults_list.md">pinned source</a></td><td><code>2be5eed7f90a3ee690b7df3fd8d3c0dc228a8378c48c9bfdb6782e39974d8082</code></td><td>multiple configs 同 key 时 last wins；<code>_self_</code> 控制当前 config 相对位置</td></tr>
+<tr><td>Hydra <code>basic.md</code></td><td><a href="https://github.com/facebookresearch/hydra/blob/7ef3acab78b46bf82370e7931f748aef5fd80e5f/website/versioned_docs/version-1.3/advanced/override_grammar/basic.md">pinned source</a></td><td><code>bd3348440a57e7f9e8a63d2e64848cfd5934e22f850887048efc94624bb381a4</code></td><td><code>foo.bar=value</code>、<code>+</code>、<code>++</code>、<code>~</code>；Defaults List 与 config object 分开</td></tr>
+<tr><td>Hydra LICENSE</td><td><a href="https://github.com/facebookresearch/hydra/blob/7ef3acab78b46bf82370e7931f748aef5fd80e5f/LICENSE">pinned source</a></td><td><code>52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85</code></td><td>MIT</td></tr>
+<tr><td>pydantic-settings <code>docs/index.md</code></td><td><a href="https://github.com/pydantic/pydantic-settings/blob/1d0ea26f9e04ec9e20767d70e4508bb33c8708e7/docs/index.md">pinned source</a></td><td><code>569a3398f65c99f3f72c73b891f633f1767c79992110ebb0a90b136cc95205b9</code></td><td>CLI→init→env→dotenv→secrets→defaults；可自定义；debug 可能泄露 secrets</td></tr>
+<tr><td>pydantic-settings LICENSE</td><td><a href="https://github.com/pydantic/pydantic-settings/blob/1d0ea26f9e04ec9e20767d70e4508bb33c8708e7/LICENSE">pinned source</a></td><td><code>eb355a753e020346d33d83bf9769135b89fc610568ac531a01c295bcee7fd998</code></td><td>MIT</td></tr>
+<tr><td>CPython <code>argparse.rst</code></td><td><a href="https://github.com/python/cpython/blob/ebf955df7a89ed0c7968f79faec1de49f61ed7cb/Doc/library/argparse.rst">pinned source</a></td><td><code>46c9dc41aa479d4f068b644149ca4cb12c4076ef25ddd2e547e50becb611c40a</code></td><td>缺省值、字符串→类型转换、choices/required</td></tr>
+<tr><td>CPython LICENSE</td><td><a href="https://github.com/python/cpython/blob/ebf955df7a89ed0c7968f79faec1de49f61ed7cb/LICENSE">pinned source</a></td><td><code>b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231</code></td><td>PSF License Version 2</td></tr>
+<tr><td>PyTorch Elastic Run</td><td><a href="https://docs.pytorch.org/docs/2.13/elastic/run.html">docs 2.13</a></td><td>normalized main text <code>77d82a42359b5f76a07260cdd9c44abd3a5002a8fff4fd54b59f64a43342560e</code></td><td>runtime env、restart/run ID、rank/world-size instability；已由 ENG-018 冻结</td></tr>
+<tr><td>RFC 8785 text</td><td><a href="https://www.rfc-editor.org/rfc/rfc8785.txt">RFC Editor</a></td><td><code>63d52294eb0e3f0014174288186d388b4ddbf2c67d1ce8af1d9726eb0c3ab240</code></td><td>canonical JSON 作为 hashing/signing 的稳定输入</td></tr>
+</tbody></table>
+<p>所有正文 SHA 均对 2026-07-17 取得的 UTF-8 原文计算；Hydra/Pydantic/CPython 使用 pinned GitHub revision，RFC 8785 为不可变 RFC 文本。PyTorch 页面 hash 复用 <a href="vol_05_eng018_scheduler_preemption_retry_source_freeze.html">ENG-018 Source Freeze</a> 的规范化主文本记录。</p>
+<h2 id="3">3. 官方语义：覆盖顺序不是跨框架常量</h2>
+<p>Hydra 1.3 的 Defaults List 使用 depth-first composition；多个 config 定义同一值时后者覆盖前者，<code>_self_</code> 决定当前文件在 Defaults List 的相对位置。Hydra CLI override 又区分：匹配 config group 的操作修改 Defaults List，其余操作修改 config object；<code>+</code>、<code>++</code>、<code>~</code> 分别涉及 append、append-or-override 和 delete。[1][2]</p>
+<p>pydantic-settings 2.14.1 的默认优先级是：CLI（启用时）→ settings initializer → environment → dotenv → secrets directory → model defaults；高优先级 source 覆盖低优先级 source，但 nested object 可由低优先级 source 补齐缺失子键。该顺序可以用 <code>settings_customise_sources</code> 改写。[3]</p>
+<p>CPython <code>argparse</code> 只承诺 CLI 参数缺失时使用 default，并用 <code>type</code> 做转换/检查；它不定义 YAML、env 与 CLI 的合并顺序。[4] 因而面试回答必须先说“我的项目声明了哪套 precedence”，不能把某个框架的默认值当成普遍规律。</p>
+<h2 id="4-engineering-contract-resolve-validate-redact-canonicalize">4. Engineering Contract：resolve → validate → redact → canonicalize</h2>
+<p>项目应显式声明合并层和方向。例如右侧优先时：</p>
+<div class="formula">\[
+C_{eff}=V\left(M(D,F,E,A,R)\right)
+\]</div>
+<p>其中：(D) 是代码/schema defaults，(F) 是 composed file config，(E) 是 allowlisted environment，(A) 是 CLI/API override，(R) 是 runtime-derived 值；(M) 是项目声明的 merge，(V) 是 typed validation。这个公式是工程合同，不表示 Hydra 与 pydantic-settings 的默认顺序相同；项目必须把实际 order 写进 manifest。</p>
+<p>每个叶子字段至少保存：</p>
+<pre><code class="language-text">field_path / typed_value / semantic_role
+winning_source / source_locator / source_revision
+overridden_values[] / conversion / validation
+redaction_policy / included_in_semantic_hash</code></pre>
+<p>仅保存最终 YAML 不足以回答“为什么是这个值”；仅保存命令字符串又无法证明 shell 展开、env 注入和运行时推导后的 typed value。</p>
+<h2 id="5-semantic-config-execution-config-secret">5. Semantic Config、Execution Config 与 Secret</h2>
+<table><thead><tr><th>类别</th><th>典型字段</th><th>identity 处理</th></tr></thead><tbody>
+<tr><td>semantic</td><td>dataset/filter/revision、model/processor/normalizer、loss、optimizer、LR、seed、batch/sampler、eval protocol</td><td>进入 semantic config hash</td></tr>
+<tr><td>conditional semantic</td><td>world-size、hardware/backend、dtype、worker count</td><td>如果改变 effective batch、sampler、numerics 或 protocol，则进入；否则仍记录在 execution manifest</td></tr>
+<tr><td>execution/attempt</td><td>output/log/tmp path、hostname、scheduler job/attempt、<code>RANK/LOCAL_RANK</code>、restart count、timestamps</td><td>不进入 stable semantic ID；进入 attempt ledger</td></tr>
+<tr><td>secret</td><td>token、password、credential、private key</td><td>不落 raw value；只记录 provider、key/version reference 与 redaction status</td></tr>
+</tbody></table>
+<p>TorchElastic 的 rank/world-size 可能变化，因此不能把 <code>rank0</code> 或一次 attempt 的 <code>LOCAL_RANK</code> 编进稳定 logical run identity。[5] 但 world-size 若改变 effective batch 或 sampler partition，就必须进入 semantic comparison 或显式标为允许变化的恢复维度。</p>
+<h2 id="6-canonical-run-identity">6. Canonical Run Identity</h2>
+<p>原始 YAML 的 key 顺序、注释、浮点/字符串表现和相对路径都可能不同；在语义相同的情况下直接 hash 原始文件会产生不同 ID。推荐先完成类型解析、路径/revision 归一化、secret redaction 和 semantic field selection，再使用 RFC 8785 等 canonical representation 生成 bytes。[6]</p>
+<div class="formula">\[
+run\_key=\operatorname{SHA256}\left(JCS(C_{semantic})\,\|\,code\_sha\,\|\,data\_manifest\_sha\,\|\,base\_model\_revision\right)
+\]</div>
+<p>这里 <code>run_key</code> 标识实验语义，不等于 scheduler job ID、W&amp;B/MLflow ID 或 TorchElastic run ID；<code>logical_run_id</code> 可以引用该 key，而 <code>attempt_id</code> 每次重试新建。不要把 raw secret 放入 hash：即使只保存 digest，也可能形成离线猜测或跨系统关联风险。</p>
+<h2 id="7-local-evidence-uwm">7. Local Evidence：UWM</h2>
+<p>本地 launcher：</p>
+<pre><code class="language-text">C:\Users\mousongzhe\Project\wm\uwm_libero_official_repro\scripts\remote_muxi_libero_finetune_5tasks_ddp.sh
+SHA E5B6DCB03FD6612B996AB9DFD3227CB2426E0A147F21FACEE383BBF56EC29D92</code></pre>
+<p>该脚本使用 <code>${VAR:-default}</code> 接受外部 env 或脚本默认值，导出 CUDA/MACA/NCCL/W&amp;B/HF runtime env，再调用 UWM 的 Hydra entrypoint，以 CLI override 写入 <code>dataset</code>、<code>hydra.run.dir</code>、checkpoint、batch、step、rollout 和 model 参数。它直接证明“env defaults + Hydra CLI overrides”存在。</p>
+<p><a href="vol_05_local_artifact_gate_eng004_006.html">ENG-004..006 Artifact Gate</a> 还记录 <code>ds_config_effective.json</code>（SHA <code>2bf8216f04391ce4323fc79ae74aae9728e8b13f8d4057f281734a0a4da54642</code>），能证明某个 DeepSpeed effective subset。当前仍没有：完整 Hydra resolved config、逐字段 winning source、env allowlist/hash、launcher SHA 与 run/checkpoint 的同一 immutable manifest。launcher 会打印若干路径/参数，但日志文本不是 typed provenance ledger。</p>
+<h2 id="8-local-evidence-openpivla">8. Local Evidence：OpenPiVLA</h2>
+<p>formal trainer：</p>
+<pre><code class="language-text">C:\Users\mousongzhe\Project\openpivla_deployment\repro_train\openpi_src\src\openpi\training\vla_qwen3_repro\formal_train.py
+SHA 51B67D3E04496E68076BF6461506141EBCDDF9A82E6C30AF1FDC0F1F2CCC6F94</code></pre>
+<p>该代码通过 <code>argparse</code> 定义 recipe/model/data/output、batch/accumulation、LR、dtype、checkpoint、LoRA 和 seed；从 env 读取 <code>WORLD_SIZE/RANK/LOCAL_RANK</code>。<code>formal_plan.json</code> 保存 recipe/resource/training scale/paths，checkpoint 的 <code>trainer_state.json</code> 保存 <code>vars(args)</code>，因此它比“只留命令”更接近 effective args snapshot。</p>
+<p>三份 YAML 的 SHA 分别为 <code>78D6C4C9D5A1BA06FCA6C6EE6234DC8400A9501346D9BC8B272A82EED76A3601</code>、<code>247151EC457DA90A57AF3416F4A79C563523993345ADABC35316F2612A1F36D2</code>、<code>42D0C0A341C118A66C856EF97509F414240F279942D158B6D4BF916FCB64B592</code>，每份只有 <code>mode/notes/run_id</code> 三个顶层键；<code>formal_train.py</code> 未加载 YAML。故不能把这些 YAML 当作 formal trainer 的完整输入 config，也不能据此证明 YAML→CLI→env precedence、canonical run hash 或 archive/formal lineage。</p>
+<h2 id="9-local-evidence-opd">9. Local Evidence：OPD</h2>
+<p>formal OPD source：</p>
+<pre><code class="language-text">C:\Users\mousongzhe\muxi\train_opd_online_vl.py
+SHA BF9120B5D88180EA4C4725C6F4934913F35FDD36ECB4BC8E6B3B089FB964D8D9</code></pre>
+<p>该脚本用 <code>argparse</code> 接收 model/data/output、教师、route、DeepSpeed、batch、optimizer、save/resume 和 OPD generation 参数；<code>load_teacher_ds_config()</code> 读取 JSON，并用 <code>WORLD_SIZE</code> 把 <code>train_batch_size/micro_batch/accumulation</code> 的 <code>auto</code> 改成数值。这个 runtime mutation 说明“source JSON hash”不等于“effective config hash”。</p>
+<p>本地 <code>zero2.json</code> / <code>zero3_opd_maca_gradclip5.json</code> SHA 为 <code>C2F2E295B3F2E8E67CBCDF1052710D7ED7A1AD9D95F4C44C9EC40AF178A50BA9</code> / <code>CA5C4030CCEC5DAE16B3614ED072035E6BB05CFD3BF411C92CC51D411D6C655F</code>；两个训练 manifest SHA 为 <code>CED5328B5EDE5D2BD758A9E6C96841F7A37F69E32EFC1140EFB7F8EF05F9B60F</code> / <code>7BB3CF6463507E5C0D8C4DECCDA7AE7B2288B0DA1D4A019E4CAB862C18AB6185</code>。训练结束的 <code>opd_online_run_summary.json</code> 只保存 data/model/teachers、部分 save 与 OPD summary，没有完整 <code>vars(args)</code>、mutated DeepSpeed config、env provenance、code/config hash。因此现有证据不能证明唯一 effective config 或 old/new OPD run identity 已闭合。</p>
+<h2 id="10-resolver-manifest">10. Resolver 与 Manifest 伪代码（工程合同）</h2>
+<pre><code class="language-python">def resolve_run(defaults, files, env, cli, runtime, schema, source_revisions):
+    # 1. Read only allowlisted env keys; never copy the whole process environment.
+    env_values = read_allowlisted_env(env, schema.env_allowlist)
+
+    # 2. Merge with one declared precedence and keep every overwritten candidate.
+    merged, field_provenance = merge_with_trace(
+        defaults, files, env_values, cli, runtime, precedence=schema.precedence
+    )
+
+    # 3. Convert and validate types before creating an identity.
+    effective = schema.validate(merged)
+    semantic, execution, secret_refs = classify_and_redact(effective, schema)
+
+    # 4. Canonicalize semantic values, then bind code/data/model revisions.
+    run_key = sha256(jcs(semantic), source_revisions.code,
+                     source_revisions.data, source_revisions.base_model)
+
+    # 5. Persist effective config and provenance before training side effects begin.
+    return immutable_manifest(run_key, semantic, execution, secret_refs,
+                              field_provenance, source_revisions)</code></pre>
+<p>伪代码不代表 Hydra、Pydantic 或任一项目已有实现；<code>merge_with_trace</code>、schema、JCS、secret provider 和 immutable store 均需实际落地、测试并绑定 checkpoint/eval。</p>
+<h2 id="11-gate">11. Gate 与不能使用的口径</h2>
+<table><thead><tr><th>Gate</th><th>当前状态</th><th>退出条件</th></tr></thead><tbody>
+<tr><td>official precedence/type/canonicalization</td><td><code>PASS WITH WARNING</code></td><td>官方机制已冻结；跨框架统一顺序继续标为项目合同</td></tr>
+<tr><td>UWM config lineage</td><td><code>WARN</code></td><td>full resolved Hydra config + field source map + launcher/env/code/data/checkpoint hashes</td></tr>
+<tr><td>OpenPiVLA config lineage</td><td><code>WARN</code></td><td>args snapshot 与 recipe/YAML/command/env source map、canonical hash、checkpoint/eval manifest 对齐</td></tr>
+<tr><td>OPD config lineage</td><td><code>WARN</code></td><td>full args + mutated DeepSpeed effective config + env provenance + old/new run lineage</td></tr>
+<tr><td>secret safety</td><td><code>PENDING</code></td><td>env allowlist、redaction test、no-secret-log scan、secret reference/version contract</td></tr>
+<tr><td>knowledge/card</td><td><code>DRAFTED / UNSEEN</code></td><td>ENG-019 知识节点和一张题卡已生成；保持 <code>unseen</code>，后续补 resolver/provenance/secret-canary artifacts；ENG-020 后置</td></tr>
+<tr><td>oral drill</td><td><code>PENDING</code></td><td>候选人真实回答后才创建或更新 coaching state</td></tr>
+</tbody></table>
+<p>不能说：</p>
+<ol><li>“用了 Hydra，所以每次 run 自动可复现”——仍需 resolved config、source revisions、data/model/checkpoint 与 runtime artifact。</li><li>“CLI 永远覆盖 env”——只在声明并验证的 resolver/default policy 中成立。</li><li>“YAML 一样就是同一个 run”——runtime-derived、code/data/model revision 和 typed value 可能不同。</li><li>“W&amp;B/TorchElastic run ID 就是实验 identity”——它们是服务/运行标识，不自动等价于 semantic config hash。</li><li>“把所有 env dump 进日志最可追溯”——可能直接泄露 token、credential 和内部路径。</li><li>“config 文件 hash 已经绑定 effective config”——CLI/env/default/<code>auto</code> mutation 后的值可能不同。</li></ol>
+<h2 id="12-source-gate">12. Source Gate 结论</h2>
+<p>ENG-019 的 source-first gate 已闭合：Hydra 支持 composition/override，pydantic-settings 给出可自定义的 source priority，argparse 支持 CLI default/type conversion，torchrun 注入并可能改变 runtime identity，RFC 8785 提供 canonical JSON。它们共同支持“显式 resolve、typed validate、field provenance、secret redaction、semantic/attempt identity 分离”的工程合同，但不证明本地三个项目已经完成这套系统。</p>
+<p>当前本地最强证据是：UWM launcher 的 env→Hydra CLI override、OpenPiVLA 的完整 argparse snapshot、OPD 的 JSON→<code>WORLD_SIZE</code> effective mutation和部分 run summary。共同缺口是统一 schema、逐字段 provenance、secret-safe canonical config hash 以及 run→attempt→checkpoint→eval 的 immutable manifest。Verdict 保持 <code>WARN</code>；ENG-019 知识页与一张 <code>unseen</code> 题卡已在下游 bounded slice 生成，ENG-020 不展开。</p>
+<h2 id="references">References</h2>
+<ol><li>Meta, <a href="https://github.com/facebookresearch/hydra/blob/7ef3acab78b46bf82370e7931f748aef5fd80e5f/website/versioned_docs/version-1.3/advanced/defaults_list.md">Hydra 1.3 Defaults List</a>。</li><li>Meta, <a href="https://github.com/facebookresearch/hydra/blob/7ef3acab78b46bf82370e7931f748aef5fd80e5f/website/versioned_docs/version-1.3/advanced/override_grammar/basic.md">Hydra 1.3 Basic Override Grammar</a>。</li><li>Pydantic, <a href="https://github.com/pydantic/pydantic-settings/blob/1d0ea26f9e04ec9e20767d70e4508bb33c8708e7/docs/index.md">pydantic-settings 2.14.1 documentation</a>。</li><li>Python Software Foundation, <a href="https://github.com/python/cpython/blob/ebf955df7a89ed0c7968f79faec1de49f61ed7cb/Doc/library/argparse.rst">Python 3.14 <code>argparse</code></a>。</li><li>PyTorch 2.13, <a href="https://docs.pytorch.org/docs/2.13/elastic/run.html">Elastic Run / torchrun</a>。</li><li>RFC Editor, <a href="https://www.rfc-editor.org/rfc/rfc8785.html">RFC 8785: JSON Canonicalization Scheme</a>。</li><li>本仓库，<a href="vol_05_local_artifact_gate_eng004_006.html">ENG-004..006 Artifact Gate</a>、<a href="vol_05_eng013_reproducibility_source_freeze.html">ENG-013 Reproducibility</a>、<a href="vol_05_eng018_scheduler_preemption_retry_source_freeze.html">ENG-018 Scheduler / Retry</a> 与五项目 evidence inventory。</li></ol>
+</article></body></html>

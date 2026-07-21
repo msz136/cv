@@ -1,0 +1,37 @@
+{
+  "artifact": "evidence/projects/openpivla_p0_bundle_audit.md",
+  "html": "evidence/projects/openpivla_p0_bundle_audit.html",
+  "review_date": "2026-07-21",
+  "status": "p0_audited / partial / checkpoint-pending / ownership-pending",
+  "verdict": "WARN",
+  "source_sha256": "01FF0256E5E2197586FF28754FE0956B5EAFF9CDF94CA384904699617F9DBC2A",
+  "scope": {
+    "project": "OpenPiVLA",
+    "p0_fields": 10,
+    "checkpoint_verified": false,
+    "raw_benchmark_bundle": false,
+    "parser_controller_roundtrip": false,
+    "ownership_confirmed": false,
+    "benchmark_claims_promoted": 0,
+    "question_cards_changed": 0,
+    "coaching_state_created": false
+  },
+  "checks": {
+    "trainer_code": "PASS WITH WARNING (Qwen3-VL/LoRA/CE/save path is local-direct; final load smoke missing)",
+    "representation": "PASS WITH WARNING (H=15,D=72 and limit=16 conflict directly reproduced; parser/controller missing)",
+    "loss_mask": "PASS (padding-only mask and full-chat CE boundary recorded)",
+    "official_lineage": "PASS WITH WARNING (official 7D/4-step rollout separated from formal Qwen lineage)",
+    "checkpoint_gate": "FAIL TO PROMOTE (report/path references only; no local binary/hash)",
+    "raw_metric_gate": "FAIL TO PROMOTE (97.4 summary lacks raw trials/episodes/protocol denominator)",
+    "ownership_gate": "PENDING (13-row ledger exists; candidate confirmation and pre-snapshot diff missing)",
+    "renderer": "PASS (ARIS academic v1 HTML rendered from Markdown)",
+    "browser_visual_check": "PENDING (browser connector unavailable)"
+  },
+  "open_items": [
+    "Export immutable formal checkpoint/processor/normalizer/config hashes and load smoke.",
+    "Bind 224_h10_40000 to raw episodes, trial/seed/init/task protocol and reducer.",
+    "Add strict JSON parser and controller/normalizer round-trip tests.",
+    "Answer OWN-OPV-001 and map personal/collaborative/tool ownership to concrete functions."
+  ],
+  "next": "Keep OpenPiVLA PARTIAL/WARN; ask one ownership question only and do not promote 97.4 or official-comparison claims."
+}

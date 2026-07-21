@@ -1,0 +1,87 @@
+{
+  "artifact": "sources/vol_04_sim2real_claim_to_mechanism.md",
+  "html": "sources/vol_04_sim2real_claim_to_mechanism.html",
+  "review_date": "2026-07-20",
+  "status": "drafted / primary_papers_and_official_docs_reviewed / design_test_matrix_drafted / independent_fact_reviewed",
+  "verdict": "WARN",
+  "source_sha256": "5144CBCD871D8F2AAB3D2F5A604F84F7E902F80021DA0DAFB21E0C053DDACA60",
+  "evidence_cutoff": "2026-07-20",
+  "upstream": {
+    "primary_papers": [
+      "arXiv 1703.06907v1",
+      "arXiv 1710.06537v3",
+      "arXiv 1810.05687v4",
+      "arXiv 1804.10332v2",
+      "arXiv 1702.02453v3",
+      "arXiv 2107.04034v1",
+      "arXiv 1812.03201v2",
+      "arXiv 2010.15920v2",
+      "arXiv 1705.10702v4",
+      "arXiv 1808.00177v5"
+    ],
+    "paper_metadata_verified": true,
+    "paper_method_text_verified": true,
+    "paper_license_boundary": "arXiv non-exclusive distribution license; facts cited, figures/code not reused",
+    "official_docs": [
+      "MuJoCo stable Modeling/XML Reference accessed 2026-07-16",
+      "OpenCV 4.x calib3d accessed 2026-07-16",
+      "robosuite 1.5 controller docs accessed 2026-07-16"
+    ],
+    "mujoco_head_observed": "0ce5e98916d8128ddb0eeb2f17304d2d9d29eecf",
+    "robosuite_head_observed": "5ce6643f3092639d08f7b0f90ed1c6a84f50552c",
+    "docs_build_commit_verified": false,
+    "independent_pdf_refetch": "PASS (10 fixed arXiv revisions, 124 pages, 0 blank pages; hashes recorded in independent review)",
+    "official_source_refetch": "PASS WITH WARNING (MuJoCo 3.10.0 source tag, OpenCV fixed commit and robosuite v1.5.1 files; stable docs response is not a runtime build proof)",
+    "deterministic_probes": "PASS (12/12 geometry, interface, range, timing and safety contract probes)",
+    "source_knowledge_card_reconciliation": "PASS WITH WARNING (WM-031..038 and WM-040..044 reconciled; public synthesis remains distinct from local evidence)"
+  },
+  "coverage": {
+    "question_ids": [
+      "VLA-WM-031",
+      "VLA-WM-032",
+      "VLA-WM-033",
+      "VLA-WM-034",
+      "VLA-WM-035",
+      "VLA-WM-036",
+      "VLA-WM-037",
+      "VLA-WM-038",
+      "VLA-WM-040",
+      "VLA-WM-041",
+      "VLA-WM-042",
+      "VLA-WM-043",
+      "VLA-WM-044"
+    ],
+    "source_claims_audited": 36,
+    "local_real_robot_claims_verified": 0
+  },
+  "checks": {
+    "gap_taxonomy": "PASS AS SYNTHESIS (visual/sensor, dynamics, control/timing, contact, task/protocol and safety separated)",
+    "visual_domain_randomization": "PASS (Tobin randomization variables and ablation boundary mapped)",
+    "camera_contract": "PASS (intrinsics, extrinsics and distortion mapped to OpenCV/MuJoCo semantics)",
+    "dynamics_randomization": "PASS (distribution objective, parameter cadence and robustness-optimality boundary mapped)",
+    "system_identification": "PASS (measurement-centered ranges, explicit OSI and latent adaptation separated)",
+    "simopt": "PASS (real-trajectory distribution adaptation separated from exact parameter identification)",
+    "control_timing": "PASS (physics/controller/policy clocks, latency and action queue contract mapped)",
+    "actuator_model": "PASS (measured latency/actuator evidence and required paired tests mapped)",
+    "contact_semantics": "PASS (friction dimensions, solref/solimp, timestep and gripper/controller boundary mapped)",
+    "adaptation_methods": "PASS (fixed DR, SimOpt, UP-OSI, RMA, recurrent SysID, residual and real fine-tune compared)",
+    "residual_policy": "PASS WITH WARNING (base plus bounded residual mapped; no generic stability guarantee claimed)",
+    "uncertainty_and_chance_constraints": "PASS AS DESIGN FRAMEWORK (Cautious MPC source verified; VLA calibration not runtime-tested)",
+    "recovery_and_fallback": "PASS AS DESIGN FRAMEWORK (Recovery RL risk gate mapped; zero-risk guarantee not claimed)",
+    "paired_test_matrix": "PASS (single-intervention tests and evidence limits specified)",
+    "personal_truth_boundary": "PASS (simulation work not relabeled as real-hardware Sim2Real)",
+    "html_static_validation": "PASS (one h1, full source SHA, 30 unique anchors, 30 valid fragments, 6 consistent tables, one commented pseudocode block, MathJax)",
+    "browser_visual_check": "BLOCKED (in-app Browser URL policy rejects local file:// navigation; static checks do not substitute for visual QA)",
+    "independent_fact_review": "PASS WITH WARNING (see vol_04_sim2real_independent_fact_review.md)",
+    "local_hardware_artifacts": "MISSING",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep MuJoCo stable HTML response hashes separate from the 3.10.0 source tag; do not claim a local runtime build from either alone.",
+    "Collect any available real camera calibration, controller frequency, latency, actuator and contact measurement artifacts.",
+    "Do not promote simulation-only LIBERO/RoboCasa work to a Sim2Real claim without real-hardware evidence.",
+    "Run browser visual QA and repair any mobile/table overflow before changing the verdict.",
+    "Keep all VOL 04 cards unseen until real oral practice."
+  ],
+  "next": "Run browser QA for this independent review and then reconcile VOL 04 Audit E / repository completion; keep all cards unseen until oral practice."
+}

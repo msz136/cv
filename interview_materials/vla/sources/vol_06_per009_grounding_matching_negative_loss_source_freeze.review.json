@@ -1,0 +1,61 @@
+{
+  "artifact": "sources/vol_06_per009_grounding_matching_negative_loss_source_freeze.md",
+  "html": "sources/vol_06_per009_grounding_matching_negative_loss_source_freeze.html",
+  "review_date": "2026-07-20",
+  "status": "source_frozen / VLA-PER-009 / primary_official_checked / local_ce_top1_kl_boundary / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "D97851CD4330A8C412AACA066FBE267FBC2E8FCD5646B3938697BECAAB790AD0",
+  "scope": {
+    "question_id": "VLA-PER-009",
+    "primary_papers": 4,
+    "first_party_repository_files": 4,
+    "implementation_bridge_files": 5,
+    "repository_review_bridges": 2,
+    "local_files_directly_read": 5,
+    "local_metric_rows_recomputed": 2500,
+    "deterministic_probes": 3,
+    "knowledge_generated": 1,
+    "question_cards_generated": 1,
+    "practice_state": "260 generated cards unseen; PER-009 source + knowledge + card synchronized"
+  },
+  "frozen_revisions": {
+    "grounding_dino_paper": "arXiv:2303.05499v5 / 2024-04-15",
+    "detr_paper": "arXiv:2005.12872v3 / 2020-05-28",
+    "focal_loss_paper": "arXiv:1708.02002v2 / 2018-02-07",
+    "giou_paper": "arXiv:1902.09630v2 / 2019-04-05",
+    "grounding_dino_repo": "IDEA-Research/GroundingDINO@856dde20aee659246248e20734ef9ba5214f5e44",
+    "transformers": "v4.57.1 / 8cb5963cc22174954e7dca2c0a3320b7dc2f4edc",
+    "local_muxi": "756e27e16adcfb3ccbfe98c2920dda42095b127f"
+  },
+  "checks": {
+    "bounded_slice": "PASS (the source freeze remains synchronized after the separate PER-009 card-only slice; no PER-010 artifact or mastery change)",
+    "primary_and_official_sources": "PASS WITH WARNING (four version-pinned paper PDFs, pinned GroundingDINO code, Transformers 4.57.1 loss bridge and five clean local artifacts were read and hashed; first-party pinned repo lacks the complete matcher/criterion body)",
+    "training_schema": "PASS (B/Q/L logits, normalized boxes, class labels, label maps, text masks, assignments and distributed num-boxes denominator are separated)",
+    "matching_contract": "PASS (token focal-style class cost, L1, negative GIoU, one-to-one SciPy assignment and re-matching for auxiliary outputs are explicit)",
+    "matching_vs_loss": "PASS (discrete cost/assignment, final gradient losses, separate coefficients and logging-only cardinality are not conflated)",
+    "negative_taxonomy": "PASS WITH WARNING (unmatched-query and non-target-token zeros are separated from padding masks, dataset negatives and hard-negative mining; the latter two recipes remain unverified)",
+    "focal_loss": "PASS (alpha/gamma semantics, easy-negative down-weighting, valid-token numerator and deterministic hard/easy probe are frozen)",
+    "box_losses": "PASS (matched-pair L1 and GIoU, normalized cxcywh/corner conversion, num-boxes denominator and metric/loss boundary are frozen)",
+    "reduction_and_distributed": "PASS WITH WARNING (valid-token sum, cross-worker average GT denominator, sample/route/batch ordering and auxiliary/encoder branches are explicit; actual local runtime world size/config is not archived here)",
+    "weight_discrepancy": "PASS WITH WARNING (Grounding DINO v5 narrative disagrees with Table 8 on classification matching/final weights; Transformers 4.57.1 aligns with Table 8, so revision/config pinning is mandatory)",
+    "local_sft_boundary": "PASS WITH WARNING (prompt/padding labels are -100 and assistant tokens are supervised; loaded model internal CE reduction is not proven by the wrapper and SafeTrainer can emit zero-loss fallback steps)",
+    "local_top1_boundary": "PASS (object/region teacher top-1 labels, per-sample valid-token CE, route weights and batch mean are mapped without calling them Hungarian or box losses)",
+    "local_online_kl_boundary": "PASS WITH WARNING (generated-response full-vocabulary KL, optional veto target, prefix mask, sample weight and route/rank invariants are mapped; teacher correctness and eval uplift remain unverified)",
+    "local_metric_recompute": "PASS WITH WARNING (2500 CSV rows reproduce first-100, last-100 and last-row summary values; checkpoint, command, holdout raw predictions and robot results are not bound)",
+    "typed_manifest_and_probes": "PASS (loss family, schemas, maps, masks, coefficients, negative semantics, reduction order, worker counts, fallback events and raw loss dictionary are specified; three deterministic probes pass)",
+    "cross_volume_dedup": "PASS (PER-007 inference, PER-008 representation, PER-010 metric, PER-011 teacher noise and PER-015 controller gate remain separate)",
+    "project_truth_boundary": "PASS (public detector mechanisms, local CE/top1/KL code, local metrics and missing evaluation/ownership evidence are separated)",
+    "practice_state": "PASS (260 cards remain unseen; PER-009 source/knowledge/card are synchronized and coaching_state.md is absent)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, eighteen H2 including the TOC heading, eleven H3, six tables, three code blocks, six formula blocks, canonical/HTML/review SHA synchronized after the inline-math and list-spacing repairs, balanced delimiters and zero formula-em/control-character issues)",
+    "browser_visual_check": "BLOCKED (the existing in-app Browser file:// policy restriction remains; static checks do not substitute for desktop/narrow visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized VLA-PER-009 atomic card unseen until a real oral drill.",
+    "Archive the exact local command/config/checkpoint/model class, raw per-component losses, denominators and zero-loss/dummy/retry event ledger.",
+    "Bind the 2500-row optimization trace to immutable checkpoints and same-protocol holdout raw predictions before claiming quality uplift.",
+    "Treat Grounding DINO classification coefficients as revision/config-dependent because paper narrative and Table 8 disagree.",
+    "Keep all 260 cards unseen and do not create coaching_state.md before a real oral drill."
+  ],
+  "next": "Generate only the VLA-PER-010 metric/parser source freeze; do not generate its knowledge/card or change mastery in the same slice."
+}

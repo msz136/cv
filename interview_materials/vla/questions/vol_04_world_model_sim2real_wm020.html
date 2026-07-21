@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 VLA-WM-020 原子题卡：Posterior Collapse / Action Ignoring / Leakage / Shortcut</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_04_world_model_sim2real_wm020.md">
+<meta name="aris:source-sha256" content="a9430dd549946ff3606e78389d3e452a234330cd08f5942179b6066636514441">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>a9430dd549946ff3606e78389d3e452a234330cd08f5942179b6066636514441</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_04_world_model_sim2real_wm020.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#world-model-failure">World model 四类 failure 如何诊断</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 04 VLA-WM-020 原子题卡：Posterior Collapse / Action Ignoring / Leakage / Shortcut</h1>
+<div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-18 覆盖范围：<code>VLA-WM-020</code> 难度：L3 1 题 优先级：P1 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_04_world_model_sim2real_wm020_failure_diagnostics.html">WM-020 Knowledge</a>；来源边界见 <a href="../sources/vol_04_wm020_failure_diagnostics_source_freeze.html">WM-020 Source Freeze</a>。</div>
+<h2 id="world-model-failure">World model 四类 failure 如何诊断</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-WM-020</b> · 怎样发现 posterior collapse、action ignoring、future leakage 与 background shortcut？</summary>
+<p><strong>面试意图</strong>：判断你能否把 failure 映射到不同控制变量和干预，而不是用一个 loss 解释所有 world-model 问题。</p>
+<p><strong>30 秒回答</strong>：四层排查：collapse 看 posterior/prior 与 latent ablation；ignoring 固定观测做 action swap；leakage 查时间戳、causal mask、未来帧和 shift；shortcut 固定任务动作换背景。冻结 split、mask、seed、horizon；单一 loss 不能证明因果有效。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：collapse 查 posterior/prior、KL、latent usage 和 zero/mean ablation；低 KL 不是充分条件。ignoring 用固定 observation 做 action swap/sweep，看 future delta。leakage 画可见集合，移除未来帧并核对 timestamp、shift、causal mask 和 teacher/open-loop gap。shortcut 固定 task/action 换背景或相机，再做 counterfactual。所有结果绑定 checkpoint、split、mask、seed、horizon 和 raw trace；没有 probe 只能说测试方案。</p>
+<p><strong>诊断 / 证据</strong>：输出 latent usage、action intervention delta、visibility matrix、future-removal replay、per-offset teacher/open-loop，以及 background/domain holdout。action sensitivity 低时先排除延迟、接触时间窗、归一化和噪声；换背景掉点后仍需 object/action counterfactual 才能称 shortcut。</p>
+<p><strong>项目挂钩</strong>：UWM/LIBERO 可挂 action/image conditional loss、normalizer、fixed/reset protocol 与 mask；WAM/Cosmos 可挂 world/value/action slot 与 offline proxy；OpenPiVLA 可挂 causal-CE/sequence mask；OPD/Harness 可挂 schema、scorer 和 episode trace。安全表达是“我能设计并审计这些 probe”，不把项目已有 MSE、0-success、格式 scorer 或公开代码写成 WM-020 failure 的个人实验证据。</p>
+<p><strong>追问树</strong>：低 KL 是否一定 collapse？action token 存在为何仍会 ignoring？怎样区分 action delay 与 ignoring？causal mask 正确但仍 leakage 可能在哪？为什么随机 split 会掩盖 background shortcut？background swap 与 domain randomization 有何差异？teacher-forced 高分为什么不能证明闭环？需要哪些 raw artifacts 才能升级结论？</p>
+<p><strong>易错点</strong>：把 KL 低直接等于 collapse；把 attention/action gradient 当因果证明；只检查 <code>causal=True</code> 不查数据 shift；把背景增强一次当作 shortcut 已消除；把 offline loss 或 video quality 当作 action consequence；忽略 horizon、timestamp、normalizer、valid mask 和 episode denominator。</p>
+<p><strong>危险答案</strong>：说“action 在输入里所以模型一定用了它”“teacher-forced accuracy 高就没有泄漏”“domain randomization 后 shortcut 肯定消失”“低 KL 说明模型坏了”“一个 world-model loss 下降证明项目闭环成功”。</p>
+<p><strong>来源</strong>：[1][2][3][4][5][6]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../sources/vol_04_wm020_failure_diagnostics_source_freeze.html">WM-020 Source Freeze</a>：四类 failure、诊断矩阵和项目边界。</li><li><a href="../sources/vol_04_world_model_foundations_claim_to_code.html">World Model Foundations Audit A</a>：RSSM、one-step/open-loop、actionability 与 model bias。</li><li><a href="../sources/vol_04_world_model_foundations_independent_fact_review.html">DreamerV3 independent fact review</a>：posterior/prior、dyn/rep KL、free-nats 与 reimplementation 边界。</li><li><a href="../sources/vol_03_act_claim_to_code.html">ACT claim-to-code audit</a>：CVAE posterior/prior、KL、action chunk 与 latent train/infer gap。</li><li><a href="../sources/vol_03_architecture_execution_claim_to_code.html">Architecture / execution audit</a>：sequence、causal mask、loss mask 与 future visibility。</li><li><a href="../knowledge/vol_06_per003_multiview_temporal.html">PER-003 Multi-view / Temporal</a>：timestamp、presence、causal/ordered mask 与 replay leakage。</li></ol>
+</article></body></html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 ENG-016：Student + Multiple Teachers 显存与调度来源冻结</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eng016_multiteacher_memory_scheduling_source_freeze.md">
+<meta name="aris:source-sha256" content="1bcee601fd025d20ad27976a54f56e26e9f11142ce894d63f7a6baff66fabd2f">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>1bcee601fd025d20ad27976a54f56e26e9f11142ce894d63f7a6baff66fabd2f</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eng016_multiteacher_memory_scheduling_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question-scope">1. 问题与最小范围（Question / Scope）</a></li><li><a href="#2">2. 证据类型与冻结输入</a></li><li><a href="#2-1-normalized-raw">2.1 官方来源 normalized / raw 指纹</a></li><li><a href="#3-student-teacher">3. Student/teacher 的最小计算合同</a></li><li><a href="#3-1-teacher-teacher">3.1 Teacher 冻结不等于 teacher 不占显存</a></li><li><a href="#3-2-soft-target-kl-hard-label-loss">3.2 Soft-target KL 与 hard-label loss</a></li><li><a href="#3-3">3.3 多教师聚合是一个额外的工程设计</a></li><li><a href="#4">4. 多教师显存与调度策略</a></li><li><a href="#4-1-schedule">4.1 三种基本 schedule</a></li><li><a href="#4-2-peak-memory">4.2 Peak memory 账本</a></li><li><a href="#4-3-step-time">4.3 Step-time 与调度代价</a></li><li><a href="#5-replay">5. 验证矩阵与最小 replay</a></li><li><a href="#6-opd">6. 本地 OPD 证据与安全口径</a></li><li><a href="#7-claim">7. 来源到 claim 的边界</a></li><li><a href="#8-upstream">8. 最小验证伪代码（工程合同，不是 upstream 实现）</a></li><li><a href="#9-gate">9. Gate、风险与下一步</a></li><li><a href="#references">参考来源（References）</a></li></ol></nav>
+<h1>VOL 05 ENG-016：Student + Multiple Teachers 显存与调度来源冻结</h1>
+<div class="meta">审计日期：2026-07-17 状态：<code>source_frozen / VLA-ENG-016_knowledge+card_drafted / WARN</code> 对应问题：<code>VLA-ENG-016</code>——student 同时使用多个 teacher 时，如何安排显存、forward、蒸馏 loss 与调度？ 当前边界：本文件冻结蒸馏目标、teacher no-grad、FSDP/ZeRO state 语义和本地 OPD hook；ENG-016 知识正文与一张 <code>unseen</code> 题卡已生成，single-teacher ablation、吞吐/显存 A/B 和个人收益结论仍后置。</div>
+<h2 id="1-question-scope">1. 问题与最小范围（Question / Scope）</h2>
+<p>本切片只回答五个面试准备问题：</p>
+<ol><li>teacher 为什么要冻结参数并在 <code>no_grad</code> 下 forward？<code>detach</code>、<code>no_grad</code> 和 CPU/NVMe offload 分别解决什么问题？</li><li>多教师的 logits/representation 如何聚合？route metadata、confidence weighting 和 learned router 的边界是什么？</li><li>“全部 teacher 常驻 GPU”“逐个 teacher 顺序 forward”“CPU/NVMe staging”分别如何影响 peak memory、copy/I/O 和 latency？</li><li>如何设计 student hard-label loss、teacher KL loss、mask、temperature 和 teacher weight 的可复现合同？</li><li>结合 OPD 本地证据，怎样描述五教师 coldstart/online OPD，而不把组合路线写成单因果提升？</li></ol>
+<p>本页不声称多个 teacher 已经优于单 teacher，不声称 OPD 的 loss/吞吐/成功率收益，也不把 <code>preloaded_zero3</code> 或 route metadata 写成完整的 learned router 或已验证的显存优化。</p>
+<h2 id="2">2. 证据类型与冻结输入</h2>
+<table><thead><tr><th>输入</th><th>类型</th><th>版本 / revision</th><th>本页支持</th><th>本页不支持</th></tr></thead><tbody>
+<tr><td>Hinton et al. knowledge distillation</td><td>primary / paper</td><td><a href="https://arxiv.org/abs/1503.02531">arXiv:1503.02531</a>，访问 2026-07-17</td><td>soft target、temperature 和 teacher→student transfer 的方法背景</td><td>当前 OPD 的 teacher 数量、路由、显存或指标</td></tr>
+<tr><td>PyTorch <code>kl_div</code></td><td>primary / official-doc</td><td>PyTorch 2.13；访问 2026-07-17</td><td>input 是 log-probability、target 同 shape、<code>batchmean</code>/<code>mean</code> reduction 差异、<code>log_target</code> 语义</td><td>某个 reduction 或 temperature 一定适合 VLA；多教师权重策略</td></tr>
+<tr><td>PyTorch <code>no_grad</code></td><td>primary / official-doc</td><td>PyTorch 2.13；访问 2026-07-17</td><td>关闭 gradient calculation、减少需要保存的 autograd memory、thread-local 与 factory-function exception</td><td>teacher 参数自动移出 GPU、teacher forward 自动变快或不占 activation</td></tr>
+<tr><td>PyTorch FSDP</td><td>primary / official-doc</td><td>PyTorch 2.13；访问 2026-07-17</td><td>parameter sharding、CPU offload、state 生命周期和通信/内存边界</td><td>多 teacher 调度器、跨 teacher 的统一吞吐保证</td></tr>
+<tr><td>DeepSpeed ZeRO-3</td><td>official-code / official-doc source</td><td><code>microsoft/DeepSpeed@de1846cf6fbdd6f1c2adf046f319791ca78cc547</code></td><td>参数/梯度/optimizer 分片、CPU/NVMe offload、gather/partition assumptions</td><td>当前 OPD 运行是否完成、teacher weight 是否可复算、显存/吞吐收益</td></tr>
+<tr><td>ENG-015 memory/offload contract</td><td>local-source / reviewed</td><td>本仓库 <code>sources/vol_05_eng015_activation_offload_source_freeze.html</code></td><td>activation 与 state offload 的区别、matched A/B、resume gate</td><td>ENG-016 的具体 teacher schedule 已实测</td></tr>
+<tr><td>OPD claim–evidence inventory</td><td>local-evidence</td><td>本仓库 <code>evidence/projects/opd_claim_evidence_inventory.html</code></td><td>五 expert mix、<code>preloaded_zero3</code>、teacher selection、coldstart/full-vocab KL、student rollout/route KL 与证据缺口</td><td>single-teacher/SFT-only/no-synthetic ablation、checkpoint binary、完整 raw prediction 与单因果 uplift</td></tr>
+</tbody></table>
+<h3 id="2-1-normalized-raw">2.1 官方来源 normalized / raw 指纹</h3>
+<p>HTML 来源按仓库统一规则：移除 <code>script/style/nav/header/footer/svg</code>，合并正文空白，再计算 normalized main-text SHA-256；DeepSpeed RST 使用 frozen commit 的 raw bytes SHA-256。论文以 arXiv 版本和链接作为版本锚点。</p>
+<table><thead><tr><th>来源</th><th>URL</th><th>指纹类型</th><th>长度</th><th>SHA-256</th></tr></thead><tbody>
+<tr><td>PyTorch <code>kl_div</code></td><td><a href="https://docs.pytorch.org/docs/2.13/generated/torch.nn.functional.kl_div.html">2.13/kl_div.html</a></td><td>normalized main text</td><td>2336</td><td><code>c0a91e0e86816e476c8228c5b2b32c43a0ae192bb6858bad2c100f0b047cf79f</code></td></tr>
+<tr><td>PyTorch <code>no_grad</code></td><td><a href="https://docs.pytorch.org/docs/2.13/generated/torch.no_grad.html">2.13/no_grad.html</a></td><td>normalized main text</td><td>2427</td><td><code>29bfe53b651ec45fa25acb9efae83c8ce7d8e47a8e97868d6fdc0436eafce0f4</code></td></tr>
+<tr><td>PyTorch FSDP</td><td><a href="https://docs.pytorch.org/docs/2.13/fsdp.html">2.13/fsdp.html</a></td><td>normalized main text</td><td>61919</td><td><code>9f14bed9d2267151f21bd7c0a61007e25f7443e877ab16a047fd29a28aa87810</code></td></tr>
+<tr><td>DeepSpeed ZeRO-3</td><td><a href="https://raw.githubusercontent.com/microsoft/DeepSpeed/de1846cf6fbdd6f1c2adf046f319791ca78cc547/docs/code-docs/source/zero3.rst">zero3.rst</a></td><td>raw RST bytes</td><td>22955</td><td><code>e8eeb0ccfd067c371e522b494d70e0a233e7aeda4d5ccf6dd1a200d01a4b6847</code></td></tr>
+</tbody></table>
+<h2 id="3-student-teacher">3. Student/teacher 的最小计算合同</h2>
+<h3 id="3-1-teacher-teacher">3.1 Teacher 冻结不等于 teacher 不占显存</h3>
+<p>三件事要分开：</p>
+<table><thead><tr><th>操作</th><th>解决的问题</th><th>不自动解决</th></tr></thead><tbody>
+<tr><td><code>requires_grad_(False)</code> / 不把 teacher 参数放进 optimizer</td><td>不更新 teacher 参数</td><td>参数仍可能驻留 GPU；forward 仍可能保存 autograd graph（若未 <code>no_grad</code>）</td></tr>
+<tr><td><code>torch.no_grad()</code></td><td>不构建 teacher 的 gradient graph，减少需要保存的 autograd memory</td><td>不搬走参数，不保证没有 activation/temporary buffer，不保证速度提升</td></tr>
+<tr><td><code>detach()</code> teacher output</td><td>切断 student loss 对 teacher output 的反向路径</td><td>若 teacher forward 已在 grad mode 执行，之前的中间图可能已经产生；不替代 <code>no_grad</code></td></tr>
+</tbody></table>
+<p>PyTorch 2.13 文档明确把 <code>no_grad</code> 定义为关闭 gradient calculation，并说明对本来需要 gradient 的计算可减少 memory consumption；同时保留 factory-function exception 和 thread-local 边界。因此安全实现是：teacher 参数冻结、teacher forward 包在 <code>no_grad</code>、只保留 loss 需要的 logits/representation，再在 student 上反向。</p>
+<h3 id="3-2-soft-target-kl-hard-label-loss">3.2 Soft-target KL 与 hard-label loss</h3>
+<p>设 teacher (m) 的 logits 为 (z_t^{(m)})，student logits 为 (z_s)，temperature 为 (T&gt;0)：</p>
+<div class="formula">\[
+p_t^{(m)}=\operatorname{softmax}(z_t^{(m)}/T),\qquad
+\log p_s=\operatorname{log\_softmax}(z_s/T)
+\]</div>
+<p>PyTorch <code>kl_div(input, target)</code> 的 <code>input</code> 是 log-probability，<code>target</code> 与其同 shape；若用 <code>reduction="batchmean"</code>，输出是 sum 除以 batch size。标准 distillation 可写成：</p>
+<div class="formula">\[
+L_{\mathrm{KD}}^{(m)}=T^2\,\mathrm{KL}\left(p_t^{(m)}\,\|\,p_s\right)
+\]</div>
+<p>其中 (T^2) 是经典蒸馏中用于保持梯度量级的缩放；temperature、reduction、token mask 和 vocabulary 对齐必须写入 run manifest。<code>mean</code> 与 <code>batchmean</code> 不等价，不能只说“用了 KL”而不报 reduction。[1][2]</p>
+<h3 id="3-3">3.3 多教师聚合是一个额外的工程设计</h3>
+<p>若样本 (x) 由 route (r(x)) 指向教师集合 (mathcal M(x))，可先定义：</p>
+<div class="formula">\[
+L(x)=\lambda_{\mathrm{hard}}L_{\mathrm{hard}}(x)+
+\lambda_{\mathrm{KD}}\sum_{m\in\mathcal M(x)}w_m(x)L_{\mathrm{KD}}^{(m)}(x)
+\]</div>
+<p>这里 (w_m(x)) 可以来自固定 route、置信度或显式实验权重；若是 route metadata，就应称为 <strong>metadata-driven selection</strong>，不能称为 learned router。权重归一化、teacher 缺失时的 fallback、不同 teacher 的 vocabulary/format 对齐和有效 token mask 都是工程合同，不是 Hinton 论文自动给出的默认值。</p>
+<h2 id="4">4. 多教师显存与调度策略</h2>
+<h3 id="4-1-schedule">4.1 三种基本 schedule</h3>
+<table><thead><tr><th>schedule</th><th>GPU peak</th><th>计算/传输</th><th>适合情况</th><th>风险</th></tr></thead><tbody>
+<tr><td>all teachers resident</td><td>高：参数、temporary buffer 和 concurrent outputs 叠加</td><td>teacher forward 可并行，重复加载少</td><td>teacher 较小、GPU 余量足、延迟敏感</td><td>峰值 O(∑ teacher states)，易与 student/optimizer 冲突</td></tr>
+<tr><td>sequential teacher forward</td><td>较低：一次只保留一个 teacher 的活跃 state/output</td><td>teacher forward 串行，可能重复读取/同步</td><td>teacher 大、显存紧张、吞吐可让步</td><td>latency 叠加；若缓存所有 logits，仍会出现 output peak</td></tr>
+<tr><td>staged CPU/NVMe</td><td>GPU 低一些，CPU/NVMe 较高</td><td>CPU↔GPU/NVMe copy、queue、prefetch、overlap</td><td>参数总量超过 GPU/CPU 单层容量</td><td>I/O wait、带宽抖动、restore/lineage 复杂</td></tr>
+</tbody></table>
+<p>这三种 schedule 是设计空间，不是性能结论。FSDP/ZeRO 的参数分片和 offload 可以嵌入其中，但要明确 teacher state 的 ownership、gather 时机和 optimizer 是否绝不触碰 teacher。</p>
+<h3 id="4-2-peak-memory">4.2 Peak memory 账本</h3>
+<p>多教师 step 可拆成：</p>
+<div class="formula">\[
+M_{\mathrm{peak}}\approx M_s+M_{t,\mathrm{resident}}+M_{t,\mathrm{active}}+M_{\mathrm{logits}}+M_{\mathrm{act}}+M_{\mathrm{optim}}+M_{\mathrm{temp}}+M_{\mathrm{comm}}
+\]</div>
+<p>(M_s) 是 student 参数/梯度，(M_{t,\mathrm{resident}}) 是常驻 teacher state，(M_{t,\mathrm{active}}) 是当前 forward 的参数/activation，(M_{\mathrm{logits}}) 是保留的 teacher 输出。顺序 schedule 主要减少 (M_{t,\mathrm{active}})；如果把所有 teacher logits 存到 batch 末尾，(M_{\mathrm{logits}}) 仍可能成为峰值。这个公式是本节点的审计账本，不是官方内存上界。</p>
+<h3 id="4-3-step-time">4.3 Step-time 与调度代价</h3>
+<div class="formula">\[
+T_{\mathrm{step}}=T_s+\sum_{m\in\mathcal M}T_{t,m}+T_{\mathrm{copy}}+T_{\mathrm{io}}+T_{\mathrm{comm}}+T_{\mathrm{sync}}
+\]</div>
+<p>student backward 主要在 (T_s)；teacher no-grad forward 仍消耗 (T_{t,m})，CPU/NVMe staging 增加 (T_{\mathrm{copy}})/(T_{\mathrm{io}})。多教师并行是否能 overlap 取决于 stream、通信和内存带宽，不能由“没有 grad”推出吞吐提升。</p>
+<h2 id="5-replay">5. 验证矩阵与最小 replay</h2>
+<p>每个 teacher/student run 固定：teacher revision、student revision、route schema、temperature、KL reduction、hard/KD loss weights、valid-token mask、dtype、micro/effective batch、teacher schedule、offload device、world-size、warm-up 和 measurement window。</p>
+<table><thead><tr><th>轴</th><th>baseline</th><th>candidate</th><th>必须记录</th></tr></thead><tbody>
+<tr><td>teacher count</td><td>single teacher</td><td>multiple teachers</td><td>teacher IDs、route distribution、missing/fallback count</td></tr>
+<tr><td>schedule</td><td>resident</td><td>sequential/staged</td><td>peak GPU/CPU/NVMe、teacher forward ms、copy/I/O wait</td></tr>
+<tr><td>loss</td><td>hard label only</td><td>hard + KL</td><td>(T)、reduction、mask、per-teacher loss、weight sum</td></tr>
+<tr><td>gradient</td><td>student only</td><td>student + accidental teacher path check</td><td>teacher <code>grad is None</code>、student grad norm、overflow/scaler</td></tr>
+<tr><td>data</td><td>fixed request trace</td><td>same trace</td><td>sample IDs、route metadata、format/length distribution</td></tr>
+<tr><td>checkpoint</td><td>model-only</td><td>full training bundle</td><td>teacher/student revisions、optimizer/RNG/sampler、next-batch IDs</td></tr>
+</tbody></table>
+<p>最小 replay 不需要把所有 teacher logits 永久保存：可以在固定 request trace 上按 schedule 重新生成，并比较 route、masked KL、student logits、gradient norm、optimizer step 和下一批 sample IDs。只比较 aggregate loss，无法发现 teacher 顺序、mask 或 route drift。</p>
+<h2 id="6-opd">6. 本地 OPD 证据与安全口径</h2>
+<p>本仓库 <a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a> 直接支持：</p>
+<ul><li>数据层有五个 expert mix、image-hash split、target/candidate expert 与 format metadata；</li><li>coldstart summary 记录五教师 <code>preloaded_zero3</code>、teacher rollout 和 full-vocab KL；</li><li>正式 online OPD 记录 student rollout 后，在同一 response 上执行 route-based teacher forward，再做 full-vocab KL；</li><li>当前实现中的 teacher selection 是 route metadata 驱动，不是已经独立验证的 learned router。</li></ul>
+<p>同一 inventory 也明确：没有 model weights/optimizer state 的完整 bundle、single-teacher/SFT-only/no-synthetic/synthetic-ratio ablation，且旧版 OPD final 与新版 OPD5000 checkpoint 不是同一 run lineage。因此可说“我实现/复核了五教师 coldstart 与 student-rollout→teacher-KL 的训练链路及证据边界”，不能说“多教师本身带来全部 uplift”或“已证明五教师优于单教师”。</p>
+<h2 id="7-claim">7. 来源到 claim 的边界</h2>
+<table><thead><tr><th>Claim</th><th>证据等级</th><th>当前安全表述</th></tr></thead><tbody>
+<tr><td>KL 的 input/target/reduction 语义</td><td>primary official-doc</td><td>PyTorch 2.13 <code>kl_div</code> 合同</td></tr>
+<tr><td>teacher no-grad 可减少 autograd memory</td><td>primary official-doc</td><td><code>no_grad</code> 关闭梯度计算；参数/IO 仍需单独设计</td></tr>
+<tr><td>多 teacher 的权重/route 公式</td><td>inference / engineering contract</td><td>设计候选，需固定 manifest 与 ablation</td></tr>
+<tr><td>OPD 五教师 <code>preloaded_zero3</code> 与 rollout/KL</td><td>local-direct / report-supported</td><td>当前源码/summary 支持链路存在</td></tr>
+<tr><td>多教师带来吞吐、显存或成功率提升</td><td>unverified</td><td>没有 matched single-teacher/A-B，不能说</td></tr>
+<tr><td>Git author 或 route metadata 等于个人 ownership/learned router</td><td>reject</td><td>需 ownership ledger 和 learned-router artifact</td></tr>
+</tbody></table>
+<h2 id="8-upstream">8. 最小验证伪代码（工程合同，不是 upstream 实现）</h2>
+<pre><code class="language-python">def multi_teacher_step(student, teachers, batch, route, cfg):
+    # 1. Freeze teacher parameters and keep only the student in the optimizer.
+    freeze_parameters(teachers)
+    student_logits = student(batch.inputs)
+
+    # 2. Run only routed teachers under no_grad; avoid building teacher graphs.
+    teacher_losses = []
+    with no_grad():
+        for teacher_id in route.teacher_ids:
+            teacher_logits = teachers[teacher_id](batch.inputs)
+            teacher_losses.append(masked_kl(student_logits, teacher_logits,
+                                            temperature=cfg.temperature,
+                                            reduction=cfg.kl_reduction,
+                                            mask=batch.valid_mask))
+
+    # 3. Combine hard labels and explicitly normalized teacher weights.
+    loss = cfg.hard_weight * hard_loss(student_logits, batch.labels)
+    loss += cfg.kd_weight * weighted_sum(teacher_losses, route.weights)
+
+    # 4. Backprop only through the student, then record peak memory and timing.
+    loss.backward()
+    optimizer_step(student)
+    return record_route_loss_memory_latency(route, teacher_losses)</code></pre>
+<p>伪代码只表达冻结、route、mask、KL 和 student-only backward 的顺序；teacher schedule、FSDP/ZeRO gather、CPU/NVMe staging、容错和 exact API 必须在具体环境中实现和测量。</p>
+<h2 id="9-gate">9. Gate、风险与下一步</h2>
+<table><thead><tr><th>Gate</th><th>当前状态</th><th>下一动作</th></tr></thead><tbody>
+<tr><td>distillation/temperature/KL</td><td><code>PASS WITH WARNING</code></td><td>后续知识页固定 log-prob、target、reduction、(T^2) 与 mask</td></tr>
+<tr><td>teacher no-grad/freeze</td><td><code>PASS WITH WARNING</code></td><td>区分参数冻结、no-grad、detach 和 offload；检查 teacher grad/peak</td></tr>
+<tr><td>multi-teacher schedule</td><td><code>WARN / engineering contract</code></td><td>对 resident/sequential/staged 做 matched memory/latency A/B</td></tr>
+<tr><td>FSDP/ZeRO state ownership</td><td><code>PASS WITH WARNING</code></td><td>记录 teacher/student revision、gather/offload、CPU/NVMe 与 checkpoint lineage</td></tr>
+<tr><td>OPD project boundary</td><td><code>PASS WITH WARNING</code></td><td>保留五教师链路 local-direct；补 single-teacher/SFT-only/synthetic-ratio ablation</td></tr>
+<tr><td>knowledge/card</td><td><code>DRAFTED / UNSEEN</code></td><td>保持题卡 <code>unseen</code>；后续补 single-teacher/A-B/lineage；不展开 ENG-017</td></tr>
+</tbody></table>
+<h2 id="references">参考来源（References）</h2>
+<ol><li>Hinton, Vinyals, Dean，<a href="https://arxiv.org/abs/1503.02531">Distilling the Knowledge in a Neural Network</a>，soft target 与 temperature 的原始论文背景。</li><li>PyTorch 2.13，<a href="https://docs.pytorch.org/docs/2.13/generated/torch.nn.functional.kl_div.html"><code>torch.nn.functional.kl_div</code></a>，log-probability input、target shape 与 reduction 语义。</li><li>PyTorch 2.13，<a href="https://docs.pytorch.org/docs/2.13/generated/torch.no_grad.html"><code>torch.no_grad</code></a>，gradient calculation 与 memory 边界。</li><li>PyTorch 2.13，<a href="https://docs.pytorch.org/docs/2.13/fsdp.html">FSDP</a>，parameter sharding、CPU offload 与 state 生命周期。</li><li>Microsoft DeepSpeed，<a href="https://github.com/microsoft/DeepSpeed/blob/de1846cf6fbdd6f1c2adf046f319791ca78cc547/docs/code-docs/source/zero3.rst"><code>zero3.rst</code></a>，ZeRO-3 partition/offload 与 assumptions。</li><li>本仓库，<a href="vol_05_eng015_activation_offload_source_freeze.html">ENG-015 memory/offload source freeze</a>，显存/step-time/resume 合同。</li><li>本仓库，<a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>，五教师、route、coldstart、online KL 与 ablation/ownership 缺口。</li></ol>
+</article></body></html>

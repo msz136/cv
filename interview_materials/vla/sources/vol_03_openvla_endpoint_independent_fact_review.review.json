@@ -1,0 +1,29 @@
+{
+  "artifact": "sources/vol_03_openvla_endpoint_independent_fact_review.md",
+  "html": "sources/vol_03_openvla_endpoint_independent_fact_review.html",
+  "review_date": "2026-07-21",
+  "status": "independent_fact_reviewed / audit_a / endpoint_mask_checked / PASS WITH WARNING",
+  "verdict": "PASS WITH WARNING",
+  "source_sha256": "393F7263EBC771F542EF551E364C83F1250BEC50D5F1705E88CCDE25193BDD37",
+  "frozen_upstream": {
+    "paper": "OpenVLA arXiv 2406.09246v3",
+    "repository_commit": "c8f03f48af692657d3060c19588038c7220e9af9"
+  },
+  "checks": {
+    "paper_256_bins": "PASS (paper v3 states 256 bins, integer indices 0..255 and 256 least-used tokens)",
+    "encoder_cardinality": "PASS (frozen code digitize returns 1..256 and maps to last 256 token IDs)",
+    "decoder_cardinality": "PASS WITH WARNING (255 centers; b=255 and b=256 alias to center index 254)",
+    "deterministic_probe": "PASS (-1, 0, penultimate threshold and 1 endpoint reproduced expected indices/centers)",
+    "label_and_metric_masks": "PASS (prompt/image labels ignored; optional EOS in CE; accuracy/L1 metric selects action IDs only)",
+    "project_truth_boundary": "PASS WITH WARNING (local tokenizer/checkpoint/stats/controller/97.4%/ownership remain open)",
+    "html_static_validation": "PASS (canonical/review SHA, one H1, zero formula-em pollution, zero control characters and no missing local links)",
+    "browser_visual_check": "PASS WITH WARNING (localhost desktop 1440x1000 and narrow 800x1000; one H1, academic palette/serif, sticky-to-static TOC, contained tables/code/formulas, zero formula-em and no page-wide overflow)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the validated paper/code/probe and SHA/H1/formula/link contract synchronized under future edits.",
+    "Do not attribute the 255-center nuance or any local fix to the candidate without ownership evidence.",
+    "Keep all 44 VOL 03 cards unseen until oral practice."
+  ],
+  "next": "Run one real OpenVLA/action-token oral question or collect one immutable local OpenPiVLA artifact; keep all 44 cards unseen until oral practice."
+}

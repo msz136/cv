@@ -1,0 +1,38 @@
+{
+  "artifact": "sources/vol_04_wm030_test_time_planning_latency_risk_source_freeze.md",
+  "html": "sources/vol_04_wm030_test_time_planning_latency_risk_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-WM-030 / knowledge_synced / card_synced",
+  "verdict": "WARN",
+  "source_sha256": "b97ac83aeacc7d509dcd98ed04d6e45cd18b40e9333eb17de439b4f7044184ff",
+  "frozen_sources": {
+    "cosmos_paper": "arXiv:2601.16163v1 / HTML UTF-8 SHA-256 02ca817937f4b62a96873dc2702574d6e1c4a66715f8cedec24fd5cf42f4fc70",
+    "cosmos_code": "18a2accadf4e7a3531e56754102af5a24d2316da",
+    "pytorch": "2.13 CUDA semantics/Event/synchronize docs",
+    "triton": "Measurements and Metrics rolling docs / UTF-8 SHA-256 0c24a82a70b5993bfd6be59ac899c4d285c2b57c60a62d8c666a528fed0b734e",
+    "local_boundary": "WM-023/029, ENG-022 and WAM Claim-Evidence Inventory"
+  },
+  "checks": {
+    "batch_boundary": "PASS (only VLA-WM-030 frozen; WM-031..038 remain deferred)",
+    "primary_source_scope": "PASS (Cosmos latency and N/world/value recipe tied to arXiv v1 and frozen official commit)",
+    "code_hashes": "PASS (cosmos_utils, LIBERO, RoboCasa and ALOHA deploy SHA-256 recorded)",
+    "critical_path": "PASS (sensor/client/queue/action/world/value/selector/response/controller apply separated)",
+    "work_wallclock_separation": "PASS (N/P/Ew/Ev/depth/denoise and serial/parallel models explicit)",
+    "cuda_timing": "PASS (PyTorch asynchronous timing, Event/synchronize, cold/steady and percentiles explicit)",
+    "communication_boundary": "PASS (IPC, payload bytes, RTT/server queue and optional all-results response separated)",
+    "deadline_freshness": "PASS (sync pause, async K/fctrl, TTL/version/cancel/watchdog/fallback separated)",
+    "cosmos_exact_boundary": "PASS WITH WARNING (0.16/0.61/0.95/4.9 seconds remain specified-H100 upstream facts only)",
+    "project_evidence_boundary": "PASS (no local WAM planning, latency, success or ownership claim)",
+    "html_static_validation": "PASS (canonical SHA embedded; one H1, thirteen H2 headings, four tables, formulas, pseudocode and MathJax rendered)",
+    "local_links": "PASS (WM-023/029, ENG-022 and WAM inventory links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)"
+  },
+  "open_items": [
+    "Collect local candidate/world/value request traces with returned and missing candidate IDs.",
+    "Collect N/P/Ew/Ev/depth/denoise sweeps, network/IPC timing, payload bytes and controller-apply timestamps.",
+    "Define task-specific pause, TTL, partial-candidate and fallback safety policies before deployment claims.",
+    "Do not transfer specified 1x/8x H100 wall-clock to local WAM or another benchmark.",
+    "Do not create coaching_state.md until an actual drill."
+  ],
+  "next": "Build only VLA-WM-031 Sim2Real reality-gap taxonomy next; keep VLA-WM-030 unseen until oral practice."
+}

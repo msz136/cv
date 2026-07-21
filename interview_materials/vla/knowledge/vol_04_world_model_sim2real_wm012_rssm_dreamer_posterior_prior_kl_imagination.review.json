@@ -1,0 +1,35 @@
+{
+  "artifact": "knowledge/vol_04_world_model_sim2real_wm012_rssm_dreamer_posterior_prior_kl_imagination.md",
+  "html": "knowledge/vol_04_world_model_sim2real_wm012_rssm_dreamer_posterior_prior_kl_imagination.html",
+  "source_freeze": "sources/vol_04_wm012_rssm_dreamer_posterior_prior_kl_imagination_source_freeze.md",
+  "review_date": "2026-07-18",
+  "status": "drafted / VLA-WM-012 / knowledge_42_of_44 / card_synced",
+  "verdict": "WARN",
+  "source_sha256": "addc7cd4b26543c6931c5e4efb92c05344ca5126a6a1a4ecf5898b3844ca0e93",
+  "covered_question_ids": ["VLA-WM-012"],
+  "checks": {
+    "single_node_scope": "PASS (RSSM/ELBO/KL/imagination only; WM-013 overshooting and WM-021 actor/critic optimization excluded)",
+    "intuition_and_mechanism": "PASS (two information paths, sequential latent model and prior-only imagination)",
+    "formula_explanations": "PASS (variables, intuition, implementation mapping and version assumptions follow display formulas)",
+    "rssm_state_and_factorization": "PASS (h/z, previous action, prior, posterior and heads connected)",
+    "elbo_and_kl": "PASS (approximate filtering posterior and KL dual role derived)",
+    "v2_v3_boundary": "PASS (alpha balancing versus dyn/rep/free-bits/scales separated)",
+    "time_index_and_reset": "PASS (previous-action alignment, reset masking and episode leakage covered)",
+    "imagination": "PASS (posterior starts, policy/core/prior/sample loop and joint distribution covered)",
+    "future_leakage": "PASS (observation-removal and posterior-versus-prior tests explicit)",
+    "pseudocode": "PASS (causal encoding, aligned filtering, separated KL gradients, valid starts and prior rollout commented)",
+    "project_evidence_boundary": "PASS (WAM/UWM not labeled RSSM/Dreamer projects)",
+    "html_static_validation": "PASS (canonical SHA embedded; one H1, twenty-two H2 headings, one table, formulas, commented pseudocode and MathJax rendered)",
+    "local_links": "PASS (WM-004/011/021/source and WAM/UWM inventory links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "question_card": "PASS WITH WARNING (one VLA-WM-012 atomic card synchronized and remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep VLA-WM-012 unseen until oral practice.",
+    "Collect local action/reset tests, raw KL traces, posterior/prior rollouts and cloned-state alignment.",
+    "Do not claim WAM/UWM use RSSM or recover any unverified personal Dreamer result.",
+    "Do not create coaching_state.md until an actual drill."
+  ],
+  "next": "Build only VLA-WM-013 latent overshooting / multi-step consistency next."
+}

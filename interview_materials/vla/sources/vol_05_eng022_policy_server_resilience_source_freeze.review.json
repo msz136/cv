@@ -1,0 +1,64 @@
+{
+  "artifact": "sources/vol_05_eng022_policy_server_resilience_source_freeze.md",
+  "html": "sources/vol_05_eng022_policy_server_resilience_source_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "source_frozen / VLA-ENG-022 / knowledge_drafted / card_1_of_1_unseen / WARN",
+  "verdict": "WARN",
+  "source_sha256": "9945C2A6D415A36105847C1C1CDDF99B197DD670EA169B2D21CDFC5CDEEDA656",
+  "coverage": {
+    "knowledge_id": "VLA-ENG-022",
+    "topic": "policy server batching, bounded queue/backpressure, deadline/cancellation, timeout and safe fallback",
+    "official_pages_checked": 7,
+    "local_files_checked": 7,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "cpython": "2931f2067a6ecdc52cb44f694ce14ab8b50b9a32",
+    "triton_server": "0ae38c793358f8db77a9cbc1d1bde984619d5c1b",
+    "physical_intelligence_openpi": "15a9616a00943ada6c20a0f158e3adb39df2ccac"
+  },
+  "raw_source_sha256": {
+    "cpython_asyncio_queue": "c7312064e8c18f1e45656bbabb59949cdd0adf258f32595d073b2e66593244d2",
+    "cpython_asyncio_tasks": "1d833356e1a5977399a0668ef7a07223db793cc1a1bcad4dae4934d8d8434cd2",
+    "triton_model_configuration": "01e50042a66024ad5c9143e7aa3f43b0338f29f8ef6cc42979909589774b8151",
+    "triton_batcher": "577e45c86b65a73e42aca1bb406d48a5edf25540e9312de904388ae69c1f9505",
+    "openpi_websocket_policy_server": "1370d345e6c3c5b8f15573050e485e60a5b423d1df33e24b237805e6b442b026",
+    "openpi_serve_policy": "eccc0448b4873fd30a1fff3355c5de7a7c227138e6db04b7dcaa5bb38a6a5809",
+    "openpi_policy": "a2ac5236e23b11d0f5a840d4a8fef148d89dba921d5452ec5dfcd5a6ffa46f20"
+  },
+  "local_evidence_sha256": {
+    "openpivla_eval_lerobot_action_server": "B1B7FB9B7A86355B9C1843CDE971B38FD26A2DAB1F18550128671F79F1AB4F39",
+    "openpivla_rollout": "E583E4770E4F867FA7B4BEABB3C88964EAB5B3E1AECBD1B59B870B20EF191DE3",
+    "openpivla_deployment": "C0A3DD0C0DA8C1C0D36023046D5337900A71680B413657BC9B1062EEF2EEA14",
+    "robot_harness_registry": "EF1AFE36697D16F4C2A1392F618444712A87F2F88EE3BDABE409BD2948D24CF1",
+    "robot_harness_runtime": "CEE9148C2987DA7FF6839534EBCFED75B953A8678742AD9442523F96A6A77280",
+    "robot_harness_chat_stream": "029EE34A7A310DF54CD0A73CCA80D155F0D1C0A8E2476696D880348C42444035",
+    "project_inventory_boundary": "reviewed_in_openpivla_and_robot_harness_inventories"
+  },
+  "checks": {
+    "bounded_slice": "PASS (source freeze plus one ENG-022 knowledge node and one unseen card; later resilience slices remain deferred)",
+    "queue_backpressure": "PASS WITH WARNING (bounded queue/maxsize, queue delay, max batch and overload actions sourced; local VLA queue not proven)",
+    "batching_shape": "PASS WITH WARNING (Triton batch dimension/max_batch_size/ragged boundary sourced; VLA shape/freshness A-B missing)",
+    "deadline_cancellation": "PASS WITH WARNING (asyncio timeout/wait_for cancellation and cleanup semantics sourced; end-to-end propagation unverified)",
+    "fallback_safety": "PASS WITH WARNING (TTL/freshness/safe-stop/known-good bundle contract explicit; local fallback implementation unverified)",
+    "openpi_boundary": "PASS (OpenPI server is per-request WebSocket infer/timing/error baseline, not generalized to dynamic batch/SLO/fallback)",
+    "project_truth_boundary": "PASS (OpenPiVLA timeout reports and Robot Harness tool timeout/cancel hooks are not upgraded to policy-server resilience)",
+    "verification_matrix": "PASS (burst, batch wait, shape, queue/infer timeout, disconnect, malformed action, worker failure, retry storm and recovery cases explicit)",
+    "pseudocode": "PASS (admission→queue→batch→deadline→infer→validate→controller/fallback order shown; APIs remain contracts)",
+    "html_static_validation": "PASS (source SHA, one H1, eleven H2, six H3, three tables and four code/state blocks)",
+    "local_links": "PASS (ENG-017/018/021 and project inventory links resolve)",
+    "secret_value_handling": "PASS (only identifiers, paths and hashes recorded; no credential values copied)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Define one policy-server admission/batching contract with max queue, max batch, queue delay, fairness and action-freshness budgets.",
+    "Run burst/queue/infer timeout, cancellation/leaked-task, disconnect, retry-storm and worker-failure drills.",
+    "Bind safe fallback to a verified model/processor/normalizer bundle, TTL, controller watchdog and audit event.",
+    "Measure p50/p95/p99 queue/infer/total latency, batch size, queue depth, action age and fallback rate.",
+    "Knowledge node and one unseen card are generated; keep them WARN/unseen until stronger queue/SLO/fallback evidence or a real oral answer is available."
+  ],
+  "next": "Synchronize source/index state and run the ENG-022 one-question oral drill; keep later resilience slices deferred."
+}

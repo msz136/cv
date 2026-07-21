@@ -1,0 +1,42 @@
+{
+  "artifact": "sources/vol_04_wm034_control_latency_actuator_controller_mismatch_source_freeze.md",
+  "html": "sources/vol_04_wm034_control_latency_actuator_controller_mismatch_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-WM-034 / knowledge_synced / card_synced",
+  "verdict": "WARN",
+  "source_sha256": "106fe97d60e78505ae71e7a8667499a615d71b2e1f0099c1da474713ecf940f8",
+  "frozen_sources": {
+    "tan_sim2real": "arXiv:1804.10332v2 / ar5iv response SHA-256 c34db6210074989010a635a11705e17da4a38d4b105e471159a9cc832a120a49",
+    "peng_dynamics_randomization": "arXiv:1710.06537v3 / ar5iv response SHA-256 29d5e90f2a01e918bacb9d2a3e31622fc68018063be2bece6d86d2e0fca8a1b3",
+    "hwangbo_actuator": "arXiv:1901.08652v1 / ar5iv response SHA-256 53c0966cd6f700324a67c4a62dd35a708dbf5738547ba869bc307d4afdb197e9",
+    "mujoco_actuation": "stable docs 2026-07-18 / response SHA-256 94228bfd24a70ce8d7c522269235bc17357183f7b7f2d17ffcd23703785ce3ac",
+    "robosuite_controllers": "robosuite 1.5 docs / response SHA-256 fdee90590d9ab45a2865531928c7ec4e0f46065a441777c53ed6921a83f65c99",
+    "robosuite_environments": "robosuite 1.5 docs / response SHA-256 521289c934304606d4c4fa3d03ce9b006cc20dc293748c88ef9f78022f80c1e5",
+    "local_boundary": "Sim2Real Audit D, WM-023, VOL 03 Architecture/Execution Audit and Evidence Manifest"
+  },
+  "checks": {
+    "batch_boundary": "PASS (only VLA-WM-034 frozen; WM-035..038 remain deferred)",
+    "primary_source_scope": "PASS (latency/stability, action timestep proxy, actuator modeling and controller semantics tied to primary/official sources)",
+    "multi_clock_contract": "PASS AS ENGINEERING SYNTHESIS (physics, sensor, policy, transport, controller and actuator clocks separated)",
+    "latency_semantics": "PASS (inference, response, action age, sensor loop, tail/jitter/deadline/staleness separated)",
+    "frequency_semantics": "PASS (delta, velocity, absolute, torque and chunk physical-time effects separated)",
+    "actuator_boundary": "PASS (control, transmission, activation dynamics, force generation, bandwidth and saturation explicit)",
+    "controller_boundary": "PASS (mode, frame, unit, transform, gains, limits, gripper and reset contract explicit)",
+    "freshness_guard": "PASS AS ENGINEERING SYNTHESIS (episode/version/deadline, duplicate/out-of-order and queue policies explicit)",
+    "diagnostic_ladder": "PASS (protocol/clock/round-trip/free-space/actuator/latency/frequency/contact order explicit)",
+    "matched_sweep": "PASS (frequency, latency, actuator, controller and chunk/queue arms with fixed protocol)",
+    "project_evidence_boundary": "PASS (no local real-time, actuator-fit, controller-parity or real-transfer result claimed)",
+    "html_static_validation": "PASS (canonical SHA embedded; one H1, eighteen H2 headings, six tables, formulas, commented pseudocode and MathJax rendered)",
+    "local_links": "PASS (Audit D, WM-023, Architecture Audit and Evidence Manifest links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "independent_fact_review": "PASS WITH WARNING (reconciled by vol_04_sim2real_independent_fact_review.md; local capture-to-apply trace remains missing)"
+  },
+  "open_items": [
+    "Collect a complete clock/controller contract and synchronized capture-to-apply trace.",
+    "Collect action-age tails, deadline/stale/drop/queue metrics and real actuator fit/held-out data.",
+    "Run fixed-checkpoint frequency/latency/actuator/controller/K matched sweeps.",
+    "Collect protocol-complete real closed-loop and ownership evidence before C2/C3 claims.",
+    "Keep VLA-WM-034 unseen until oral practice; do not create coaching_state.md without a real drill."
+  ],
+  "next": "Build only VLA-WM-035 camera intrinsics/extrinsics and sensor corruption next; keep WM-036..038 deferred."
+}

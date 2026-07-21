@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 08 SYS-003 原子题卡：Robot Fleet 与 Multi-tenant GPU Scheduling</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\vol_08_sys003.md">
+<meta name="aris:source-sha256" content="7885cf2de2fb8439978bce00ee875c1210b4d1438382aec459bf4c12ab102b12">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>7885cf2de2fb8439978bce00ee875c1210b4d1438382aec459bf4c12ab102b12</code>；生成自：<code>interview_materials\vla\questions\vol_08_sys003.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#robot-fleet-multi-tenant-gpu-scheduling">如何设计 Robot Fleet 与 Multi-tenant GPU Scheduling？</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 08 SYS-003 原子题卡：Robot Fleet 与 Multi-tenant GPU Scheduling</h1>
+<div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-20 覆盖范围：<code>SYS-VLA-003</code> 难度：L3 1 题 优先级：P1 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_08_sys003_robot_fleet_multitenant_gpu_scheduling.html">SYS-003 Knowledge</a>；来源边界见 <a href="../sources/vol_08_sys003_robot_fleet_multitenant_gpu_scheduling_source_freeze.html">SYS-003 Source Freeze</a>。</div>
+<h2 id="robot-fleet-multi-tenant-gpu-scheduling">如何设计 Robot Fleet 与 Multi-tenant GPU Scheduling？</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>SYS-VLA-003</b> · 当机器人、租户、模型 revision 和异构 GPU 同时增长时，如何设计 fleet scheduler，并保证公平、freshness 与安全边界？</summary>
+<p><strong>面试意图</strong>：判断你能否把 tenant/robot/model identity、quota、placement、fairness、preemption、replica/cache、robot lease、canary 和 cost/SLO 串起来，而不是只罗列 Kubernetes 或 GPU 名词。</p>
+<p><strong>30 秒回答</strong>：拆 queue、placement、lease、rollout。请求带 tenant/robot/model、deadline、epoch；查 quota/兼容性，按 GPU/MIG/显存选节点。capacity/fairness/priority/freshness 分开；lease 失效丢 action，controller stop。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：校验 tenant/robot/model/schema、deadline、lease 后查 quota，按 GPU/MIG、显存、locality、warm replica placement。capacity/fairness/priority/freshness 分开；Triton/Ray 只提供资源机制。cache 绑定 model/processor/normalizer/schema；preemption 先处理无副作用任务。lease 失效提升 epoch、丢旧回包、controller stop。用 queue wait、tail、age、miss、share、fallback、cost 验证；局部项目 hook 不能称 fleet。</p>
+<p><strong>诊断 / 证据</strong>：先做 identity/schema/normalizer roundtrip，再记录 admission、queue wait、Filter/Score、GPU reservation、model load、infer、lease renew、controller ack 和 rollback 时间戳。做 tenant burst、GPU 异构、cold/warm cache、preemption、lease expiry、stale-response、replica crash 和 reconnect fault injection；固定 task/seed/cohort，按 tenant 报 queue wait、p95/p99 capture→apply、action age、deadline miss、share、fallback、cost 与 success。没有 multi-tenant load trace、placement/fairness A/B、lease fencing、controller ack 或 checkpoint/cache lineage 时，只能讲设计门，不能报 fleet SLO 或 production fairness。</p>
+<p><strong>项目挂钩</strong>：OpenPiVLA 可连接 offline WebSocket、in-process broker、normalizer/action-shape/parser 风险；Robot Harness 可连接 tool scope/lock/timeout/compensation；OPD 可连接 multi-expert route、teacher schedule、ZeRO/config；WAM 可连接 simulator/chunk/controller diagnostic；UWM/LIBERO 可连接 launcher、task mapping、fixed protocol 和 loader diagnosis。五个项目都没有统一 fleet control plane、GPU placement、robot lease 或 multi-tenant fairness artifact，不能把局部 hook 说成我上线了 production fleet。</p>
+<p><strong>追问树</strong>：capacity、fairness、priority、freshness 有什么区别？为什么 GPU utilization 高不代表 action deadline 满足？Kubernetes preemption 能否安全抢占 serving？MIG/time-slicing 是否提供显存和实时隔离？model cache key 为什么必须带 normalizer/schema revision？Ray placement group 与 Triton rate limiter 各解决什么？Lease epoch 如何防止旧 action 回包？controller ack、hold/stop 和 independent e-stop 谁最终负责？如何设计 canary 与 rollback 的 cohort/metric tuple？</p>
+<p><strong>易错点</strong>：把 quota 当 fairness；把 priority 当 safety；把 logical resource 当 physical isolation；把 preemption 当 cancellation；把 warm cache 当 checkpoint lineage；只报 GPU utilization 或平均 latency；把上游 scheduler 文档和 Git author 当个人 fleet ownership；把 simulator rollout 当 multi-robot production result。</p>
+<p><strong>危险答案</strong>：说“Kubernetes/Volcano/Ray/Triton 已经构成我的 VLA fleet”；说“GPU time-slicing/MIG 天然安全”；说“Lease renew 就代表机器人执行成功”；说“抢占 Pod 会自动撤回旧 action”；或说“五个项目的脚本证明我完成了 tenant fairness、fleet SLO 和物理安全”。</p>
+<p><strong>来源</strong>：[1][2][3][4][5]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../knowledge/vol_08_sys003_robot_fleet_multitenant_gpu_scheduling.html">SYS-003 Knowledge</a>：identity、capacity/placement、fairness/preemption、GPU/cache、lease、canary/cost 与项目边界。</li><li><a href="../sources/vol_08_sys003_robot_fleet_multitenant_gpu_scheduling_source_freeze.html">SYS-003 Source Freeze</a>：15 个 pinned public sources、5 项目 inventory/ledger SHA 与 15/15 probes。</li><li>Kubernetes <a href="https://github.com/kubernetes/website/tree/d19aacebe8061a6ef5dcc1e68904aaefe35c5445/content/en/docs/concepts">scheduler/quota/priority/Lease</a>。</li><li>NVIDIA <a href="https://github.com/NVIDIA/k8s-device-plugin/tree/248164727d5d8bac7024a8e12a13e69246cf0969">device plugin</a>、Volcano <a href="https://github.com/volcano-sh/volcano/tree/329f91d73dc75e4b7f29a55e8c29fa6ea67cd6b0">fair-share/capacity/priority</a>、Triton <a href="https://github.com/triton-inference-server/server/tree/d1e6320698eda052ea2c3deaba4069958171caa5">model/rate limiter</a>。</li><li>Ray <a href="https://github.com/ray-project/ray/tree/6623e6b1e71fcdb7161d6ec0b190e345665d5ba3">resources/placement/Serve</a> 与 ROS 2 <a href="https://github.com/ros2/design/blob/93a415bf928751d37fce6f83215c521658e20c93/articles/node_lifecycle.md">node lifecycle</a>。</li></ol>
+</article></body></html>

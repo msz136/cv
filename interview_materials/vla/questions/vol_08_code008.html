@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 08 CODE-VLA-008 原子手撕题卡：Bellman TD(0) Update</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\vol_08_code008.md">
+<meta name="aris:source-sha256" content="ee52be476c7cdf559ca3fcfd9b7ee65507fa24ade004b64f958e450103a69945">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>ee52be476c7cdf559ca3fcfd9b7ee65507fa24ade004b64f958e450103a69945</code>；生成自：<code>interview_materials\vla\questions\vol_08_code008.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#bellman-td-0-update">实现正确的 Bellman TD(0) update</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 08 CODE-VLA-008 原子手撕题卡：Bellman TD(0) Update</h1>
+<div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-20 覆盖范围：<code>CODE-VLA-008</code> 难度：L2 1 题 优先级：P0 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_08_code008_bellman_td0.html">CODE-008 Knowledge</a>；来源边界见 <a href="../sources/vol_08_code008_bellman_td0_source_freeze.html">CODE-008 Source Freeze</a>。</div>
+<h2 id="bellman-td-0-update">实现正确的 Bellman TD(0) update</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>CODE-VLA-008</b> · 请实现 Bellman TD(0) update，区分 terminated/truncated，并处理 target、mask 与 batch edge cases。</summary>
+<p><strong>面试意图</strong>：判断你能否把 MDP 语义落实到 transition schema、target detach、valid reduction 和可诊断的代码，而不是只背 Bellman 公式。</p>
+<p><strong>30 秒回答</strong>：分开 <code>terminated/truncated</code>，带上 <code>obs_tp1</code>。target=<code>r+γ(1−terminated)V_next.detach()</code>；terminal 不 bootstrap，timeout 通常 bootstrap。检查 flags、all-invalid、<code>γ=0</code>、shape；无 replay artifact 不声称收敛。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：冻结 transition schema 与 episode/step lineage；拒绝双 flag、缺 <code>obs_tp1</code>、非 finite reward/discount。terminal mask 只来自 <code>terminated</code>，truncation 有 next state 仍 bootstrap。target detach；<code>valid</code> 明确分子/分母，<code>[B]</code>/<code>[B,T]</code> 对齐，分布式先聚合计数再相除。Q-learning 只替换 next value，不是所有 TD 都取 max；success、controller stop、network timeout 保留来源，不自动变成 terminal。</p>
+<p><strong>诊断 / 证据</strong>：按 <code>schema/lineage → terminated/truncated → obs_tp1 → terminal mask → gamma/dtype → detach → shape/broadcast → valid denominator → target revision</code> 定位。至少跑 8 个 probe：真实 terminal 不 bootstrap；time-limit truncation bootstrap；两 flag 冲突 reject/precedence；<code>gamma=0</code> 只剩 reward；<code>[B]</code> 与 <code>[B,T]</code> 等价；all-invalid reject/skip；target 无梯度；NaN/Inf 在 reduction 前暴露。runtime 还要有 transition/replay bundle、target-network revision 和 numerator/denominator 记录。</p>
+<p><strong>项目挂钩</strong>：VOL 02 的 Harness 只能连接 offline grouped reward-weighted update、GAE/timeout 讨论；OpenPiVLA、WAM、UWM/LIBERO、OPD 的 rollout/reward/summary 不能替代 transition-level artifact。当前没有 CODE-008 本地 learner、replay bundle、gradient parity、target revision 或候选人 ownership；安全说法是“我能实现并审计 TD(0) 合同”，不能说已证明 value 收敛、offline RL 稳定或真机成功。</p>
+<p><strong>追问树</strong>：为什么 truncation 通常仍 bootstrap？<code>obs_tp1</code> 缺失怎么办？<code>success=True</code> 是否一定 terminal？为什么 target 要 detach？两 flag 同时 true 怎么处理？Q-learning 的 max 在哪一侧？action chunk timeout 如何进入 schema？分布式 masked loss 为什么不能平均各 rank 的 mean？</p>
+<p><strong>易错点</strong>：把 <code>done=terminated or truncated</code> 直接用于 Bellman mask；把 success 当 terminal；忽略 <code>obs_tp1</code> provenance；target 和 prediction 一起反传；all-invalid 静默返回 0；把 <code>[B,T]</code> mask 错位到 next state；用 loss 下降冒充 value 正确；把公开 TD 机制写成个人项目实现。</p>
+<p><strong>危险答案</strong>：说“timeout 就是失败所以不 bootstrap”“Gymnasium API 证明我实现了 learner”“所有 Q/V target 都取 max”“target 不 detach 也一样”“一次 rollout 成功就证明 TD 稳定”。</p>
+<p><strong>来源</strong>：[1][2][3][4]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../knowledge/vol_08_code008_bellman_td0.html">CODE-008 Knowledge</a>：transition schema、terminal/timeout bootstrap、target detach、reduction、probe 与项目边界。</li><li><a href="../sources/vol_08_code008_bellman_td0_source_freeze.html">CODE-008 Source Freeze</a>：Sutton–Barto、Gymnasium time-limit 语义与 8 个 deterministic probes。</li><li>Sutton &amp; Barto, <a href="http://incompleteideas.net/book/the-book-2nd.html">Reinforcement Learning: An Introduction</a>。</li><li>Gymnasium, <a href="https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/">Handling Time Limits</a>。</li></ol>
+</article></body></html>

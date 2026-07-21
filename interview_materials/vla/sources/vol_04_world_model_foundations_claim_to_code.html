@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 Source Audit A：World Model / PlaNet / DreamerV3 Foundations Claim-to-Code</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_world_model_foundations_claim_to_code.md">
+<meta name="aris:source-sha256" content="bb48af7605688132ddd589109c8417dd0ebfe65f504a98cf5ab660f01e34ba7b">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>bb48af7605688132ddd589109c8417dd0ebfe65f504a98cf5ab660f01e34ba7b</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_world_model_foundations_claim_to_code.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 证据层级与冻结对象</a></li><li><a href="#3-world-model">3. World model 的概率合同</a></li><li><a href="#3-1">3.1 直觉：在内部预测“采取动作后会发生什么”</a></li><li><a href="#3-2-observation-state-latent-reward-termination">3.2 observation、state、latent、reward、termination 如何取舍</a></li><li><a href="#3-3">3.3 与相邻模块的边界</a></li><li><a href="#4-world-models-vae-mdn-rnn-dream-controller">4. World Models：VAE、MDN-RNN 与 dream 中的 controller</a></li><li><a href="#4-1">4.1 论文方法的最短证据链</a></li><li><a href="#4-2-dream-training">4.2 dream training 的收益与漏洞</a></li><li><a href="#5-planet-belief-state-latent-planning">5. PlaNet：belief-state latent planning</a></li><li><a href="#5-1-deterministic-stochastic-transition">5.1 为什么需要 deterministic + stochastic transition</a></li><li><a href="#5-2-latent-overshooting">5.2 latent overshooting 的作用</a></li><li><a href="#5-3-online-planning-receding-horizon">5.3 online planning 与 receding horizon</a></li><li><a href="#6-dreamerv3-rssm-frozen-repo">6. DreamerV3 RSSM：论文合同到 frozen repo</a></li><li><a href="#6-1-factorization">6.1 论文中的完整 factorization</a></li><li><a href="#6-2-rssm-py">6.2 `rssm.py` 的逐行映射</a></li><li><a href="#6-3-kl-balancing-free-nats-collapse">6.3 KL balancing、free nats 与 collapse</a></li><li><a href="#7-dreamerv3-world-model-loss-imagination-actor-critic">7. DreamerV3 的 world-model loss、imagination 与 actor-critic</a></li><li><a href="#7-1-world-model-loss">7.1 world-model loss 的组成</a></li><li><a href="#7-2-imagined-trajectory">7.2 imagined trajectory 的数据流</a></li><li><a href="#7-3-actor-critic-return">7.3 actor、critic 与 λ-return</a></li><li><a href="#7-4-model-bias">7.4 梯度边界与 model bias</a></li><li><a href="#8-one-step-teacher-forcing-open-loop-rollout-scheduled-sampling">8. one-step、teacher forcing、open-loop rollout 与 scheduled sampling</a></li><li><a href="#8-1-protocol">8.1 四种 protocol 必须拆开</a></li><li><a href="#8-2">8.2 误差为何会累积</a></li><li><a href="#9-uncertainty-actionability-simulator">9. uncertainty、actionability 与可查询 simulator 边界</a></li><li><a href="#9-1-aleatoric-vs-epistemic">9.1 aleatoric vs epistemic</a></li><li><a href="#9-2-video-model-actionable">9.2 video model 什么时候 actionable</a></li><li><a href="#9-3-auxiliary-representation-vs-queryable-simulator">9.3 auxiliary representation vs queryable simulator</a></li><li><a href="#10-metric-boundary-proxy-success">10. metric boundary：proxy 不是 success</a></li><li><a href="#11">11. 从论文到代码的最小审计矩阵</a></li><li><a href="#12">12. 面试答题骨架与失败追问</a></li><li><a href="#12-1-30">12.1 30 秒主回答</a></li><li><a href="#12-2">12.2 面试官继续追问时的机制点</a></li><li><a href="#13">13. 当前证据边界与后续动作</a></li><li><a href="#14-references">14. 参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 Source Audit A：World Model / PlaNet / DreamerV3 Foundations Claim-to-Code</h1>
+<div class="meta">审计日期：2026-07-16 状态：<code>drafted / upstream_paper_and_code_reviewed / independent_reviewed_slice / next_knowledge_batch</code> 覆盖题目：<code>VLA-WM-001..014</code>、<code>VLA-WM-019..021</code> 本页目的：把 world model 的输入输出合同、latent dynamics、one-step 与 rollout、RSSM、imagination actor-critic 以及评估边界固定成可审计的面试知识。UWM、Cosmos/WAM、LIBERO/RoboCasa 的项目数字不在本页作通用方法证据。</div>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>World model 不是“能生成视频的模型”的同义词。</strong>它是一个条件预测器：给定观测历史、动作以及必要的任务条件，预测未来 latent/observation、reward 和 termination/continuation。是否能支持 action consequence、长时 rollout 或 planning，取决于这些变量和训练/评估合同，而不是画面是否逼真。[1][2][3]</li><li><strong>早期 World Models 把视觉压缩和时序预测分开。</strong>VAE 将图像压成 latent，MDN-RNN 建模 \(p(z_{t+1}\mid a_t,z_t,h_t)\)，小 controller 再读取 latent 与 recurrent state；论文甚至在 learned dream 中训练 controller，但这同时暴露了 model exploitation 风险。[1]</li><li><strong>PlaNet 的核心是 belief-state latent dynamics + online planning。</strong>它同时使用 deterministic 与 stochastic transition，并用 latent overshooting 让多步 latent prediction 受约束；论文明确把模型误差、误差累积、多未来和 OOD 过度自信列为 planning 难点。[2]</li><li><strong>DreamerV3 的 RSSM 将 posterior observation update 与 prior action-conditioned imagination 分开。</strong>论文公式中的 \(h_t=f_\phi(h_{t-1},z_{t-1},a_{t-1})\)、posterior \(q_\phi(z_t\mid h_t,x_t)\)、prior \(p_\phi(\hat z_t\mid h_t)\)、reward/continue/decoder heads，在 frozen repo 中分别对应 <code>RSSM.observe</code>、<code>RSSM.imagine</code>、<code>RSSM.loss</code> 与 <code>Agent.loss</code>。[3][4]</li><li><strong>Dreamer 的 actor/critic 训练不是把真实像素再喂一遍。</strong>它从 replay 后验状态起点，在 prior dynamics 中生成 imagined latent trajectory，预测 reward/continue，再用 \(\lambda\)-return 更新 actor/critic；world model、actor、critic 的梯度边界由 <code>stop_gradient</code> 和不同 loss 路径共同决定。[3][4]</li><li><strong>one-step 指标下降不能证明 rollout 可用。</strong>teacher-forced one-step 使用真实上一步 latent/observation；open-loop rollout 使用模型自己的上一步预测。误差可累积，且 action-insensitive、posterior collapse、背景 shortcut 会让 pixel/latent proxy 与 downstream success 脱钩。[2][3]</li><li><strong>reward、value、success classifier、termination predictor 不是一回事。</strong>reward 是一步即时任务信号，value 是策略条件下的未来回报估计，success classifier 是评估或目标标签，continuation/termination 表示 episode 是否继续。把它们混成一个“好坏分数”会导致 planning 和审计错误。[3][4]</li><li><strong>随机性必须分层。</strong>aleatoric uncertainty 是环境本身的多可能结果，epistemic uncertainty 是数据/模型知识不足；ensemble、posterior samples、disagreement 或 calibrated likelihood 只是估计手段，不能自动等价于真实风险。[2][3]</li><li><strong>“action-conditioned”仍不自动等于“可干预”。</strong>如果动作只与背景变化相关、动作覆盖窄、数据存在 confounder，模型可能在观测预测上很好却不反映执行该动作的因果后果；需要 counterfactual/action-swap、action sensitivity 和 closed-loop tests。[2]</li><li><strong>DreamerV3 repo 的实现边界必须明说。</strong>README 自称基于 DreamerV2 的 reimplementation，与 Google/DeepMind 无关；它是逐行实现证据，不应被描述为论文作者发布的官方代码，也不能由 repo 直接证明个人项目结果。[4]</li></ol>
+<h2 id="2">2. 证据层级与冻结对象</h2>
+<table><thead><tr><th>层级</th><th>冻结对象</th><th>本页支持</th><th>本页不支持</th></tr></thead><tbody>
+<tr><td>[1] 论文</td><td>Ha &amp; Schmidhuber, <em>World Models</em>, arXiv <code>1803.10122</code>，ar5iv HTML 已保存于 <code>%TEMP%\\vol04-papers\\worldmodels.html</code></td><td>VAE/MDN-RNN/controller 分解、dream training、模型漏洞边界</td><td>现代 RSSM、机器人 action schema、本地项目</td></tr>
+<tr><td>[2] 论文</td><td>Hafner et al., <em>Learning Latent Dynamics for Planning from Pixels</em>（PlaNet），arXiv <code>1811.04551</code>，ar5iv HTML 已保存于 <code>%TEMP%\\vol04-papers\\planet.html</code></td><td>latent planning、stochastic+deter­ministic transition、latent overshooting、multi-step/OOD 难点、CEM planning</td><td>DreamerV3 的实现、VLA 项目指标</td></tr>
+<tr><td>[3] 论文</td><td>Hafner et al., <em>Mastering Diverse Domains through World Models</em>（DreamerV3），arXiv <code>2301.04104</code>，ar5iv HTML 已保存于 <code>%TEMP%\\vol04-papers\\dreamer.html</code></td><td>RSSM 合同、world-model/actor/critic 分工、imagined trajectories、λ-return、symlog/KL/free-bits 设计</td><td>frozen repo 的 exact defaults、用户项目结果</td></tr>
+<tr><td>[4] 代码</td><td><code>danijar/dreamerv3</code> frozen commit <code>e3f02248693a79dc8b0ebd62c93683888ddaccfe</code></td><td><code>rssm.py</code> observe/imagine/loss、<code>agent.py</code> loss graph、config scales/horizon、repo disclaimer</td><td>论文作者官方实现、checkpoint 兼容性、个人贡献</td></tr>
+<tr><td>同源推断</td><td>[1]–[4] 联合分析</td><td>one-step/rollout gap、metric contract、最小测试矩阵</td><td>未运行的 rollout 成功、未见的本地数据与数字</td></tr>
+</tbody></table>
+<p><strong>许可证与可复现边界：</strong>GitHub metadata 将 frozen Dreamer repo 标为 MIT，但本页引用的代码语义仍需以 commit 为准；repo README 明确写 <code>reimplementation</code>，因此 license、作者归属、论文结果和本地使用应分别记录。论文 HTML 与 repo commit 已验证，论文 source tar、checkpoint、运行环境和浏览器视觉 QA 未作为已完成证据。</p>
+<h2 id="3-world-model">3. World model 的概率合同</h2>
+<h3 id="3-1">3.1 直觉：在内部预测“采取动作后会发生什么”</h3>
+<p>普通视频预测只需回答“下一帧像什么”；用于控制的 world model 还要回答“如果我执行动作 \(a_t\)，未来状态、奖励和终止概率怎样变化”。它可以在 pixel、state 或 latent 空间运行，但必须明确 condition、预测 horizon、随机采样方式和输出单位。</p>
+<p>专业地，令 \(o_t\) 是观测（observation），\(s_t\) 是隐藏/真实状态（state），\(a_t\) 是动作，\(r_t\) 是即时 reward，\(c_t\) 是 continuation/是否继续。一个最小 action-conditioned 合同是：</p>
+<div class="formula">\[
+p_\theta(z_{t+1},r_{t+1},c_{t+1}\mid z_{\le t},a_{\le t},g),
+\]</div>
+<p>其中 \(z_t\) 可以是观测压缩后的 latent，\(g\) 是任务/语言条件（若存在）。变量解释：\(p_\theta\) 是模型学习的条件分布，不要求把每一帧都还原到 RGB；实现上必须能指出 latent transition、reward head、continue head 的输入输出。该表达是跨方法的合同框架，DreamerV3 的具体 factorization 见第 6 节；它不是某个项目的已验证接口。[2][3][4]</p>
+<h3 id="3-2-observation-state-latent-reward-termination">3.2 observation、state、latent、reward、termination 如何取舍</h3>
+<table><thead><tr><th>变量</th><th>作用</th><th>典型监督</th><th>缺失时风险</th></tr></thead><tbody>
+<tr><td>observation \(o_t/x_t\)</td><td>传感器实际看到的像素、proprio 或多模态输入</td><td>reconstruction / observation likelihood</td><td>latent 可能只学 reward shortcut</td></tr>
+<tr><td>state/belief \(s_t\)</td><td>决策所需但可能不可直接观测的状态</td><td>filtering、latent consistency、任务监督</td><td>POMDP 下记忆不足</td></tr>
+<tr><td>latent \(z_t,h_t\)</td><td>便于压缩、预测和 planning 的表示</td><td>posterior/prior、KL、multi-step consistency</td><td>表示错位或 collapse</td></tr>
+<tr><td>reward \(r_t\)</td><td>一步任务信号</td><td>reward prediction</td><td>想象规划无法比较后果</td></tr>
+<tr><td>continuation \(c_t\) / termination</td><td>episode 是否还在继续</td><td>Bernoulli head / environment flag</td><td>return bootstrapping、horizon 被算错</td></tr>
+<tr><td>action \(a_t\)</td><td>干预变量</td><td>transition condition、action sensitivity test</td><td>只能做相关性预测</td></tr>
+</tbody></table>
+<p>面试中先问“这个模型到底预测哪一个变量、在什么时间索引、使用真实还是模型历史”，比直接背“world model = dynamics model”更可靠。</p>
+<h3 id="3-3">3.3 与相邻模块的边界</h3>
+<ul><li><strong>policy</strong>：给定当前信息选择动作 \(\pi(a_t\mid s_t)\)；world model 预测 action 后果，二者可联合训练但语义不同。</li><li><strong>environment simulator</strong>：由物理/规则引擎定义的真实交互对象；learned world model 是近似分布，可能在 OOD 或长 rollout 失真。</li><li><strong>reward model</strong>：只预测/定义 reward；它不必能重建观测或预测 action consequence。</li><li><strong>value model</strong>：预测给定 policy/return convention 下的未来累计回报；它不是 continuation，也不是物理动力学。</li><li><strong>video generator</strong>：若不接受 action 或不预测 reward/termination，就只能证明视觉先验；是否 actionable 必须用 intervention 与 closed-loop test 验证。</li></ul>
+<h2 id="4-world-models-vae-mdn-rnn-dream-controller">4. World Models：VAE、MDN-RNN 与 dream 中的 controller</h2>
+<h3 id="4-1">4.1 论文方法的最短证据链</h3>
+<p>World Models 论文先用 VAE 将高维图像 frame 压缩为 latent vector，再用 MDN-RNN 预测下一个 latent 的概率分布，最后用小 controller 从 latent 与 RNN hidden state 产生动作。论文摘要和第 2 节明确指出：world model 训练是无监督的，controller 可以完全在模型自己的 hallucinated dream 中训练，再转回真实环境。[1]</p>
+<p>MDN-RNN 的条件形式可以写为：</p>
+<div class="formula">\[
+p_\theta(z_{t+1}\mid a_t,z_t,h_t)
+=\sum_{k=1}^{K}\pi_k(h_t,z_t,a_t)\,
+\mathcal N\!\left(z_{t+1};\mu_k,\Sigma_k\right),
+\]</div>
+<p>其中 \(h_t\) 是 recurrent hidden state，\(K\) 是 mixture components，\(\pi_k,\mu_k,\Sigma_k\) 是 mixture weight、mean、covariance。直觉是让模型表达多个可能未来，而不是只输出平均 latent；实现映射是 MDN 输出分布参数后采样 \(z_{t+1}\)，不是对 RGB 像素做单一 MSE。[1]</p>
+<h3 id="4-2-dream-training">4.2 dream training 的收益与漏洞</h3>
+<p>在 learned dream 里训练 controller 可以省去反复渲染真实环境、把训练信号放在紧凑 latent 空间，并使 controller 很小。[1] 但模型可能存在“漏洞”：policy 学会触发 world model 的分布外错误，使 dream reward 很高，真实环境却失败。这个现象是 model bias 与 model exploitation 的早期例子，不能用 dream return 替代 real rollout success。</p>
+<p>最小审计问题：</p>
+<ol><li>dream 的初始 latent 来自真实观测还是纯模型生成？</li><li>rollout horizon、多次采样和 termination 如何处理？</li><li>policy 是否在真实数据分布之外行动？</li><li>dream reward 与真实 reward 是否在同一 contract、同一单位、同一 success predicate 下？</li></ol>
+<h2 id="5-planet-belief-state-latent-planning">5. PlaNet：belief-state latent planning</h2>
+<h3 id="5-1-deterministic-stochastic-transition">5.1 为什么需要 deterministic + stochastic transition</h3>
+<p>PlaNet 从 pixels 学习 latent dynamics，并在线在 latent space 规划动作。论文摘要强调其 transition model 同时含 deterministic 和 stochastic components；这对 partial observability、contact dynamics 和多未来尤为重要。[2]</p>
+<p>可用一个抽象 RSSM 写成：</p>
+<div class="formula">\[
+h_t=f_\theta(h_{t-1},z_{t-1},a_{t-1}),\qquad
+z_t\sim q_\phi(z_t\mid h_t,o_t),
+\]</div>
+<div class="formula">\[
+\hat z_t\sim p_\theta(\hat z_t\mid h_t),\qquad
+\hat r_t\sim p_\theta(r_t\mid h_t,z_t).
+\]</div>
+<p>变量解释：\(h_t\) 保存动作与历史，\(z_t\) 表示当前观测提供的 stochastic belief，posterior \(q\) 使用真实观测，prior \(p\) 在 imagination 时只依赖历史与动作。实现映射：planning 期间不能偷偷读取未来真实 observation，否则不再是 open-loop latent planning。[2]</p>
+<h3 id="5-2-latent-overshooting">5.2 latent overshooting 的作用</h3>
+<p>单步 KL 只约束一步 prior/posterior；latent overshooting 将更远的 multi-step prior 与 posterior 也纳入变分目标，使模型对长期 latent transition 更一致。其目的不是保证 RGB 细节漂亮，而是提升 reward-relevant long-horizon prediction；PlaNet 论文明确将它描述为 generalized variational objective。[2]</p>
+<p>抽象的 (k)-step 正则可写为：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{over}}^{(k)}
+=\mathbb E\left[
+\operatorname{KL}\left(
+q_\phi(z_{t+k}\mid o_{\le t+k},a_{&lt;t+k})
+\;\middle\|\;
+p_\theta^{(k)}(z_{t+k}\mid h_t,a_{t:t+k-1})
+\right)\right].
+\]</div>
+<p>这里 \(p_\theta^{(k)}\) 是从当前 belief 连续执行 \(k\) 个动作得到的 prior；它是对 PlaNet 机制的形式化表达，变量、方向和是否加权必须按具体实现确认。不能把它误说成“多步 pixel MSE”。[2]</p>
+<h3 id="5-3-online-planning-receding-horizon">5.3 online planning 与 receding horizon</h3>
+<p>PlaNet 在每次决策时从当前 belief 初始化 action-sequence distribution，用 CEM 等方法采样、在 latent model 中 rollout、按 predicted reward 选择动作，并只执行第一步/短段后重新观测和规划。[2] 这是一种 receding-horizon contract：增加 planning compute 可能提升搜索，但会增加 latency；模型偏差越大，越应该缩短 open-loop execution 和增加真实观测校正。</p>
+<h2 id="6-dreamerv3-rssm-frozen-repo">6. DreamerV3 RSSM：论文合同到 frozen repo</h2>
+<h3 id="6-1-factorization">6.1 论文中的完整 factorization</h3>
+<p>DreamerV3 论文给出 RSSM 的核心关系：</p>
+<div class="formula">\[
+h_t=f_\phi(h_{t-1},z_{t-1},a_{t-1}),\quad
+z_t\sim q_\phi(z_t\mid h_t,x_t),\quad
+\hat z_t\sim p_\phi(\hat z_t\mid h_t),
+\]</div>
+<div class="formula">\[
+\hat r_t\sim p_\phi(\hat r_t\mid h_t,z_t),\quad
+\hat c_t\sim p_\phi(\hat c_t\mid h_t,z_t),\quad
+\hat x_t\sim p_\phi(\hat x_t\mid h_t,z_t).
+\]</div>
+<p>其中 \(x_t\) 是 sensory input，\(z_t\) 是 stochastic representation，\(h_t\) 是 deterministic recurrent state，\(a_t\) 是 action，\(r_t\) 是 reward，\(c_t\) 是 continuation。posterior 使用观测进行 filtering；prior 不读当前观测，因而可用于 imagined rollout。[3]</p>
+<h3 id="6-2-rssm-py">6.2 <code>rssm.py</code> 的逐行映射</h3>
+<table><thead><tr><th>机制</th><th>frozen commit 证据</th><th>面试口径</th></tr></thead><tbody>
+<tr><td>state shape</td><td><code>dreamerv3/rssm.py</code> <code>entry_space</code>：<code>deter=[B,4096]</code>、<code>stoch=[B,32,32]</code>（默认配置）</td><td>stochastic latent 是 grouped categorical representation；不要只说一个连续向量</td></tr>
+<tr><td>posterior observe</td><td><code>observe</code> / <code>_observe</code>：读取 <code>tokens, action, reset</code>，先 <code>_core</code> 再 <code>_logit('obslogit', ...)</code>，从 <code>_dist(logit).sample</code> 得到 stoch</td><td>真实序列用 observation posterior 更新 belief</td></tr>
+<tr><td>prior imagine</td><td><code>imagine</code>：由 policy 产生 action，调用 <code>_core</code> 与 <code>_prior(deter)</code>，采样 prior stoch</td><td>imagined sequence 不读未来 observation</td></tr>
+<tr><td>dynamics loss</td><td><code>loss</code>：<code>dyn = KL(stop_gradient(post) ∥ prior)</code>、<code>rep = KL(post ∥ stop_gradient(prior))</code>，可用 <code>free_nats</code> 截断</td><td>dyn/rep 两个方向表达不同梯度边界，不能只写“一个 KL”</td></tr>
+<tr><td>reset</td><td><code>_observe</code> 对 <code>reset</code> mask carry/action</td><td>episode 边界必须进入 world-model state contract</td></tr>
+<tr><td>action normalization</td><td><code>_core</code> 中按 stop-gradient 最大绝对值缩放 action</td><td>这是 repo 实现细节，不应泛化成所有 RSSM 的必然设计</td></tr>
+</tbody></table>
+<h3 id="6-3-kl-balancing-free-nats-collapse">6.3 KL balancing、free nats 与 collapse</h3>
+<p>DreamerV3 的 <code>rssm.py</code> 用两项 KL：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{dyn}}=
+\operatorname{KL}(\operatorname{sg}(q)\|p),\qquad
+\mathcal L_{\mathrm{rep}}=
+\operatorname{KL}(q\|\operatorname{sg}(p)).
+\]</div>
+<p><code>sg</code> 是 stop-gradient；前一项主要推动 prior 追 posterior，后一项主要推动 posterior 与 prior 对齐但不让 prior 通过该项获得梯度。repo 还用 <code>free_nats</code> 做下限裁剪，避免极小 KL 过早压掉 stochastic information。具体 loss scales 来自 <code>configs.yaml</code>，不能仅凭论文摘要声称某个数值是 universal default。[3][4]</p>
+<p>常见 failure：</p>
+<ul><li><strong>posterior collapse</strong>：\(q(z_t\mid h_t,x_t)\) 忽略 observation，KL 接近零且重建/任务性能无改善；应检查 latent entropy、KL、observation ablation。</li><li><strong>prior collapse / action ignoring</strong>：prior 对 action 改变不敏感；做 action-swap、finite-difference 或 counterfactual rollout。</li><li><strong>free-nats 过大</strong>：可能让 KL 误差长期不回传，需看裁剪前后统计。</li><li><strong>reset 泄漏</strong>：episode 首帧 carry 未清空，导致跨 episode 信息污染。</li></ul>
+<h2 id="7-dreamerv3-world-model-loss-imagination-actor-critic">7. DreamerV3 的 world-model loss、imagination 与 actor-critic</h2>
+<h3 id="7-1-world-model-loss">7.1 world-model loss 的组成</h3>
+<p>frozen <code>dreamerv3/agent.py</code> 的 <code>loss</code> 先编码 observation，再调用 <code>dyn.loss</code>，随后 decoder reconstruction、reward head 和 continuation head：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{wm}}
+=\mathcal L_{\mathrm{dyn}}+\mathcal L_{\mathrm{rep}}
++\lambda_{\mathrm{rec}}\mathcal L_{\mathrm{rec}}
++\lambda_r\mathcal L_r
++\lambda_c\mathcal L_c.
+\]</div>
+<p>变量解释：\(\mathcal L_{\mathrm{rec}}\) 重建输入，\(\mathcal L_r\) 预测 reward，\(\mathcal L_c\) 预测 continuation，\(\lambda\) 由 <code>config.loss_scales</code> 展开；代码还可能为不同 observation key 复制 reconstruction scale。该式是对 repo loss dictionary 的结构化总结，不表示所有项目都使用相同 head 或权重。[3][4]</p>
+<p>DreamerV3 论文还讨论 symlog prediction：decoder、reward predictor、critic 使用 symlog 形式以跨 reward scale 稳定训练。[3] 这是 DreamerV3 的设计，不应写成 world model 的必要组件。</p>
+<h3 id="7-2-imagined-trajectory">7.2 imagined trajectory 的数据流</h3>
+<p><code>Agent.loss</code> 的 imagination 流程是：</p>
+<ol><li>从 replay sequence 的最后 \(K=\min(\texttt{imag\_last},T)\) 个 posterior states 取 starts；</li><li>用 <code>policyfn</code> 从当前 latent feature 采样 action；</li><li><code>dyn.imagine(starts, policyfn, H, ...)</code> 通过 prior dynamics 生成 (H) 步 latent/action；</li><li>reward/continue/policy/value heads 作用于 imagined features；</li><li><code>imag_loss</code> 用 λ-return、advantage 和 entropy 更新 actor/critic；</li><li>可选 replay value loss 直接用真实 replay features 做 value regularization。</li></ol>
+<p>用张量合同表达：</p>
+<div class="formula">\[
+s_0\sim q_\phi(s_t\mid x_{\le t},a_{&lt;t}),\quad
+a_{1:H}\sim\pi_\theta(\cdot\mid s_{0:H-1}),\quad
+s_{1:H}\sim p_\phi(\cdot\mid s_{0:H-1},a_{1:H}).
+\]</div>
+<p>变量 \(s_t=(h_t,z_t)\) 是 RSSM feature；前缀 \(s_0\) 来自真实 replay，之后的 \(s_{1:H}\) 是模型想象。这样既利用真实数据校准起点，又避免每个 actor update 都与真实环境交互。[3][4]</p>
+<h3 id="7-3-actor-critic-return">7.3 actor、critic 与 λ-return</h3>
+<p>论文把 actor 写成 \(a_t\sim\pi_\theta(a_t\mid s_t)\)，critic 写成 \(v_\psi(s_t)\approx\mathbb E_{p_\phi,\pi_\theta}[R_t]\)。frozen repo 的 <code>imag_loss</code> 计算 continuation-weighted return、advantage、policy log-probability/entropy 与 value target；<code>lambda_return</code> 反向递推得到 bootstrap return。[3][4]</p>
+<p>可用标准形式概括：</p>
+<div class="formula">\[
+R_t^\lambda=r_t+\gamma c_t\big((1-\lambda)v_\psi(s_{t+1})
++\lambda R_{t+1}^\lambda\big).
+\]</div>
+<p>这里 \(c_t\) 是 continuation mask，\(\gamma\) 是 discount，\(\lambda\) 控制 bootstrap 与多步 return 的混合。实现映射：repo 先从 <code>con</code> 与 <code>term/last</code> 生成 <code>weight</code>，再调用 <code>lambda_return</code>；具体 <code>disc</code> 还受 <code>contdisc</code> 与 <code>horizon</code> 配置影响。[4]</p>
+<h3 id="7-4-model-bias">7.4 梯度边界与 model bias</h3>
+<p>Dreamer 的 actor/critic 依赖 model-generated states，因此 world model bias 会进入 imagined return。repo 通过 <code>sg</code>、<code>ac_grads</code>、<code>reward_grad</code>、<code>repval_grad</code> 等配置控制哪些梯度可回到 world model；不能笼统说“actor loss 反向更新整个 world model”。</p>
+<p>如果 world model 在 OOD state 上高估 reward/value，actor 会主动寻找模型漏洞；典型防护包括：缩短 imagination horizon、增加真实数据覆盖、ensemble/disagreement penalty、uncertainty-aware value、receding-horizon replan，以及把 imagined proxy 与 real success 分开报告。[2][3][4]</p>
+<h2 id="8-one-step-teacher-forcing-open-loop-rollout-scheduled-sampling">8. one-step、teacher forcing、open-loop rollout 与 scheduled sampling</h2>
+<h3 id="8-1-protocol">8.1 四种 protocol 必须拆开</h3>
+<table><thead><tr><th>Protocol</th><th>下一步输入</th><th>证明什么</th><th>不能证明</th></tr></thead><tbody>
+<tr><td>teacher-forced one-step</td><td>真实 \(o_t/z_t\) + \(a_t\)</td><td>局部条件预测能力</td><td>长时稳定、闭环成功</td></tr>
+<tr><td>teacher-forced multi-step</td><td>每步仍注入真实 latent/observation</td><td>多步监督下的局部一致性</td><td>纯模型 rollout</td></tr>
+<tr><td>open-loop rollout</td><td>第一步后使用模型自己的预测</td><td>误差累积与长期稳定性</td><td>真实环境可控性</td></tr>
+<tr><td>closed-loop policy</td><td>真实环境重新观测并执行动作</td><td>任务成功与控制合同</td><td>world model 所有细节都正确</td></tr>
+</tbody></table>
+<p><strong>scheduled sampling</strong> 在训练中以一定概率把模型自己的预测替代真实历史，试图缩小 train/eval exposure bias；但它会改变训练分布、梯度路径和目标一致性，不能当作免费修复。面试回答应给出 schedule、替换粒度（observation/latent/action）和真实评估 protocol。[2][3]</p>
+<h3 id="8-2">8.2 误差为何会累积</h3>
+<p>若单步误差为 \(e_t\)，局部 Lipschitz 常数约为 \(L\)，粗略上可有：</p>
+<div class="formula">\[
+\|\hat s_{t+k}-s_{t+k}\|
+\lesssim\sum_{i=0}^{k-1}L^{k-1-i}e_{t+i}.
+\]</div>
+<p>这不是任一论文的 exact bound，而是解释 rollout compounding 的分析框架：当动力学放大误差（\(L&gt;1\)）或进入训练分布外区域，长 horizon 误差可能超线性增长。应通过真实 open-loop traces、latent disagreement 和 downstream task probes 验证，而不是从 one-step MSE 外推 success。[2]</p>
+<h2 id="9-uncertainty-actionability-simulator">9. uncertainty、actionability 与可查询 simulator 边界</h2>
+<h3 id="9-1-aleatoric-vs-epistemic">9.1 aleatoric vs epistemic</h3>
+<ul><li><strong>Aleatoric</strong>：同一 state/action 即使无限数据仍有多个结果，例如接触摩擦、遮挡后的不可见分支、随机环境；应输出条件分布或采样多模态结果。</li><li><strong>Epistemic</strong>：模型没见过该 state/action 或数据不足，随着覆盖增加理论上可降低；ensemble disagreement、dropout/posterior sampling、density/novelty score 是代理。</li></ul>
+<p>二者在 planning 中不同：aleatoric 可通过风险敏感期望/分位数处理；epistemic 更适合触发探索、保守 penalty 或 fallback。单个 Gaussian variance 无法自动区分两种来源。[2]</p>
+<h3 id="9-2-video-model-actionable">9.2 video model 什么时候 actionable</h3>
+<p>至少需要同时满足：</p>
+<ol><li>action 明确进入 transition condition，并做 action-swap/counterfactual 检验；</li><li>预测变量含 reward、termination 或与控制目标有可验证关联；</li><li>open-loop 与 closed-loop 评估使用固定 schema、horizon、normalizer 和 reset；</li><li>在分布外/失败轨迹上检查物理一致性与 action sensitivity。</li></ol>
+<p>否则最多称为“视觉预测器/视频生成器”。同一模型可以具备视频生成能力而没有可用 dynamics；不能用 FVD、PSNR 或画面主观质量直接证明 policy 成功。[1][2][3]</p>
+<h3 id="9-3-auxiliary-representation-vs-queryable-simulator">9.3 auxiliary representation vs queryable simulator</h3>
+<p><strong>辅助表示</strong>：只要求 encoder/latent 对 action policy、reward 或 representation learning 有帮助；可不解码像素、可不支持任意 counterfactual action。</p>
+<p><strong>可查询 simulator</strong>：给定任意候选 action sequence，能在明确概率合同下预测未来 state/observation/reward/termination，且有 rollout horizon、uncertainty 和 reset 语义；planning 或 best-of-N 才能把它当作模拟器。</p>
+<p>回答项目问题时，先写“本实验只用 world head 作为 auxiliary loss”还是“eval 真的查询 world model 选择 action”，否则很容易把 multi-task pretraining 夸成 model-based control。</p>
+<h2 id="10-metric-boundary-proxy-success">10. metric boundary：proxy 不是 success</h2>
+<table><thead><tr><th>指标</th><th>主要证明</th><th>常见误读</th></tr></thead><tbody>
+<tr><td>PSNR/SSIM</td><td>像素重建局部相似</td><td>认为物理、动作、任务都正确</td></tr>
+<tr><td>FVD/视频感知分数</td><td>视频分布/视觉质量（依实现而定）</td><td>认为 action consequence 正确</td></tr>
+<tr><td>latent KL / reconstruction</td><td>表示与 dynamics 训练目标拟合</td><td>认为长 horizon 可规划</td></tr>
+<tr><td>reward/value MSE</td><td>任务信号预测或价值拟合</td><td>认为 controller closed-loop success</td></tr>
+<tr><td>action MSE</td><td>行为标签拟合</td><td>认为 rollout 不会漂移</td></tr>
+<tr><td>open-loop rollout error</td><td>模型自回归稳定性</td><td>认为真实环境能执行</td></tr>
+<tr><td>closed-loop success</td><td>固定 protocol 下的任务结果</td><td>不能单独解释 world model 哪个 head 正确</td></tr>
+</tbody></table>
+<p>最小可比报告应同时记录 horizon、teacher forcing/open-loop、任务 split、reset、episode 数、seed、normalizer、checkpoint 和 success predicate。没有这些字段，数字只能作为方向性 context，不能声称“world model 更好”。</p>
+<h2 id="11">11. 从论文到代码的最小审计矩阵</h2>
+<table><thead><tr><th>Claim</th><th>论文证据</th><th>frozen repo 证据</th><th>仍未证明</th></tr></thead><tbody>
+<tr><td>RSSM posterior/prior 分离</td><td>DreamerV3 Eq. 3 / Figure 3</td><td><code>rssm.py</code> <code>observe</code> vs <code>imagine</code></td><td>用户项目是否复用此 RSSM</td></tr>
+<tr><td>reward/continue/reconstruction heads</td><td>DreamerV3 World Model Learning</td><td><code>agent.py</code> <code>rew</code>, <code>con</code>, <code>dec</code> 与 <code>loss</code></td><td>head 的本地数据字段、权重和结果</td></tr>
+<tr><td>latent imagination actor-critic</td><td>DreamerV3 Eq. 6–7</td><td><code>Agent.loss</code> imagination + <code>imag_loss</code></td><td>任何具体 VLA/WAM downstream gain</td></tr>
+<tr><td>KL balancing/free nats</td><td>DreamerV3 训练目标与 appendix</td><td><code>rssm.py</code> <code>dyn/rep/free_nats</code>；<code>configs.yaml</code> scales</td><td>不同配置的可比性</td></tr>
+<tr><td>latent overshooting</td><td>PlaNet paper</td><td>DreamerV3 frozen repo README/代码未作为同一机制证据</td><td>DreamerV3 是否启用 PlaNet overshooting</td></tr>
+<tr><td>dream controller</td><td>World Models paper</td><td>无需现代 repo 才成立</td><td>真实机器人可迁移性</td></tr>
+</tbody></table>
+<h2 id="12">12. 面试答题骨架与失败追问</h2>
+<h3 id="12-1-30">12.1 30 秒主回答</h3>
+<p>“我会先把 world model 定义成 action-conditioned 的未来分布，而不是泛化成视频生成器。输入通常是 observation/history/action，输出至少要明确 latent/observation、reward 和 continuation。World Models 是 VAE+MDN-RNN 的早期分解；PlaNet 在 stochastic+deter­ministic latent belief 上在线规划，并用 latent overshooting 约束多步；DreamerV3 用 RSSM 的 posterior 从真实 observation 更新起点，再用 action-conditioned prior 做 imagination，reward/continue head 生成 return，actor/critic 在想象轨迹上更新。判断它是否有用要把 one-step、open-loop、closed-loop success 分开，并审计 action sensitivity、uncertainty、reset、normalizer 和模型漏洞。”</p>
+<h3 id="12-2">12.2 面试官继续追问时的机制点</h3>
+<ul><li>“为什么 one-step MSE 很低还会失败？”——真实历史 vs 自回归历史、error compounding、OOD、action ignoring。</li><li>“Dreamer 的 posterior/prior 为什么分开？”——posterior 可用当前观测做 filtering；prior 才能在 imagination 不读未来观测。</li><li>“reward head 和 value head 有何区别？”——一步信号 vs policy-conditioned cumulative return；训练/评估时间索引不同。</li><li>“如何证明是 action-conditioned？”——action intervention/swap、finite difference、counterfactual rollout、real controller test。</li><li>“DreamerV3 repo 是官方代码吗？”——不是；README 自称 reimplementation，论文事实和代码证据分开。</li></ul>
+<h2 id="13">13. 当前证据边界与后续动作</h2>
+<ul><li>已核实：World Models、PlaNet、DreamerV3 论文 HTML；DreamerV3 frozen commit 的 README、RSSM observe/imagine/loss、Agent world-model/imagination/replay-value loss、configs loss scales/RSSM/imagination horizon。</li><li>尚未核实：PlaNet source tar、Dreamer repo checkpoint 与 exact paper result reproduction、任何用户本地 world-model/WAM/UWM artifact、浏览器视觉 QA、真实口述。独立 frozen-source 事实复核已记录在 <a href="vol_04_world_model_foundations_independent_fact_review.html">复核报告</a>。</li><li>不写入本页：UWM/Cosmos 的 action/video/value slots、LIBERO/RoboCasa strict 数字、WAM/UWM 的本地 MSE/success、个人贡献边界；这些要到对应 Source Audit 与 VOL 07 项目证据后再写。</li><li>下一步：基于独立复核先生成 <code>VLA-WM-001..010</code> 知识页；之后再进入 Source Audit B（UWM）的完整审查，确认 video/action diffusion、license、checkpoint、mask/horizon 与 LIBERO eval contract。</li></ul>
+<h2 id="14-references">14. 参考文献（References）</h2>
+<ol><li>Ha &amp; Schmidhuber, “World Models”, 2018. <a href="https://arxiv.org/abs/1803.10122">arXiv</a>；本地论文快照：<code>%TEMP%\\vol04-papers\\worldmodels.html</code>。</li><li>Hafner et al., “Learning Latent Dynamics for Planning from Pixels” (PlaNet), 2019. <a href="https://arxiv.org/abs/1811.04551">arXiv</a>；本地论文快照：<code>%TEMP%\\vol04-papers\\planet.html</code>。</li><li>Hafner et al., “Mastering Diverse Domains through World Models” (DreamerV3), 2023/2025. <a href="https://arxiv.org/abs/2301.04104">arXiv</a>；本地论文快照：<code>%TEMP%\\vol04-papers\\dreamer.html</code>。</li><li><code>danijar/dreamerv3</code>, frozen commit <code>e3f02248693a79dc8b0ebd62c93683888ddaccfe</code>. <a href="https://github.com/danijar/dreamerv3/tree/e3f02248693a79dc8b0ebd62c93683888ddaccfe">GitHub</a>；重点文件：<a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/dreamerv3/rssm.py"><code>rssm.py</code></a>、<a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/dreamerv3/agent.py"><code>agent.py</code></a>、<a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/dreamerv3/configs.yaml"><code>configs.yaml</code></a>。</li></ol>
+</article></body></html>

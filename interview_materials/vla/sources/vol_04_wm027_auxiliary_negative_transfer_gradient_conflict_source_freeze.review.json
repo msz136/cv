@@ -1,0 +1,34 @@
+{
+  "artifact": "sources/vol_04_wm027_auxiliary_negative_transfer_gradient_conflict_source_freeze.md",
+  "html": "sources/vol_04_wm027_auxiliary_negative_transfer_gradient_conflict_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-WM-027 / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "92113dee7896f8691ddb32a89cdd69d89d57a7fd14c4b6168df583b383517f2f",
+  "covered_question_ids": ["VLA-WM-027"],
+  "checks": {
+    "primary_source_revision": "PASS (PCGrad arXiv v4, GradNorm arXiv v4 and PCGrad official-code commit c5fbd7c frozen)",
+    "definition_separation": "PASS (matched negative transfer is separated from local gradient conflict)",
+    "first_order_diagnostic": "PASS (pairwise cosine, joint-update dot product, layer-wise norm ratio and zero-gradient NA semantics included)",
+    "pcgrad_formula": "PASS (negative-inner-product projection, random order and local/compute limitations match primary paper)",
+    "gradnorm_formula": "PASS (relative inverse training rate, target norm, weight objective and sum-to-T renormalization match primary paper)",
+    "contract_first": "PASS (label, routing/mask, padding, normalizer, role/domain and capacity checks precede surgery)",
+    "distributed_measurement": "PASS (AMP unscale, pre/post clip, global per-role gradient and no rank-cosine averaging specified)",
+    "cosmos_exact_boundary": "PASS (unified EDM training objective is separated from component diagnostic metrics)",
+    "project_evidence_boundary": "PASS (WAM local gradient, paired objective arms, multi-seed episodes and ownership remain missing)",
+    "html_static_validation": "PASS (canonical SHA, one H1, twelve H2 headings, two tables and MathJax rendered)",
+    "local_links": "PASS (WM-025/026 and WAM inventory links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "downstream_artifacts": "PASS WITH WARNING (knowledge page and one unseen atomic card synchronized)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep VLA-WM-027 unseen until a real oral drill.",
+    "Collect exact WAM config/checkpoint, per-role exact-loss gradients, matched objective arms, multi-seed episodes and ownership.",
+    "Do not infer confirmed negative transfer from a single negative cosine, component metric or single episode.",
+    "Do not claim PCGrad/GradNorm was locally executed or improved closed-loop success.",
+    "Do not create coaching_state.md before an actual drill."
+  ],
+  "next": "Proceed only to VLA-WM-028 routing/slot-mask/loss-weight contract, or run one real WM-027 oral drill; keep WM-029..038 deferred."
+}
+

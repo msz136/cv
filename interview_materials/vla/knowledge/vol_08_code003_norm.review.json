@@ -1,0 +1,30 @@
+{
+  "artifact": "knowledge/vol_08_code003_norm.md",
+  "html": "knowledge/vol_08_code003_norm.html",
+  "source_freeze": "sources/vol_08_code003_norm_source_freeze.md",
+  "review_date": "2026-07-18",
+  "status": "drafted / CODE-VLA-003 / knowledge_1_of_phase / card_synchronized / WARN",
+  "verdict": "WARN",
+  "source_sha256": "53919a8b1a8b82bd8213f3acd8de07533737c02308aa1e3c254b9a3254ebf8c5",
+  "question_ids": [
+    "CODE-VLA-003"
+  ],
+  "checks": {
+    "source_gate": "PASS WITH WARNING (official PyTorch APIs, RMSNorm paper and VOL 01 context are cited)",
+    "formula_and_code": "PASS (LayerNorm/RMSNorm formulas, axes, fp32 accumulation and affine paths are mapped with comments)",
+    "train_eval_boundary": "PASS (no running statistics; dropout/autocast/fused kernel are kept external)",
+    "test_matrix": "PASS (constant/non-zero-mean, multi-dim, low precision, affine and autograd parity are included)",
+    "vla_project_boundary": "PASS (feature norm, action normalizer and project hooks are not conflated with personal uplift)",
+    "html_static_validation": "PASS (one H1, twelve H2, tables, formulas and commented code rendered)",
+    "local_links": "PASS (CODE-003 source freeze and VOL 01 link resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "question_card": "PASS WITH WARNING (one CODE-VLA-003 hand-coding card synchronized; it remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized CODE-VLA-003 hand-coding card unseen until a drill.",
+    "Add a local forward/backward parity or matched norm ablation artifact if available.",
+    "Keep feature normalization and action normalization separate; do not create coaching_state.md before a drill."
+  ],
+  "next": "Synchronize VOL 08/global indexes, then run a whiteboard drill or collect a parity artifact."
+}

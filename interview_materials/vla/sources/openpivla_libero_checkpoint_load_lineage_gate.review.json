@@ -1,0 +1,39 @@
+{
+  "artifact": "sources/openpivla_libero_checkpoint_load_lineage_gate.md",
+  "html": "sources/openpivla_libero_checkpoint_load_lineage_gate.html",
+  "review_date": "2026-07-21",
+  "status": "local_direct / log_hash_frozen / checkpoint_load_confirmed / binary_unverified / WARN",
+  "verdict": "WARN",
+  "source_sha256": "02B6D0A5ECC380C992B92EBC03E7BBE6EEAF47E30B9A22020B3F7A43F8C4648A",
+  "evidence_cutoff": "2026-07-21",
+  "local_sources": {
+    "project_root": "C:\\Users\\mousongzhe\\project\\openpivla_deployment",
+    "serve_log_sha256": "FF0B39D7B87D604D86486A0088E7CF7FD2D3EA99CB151B99FD5D9B9E60AACD2A",
+    "client_log_sha256": "BC1B7FE6E54735B4623062D151D47667BD418F4F7A46B6CC471EC1F961869572",
+    "rollout_script_sha256": "1C7F74DE83FD373A27FEDC70D863D5F0BF164B4512ED63E1D76552A0F22C3016",
+    "deployment_sha256": "C0A3DD0C0DA8C1C0D36023046D5337900A71680B413657BC9B1062EEF2EEA14E",
+    "rollout_summary_sha256": "341E77110D75E50B601A078923F51EF8FA39AAA045FA491843A1003B0320E1DB"
+  },
+  "checks": {
+    "server_restore_log": "PASS WITH WARNING (Orbax 0.11.13 restored 6.2 GiB from pi05_libero/params in 17 s; checkpoint file manifest absent)",
+    "normalizer_load": "PASS WITH WARNING (loaded from checkpoint assets/physical-intelligence/libero; asset SHA absent)",
+    "server_ready": "PASS (0.0.0.0:8399 listening)",
+    "client_connection": "PASS WITH WARNING (localhost connection opened and co-located client result exists; no shared run UUID/request ID)",
+    "rollout_contract": "PASS WITH WARNING (observation fields, state transform, image preprocess and 7D action slice read from hashed local script; exact argv absent)",
+    "result_boundary": "PASS (task-0 model/no-op both preserved as 0 reward / false success)",
+    "success_scorer": "WARN (script maps success to done; no independent scorer/version bundle)",
+    "private_finetune_lineage": "UNVERIFIED (official pi05_libero load does not establish Qwen3-VL LoRA checkpoint lineage)",
+    "ownership": "PENDING (candidate per-file role and pre-snapshot diff not confirmed)",
+    "html_static_validation": "PASS (full repository validator: one H1, source SHA, MathJax/formula safety, local links and ARIS academic checks all pass)",
+    "browser_visual_check": "PASS WITH WARNING (rechecked after card mapping at localhost 1440x1000: warm-paper serif page, 260px sticky TOC, one H1, two MathJax containers, zero page overflow/formula-em; 800x1000: static TOC and zero page overflow)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Generate a read-only checkpoint manifest with per-file path, size and SHA plus normalization-asset hashes.",
+    "Record exact server/client argv, effective config, UTC timestamp, run UUID and request IDs.",
+    "Run a matched LIBERO probe for image flip/resize, state axis/unit, action order/unit, replan interval, controller and scorer.",
+    "The evidence is mapped to PROJ-OPENPIVLA-007; keep the card unseen until a real oral response is recorded.",
+    "Confirm candidate ownership before using first-person end-to-end contribution claims."
+  ],
+  "next": "Collect the missing immutable checkpoint manifest or run one matched LIBERO failure probe; keep PROJ-OPENPIVLA-007 unseen until a real oral response is recorded."
+}

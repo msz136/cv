@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 PER-019：Navigation Evaluation、Failure Taxonomy 与 Fail-Closed Protocol</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per019_navigation_evaluation_failure.md">
+<meta name="aris:source-sha256" content="8b6c39320986eb16a63882fadad8aadc1e76800164a7a7c795c86f92051a4cea">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>8b6c39320986eb16a63882fadad8aadc1e76800164a7a7c795c86f92051a4cea</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per019_navigation_evaluation_failure.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 学习出口</a></li><li><a href="#2">2. 一分钟心智模型</a></li><li><a href="#3-success">3. Success：位置接近不等于协议成功</a></li><li><a href="#4-distance-point-view-points-geodesic-contract">4. Distance：POINT、VIEW_POINTS 与 geodesic contract</a></li><li><a href="#4-1-goal">4.1 两种 goal 解释</a></li><li><a href="#4-2-action-count">4.2 轨迹长度不是 action count</a></li><li><a href="#5-spl-softspl-metric-namespace">5. SPL、SoftSPL 与 metric namespace</a></li><li><a href="#5-1-spl">5.1 SPL</a></li><li><a href="#5-2-softspl-binary-sr">5.2 SoftSPL：连续软成功，不是另一种 binary SR</a></li><li><a href="#5-3-ne-os-tl">5.3 NE、OS、TL：名称相同也要绑定协议</a></li><li><a href="#6-split-denominator">6. Split、denominator 与统计报告</a></li><li><a href="#6-1">6.1 评估对象是一个集合，不是一个平均数</a></li><li><a href="#6-2-success-rate">6.2 Success rate 的不确定性</a></li><li><a href="#7-typed-navigation-evaluation-manifest">7. Typed Navigation Evaluation Manifest</a></li><li><a href="#8-failure-taxonomy-symptom-first-divergence">8. Failure Taxonomy：从 symptom 到 first divergence</a></li><li><a href="#9-fail-closed">9. Fail-Closed 评估伪代码</a></li><li><a href="#10-deterministic-probes-source">10. Deterministic Probes：把 source 语义变成面试检查</a></li><li><a href="#11">11. 方法比较：面试一张表讲清楚</a></li><li><a href="#12">12. 五项目真实性边界</a></li><li><a href="#13">13. 两档面试回答</a></li><li><a href="#13-1-30">13.1 约 30 秒回答</a></li><li><a href="#13-2-2">13.2 约 2 分钟机制回答</a></li><li><a href="#14">14. 高频追问与答题抓手</a></li><li><a href="#15">15. 本页证据边界与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 PER-019：Navigation Evaluation、Failure Taxonomy 与 Fail-Closed Protocol</h1>
+<div class="meta">状态：<code>knowledge_drafted / VLA-PER-019 / source_frozen / project_truth_bounded / card_pending / WARN</code> 更新日期：2026-07-21 权威来源：<a href="../sources/vol_06_per019_navigation_evaluation_failure_source_freeze.html">PER-019 Navigation Evaluation / Failure Source Freeze</a> 学习边界：本页把 <code>Success</code>、<code>DistanceToGoal</code>、SPL、SoftSPL、NE、OS、TL、split、episode denominator、统计报告与 failure taxonomy 转成可面试、可审计的知识；不生成题卡，不修改 274 张题卡的 mastery，不创建 <code>coaching_state.md</code>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>在 VLN、ObjectNav 与 PointGoal 评估中，怎样保证 <code>success</code>、<code>SPL</code>、<code>SoftSPL</code>、<code>NE</code>、<code>OS</code>、<code>TL</code> 与 failure taxonomy 共享同一 episode、split、stop 和 denominator？当本地没有完整 navigation bundle 时，如何 fail closed，而不是从一张 summary、训练 loss 或项目文件名推断导航能力？</p>
+<h2 id="1">1. 学习出口</h2>
+<p>完成本页后，面试中应能做到：</p>
+<ol><li>解释为什么 success 不是“曾经到过附近”，而是 stop、距离模式和阈值共同定义的协议谓词。</li><li>从 <code>POINT</code> / <code>VIEW_POINTS</code>、Euclidean step length、geodesic distance 三层区分距离语义。</li><li>写出 SPL，并说明参考最短距离、实际路径、success 必须来自同一 episode 与同一 scorer。</li><li>区分 binary success、SoftSPL 的连续软成功项、NE、OS、TL 与 summary 平均值；不把不同 metric namespace 混报。</li><li>设计包含 task、split、simulator、trajectory、metric、statistics、failure 和 ownership 的 typed evaluation manifest。</li><li>说明 <code>EVAL.EPISODE_COUNT == -1</code>、invalid/duplicate row、missing episode、early stop 与 CI 样本单位如何改变 estimand。</li><li>按 <code>symptom → first verified divergence → root cause → recovery/terminal outcome</code> 诊断导航失败；没有 raw trace 时保留 <code>unknown</code>。</li><li>对 OpenPiVLA、Robot Harness、OPD、WAM、UWM/LIBERO 给出不越界的项目回答。</li></ol>
+<h2 id="2">2. 一分钟心智模型</h2>
+<pre><code class="language-text">task / dataset / split / episode manifest
+              ↓
+simulator + navmesh + distance mode + success threshold
+              ↓
+ordered poses + action + STOP + termination/truncation trace
+              ↓
+per-episode scorer: Success / Distance / SPL / SoftSPL / NE / OS / TL
+              ↓
+denominator manifest + CI/statistics + failure taxonomy
+              ↓
+aggregate report + checkpoint/scorer/ownership lineage</code></pre>
+<p>核心句子是：<strong>先确认评估了哪些 episode、使用什么几何和 stop 语义，再确认每一行 trajectory 能否重算指标，最后才讨论平均值和根因。</strong> 论文数字、leaderboard 行、项目 summary 或训练 loss 都不能替代这条 lineage。</p>
+<h2 id="3-success">3. Success：位置接近不等于协议成功</h2>
+<p>Habitat-Lab 固定 revision 的 <code>Success</code> measure 依赖 <code>DistanceToGoal</code>，并要求 agent 调用 STOP，同时满足距离阈值。对 episode (i)，可用下式表达其协议谓词：</p>
+<div class="formula">\[
+s_i=\mathbf{1}\!\left[\operatorname{stop}_i=1\;\land\;d_i^{\mathrm{goal}}&lt;\tau_i^{\mathrm{success}}\right].
+\]</div>
+<p>这里 \(s_i\) 是 episode-level success，\(\operatorname{stop}_i\) 是 scorer 记录的 STOP 事件，\(d_i^{\mathrm{goal}}\) 是指定距离模式下的目标距离，\(\tau_i^{\mathrm{success}}\) 是 success threshold。直觉是“到过附近”仍可能没有完成任务；实现映射是 <code>Success.update_metric</code> 读取 STOP 状态并依赖 <code>DistanceToGoal</code>，而不是从最后一帧的欧氏距离直接猜测。该语义来自固定 Habitat-Lab <code>nav.py</code>，不能自动推广到任意本地 evaluator。</p>
+<p>面试追问时要先问四件事：STOP 是显式 action 还是 episode 截断？距离是 position 还是 viewpoint？阈值是否随 task/config 变化？最后一行是自然终止、timeout 还是 scorer 丢行？任一项缺失，都只能说“候选 success symptom”，不能说 protocol-confirmed success。</p>
+<h2 id="4-distance-point-view-points-geodesic-contract">4. Distance：POINT、VIEW_POINTS 与 geodesic contract</h2>
+<h3 id="4-1-goal">4.1 两种 goal 解释</h3>
+<p>Habitat <code>DistanceToGoal</code> 根据 <code>distance_to</code> 选择不同语义：</p>
+<table><thead><tr><th>模式</th><th>目标几何</th><th>评估含义</th><th>常见误写</th></tr></thead><tbody>
+<tr><td><code>POINT</code></td><td>到 goal position 的 simulator geodesic distance</td><td>位置接近</td><td>用直线欧氏距离代替 navmesh 路径</td></tr>
+<tr><td><code>VIEW_POINTS</code></td><td>到一个或多个 goal viewpoint 的 simulator geodesic distance</td><td>需要抵达可观察目标的视点集合</td><td>把 viewpoint 当成任意 goal center</td></tr>
+</tbody></table>
+<p>对地图上的位置 (x) 和 goal 集合 (G)，可把几何距离抽象为：</p>
+<div class="formula">\[
+d_{\mathrm{geo}}(x,G)=\min_{g\in G}\operatorname{ShortestPath}_{\mathrm{navmesh}}(x,g).
+\]</div>
+<p>\(x\) 是 simulator pose，\(G\) 是 position 或 viewpoint 集合，\(\operatorname{ShortestPath}_{\mathrm{navmesh}}\) 是受场景 navmesh 约束的最短路径。公式表达的是 geodesic contract 的直觉，不替代具体 simulator API。实现上必须记录 <code>distance_mode</code>、scene/navmesh revision 与 goal viewpoint 列表；否则相同坐标可能对应不同的 success 前置量。</p>
+<h3 id="4-2-action-count">4.2 轨迹长度不是 action count</h3>
+<p>Habitat SPL probe 显示实际路径长度累计相邻 simulator positions 的 Euclidean step distance：</p>
+<div class="formula">\[
+L_i=\sum_{t=1}^{T_i}\left\|p_{i,t}-p_{i,t-1}\right\|_2.
+\]</div>
+<p>\(p_{i,t}\) 是 episode \(i\) 在第 \(t\) 个记录点的位置，\(T_i\) 是 scorer 看到的轨迹长度。直觉是同样执行 20 个 action，如果 controller step size、停顿、碰撞或重复动作不同，物理路径长度可能不同。实现映射是 trajectory trace 中的 ordered poses；不能用 action 数、policy query 数或 wall-clock 秒数替代 \(L_i\)。</p>
+<h2 id="5-spl-softspl-metric-namespace">5. SPL、SoftSPL 与 metric namespace</h2>
+<h3 id="5-1-spl">5.1 SPL</h3>
+<p>令 \(L_i^\star\) 为同一 episode、同一 scene/navmesh 与同一 goal 语义下的参考最短距离，\(L_i\) 为实际路径长度，\(s_i\) 为同一 scorer 的 binary success，则 success-weighted path length 为：</p>
+<div class="formula">\[
+\operatorname{SPL}_i
+=s_i\cdot\frac{L_i^\star}{\max\!\left(L_i^\star,L_i\right)}.
+\]</div>
+<p>变量 \(L_i^\star,L_i,s_i\) 必须来自同一 episode lineage；\(\max\) 惩罚绕路，\(s_i=0\) 时失败 episode 的 SPL 为 0。代码映射对应 <code>SPL.reset_metric</code> 保存 start/end distance、<code>update_metric</code> 累计路径并读取 <code>Success</code>；零距离 episode、缺失路径和重复 episode 需要 scorer 的显式 guard，不能静默除零。</p>
+<p>episode-level 汇总通常是：</p>
+<div class="formula">\[
+\overline{\operatorname{SPL}}=\frac{1}{N_{\mathrm{eval}}}\sum_{i\in\mathcal E_{\mathrm{eval}}}\operatorname{SPL}_i,
+\qquad
+\operatorname{SR}=\frac{1}{N_{\mathrm{eval}}}\sum_{i\in\mathcal E_{\mathrm{eval}}}s_i.
+\]</div>
+<p>这里 \(\mathcal E_{\mathrm{eval}}\) 是经过 split、inclusion/exclusion 与 invalid-row policy 确认的 episode 集合，\(N_{\mathrm{eval}}=|\mathcal E_{\mathrm{eval}}|\)。实现上必须保存 episode ID set 和 denominator manifest；只汇总成功样本会把 SR/SPL 的 estimand 改成条件均值。</p>
+<h3 id="5-2-softspl-binary-sr">5.2 SoftSPL：连续软成功，不是另一种 binary SR</h3>
+<p>固定 Habitat source probe 只保证 SoftSPL 使用连续的 soft-success 项替换 binary success，再乘 path-length penalty。为避免把未逐行复述的实现写成强 claim，使用下面的<strong>教学抽象</strong>：</p>
+<div class="formula">\[
+\operatorname{SoftSPL}_i
+=q_i^{\mathrm{soft}}\cdot\frac{L_i^\star}{\max\!\left(L_i^\star,L_i\right)},
+\qquad q_i^{\mathrm{soft}}\in[0,1].
+\]</div>
+<p>\(q_i^{\mathrm{soft}}\) 表示官方实现计算的连续接近度；它不是 \(s_i\)，也不能在没有固定 scorer 代码时自行指定成某个距离线性函数。直觉是允许“接近目标但未满足 STOP 阈值”的 episode 得到诊断性分数；实现映射是读取 pinned <code>SoftSPL</code> 的实际 soft-success 定义，并同时记录 distance mode、threshold、path length 与 denominator。面试中应说“SoftSPL 是同一 path penalty 下的连续 soft-success 指标”，不要把它当成 leaderboard SPL 或 binary success。</p>
+<h3 id="5-3-ne-os-tl">5.3 NE、OS、TL：名称相同也要绑定协议</h3>
+<table><thead><tr><th>指标</th><th>常见语义</th><th>必须绑定</th><th>不能直接推出</th></tr></thead><tbody>
+<tr><td><code>NE</code></td><td>终点到目标的导航误差</td><td>final pose、goal mode、geodesic scorer、episode set</td><td>success 或 recovery root cause</td></tr>
+<tr><td><code>OS</code></td><td>是否曾到达目标区域或是否满足任务的 oracle-success 条件</td><td>task-specific scorer、是否要求 STOP、时间范围</td><td>已正确终止或 leaderboard SR</td></tr>
+<tr><td><code>TL</code></td><td>trajectory length，可能是 steps 或 path length</td><td>unit、controller step、timeout policy</td><td>efficient execution，除非与 SPL 协议一致</td></tr>
+</tbody></table>
+<p><code>NE/OS/TL</code> 的缩写在不同 benchmark 中可能有细节差异；因此回答时先给 task/revision/scorer，再给数值。不得把 VLN-CE 的指标表、Habitat 的 measure 名称或项目 JSON 字段直接当成跨 benchmark 同义词。</p>
+<h2 id="6-split-denominator">6. Split、denominator 与统计报告</h2>
+<h3 id="6-1">6.1 评估对象是一个集合，不是一个平均数</h3>
+<p>建议把 episode inclusion 写成显式集合：</p>
+<div class="formula">\[
+\mathcal E_{\mathrm{eval}}
+=\left\{e\in\mathcal E_{\mathrm{requested}}:\operatorname{split}(e)=\sigma,\;e\notin\mathcal E_{\mathrm{excluded}},\;\operatorname{row}(e)\text{ is valid}\right\}.
+\]</div>
+<p>\(\sigma\) 是 <code>train</code>、<code>val_seen</code>、<code>val_unseen</code> 或 <code>test_challenge</code> 等 split，\(\mathcal E_{\mathrm{excluded}}\) 记录显式过滤项。直觉是 denominator 先于平均值；实现上要保存 requested IDs、included IDs、excluded IDs、missing IDs、duplicate keys 与过滤原因。</p>
+<p>VLN-CE README 明确区分 train/val_seen/val_unseen/test-challenge，并说明 <code>EVAL.EPISODE_COUNT == -1</code> 才评估全部 episode。若只跑前 (k) 个、只保留 successful rows、过滤 invalid episode 却不写入 manifest，得到的是另一个 estimand，不能复述为同一 leaderboard 结果。</p>
+<h3 id="6-2-success-rate">6.2 Success rate 的不确定性</h3>
+<p>VOL 05 EVAL-003 已冻结 episode-level Bernoulli 与 Wilson/Clopper–Pearson 边界。对 \(k=\sum_i s_i\)、\(n=N_{\mathrm{eval}}\)，Wilson 区间的 teaching form 可写为：</p>
+<div class="formula">\[
+\hat p=\frac{k}{n},\qquad
+\operatorname{CI}_{\mathrm{Wilson}}
+=\frac{\hat p+\frac{z^2}{2n}\pm z\sqrt{\frac{\hat p(1-\hat p)}{n}+\frac{z^2}{4n^2}}}{1+\frac{z^2}{n}}.
+\]</div>
+<p>\(\hat p\) 是 episode-level SR，\(z\) 是置信水平对应的正态分位数。变量 \(k,n\) 必须来自同一 denominator manifest；zero/all-success、小样本、task/scene/seed clustering 与 optional stopping 应按 EVAL-003 规则处理。这个统计公式只说明报告不确定性，不证明 scorer、policy 或项目 ownership。</p>
+<h2 id="7-typed-navigation-evaluation-manifest">7. Typed Navigation Evaluation Manifest</h2>
+<p>任何“navigation score / improved navigation / failure root cause”回答至少需要以下字段：</p>
+<table><thead><tr><th>Layer</th><th>最低字段</th><th>缺失时的 fail-closed 结论</th></tr></thead><tbody>
+<tr><td>task</td><td>task family、dataset revision/license、scene、episode ID、goal type、action/STOP schema、frame/unit</td><td>不知道评估的任务与几何语义</td></tr>
+<tr><td>split</td><td>split、scene split、episode inclusion/exclusion、episode count</td><td>不能比较或复述公开数字</td></tr>
+<tr><td>simulator</td><td>Habitat/VLN-CE commit、scene/navmesh、distance mode、threshold、controller/action step</td><td>不能确认 scorer 与环境一致</td></tr>
+<tr><td>trajectory</td><td>ordered poses、action、timestamp/step、STOP、termination/truncation、invalid action</td><td>不能重算 path length、stop 或 failure</td></tr>
+<tr><td>metrics</td><td>SR、SPL/SoftSPL、NE、OS、TL、collision/timeout、denominator、missing policy</td><td>summary-only 不是完整评估</td></tr>
+<tr><td>statistics</td><td>episode-level rows、task/scene/seed clustering、CI method、zero/all-success handling</td><td>不报告聚合不确定性</td></tr>
+<tr><td>failure</td><td>first divergence、taxonomy label、evidence pointer、recovery/terminal outcome</td><td>只能说 symptom，不能说 confirmed root cause</td></tr>
+<tr><td>ownership</td><td>code/config/data/scorer author、operator、reviewer、artifact custodian</td><td>upstream code/Git author 不能成为个人 ownership</td></tr>
+</tbody></table>
+<p>推荐 immutable lineage：</p>
+<pre><code class="language-text">task_manifest_sha + split_manifest_sha + simulator/scorer_revision
+    -&gt; episode_ids + trajectory_schema + controller_revision
+    -&gt; raw_episode_trace + termination_reason
+    -&gt; per_episode_metrics + denominator_manifest
+    -&gt; aggregate/CI_report + failure_taxonomy
+    -&gt; checkpoint_sha + ownership_ledger</code></pre>
+<p>这条链的作用不是增加文档字段，而是让每个数值都能追溯到 episode、scorer、代码 revision 和责任边界。当前仓库没有五个项目的完整 local-direct navigation bundle，所以该 manifest 是面试设计合同，不是现有项目已实现的统一 evaluator。</p>
+<h2 id="8-failure-taxonomy-symptom-first-divergence">8. Failure Taxonomy：从 symptom 到 first divergence</h2>
+<p>诊断顺序固定为：</p>
+<pre><code class="language-text">protocol/data
+  -&gt; policy/decision
+  -&gt; geometry/localization
+  -&gt; control/execution
+  -&gt; scorer/statistics
+  -&gt; unknown</code></pre>
+<table><thead><tr><th>类别</th><th>典型症状</th><th>首查 artifact</th><th>不能直接推出</th></tr></thead><tbody>
+<tr><td>protocol/data</td><td>split 泄漏、episode 缺失、goal/viewpoint 不一致、scene/navmesh mismatch</td><td>split manifest、episode ID set、revision SHA</td><td>模型能力退化</td></tr>
+<tr><td>policy/decision</td><td>invalid action、early STOP、loop、memory reset</td><td>raw action、parser error、policy/memory trace</td><td>controller 或 scorer 有 bug</td></tr>
+<tr><td>geometry/localization</td><td>frame mismatch、drift、goal distance 异常</td><td>frame IDs、pose transform、navmesh、relocalization log</td><td>平均 NE 已确认根因</td></tr>
+<tr><td>control/execution</td><td>collision、controller reject、clip、timeout/horizon</td><td>controller status、step trace、termination reason</td><td>timeout 等于 collision</td></tr>
+<tr><td>scorer/statistics</td><td>denominator、duplicate、missing row、metric mode、CI 单位错误</td><td>denominator manifest、per-episode rows、scorer revision</td><td>policy 真失败</td></tr>
+<tr><td>unknown</td><td>只有 summary、视频或时间顺序</td><td>请求 raw trace；保留 <code>unknown</code></td><td>用最接近的故事替代证据</td></tr>
+</tbody></table>
+<p>一个完整根因表必须写成 <code>symptom → first verified divergence → root cause → recovery/terminal outcome</code>。例如“val-unseen SPL 下降”只是 symptom；只有确认 split manifest、scene revision、policy hash、trajectory first divergence 后，才可以把 root cause 收窄到 geometry、policy 或 scorer。</p>
+<h2 id="9-fail-closed">9. Fail-Closed 评估伪代码</h2>
+<pre><code class="language-python">def evaluate_navigation(manifest, env, policy, scorer):
+    # 1. Freeze task/split/simulator/scorer identity before running an episode.
+    assert manifest.task_sha and manifest.split_sha
+    assert manifest.simulator_sha and manifest.scorer_sha
+    expected_ids = manifest.expected_episode_ids()
+
+    rows = []
+    for episode_id in expected_ids:
+        # 2. Reset the declared scene, goal mode, controller and STOP schema.
+        trace = rollout_one_episode(env, policy, episode_id, manifest)
+        if trace.policy_sha != manifest.policy_sha:
+            return stop(&quot;policy_lineage_mismatch&quot;)
+        if not trace.has_ordered_pose_action_stop_termination:
+            return stop(&quot;incomplete_episode_trace&quot;)
+
+        # 3. Score one complete episode; do not silently drop invalid rows.
+        row = scorer.score(trace, manifest.metric_config)
+        if row.episode_id != episode_id or row.duplicate_key:
+            return stop(&quot;duplicate_or_misaligned_episode&quot;)
+        rows.append(row)
+
+    # 4. Build the denominator from expected/included/excluded IDs explicitly.
+    denominator = build_denominator_manifest(expected_ids, rows, manifest)
+    if denominator.missing_ids or denominator.invalid_ids:
+        return stop(&quot;non_recomputable_denominator&quot;)
+
+    # 5. Aggregate SR/SPL/NE/OS/TL and attach CI plus failure evidence pointers.
+    report = aggregate_with_ci(rows, denominator, manifest.statistics_config)
+    return report</code></pre>
+<p>这段代码是评估身份和安全 gate 的教学目标，不是五个项目已有的统一 scorer。尤其不能用 <code>except: continue</code> 隐藏 invalid episode，也不能从 successful rows 反推 denominator。若无法得到 expected/included/excluded IDs 与 raw trace，输出应是 <code>not_recomputable</code> 或 <code>unknown</code>。</p>
+<h2 id="10-deterministic-probes-source">10. Deterministic Probes：把 source 语义变成面试检查</h2>
+<table><thead><tr><th>Probe</th><th>固定观察/输入</th><th>预期结论</th><th>面试要点</th></tr></thead><tbody>
+<tr><td>P19-01</td><td><code>Success.update_metric</code> 检查 STOP 与 <code>distance &lt; success_distance</code></td><td>success 需要 stop + threshold</td><td>位置接近不等于完成</td></tr>
+<tr><td>P19-02</td><td><code>Success</code> 依赖 <code>DistanceToGoal</code></td><td>measure identity 绑定</td><td>不能换成任意 distance</td></tr>
+<tr><td>P19-03</td><td><code>POINT</code> 调用 geodesic distance 到 goal position</td><td>POINT 不是欧氏距离</td><td>记录 navmesh revision</td></tr>
+<tr><td>P19-04</td><td><code>VIEW_POINTS</code> 调用 geodesic distance 到 viewpoints</td><td>viewpoint 集合改变前置量</td><td>不混 goal center</td></tr>
+<tr><td>P19-05</td><td><code>SPL.reset_metric</code> 保存 start/end distance 并依赖 Success</td><td>shortest/success 同 episode</td><td>不能拼不同 scorer</td></tr>
+<tr><td>P19-06</td><td><code>SPL.update_metric</code> 累加相邻 pose Euclidean step</td><td>path length 不是 action count</td><td>需要 ordered poses</td></tr>
+<tr><td>P19-07</td><td><code>success * shortest / max(shortest, actual)</code></td><td>失败 SPL 为 0，绕路降分</td><td>不把 TL 当 SPL</td></tr>
+<tr><td>P19-08</td><td>SoftSPL 使用连续 soft-success × path penalty</td><td>SoftSPL ≠ binary SPL</td><td>需固定 soft-success 实现</td></tr>
+<tr><td>P19-09</td><td>README 列出 split 与 TL/NE/OS/SR/SPL</td><td>namespace 进入 protocol tuple</td><td>不能跨 split 平均</td></tr>
+<tr><td>P19-10</td><td><code>EVAL.EPISODE_COUNT == -1</code> 才全量评估</td><td>子集/过滤会改变 estimand</td><td>denominator 先于平均数</td></tr>
+</tbody></table>
+<p>这些 probe 是 source-text contract 和手算检查，不是 simulator runtime、benchmark reproduction、训练稳定性或个人项目结果。</p>
+<h2 id="11">11. 方法比较：面试一张表讲清楚</h2>
+<table><thead><tr><th>对象</th><th>输入/状态</th><th>输出或信号</th><th>最小可审计证据</th><th>常见误写</th></tr></thead><tbody>
+<tr><td>Success</td><td>final pose + STOP + goal mode</td><td>binary \(s_i\)</td><td>stop flag、distance measure、threshold</td><td>到过附近就成功</td></tr>
+<tr><td>SPL</td><td>success + shortest + actual path</td><td>success-weighted efficiency</td><td>shortest、ordered poses、same episode</td><td>action count 就是路径</td></tr>
+<tr><td>SoftSPL</td><td>soft success + path penalty</td><td>连续进度诊断</td><td>pinned scorer 的 \(q_i^{\mathrm{soft}}\)</td><td>直接当 SR/leaderboard SPL</td></tr>
+<tr><td>NE</td><td>final pose + goal geometry</td><td>final navigation error</td><td>final pose、geodesic scorer</td><td>NE 低就一定 stop 成功</td></tr>
+<tr><td>OS</td><td>task-specific oracle success</td><td>progress/any-time signal</td><td>exact scorer predicate、time window</td><td>所有 benchmark 的 OS 同义</td></tr>
+<tr><td>TL</td><td>steps 或 physical path length</td><td>trajectory cost</td><td>unit、controller step、termination</td><td>TL 低就是高效成功</td></tr>
+<tr><td>failure taxonomy</td><td>raw trace + first divergence</td><td>diagnosis label</td><td>trace pointer、revision、recovery outcome</td><td>summary 能证明根因</td></tr>
+</tbody></table>
+<h2 id="12">12. 五项目真实性边界</h2>
+<table><thead><tr><th>项目</th><th>可以安全连接的局部 hook</th><th>当前不能说</th><th>若要升级需要</th></tr></thead><tbody>
+<tr><td>OpenPiVLA</td><td>image/language/action schema、normalizer/parser/controller contract</td><td>已完成 VLN/ObjectNav evaluator、SPL/NE 或 navigation rollout</td><td>local split/scorer、episode trace、checkpoint 与 ownership</td></tr>
+<tr><td>Robot Harness</td><td>semantic-navigation tool schema、2D tri-state occupancy、PCD/map interface</td><td>个人 navigation policy、真实 robot episode、SPL/OS/collision safety</td><td>navigation collector、统一 scorer、raw episodes</td></tr>
+<tr><td>OPD</td><td>point/box/text route、strict/lenient scorer、grounding evidence</td><td>closed-loop navigation、3D route、导航 success uplift</td><td>environment state/action、trajectory、matched eval</td></tr>
+<tr><td>WAM</td><td>camera/controller/provenance、simulator diagnostic</td><td>navigation benchmark、移动平台或 navigation metric</td><td>navigation task bundle、scorer、ownership</td></tr>
+<tr><td>UWM/LIBERO</td><td>simulated manipulation protocol、loader/launcher diagnosis</td><td>VLN/ObjectNav、mobile navigation、navigation generalization</td><td>navigation dataset、episode rows、matched protocol</td></tr>
+</tbody></table>
+<p>安全回答顺序是：<code>public definition → pinned paper/repo → protocol identity → local inventory → local-direct exception → missing artifact → ownership</code>。当前仓库的结论是“没有个人导航结果”，不是“项目导航失败”。</p>
+<h2 id="13">13. 两档面试回答</h2>
+<h3 id="13-1-30">13.1 约 30 秒回答</h3>
+<p>我会先把 success 定义成协议谓词：必须在指定 <code>POINT</code> 或 <code>VIEW_POINTS</code> 距离模式下满足 threshold，并且 agent 真正调用 STOP。SPL 再用同一 episode 的参考最短距离、ordered pose 累计路径和 success 计算；SoftSPL 是连续 soft-success 加 path penalty，不能当 binary SR。NE、OS、TL 也必须带 task、split、scorer、unit 和 denominator。评估前我会固定 expected/included/excluded episode IDs、simulator/scorer revision 和 raw trace；缺任何一层就 fail closed。对我的项目，目前只有 schema/interface/upstream hook，没有完整 navigation bundle，所以不会把 summary 或训练 loss说成个人导航结果。</p>
+<h3 id="13-2-2">13.2 约 2 分钟机制回答</h3>
+<p>我先问评估对象是谁：task、split、scene、episode ID、goal mode、STOP schema 和 scorer revision。Habitat 的 Success 依赖 DistanceToGoal，并要求 stop 加 threshold；POINT 和 VIEW_POINTS 走不同 goal 几何，距离是 simulator geodesic，不是直接欧氏距离。SPL 用同一 episode 的 shortest path、实际 pose path 和 binary success，SoftSPL 则把 binary success 换成官方实现定义的连续 soft-success，再乘路径惩罚。NE、OS、TL 不能脱离 benchmark 的 exact predicate、unit 和时间窗口。然后我检查 denominator：VLN-CE 的 <code>EVAL.EPISODE_COUNT=-1</code> 才是全量，任何只评估成功行、过滤 invalid、丢失 episode 或 duplicate row 都会改变 estimand。最后按 protocol/data、policy/decision、geometry/localization、control/execution、scorer/statistics、unknown 做 first-divergence 诊断；没有 raw trace，只保留 symptom 或 unknown。我的五个项目目前缺少统一 navigation scorer、split manifest、逐 episode trace 和 ownership，因此我会把这些当成面试中的评估合同和补证据计划，而不是声称已有导航 benchmark 结果。</p>
+<h2 id="14">14. 高频追问与答题抓手</h2>
+<table><thead><tr><th>追问</th><th>回答抓手</th></tr></thead><tbody>
+<tr><td>到过目标附近但没 STOP，算 success 吗？</td><td>按固定 Habitat measure 不算；success 同时需要 STOP 与 threshold。</td></tr>
+<tr><td>SPL 为什么不能用 action 数计算？</td><td>Habitat probe 累计相邻 pose 的 Euclidean step distance，action count 没有物理单位。</td></tr>
+<tr><td>POINT 和 VIEW_POINTS 的差别？</td><td>goal position 与 viewpoint 集合不同，都会影响 geodesic distance 和 success 前置量。</td></tr>
+<tr><td>SoftSPL 是不是更宽松的 SR？</td><td>不是；它是连续 soft-success × path penalty，必须带 scorer 定义，不能替换 binary SR。</td></tr>
+<tr><td><code>EVAL.EPISODE_COUNT=-1</code> 为什么重要？</td><td>它表达全量 episode；子集、过滤和 early cutoff 会改变 denominator/estimand。</td></tr>
+<tr><td>只有平均 NE 能找到根因吗？</td><td>不能；先要 per-episode trace、first divergence、frame/scorer/revision。</td></tr>
+<tr><td>timeout 算 collision 吗？</td><td>不应默认相同；termination reason、controller status 和 horizon 必须分开。</td></tr>
+<tr><td>论文 SPL 和 leaderboard SPL 不同怎么办？</td><td>报告 split、revision、hardware/build、scorer 和 protocol tuple，不直接比较裸数字。</td></tr>
+<tr><td>你的项目做过 navigation evaluator 吗？</td><td>当前没有 local-direct bundle；只能讲 schema/interface/upstream 机制和补证据路径。</td></tr>
+</tbody></table>
+<h2 id="15">15. 本页证据边界与下一步</h2>
+<p>本页已把 PER-019 source freeze 转成可学习知识：success/STOP、POINT/VIEW_POINTS、geodesic distance、SPL、SoftSPL 的实现边界、NE/OS/TL namespace、split/denominator、Wilson CI、typed manifest、failure taxonomy、fail-closed 伪代码、10 个 deterministic probes、五项目 truth boundary、两档口述回答与追问抓手均已覆盖。</p>
+<p>直接支持来自 <a href="../sources/vol_06_per019_navigation_evaluation_failure_source_freeze.html">PER-019 Source Freeze</a>、Anderson SPL、Krantz VLN-CE、pinned Habitat-Lab <code>nav.py</code>、pinned VLN-CE README、VOL 05 EVAL-003 与 PER-004。SoftSPL 的 \(q_i^{\mathrm{soft}}\) 在本文中明确标为教学抽象；不能把未逐行复核的具体 soft-success 函数写成本地实现事实。</p>
+<p>当前仍为 <code>WARN</code>：没有五个项目的 local-direct navigation episode bundle、统一 scorer、split manifest、per-episode trace、matched checkpoint/eval 或 ownership confirmation；没有真实口述，所以不创建 coaching state、不生成题卡、不改变 mastery。下一 bounded slice 才考虑生成 <code>VLA-PER-019</code> atomic card；PER-020 source gate 与 SYS-VLA-004/ PER-018 真实口述仍是独立队列。</p>
+<h2 id="references">References</h2>
+<ol><li>Anderson et al., <a href="https://arxiv.org/pdf/1807.06757v3">On Evaluation of Embodied Navigation Agents</a>, arXiv <code>1807.06757v3</code>。</li><li>Krantz et al., <a href="https://arxiv.org/pdf/2004.02857v2">Beyond the NavGraph: VLN in Continuous Environments</a>, arXiv <code>2004.02857v2</code>。</li><li>Habitat-Lab <a href="https://github.com/facebookresearch/habitat-lab/blob/0fb6f43ffe806a8088a171b036336c093bcf604e/habitat-lab/habitat/tasks/nav/nav.py"><code>nav.py</code></a>，commit <code>0fb6f43ffe806a8088a171b036336c093bcf604e</code>。</li><li>VLN-CE <a href="https://github.com/jacobkrantz/VLN-CE/blob/729d141b2ee10628061ada74dd3a5b9f70faeba5/README.md"><code>README.md</code></a>，commit <code>729d141b2ee10628061ada74dd3a5b9f70faeba5</code>。</li><li><a href="../sources/vol_05_eval003_success_rate_confidence_interval_source_freeze.html">VOL 05 EVAL-003 statistical contract</a>。</li><li><a href="../sources/vol_06_per004_vln_objectnav_source_freeze.html">VOL 06 PER-004 VLN/ObjectNav source freeze</a>。</li><li><a href="../sources/vol_06_per019_navigation_evaluation_failure_source_freeze.html">VOL 06 PER-019 Source Freeze</a>。</li></ol>
+</article></body></html>

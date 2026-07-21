@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 08 CODE-008 Source Freeze：Bellman TD(0) Update</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_08_code008_bellman_td0_source_freeze.md">
+<meta name="aris:source-sha256" content="1287945d5fa0b3286ec9c81dfa1919b5f22d31a8f1402ba2a1bcfd4cc2049889">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>1287945d5fa0b3286ec9c81dfa1919b5f22d31a8f1402ba2a1bcfd4cc2049889</code>；生成自：<code>interview_materials\vla\sources\vol_08_code008_bellman_td0_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision-claim-boundary">1. 来源、revision 与 claim boundary</a></li><li><a href="#2-frozen-transition-schema">2. Frozen transition schema</a></li><li><a href="#3-td-0-target">3. TD(0) target</a></li><li><a href="#4-batch-discount-reduction">4. Batch、discount 与 reduction</a></li><li><a href="#5-deterministic-probe-matrix">5. Deterministic probe matrix</a></li><li><a href="#6">6. 项目真实性边界</a></li><li><a href="#7-source-gate">7. Source gate 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 08 CODE-008 Source Freeze：Bellman TD(0) Update</h1>
+<div class="meta">状态：<code>source_frozen / CODE-VLA-008 / knowledge_synced / card_pending / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本切片只冻结 TD(0) 的 batch 输入、bootstrap、discount、terminated/truncated、success 与 shape/reduction 合同；不把 VOL 01/VOL 02 的公开机制或本地 offline RL hook 写成候选人已经实现了可靠 value learner。</div>
+<h2 id="question">问题（Question）</h2>
+<p>如何实现一个正确的 Bellman TD(0) update，并避免把 <code>terminated</code>、time-limit <code>truncated</code>、success 和一个无语义 <code>done</code> 混在一起？手撕题还要说明 reward/discount 的 dtype、bootstrap mask、batch shape、target detach、empty/invalid transition 与测试 oracle。</p>
+<h2 id="1-revision-claim-boundary">1. 来源、revision 与 claim boundary</h2>
+<table><thead><tr><th>来源</th><th>类型 / 固定信息</th><th>直接支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td>Sutton &amp; Barto, <a href="http://incompleteideas.net/book/the-book-2nd.html">Reinforcement Learning: An Introduction, 2nd ed.</a></td><td>primary textbook；访问日期 2026-07-20</td><td>MDP、return、value/Q、Bellman relation、TD target 与 on/off-policy 区分</td><td>用户项目采用某个 TD 变体、稳定性或指标收益</td></tr>
+<tr><td>Gymnasium, <a href="https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/">Handling Time Limits</a></td><td>official docs；访问日期 2026-07-20；time-limit 语义按 VOL 02 review 固定</td><td><code>terminated</code> 是 MDP 真终止，<code>truncated</code> 是外部时间限制；timeout 通常仍允许 bootstrap</td><td>所有环境的 success predicate、episode 语义或候选人代码</td></tr>
+<tr><td>本仓库 <a href="vol_01_batch2_mdp_td_control_independent_fact_review.html">VOL 01 Batch 2 MDP / TD / Control review</a></td><td>local canonical fact review</td><td>TD terminal mask 的修正、terminated/truncated 分离、项目边界</td><td>CODE-008 本地实现、白板通过或个人 ownership</td></tr>
+<tr><td>本仓库 <a href="vol_02_il_rl_posttraining_independent_fact_review.html">VOL 02 IL / RL fact review</a></td><td>local canonical fact review</td><td>GAE/timeout bootstrap 与本地 offline RL 表述边界</td><td>本地 Harness 是 online GRPO 或完整 value learner</td></tr>
+</tbody></table>
+<p><code>checked</code> 只支持窄机制 claim；source freeze 不声明 reward scale、target network、optimizer、loss reduction 或项目算法已经闭合。</p>
+<h2 id="2-frozen-transition-schema">2. Frozen transition schema</h2>
+<p>建议每条 transition 至少包含：</p>
+<pre><code class="language-text">(obs_t, action_t, reward_t, obs_tp1, terminated_t, truncated_t,
+ success_t, discount_t, valid_t, episode_id, step_id)</code></pre>
+<p><code>terminated</code> 表示环境内真实吸收终止，<code>truncated</code> 表示时间限制或外部截断；二者不能在进入 learner 前压成一个没有来源的 <code>done</code>。<code>success</code> 是任务评估/业务谓词，不能自动等价于 <code>terminated</code>；timeout 也不能自动等于 failure。</p>
+<h2 id="3-td-0-target">3. TD(0) target</h2>
+<p>对 state-value learner，固定 <code>V_next = V_target(obs_tp1)</code>：</p>
+<div class="formula">\[
+y_t=r_t+\gamma_t\left(1-m_t^{\mathrm{term}}\right)\,\operatorname{stopgrad}\!\left[V_{next}\right],
+\qquad
+\delta_t=y_t-V(obs_t).
+\]</div>
+<p>这里 <code>m_term=1</code> 只表示真实终止；time-limit truncation 通常令 <code>m_term=0</code>，因此仍从 <code>obs_tp1</code> bootstrap。对 Q-learning，<code>V_next</code> 替换为 <code>max_a Q_target(obs_tp1,a)</code> 或明确的 next-action value；这不是“把所有 next value 都取 max”的通用答案。</p>
+<p>实现映射：<code>reward/discount/mask</code> 先广播到 <code>[B]</code> 或 <code>[B,T]</code>，target 分支 detached，loss 只在 <code>valid_t=1</code> 的 transition 上 reduction。若数据集没有可靠 <code>obs_tp1</code>，不能声称 timeout bootstrap 已实现，应 reject/mark invalid。</p>
+<h2 id="4-batch-discount-reduction">4. Batch、discount 与 reduction</h2>
+<ul><li><code>gamma</code> 可以是标量或 per-transition discount，但 dtype/device 与 reward/value 必须一致；<code>gamma=0</code> 应完全关闭 bootstrap。</li><li><code>terminated</code>、<code>truncated</code>、<code>valid</code> 必须是 bool 或明确的 0/1 mask，不能用浮点 reward 的符号推断。</li><li><code>target</code> 使用 <code>stopgrad</code>；只对 prediction 反传，避免 target network/value 被错误地一起更新。</li><li>masked loss 的 numerator/denominator 要明确：全零 <code>valid</code> 是数据事件，不应静默返回“漂亮的零 loss”。</li><li>batch shape、单步 <code>[B]</code>、序列 <code>[B,T]</code> 与 extra action/value head 必须有显式 broadcast/flatten 合同。</li></ul>
+<h2 id="5-deterministic-probe-matrix">5. Deterministic probe matrix</h2>
+<table><thead><tr><th>Probe</th><th>输入/条件</th><th>预期</th></tr></thead><tbody>
+<tr><td>P1</td><td><code>terminated=True</code>, <code>truncated=False</code></td><td>target 不 bootstrap</td></tr>
+<tr><td>P2</td><td><code>terminated=False</code>, <code>truncated=True</code>, 有 <code>obs_tp1</code></td><td>target 仍 bootstrap，并保留 truncation provenance</td></tr>
+<tr><td>P3</td><td>两 flags 同时为 true</td><td>reject 或显式 precedence；不得静默混合</td></tr>
+<tr><td>P4</td><td><code>gamma=0</code></td><td>target 仅为 reward</td></tr>
+<tr><td>P5</td><td><code>[B]</code> 与 <code>[B,T]</code> broadcast</td><td>shape/flatten 后逐元素一致</td></tr>
+<tr><td>P6</td><td><code>valid=0</code> / all-invalid batch</td><td>reject/skip 并记录 reason，不伪造零 loss</td></tr>
+<tr><td>P7</td><td>target detach</td><td>value prediction 有梯度，target 分支无梯度</td></tr>
+<tr><td>P8</td><td>reward/value dtype、NaN/Inf</td><td>finite/ dtype policy 明确，异常在 reduction 前暴露</td></tr>
+</tbody></table>
+<h2 id="6">6. 项目真实性边界</h2>
+<p>VOL 02 review 中的 local Harness 只能绑定 offline grouped reward-weighted policy update 与 timeout/GAE 讨论；它不证明候选人实现了 CODE-008 TD learner。WAM/UWM/OPD/OpenPiVLA/Robot Harness 的 rollout、reward、success 或 eval summary 也不能替代 transition-level <code>obs_tp1 + terminated/truncated + target/reduction</code> artifact。安全表达是“我能写出并审计 TD(0) update”，不能声称 value 收敛、offline RL 稳定或真机成功。</p>
+<h2 id="7-source-gate">7. Source gate 结论与下一步</h2>
+<p>Sutton–Barto 与 Gymnasium 加上 VOL 01/VOL 02 fact review 足以冻结 TD(0)、timeout bootstrap 与 batch edge cases；下游 knowledge 已独立生成并保持与本 source contract 一致。当前仍没有 CODE-008 local implementation、transition bundle、gradient parity 或 candidate ownership。source gate 保持 <code>WARN</code>，下一步只生成 CODE‑VLA‑008 atomic card，继续保持 <code>unseen</code>，不启动 <code>SYS-VLA-004</code>。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="http://incompleteideas.net/book/the-book-2nd.html">Sutton &amp; Barto, Reinforcement Learning: An Introduction</a>。</li><li><a href="https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/">Gymnasium Handling Time Limits</a>。</li><li>本仓库 <a href="vol_01_batch2_mdp_td_control_independent_fact_review.html">VOL 01 Batch 2 MDP/TD/Control review</a>。</li><li>本仓库 <a href="vol_02_il_rl_posttraining_independent_fact_review.html">VOL 02 IL/RL/Post-training review</a>。</li></ol>
+</article></body></html>

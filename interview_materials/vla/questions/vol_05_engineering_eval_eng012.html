@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：ENG-012 原子题卡</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_05_engineering_eval_eng012.md">
+<meta name="aris:source-sha256" content="e7029b07b8f349efb5fb0f68bad17584aa911ef2ca9aed1d0c5b6c5f820d5251">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>e7029b07b8f349efb5fb0f68bad17584aa911ef2ca9aed1d0c5b6c5f820d5251</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_05_engineering_eval_eng012.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#storage-layout-workload">Storage Layout 与 Workload</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：ENG-012 原子题卡</h1>
+<div class="meta">状态：<code>drafted / cards_1_of_1 / WARN</code> 更新日期：2026-07-17 覆盖范围：<code>VLA-ENG-012</code> 难度：L2 1 题 优先级：P1 1 题 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_05_engineering_eval_eng012.html">ENG-012 Storage Layout</a>；没有 matched request-trace benchmark 前，格式选择只能称为候选方案。</div>
+<h2 id="storage-layout-workload">Storage Layout 与 Workload</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P1</span> <b>VLA-ENG-012</b> · HDF5、Zarr、WebDataset、Parquet 应怎样按 VLA workload 选择？</summary>
+<p><strong>面试意图</strong>：判断你能否区分数组存储、tar-shard streaming 与列式表，并用访问 trace 证明选择，而不是背格式优缺点排行榜。</p>
+<p><strong>30 秒回答</strong>：先区分随机窗口、顺序流和列扫描：HDF5/Zarr 看 chunk 与读放大，WebDataset 看 shard 和预切样本，Parquet 看 row group 与列投影。再用固定请求 trace 比 p95、物理/逻辑字节、请求数和 GPU 等待；没有 matched A/B 只称候选布局。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：四者不是同一层。HDF5/Zarr 是 N 维数组，随机窗口看 chunk 对齐和 <code>A_read=physical/logical bytes</code>；Zarr 另看 object request 与 shard 写入。WebDataset 将预切样本放入 tar shards，适合顺序远端流，但 shuffle、worker/rank 分片和任意窗口需另行设计。Parquet 按 row group/column chunk 组织，适合 split、quality、lineage 等少数列扫描。混合布局可用 Parquet index + payload store，但要用 shared sample_id、manifest hash 和 roundtrip 防漂移。</p>
+<p><strong>诊断 / 证据</strong>：冻结相同 sample/window request、schema、compression、storage medium、worker/rank 与 cold/warm cache；报告 p50/p95/p99、samples/s、logical/physical MB、<code>A_read</code>、object/file request、decode/decompress、worker idle、GPU data wait、rank imbalance、retry 和 corrupt-unit blast radius。只报峰值 MB/s 或 DataLoader-only 加速不能支持最终选择。</p>
+<p><strong>项目挂钩</strong>：UWM/LIBERO 的 Zarr DataLoader-only stall 只能作为读取瓶颈线索；可先查 window selection、chunk 触碰、preload、worker wait 和 cache state。不能据此说 Zarr 是根因、换 HDF5/WebDataset 必然更快，或 full-training throughput 已提升。</p>
+<p><strong>追问树</strong>：为什么 HDF5/Zarr 不能直接排名？chunk 越小越好吗？WebDataset 如何保证 shuffle 与 worker 分片？Parquet 能不能存视频？hybrid layout 如何防 index/payload 漂移？怎样设计 fixed request trace？</p>
+<p><strong>危险答案</strong>：说“Zarr 最适合云、WebDataset 一定快 3–10 倍、Parquet 不能存 binary”，或拿不同 sampler/cache/压缩参数的结果直接比较。</p>
+<p><strong>来源</strong>：[1][2][3]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../knowledge/vol_05_engineering_eval_eng012.html">ENG-012 知识页</a>：四类系统机制、workload mapping、<code>A_read</code>、benchmark contract 与项目边界。</li><li><a href="../sources/vol_05_eng012_storage_formats_source_freeze.html">ENG-012 Source Freeze</a>：h5py 3.15.0、Zarr v3.2.1、WebDataset commit、Parquet format commit 与 PyArrow 22.0 的 frozen evidence。</li><li><a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO Claim–Evidence Inventory</a>：Zarr DataLoader-only stall、preload 方向与 full-training evidence boundary。</li></ol>
+</article></body></html>

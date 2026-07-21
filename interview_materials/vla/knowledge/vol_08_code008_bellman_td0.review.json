@@ -1,0 +1,30 @@
+{
+  "artifact": "knowledge/vol_08_code008_bellman_td0.md",
+  "html": "knowledge/vol_08_code008_bellman_td0.html",
+  "source_freeze": "sources/vol_08_code008_bellman_td0_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / CODE-VLA-008 / knowledge_11_of_phase / card_pending / WARN",
+  "verdict": "WARN",
+  "source_sha256": "fc210e0ff654f670a667948414213191b221e04fef27b80b0781e28168013c7a",
+  "question_ids": ["CODE-VLA-008"],
+  "checks": {
+    "source_gate": "PASS WITH WARNING (Sutton-Barto, Gymnasium and VOL 01/VOL 02 fact reviews are linked)",
+    "transition_schema": "PASS (obs/next obs, reward, flags, success, discount, valid and lineage fields are explicit)",
+    "td0_target": "PASS (terminal mask, timeout bootstrap, target detach and V/Q distinction are explicit)",
+    "batch_and_reduction": "PASS (broadcast, all-invalid, dtype/NaN, denominator and distributed reduction boundaries are explicit)",
+    "pseudocode": "PASS (reference implementation keeps flags separate and rejects ambiguous/invalid transitions)",
+    "diagnostic_probes": "PASS (8 deterministic probes and first-divergence order are specified)",
+    "project_truth_boundary": "PASS (no local TD learner, replay bundle, convergence, value uplift or ownership is inferred)",
+    "html_static_validation": "PASS (one H1, valid hierarchy, 3 formula blocks, academic palette/TOC/responsive rules and matching SHA)",
+    "local_links": "PASS (CODE-008 source freeze, VOL 01/VOL 02 reviews and official links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "question_card": "PASS WITH WARNING (CODE-VLA-008 atomic card is generated, SHA-synchronized and remains unseen)",
+    "oral_or_whiteboard_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep CODE-VLA-008 unseen until a whiteboard/runtime drill; do not infer mastery from generated content.",
+    "Execute the 8-probe matrix against a local/reference implementation without confusing reference output with candidate ownership.",
+    "Keep success, terminated, truncated, timeout and reward semantics separate in every project answer."
+  ],
+  "next": "Run one CODE-VLA-008 whiteboard/runtime drill or collect a transition artifact; keep it unseen and do not start SYS-VLA-004 in the same slice."
+}

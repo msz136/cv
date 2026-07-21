@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenPiVLA ALOHA Action-Level Eval：Checkpoint Load / Serve / L1 Gate</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\openpivla_aloha_action_eval_load_gate.md">
+<meta name="aris:source-sha256" content="ae425706e5d0b5507c99aed0176380431d5b87551ee0f9f787c0e4766e44f7a2">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>ae425706e5d0b5507c99aed0176380431d5b87551ee0f9f787c0e4766e44f7a2</code>；生成自：<code>interview_materials\vla\sources\openpivla_aloha_action_eval_load_gate.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-evidence-freeze">1. Evidence freeze</a></li><li><a href="#2-server-load-client-connection">2. Server load / client connection</a></li><li><a href="#3-action-level-eval-contract">3. Action-level eval contract</a></li><li><a href="#4-frozen-result-and-comparability">4. Frozen result and comparability</a></li><li><a href="#5-pseudocode-mapping">5. Pseudocode mapping</a></li><li><a href="#6-interview-boundary">6. Interview boundary</a></li><li><a href="#30">30 秒回答</a></li><li><a href="#section-8">高频追问</a></li><li><a href="#7">7. 公源 / 本地 / 未核实边界</a></li><li><a href="#8">8. 下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>OpenPiVLA ALOHA Action-Level Eval：Checkpoint Load / Serve / L1 Gate</h1>
+<div class="meta">状态：<code>local-direct / log-hash-frozen / official-action-eval / task-success-not-proven / WARN</code> 审查日期：2026-07-21 范围：<code>C:\Users\mousongzhe\project\openpivla_deployment\artifacts\lerobot_action_eval_aloha_sample_real_v2</code> 与对应 scripts。 结论先行：ALOHA LeRobot action-level eval 的 server log 直接确认官方 <code>pi0_aloha_sim</code> checkpoint 被 Orbax 恢复约 6.0 GiB、17.31 秒完成，norm stats 从 checkpoint assets 加载，server 在 8020 监听并接受 client；summary 冻结 4 个样本、每个 50 步、14D action 的 mean L1 <code>0.0330713950</code>、std <code>0.0205169544</code>。这是 action-vector 对齐/部署 harness 证据，不是 task-level success、fine-tune 成绩或泛化 benchmark。</div>
+<h2 id="1-evidence-freeze">1. Evidence freeze</h2>
+<table><thead><tr><th>ID</th><th>本地对象</th><th>SHA-256</th><th>直接支持</th></tr></thead><tbody>
+<tr><td>A01</td><td><code>artifacts\lerobot_action_eval_aloha_sample_real_v2\serve.log</code></td><td><code>F02D0E4D08D6879C2F080B3DA905B4EA11A73B7510B7D8867785FFD1384A0868</code></td><td><code>pi0_aloha_sim</code> restore、6.0 GiB、17.31 s、norm stats、8020 listen、localhost connection</td></tr>
+<tr><td>A02</td><td><code>artifacts\lerobot_action_eval_aloha_sample_real_v2\summary.json</code></td><td><code>D367885AFB621469C81CB885C53FD36A87F02F06B8F4ED9B854F32BDB6663BAC</code></td><td>official WebsocketClientPolicy、dataset/config/checkpoint 字段、4×50、14D、L1 统计</td></tr>
+<tr><td>A03</td><td><code>scripts\eval_lerobot_action_server.py</code></td><td><code>B1B7FB9B7A86355B9C1843CDE971B38FD26A2DAB1F18550128671F79F1AB4F39</code></td><td>parquet/action window、image/state request、client infer、L1 计算与 summary writer</td></tr>
+<tr><td>A04</td><td><code>scripts\run_lerobot_action_eval.sh</code></td><td><code>61DFE972B20722CF08B3FA139D68B29B6C1B52286671A7705000AE3738A8BF60</code></td><td>config/checkpoint/port/action-horizon 的 launch 参数与 server/client 顺序</td></tr>
+<tr><td>D01</td><td><code>DEPLOYMENT.md</code></td><td><code>C0A3DD0C0DA8C1C0D36023046D5337900A71680B413657BC9B1062EEF2EEA14E</code></td><td>deployment provenance、official checkpoint 与 action-eval 边界</td></tr>
+</tbody></table>
+<p>本页不复制远端权重、parquet 或图片，只冻结本地日志、summary 与脚本 hash。</p>
+<h2 id="2-server-load-client-connection">2. Server load / client connection</h2>
+<p><code>A01</code> 的关键顺序是：</p>
+<pre><code class="language-text">Restoring checkpoint from .../checkpoints/pi0_aloha_sim/params
+total bytes: 6.0 GiB
+Finished restoring checkpoint in 17.31 seconds
+Loaded norm stats from .../checkpoints/pi0_aloha_sim/assets/lerobot/aloha_sim_transfer_cube_human
+server listening on 0.0.0.0:8020
+Connection from (&#x27;127.0.0.1&#x27;, 40058) opened
+Connection ... closed</code></pre>
+<p>这条日志比 summary 里的 checkpoint 字符串更强，因为它记录了 restore 的执行事件、读取体量、normalizer 路径与 WebSocket 生命周期。它与 <a href="openpivla_libero_checkpoint_load_lineage_gate.html">LIBERO Load–Serve–Client Lineage Gate</a> 形成两个 task-specific official checkpoint load 样本：<code>pi0_aloha_sim</code> 与 <code>pi05_libero</code>。</p>
+<p>但 A01 仍不等价于 immutable binary manifest：没有 <code>params</code> 目录逐文件 SHA、object-store revision、processor/tokenizer hash 或 shared run UUID。</p>
+<h2 id="3-action-level-eval-contract">3. Action-level eval contract</h2>
+<p><code>A03</code> / <code>A04</code> 支持的流水线是：</p>
+<pre><code class="language-text">LeRobot parquet row
+  -&gt; state/action/image fields
+  -&gt; WebsocketClientPolicy(host=127.0.0.1, port=8020)
+  -&gt; predicted action chunk
+  -&gt; align with GT action window
+  -&gt; per-sample L1 + norm statistics
+  -&gt; summary.json / dashboard / plots</code></pre>
+<p>本地脚本中可直接核对的字段与边界：</p>
+<table><thead><tr><th>项目</th><th>证据</th><th>边界</th></tr></thead><tbody>
+<tr><td>dataset</td><td><code>lerobot/aloha_sim_transfer_cube_human</code> 的 sample copy</td><td>只取本地 sample parquet，不等于全量 benchmark</td></tr>
+<tr><td>checkpoint/config</td><td><code>pi0_aloha_sim</code> 与 official checkpoint path</td><td>server restore direct；binary SHA 缺失</td></tr>
+<tr><td>sample count</td><td>4</td><td>四个采样点来自 episode 0 的 row 0/50/100/150</td></tr>
+<tr><td>action window</td><td>horizon 50</td><td>这是离线 action comparison，不是环境执行 50 步</td></tr>
+<tr><td>action dimension</td><td>14</td><td>summary 与 script compare shape direct；不推断 task controller semantics</td></tr>
+<tr><td>image/state request</td><td><code>observation.images.top</code>、state key，wrist placeholders 按脚本构造</td><td>数据字段/预处理可复核；完整 camera calibration 未闭合</td></tr>
+<tr><td>metric</td><td>per-sample absolute error 的 mean L1</td><td>不等价 reward/success 或 closed-loop success</td></tr>
+</tbody></table>
+<p>L1 的实现语义可以写成：</p>
+<div class="formula">\[
+\operatorname{L1}_{i}
+=
+\frac{1}{H D}
+\sum_{h=1}^{H}\sum_{d=1}^{D}
+\left|\hat a_{i,h,d}-a_{i,h,d}\right|
+\]</div>
+<p>其中 (i) 是 sample，(H=50) 是 action horizon，(D=14) 是比较维度，(hat a) 是 server 返回动作，(a) 是 parquet 中的 GT action window。直觉上，它只回答“预测 action vector 与离线标签在数值上有多近”；实现映射来自 <code>A03</code> 的 <code>compare_horizon</code>、<code>compare_dim</code> 与逐元素 absolute error。它不包含环境状态转移、接触、终止或 success predicate。</p>
+<h2 id="4-frozen-result-and-comparability">4. Frozen result and comparability</h2>
+<table><thead><tr><th>sample</th><th>row/frame</th><th>L1</th><th>predicted norm</th><th>GT norm</th></tr></thead><tbody>
+<tr><td>0</td><td>0 / 0</td><td><code>0.0678215474</code></td><td><code>2.0785110</code></td><td><code>2.1135752</code></td></tr>
+<tr><td>1</td><td>50 / 50</td><td><code>0.0227967594</code></td><td><code>2.18176198</code></td><td><code>2.21180510</code></td></tr>
+<tr><td>2</td><td>100 / 100</td><td><code>0.0148706269</code></td><td><code>2.14331412</code></td><td><code>2.14696836</code></td></tr>
+<tr><td>3</td><td>150 / 150</td><td><code>0.0267966483</code></td><td><code>2.04372430</code></td><td><code>2.08739448</code></td></tr>
+<tr><td>aggregate</td><td>4 samples</td><td>mean <code>0.0330713950</code>, std <code>0.0205169544</code></td><td>—</td><td>—</td></tr>
+</tbody></table>
+<p>这组数字可以安全表述为：</p>
+<div class="meta">“我通过官方 OpenPI WebSocket server 对 ALOHA LeRobot sample 做了 4 个 action-window 对齐检查，每个窗口 50 步、14 维，mean L1 是 0.03307；同时保留了 server restore、norm stats 与 client connection log。”</div>
+<p>不能表述为：</p>
+<ul><li>ALOHA task success rate 或官方 benchmark score；</li><li>训练后模型的结果；</li><li>4 个 sample 代表完整数据集泛化；</li><li>L1 较低就证明 controller/axis/unit/normalizer 全部正确；</li><li>与 LIBERO <code>0/1</code> 或 ALOHA true-physics <code>2/3</code> 直接做 uplift 比较。</li></ul>
+<h2 id="5-pseudocode-mapping">5. Pseudocode mapping</h2>
+<pre><code class="language-python">def offline_action_eval(parquet, policy_client, row_indices, horizon):
+    # 1. Read one LeRobot row and its future GT action window.
+    for row_index in row_indices:
+        row = parquet[row_index]
+        gt = stack_future_actions(parquet, row_index, horizon)
+
+        # 2. Build the official OpenPI observation request from image/state fields.
+        request = build_openpi_observation(row)
+
+        # 3. Query the WebSocket policy server for a predicted action chunk.
+        pred = policy_client.infer(request)[&quot;actions&quot;]
+
+        # 4. Compare only the common horizon and dimensions; do not step a simulator.
+        pred_cmp, gt_cmp = align(pred, gt, horizon=horizon)
+        l1 = abs(pred_cmp - gt_cmp).mean()
+        save_sample_metrics(row_index, l1, pred_cmp, gt_cmp)
+
+    # 5. Aggregate mean/std and write summary.json and plots.
+    return write_action_eval_summary()</code></pre>
+<p>此伪代码只抽象 <code>A03</code> 的离线 action comparison；它明确没有 <code>env.step</code>、controller、reward 或 success scorer。</p>
+<h2 id="6-interview-boundary">6. Interview boundary</h2>
+<h3 id="30">30 秒回答</h3>
+<p>“除了 true-physics rollout，我还把官方 <code>pi0_aloha_sim</code> 接到 LeRobot action-eval harness，先验证 server load、normalizer、WebSocket client 和 action parsing 是否闭环。4 个 sample、每个 50 步、14D action 的 mean L1 是 0.03307，std 是 0.02052。它只能说明离线 action-vector 对齐和部署链路可运行，不是 task success，也不是我训练出的 checkpoint；要升级到 benchmark，还要补完整 task matrix、controller、success scorer 和 immutable checkpoint manifest。”</p>
+<h3 id="section-8">高频追问</h3>
+<ol><li><strong>为什么 L1 不是成功率？</strong> 因为没有环境状态转移和终止条件，只比较预测 chunk 与 parquet GT。</li><li><strong>为什么 summary checkpoint 字段不够？</strong> 因为 A01 的 server restore 才证明真正加载了 <code>pi0_aloha_sim/params</code>。</li><li><strong>14D 是什么？</strong> 是该 action comparison 的共同 tensor 维度；本页不把它解释成某个真实 controller 的 axis/unit contract。</li><li><strong>能否与 LIBERO 0-success 对比？</strong> 不能直接比较；一个是离线 L1、一个是 task-level physics rollout，协议层级不同。</li><li><strong>下一步是什么？</strong> 固定 action axis/order/unit、normalizer、controller 和 success scorer，再做 matched closed-loop probe。</li></ol>
+<h2 id="7">7. 公源 / 本地 / 未核实边界</h2>
+<table><thead><tr><th>类型</th><th>当前内容</th></tr></thead><tbody>
+<tr><td>public / official-code</td><td>OpenPI WebSocket policy server/client、官方 <code>pi0_aloha_sim</code> config/checkpoint convention</td></tr>
+<tr><td>local evidence</td><td>A01–A04 的 hash、4×50×14 action comparison、L1/norm summary</td></tr>
+<tr><td>local inference</td><td>server restore + summary + launch script 共同支持一次 action-eval pipeline 的运行链</td></tr>
+<tr><td>unverified</td><td>checkpoint binary SHA、processor/tokenizer revision、完整数据集覆盖、controller semantics、个人 ownership、fine-tune lineage</td></tr>
+</tbody></table>
+<h2 id="8">8. 下一步</h2>
+<ol><li>把 <code>pi0_aloha_sim</code> 与 <code>pi05_libero</code> 的 params/assets 生成逐文件 manifest，并绑定 OpenPI commit、processor/tokenizer revision。</li><li>记录 server/client exact argv、UTC timestamp、shared run UUID 与 request IDs。</li><li>用相同 action contract 做 matched LIBERO diagnostic probe，再连接 task-native controller/scorer。</li><li>本页已作为诊断来源加入 <code>PROJ-OPENPIVLA-007</code>；题卡仍保持 <code>unseen</code>。</li></ol>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Local action-eval server log（A01）。</li><li>Local action-eval summary（A02）。</li><li>Local evaluator script（A03）与 launch script（A04）。</li><li>Local deployment record（D01）。</li><li><a href="openpivla_runtime_rollout_artifact_gate.html">OpenPiVLA Runtime Rollout Artifact Gate</a>。</li><li><a href="openpivla_libero_checkpoint_load_lineage_gate.html">OpenPiVLA / LIBERO Checkpoint Load–Serve–Client Lineage Gate</a>。</li></ol>
+</article></body></html>

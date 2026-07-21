@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 VLA-WM-028 原子题卡：Routing、Slot Mask 与 Loss Weight</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_04_world_model_sim2real_wm028.md">
+<meta name="aris:source-sha256" content="de7025f82c1bf018a6c5a12efe3ec6d42b32326260a8efb566067505667f525d">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>de7025f82c1bf018a6c5a12efe3ec6d42b32326260a8efb566067505667f525d</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_04_world_model_sim2real_wm028.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#sample-routing-slot-mask-loss-weight-action-world-value">sample routing、slot mask 与 loss weight 怎样避免 action/world/value 互相污染？</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 04 VLA-WM-028 原子题卡：Routing、Slot Mask 与 Loss Weight</h1>
+<div class="meta">状态：drafted / card_1_of_1 / WARN 更新日期：2026-07-18 覆盖范围：VLA-WM-028 难度：L3 1 题 优先级：P0 练习状态：unseen 前置：<a href="../knowledge/vol_04_world_model_sim2real_wm028_routing_slot_mask_loss_weight.html">WM-028 Knowledge</a>；来源边界见 <a href="../sources/vol_04_wm028_routing_slot_mask_loss_weight_source_freeze.html">WM-028 Source Freeze</a>。</div>
+<h2 id="sample-routing-slot-mask-loss-weight-action-world-value">sample routing、slot mask 与 loss weight 怎样避免 action/world/value 互相污染？</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>VLA-WM-028</b> · sample routing、slot mask 与 loss weight 怎样避免 action/world/value 互相污染？</summary>
+<p><strong>面试意图</strong>：判断你能否把数据角色、模型可见信息、反向目标、padding 有效性和优化权重分层，而不是把所有问题都归结成“调 loss coefficient”。</p>
+<p><strong>30 秒回答</strong>：routing 定角色，condition 定可见信息，target/valid 定反向，weight 只缩放梯度。用 one-hot、slot 真值表、padding 单测防串线，看 gradient share。Cosmos 隔离 mask 默认关闭，张量 mean 使 slot 数成为隐式权重；核对 config/denominator 后做闭环对照。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：审计 role、condition、target/valid、weight/reduction；metric 只管日志。有效影响由 role 概率、active slot、noise weight、multiplier、denominator 决定。隔离模式要求 target 属于该 role 且不作 clean input，valid 排除末端重复。Cosmos 隔离 flag 默认 false、action multiplier=1，mask 后仍对完整 BCTHW mean；value-mask flag 存在“构造但未进入 apply 条件”的 WARN。最后对照 joint、isolated、valid、per-role normalization 和 ratio/weight。</p>
+<p><strong>诊断 / 证据</strong>：保存 resolved config、role histogram、source/token/active-slot count、四张 mask、loss numerator/denominator、noise-weight exposure、per-role pre-clip gradient。单测包括 role one-hot、mask truth table、no-target-leak、empty-target fail-fast、padding invariance、multiplier monotonicity 和单卡/多卡 parity。component L1/MSE 只做 metric，不能证明 target mask 生效。</p>
+<p><strong>项目挂钩</strong>：Cosmos/WAM 可映射 demo/world/value role、clean condition、optional target mask 与 action multiplier。WAM inventory 没有 local resolved flags、mask dump、role/denominator/gradient trace、paired episodes 和 ownership；CoffeePressButton 单 episode 不能证明训练污染。安全说“我能设计合同与验证矩阵”，不能说“已调好 50/25/25 或已消除污染”。</p>
+<p><strong>追问树</strong>：condition mask 和 target mask 有何区别？valid mask 为什么独立？metric mask 能证明什么？50/25/25 是 batch 事实吗？为什么 slot 数是隐式权重？full-tensor mean 与 active-count mean 差什么？target 能否同时 clean-conditioned？empty mask 为什么危险？如何测 observed gradient share？为何 weight 修不了 label/mask bug？怎样做 distributed parity？</p>
+<p><strong>易错点</strong>：复用一张 mask；把 mask=1 一律解释为 target；只读 sampling config 不看 observed share；忽略 full-tensor denominator；把 component metric 当训练 objective；看到 flag 名就断言生效；把推荐 valid mask/per-role normalization 写成上游或个人已实现。</p>
+<p><strong>危险答案</strong>：说“把三个 loss weight 调成 1:1:1 就不会污染”“Cosmos 默认严格隔离三种目标”“50/25/25 每个 batch 都成立”“target mask 乘上后天然按有效元素归一化”“我已经用 mask/weight 提升了 WAM 成功率”。</p>
+<p><strong>来源</strong>：[1][2][3][4][5]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../sources/vol_04_wm028_routing_slot_mask_loss_weight_source_freeze.html">WM-028 Source Freeze</a>：五层合同、frozen defaults/reduction、测试矩阵与 WAM 边界。</li><li><a href="../sources/vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos Policy / WAM Claim-to-Code</a>：routing、condition、target-mask branch 与 exact training path。</li><li><a href="../knowledge/vol_04_world_model_sim2real_wm025_cosmos_wam_slot_mask_loss.html">WM-025 Slot / Mask / Loss</a>：slot layout 与主 loss/component metric 边界。</li><li><a href="../knowledge/vol_04_world_model_sim2real_wm027_auxiliary_negative_transfer_gradient_conflict.html">WM-027 Negative Transfer</a>：contract-first 与 gradient share。</li><li><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM Claim–Evidence Inventory</a>：local config/mask/gradient/ownership 缺口。</li></ol>
+</article></body></html>

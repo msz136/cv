@@ -1,0 +1,46 @@
+{
+  "artifact": "sources/vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.md",
+  "html": "sources/vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.html",
+  "review_date": "2026-07-20",
+  "status": "source_frozen / SYS-VLA-002 / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "45d78013c69c5727017cea56c1c563333d92b173406104bc963a3ba31da2e694",
+  "scope": {
+    "official_source_rows": 14,
+    "openpi_fixed_files_refetched": 8,
+    "openpi_commit": "15a9616a00943ada6c20a0f158e3adb39df2ccac",
+    "cross_system_fixed_sources": 6,
+    "local_openpivla_files_rehashed": 3,
+    "deterministic_probes": 14,
+    "deterministic_probes_passed": 14,
+    "display_formulas": 3,
+    "knowledge_nodes_created": 1,
+    "question_cards_created": 1,
+    "mastery_changes": 0
+  },
+  "checks": {
+    "bounded_slice": "PASS (SYS-VLA-002 source freeze plus downstream knowledge/card are synchronized; no SYS-VLA-003, PER-019, coaching state or mastery change)",
+    "official_source_refetch": "PASS (OpenPI 8/8 fixed files, CPython 2 docs, Triton config/batcher, gRPC deadline and ROS 2 QoS/real-time docs refetched at pinned revisions with matching SHA)",
+    "license_boundary": "PASS (OpenPI/ROS Apache-2.0, CPython PSF-2.0, Triton BSD-3-Clause, gRPC content CC BY 4.0/code samples Apache-2.0 are separated)",
+    "openpi_request_response_contract": "PASS WITH WARNING (metadata and recv->infer->timing->send plus sync client send->recv are direct; schema version/request ID/deadline/queue/batching/cancel propagation are absent from the frozen files)",
+    "chunk_replan_state": "PASS WITH WARNING (broker cursor and LIBERO/DROID example cadence are direct; H/K/example shapes are not generalized to user projects)",
+    "deadline_backpressure_batching": "PASS WITH WARNING (CPython/Triton/gRPC/ROS mechanisms are direct cross-sources; their composition into a VLA service remains an explicit design inference)",
+    "realtime_safety_boundary": "PASS (server-local infer timing is not promoted to capture-to-apply E2E, hard real-time, cancellation-to-physical-stop or e-stop proof)",
+    "local_openpivla_rehash": "PASS (3/3 current files match recorded SHA; offline WebSocket eval is separated from the in-process ALOHA broker rollout)",
+    "project_truth_boundary": "PASS WITH WARNING (five projects provide interface/gap hooks only; production serving, p99, fairness, watchdog and candidate end-to-end ownership remain unverified)",
+    "deterministic_probes": "PASS (14/14 source-order/presence/negative-boundary probes)",
+    "math_and_formula_contract": "PASS (3 balanced display formulas plus 15 balanced inline spans; rendered MathJax has 18 containers including 3 display, zero formula-em nodes and zero visible LaTeX source)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, valid hierarchy, 7 tables, 1 commented serving-path code block, 7,708 resolving local links across the repository, matching canonical/HTML/review SHA and zero control characters)",
+    "browser_visual_check": "PASS (localhost QA at 1440x1000 and 800x1000; 260px sticky desktop TOC becomes 753px static narrow TOC, document width equals client width, tables/code/formulas remain contained, and browser logs contain no error/warning)",
+    "knowledge_and_card": "PASS WITH WARNING (downstream knowledge/card are synchronized and remain unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synced SYS-VLA-002 card unseen; add a versioned request/response trace before making a platform claim.",
+    "Add an executable versioned request/response trace with request ID, timestamps, model/schema/normalizer identity and controller acknowledgement before making a platform claim.",
+    "Collect load/fault-injection evidence for queue bounds, action age, deadline miss, stale response, reconnect and cancellation leakage.",
+    "Keep controller hold/stop and independent e-stop outside the software-serving claim until direct robot/controller evidence exists.",
+    "Confirm candidate role per OpenPiVLA ownership ledger before using personal ownership language."
+  ],
+  "next": "Run one SYS-VLA-002 oral drill or collect a request-ID plus capture-to-apply trace artifact; keep the synced card unseen and do not start SYS-VLA-003."
+}

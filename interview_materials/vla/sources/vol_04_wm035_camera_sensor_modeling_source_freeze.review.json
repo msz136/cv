@@ -1,0 +1,42 @@
+{
+  "artifact": "sources/vol_04_wm035_camera_sensor_modeling_source_freeze.md",
+  "html": "sources/vol_04_wm035_camera_sensor_modeling_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-WM-035 / knowledge_synced / card_synced",
+  "verdict": "WARN",
+  "source_sha256": "50918b15cb279159a48e5526393164a866f3061a56ff202273f9a18aa505ad75",
+  "frozen_sources": {
+    "opencv_pinned_calibration": "commit f7dd7df170add1655de75b5e95f20f41d2a88293 / raw SHA-256 72f48a264d331a7d81dcd9463b98f096871cb140105f96f08abdf954d84203c4",
+    "opencv_calib3d": "4.x docs 2026-07-18 / response SHA-256 564e922f60635d1be9d8da36e60f42eb1dc1d53f884e0fe447d54ba08648b50b",
+    "tobin_domain_randomization": "arXiv:1703.06907v1 / ar5iv response SHA-256 faba518e98357c65a59d41f340bb723d4bb84c50eb359813597daab113dcd33a",
+    "openai_dexterous": "arXiv:1808.00177v5 / ar5iv response SHA-256 826fb63d545518661a10b9cac05110bf7c813e88f99698d3b9e98cb313f81e93",
+    "imagenet_c": "arXiv:1903.12261v1 / ar5iv response SHA-256 d3c445b259eb3af5381f0bba396d902bc28923fb8f743ce95107df734e33381f",
+    "mujoco_camera": "stable docs 2026-07-18 / response SHA-256 505230785371f9e6e54575b5178950ffbce4b5b2fa9db7a0a393f91adc1315da",
+    "local_boundary": "WM-032, WM-034, PER-002 and Evidence Manifest with OPD/OpenPiVLA inventories"
+  },
+  "checks": {
+    "batch_boundary": "PASS (only VLA-WM-035 frozen; WM-036..038 remain deferred)",
+    "primary_source_scope": "PASS (calibration/projection, visual randomization, noise cadence and corruption taxonomy tied to official/primary sources)",
+    "five_layer_contract": "PASS AS ENGINEERING SYNTHESIS (geometry, photometric, temporal, visibility and sensor factors separated)",
+    "geometry_contract": "PASS (K/R/t/distortion/image space, resize/crop and calibration residuals explicit)",
+    "photometric_temporal": "PASS AS ENGINEERING SYNTHESIS (exposure/gain/WB/response, blur/readout/timestamp and implementation limits explicit)",
+    "sensor_noise": "PASS AS ENGINEERING SYNTHESIS (shot/read/bias/pattern/quantization/compression/drop/depth invalid and cadence explicit)",
+    "occlusion_validity": "PASS (visible fraction, occluder/depth/time/view correlation and task solvability explicit)",
+    "label_consistency": "PASS (rerender/reprojection, K update, pixel/pose/action/time transform and reject rules explicit)",
+    "benchmark_boundary": "PASS (ImageNet-C taxonomy/severity not relabeled as target sensor or closed-loop evidence)",
+    "matched_ablation": "PASS (nominal/five factors/combined/overwide with sim/holdout/replay/closed-loop gates)",
+    "project_evidence_boundary": "PASS (camera fields/static grounding not promoted to calibration, camera-DR or real-transfer results)",
+    "html_static_validation": "PASS (canonical SHA embedded; one H1, twenty H2 headings, eight tables, formulas, commented pseudocode and MathJax rendered)",
+    "local_links": "PASS (WM-032, WM-034, PER-002 and Evidence Manifest links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "independent_fact_review": "PASS WITH WARNING (reconciled by vol_04_sim2real_independent_fact_review.md; local calibration bundle remains missing)"
+  },
+  "open_items": [
+    "Collect local camera rig/calibration bundles with serials, revisions and reprojection/hand-eye residuals.",
+    "Collect exposure/gain/WB/motion/noise/drop/depth capture surveys and synchronized timestamps.",
+    "Collect camera factor sampler, target overlays, rejection ledger and matched factor arms.",
+    "Collect protocol-complete real replay/closed-loop and ownership evidence before C2/C3 claims.",
+    "Keep VLA-WM-035 unseen until oral practice; do not create coaching_state.md without a real drill."
+  ],
+  "next": "Build only VLA-WM-036 friction/contact/compliance/gripper semantics next; keep WM-037..038 deferred."
+}

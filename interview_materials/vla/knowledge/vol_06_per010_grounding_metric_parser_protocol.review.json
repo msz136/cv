@@ -1,0 +1,41 @@
+{
+  "artifact": "knowledge/vol_06_per010_grounding_metric_parser_protocol.md",
+  "html": "knowledge/vol_06_per010_grounding_metric_parser_protocol.html",
+  "source_freeze": "sources/vol_06_per010_grounding_metric_parser_protocol_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / VLA-PER-010 / source_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "5ECF8C5D984007B5C9B27F162D6ABCC69F34CF1DCCD402FD62182AC62E7C098A",
+  "question_ids": [
+    "VLA-PER-010"
+  ],
+  "checks": {
+    "source_gate": "PASS WITH WARNING (version-pinned MDETR/RoboPoint/MPII papers, MDETR/COCO API/MMPose code and local OPD evaluator/inventory are inherited from the frozen source; MDETR paper/code metric semantics disagree and local raw predictions remain unarchived)",
+    "evaluation_stack": "PASS (raw output, expected representation, tag/syntax/coordinate/geometry states, matching, per-sample metric, denominator, aggregation and protocol identity are ordered explicitly)",
+    "strict_vs_lenient": "PASS WITH WARNING (full-match strict scoring and diagnostic-only lenient recovery are separated; the current local evaluator remains tag-gated but geometry-lenient and mixed grounding falls into text)",
+    "box_metrics": "PASS (single-pair IoU, mean IoU and Acc@threshold have formulas, variables, implementation mapping, inclusive threshold and denominator distinctions)",
+    "refexp_and_mdetr": "PASS WITH WARNING (top-k expression success is separated from its printed name; pinned MDETR code thresholds GIoU while the paper describes IoU, with a deterministic 0.5 decision flip)",
+    "coco_ap_ar": "PASS (IoU/recall grids, T/R/K/A/M shapes, ranking, matching/ignore, area/category/maxDets and absent-category handling are explained without calling them RefExp R@k)",
+    "point_metrics": "PASS (PCK normalization/visibility/correspondence, RoboPoint mask-hit and local fixed-coordinate any-pair Hit@50/100 are separately formulated and named)",
+    "multipoint_quality": "PASS WITH WARNING (any-pair minimum, two directed nearest-neighbor means, count/duplicate risks and optional one-to-one matching are explained; a task-specific OPD bipartite metric is not archived)",
+    "invalid_denominator": "PASS WITH WARNING (missing/mixed/out-of-range/degenerate/empty/duplicate policies and field-specific bool/numeric denominators are explicit; current mixed-grounding behavior remains unsafe)",
+    "aggregation_and_protocol": "PASS (sample/image/category/keypoint/episode units, representation strata, canonical manifest and comparability matrix are present)",
+    "pseudocode": "PASS (commented scoring pseudocode preserves raw output, separates strict/lenient paths, applies invalid policy before metric aggregation and saves per-field denominator inclusion)",
+    "local_opd_mapping": "PASS WITH WARNING (local routing, regex/fallback parsing, field outputs, 10k inventory composition and three-protocol reconciliation are mapped; raw predictions, exact checkpoint hashes and parser-v2 rerun remain missing)",
+    "failure_and_interview_readiness": "PASS (contract-first failure taxonomy, two-minute answer, ten follow-ups and dangerous-answer list are included)",
+    "project_truth_boundary": "PASS (OPD direct code/inventory evidence and Robot Harness downstream-interface-only hook are separated from robot success, causality and candidate ownership)",
+    "cross_volume_dedup": "PASS (PER-001 schema, PER-006 transform lineage, PER-007 inference, PER-008 representation, PER-009 training loss, PER-011 teacher noise, PER-015 action gate and VOL 05 statistics remain separate)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, twenty-two H2 including TOC, thirteen H3, eleven tables, seven code blocks, seven formula blocks, balanced MathJax delimiters, canonical/HTML/review SHA synchronized, required palette/serif/sticky 260px TOC/900px breakpoint/print rules present, local links/anchors valid and zero formula-em/control-character issues)",
+    "browser_visual_check": "BLOCKED (the existing in-app Browser file:// policy restriction remains; static checks do not substitute for desktop/narrow visual QA)",
+    "question_card": "PASS WITH WARNING (one L2/P0 PER-010 atomic card is synchronized, passes the 180/350-character gates and remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized VLA-PER-010 atomic card unseen until a real oral drill.",
+    "Archive OPD raw predictions, sample/image/gold hashes, exact checkpoints and generation config before parser protocol reconciliation.",
+    "Add golden tests and publish a versioned strict parser that explicitly handles or rejects mixed grounding, legacy parenthesized points and trailing prose.",
+    "Report original-strict, protocol-fixed-strict and lenient-geometry results separately with per-field denominators and a paired transition matrix.",
+    "Do not create coaching_state.md or change mastery before a real oral drill."
+  ],
+  "next": "Generate only the VLA-PER-011 pseudo-label/teacher-noise source freeze; do not generate its knowledge/card or change mastery in the same slice."
+}

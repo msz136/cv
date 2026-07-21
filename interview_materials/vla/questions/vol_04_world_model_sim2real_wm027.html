@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 VLA-WM-027 原子题卡：Auxiliary Negative Transfer 与 Gradient Conflict</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_04_world_model_sim2real_wm027.md">
+<meta name="aris:source-sha256" content="cf14f4b41350ad67780cae53c0a37af150706024f86ae411584b38caf6923e4d">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>cf14f4b41350ad67780cae53c0a37af150706024f86ae411584b38caf6923e4d</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_04_world_model_sim2real_wm027.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#auxiliary-world-value-gradient-conflict">什么时候 auxiliary world/value 会负迁移，如何识别 gradient conflict？</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 04 VLA-WM-027 原子题卡：Auxiliary Negative Transfer 与 Gradient Conflict</h1>
+<div class="meta">状态：drafted / card_1_of_1 / WARN 更新日期：2026-07-18 覆盖范围：VLA-WM-027 难度：L3 1 题 优先级：P1 练习状态：unseen 前置：<a href="../knowledge/vol_04_world_model_sim2real_wm027_auxiliary_negative_transfer_gradient_conflict.html">WM-027 Knowledge</a>；来源边界见 <a href="../sources/vol_04_wm027_auxiliary_negative_transfer_gradient_conflict_source_freeze.html">WM-027 Source Freeze</a>。</div>
+<h2 id="auxiliary-world-value-gradient-conflict">什么时候 auxiliary world/value 会负迁移，如何识别 gradient conflict？</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-WM-027</b> · 什么时候 auxiliary world/value 会负迁移，如何识别 gradient conflict？</summary>
+<p><strong>面试意图</strong>：判断你能否区分“局部梯度冲突”和“已确认负迁移”，并按数据合同、梯度诊断、优化器干预、闭环证据的顺序定位问题。</p>
+<p><strong>30 秒回答</strong>：负迁移指同数据、算力、协议下，加入辅助目标后 action/闭环比 action-only 稳定变差；负 cosine 只是局部信号。用 exact loss 记录逐层 cosine、norm ratio，先查标签、mask、padding、role 比例。方向冲突试 PCGrad，尺度失衡试 GradNorm，最终靠多 seed 闭环对照证实。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：令 ga 为 action 梯度、gu 为辅助梯度；cos&lt;0 是 PCGrad conflict，ga·gjoint&lt;0 只表示该步一阶上伤害 action，不证明最终负迁移。逐层/角色记录 cosine、weighted norm、valid target；AMP 先 unscale，DDP 用全局梯度。PCGrad投影负方向，GradNorm按相对训练速率调权重；label、mask、domain、capacity 错则先修 contract。最后 matched 比较 action-only/+world/+value/all 的 action、auxiliary、per-task success、paired episode 与 seed/CI。</p>
+<p><strong>诊断 / 证据</strong>：先做 role matrix、exact target-mask loss、empty-mask fail-fast、action/value label audit、terminal-padding A/B 和 normalizer round-trip；再画 layer×role gradient matrix、norm ratio、conflict duration 与 joint-update alignment。AMP 先 unscale，DDP/FSDP 统计全局 gradient 或 exact sharded dot/norm，不平均 rank cosine。gradient 变好但 action/闭环不变，只能说优化几何改变。</p>
+<p><strong>项目挂钩</strong>：Cosmos/WAM 的主项是 unified latent EDM loss，日志 action/future/value L1/MSE 不天然等于三条训练梯度。WAM inventory 仍缺 exact local config/checkpoint、gradient trace、matched objective arms、跨 seed episodes 与 ownership；单 episode trace、单样本 future proxy 不能证明 negative transfer。安全说“我能设计 audit”，不能说“已用 PCGrad/GradNorm 修好项目”。</p>
+<p><strong>追问树</strong>：负 cosine 为什么不等于负迁移？为什么要看 ga·gjoint？逐层统计为何优于全模型平均？不同 routed batch 的 cosine 怎样解释？AMP/DDP 下怎么测？PCGrad 的投影公式是什么？随机 task order 有何影响？GradNorm 的 relative inverse training rate 怎么算？GradNorm 能消除方向冲突吗？如果 value 是噪声任务，GradNorm 会怎样？如何做 matched closed-loop？</p>
+<p><strong>易错点</strong>：从一次负 cosine 宣布根因；用 component metric 代替 exact training gradient；平均各 rank cosine；AMP 未 unscale；只改 loss weight 不查 valid target；把 PCGrad 与 GradNorm 当同一种方法；gradient 图改善就宣称 success 提升。</p>
+<p><strong>危险答案</strong>：说“cosine&lt;0 就证明负迁移”“PCGrad 保证多任务更好”“GradNorm 会自动删除坏任务”“action/future/value 日志 loss 可直接当三条 official gradient”“我已经在 WAM 用 gradient surgery 提升成功率”。</p>
+<p><strong>来源</strong>：[1][2][3][4][5]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../sources/vol_04_wm027_auxiliary_negative_transfer_gradient_conflict_source_freeze.html">WM-027 Source Freeze</a>：定义、诊断合同、PCGrad/GradNorm 与项目边界。</li><li>Yu et al., <a href="https://arxiv.org/abs/2001.06782v4">Gradient Surgery for Multi-Task Learning</a>。</li><li>Chen et al., <a href="https://arxiv.org/abs/1711.02257v4">GradNorm</a>。</li><li><a href="../knowledge/vol_04_world_model_sim2real_wm025_cosmos_wam_slot_mask_loss.html">WM-025 Cosmos/WAM Slot / Mask / Loss</a>：exact loss、routing 与 metric 边界。</li><li><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM Claim–Evidence Inventory</a>：本地 gradient/ablation/ownership 缺口。</li></ol>
+</article></body></html>

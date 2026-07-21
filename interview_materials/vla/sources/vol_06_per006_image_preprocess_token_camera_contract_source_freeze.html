@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 PER-006 Source Freeze：Image Preprocess、Patch Token 与 Camera Identity Contract</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per006_image_preprocess_token_camera_contract_source_freeze.md">
+<meta name="aris:source-sha256" content="2bfcec5ab3cc3f48c26f3a2efb41fb7ed0932b2b56671b7b2ff2906c690561e6">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>2bfcec5ab3cc3f48c26f3a2efb41fb7ed0932b2b56671b7b2ff2906c690561e6</code>；生成自：<code>interview_materials\vla\sources\vol_06_per006_image_preprocess_token_camera_contract_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-official-source-ledger">2. Primary / official source ledger</a></li><li><a href="#3">3. 冻结的上游输入合同</a></li><li><a href="#3-1-transform-chain">3.1 Transform chain</a></li><li><a href="#3-2-patch-grid-token">3.2 Patch / grid / token</a></li><li><a href="#3-3-pixel-value-normalization">3.3 Pixel value 与 normalization</a></li><li><a href="#4-local-evidence-audit">4. Local evidence audit</a></li><li><a href="#4-1-opd-double-resize-deterministic-probe">4.1 OPD double-resize deterministic probe</a></li><li><a href="#4-2-openpivla-formal-comparison">4.2 OpenPiVLA formal comparison</a></li><li><a href="#5-camera-identity-order-round-trip">5. Camera identity、order 与坐标 round-trip</a></li><li><a href="#6-cross-volume">6. Cross-volume 去重边界</a></li><li><a href="#7-claim-boundary">7. Claim boundary 与验收门</a></li><li><a href="#8-bounded-slice">8. 下一 bounded slice</a></li><li><a href="#references">参考入口（References）</a></li></ol></nav>
+<h1>VOL 06 PER-006 Source Freeze：Image Preprocess、Patch Token 与 Camera Identity Contract</h1>
+<div class="meta">状态：<code>source_frozen / VLA-PER-006 / upstream_checked / local_double_resize_risk / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-19 证据截止：2026-07-19 本页冻结 raw image 到 Qwen3-VL visual token 的 transform、shape、metadata 与本地调用边界；下游 knowledge/card 已同步且题卡保持 unseen；不把 preprocessing 配置写成模型效果或个人创新。</div>
+<h2 id="question">问题（Question）</h2>
+<p>一张机器人相机图像从磁盘/PIL 进入 VLM 时，<code>resize/crop/letterbox</code>、颜色与数值范围、patch/grid/token、camera identity 和坐标逆变换分别在哪里发生？本地 OpenPiVLA 与 OPD 是否真的使用同一条 preprocessing 路径？</p>
+<h2 id="1">1. 结论先行</h2>
+<ol><li>ViT v2 只支持“Transformer 可直接处理 image-patch sequence”的基础范式；Qwen3-VL 的具体 resize、grid、merge 和 token 数必须回到官方 processor/model code 与具体 checkpoint 工件。</li><li><code>Qwen/Qwen3-VL-8B-Instruct@0c351d...</code> 的 <code>preprocessor_config.json</code> 声明 <code>patch_size=16</code>、<code>temporal_patch_size=2</code>、<code>merge_size=2</code>、<code>image_mean=image_std=[0.5,0.5,0.5]</code>、<code>shortest_edge=65536</code>、<code>longest_edge=16777216</code>。</li><li>Qwen 官方 <code>qwen-vl-utils 0.0.14</code> 的 <code>process_vision_info</code> 默认 <code>image_patch_size=14</code>；Qwen3-VL 官方 README 明确示例传 <code>image_patch_size=16</code>，并在工具已完成 resize 后向 processor 传 <code>do_resize=False</code>。</li><li>OPD 的 <code>expert_sft.py</code> 与 raw-holdout eval 都调用 <code>process_vision_info(messages)</code>，没有传16，随后调用 processor 时也没有 <code>do_resize=False</code>；静态调用链因此是 factor 28 的工具 resize，再进入 factor 32 的 Qwen3 processor resize。当前没有 matched run 证明其性能影响，但 contract mismatch 直接存在。</li><li>OpenPiVLA formal path 与 dry-run path 不相同：formal MindCube 分支把原始 RGB PIL 交给 <code>AutoProcessor</code> 一次，DROID action 分支当前 <code>images=[]</code>；另一个 public-data dry-run adapter 则先把图像强制拉伸到 <code>224×224</code>。dry-run 行为不能替 formal Qwen 图像训练补证。</li><li>冻结的 Qwen official path 使用保持宽高比的 smart resize，没有 crop/letterbox；因此不能凭通用视觉经验假定 padding offset 或 crop origin。本地也未发现逐样本 <code>original_size/resized_size/grid/camera_id/frame/timestamp</code> manifest。</li></ol>
+<h2 id="2-primary-official-source-ledger">2. Primary / official source ledger</h2>
+<p>SHA-256 对访问到的 UTF-8 文本计算；Git blob/hash、release tag 与模型 revision 分开记录。来源只支持其所在层，不能把上游实现或 model card 归为个人贡献。</p>
+<table><thead><tr><th>来源</th><th>类型 / revision</th><th>SHA-256</th><th>支持的事实</th><th>不能支持</th></tr></thead><tbody>
+<tr><td><a href="https://arxiv.org/abs/2010.11929v2">Vision Transformer</a></td><td>primary paper；arXiv API v2，读取 2026-07-19</td><td><code>A6D2B7F1AC2C6F8C3483015E7AD02C2031B01336930D6D993C218A0BEC42F719</code></td><td>pure Transformer 可直接处理 image-patch sequence 的基础范式</td><td>Qwen3-VL 的具体 patch、resize、merge、normalization 或项目效果</td></tr>
+<tr><td><a href="https://github.com/QwenLM/Qwen3-VL/blob/96588727e44c78b25ba03ea03b8e12f7e64fd0da/README.md">Qwen3-VL README</a></td><td>official repo；commit <code>96588727...</code>；Apache-2.0</td><td><code>FC21106258C51E0B91A652EEF12F5925BECB146EA8B8C79A4251AC2E89A2F1AC</code></td><td>Qwen3-VL processor 用法、<code>size</code> 与 pixel-budget 语义、Qwen3 <code>image_patch_size=16</code>、避免重复 resize 的示例</td><td>本地 checkpoint 的 processor config 或 OPD/OpenPiVLA 已按示例调用</td></tr>
+<tr><td><a href="https://github.com/QwenLM/Qwen3-VL/blob/96588727e44c78b25ba03ea03b8e12f7e64fd0da/qwen-vl-utils/pyproject.toml">qwen-vl-utils pyproject</a></td><td>official package metadata；version <code>0.0.14</code>；Apache-2.0</td><td><code>C931C92AF0714107B2EC3B2DB667BD899BCB7B64E16310A8D78AB14C7196B22B</code></td><td>与本地 pip inventory 的 package version 对齐</td><td>wheel 内容、运行环境或调用正确性自动一致</td></tr>
+<tr><td><a href="https://github.com/QwenLM/Qwen3-VL/blob/96588727e44c78b25ba03ea03b8e12f7e64fd0da/qwen-vl-utils/src/qwen_vl_utils/vision_process.py">qwen-vl-utils vision_process.py</a></td><td>official code；同一 commit</td><td><code>46C056F52F8ACD2597A46377868F0BF7436DD893EE2CA53CC3C4CB59EBAE7BF0</code></td><td><code>smart_resize</code>、factor/pixel band、RGB conversion、直接 PIL resize、<code>process_vision_info</code> 默认 patch size 14</td><td>crop/letterbox、插值显式 pin、坐标逆变换或 camera metadata</td></tr>
+<tr><td><a href="https://github.com/huggingface/transformers/blob/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/models/qwen2_vl/image_processing_qwen2_vl.py">Transformers Qwen2VLImageProcessor</a></td><td>official code；<code>v4.57.1</code> / commit <code>8cb5963c...</code>；Apache-2.0</td><td><code>7820A0FCCA107E75605E08D9B774285CA2B0316F857BC0225C779794705ECF4F</code></td><td>model artifact 指定的 size/patch/merge、bicubic resize、rescale/normalize、<code>pixel_values</code> 与 <code>image_grid_thw</code> 生成</td><td>任意本地 checkpoint 都继承相同 processor artifact</td></tr>
+<tr><td><a href="https://github.com/huggingface/transformers/blob/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/models/qwen2_vl/image_processing_qwen2_vl_fast.py">Transformers Qwen2VLImageProcessorFast</a></td><td>official fast processor；同一 release</td><td><code>09BFA9B17DF7C3F0C6159BC34008EE50F21D2472CD5BAE7E5C21BA1CA13A423C</code></td><td>复用 slow <code>smart_resize</code>；显式 bicubic/rescale/normalize；fast patchify 与 grid 输出；与 model artifact 的 processor type 对齐</td><td>本地实际加载的 class、backend 和 kwargs 已被 run bundle 记录</td></tr>
+<tr><td><a href="https://github.com/huggingface/transformers/blob/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/models/qwen3_vl/processing_qwen3_vl.py">Transformers Qwen3VLProcessor</a></td><td>official code；同一 release</td><td><code>EFD8D64AAF608AAD1FFB3E6D503D6A99E5227D007DF95C1D9FA905D998CDA4A9</code></td><td>image placeholder 数由 <code>image_grid_thw.prod()/merge_size²</code> 决定</td><td>camera identity、坐标语义或 action alignment</td></tr>
+<tr><td><a href="https://github.com/huggingface/transformers/blob/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/models/qwen3_vl/modeling_qwen3_vl.py">Transformers Qwen3VL modeling</a></td><td>official code；同一 release</td><td><code>DD63ED3B124232735B3DCA1BFA28F9D6B0D3F7182AFCB75DDE8F3E724B2B22DA</code></td><td>patch embedding kernel、spatial merge 与 image-feature/token count 一致性检查</td><td>本地图像内容或 camera ordering 正确</td></tr>
+<tr><td><a href="https://github.com/huggingface/transformers/blob/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/models/qwen3_vl/configuration_qwen3_vl.py">Qwen3VL configuration</a></td><td>official code；同一 release</td><td><code>177FD0A4DC1B08307C08CA72CF26B8D7DC028AB6AB5975BF650FC14AB8132A83</code></td><td>default patch 16、spatial merge 2、temporal patch 2</td><td>具体 checkpoint 一定未覆盖 defaults</td></tr>
+<tr><td><a href="https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct/blob/0c351dd01ed87e9c1b53cbc748cba10e6187ff3b/preprocessor_config.json">Qwen3-VL-8B preprocessor config</a></td><td>official model artifact；revision <code>0c351dd0...</code>；Apache-2.0</td><td><code>27225450AC9C6529872EE1924FCB0962FF5634834F817040F444118116F4E516</code></td><td>checkpoint-specific size、patch、merge、mean/std、processor type</td><td>本地复制/checkpoint 的 config hash 相同</td></tr>
+<tr><td><a href="https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct/blob/0c351dd01ed87e9c1b53cbc748cba10e6187ff3b/config.json">Qwen3-VL-8B config</a></td><td>official model artifact；同一 revision</td><td><code>5CD452860DC1E9C29DD71CC3CEF7F39B338B7A40793F7A260655C2D3568F3661</code></td><td>vision patch16、merge2、temporal2 与 token IDs</td><td>本地 processor/model pair 已绑定或 rollout 可复现</td></tr>
+</tbody></table>
+<h2 id="3">3. 冻结的上游输入合同</h2>
+<h3 id="3-1-transform-chain">3.1 Transform chain</h3>
+<p>冻结代码中的 image-only path 是：</p>
+<pre><code class="language-text"># qwen-vl-utils path
+image path / URL / base64 / PIL
+  -&gt; RGB conversion
+  -&gt; smart_resize(aspect ratio approximately preserved,
+                  H&#x27; and W&#x27; divisible by patch_size * merge_size)
+  -&gt; direct PIL resize
+  -&gt; Qwen image processor(do_resize=False in the official two-stage example)
+  -&gt; rescale + normalize
+  -&gt; patchify + image_grid_thw
+  -&gt; spatial merge + image placeholder tokens</code></pre>
+<p>没有 crop、letterbox 或 padding-offset 分支。<code>resized_height/resized_width</code> 仍会被 round 到 factor 的倍数，不等于无条件采用请求尺寸。</p>
+<p>对 Qwen3-VL-8B：</p>
+<div class="formula">\[
+F=p\,m=16\times2=32
+\]</div>
+<p>其中 \(p\) 是 spatial patch size，\(m\) 是 spatial merge size，\(F\) 是 resize divisibility factor。代码映射：<code>qwen-vl-utils.fetch_image(image_patch_size=16)</code> 与 checkpoint <code>preprocessor_config.json</code>。</p>
+<h3 id="3-2-patch-grid-token">3.2 Patch / grid / token</h3>
+<p>静态图像经过 temporal duplication 后，<code>image_grid_thw</code> 可写作 \((T_g,H_g,W_g)\)，image placeholder 数为：</p>
+<div class="formula">\[
+N_{\mathrm{img}}=\frac{T_gH_gW_g}{m^2}
+\]</div>
+<p>其中 \(H_g=H'/p\)、\(W_g=W'/p\)、静态图像通常 \(T_g=1\)。对 \(p=16,m=2\)，若 \(H',W'\) 都是32的倍数，则：</p>
+<div class="formula">\[
+N_{\mathrm{img}}=\frac{H&#x27;W&#x27;}{1024}.
+\]</div>
+<p>直觉：每个 <code>16×16</code> patch 先进入视觉 encoder，<code>2×2</code> spatial merge 后每四个 spatial patches 对应一个语言侧 image placeholder。实现映射：Transformers image processor 生成 <code>pixel_values/image_grid_thw</code>，Qwen3 processor 按 <code>prod(grid)/merge²</code> 展开 <code>&lt;|image_pad|&gt;</code>。</p>
+<h3 id="3-3-pixel-value-normalization">3.3 Pixel value 与 normalization</h3>
+<p><code>Qwen3-VL-8B-Instruct@0c351d...</code> 的 processor artifact 声明 RGB mean/std 都为0.5；Transformers class 仍支持 <code>do_rescale/do_normalize</code>。因此：</p>
+<ul><li>输入若是0–255，应允许 processor rescale；</li><li>输入若已是0–1，重复 <code>do_rescale</code> 会形成错误量级，官方 image processor 文档要求此时关闭；</li><li>不能只记录“用了 AutoProcessor”，必须同时冻结本地 <code>preprocessor_config.json</code>、调用 kwargs 与实际 input range。</li></ul>
+<h2 id="4-local-evidence-audit">4. Local evidence audit</h2>
+<table><thead><tr><th>路径 / SHA</th><th>直接事实</th><th>风险边界</th></tr></thead><tbody>
+<tr><td><code>C:\Users\mousongzhe\muxi\metax_pkgs\pip-list.json</code> / <code>2A730543...</code></td><td>local environment 记录 <code>transformers=4.57.1</code>、<code>qwen-vl-utils=0.0.14</code>、<code>Pillow=10.4.0</code></td><td>版本对齐不证明调用 kwargs 正确；remote run image/config hash 未闭合</td></tr>
+<tr><td><code>C:\Users\mousongzhe\muxi\point\expert_sft.py</code> / <code>2A1D37F...</code></td><td>每个 image message 写 <code>min_pixels=max_pixels=50176</code>；调用 <code>process_vision_info(full_messages)</code>；随后 processor 编码，未传 <code>image_patch_size=16</code> 或 <code>do_resize=False</code></td><td>形成 factor28→factor32 双阶段 resize 风险；没有 per-sample grid/transform log 或 matched ablation</td></tr>
+<tr><td><code>C:\Users\mousongzhe\muxi\point\eval_qwen_vl_raw_holdout.py</code> / <code>29574ADC...</code></td><td>eval 同样用 <code>min=max=50176</code>、默认 <code>process_vision_info</code> 与 processor；训练/评估调用形态一致</td><td>“一致”不等于正确；point/box protocol 仍需原图↔处理图 round-trip</td></tr>
+<tr><td><code>C:\Users\mousongzhe\Project\openpivla_deployment\repro_train\openpi_src\src\openpi\training\vla_qwen3_repro\formal_train.py</code> / <code>51B67D3E...</code></td><td>formal defaults <code>min=max=200704</code>；MindCube 将原始 RGB PIL 交给 processor；DROID action dataset 返回 <code>images=[]</code></td><td>不能把 MindCube 图像 path 证明为 DROID/VLA image training；未记录 camera identity 或 output grid manifest</td></tr>
+<tr><td><code>...\vla_qwen3_repro\data.py</code> / <code>32C6AA76...</code></td><td>public-data dry-run <code>_read_image</code> 直接 <code>resize((224,224))</code>、除255并输出 CHW；<code>VLAQwen3ReproCollator</code> 是 dry-run adapter</td><td>强制方形会改变非方图像几何；该路径不是 formal Qwen processor path，不能混为一谈</td></tr>
+</tbody></table>
+<h3 id="4-1-opd-double-resize-deterministic-probe">4.1 OPD double-resize deterministic probe</h3>
+<p>probe 直接复刻 frozen <code>smart_resize</code> 的整数舍入，不加载模型、不声称已复现实验。</p>
+<table><thead><tr><th>原始 H×W</th><th>qwen-vl-utils stage（factor28，min=max50176）</th><th>Qwen3 processor stage（factor32，同一 pixel budget）</th><th>最终 image tokens</th></tr></thead><tbody>
+<tr><td><code>480×640</code></td><td><code>168×252</code></td><td><code>192×288</code></td><td>54</td></tr>
+<tr><td><code>720×1280</code></td><td><code>168×280</code></td><td><code>192×320</code></td><td>60</td></tr>
+<tr><td><code>1000×1000</code></td><td><code>224×224</code></td><td><code>224×224</code></td><td>49</td></tr>
+</tbody></table>
+<p><code>min_pixels=max_pixels</code> 不保证最终像素积严格等于该值：divisibility 与 ceil/floor rounding 可以让第一阶段低于、第二阶段高于目标。当前结论是 shape/token contract 可变且未归档，不是“已证明性能下降”。</p>
+<h3 id="4-2-openpivla-formal-comparison">4.2 OpenPiVLA formal comparison</h3>
+<p>formal MindCube defaults <code>min=max=200704</code> 且只由 Qwen processor resize 一次。相同原图的 source-derived probe：</p>
+<table><thead><tr><th>原始 H×W</th><th>formal processed H×W（factor32）</th><th>image tokens</th></tr></thead><tbody>
+<tr><td><code>480×640</code></td><td><code>384×512</code></td><td>192</td></tr>
+<tr><td><code>720×1280</code></td><td><code>320×576</code></td><td>180</td></tr>
+<tr><td><code>1000×1000</code></td><td><code>448×448</code></td><td>196</td></tr>
+</tbody></table>
+<p>这只说明两个本地入口的 pixel/token budget 不同；不能比较模型质量，因为 dataset、task、checkpoint、训练目标和运行 lineage 都不同。</p>
+<h2 id="5-camera-identity-order-round-trip">5. Camera identity、order 与坐标 round-trip</h2>
+<p>image token 本身不携带“workspace camera / wrist camera / front-left camera”的机器人语义。最小输入 manifest 应记录：</p>
+<table><thead><tr><th>字段</th><th>必须回答</th><th>当前本地状态</th></tr></thead><tbody>
+<tr><td><code>sample_id / image_id</code></td><td>哪个样本、哪张原图？</td><td>OPD 有 path；formal MindCube 有 row image list；统一 immutable manifest 未见</td></tr>
+<tr><td><code>camera_id / frame_id</code></td><td>这张图属于哪台相机、哪个 optical frame？</td><td>formal/OPD message 仅靠 image order/path；未见显式 camera identity</td></tr>
+<tr><td><code>capture_timestamp</code></td><td>观测与 state/action 的时间关系？</td><td>本切片未找到</td></tr>
+<tr><td><code>original_h,w</code></td><td>坐标输出相对哪张图？</td><td>processor 可读取，但 local run bundle 未归档</td></tr>
+<tr><td><code>resize/crop/pad</code></td><td>scale、crop origin、padding offset、interpolation？</td><td>official path 为 smart resize；local 未归档逐样本 transform；crop/letterbox 不应假定</td></tr>
+<tr><td><code>processed_h,w / image_grid_thw</code></td><td>实际 patch grid 与 token 数？</td><td>processor runtime 可返回；local result bundle 未见保存</td></tr>
+<tr><td><code>pixel_range / mean / std</code></td><td>0–255 还是0–1，是否重复 rescale？</td><td>checkpoint config 可查；dry-run adapter 已先/255，与 formal path分离</td></tr>
+<tr><td><code>inverse mapping</code></td><td>point/box 如何回到原图/3D/controller frame？</td><td>PER-001/002 规定 gate；本地 round-trip artifact 缺失</td></tr>
+</tbody></table>
+<p>多图输入还必须证明 message placeholder 顺序、flatten 后 image 顺序和 camera metadata 一一对应。formal collator 将 batch 内 image list 依次 flatten；代码没有显式 camera key，因此“第几个 image token”不能自动解释为某个机器人相机。</p>
+<h2 id="6-cross-volume">6. Cross-volume 去重边界</h2>
+<table><thead><tr><th>已有页面</th><th>已覆盖</th><th>PER-006 新增边界</th></tr></thead><tbody>
+<tr><td>VOL 01 Transformer / representation</td><td>attention、patch/token 基础直觉</td><td>具体 Qwen processor transform、grid/token 与 pixel contract</td></tr>
+<tr><td>VOL 03 VLA Architecture</td><td>image/language/action 接口、mask、action head</td><td>raw image 到 visual placeholders 的前处理与 camera identity</td></tr>
+<tr><td>PER-001 Grounding</td><td>point/box/text 与 coordinate inverse</td><td>坐标 inverse 所依赖的原图→处理图 manifest</td></tr>
+<tr><td>PER-003 Multi-view / Temporal</td><td>per-view camera/frame/time/presence schema</td><td>单图 processor 不会自动提供 camera semantic；flatten/order gate</td></tr>
+<tr><td>VOL 05 Engineering/Eval</td><td>dataset/manifest/reproducibility</td><td>perception-specific transform/grid/token fields与 deterministic probe</td></tr>
+</tbody></table>
+<p>PER-006 knowledge 已按该边界讲清“如何解释和审计”，没有重复 Transformers/ViT 通用教学，也没有把本页的静态 mismatch 升级为 causal performance conclusion。</p>
+<h2 id="7-claim-boundary">7. Claim boundary 与验收门</h2>
+<p>当前可以说：</p>
+<ul><li>“我审计了 Qwen3-VL 图像输入链，区分 qwen-vl-utils factor28 默认与 Qwen3 factor32，并定位本地 OPD 未传 patch16/未关闭二次 resize 的 shape/token contract 风险。”</li><li>“OpenPiVLA formal MindCube、DROID action 与 dry-run adapter 是三条不同 image lineage；当前 DROID formal action 分支没有图像。”</li></ul>
+<p>当前不能说：</p>
+<ul><li>“已修复 preprocessing 并提升 grounding/VLA 成功率。”</li><li>“50176 pixels 一定产生固定49个 visual tokens。”</li><li>“模型天然知道 camera identity，或 resize 不影响 point/box 坐标。”</li><li>“OpenPiVLA 已完成 image-conditioned DROID VLA training。”</li></ul>
+<p>升级前至少需要：</p>
+<ol><li>pin 本地 model/processor/qwen-vl-utils revision 与 config hash；</li><li>对多种宽高比保存 original/resized/grid/token/inverse manifest；</li><li>统一 <code>image_patch_size=16</code> 与 <code>do_resize</code> policy，做 train/eval parity test；</li><li>point/box sentinel 从原图→processor→parser→原图 round-trip；</li><li>多相机样本保存 camera/frame/timestamp/order；</li><li>matched preprocessing A/B 后才能讨论 metric 或 closed-loop 影响。</li></ol>
+<h2 id="8-bounded-slice">8. 下一 bounded slice</h2>
+<p><code>VLA-PER-007..009</code> source/knowledge/card已同步且保持<code>unseen</code>。下一轮只做PER-010 metric/parser source freeze，不生成knowledge/card或修改其他mastery。</p>
+<h2 id="references">参考入口（References）</h2>
+<ol><li><a href="vol_06_perception_grounding_navigation_coverage_gap_audit.md">VOL 06 Coverage-Gap Audit</a></li><li><a href="../questions/vol_06_perception_grounding_navigation.question_list.md">VOL 06 Phase 0 Question List</a></li><li><a href="vol_06_per001_grounding_coordinate_source_freeze.md">PER-001 Grounding Source Freeze</a></li><li><a href="vol_06_per003_multiview_temporal_source_freeze.md">PER-003 Multi-view / Temporal Source Freeze</a></li><li><a href="openpivla_formal_json_ce_shape_contract_artifact_gate.md">OpenPiVLA JSON/CE Shape Contract Gate</a></li><li><a href="../evidence/projects/opd_claim_evidence_inventory.md">OPD Claim–Evidence Inventory</a></li></ol>
+</article></body></html>

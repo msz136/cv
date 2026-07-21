@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 PER-008 Source Freeze：Point / Box / Mask / Keypoint / Affordance 表示选择</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per008_representation_choice_source_freeze.md">
+<meta name="aris:source-sha256" content="62856e6c9b96028d26de6d5656140b05efe15dca192af241bba4ebff31585825">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>62856e6c9b96028d26de6d5656140b05efe15dca192af241bba4ebff31585825</code>；生成自：<code>interview_materials\vla\sources\vol_06_per008_representation_choice_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-official-local-source-ledger">2. Primary / official / local source ledger</a></li><li><a href="#3">3. 与相邻节点的去重边界</a></li><li><a href="#4">4. 五类表示的最小语义合同</a></li><li><a href="#4-1-point">4.1 Point：位置候选，不含范围</a></li><li><a href="#4-2-box">4.2 Box：实例范围近似，不含精细形状</a></li><li><a href="#4-3-mask">4.3 Mask：像素成员关系，不含任务语义</a></li><li><a href="#4-4-semantic-keypoint">4.4 Semantic keypoint：带角色的几何锚点</a></li><li><a href="#4-5-affordance">4.5 Affordance：动作条件下的可交互性</a></li><li><a href="#5">5. 选择原则：下游最小充分表示</a></li><li><a href="#6-probe">6. 转换不等价与确定性probe</a></li><li><a href="#6-1-mask-box">6.1 Mask→box是有损映射</a></li><li><a href="#6-2-point-semantic-action-fields">6.2 Point不保留semantic/action fields</a></li><li><a href="#6-3-provenance">6.3 表示转换必须标记provenance</a></li><li><a href="#7-typed-representation-manifest">7. Typed representation manifest</a></li><li><a href="#8">8. 可审计选择伪代码</a></li><li><a href="#9">9. 四个公开方法的接口对照</a></li><li><a href="#10-opd-affordance-named-point-dense-affordance-head">10. 本地 OPD：affordance-named point，不是dense affordance head</a></li><li><a href="#11-failure-taxonomy">11. Failure taxonomy 与补证顺序</a></li><li><a href="#12-source-gate-bounded-slice">12. Source gate 结论与下一 bounded slice</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 PER-008 Source Freeze：Point / Box / Mask / Keypoint / Affordance 表示选择</h1>
+<div class="meta">状态：<code>source_frozen / VLA-PER-008 / primary_official_checked / local_point_box_affordance_boundary / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本切片只冻结五类 perception output 的语义、信息量、下游充分性、转换损失、uncertainty 与本地项目边界；不生成 knowledge/card，不展开 PER-009 loss、PER-010 metric 或 PER-012 具体模型。</div>
+<h2 id="question">问题（Question）</h2>
+<p>机器人收到“把杯子挂到架子上”“在空位放下物体”或“拉开抽屉”后，perception 应输出 point、box、mask、semantic keypoint 还是 action-conditioned affordance？更密集的表示是否一定更好？一个叫“affordance”的数据字段是否等于系统已经学习并执行了可行动作？</p>
+<p>本页冻结的不是五选一排行榜，而是可审计的选择链：</p>
+<pre><code class="language-text">task + downstream consumer + coordinate/time contract
+  -&gt; minimum sufficient representation
+  -&gt; uncertainty / multimodality / validity schema
+  -&gt; optional conversion with explicit information loss
+  -&gt; parser / metric / controller gate
+  -&gt; evidence-bounded project claim</code></pre>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>表示由下游问题决定，不由像素密度决定</strong>：ROI/crop 常用 box；轮廓、遮挡或精细占用需要 mask；一个或多个候选接触位置可用 point set；类别级几何约束需要有稳定语义 ID 的 keypoints；动作原语、方向、工具和状态条件进入后才是 affordance contract。</li><li><strong>point 不自动等于 keypoint 或 affordance</strong>：裸坐标只回答“哪里”；semantic keypoint 还回答“这个点在类别中的角色”；affordance 还要回答“在什么动作、方向、工具、状态与 horizon 下可交互”。</li><li><strong>box 与 mask 不等价</strong>：mask 可以确定一个包围盒，但多个不同 mask 可共享同一 box；从 box 反推 mask 是欠定问题。把 box 塞满当 mask 会伪造形状、接触和碰撞信息。</li><li><strong>SAM 证明 promptable mask I/O，不证明语义或机器人可行动性</strong>：冻结 <code>SamPredictor</code> 接收 point/box/mask prompt，返回原图尺寸 masks、predicted mask quality 与低分辨率 logits；这些输出仍需 language/instance binding、坐标和 downstream action gate。</li><li><strong>RoboPoint 与 kPAM 的“keypoint”语义不同但都超出裸点</strong>：RoboPoint 用语言条件输出多个 normalized image points，服务 spatial-affordance；kPAM 用 semantic 3D keypoints承载类别级几何 costs/constraints并接 action planning。不能只看二维坐标格式就把两者合并。</li><li><strong>Where2Act 的 affordance 是 action-conditioned contract</strong>：冻结公源按 action primitive 在点云/像素位置上预测 actionability、proposal orientation 与 success likelihood；它不是普通 objectness heatmap，也不能迁移为任意 gripper/controller 的已校准成功率。</li><li><strong>本地 OPD 有 affordance-named point supervision，但没有已证实的 dense affordance head</strong>：ShareRobot 路径把 <code>affordance.{x,y}</code> 归一化为一个 point target，训练/评估主合同仍是 point/box/text generation与parser/scorer。它支持“affordance-pointing 数据路径”，不支持 mask、semantic-keypoint pipeline、Where2Act式 actionability map、controller feasibility或机器人成功。</li></ol>
+<h2 id="2-primary-official-local-source-ledger">2. Primary / official / local source ledger</h2>
+<p>论文行的 SHA-256 对 2026-07-20 读取到的 version-pinned PDF bytes 计算；官方文本行按 UTF-8 与 LF 规范化后计算；本地文件使用原始文件 SHA。代码 license 只约束对应 repository source，不能自动覆盖论文、checkpoint、dataset 或第三方 asset。</p>
+<table><thead><tr><th>来源</th><th>类型 / revision / license</th><th>SHA-256</th><th>支持的事实</th><th>不能支持</th></tr></thead><tbody>
+<tr><td><a href="https://arxiv.org/abs/2406.10721v1">RoboPoint paper v1</a></td><td>primary；2024-06-15；PDF读取 2026-07-20</td><td><code>AE9E8476D63B82CCFA922905E6B410DC9EF302CD0618E11B79F10E06A5C8A1ED</code></td><td>language-conditioned image keypoint affordance、synthetic instruction tuning与downstream framing</td><td>本地 OPD 已复现RoboPoint结果或真实机器人成功</td></tr>
+<tr><td><a href="https://github.com/wentaoyuan/RoboPoint/blob/206cb1e086fc3960a8673725a8540766655cd9c5/README.md">RoboPoint README</a></td><td>official-code；<code>206cb1e...</code>；Apache-2.0 repo</td><td><code>DBEF6F10214A3DA0E10F666C230BB9EE8565B72C1FD5A8C42F3509C37107A57B</code></td><td>多个<code>[(x,y),...]</code>、<code>[0,1]</code> normalized image-point output contract</td><td>point语义自动等于3D keypoint、dense affordance或controller action</td></tr>
+<tr><td><a href="https://github.com/wentaoyuan/RoboPoint/blob/206cb1e086fc3960a8673725a8540766655cd9c5/robopoint/eval/summarize_vqa.py">RoboPoint summarize_vqa.py</a></td><td>official-code；同一commit</td><td><code>B5B4617C53785DE459262F0595DF3FFAE643EF232DFCF18ECC24D4D0769349DA</code></td><td>text→points/box-area parser、坐标缩放与mask-membership平均分</td><td>metric跨项目可比、每个点是可执行接触或机器人成功</td></tr>
+<tr><td><a href="https://github.com/wentaoyuan/RoboPoint/blob/206cb1e086fc3960a8673725a8540766655cd9c5/LICENSE">RoboPoint LICENSE</a></td><td>official-code；Apache-2.0 text</td><td><code>C71D239DF91726FC519C6EB72D318EC65820627232B2F796219E87DCF35D0AB4</code></td><td>repository source license线索</td><td>model/data/第三方依赖授权自动闭合</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2304.02643v1">Segment Anything paper v1</a></td><td>primary；2023-04-05；PDF读取 2026-07-20</td><td><code>C6CA524E47200C3E542587CA76AC1DBC89CC67340F948C819250D16FDBD90CFB</code></td><td>promptable segmentation task/model/data engine与zero-shot framing</td><td>语义label、语言grounding、contact或action feasibility</td></tr>
+<tr><td><a href="https://github.com/facebookresearch/segment-anything/blob/dca509fe793f601edb92606367a655c15ac00fdf/README.md">Segment Anything README</a></td><td>official-code；<code>dca509f...</code>；Apache-2.0 repo</td><td><code>CAB2C4900910C9E4AFD64833F57D106B8FC1A27FCA963D4439AE5B8F94CDBCE1</code></td><td>point/box prompts产生mask、automatic mask generation入口</td><td>本地项目调用SAM或mask必然比box适合controller</td></tr>
+<tr><td><a href="https://github.com/facebookresearch/segment-anything/blob/dca509fe793f601edb92606367a655c15ac00fdf/segment_anything/predictor.py">SAM predictor.py</a></td><td>official-code；同一commit</td><td><code>AB66C29AC0B5B204D23997EF49D8A2476F71B596CE97E35EFBF116CFC2118FCE</code></td><td>point/box/mask_input、multimask、<code>CxHxW</code> masks、quality与<code>256×256</code> low-res logits</td><td>quality已校准为任务成功率、mask带语义/实例唯一性或机器人安全</td></tr>
+<tr><td><a href="https://github.com/facebookresearch/segment-anything/blob/dca509fe793f601edb92606367a655c15ac00fdf/LICENSE">SAM LICENSE</a></td><td>official-code；Apache-2.0 text</td><td><code>C71D239DF91726FC519C6EB72D318EC65820627232B2F796219E87DCF35D0AB4</code></td><td>repository source license线索</td><td>SA-1B、checkpoint和第三方资产授权自动相同</td></tr>
+<tr><td><a href="https://arxiv.org/abs/1903.06684v2">kPAM paper v2</a></td><td>primary；updated 2019-10-29；PDF读取 2026-07-20</td><td><code>37CC5BA0FD585E627E8573FB13C12D909F204B5D347EE4579A7947D8AA2DC7A8</code></td><td>semantic 3D keypoints、几何cost/constraint、segmentation→keypoint→planning→execution factorization</td><td>任意2D point list已经具备semantic identity、3D frame或planning闭环</td></tr>
+<tr><td><a href="https://github.com/weigao95/kPAM/blob/7214936b619527aee3b02d5306ada15decb95140/README.md">kPAM README</a></td><td>official-code；<code>7214936...</code>；MIT repo</td><td><code>665E70DCDAB873262458CC748F48A9D4550FA6B4EBFBAC7DD2884464C5636BD3</code></td><td>category object target定义在semantic keypoints上；公开子模块边界</td><td>private spartan、平台执行或本地项目已实现</td></tr>
+<tr><td><a href="https://github.com/weigao95/kPAM/blob/7214936b619527aee3b02d5306ada15decb95140/LICENSE">kPAM LICENSE</a></td><td>official-code；MIT text</td><td><code>0CE9E11A7E6AAEA1B8A0C75D0DBCC507C4F106D6CD7C44AA4C0D4A05F96E82BF</code></td><td>top-level repository license线索</td><td>所有submodule、模型和数据授权自动闭合</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2101.02692v2">Where2Act paper v2</a></td><td>primary；ICCV 2021；updated 2021-08-10；PDF读取 2026-07-20</td><td><code>7649D0C8404CA5DD696D94A001D1D3501D789CA58B3002032BF67791D689631F</code></td><td>action primitive条件下每点actionability、interaction proposal与可动region</td><td>任意场景/机器人/工具上的通用成功概率</td></tr>
+<tr><td><a href="https://github.com/daerduoCarey/where2act/blob/1daf1a24f7a372599b211108fa851f7ec3581330/README.md">Where2Act README</a></td><td>official-code；<code>1daf1a2...</code>；README声明MIT，但commit无LICENSE文件</td><td><code>C77FA0975B853BE7A5E081C7B278B82F2382318E359A734845F249984BB35788</code></td><td>actionability score、trajectory、success likelihood、SAPIEN interaction framing</td><td>完整license packaging、真实机器人结果或OPD同构实现</td></tr>
+<tr><td><a href="https://github.com/daerduoCarey/where2act/blob/1daf1a24f7a372599b211108fa851f7ec3581330/code/models/model_3d.py">Where2Act model_3d.py</a></td><td>official-code；同一commit；license warning同上</td><td><code>968165B68FA9933553497F884F37F484A4F78D70BD647B5C4FF890F0427DE5C2</code></td><td>PointNet++ feature、per-point ActionScore、6D orientation actor与critic success score</td><td>分数跨primitive/robot校准或下游执行已经安全</td></tr>
+<tr><td><a href="vol_06_per001_grounding_coordinate_source_freeze.html">PER-001 Grounding Coordinate Source Freeze</a></td><td>repository-reviewed bridge</td><td>review SHA见对应记录</td><td>point/box/text schema、coordinate、parser与static metric边界</td><td>五类表示选择已被完整覆盖</td></tr>
+<tr><td><a href="vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.html">PER-007 Open-vocabulary Grounding Source Freeze</a></td><td>repository-reviewed bridge</td><td>review SHA见对应记录</td><td>Grounding DINO query–token、box/phrase、geometry/NMS contract</td><td>mask/keypoint/affordance选择或本地detector部署</td></tr>
+<tr><td><code>muxi/point/build_expert_mixes_seed0.py</code></td><td>local-evidence；<code>muxi@756e27e...</code></td><td><code>60DFDF46FDAC8EB9DBBE38A13298D6D71819EB7AD13F6B0D00A86B87032EABD0</code></td><td><code>&lt;box&gt;</code>/<code>&lt;point&gt;</code> extraction与expert mix</td><td>mask、semantic keypoint、dense affordance head或learned representation router</td></tr>
+<tr><td><code>muxi/point/eval_qwen_vl_raw_holdout.py</code></td><td>local-evidence；同一HEAD</td><td><code>29574ADCE53B254BC33ED39C370642707F570000F7F3FB8F037DBD1F5E0D206B</code></td><td>point/box/text parser、format gate、IoU与point distance</td><td>action-conditioned success、mask IoU、keypoint identity或robot episode</td></tr>
+<tr><td><code>muxi/point/build_clean_grounding_pool.py</code></td><td>local-evidence；同一HEAD</td><td><code>A7A5906E11EA687C6FD0DEC40F3D30922A91B538EB98C740230227F9FF943087</code></td><td>box clip/filter、<code>xyxy→0..1000</code>与tagged SFT row</td><td>box足以表示shape/contact或部署detector</td></tr>
+<tr><td><code>muxi/opd_project/scripts/build_prompt_pool.py</code></td><td>local-evidence；同一HEAD</td><td><code>293C776BA03E28DAC0029F985EEFFDC20036D24A289F3D74B1F761D1C7629315</code></td><td>ShareRobot <code>affordance.{x,y}</code>→<code>0..1000</code>单point prompt/<code>gt_points</code></td><td>dense affordance map、动作方向、controller feasibility或执行成功</td></tr>
+<tr><td><code>muxi/point/point_data_only.py</code></td><td>local-evidence；同一HEAD</td><td><code>F650CB1F1B4A37566E11FA30C47A855DD59B74052588799839DF28F71EEC5787</code></td><td>trajectory/affordance records转point answer与“actionable location”prompt</td><td>trajectory dynamics、semantic keypoint identity或真实机器人action</td></tr>
+</tbody></table>
+<h2 id="3">3. 与相邻节点的去重边界</h2>
+<table><thead><tr><th>节点</th><th>已负责</th><th>PER-008只新增</th></tr></thead><tbody>
+<tr><td>PER-001</td><td>point/box/text coordinate、parser、IoU/point metric基础</td><td>五类representation的语义层级、选择条件与不可逆转换</td></tr>
+<tr><td>PER-002</td><td>2D→3D lift、calibration、frame/TF</td><td>keypoint/affordance是否需要3D及其frame字段；不重讲投影公式</td></tr>
+<tr><td>PER-006</td><td>image transform、processed/raw inverse、camera identity</td><td>所有representation必须继承同一image/camera/time lineage</td></tr>
+<tr><td>PER-007</td><td>text-conditioned query–token、box/phrase与optional NMS</td><td>box与point/mask/keypoint/affordance的downstream trade-off</td></tr>
+<tr><td>PER-009</td><td>matching、negative、loss/reduction</td><td>本页不规定每种head的训练loss</td></tr>
+<tr><td>PER-010</td><td>IoU/PCK/Recall/parser与protocol comparability</td><td>本页只冻结metric所需字段，不选择最终分数或threshold</td></tr>
+<tr><td>PER-012</td><td>segmentation/depth/keypoint/affordance的具体方法</td><td>本页只做output/interface choice，不展开模型结构与训练recipe</td></tr>
+<tr><td>PER-015</td><td>perception→action reachability、uncertainty与failure gate</td><td>本页不把representation输出升级为可执行action</td></tr>
+</tbody></table>
+<h2 id="4">4. 五类表示的最小语义合同</h2>
+<h3 id="4-1-point">4.1 Point：位置候选，不含范围</h3>
+<p>最小point set可写为<code>[(x_i,y_i)]_{i=1}^N</code>。它适合“在哪里点、放、看、接近”的候选位置，序列短、标注与生成便宜，也能表达多模态候选；但裸point没有物体范围、方向、surface normal、semantic role或action precondition。</p>
+<p>必须冻结：<code>N</code>是否可变、坐标space/unit、点顺序是否有意义、重复点策略、valid radius、score semantics、空集与多解如何处理。RoboPoint README明确要求多个normalized tuples；本地OPD则主要使用<code>0..1000</code> tagged point，二者不能无manifest混用。</p>
+<h3 id="4-2-box">4.2 Box：实例范围近似，不含精细形状</h3>
+<p>box以<code>xyxy</code>或<code>cxcywh</code>给出instance extent，适合proposal、ROI crop、tracking association和粗碰撞gate。它比point多范围、比mask便宜，但会把背景和空洞包进矩形，不表达object contour、可抓部位或遮挡层级。</p>
+<p>必须冻结：box格式、normalized/pixel、inclusive/exclusive corner、clip/invalid规则、phrase/instance binding、score与NMS policy。PER-007的box score不是mask quality或affordance success。</p>
+<h3 id="4-3-mask">4.3 Mask：像素成员关系，不含任务语义</h3>
+<p>binary/soft mask回答“哪些像素属于这个region”。SAM predictor把point/box/mask prompt编码后，可返回<code>C×H×W</code>原图尺寸masks、长度<code>C</code>的predicted quality和<code>C×256×256</code> low-resolution logits；单click歧义时可返回多mask候选。</p>
+<p>mask适合精细轮廓、重叠、surface extraction、occupancy或collision preprocessing，但成本包括dense storage/compute、component/instance ambiguity、边界噪声和temporal flicker。SAM mask本身没有language label、instance permanence、depth、contact normal或action primitive。</p>
+<h3 id="4-4-semantic-keypoint">4.4 Semantic keypoint：带角色的几何锚点</h3>
+<p>keypoint不只是point坐标，还应有<code>semantic_id</code>、instance/category、visibility与2D/3D frame。kPAM把类别级目标写成semantic 3D keypoints上的几何costs/constraints，并显式分成instance segmentation、3D keypoint detection、optimization planning和local geometry execution。</p>
+<p>它适合handle、rim、tip、hinge等少量任务相关结构，能忽略无关shape细节；代价是semantic correspondence难标、遮挡时不确定、跨类别定义可能失效，而且同一坐标若semantic ID不同，controller constraint也不同。</p>
+<h3 id="4-5-affordance">4.5 Affordance：动作条件下的可交互性</h3>
+<p>affordance必须至少绑定<code>primitive/tool/state</code>，必要时还要有direction/orientation、force、horizon与success-score semantics。Where2Act的公开合同是在articulated 3D object上，对pushing/pulling等primitive预测per-point actionability、interaction orientation proposal和critic success likelihood。</p>
+<p>因此“affordance point”可以用point坐标承载结果，但它的语义不能被坐标本身替代。同一pixel在push与pull、不同gripper、门开/关状态或不同collision context下可以有不同可行性。</p>
+<h2 id="5">5. 选择原则：下游最小充分表示</h2>
+<p>表示选择是一个接口设计，而不是从point到mask的单调升级。下面是source-derived机制加engineering inference的冻结矩阵；“推荐”只表示起始contract，最终选择仍需matched task evidence。</p>
+<table><thead><tr><th>下游问题</th><th>起始表示</th><th>为什么足够/必要</th><th>主要代价与失败</th></tr></thead><tbody>
+<tr><td>object proposal、ROI crop、粗tracking</td><td>box + phrase/instance</td><td>需要范围但不依赖精细contour</td><td>背景混入、thin/rotated object不紧致</td></tr>
+<tr><td>free-space、look-at、粗contact候选</td><td>point set + validity radius</td><td>输出短且能表达多个位置mode</td><td>无extent/normal；单点可能落在不可达或遮挡处</td></tr>
+<tr><td>precise overlap、contour、surface/occupancy预处理</td><td>mask + instance/quality</td><td>像素成员关系直接服务几何处理</td><td>dense成本、temporal flicker、语义/深度仍缺</td></tr>
+<tr><td>category-level pose-free geometric constraint</td><td>semantic 2D/3D keypoints</td><td>少量task-relevant anchors可进入cost/constraint</td><td>语义 correspondence、visibility与frame难题</td></tr>
+<tr><td>contact/action proposal conditioned on primitive</td><td>affordance field/points + primitive + direction + success semantics</td><td>输出直接绑定“哪里+如何做”</td><td>强task/robot/controller依赖，校准与安全证据要求最高</td></tr>
+</tbody></table>
+<p>一个可审计的engineering选择目标可写为：</p>
+<div class="formula">\[
+r^*=\arg\min_{r\in\mathcal R}
+\left(C_{\mathrm{label}}(r)+C_{\mathrm{infer}}(r)
++\lambda\,\mathbb E[L_{\mathrm{down}}\mid r]
++\mu\,C_{\mathrm{convert}}(r)+\nu\,C_{\mathrm{stale}}(r)\right).
+\]</div>
+<p>其中<code>r</code>是representation，<code>C_label/C_infer</code>是标注与推理成本，<code>L_down</code>是下游任务损失，<code>C_convert</code>是坐标/格式转换与信息损失，<code>C_stale</code>是时序陈旧风险，<code>λ/μ/ν</code>是部署权重。该式是本页的decision rubric，不是四篇论文共同提出的训练目标；代码映射应落到manifest、latency log、matched ablation和downstream failure trace。</p>
+<h2 id="6-probe">6. 转换不等价与确定性probe</h2>
+<h3 id="6-1-mask-box">6.1 Mask→box是有损映射</h3>
+<p>对非空binary mask <code>M</code>，其axis-aligned bounding box可写为：</p>
+<div class="formula">\[
+B(M)=\left(\min_{M(x,y)=1}x,\min_{M(x,y)=1}y,
+\max_{M(x,y)=1}x+1,\max_{M(x,y)=1}y+1\right).
+\]</div>
+<p>变量<code>M(x,y)</code>表示pixel membership，<code>B(M)</code>使用half-open <code>xyxy</code>。直觉上box只保留四个极值；实现上可由<code>where(mask)</code>求min/max，但不能从四个数唯一恢复mask。</p>
+<p>确定性5×5 probe：一个3×3实心mask和仅保留四角的mask都得到<code>(1,1,4,4)</code>，但面积分别为9和4。结论是<code>mask→box</code>可复算，<code>box→mask</code>不可逆；把box内部全设1不是恢复，而是新假设。</p>
+<h3 id="6-2-point-semantic-action-fields">6.2 Point不保留semantic/action fields</h3>
+<p>同一<code>xy=(200,300)</code>分别标为<code>mug_handle</code>和<code>mug_rim</code>，坐标相同但keypoint contract不同；同一<code>xy=(500,500)</code>分别绑定<code>push/+x</code>和<code>pull/-x</code>，坐标相同但affordance contract不同。裸point只能作为完整record的一个field。</p>
+<h3 id="6-3-provenance">6.3 表示转换必须标记provenance</h3>
+<table><thead><tr><th>转换</th><th>可做</th><th>丢失/新增假设</th></tr></thead><tbody>
+<tr><td>mask→box</td><td>对foreground取极值</td><td>contour、hole、component与area</td></tr>
+<tr><td>keypoints→box</td><td>对visible points取极值</td><td>object extent；box可能只包住局部anchors</td></tr>
+<tr><td>affordance field→top-k points</td><td>按score/spacing取候选</td><td>dense landscape、calibration、被截mode</td></tr>
+<tr><td>box→mask</td><td>只能调用segmentation model或填充矩形</td><td>model revision/prompt与新prediction；不是inverse</td></tr>
+<tr><td>point→affordance</td><td>不可仅凭坐标完成</td><td>必须新增primitive/tool/state/direction与success semantics</td></tr>
+</tbody></table>
+<h2 id="7-typed-representation-manifest">7. Typed representation manifest</h2>
+<p>任何表示都先继承PER-006的image/camera/time lineage，再保存自身字段：</p>
+<pre><code class="language-json">{
+  &quot;sample_id&quot;: &quot;...&quot;,
+  &quot;image_id&quot;: &quot;...&quot;,
+  &quot;camera_id&quot;: &quot;...&quot;,
+  &quot;frame_id&quot;: &quot;...&quot;,
+  &quot;timestamp&quot;: 0.0,
+  &quot;representation_type&quot;: &quot;point_set | box | mask | semantic_keypoints | affordance&quot;,
+  &quot;coordinate_space&quot;: &quot;original_pixel | processed_pixel | normalized_0_1 | normalized_0_1000 | world&quot;,
+  &quot;transform_revision&quot;: &quot;...&quot;,
+  &quot;prompt_hash&quot;: &quot;...&quot;,
+  &quot;model_processor_code_revision&quot;: &quot;...&quot;,
+  &quot;score&quot;: 0.0,
+  &quot;score_semantics&quot;: &quot;...&quot;,
+  &quot;uncertainty&quot;: {},
+  &quot;valid&quot;: true,
+  &quot;invalid_reason&quot;: null,
+  &quot;payload&quot;: {}
+}</code></pre>
+<p><code>payload</code>按类型扩展：</p>
+<table><thead><tr><th>类型</th><th>必需payload</th></tr></thead><tbody>
+<tr><td>point set</td><td><code>points,point_scores,valid_radius,ordering,multimodal_group</code></td></tr>
+<tr><td>box</td><td><code>format,coords,phrase,instance_id,clipped,nms_revision</code></td></tr>
+<tr><td>mask</td><td><code>shape,encoding,threshold,component_ids,quality_semantics,source_prompt</code></td></tr>
+<tr><td>semantic keypoints</td><td><code>semantic_ids,coords,visibility,covariance,instance_id,category,frame</code></td></tr>
+<tr><td>affordance</td><td><code>support_geometry,primitive,tool_or_gripper,state_precondition,direction_or_orientation,horizon,success_score_semantics</code></td></tr>
+</tbody></table>
+<p>只保存<code>payload</code>而不保存representation type、coordinate space和score semantics，会让同样的两个数字在pixel、normalized、keypoint或action point之间静默漂移。</p>
+<h2 id="8">8. 可审计选择伪代码</h2>
+<pre><code class="language-python">def choose_perception_representation(task, consumer, evidence):
+    # 1) 先冻结下游真正读取的字段；不要先选最复杂的视觉head。
+    need = consumer.required_fields(task)
+
+    # 2) 用最小充分表示满足extent、contour、semantic anchor或action条件。
+    if need.action_primitive or need.contact_orientation:
+        rep = &quot;affordance&quot;
+    elif need.semantic_anchor or need.geometric_constraint:
+        rep = &quot;semantic_keypoints&quot;
+    elif need.contour or need.pixel_occupancy:
+        rep = &quot;mask&quot;
+    elif need.extent or need.roi:
+        rep = &quot;box&quot;
+    else:
+        rep = &quot;point_set&quot;
+
+    # 3) 验证本地source/label/parser/metric/controller是否真的支持该表示。
+    if not evidence.has_schema(rep) or not evidence.has_parser(rep):
+        return fail_closed(&quot;representation_not_supported&quot;)
+
+    # 4) 所有表示继承image/camera/time/coordinate lineage并保留不确定性。
+    manifest = build_typed_manifest(rep, task, consumer, evidence)
+
+    # 5) 转换只能作为有provenance的新stage；禁止把有损转换写成等价。
+    manifest.conversions = freeze_conversion_chain(evidence.conversions)
+    return manifest</code></pre>
+<p>此伪代码不是某个official API；它把本页source facts组织成fail-closed工程gate。knowledge阶段应再展开每种表示的口述比较与matched evaluation设计。</p>
+<h2 id="9">9. 四个公开方法的接口对照</h2>
+<table><thead><tr><th>方法</th><th>输入条件</th><th>原生输出</th><th>适合支持</th><th>必须补的downstream contract</th></tr></thead><tbody>
+<tr><td>Grounding DINO（PER-007）</td><td>image + text tokens</td><td>query-token score + normalized boxes + phrase</td><td>open-vocabulary proposal/ROI</td><td>coordinate inverse、NMS、instance/action gate</td></tr>
+<tr><td>RoboPoint</td><td>image + language instruction</td><td>multiple normalized image points</td><td>spatial relation/free-space/action-point suggestion</td><td>parser、mode/valid radius、reachability与controller验证</td></tr>
+<tr><td>SAM</td><td>image + point/box/mask prompts</td><td>one/multiple masks + predicted quality + low-res logits</td><td>promptable contour/region extraction</td><td>semantic/language binding、instance/time/depth/action gate</td></tr>
+<tr><td>kPAM</td><td>segmented object + semantic keypoint detector</td><td>semantic 3D keypoints进入geometric costs/constraints</td><td>category-level manipulation geometry</td><td>visibility/covariance、frame/calibration、planner/executor</td></tr>
+<tr><td>Where2Act</td><td>articulated point cloud/image-depth + action primitive</td><td>per-point actionability、orientation proposal、critic score</td><td>primitive-conditioned interaction proposal</td><td>robot/tool/state/domain calibration与safe execution</td></tr>
+</tbody></table>
+<p>这些方法不是可互换baseline：输入、输出、监督、metric与机器人条件不同。不能用论文各自数字比较“哪种表示最好”。</p>
+<h2 id="10-opd-affordance-named-point-dense-affordance-head">10. 本地 OPD：affordance-named point，不是dense affordance head</h2>
+<p>冻结本地HEAD为<code>756e27e16adcfb3ccbfe98c2920dda42095b127f</code>；五个直接读取文件无选定路径未提交diff。直接证据链为：</p>
+<pre><code class="language-text">ShareRobot affordance {x,y} / trajectory or point records
+  -&gt; normalize or scale to point coordinates
+  -&gt; prompt: point to actionable location / predict trajectory
+  -&gt; tagged point/box/text SFT target
+  -&gt; autoregressive generation
+  -&gt; point/box/text parser and static scorer</code></pre>
+<p>具体边界：</p>
+<ol><li><code>build_prompt_pool.py</code>把<code>affordance.x/y</code>按原图宽高缩放到<code>0..1000</code>，输出一个<code>gt_points=[[x,y]]</code>并标<code>task_type=affordance_pointing</code>；没有primitive、direction、gripper、state或success head。</li><li><code>point_data_only.py</code>读取trajectory/affordance records，最终仍调用<code>point_answer(scaled)</code>；“Point to the actionable affordance location”是prompt语义，不改变point representation本身。</li><li><code>build_expert_mixes_seed0.py</code>显式提取<code>&lt;box&gt;</code>和<code>&lt;point&gt;</code>；<code>eval_qwen_vl_raw_holdout.py</code>按point/box/text走format与geometry/static text评分。</li><li>对这五个选定文件的静态搜索中，<code>keypoint</code>、<code>segment_anything</code>、<code>sam_model</code>、<code>mask_rle</code>、<code>polygon</code>和<code>&lt;mask&gt;</code>均为0匹配；这只说明选定路径没有显式实现，不排除未归档、远端、历史或其他文件。</li></ol>
+<p>安全表述：</p>
+<div class="meta">本地OPD含affordance-labelled point supervision和point/box/text生成评估。我会把“affordance数据语义”与“representation type=point”分开；当前证据不支持dense affordance map、semantic keypoint/SAM pipeline、action-conditioned success calibration或机器人执行闭环。</div>
+<h2 id="11-failure-taxonomy">11. Failure taxonomy 与补证顺序</h2>
+<table><thead><tr><th>层</th><th>失败</th><th>首个检查</th></tr></thead><tbody>
+<tr><td>task sufficiency</td><td>point无法支持contour/collision，box无法支持contact</td><td>downstream consumer required-fields</td></tr>
+<tr><td>semantic collapse</td><td>把裸point叫keypoint/affordance</td><td>semantic ID、primitive/tool/state fields</td></tr>
+<tr><td>geometry</td><td>pixel/normalized、processed/raw、2D/3D混用</td><td>coordinate space、transform、frame与round-trip</td></tr>
+<tr><td>ambiguity</td><td>单点/单mask强行压掉多解</td><td>candidate set、multimask、mode group与uncertainty</td></tr>
+<tr><td>conversion</td><td>box填充成mask或points极值当object box</td><td>conversion provenance与loss declaration</td></tr>
+<tr><td>temporal</td><td>mask/keypoint/affordance已陈旧仍执行</td><td>timestamp、observation age、tracking/instance ID</td></tr>
+<tr><td>score</td><td>mask quality、objectness、point hit、affordance success混比</td><td>score semantics、calibration split与protocol revision</td></tr>
+<tr><td>project</td><td>affordance-named dataset被说成机器人能力</td><td>raw target、model head、parser、controller与episode artifact</td></tr>
+</tbody></table>
+<p>补证顺序：冻结consumer字段→选择最小表示→保存raw/multimodal output→坐标与time round-trip→解析/metric golden test→matched downstream ablation→controller/reachability gate→最后才谈robot success。</p>
+<h2 id="12-source-gate-bounded-slice">12. Source gate 结论与下一 bounded slice</h2>
+<p>本切片已冻结：</p>
+<ol><li>point、box、mask、semantic keypoint与affordance的最小语义差异；</li><li>RoboPoint、SAM、kPAM、Where2Act的version-pinned paper/repo/output contracts；</li><li>downstream minimum-sufficient selection、不可逆转换与typed manifest；</li><li>三个deterministic non-equivalence probes；</li><li>OPD中“affordance-labelled point supervision”与“dense/action-conditioned affordance model”的真实性边界；</li><li>与PER-001/002/006/007/009/010/012/015的责任去重。</li></ol>
+<p>当前verdict为<code>WARN</code>：公源表示合同已冻结，但本地没有mask/semantic-keypoint head、dense affordance map、action primitive/direction/success-calibration、matched representation ablation或controller/robot bundle；Where2Act pinned commit只有README中的MIT声明而无LICENSE文件。</p>
+<p><code>VLA-PER-008..009</code> source/knowledge/card均已在独立切片同步，题卡保持<code>unseen</code>。下一 bounded slice只做PER-010 metric/parser source freeze；不生成knowledge/card，不创建<code>coaching_state.md</code>，不改变260张题卡的状态。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="https://arxiv.org/abs/2406.10721v1">RoboPoint v1</a> 与 <a href="https://github.com/wentaoyuan/RoboPoint/tree/206cb1e086fc3960a8673725a8540766655cd9c5">official repository@206cb1e</a>。</li><li><a href="https://arxiv.org/abs/2304.02643v1">Segment Anything v1</a> 与 <a href="https://github.com/facebookresearch/segment-anything/tree/dca509fe793f601edb92606367a655c15ac00fdf">official repository@dca509f</a>。</li><li><a href="https://arxiv.org/abs/1903.06684v2">kPAM v2</a> 与 <a href="https://github.com/weigao95/kPAM/tree/7214936b619527aee3b02d5306ada15decb95140">official repository@7214936</a>。</li><li><a href="https://arxiv.org/abs/2101.02692v2">Where2Act v2</a> 与 <a href="https://github.com/daerduoCarey/where2act/tree/1daf1a24f7a372599b211108fa851f7ec3581330">official repository@1daf1a2</a>。</li><li><a href="vol_06_per001_grounding_coordinate_source_freeze.html">PER-001 Grounding Coordinate Source Freeze</a>。</li><li><a href="vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.html">PER-007 Open-vocabulary Grounding Source Freeze</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>。</li><li>Local read-only evidence：<code>C:\Users\mousongzhe\muxi</code> at <code>756e27e16adcfb3ccbfe98c2920dda42095b127f</code>；selected file hashes见source ledger。</li></ol>
+</article></body></html>

@@ -1,0 +1,49 @@
+{
+  "artifact": "sources/vol_03_openvla_claim_to_code.md",
+  "html": "sources/vol_03_openvla_claim_to_code.html",
+  "review_date": "2026-07-21",
+  "status": "independent_fact_reviewed / endpoint_mask_checked / project_boundary_pending / WARN",
+  "verdict": "WARN",
+  "source_sha256": "8A66CE90E10BF60E015EE46CC78D9B1756048F386A38DF679607B0CABD17974F",
+  "evidence_cutoff": "2026-07-16",
+  "upstream": {
+    "paper": "OpenVLA arXiv 2406.09246v3",
+    "repository": "openvla/openvla",
+    "commit": "c8f03f48af692657d3060c19588038c7220e9af9",
+    "commit_verified": true
+  },
+  "coverage": {
+    "question_ids": [
+      "VLA-ARCH-001",
+      "VLA-ARCH-002",
+      "VLA-ARCH-003",
+      "VLA-ARCH-004",
+      "VLA-ARCH-005",
+      "VLA-ACT-002",
+      "VLA-ACT-003",
+      "VLA-ACT-004"
+    ],
+    "upstream_claims_audited": 10,
+    "local_project_claims_verified": 0
+  },
+  "checks": {
+    "paper_version_and_sections": "PASS (arXiv HTML v3 reachable; sections 3.2-3.5 and 6 read)",
+    "repository_head": "PASS (git rev-parse matches frozen commit)",
+    "code_path_exists": "PASS (tokenizer, dataset, model, normalization, training and inference paths read)",
+    "claim_to_code_mapping": "PASS (direct / nuance / rejected labels included)",
+    "formula_variable_mapping": "PASS (normalization, tokenization, decode, unnormalization, CE mask)",
+    "paper_code_discrepancy_recorded": "PASS (256-way paper abstraction vs 255 decode centers)",
+    "local_project_boundary": "PARTIAL (existing HTML is not raw config/log/eval manifest)",
+    "html_static_validation": "PASS (one h1, internal links/fragments, source SHA, formula mapping and code-block comments)",
+    "browser_visual_check": "PASS WITH WARNING (localhost desktop 1440x1000 and narrow 800x1000; one H1, academic palette/serif, sticky-to-static TOC, contained tables/code/formulas, zero formula-em and no page-wide overflow)",
+    "independent_fact_review": "PASS WITH WARNING (paper v3, frozen tokenizer/dataset/model/strategy and deterministic endpoint probe independently checked; local project gate remains open)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Preserve the independently reviewed 256-token/255-center alias and CE-vs-metric mask nuance under future edits.",
+    "Keep the scalar-token vs FAST/flow action representation boundary synchronized under future edits.",
+    "Collect the local OpenPiVLA checkpoint, action axis/order, horizon, normalization stats and eval summary artifacts.",
+    "Keep the existing OpenVLA-linked question cards unseen until real oral practice."
+  ],
+  "next": "Run one real OpenVLA/action-token oral question or collect one immutable local OpenPiVLA artifact; keep linked cards unseen."
+}

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-018 Source Freeze：Prediction / Execution / Replan Horizon</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm018_prediction_horizon_source_freeze.md">
+<meta name="aris:source-sha256" content="6927970508d01f328aef6ca629a72589d986a48b9ac811eb8eb6327907b00254">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>6927970508d01f328aef6ca629a72589d986a48b9ac811eb8eb6327907b00254</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm018_prediction_horizon_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 问题与结论边界</a></li><li><a href="#2">2. 冻结来源</a></li><li><a href="#3">3. 五条时间轴</a></li><li><a href="#4">4. 过短与过长的机制</a></li><li><a href="#5">5. 实现对照</a></li><li><a href="#diffusion-policy">Diffusion Policy</a></li><li><a href="#act">ACT</a></li><li><a href="#cosmos-wam-uwm">Cosmos/WAM 与 UWM</a></li><li><a href="#6">6. 最小实验矩阵</a></li><li><a href="#7">7. 项目与证据边界</a></li><li><a href="#8-review">8. Review 结论与下一步</a></li><li><a href="#section-12">参考来源</a></li></ol></nav>
+<h1>VOL 04 WM-018 Source Freeze：Prediction / Execution / Replan Horizon</h1>
+<div class="meta">审计日期：2026-07-17 状态：<code>source_frozen / horizon-contract / WARN</code> 覆盖题目：<code>VLA-WM-018</code> 本轮边界：只冻结 observation、prediction、execution、replan 与 imagination horizon 的定义、实现入口和实验矩阵；不生成 knowledge page，不生成题卡。</div>
+<h2 id="1">1. 问题与结论边界</h2>
+<p>题目：<strong>prediction horizon 过短或过长如何影响可控性、细节与训练稳定性？</strong></p>
+<p>回答前必须拆开至少五条时间轴：observation/history horizon、model prediction horizon、action execution prefix、policy replan interval、world-model imagination/planning horizon。它们可能数值相同，但语义不相同；仅说“horizon=16”无法判断模型预测、执行还是多久吸收一次新 observation。</p>
+<p>冻结结论：</p>
+<ol><li>horizon 太短会削弱动作/未来序列的长期一致性，难以覆盖延迟 reward、接触过程和 demonstration 的 temporal structure；但 target 更近、误差更小、训练通常更容易稳定。[S1][S2]</li><li>horizon 太长增加 sequence coherence 与规划视野，同时扩大 compounding error、OOD rollout、stale action、显存/计算和 padding 比例；若 execution/replan 也变长，反馈纠错会变慢。[S1][S2][S3]</li><li>model prediction horizon 与 execution horizon 可解耦：Diffusion Policy 区分 (T_o,T_p,T_a)，ACT 在 temporal aggregation 下可保持长 prediction horizon 但每步 replan，Cosmos RoboCasa 可预测 32 步只执行前 16 步。[S2][S3][S4]</li><li>UWM 的 <code>action_len=16</code>、<code>num_frames=19</code>、<code>obs_num_frames=2</code> 是 frozen config；未来 observation 帧数与 action horizon 不应被当作所有任务的通用最优值。[S5]</li><li>horizon 优劣必须用 per-step error、open-loop rollout、action sensitivity、latency、closed-loop success 与 failure traces 联合判断；one-step MSE 不能外推长 horizon 可用性。[S1][S5]</li></ol>
+<h2 id="2">2. 冻结来源</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>frozen boundary</th><th>可支持</th><th>不能支持</th><th>状态</th></tr></thead><tbody>
+<tr><td>S1</td><td><a href="vol_04_world_model_foundations_claim_to_code.html">World Model Foundations Audit</a></td><td>World Models/PlaNet/DreamerV3 papers + DreamerV3 <code>e3f0224</code> audit</td><td>teacher-forced vs open-loop、compounding error、imagination/planning horizon、receding horizon</td><td>本地 UWM/WAM 的最优 horizon</td><td>checked / WARN</td></tr>
+<tr><td>S2</td><td><a href="vol_03_diffusion_policy_claim_to_code.html">Diffusion Policy Audit</a></td><td>repo <code>5ba07ac6661db573af695b419a7947ecb704690f</code> + paper</td><td>(T_o,T_p,T_a)、<code>horizon</code>/<code>n_action_steps</code>、sim/real replan、warm-start 边界</td><td>本地 OpenPiVLA 或 world-model 具体配置</td><td>checked / WARN</td></tr>
+<tr><td>S3</td><td><a href="vol_03_act_claim_to_code.html">ACT Audit</a></td><td>repo <code>742c753c0d4a5d87076c8f69e5628c79a8cc5488</code> + paper</td><td>(H)、query frequency、temporal aggregation、chunk 内 open-loop/边界闭环</td><td>所有 action chunk 模型都用 ACT 的 14D/100-step recipe</td><td>checked / WARN</td></tr>
+<tr><td>S4</td><td><a href="vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos/WAM Audit C</a></td><td>repo <code>18a2accadf4e7a3531e56754102af5a24d2316da</code> + paper/docs</td><td>LIBERO 16-step、RoboCasa 32-step prediction/16-step execution、planning compute</td><td>用户 WAM runtime/horizon 已复现</td><td>checked / WARN</td></tr>
+<tr><td>S5</td><td><a href="vol_04_uwm_video_action_claim_to_code.html">UWM Audit B</a></td><td>repo <code>b7d4067c8859775e5b08f681e76d538015cdd445</code></td><td>action_len/history/future shape、forward/inverse/joint proxy 与 metric boundary</td><td><code>16</code> 是方法常数；proxy MSE 等于 success</td><td>checked / WARN</td></tr>
+<tr><td>S6</td><td><a href="vol_04_wm017_heterogeneous_schema_source_freeze.html">WM-017 Schema Freeze</a></td><td>Open X/UWM schema boundary</td><td>timestamp、control Hz、valid-step/terminal mask、per-embodiment horizon</td><td>本地 adapter/horizon A/B 已完成</td><td>checked / WARN</td></tr>
+</tbody></table>
+<h2 id="3">3. 五条时间轴</h2>
+<table><thead><tr><th>时间轴</th><th>符号</th><th>回答的问题</th><th>常见错误</th></tr></thead><tbody>
+<tr><td>observation/history horizon</td><td>(T_o)</td><td>模型读取多少历史 observation</td><td>当成全部 episode history</td></tr>
+<tr><td>prediction horizon</td><td>(T_p) / (H)</td><td>模型一次预测多少未来 action/state slots</td><td>当成真实执行步数</td></tr>
+<tr><td>execution prefix</td><td>(T_a) / (K)</td><td>一次 query 后实际执行多少步</td><td>默认等于 prediction horizon</td></tr>
+<tr><td>replan interval</td><td>(R)</td><td>多久再次读取 observation 并推理</td><td>只从 model config 猜</td></tr>
+<tr><td>imagination/planning horizon</td><td>(H_{imag})</td><td>latent/world model 向前 rollout 多远以算 value/return</td><td>与视频 future frame 数混同</td></tr>
+</tbody></table>
+<p>物理时间还要乘 control period：</p>
+<div class="formula">\[
+\Delta t_{pred}=T_p/f_{ctrl},\qquad
+\Delta t_{exec}=T_a/f_{ctrl},\qquad
+\Delta t_{replan}=R/f_{ctrl}.
+\]</div>
+<p>变量解释：(f_{ctrl}) 是控制频率。同样的 16 步，在 5 Hz 与 50 Hz 下分别是 3.2 秒和 0.32 秒；因此跨项目比较必须记录 control rate、action repeat、latency 和 timestamp，而不能只报 step 数。</p>
+<h2 id="4">4. 过短与过长的机制</h2>
+<table><thead><tr><th>Horizon</th><th>收益</th><th>风险</th><th>重点指标</th></tr></thead><tbody>
+<tr><td>较短 prediction</td><td>target 更近、padding 少、计算/显存低、误差较易控制</td><td>缺 sequence coherence、接触/延迟 reward 覆盖不足、频繁 query</td><td>one-step/per-step error、query latency、success</td></tr>
+<tr><td>较长 prediction</td><td>捕获连续动作、接触阶段与长期结构；可供 planner/ensemble 选择</td><td>compounding error、OOD latent、末端模糊/多模态平均、padding 与训练难度</td><td>error-vs-offset、action sensitivity、open-loop rollout</td></tr>
+<tr><td>较短 execution/replan</td><td>快速吸收新 observation，扰动恢复快</td><td>inference/通信频繁、可能抖动</td><td>latency/action age、controller smoothness</td></tr>
+<tr><td>较长 execution/replan</td><td>推理摊销、chunk coherence</td><td>stale action、接触后继续执行错误计划</td><td>failure offset、recovery、closed-loop success</td></tr>
+<tr><td>较长 imagination</td><td>value 看得更远</td><td>model bias/optimizer exploitation 放大</td><td>imagined-vs-real return、uncertainty/calibration</td></tr>
+</tbody></table>
+<h2 id="5">5. 实现对照</h2>
+<h3 id="diffusion-policy">Diffusion Policy</h3>
+<p>frozen repo 将 prediction horizon 写为 <code>horizon=T_p</code>，返回步数由 <code>n_action_steps=T_a</code> 控制；simulation wrapper 一次执行 action batch，real eval 的 <code>steps_per_inference</code> 决定多久重算。论文提到 receding-horizon warm-start，但 frozen主要路径从 random noise 重启，不能写成默认实现。[S2]</p>
+<h3 id="act">ACT</h3>
+<p><code>chunk_size=num_queries=H</code> 决定一次输出多少 action slots。不做 temporal aggregation 时每 (H) 步 query 并顺序执行；开启 aggregation 时每步 query，把覆盖同一时刻的多个 chunk 预测加权，model horizon 长但 replan interval 可为 1。[S3]</p>
+<h3 id="cosmos-wam-uwm">Cosmos/WAM 与 UWM</h3>
+<p>Cosmos LIBERO 默认 16×7 action chunk 并执行 16 步；RoboCasa 默认预测 32×7、执行前 16 步。UWM 默认 <code>action_len=16</code>，history/future frame 又由 <code>num_frames</code>/<code>obs_num_frames</code> 定义。三者都说明 prediction、future observation、execution 与 replan 必须分别记录。[S4][S5]</p>
+<h2 id="6">6. 最小实验矩阵</h2>
+<table><thead><tr><th>变量</th><th>建议 sweep</th><th>必须固定</th><th>输出</th></tr></thead><tbody>
+<tr><td>prediction horizon (T_p)</td><td>4/8/16/32 或任务合理网格</td><td>model size、data split、steps、normalizer</td><td>per-offset action/video error、memory、step time</td></tr>
+<tr><td>execution prefix (T_a)</td><td>1/4/8/16</td><td>同一 checkpoint 或 matched training</td><td>success、action age、recovery、latency</td></tr>
+<tr><td>replan (R)</td><td>1/4/8/16</td><td>controller Hz、queue policy</td><td>stale-action failures、p50/p95 inference</td></tr>
+<tr><td>imagination (H_{imag})</td><td>short/medium/long</td><td>world/value checkpoint、planner budget</td><td>imagined-vs-real return、calibration</td></tr>
+<tr><td>terminal padding</td><td>mask on/off</td><td>same batches/seed</td><td>loss、gradient、per-offset error</td></tr>
+</tbody></table>
+<p>不能只做单变量 loss sweep：horizon 改变有效 target 数、padding 比例和 compute budget，必须报告有效元素分母、训练 token/step、wall-clock 和 closed-loop protocol。</p>
+<h2 id="7">7. 项目与证据边界</h2>
+<ul><li>UWM/LIBERO 可讲 action_len/history/future、normalizer、reset、rollout protocol 和 DataLoader 证据；不能把 16 写成跨任务最优，也不能用 action/image MSE 证明长 horizon 可执行。</li><li>WAM 可讲 LIBERO/RoboCasa 的 chunk/execution 差异与 0-success 诊断；没有 matched horizon sweep、checkpoint 与 episode trace，不能归因于 horizon。</li><li>OpenPiVLA 的本地 horizon/replan/controller 需从 config、checkpoint、inference loop 和 eval summary 取证；ACT/Diffusion Policy 的公开设置不能替代个人项目事实。</li></ul>
+<h2 id="8-review">8. Review 结论与下一步</h2>
+<p>本 source freeze 为 <code>WARN</code>：五条 horizon、物理时间换算、Diffusion Policy/ACT/Cosmos/UWM 代码边界和最小 sweep 已冻结；本地 matched horizon A/B、per-offset error、action-age/latency、closed-loop traces 与个人项目 lineage 仍 pending。</p>
+<p>本轮已完成 <code>knowledge/vol_04_world_model_sim2real_wm018.*</code> 与 <code>questions/vol_04_world_model_sim2real_wm018.*</code>；下一步进行 WM-015..018 真实口述，WM-019..038 继续后置。</p>
+<h2 id="section-12">参考来源</h2>
+<ol><li><a href="vol_04_world_model_foundations_claim_to_code.html">World Model Foundations Audit</a>。</li><li><a href="vol_03_diffusion_policy_claim_to_code.html">Diffusion Policy Audit</a>。</li><li><a href="vol_03_act_claim_to_code.html">ACT Audit</a>。</li><li><a href="vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos/WAM Audit C</a>。</li><li><a href="vol_04_uwm_video_action_claim_to_code.html">UWM Audit B</a>。</li><li><a href="vol_04_wm017_heterogeneous_schema_source_freeze.html">WM-017 Schema Freeze</a>。</li></ol>
+</article></body></html>

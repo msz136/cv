@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 EVAL-005 Source Freeze：Macro / Micro / Per-task / Weighted Aggregation</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eval005_aggregation_estimand_source_freeze.md">
+<meta name="aris:source-sha256" content="16b6a4c7c8e284ca8bd8a7cc831c3fc553405668ea87a071c23147f8f804ff46">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>16b6a4c7c8e284ca8bd8a7cc831c3fc553405668ea87a071c23147f8f804ff46</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eval005_aggregation_estimand_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、revision 与许可</a></li><li><a href="#2-estimand">2. 先冻结 estimand：平均的是谁</a></li><li><a href="#3-per-task-macro-micro-weighted">3. Per-task、macro、micro 与 weighted 的精确定义</a></li><li><a href="#3-1-per-task-vector">3.1 Per-task vector</a></li><li><a href="#3-2-macro-task">3.2 Macro：task 等权</a></li><li><a href="#3-3-micro-episode-count">3.3 Micro：episode count 加权</a></li><li><a href="#3-4-weighted">3.4 Weighted：外部固定权重</a></li><li><a href="#4-macro-micro">4. 何时 macro = micro，何时会反转</a></li><li><a href="#4-1-ranking-reversal">4.1 不同权重可制造 ranking reversal</a></li><li><a href="#5-suite-task-init-run">5. Suite → task → init → run 的层级</a></li><li><a href="#6-task-set-task-population">6. 固定 task set 与 task population 的区间</a></li><li><a href="#6-1-benchmark-tasks">6.1 固定 benchmark tasks</a></li><li><a href="#6-2-task-population">6.2 更大未知 task population</a></li><li><a href="#6-3-cluster">6.3 权重与 cluster</a></li><li><a href="#7-missing-task-invalid-episode-coverage">7. Missing task、invalid episode 与 coverage</a></li><li><a href="#8">8. 比较模型时先固定共同支持集</a></li><li><a href="#9-robust-aggregates">9. Robust aggregates 是补充，不是改名</a></li><li><a href="#10">10. 项目真实性边界</a></li><li><a href="#10-1-uwm">10.1 UWM</a></li><li><a href="#10-2-openpivla">10.2 OpenPiVLA</a></li><li><a href="#10-3-opd">10.3 OPD</a></li><li><a href="#11-summary-schema">11. 最小 summary schema 与伪代码</a></li><li><a href="#12-source-gate">12. Source Gate 结论与下一入口</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 EVAL-005 Source Freeze：Macro / Micro / Per-task / Weighted Aggregation</h1>
+<div class="meta">状态：<code>source_frozen / VLA-EVAL-005 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-18 证据截止：2026-07-18 本切片只冻结 aggregation estimand、task/run hierarchy、macro/micro/weighted 公式、stratified uncertainty、missing-task 与项目指标边界；下游只生成一张 <code>VLA-EVAL-005</code> 原子题卡，VOL 05 同步为 knowledge/cards 27/44。</div>
+<h2 id="question">问题（Question）</h2>
+<p>VLA 在多个 task、suite、initialization 和 training seed 上评估时，“平均成功率”不是唯一对象。必须先回答：目标总体是什么、每个 task/suite 的权重是什么、task 是固定清单还是从更大总体抽样、多个 training run 如何进入统计、缺失 task 和无效 episode 怎样处理。macro、micro、weighted 只是不同 estimand 的实现，不能在看完结果后挑最亮眼的一种。</p>
+<p>本 source gate 固定以下链路：</p>
+<pre><code class="language-text">target population / decision
+  -&gt; task-suite hierarchy + fixed weight vector
+  -&gt; per-task k_t / n_t and coverage
+  -&gt; macro / micro / weighted aggregate
+  -&gt; run/task/init-aware uncertainty
+  -&gt; per-task table + aggregate label + exclusions</code></pre>
+<h2 id="1-revision">1. 冻结来源、revision 与许可</h2>
+<p>公开 blob hash 对 2026-07-18 重新取得的 UTF-8 原文计算。公式是本节点对 estimand 的显式定义；官方代码和论文支持实现与报告边界，但不证明任何本地项目数据完整或可比。</p>
+<table><thead><tr><th>ID</th><th>来源</th><th>类型 / revision</th><th>固定入口</th><th>SHA-256</th><th>支持范围</th></tr></thead><tbody>
+<tr><td>S1</td><td>Agarwal et al., <em>Deep RL at the Edge of the Statistical Precipice</em></td><td>primary / arXiv <code>2108.13264</code></td><td><a href="https://arxiv.org/abs/2108.13264">arXiv</a></td><td>response <code>74f11076d64de0f6beb9da4a9b185dd2a42465bfde6426fb2004fd6fd9e042ac</code></td><td>多 task / 多 run 下点估计、区间、robust aggregate 与 performance profile 的报告边界</td></tr>
+<tr><td>S2</td><td><code>google-research/rliable</code></td><td>official-code / commit <code>3ccd9f4dea577a04d3d2b557f259aac08badbd81</code>, Apache-2.0</td><td><a href="https://github.com/google-research/rliable/tree/3ccd9f4dea577a04d3d2b557f259aac08badbd81">repository</a></td><td>README <code>c4d474f8a018c6faf8ab5d365bad135258a2af851e2a5672e07999438fcc6237</code>; library <code>0af084e4040fad3ae02a612b16fbcc59d9a141ac8259ad47dc1932bcc168ac14</code>; metrics <code>caf0c74e6238a12d2f59d6bcd47115e56167ea73c3b851c3f7981de17e5230cc</code>; LICENSE <code>43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1</code></td><td><code>num_runs × num_tasks</code> score matrix、equal-task aggregate mean、IQM/median、run/task stratified bootstrap 语义</td></tr>
+<tr><td>S3</td><td>LIBERO <code>metric.py</code></td><td>official-code / <code>Lifelong-Robot-Learning/LIBERO@8f1084e3132a39270c3a13ebe37270a43ece2a01</code>, MIT</td><td><a href="https://github.com/Lifelong-Robot-Learning/LIBERO/blob/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/lifelong/metric.py">metric.py</a></td><td><code>4fe37407f23cd9c1ceb4c93670f308d2fed6d34b2c2139d86123702c849cabcb</code></td><td>单 task 成功率 <code>num_success/n_eval</code> 与跨 task success vector；不替下游决定唯一 aggregate</td></tr>
+<tr><td>S4</td><td>LIBERO eval config / LICENSE</td><td>official-code / same commit</td><td><a href="https://github.com/Lifelong-Robot-Learning/LIBERO/blob/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/configs/eval/default.yaml">eval config</a></td><td>config <code>e9775e56a15317666ee8248f7e9d59072b9469c0f7346dc3ed496484657c6bcd</code>; LICENSE <code>e2885fd30a08381b799c4a33385522b23d637b4051b8f9a7f9f2519944b68ff6</code></td><td>frozen default <code>n_eval</code> 与代码许可；不证明其他论文/项目使用同一分母</td></tr>
+<tr><td>S5</td><td>OpenPI LIBERO README</td><td>official-code/doc / <code>Physical-Intelligence/openpi@15a9616a00943ada6c20a0f158e3adb39df2ccac</code>, Apache-2.0</td><td><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/examples/libero/README.md">README</a></td><td><code>a2caaf5459c4b01837b73aa93a6f69e8cdf10385b39c34eba36afa85f83fafe9</code></td><td>official π0.5 四 suite rows 98.8/98.2/98.0/92.4 与 equal-suite average 96.85</td></tr>
+<tr><td>S6</td><td>UWM paper / benchmark source audit</td><td>primary + canonical local audit / arXiv <code>2504.02792v3</code></td><td><a href="https://arxiv.org/html/2504.02792v3#S4.T2">Table II</a> / <a href="vol_04_benchmark_evidence_claim_to_protocol.html">local audit</a></td><td>local canonical <code>58a5636e953f44c2aa27e3acf65c621460186daf3732b916eac70e6ffab2de6a</code></td><td>五 task、50 OOD init、3 finetune seeds 与 protocol non-comparability；不证明本地 74.4 可复算</td></tr>
+<tr><td>S7</td><td>Simpson (1951), interaction in contingency tables</td><td>primary / DOI</td><td><a href="https://doi.org/10.1111/j.2517-6161.1951.tb00088.x">DOI</a></td><td>DOI 指纹</td><td>不同分层权重可能造成 aggregate association/ranking reversal</td></tr>
+<tr><td>S8</td><td>EVAL-003 / EVAL-004</td><td>canonical local source freezes</td><td><a href="vol_05_eval003_local_statistical_artifact_gate.html">CI/artifact gate</a> / <a href="vol_05_eval004_paired_init_seed_significance_source_freeze.html">paired significance</a></td><td>artifact gate <code>4f28ebe5c2e2acdb47963bb71189123bcbcd6de7f7bb3ccb87e7a6843d3d63f4</code>; EVAL-004 <code>c89c052a630692a12a20235fa6d53278f43e4509c6e567110f81f7c2eb427313</code></td><td>episode denominator、cluster、paired difference、training-seed 与 invalid-pair 前置合同</td></tr>
+</tbody></table>
+<p><code>rliable.aggregate_mean</code> 对完整 <code>runs × tasks</code> 矩阵先对 run 求每 task mean，再对 task 等权求 mean；<code>aggregate_iqm</code> 则对 run-task entries 做 25% trimmed mean。二者是不同 estimand，不能把 IQM 改名为 macro average。<code>StratifiedBootstrap(task_bootstrap=False)</code> 对固定 task set 的 run uncertainty；<code>task_bootstrap=True</code> 还对 task 重采样，面向更大未知 task population 的敏感性。</p>
+<h2 id="2-estimand">2. 先冻结 estimand：平均的是谁</h2>
+<p>设共有 <code>T</code> 个 task，第 <code>t</code> 个 task 有 <code>n_t</code> 个有效 episode，成功数 <code>k_t</code>，条件成功率：</p>
+<div class="formula">\[
+\hat p_t=\frac{k_t}{n_t},\qquad t=1,\ldots,T.
+\]</div>
+<p>变量解释：<code>p_t</code> 只属于同一 checkpoint、protocol、task definition 和 episode-validity rule。实现映射是 per-task summary 的 <code>task_id/k/n/rate</code>；不同 scorer、metric type、suite version 或 controller 的结果不能只因都落在 <code>[0,1]</code> 就合并。</p>
+<p>聚合前写出一句 estimand，例如：</p>
+<pre><code class="language-text">在固定的五个 task 上，每个 task 等权、先对 training seeds 求均值的成功率。</code></pre>
+<p>或：</p>
+<pre><code class="language-text">按部署流量预注册权重，对 task-conditional success 做期望。</code></pre>
+<p>这两句对应不同总体和不同决策，数值不可互换。</p>
+<h2 id="3-per-task-macro-micro-weighted">3. Per-task、macro、micro 与 weighted 的精确定义</h2>
+<h3 id="3-1-per-task-vector">3.1 Per-task vector</h3>
+<div class="formula">\[
+\hat{\mathbf p}=(\hat p_1,\ldots,\hat p_T).
+\]</div>
+<p>per-task 不是“还没聚合完的中间结果”，而是定位失败、检查 coverage 和发现 tail task 的必报主结果。任何 scalar aggregate 都应能回链到这张表。</p>
+<h3 id="3-2-macro-task">3.2 Macro：task 等权</h3>
+<div class="formula">\[
+\hat p_{\mathrm{macro}}=\frac{1}{T}\sum_{t=1}^{T}\hat p_t.
+\]</div>
+<p>变量解释：每个 task 权重都是 <code>1/T</code>，不管该 task 跑 10 还是 100 episode。它回答“从这 T 个 task 均匀抽一个 task，再按其条件分布执行”的平均表现。task taxonomy 粒度会改变 macro：把一个 task 拆成五个近似 task 会让它获得五倍权重。</p>
+<h3 id="3-3-micro-episode-count">3.3 Micro：episode count 加权</h3>
+<div class="formula">\[
+\hat p_{\mathrm{micro}}=\frac{\sum_t k_t}{\sum_t n_t}
+=\sum_{t=1}^{T}\frac{n_t}{\sum_j n_j}\hat p_t.
+\]</div>
+<p>变量解释：micro 的隐含权重是观测分母占比。只有当 episode allocation 就代表目标部署 mixture，或明确只描述这批 pooled episodes 时，才可把它解释为目标总体表现。如果某个难 task 为了提高精度而多跑了 episode，micro 会把“实验预算”误当“业务权重”。</p>
+<h3 id="3-4-weighted">3.4 Weighted：外部固定权重</h3>
+<div class="formula">\[
+\hat p_w=\sum_{t=1}^{T}w_t\hat p_t,
+\qquad w_t\ge 0,\quad \sum_t w_t=1.
+\]</div>
+<p>变量解释：<code>w_t</code> 应来自预注册的部署频率、风险/业务优先级或 benchmark contract，而不是从模型表现反推。若 safety-critical task 是 hard gate，通常不应靠小权重把其失败平均掉；需同时报告 constraint/gate。</p>
+<p>macro 是 <code>w_t=1/T</code> 的 weighted 特例，micro 是 <code>w_t=n_t/sum n</code> 的 weighted 特例。名字不是重点，权重向量才是可审计对象。</p>
+<h2 id="4-macro-micro">4. 何时 macro = micro，何时会反转</h2>
+<p>若所有 task 的 <code>n_t=n_0</code>，则：</p>
+<div class="formula">\[
+\hat p_{\mathrm{micro}}
+=\frac{n_0\sum_t\hat p_t}{Tn_0}
+=\hat p_{\mathrm{macro}}.
+\]</div>
+<p>变量解释：两者数值相等只因为权重相等，不代表 estimand 语义相同。下一版若某 task 缺 10 个 episode，micro 权重就改变，而 macro 仍等 task。</p>
+<h3 id="4-1-ranking-reversal">4.1 不同权重可制造 ranking reversal</h3>
+<p>示例中 A 在 easy/hard 两个 task 都更高，但两模型的 episode allocation 不同：</p>
+<table><thead><tr><th>model</th><th>easy</th><th>hard</th><th>macro</th><th>micro</th></tr></thead><tbody>
+<tr><td>A</td><td>9/10 = 0.90</td><td>60/100 = 0.60</td><td>0.75</td><td>69/110 = 0.627</td></tr>
+<tr><td>B</td><td>80/100 = 0.80</td><td>5/10 = 0.50</td><td>0.65</td><td>85/110 = 0.773</td></tr>
+</tbody></table>
+<p>如果直接比各自 micro，B 看起来更高，尽管 A 在两个 task 都占优。原因不是模型行为悖论，而是比较时用了两套不同 task weights。A/B comparison 必须在共同 task set 和同一权重向量上重算；paired 数据还要沿用 EVAL-004 的 pair 内差值。</p>
+<h2 id="5-suite-task-init-run">5. Suite → task → init → run 的层级</h2>
+<p>多 suite 时，<code>average of suite averages</code> 隐含 suite 等权；<code>average of all tasks</code> 隐含 task 等权；<code>pool all episodes</code> 隐含 episode 等权。三者只有在 suite task 数和 episode 数都平衡时才相等。</p>
+<p>推荐显式写：</p>
+<div class="formula">\[
+w_{s,t}=w_s\,w_{t\mid s},\qquad
+\sum_s w_s=1,\quad \sum_{t\in s}w_{t\mid s}=1.
+\]</div>
+<p>变量解释：<code>w_s</code> 是 suite 权重，<code>w_{t|s}</code> 是 suite 内 task 权重。实现必须保存 suite/task registry，不能只存最后一个 <code>average</code> 字段。</p>
+<p>training seed 是更高层 replicate。若结论指向训练方法，先对每个 <code>(training_seed, task)</code> 得到 score matrix，再定义“先 seed 后 task”或联合 robust aggregate。把同一 checkpoint 的数百 episodes 平铺，会夸大 training-run 证据。</p>
+<h2 id="6-task-set-task-population">6. 固定 task set 与 task population 的区间</h2>
+<h3 id="6-1-benchmark-tasks">6.1 固定 benchmark tasks</h3>
+<p>问题是“在这 T 个固定 task 上，换一组 training/rollout runs 会怎样”。应保持 task strata，重采样 run/seed 或 task 内 cluster，然后用同一权重向量重算 aggregate。<code>rliable</code> 的 <code>task_bootstrap=False</code> 对应固定 task set 下的 run uncertainty。</p>
+<h3 id="6-2-task-population">6.2 更大未知 task population</h3>
+<p>问题是“这些 task 若来自更大 task population，换 task 会怎样”。可在假设 task 可交换且抽样机制可解释时重采样 task；<code>rliable task_bootstrap=True</code> 同时对 task 重采样。但 benchmark 的 hand-picked tasks 往往不是随机样本，task-bootstrap interval 不能自动升级成真实部署泛化保证。</p>
+<h3 id="6-3-cluster">6.3 权重与 cluster</h3>
+<ul><li>task 内 episode/init 相关：按 init/scene cluster 重采样；</li><li>多 training seed：先在顶层 resample seed/run；</li><li>deployment weights 来自有限流量：说明把权重视为 fixed 还是一并估计不确定性；</li><li>per-task 与 aggregate CI 同时报；naive pooled binomial CI 不能表达 task heterogeneity。</li></ul>
+<h2 id="7-missing-task-invalid-episode-coverage">7. Missing task、invalid episode 与 coverage</h2>
+<p>聚合规则必须在结果前冻结：</p>
+<table><thead><tr><th>情况</th><th>错误做法</th><th>安全合同</th></tr></thead><tbody>
+<tr><td>一个模型缺整个 task</td><td>各自平均 available tasks</td><td>对共同预注册 task set fail closed，或按预注册 failure/missing 规则并报告 coverage</td></tr>
+<tr><td>task 内单臂 crash</td><td>从该模型分母删除</td><td>沿用 EVAL-004 invalid-pair rule；报告 attempted/valid/excluded</td></tr>
+<tr><td>不同 task 跑不同 n</td><td>默认叫 overall success</td><td>同时报 n_t，明确 micro 权重是否符合 target mixture</td></tr>
+<tr><td>task version/scorer 不同</td><td>只按名字 join</td><td>使用 versioned task/scorer/protocol hash</td></tr>
+<tr><td>suite 新增 task</td><td>直接和旧 aggregate 比</td><td>在旧共同 registry 重算，再单独报告新增 coverage</td></tr>
+</tbody></table>
+<p>不能把 missing task 的权重重新归一化后静默比较，因为这会让弱模型避开难 task。至少报告 planned/attempted/valid task count、episode count、missingness reason 和 weight coverage <code>sum_{observed} w_t</code>。</p>
+<h2 id="8">8. 比较模型时先固定共同支持集</h2>
+<p>对 A/B 的 task-level paired effect：</p>
+<div class="formula">\[
+\hat\Delta_w=\sum_{t=1}^{T}w_t(\hat p_{A,t}-\hat p_{B,t}).
+\]</div>
+<p>变量解释：A/B 使用同一 <code>w_t</code> 和同一 task registry。更强的 paired init/seed 设计应先在每个 pair 上算 <code>A-B</code>，再按 task/seed hierarchy 聚合；不能让 A 的 micro weights 和 B 的 micro weights不同。显著性、multiplicity 与 holdout 沿用 EVAL-004。</p>
+<h2 id="9-robust-aggregates">9. Robust aggregates 是补充，不是改名</h2>
+<p><code>rliable</code> 还提供 median、IQM、optimality gap 和 performance profile。它们有助于展示少量 run/task、outlier 和跨 task 分布，但不能替代：</p>
+<ul><li>per-task <code>k/n</code> 与 failure table；</li><li>明确 macro/micro/deployment weights；</li><li>safety-critical task gate；</li><li>protocol 和 metric compatibility。</li></ul>
+<p>特别是 <code>aggregate_iqm</code> 在 frozen code 中对 run-task entries 做 25% trimmed mean，和“每 task 等权的 mean success”不是同一个量。报告中应写全名、输入矩阵 shape、normalization 和 CI method，不只写 <code>average</code>。</p>
+<h2 id="10">10. 项目真实性边界</h2>
+<h3 id="10-1-uwm">10.1 UWM</h3>
+<p>user-confirmed final table 为 <code>0.88/0.80/0.76/0.66/0.62</code>，每 task 50 次，因此：</p>
+<div class="formula">\[
+\hat p_{macro}=\frac{0.88+0.80+0.76+0.66+0.62}{5}=0.744,
+\qquad
+\hat p_{micro}=\frac{186}{250}=0.744.
+\]</div>
+<p>这是现有 summary 的算术一致性检查，不是 raw verification。inventory 还保留较早 <code>book_caddy=42/50</code> report，而 final summary 是 <code>44/50</code>；不能跨版本拼表。<code>232/250</code> reset-style 属于不同 protocol，也不能和 fixed-pruned-init 放在同一个 aggregate comparison。</p>
+<h3 id="10-2-openpivla">10.2 OpenPiVLA</h3>
+<p>archive table 的四 suite rows <code>0.98/0.995/0.99/0.93</code> 做 equal-suite macro 得 <code>0.97375</code>，按一位百分数显示为 <code>97.4%</code>；official OpenPI <code>98.8/98.2/98.0/92.4</code> 的 equal-suite macro 是 <code>96.85%</code>。这只验证表内 arithmetic。archive 仍缺 suite/task/trial/seed/init 分母、raw episodes 和 checkpoint lineage，因此不能恢复 per-task/micro/CI，也不能称 0.55pp uplift。</p>
+<h3 id="10-3-opd">10.3 OPD</h3>
+<p>10k raw-holdout 是 <code>box 6100 / point 1400 / text 2500</code>，对应 IoU/Acc、Hit@50/100、text exact 等不同 metric。不能用 row-count micro 把它们压成“总准确率”；应先 by-format/by-pool 报告，并在同一 metric 内按预注册 pool weights 聚合。8,251 unique images、重复 image/path cluster 还要求 cluster-aware uncertainty。</p>
+<h2 id="11-summary-schema">11. 最小 summary schema 与伪代码</h2>
+<p>最低 task row：</p>
+<pre><code class="language-text">run_id, training_seed, suite_id, task_id, task_revision,
+protocol_hash, scorer_hash, planned_n, attempted_n, valid_n,
+success_k, rate, exclusion_counts, weight_macro,
+weight_micro, weight_deployment</code></pre>
+<p>聚合伪代码：</p>
+<pre><code class="language-python">def aggregate_task_success(rows, target_weights):
+    # 1. Fail closed on version/protocol mismatch and missing planned tasks.
+    validate_common_registry(rows)
+    per_task = summarize_k_n_by_task(rows)
+
+    # 2. Keep all named estimands; never return an unlabeled &quot;average&quot;.
+    macro = mean([x.k / x.n for x in per_task])
+    micro = sum(x.k for x in per_task) / sum(x.n for x in per_task)
+    weighted = sum(target_weights[x.task_id] * (x.k / x.n)
+                   for x in per_task)
+
+    # 3. Resample the declared top-level unit and recompute fixed weights.
+    intervals = stratified_cluster_bootstrap(
+        rows, statistics=[&quot;macro&quot;, &quot;micro&quot;, &quot;weighted&quot;],
+        fixed_weights=target_weights,
+    )
+    return {&quot;per_task&quot;: per_task, &quot;macro&quot;: macro, &quot;micro&quot;: micro,
+            &quot;weighted&quot;: weighted, &quot;intervals&quot;: intervals}</code></pre>
+<p>该伪代码是 artifact contract，不是当前项目已实现的统一 scorer。真实实现还需明确 task fixed/random、training-seed 层级、paired comparison、missingness 和 resampling seed。</p>
+<h2 id="12-source-gate">12. Source Gate 结论与下一入口</h2>
+<p>EVAL-005 保持 <code>WARN</code>：aggregation estimand、公式、官方 benchmark vector、rliable run/task uncertainty 与三个项目的 arithmetic/evidence boundary 已冻结；本地仍没有统一 raw episode bundle、跨项目共同 metric 或 deployment weight manifest，因此不产生新的综合成绩。</p>
+<p>下一内容节点固定为 <code>VLA-EVAL-006</code>：benchmark / environment / controller / scorer versioning。题卡保持 <code>unseen</code>，真实口述前不创建 <code>coaching_state.md</code>。</p>
+<h2 id="references">References</h2>
+<ol><li>Agarwal et al., <a href="https://arxiv.org/abs/2108.13264"><em>Deep RL at the Edge of the Statistical Precipice</em></a>。</li><li>Google Research, <a href="https://github.com/google-research/rliable/tree/3ccd9f4dea577a04d3d2b557f259aac08badbd81"><code>rliable@3ccd9f4</code></a>。</li><li>LIBERO frozen <a href="https://github.com/Lifelong-Robot-Learning/LIBERO/blob/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/lifelong/metric.py"><code>metric.py</code></a>。</li><li>OpenPI frozen <a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/examples/libero/README.md">LIBERO README</a>。</li><li>Simpson, “The Interpretation of Interaction in Contingency Tables,” <a href="https://doi.org/10.1111/j.2517-6161.1951.tb00088.x">DOI</a>。</li><li><a href="vol_04_benchmark_evidence_claim_to_protocol.html">Benchmark / Evidence Source Audit</a>。</li><li><a href="vol_05_eval003_local_statistical_artifact_gate.html">EVAL-003 Local Statistical Artifact Gate</a> 与 <a href="vol_05_eval004_paired_init_seed_significance_source_freeze.html">EVAL-004 Paired Significance</a>。</li></ol>
+</article></body></html>

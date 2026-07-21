@@ -1,0 +1,69 @@
+{
+  "artifact": "knowledge/vol_05_engineering_eval.md",
+  "html": "knowledge/vol_05_engineering_eval.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / knowledge_10_of_44 / cards_10_of_44_unseen",
+  "verdict": "WARN",
+  "source_sha256": "19965C8D0620255E794B6FFA2B6FB791A80BF36F61E9C7CB699972B8A9EBC547",
+  "coverage": {
+    "planned_nodes": 44,
+    "drafted_nodes": 10,
+    "drafted_cards": 10,
+    "covered_ids": [
+      "VLA-ENG-001",
+      "VLA-ENG-002",
+      "VLA-ENG-003",
+      "VLA-ENG-004",
+      "VLA-ENG-005",
+      "VLA-ENG-006",
+      "VLA-ENG-007",
+      "VLA-ENG-008",
+      "VLA-EVAL-001",
+      "VLA-EVAL-002"
+    ],
+    "practice_state": "10_unseen"
+  },
+  "source_scope": {
+    "official_docs": [
+      "PyTorch 2.13 DDP/FSDP/AMP/Reproducibility/Distributed Checkpoint",
+      "DeepSpeed official ZeRO tutorial (retrieved 2026-07-17)"
+    ],
+    "local_source_audits": [
+      "VOL 04 Benchmark / Evidence",
+      "VOL 05 Batch 1 Independent Official-Doc Review"
+    ],
+    "project_inventories": [
+      "WAM",
+      "OpenPiVLA",
+      "Robot Harness",
+      "OPD",
+      "UWM / LIBERO"
+    ]
+  },
+  "checks": {
+    "batch_boundary": "PASS (only VLA-ENG-001..008 and VLA-EVAL-001..002 knowledge nodes and corresponding cards were drafted; remaining 34 nodes stay planned)",
+    "node_id_unique": "PASS (10 unique node IDs)",
+    "minimum_module_contract": "PASS (definitions, formulas, implementation mapping, pseudocode/tables, trade-offs, bad cases and project hooks included)",
+    "data_contract_boundary": "PASS (shape is separated from axis/unit/time/normalizer/provenance)",
+    "distributed_training_boundary": "PASS WITH WARNING (DDP/FSDP/ZeRO semantics are summarized from official docs; workload-specific performance is not claimed)",
+    "checkpoint_boundary": "PASS WITH WARNING (model path is not equated with resumable lineage; local artifact gate found metadata/load reports but no checkpoint binary)",
+    "serving_boundary": "PASS (latency, chunk/replan and controller contract are separated)",
+    "evaluation_boundary": "PASS (training/offline/geometry/world/sim/robot metrics remain distinct; first-failure ownership is explicit)",
+    "project_truth_boundary": "PASS (project inventories provide bad cases only; no project metric was upgraded)",
+    "local_artifact_gate": "PASS WITH WARNING (ENG-004..006 artifact audit records UWM metadata/normalizers/load reports and OPD ZeRO configs; binary, optimizer lineage and fixed-batch resume remain missing)",
+    "independent_fact_review": "PASS WITH WARNING (DDP/FSDP/ZeRO/AMP/DCP/Reproducibility checked in ../sources/vol_05_batch1_independent_fact_review.html; local resume/performance smoke remains missing)",
+    "cards": "PASS (10 corresponding atomic cards were generated in a separate bounded slice; all remain unseen)",
+    "oral_drill": "PENDING",
+    "html_static_validation": "PASS (one H1, 16 H2, 20 H3, 7 tables, 6 code blocks; renderer SHA matches Markdown SHA)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static validation used)"
+  },
+  "open_items": [
+    "Keep the 44-node Phase 0 list synchronized as later batches are drafted.",
+    "Keep VLA-ENG-001..008 and VLA-EVAL-001..002 cards unseen until the candidate answers them orally.",
+    "Use the ENG-004..006 local artifact gate at ../sources/vol_05_local_artifact_gate_eng004_006.html; run fixed-batch checkpoint load/resume and matched throughput smoke before strengthening project-facing answers.",
+    "Keep lineage fields (RNG, sampler/data cursor, processor, normalizer, eval manifest) labeled as local framework requirements, not DCP guarantees.",
+    "Add later batches for data-scale/versioning, observability, serving resilience, statistical evaluation, safety and production incident response.",
+    "Do not mark drafted knowledge as reviewed or drilled without source review and candidate oral answers."
+  ],
+  "next": "Collect local checkpoint/resume/performance artifacts for ENG-004..006, or begin one-question-at-a-time oral drills."
+}

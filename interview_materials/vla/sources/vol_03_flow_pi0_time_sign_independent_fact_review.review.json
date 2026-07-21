@@ -1,0 +1,37 @@
+{
+  "artifact": "sources/vol_03_flow_pi0_time_sign_independent_fact_review.md",
+  "html": "sources/vol_03_flow_pi0_time_sign_independent_fact_review.html",
+  "review_date": "2026-07-19",
+  "status": "independent_fact_reviewed / audit_e / theorem_endpoint_time_sign_checked / PASS WITH WARNING",
+  "verdict": "PASS WITH WARNING",
+  "source_sha256": "EA075428DA74B129B654CEE3FA4DDA7E6C0E90F3B5672E6CF1046CE5B5A62D2E",
+  "frozen_upstream": {
+    "flow_matching_paper": "arXiv 2210.02747v2",
+    "flow_matching_pdf_sha256": "5EEB39BA516396924ABA4787452F9D0ABDEE88467A4D0C264D9F66CAD0C5EE14",
+    "pi0_paper": "arXiv 2410.24164v4",
+    "pi0_pdf_sha256": "FBDFBA56258BDBD220207BA63410C6C943E43A73E97A7A5A47CA0BC74204F821",
+    "openpi_commit": "15a9616a00943ada6c20a0f158e3adb39df2ccac",
+    "openpi_pi0_raw_sha256": "24B32D7C6ED5E409459AFA8CA5AF96A4DAE09C2DCDF48E828907E411F4F12342"
+  },
+  "checks": {
+    "fm_cfm_theorem": "PASS (Theorem 2 positivity assumption, parameter-independent constant and gradient equality directly checked)",
+    "ot_endpoint": "PASS (paper sigma_min endpoint separated from the exact-linear zero-sigma special case)",
+    "pi0_paper_path": "PASS (tau 0 noise to tau 1 action, target A-epsilon and ten positive Euler steps checked)",
+    "openpi_code_path": "PASS (t 1 noise to t 0 action, target epsilon-A and negative dt checked at frozen commit)",
+    "time_velocity_step_equivalence": "PASS (t=1-tau, opposite velocity sign and opposite differential jointly preserve displacement)",
+    "shifted_beta_mapping": "PASS (paper tau=0.999(1-y) maps exactly to code t=0.001+0.999y)",
+    "deterministic_oracle": "PASS (both ten-step conventions recover the fixed action endpoint; max float64 error 2.220446049250313e-16)",
+    "downstream_cards": "PASS WITH WARNING (ACT-023..030 mechanism wording checked; local runtime and oral practice remain open)",
+    "project_truth_boundary": "PASS WITH WARNING (local class/checkpoint/mask/stats/H/K/solver/controller/97.4%/ownership remain open)",
+    "html_static_validation": "PASS (canonical/review SHA, one H1, zero formula-em pollution, zero control characters and no missing local links)",
+    "browser_visual_check": "PASS WITH WARNING (localhost desktop 1440x1000 and narrow 800x1000; one H1, academic TOC and no page-wide overflow verified)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the validated theorem/endpoint/time-sign/Beta/oracle and SHA/H1/formula/link contract synchronized under future edits.",
+    "Collect local OpenPiVLA model class, checkpoint, target builder, time sampler, action schema, norm stats, H/K, solver, controller and eval artifacts.",
+    "Do not attribute upstream conventions or this oracle to the candidate without ownership evidence.",
+    "Keep all 44 VOL 03 cards unseen until oral practice."
+  ],
+  "next": "Independently review Source Audit B remaining pi0/pi0.5/FAST/OpenPI risks or run one real oral drill; keep all 44 cards unseen."
+}

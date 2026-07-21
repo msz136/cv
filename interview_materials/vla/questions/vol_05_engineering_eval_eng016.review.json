@@ -1,0 +1,47 @@
+{
+  "artifact": "questions/vol_05_engineering_eval_eng016.md",
+  "html": "questions/vol_05_engineering_eval_eng016.html",
+  "question_list": "questions/vol_05_engineering_eval_eng016.question_list.md",
+  "review_date": "2026-07-17",
+  "status": "drafted / VLA-ENG-016 / card_1_of_1",
+  "verdict": "WARN",
+  "source_sha256": "320B8189BFAFFCAC80E640AB29D707B9C80F2EAE3B5F41B52C8C6BB89F8F3AC0",
+  "question_count": 1,
+  "covered_question_ids": ["VLA-ENG-016"],
+  "difficulty_distribution": {"L3": 1},
+  "priority_distribution": {"P1": 1},
+  "practice_distribution": {"unseen": 1, "weak": 0, "pass": 0, "strong": 0, "stale": 0},
+  "answer_length_chars": {
+    "short_answer_min": 173,
+    "short_answer_max": 173,
+    "short_answer_average": 173,
+    "short_answer_threshold": 180,
+    "mechanism_answer_min": 348,
+    "mechanism_answer_max": 348,
+    "mechanism_answer_average": 348,
+    "mechanism_answer_threshold": 350
+  },
+  "checks": {
+    "bounded_slice": "PASS (only VLA-ENG-016 was drafted; ENG-017 and unrelated cards remain deferred)",
+    "details_block_well_formed": "PASS (one Markdown and HTML details/summary block is balanced and foldable)",
+    "question_id_unique": "PASS (VLA-ENG-016 is new and will synchronize the global registry to 185 cards)",
+    "required_fields": "PASS (intent, short answer, mechanism, diagnosis/evidence, project hook, follow-up, dangerous answer, sources and state included)",
+    "answer_conciseness": "PASS (30-second answer 173 chars <=180; mechanism answer 348 chars <=350)",
+    "teacher_kl_boundary": "PASS WITH WARNING (freeze/no_grad/detach, KL direction/reduction/mask and teacher schedule are separated)",
+    "project_truth_boundary": "PASS (OPD five-teacher route/coldstart/online-KL evidence is not upgraded to learned-router or uplift claims)",
+    "practice_state": "PASS (card remains unseen; no candidate answer was provided)",
+    "html_static_validation": "PASS (source SHA, one H1, three H2, one summary and one foldable card)",
+    "local_links": "PASS (relative knowledge/source/evidence links expected to resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep short/mechanism answer lengths within the 180/350 character gates.",
+    "Collect matched single-teacher/multi-teacher memory and latency A/B with fixed route/data/effective batch.",
+    "Collect teacher/student checkpoint, optimizer/RNG/sampler lineage and verify teacher gradients remain absent.",
+    "Run SFT-only, single-teacher, no-synthetic and synthetic-ratio ablations before attributing OPD uplift.",
+    "Keep VLA-ENG-016 unseen until a real oral answer is recorded.",
+    "Do not generate ENG-017 in this increment."
+  ],
+  "next": "Run one-question-at-a-time oral practice for VLA-ENG-016 or collect the missing single-teacher/memory/lineage artifacts."
+}

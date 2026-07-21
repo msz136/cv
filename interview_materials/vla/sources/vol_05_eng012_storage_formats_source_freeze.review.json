@@ -1,0 +1,66 @@
+{
+  "artifact": "sources/vol_05_eng012_storage_formats_source_freeze.md",
+  "html": "sources/vol_05_eng012_storage_formats_source_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "source_frozen / VLA-ENG-012_knowledge+card_drafted / unseen",
+  "verdict": "WARN",
+  "source_sha256": "F13C9524A9EBC182985772069BB4696058639527699BD9D627CBF2B863D11F2F",
+  "coverage": {
+    "knowledge_id": "VLA-ENG-012",
+    "formats": [
+      "HDF5/h5py",
+      "Zarr",
+      "WebDataset",
+      "Apache Parquet"
+    ],
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "not_started"
+  },
+  "frozen_revisions": {
+    "h5py_3_15_0_tag_commit": "4e8866a3d1af352add72014149d0810ee5543c48",
+    "zarr_python_v3_2_1_commit": "85890b3bb404fd1d401267c508a2694f5734559e",
+    "webdataset_commit": "e0953f9bba17b416d5792d5a263b171c266e78be",
+    "parquet_format_commit": "21ecc2b0f5786070561ae0d34152230853c83e2b",
+    "pyarrow_docs_version": "22.0"
+  },
+  "source_fingerprints": {
+    "h5py_dataset_normalized_text": "a083daf7148d6aff3842bced69230c361c9507a71fc5b44ddfc7af3d7860ad3e",
+    "zarr_arrays_raw": "a68767daf086a2305e0a5fcfeb7e813e768a5e352d265d422a7de6ec700a9cd7",
+    "zarr_storage_raw": "67d2b5e4b23172815ca3f3b0b0039d9ab8e06a9e11f5f415794b97b6d87f84fe",
+    "webdataset_readme_raw": "99d918fb992a68b4bae908ab7e4ffcdad6f3e4e7de3bfd817077b9b7020c689e",
+    "parquet_format_readme_raw": "692afb37e07e752376006765729794cf358b4aae0582aef6a42deff1f19ca7de",
+    "pyarrow_parquet_normalized_text": "0211e40bb1cd05e142e839b44daa957dbc0714c072ea5dd0f74432bf9b48fa7b",
+    "parquet_file_format_normalized_text": "1d35808adb95b1781761d2b431707b084cafb076b38f8e685edb0862c43a6bda"
+  },
+  "licenses": {
+    "h5py": "BSD-3-Clause style",
+    "zarr_python": "MIT",
+    "webdataset": "BSD-3-Clause",
+    "apache_parquet_arrow": "Apache-2.0"
+  },
+  "checks": {
+    "bounded_slice": "PASS (source freeze remains a standalone artifact; ENG-012 knowledge and one card were generated in later separate slices, while ENG-013..016 remain deferred)",
+    "official_sources": "PASS (versioned h5py/Zarr/Arrow docs plus frozen WebDataset and Parquet repository commits)",
+    "source_fingerprints_repeatable": "PASS (normalized HTML text and raw Markdown hashes reproduced on repeated fetch)",
+    "license_freshness": "PASS WITH WARNING (licenses and current revisions recorded; Parquet official site is rolling but frozen repo provides stable core semantics)",
+    "abstraction_boundary": "PASS (array stores, tar dataset representation and columnar table format are not ranked as interchangeable products)",
+    "hdf5_claims": "PASS WITH WARNING (contiguous/chunked, B-tree, compression/resize and whole-chunk involvement sourced; concurrency and universal performance excluded)",
+    "zarr_claims": "PASS WITH WARNING (chunk/store/sharding semantics sourced; cloud/performance superiority excluded)",
+    "webdataset_claims": "PASS WITH WARNING (tar shards and sequential IterableDataset path sourced; README 3x-10x claim not generalized and random-access absolutes rejected)",
+    "parquet_claims": "PASS WITH WARNING (row group/column chunk/page and PyArrow row-group access sourced; media-payload performance remains workload-dependent)",
+    "workload_mapping": "PASS WITH WARNING (random-window/sequential-stream/column-scan/hybrid mapping explicitly labeled engineering shortlist)",
+    "benchmark_contract": "PASS (cold/warm latency, logical/physical bytes, request/decode counts, worker/GPU wait and failure radius defined)",
+    "project_truth_boundary": "PASS (UWM Zarr stall remains DataLoader-only local clue; no format root cause or full-training uplift claimed)",
+    "html_static_validation": "PASS (source SHA, one H1, twelve H2, twelve H3, two tables, one formula and one commented pseudocode block)",
+    "local_links": "PASS (all relative source/evidence links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static validation does not substitute for visual QA)"
+  },
+  "open_items": [
+    "Keep the single ENG-012 atomic card unseen until the candidate answers it orally.",
+    "Do not claim HDF5/Zarr concurrency, WebDataset universal speedup or Parquet media efficiency without matched workload evidence.",
+    "Collect a fixed request trace and four-format or candidate-pair benchmark before upgrading format-selection claims to local evidence.",
+    "Keep ENG-013..016 planned until separate primary-source gates are ready."
+  ],
+  "next": "Run one-question-at-a-time oral practice or an independent ENG-012 wording review; keep ENG-013..016 deferred."
+}

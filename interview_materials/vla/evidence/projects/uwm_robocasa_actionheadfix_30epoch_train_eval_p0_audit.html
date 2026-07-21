@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UWM RoboCasa ActionHeadFix 30 Epoch：Train-to-Closed-Loop P0 证据审计</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\uwm_robocasa_actionheadfix_30epoch_train_eval_p0_audit.md">
+<meta name="aris:source-sha256" content="41b9cdddb95163a369719e007ea11ad3a7776e79f0901f80dcacd34faa83f117">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>41b9cdddb95163a369719e007ea11ad3a7776e79f0901f80dcacd34faa83f117</code>；生成自：<code>interview_materials\vla\evidence\projects\uwm_robocasa_actionheadfix_30epoch_train_eval_p0_audit.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. 问题（Question）</a></li><li><a href="#2">2. 结论先行</a></li><li><a href="#3-p0-promotion">3. P0 promotion 结论</a></li><li><a href="#4-frozen-inputs-sha-256">4. Frozen inputs 与 SHA-256</a></li><li><a href="#4-1-run-preflight-aggregate-files">4.1 Run、preflight 与 aggregate files</a></li><li><a href="#4-2-raw-rollout-files">4.2 Raw rollout files</a></li><li><a href="#5-preflight">5. Preflight 与训练合同</a></li><li><a href="#5-1-base-load-reset-head-contract">5.1 Base-load / reset-head contract</a></li><li><a href="#5-2-dataset-observation-action-contract">5.2 Dataset / observation / action contract</a></li><li><a href="#6-metric">6. 训练完成与 metric 边界</a></li><li><a href="#7-closed-loop-protocol-tuple">7. Closed-loop protocol tuple</a></li><li><a href="#8-raw-rollout">8. 八组 raw rollout 独立重算</a></li><li><a href="#8-1-ablation">8.1 为什么不能声称 ablation 结论</a></li><li><a href="#8-2-contact-success">8.2 为什么 contact 不是 success</a></li><li><a href="#9-train-closed-loop-first-divergence">9. Train → Closed-loop first divergence</a></li><li><a href="#10-run-family-ownership">10. Run-family 与 ownership 边界</a></li><li><a href="#11">11. 面试可用口径</a></li><li><a href="#30">30 秒版本</a></li><li><a href="#loss-rollout-0">高压追问：训练 loss 降这么多，为什么 rollout 还是几乎 0？</a></li><li><a href="#no-prompt-full-h5-prompt">高压追问：no-prompt 比 full-h5 高，是不是 prompt 有害？</a></li><li><a href="#section-21">禁用表述</a></li><li><a href="#12-p0">12. 关闭 P0 的最小动作</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>UWM RoboCasa ActionHeadFix 30 Epoch：Train-to-Closed-Loop P0 证据审计</h1>
+<div class="meta">状态：<code>p0_audited / remote-snapshot-raw-rollouts / checkpoint-path-only / protocol-bounded / ownership-pending / WARN</code> 审计日期：2026-07-21 范围：只审计 <code>target_atomic_seen_official12_task_30epoch_muxi_20260628_openpi_state_3view_phase_30ep</code> 这一条 30-epoch run、对应的八组 54-scenario rollout 与同阶段 preflight；不把 Human300、100-epoch resume、其它 taskcondfix/state-weighted run、LIBERO <code>186/250</code> 或不同 action bridge 合并进主结果。</div>
+<h2 id="1-question">1. 问题（Question）</h2>
+<p>这条 UWM→RoboCasa actionheadfix 运行线是否真的完成了训练、保存引用和 closed-loop evaluation？训练端的 loss 下降能否转化为任务成功？<code>exec_horizon</code>、prompt/state/right-view ablation 的八组 rollout 有什么可复核结论？哪些字段仍不足以称为 RoboCasa benchmark、checkpoint closure 或个人独立成果？</p>
+<h2 id="2">2. 结论先行</h2>
+<p>当前 remote snapshot 已经超过 report-only：它保留了训练命令与 <code>train.out</code>、run summary、DeepSpeed effective config、12D normalizer、三类 preflight、八份原始 rollout JSON 和八份 eval log。独立复核可以证明：</p>
+<ol><li>8 卡 MetaX C500 的 30-epoch run 完成 <code>3930</code> steps；8/8 process 成功退出，未发现 traceback 或 CUDA OOM；</li><li>训练使用 18 个 atomic-seen task、9126 episodes、133457 sequences、12D reordered action、16D state、三视角、task/prompt/state conditioning；</li><li><code>train.out</code> 中 41 个打印 metric point 从 step 0 的 loss/action/raw-action <code>3.3257/2.4300/0.9986</code> 到 step 3929 的 <code>0.25385/0.07689/0.03043</code>；但 <code>val_ratio=0</code>、<code>eval_every=0</code>，这些只是训练 batch 指标，不是 held-out generalization；</li><li>八个 rollout JSON 都包含相同的 54 个 <code>(scenario, task, seed)</code>，覆盖 18 task×3 trials；全部使用同一远端 <code>models.pt</code> path、同一 normalizer path、<code>official12 + convert_action</code>，共 432 条配置内 record，环境错误为 0；</li><li>closed-loop success 极低且不稳定：full input 的 h1/h2/h4/h5/h8 分别为 <code>2/54、1/54、0/54、1/54、1/54</code>；h5 ablation 的 no-prompt/no-right/no-state 为 <code>2/54、2/54、1/54</code>；所有 success 只出现在 TurnOnElectricKettle 或 TurnOnMicrowave；</li><li>full-h4 有 <code>45/54</code> episode 记录 robot-env contact，但 success 为 <code>0/54</code>，说明“产生接触”不等于“完成任务”。</li></ol>
+<p>因此，安全结论是：<strong>训练链、12D action contract 和 54-scenario eval harness 可以审计；训练 loss 明显下降，但没有转化为稳定的 closed-loop task success。</strong> 当前不能宣称 actionheadfix 已解决 RoboCasa transfer，也不能从 1–2 个 success 推导 prompt/right-view ablation 的因果收益。</p>
+<h2 id="3-p0-promotion">3. P0 promotion 结论</h2>
+<pre><code class="language-text">P0 status = PARTIAL
+eligible training-completion claim = PRESENT / remote-snapshot-backed
+eligible raw-rollout recount = PRESENT / 8 x 54 records
+eligible checkpoint-binary claim = 0
+eligible benchmark claim = 0
+eligible ablation-uplift claim = 0
+eligible ownership claim = 0</code></pre>
+<table><thead><tr><th>P0 字段</th><th>当前证据</th><th>状态</th><th>安全解释</th></tr></thead><tbody>
+<tr><td>run identity</td><td>单一 run name、output/checkpoint/normalizer path 一致</td><td><code>PRESENT</code></td><td>可以按 run family 讲，不与其它 30/100 epoch 混用</td></tr>
+<tr><td>training completion</td><td>3930 steps、30 epochs、8/8 process exit success</td><td><code>PRESENT</code></td><td>可说训练进程完成</td></tr>
+<tr><td>training metrics</td><td><code>train.out</code> 有 41 个打印 point；derived verifier 声称读取 3930 records</td><td><code>PARTIAL</code></td><td>直接可重算 41 点；完整 <code>train.jsonl</code> 未同步</td></tr>
+<tr><td>validation</td><td><code>val_ratio=0</code>、<code>eval_every=0</code></td><td><code>ABSENT BY CONFIG</code></td><td>训练 loss 不能包装成 held-out metric</td></tr>
+<tr><td>dataset contract</td><td>18 tasks、9126 episodes、133457 sequences、seq 19、stride 16、12D action</td><td><code>PRESENT</code></td><td>支持输入输出和 sampling contract</td></tr>
+<tr><td>base load</td><td>446 matched、8 action-head keys skipped、32 missing-after-partial-load、0 unexpected</td><td><code>PRESENT / RESET-HEAD</code></td><td>证明迁移策略，不证明新 head 已学好</td></tr>
+<tr><td>produced checkpoint</td><td>summary 与 rollout 指向同一 <code>checkpoints/models.pt</code></td><td><code>REMOTE-REFERENCED</code></td><td>当前 snapshot 中 checkpoint-like binary 为 0</td></tr>
+<tr><td>normalizer</td><td>本地 12D normalizer JSON 与 rollout path 对齐</td><td><code>PRESENT</code></td><td>可 hash；第 11 个重排维度 std=0 需保持 contract 解释</td></tr>
+<tr><td>raw rollout</td><td>8 JSON×54 records，task/seed/scenario 可逐条复算</td><td><code>PRESENT</code></td><td>每个 config 的 denominator 完整</td></tr>
+<tr><td>environment health</td><td>八组均 <code>num_env_errors=0</code></td><td><code>PRESENT</code></td><td>失败不是 env exception，但仍可能是 protocol/model failure</td></tr>
+<tr><td>scorer</td><td>JSON 有 runtime <code>success</code> 与 per-task aggregation</td><td><code>PARTIAL</code></td><td>缺 immutable RoboCasa/env/scorer revision 与 episode videos</td></tr>
+<tr><td>ownership</td><td>Project commit、脚本和 Codex-derived verifier 存在</td><td><code>PENDING</code></td><td>不从路径、Git author 或工具生成 summary 推导个人独立实现</td></tr>
+</tbody></table>
+<h2 id="4-frozen-inputs-sha-256">4. Frozen inputs 与 SHA-256</h2>
+<h3 id="4-1-run-preflight-aggregate-files">4.1 Run、preflight 与 aggregate files</h3>
+<table><thead><tr><th>文件</th><th>SHA-256</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>logs/.../train.out</code></td><td><code>4C56A7181A912156C482D7982B7568FBAB1FE597DC25702B318D615BD3588B80</code></td><td>训练命令、打印 metrics、run summary、8-rank exit</td></tr>
+<tr><td><code>runs/.../train_summary.json</code></td><td><code>88EDF9D28C7EF5D40316A7C71DE0C8E932492257A50383397C497974568C8E93</code></td><td>steps/epochs/dataset/checkpoint path/memory/load report</td></tr>
+<tr><td><code>runs/.../ds_config_effective.json</code></td><td><code>2BF8216F04391CE4323FC79AE74AAE9728E8B13F8D4057F281734A0A4DA54642</code></td><td>global batch 1024、micro batch 128、ZeRO 0</td></tr>
+<tr><td><code>runs/.../artifacts/dataset_ready.json</code></td><td><code>B9AF4A9118F83F466DACD1CBE0AE7F56A37BA0AB932E50BB992392A0571CB38B</code></td><td>rank-0 dataset-ready marker</td></tr>
+<tr><td><code>runs/.../artifacts/target_atomic_seen_action_normalizer.json</code></td><td><code>27D2E8E24B3FDD43A841597D0CF3CF9CF322829FB28A26B663012338B1E48500</code></td><td>12D action normalizer</td></tr>
+<tr><td><code>sweep_summary.json</code></td><td><code>F4426789264BD5165363AD3F416B574C4C4ADB463D434C7C2182D428B835371F</code></td><td>八组 rollout aggregate</td></tr>
+<tr><td><code>sweep_summary_codex_verified.json</code></td><td><code>3AD967659D8208C2B67F0AE421E29353317BF067792878AEA14EF883B853BFC6</code></td><td>tool-derived training/rollout reconciliation；不替代 raw files</td></tr>
+<tr><td><code>checkpoint_smoke.json</code></td><td><code>BC95D7EEFC162D7A0BEE432424FF80B982B05562A5D6755A44EC8528B99C39F4</code></td><td>base UWM partial-load / reset-head preflight</td></tr>
+<tr><td><code>dataset_smoke.json</code></td><td><code>63A6DF7EE65C59560F2A58B2E73B13C8B52FBA91837FD1E3A7DE8B2D6681E681</code></td><td>三视角、state/action shape 与 task sample smoke</td></tr>
+<tr><td><code>save_smoke.json</code></td><td><code>5132415BA944C4DB7BC0E8FA992B537675FC73EB6DC51E598340A5073FCD9442</code></td><td>独立 10-step save smoke；不是本页 30-epoch binary</td></tr>
+</tbody></table>
+<p>本地代码快照：<code>uwm_robocasa_train.py</code> SHA <code>EFC53BB652302183F56B6F1BB9ACEB7ABDE31D01D953720EA1C05BB605A91FFE</code>；<code>uwm_robocasa_rollout.py</code> SHA <code>E43D3751F8D079DAC54C902B5B222A13242FF5A9CE0F3975FB00D630DA53775E</code>；evidence collector SHA <code>A0651BC6E1569A48D48F723770C86EC4FEF0290D62F89F7D32ACD5684856CC67</code>。Project HEAD 为 <code>6c524d9c6c6226075f100cdac395fef2fdc37671</code>，但 <code>remote_sync</code> 是本地缓存，commit 与路径都不能自动证明 candidate ownership。</p>
+<h3 id="4-2-raw-rollout-files">4.2 Raw rollout files</h3>
+<table><thead><tr><th>setting</th><th>raw JSON SHA-256</th><th>bytes</th></tr></thead><tbody>
+<tr><td>full_h1</td><td><code>7FECC56D94A5BEBB44E78944015351F5E4B8EA7EFC684306204595B9F5EF5E44</code></td><td>197952</td></tr>
+<tr><td>full_h2</td><td><code>31310DB9852B4FF49F393C8066CFC71C713C639BEA57C23FCE38F561D1C4D2E7</code></td><td>200613</td></tr>
+<tr><td>full_h4</td><td><code>7284F7F3E713F1987A74041EA51B48B8EB8E7510A7E296CE695FBE1EA89B287E</code></td><td>200242</td></tr>
+<tr><td>full_h5</td><td><code>0CE505AA8D820B9F59432CC90C54869D691525FC726A183DAB234A6B827A0156</code></td><td>193888</td></tr>
+<tr><td>full_h8</td><td><code>7E9A6257D8993397E167EB6E2716A6C6558BFE334CA7CE3EDC627D7D0810E458</code></td><td>196528</td></tr>
+<tr><td>no_prompt_h5</td><td><code>A6CBE854FA7E3A06671EA148B82AE46AF702FBB5BCEF28130F7D58F5D4741B77</code></td><td>193775</td></tr>
+<tr><td>no_right_h5</td><td><code>F4A8D28921ABB82430D88BE85B1DA8BB706C2D9C470583A72C45CC3EBBDA2557</code></td><td>194197</td></tr>
+<tr><td>no_state_h5</td><td><code>933DBFDBA2DC1D67C6BE7E9FA18226DDE17BA80086C42511959EA2224B7BB740</code></td><td>198679</td></tr>
+</tbody></table>
+<h2 id="5-preflight">5. Preflight 与训练合同</h2>
+<h3 id="5-1-base-load-reset-head-contract">5.1 Base-load / reset-head contract</h3>
+<p>base checkpoint 为远端 <code>libero_90.pt</code>、checkpoint step 100000。preflight 显示 <code>target_key_count=478</code>、<code>matched_count=446</code>、<code>skipped_count=8</code>、<code>unexpected=0</code>；被跳过的 8 个 key 是 7D→12D action encoder/decoder 的 weight/bias，且 <code>reset_action_head=true</code>。新增 task/prompt/state/right-view projection、action head 和 gripper phase head 共 32 个 missing-after-partial-load key，normalizer 也不从 base checkpoint 继承。</p>
+<p>这说明 actionheadfix 的基本迁移逻辑是：保留能 shape-match 的 UWM trunk，重置 12D action I/O 与新增 conditioning 模块。它不证明这些新参数经过 30 epoch 后产生了稳健策略。</p>
+<h3 id="5-2-dataset-observation-action-contract">5.2 Dataset / observation / action contract</h3>
+<table><thead><tr><th>字段</th><th>值</th></tr></thead><tbody>
+<tr><td>dataset</td><td>LeRobot <code>target_atomic_seen</code></td></tr>
+<tr><td>tasks / episodes / sequences</td><td>18 / 9126 / 133457</td></tr>
+<tr><td>seq_len / stride</td><td>19 / 16</td></tr>
+<tr><td>images</td><td>agentview + right-view + eye-in-hand，4 frames，224×224</td></tr>
+<tr><td>state</td><td>16D：EEF relative pos/rot、base pos/rot、gripper qpos</td></tr>
+<tr><td>action</td><td>12D，indices <code>5,6,7,8,9,10,11,0,1,2,3,4</code></td></tr>
+<tr><td>condition</td><td>task ID + text prompt + state + right view</td></tr>
+<tr><td>weighted loss</td><td>EEF-pos 2.0、EEF-rot 1.0、gripper 3.0、base 1.5、control 1.0</td></tr>
+<tr><td>train batch</td><td>8 GPUs × micro-batch 128 = global batch 1024</td></tr>
+<tr><td>save policy</td><td>epoch 30，limit 1，remote <code>models.pt</code> path</td></tr>
+</tbody></table>
+<p>normalizer 的一个重排维度 <code>std=0</code>、scale=<code>1e-6</code>；这与源数据该维度恒为 0 相符，但它是重要的 action-contract 风险，不能在 adapter 或 action-order 改动时静默复用。</p>
+<h2 id="6-metric">6. 训练完成与 metric 边界</h2>
+<p><code>train.out</code> 可独立解析出 41 条打印 metric point：step 0、每 100 step 和 step 3929。首末值为：</p>
+<table><thead><tr><th>metric</th><th>step 0</th><th>step 3929</th></tr></thead><tbody>
+<tr><td>total loss</td><td>3.325663</td><td>0.253850</td></tr>
+<tr><td>action loss</td><td>2.430044</td><td>0.076886</td></tr>
+<tr><td>raw action loss</td><td>0.998558</td><td>0.030433</td></tr>
+<tr><td>epoch</td><td>0.0076</td><td>30.0</td></tr>
+</tbody></table>
+<p>日志末尾 8 个 rank 都是 <code>exits successfully</code>，没有 traceback 或 CUDA OOM。<code>sweep_summary_codex_verified.json</code> 另称读取了 3930 个 training record，并给出 tail-100 average；但原始 <code>runs/.../logs/train.jsonl</code> 没有同步到当前 snapshot，因此本页不把 tail-100 值升级为独立重算结果。</p>
+<p>更关键的是，训练命令设置 <code>val_ratio=0</code>、<code>eval_every=0</code>。所以这张表只支持“optimizer 在训练分布上显著降低 loss”，不支持 held-out action accuracy、OOD generalization 或 closed-loop improvement。</p>
+<h2 id="7-closed-loop-protocol-tuple">7. Closed-loop protocol tuple</h2>
+<p>八组 raw JSON 的共同 tuple 为：</p>
+<pre><code class="language-text">task_set=atomic_seen
+split=target
+tasks=18
+scenario_sampling=round_robin
+scenarios=54 (3/task)
+scenario/seed set identical across all 8 settings
+action_mode=official12
+adapter_mode=official12
+action_execution_mode=convert_action
+checkpoint=&lt;same remote models.pt path&gt;
+normalizer=&lt;same local-hashable 12D normalizer path&gt;
+env_errors=0</code></pre>
+<p>full settings只改变 <code>exec_horizon ∈ {1,2,4,5,8}</code>；三组 h5 ablation 分别屏蔽 prompt、right-view 或 state input。因为同一组 54 scenario 被重复评估，所以 432 records 不是 432 个独立 benchmark trial，不能把各 setting 的 success 简单相加。</p>
+<h2 id="8-raw-rollout">8. 八组 raw rollout 独立重算</h2>
+<table><thead><tr><th>setting</th><th>horizon</th><th>success / 54</th><th>env errors</th><th>robot-env contact episodes</th><th>成功 task / seed</th></tr></thead><tbody>
+<tr><td>full_h1</td><td>1</td><td>2</td><td>0</td><td>42</td><td>TurnOnElectricKettle / 15, 33</td></tr>
+<tr><td>full_h2</td><td>2</td><td>1</td><td>0</td><td>47</td><td>TurnOnElectricKettle / 33</td></tr>
+<tr><td>full_h4</td><td>4</td><td>0</td><td>0</td><td>45</td><td>—</td></tr>
+<tr><td>full_h5</td><td>5</td><td>1</td><td>0</td><td>43</td><td>TurnOnMicrowave / 34</td></tr>
+<tr><td>full_h8</td><td>8</td><td>1</td><td>0</td><td>45</td><td>TurnOnElectricKettle / 51</td></tr>
+<tr><td>no_prompt_h5</td><td>5</td><td>2</td><td>0</td><td>46</td><td>TurnOnElectricKettle / 15, 33</td></tr>
+<tr><td>no_right_h5</td><td>5</td><td>2</td><td>0</td><td>45</td><td>TurnOnElectricKettle / 15, 33</td></tr>
+<tr><td>no_state_h5</td><td>5</td><td>1</td><td>0</td><td>43</td><td>TurnOnElectricKettle / 15</td></tr>
+</tbody></table>
+<p>每份 raw JSON 都满足：54 records、18 unique tasks、每 task 3 records、54 unique seeds；field <code>num_successes</code> 与逐 record recount 完全一致；per-task aggregation 与 micro/macro summary 一致；八份 JSON 的 scenario/task/seed set 完全相同。</p>
+<h3 id="8-1-ablation">8.1 为什么不能声称 ablation 结论</h3>
+<p>full_h5 是 <code>1/54</code>，no-prompt/no-right 是 <code>2/54</code>，差值只有一个 episode，而且成功集中在单一 TurnOnElectricKettle task。缺多 seed repeat、checkpoint repeat 和置信区间时，不能说“去掉 prompt/right view 提升性能”，也不能据此证明这些输入无用。它只告诉我们：当前 success 稀疏，ablation signal 被单任务和单 episode 主导。</p>
+<h3 id="8-2-contact-success">8.2 为什么 contact 不是 success</h3>
+<p>full_h4 的 45 个 episode 至少一次记录到 robot-env contact，但 54 个 episode全部失败。contact pair 可能是手、link、柜门、台面等几何接触；它没有包含任务谓词、目标物体状态或有效抓取/按键语义。因此接触率只能作为“策略是否靠近交互区域”的诊断 proxy，不能替代 RoboCasa success。</p>
+<h2 id="9-train-closed-loop-first-divergence">9. Train → Closed-loop first divergence</h2>
+<p>当前最稳健的链路判断是：</p>
+<pre><code class="language-text">base partial load passes
+  -&gt; 12D/action-state-view dataset smoke passes
+  -&gt; 30-epoch 8-GPU training exits cleanly
+  -&gt; training action/raw-action loss decreases
+  -&gt; same checkpoint and normalizer load into 8 rollout settings
+  -&gt; env execution has 0 exceptions
+  -&gt; task success remains 0–2 / 54 and concentrates in 1–2 tasks</code></pre>
+<p>这将 first divergence 收窄到“训练目标/teacher-forced action fit 到 long-horizon closed-loop control”之间，但不能唯一归因于 action head。仍可能包括：action semantics/normalizer 的细微错位、diffusion sampling误差、exec horizon、observation/state distribution shift、controller dynamics、gripper phase、recovery 缺失与 runtime scorer sensitivity。</p>
+<h2 id="10-run-family-ownership">10. Run-family 与 ownership 边界</h2>
+<table><thead><tr><th>相邻证据</th><th>与本页关系</th><th>不允许的 join</th></tr></thead><tbody>
+<tr><td>Human300 pretrain / target continuation</td><td>另一 curriculum/run family</td><td>不把其 loss 或 checkpoint 当成本页 base/结果</td></tr>
+<tr><td>100-epoch resume</td><td>另一 checkpoint 与训练阶段</td><td>不用 <code>0/54</code> 或其它结果替代本页 30 epoch sweep</td></tr>
+<tr><td>state_prompt_weighted strict/direct A/B</td><td>另一 run 和 action bridge</td><td>不把 <code>expected 12, got 5</code> 错误混入本页零 env-error denominator</td></tr>
+<tr><td>LIBERO fixed-init <code>186/250</code></td><td>user-confirmed remote summary、不同 benchmark</td><td>不与 RoboCasa 54-scenario success 比较</td></tr>
+<tr><td><code>sweep_summary_codex_verified.json</code></td><td>工具生成 reconciliation</td><td>不把工具生成文件当 candidate ownership 或 raw source</td></tr>
+</tbody></table>
+<p>当前能认领到项目层的是：这条训练/评测运行发生过，run tuple 与失败断层可复核。个人“亲手实现/设计/运行/验收”的具体边界仍需用户按脚本、command、remote operator、analysis 和 reviewer 逐项确认。</p>
+<h2 id="11">11. 面试可用口径</h2>
+<h3 id="30">30 秒版本</h3>
+<div class="meta">我在 UWM→RoboCasa 迁移里做过一条 actionheadfix 30-epoch run 的训练—评测审计。它把 LIBERO 7D action head 重置成 RoboCasa official12，并加入 task、prompt、16D state 和第三视角条件；8 卡跑完 3930 steps，训练 action loss 从打印点的 2.43 降到 0.0769。之后我固定同一 checkpoint、normalizer 和 18 task×3 scenario，扫了 h1/2/4/5/8 以及三组输入 ablation。八组都没有环境异常，但每组只有 0–2/54 success，h4 是 0/54；而 h4 有 45/54 episode 出现接触，说明接触和训练 loss 都没有转化为稳定任务完成。我把它定位为 train-to-closed-loop transfer failure，不宣称完成 RoboCasa benchmark。</div>
+<h3 id="loss-rollout-0">高压追问：训练 loss 降这么多，为什么 rollout 还是几乎 0？</h3>
+<div class="meta">因为训练侧没有 validation，loss 是 teacher-forced 训练分布指标；closed-loop 会累积 observation shift、sampling error 和 controller/action-contract误差。当前证据已经排除了“训练进程没跑完”和“env 全部 crash”，但还没有排除 normalizer/action semantics、exec horizon、gripper phase和 recovery。正确下一步是固定一个 failure scenario，对 expert action、model x0、sampled 12D action、adapter 后 action和环境状态做逐步 first-divergence，而不是继续只压训练 loss。</div>
+<h3 id="no-prompt-full-h5-prompt">高压追问：no-prompt 比 full-h5 高，是不是 prompt 有害？</h3>
+<div class="meta">不能。<code>2/54</code> 对 <code>1/54</code> 只差一个 episode，成功集中在 TurnOnElectricKettle，且只有一个 checkpoint/run。它可以作为下一轮 matched repeat 的假设，不能作为 prompt causality 或 ablation uplift。</div>
+<h3 id="section-21">禁用表述</h3>
+<ol><li>“actionheadfix 已解决 RoboCasa transfer”；</li><li>“30 epoch 模型在 RoboCasa 达到 X% benchmark”——当前只是 18-task×3-scenario 项目协议；</li><li>“训练 loss 下降证明泛化提升”——没有 validation；</li><li>“prompt/right view 有害”——成功数过少且无 repeat；</li><li>“checkpoint 已在本地验证”——只有远端 path，本地没有 binary/hash/fresh reload；</li><li>“所有代码和实验都是我独立完成”——ownership 尚未确认。</li></ol>
+<h2 id="12-p0">12. 关闭 P0 的最小动作</h2>
+<ol><li>回传或登记 30-epoch <code>models.pt</code> 的 immutable SHA/ETag，做 fresh-process load 与 fixed-input parity；当前 snapshot checkpoint-like binary 为 0。</li><li>同步完整 <code>train.jsonl</code>，独立重算 3930 training records；增加 held-out split 或固定 teacher-forced eval，避免只看训练点。</li><li>冻结 RoboCasa、MuJoCo、controller、success predicate 与 env revision；保存 54 episode 的视频或可审计 locator。</li><li>对相同 54 scenario、多个 checkpoint seed 重复 h5/full/no-prompt/no-right/no-state，报告 paired difference 与置信区间。</li><li>选择 full-h4 的 matched failure case，记录 expert/model-x0/sampled/converted/executed action、state、contact 和 task predicate 的逐步 first-divergence。</li><li>逐文件确认候选人对 train/rollout/dataset/evidence collector、远端运行和结果审查的 ownership；工具生成 summary 单列。</li></ol>
+<p>在这些字段闭合前，本页保持 <code>PARTIAL/WARN</code>：允许讲完整训练—评测失败链和协议工程，不允许讲 RoboCasa benchmark 已完成或训练取得稳定成功。</p>
+<h2 id="references">References</h2>
+<ol><li><code>C:\Users\mousongzhe\Project\remote_sync\muxi_20260629\uwm_robocasa_transfer_muxi\logs\target_atomic_seen_official12_task_30epoch_muxi_20260628_openpi_state_3view_phase_30ep\train.out</code>。</li><li><code>C:\Users\mousongzhe\Project\remote_sync\muxi_20260629\uwm_robocasa_transfer_muxi\runs\target_atomic_seen_official12_task_30epoch_muxi_20260628_openpi_state_3view_phase_30ep\</code> 下的 summary/config/normalizer。</li><li><code>C:\Users\mousongzhe\Project\remote_sync\muxi_20260629\uwm_robocasa_transfer_muxi\logs\rollout_sweeps_atomic_seen_target\target_atomic_seen_official12_task_30epoch_muxi_20260628_openpi_state_3view_phase_30ep\</code> 下八份 raw rollout JSON 与 eval log。</li><li><code>C:\Users\mousongzhe\Project\remote_sync\muxi_20260629\uwm_robocasa_transfer_muxi\diagnostics\openpi_state_3view_phase_20260628\</code> 下的 checkpoint/dataset/save smoke。</li><li><a href="uwm_libero_claim_evidence_inventory.html">UWM / LIBERO Claim–Evidence Inventory</a>。</li><li><a href="uwm_libero_p0_bundle_audit.html">UWM / LIBERO P0 Bundle Audit</a>。</li><li><a href="../../sources/vol_05_uwm_libero_robocasa_transfer_evidence_freeze.html">UWM / LIBERO / RoboCasa Transfer Evidence Freeze</a>。</li><li><a href="../../questions/proj_uwm.html">UWM Project Cards</a>。</li></ol>
+</article></body></html>

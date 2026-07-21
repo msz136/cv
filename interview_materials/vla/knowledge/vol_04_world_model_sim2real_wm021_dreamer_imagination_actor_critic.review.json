@@ -1,0 +1,31 @@
+{
+  "artifact": "knowledge/vol_04_world_model_sim2real_wm021_dreamer_imagination_actor_critic.md",
+  "html": "knowledge/vol_04_world_model_sim2real_wm021_dreamer_imagination_actor_critic.html",
+  "source_freeze": "sources/vol_04_wm021_dreamer_imagination_actor_critic_source_freeze.md",
+  "review_date": "2026-07-18",
+  "status": "drafted / VLA-WM-021 / knowledge_23_of_44 / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "fd703597a106868350d9e4aa11f777ab83e2102c635a3ec5ede863df8440fba3",
+  "question_ids": ["VLA-WM-021"],
+  "checks": {
+    "source_gate": "PASS WITH WARNING (DreamerV3 paper/reimplementation, World Model/PlaNet audit and WM-019/020 boundaries are linked)",
+    "imagination_dataflow": "PASS (replay posterior start, prior rollout, reward/continue, actor, critic and evaluation layers are separated)",
+    "return_and_gradient": "PASS (lambda-return variables, bootstrap/continue and stop-gradient/config routing are explained)",
+    "model_bias": "PASS (horizon compounding, OOD imagined state, dream/real gap and model exploitation are explicit)",
+    "diagnostic_matrix": "PASS (horizon sweep, replan, uncertainty, replay refresh, pessimistic value and paired validation are included)",
+    "formula_and_pseudocode": "PASS (return formula and commented imagined actor-critic pseudocode map to fields/targets)",
+    "project_evidence_boundary": "PASS (UWM/WAM/OpenPiVLA/OPD/Harness remain bounded hooks; no local Dreamer result is asserted)",
+    "html_static_validation": "PASS (one H1, tables, formulas, pipeline, code and canonical SHA rendered)",
+    "local_links": "PASS (WM-021 source freeze, audits and WM-019 knowledge links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "question_card": "PASS WITH WARNING (one VLA-WM-021 atomic card is synchronized and remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized VLA-WM-021 atomic card unseen until oral practice.",
+    "Keep checkpoint, imagined/real paired trace, horizon sweep, value calibration and ownership artifacts explicitly missing.",
+    "Do not call the DreamerV3 reimplementation author-official or infer project gains from the mechanism.",
+    "Do not create coaching_state.md before an actual oral drill."
+  ],
+  "next": "Run one VLA-WM-021 oral drill or collect one paired artifact; keep WM-022..038 deferred."
+}

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 03 Source Audit A：OpenVLA Action Token 与 I/O Claim-to-Code</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_03_openvla_claim_to_code.md">
+<meta name="aris:source-sha256" content="8a66ce90e10bf60e015ee46cc78d9b1756048f386a38df679607b0cabd17974f">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>8a66ce90e10bf60e015ee46cc78d9b1756048f386a38df679607b0cabd17974f</code>；生成自：<code>interview_materials\vla\sources\vol_03_openvla_claim_to_code.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 证据层级与审计范围</a></li><li><a href="#3">3. 架构与输入输出合同</a></li><li><a href="#3-1">3.1 旗舰架构</a></li><li><a href="#3-2-i-o">3.2 训练样本 I/O</a></li><li><a href="#3-3-i-o">3.3 推理 I/O</a></li><li><a href="#4-action-normalization-tokenizer">4. Action normalization 与 tokenizer 的精确数学</a></li><li><a href="#4-1-q01-q99">4.1 q01/q99 归一化</a></li><li><a href="#4-2-normalized-scalar-token-id">4.2 normalized scalar → token ID</a></li><li><a href="#4-3-token-id-normalized-scalar">4.3 token ID → normalized scalar</a></li><li><a href="#4-4">4.4 反归一化</a></li><li><a href="#5-labels">5. 训练目标、labels 与监控指标</a></li><li><a href="#6-action-chunk">6. 全量微调、单图限制与 action chunk 边界</a></li><li><a href="#6-1">6.1 旗舰训练是全量微调</a></li><li><a href="#6-2-base-openvla-chunk-policy">6.2 base OpenVLA 不是 chunk policy</a></li><li><a href="#7-claim-to-code">7. Claim-to-code 总表</a></li><li><a href="#8-openpivla-fast">8. 与 OpenPiVLA / FAST 的真实性边界</a></li><li><a href="#9-phase-0">9. 对 Phase 0 题目的支持状态</a></li><li><a href="#10">10. 风险与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 03 Source Audit A：OpenVLA Action Token 与 I/O Claim-to-Code</h1>
+<div class="meta">审计日期：2026-07-16 状态：<code>independent_fact_reviewed / endpoint_mask_checked / project_boundary_pending / WARN</code> 论文版本：OpenVLA arXiv <code>2406.09246v3</code> 官方仓库：<code>openvla/openvla</code> frozen commit <code>c8f03f48af692657d3060c19588038c7220e9af9</code> 对应题目：<code>VLA-ARCH-001..005</code>、<code>VLA-ACT-002..004</code> 本页问题：OpenVLA 到底接收什么、训练什么、生成什么、怎样把 token 还原为机器人动作？哪些事实不能迁移到 OpenPiVLA / FAST？</div>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>OpenVLA 不是“VLM 外接连续 action head”</strong>。冻结代码中的 <code>OpenVLA</code> 继承 <code>PrismaticVLM</code>，由 DINOv2 + SigLIP 视觉特征、投影器和 Llama-2 语言模型组成；动作通过语言模型末尾词表 token 自回归生成。[1][2]</li><li><strong>旗舰 OpenVLA 的基础 I/O 是单主视角 RGB + 语言 → 单步连续动作向量</strong>。默认数据路径只加载 <code>image_primary</code> 和语言，<code>load_proprio=False</code>、<code>window_size=1</code>、<code>future_action_window_size=0</code>。[1][2]</li><li><strong>训练优化目标是 masked next-token cross-entropy</strong>，不是连续动作 L1。代码中的连续 L1 用于把预测/标签 token 解码后做监控；默认配置还可把 stop/EOS token 纳入 CE，但 action accuracy mask 不把 EOS 算作 action token。[1][2]</li><li><strong>动作先按数据集每维 q01/q99 归一化到 [-1,1]，再逐标量离散</strong>。论文称每维 256 bins；冻结实现使用 256 个均匀网格点、255 个 bin center，并把上端点折到最后 center，同时仍占用末尾 256 个词表 token。[1][2]</li><li><strong>推理生成 token 数等于所选 <code>unnorm_key</code> 的动作维数</strong>；随后 token → normalized scalar → q01/q99 反归一化。模型输出的不是 controller 命令语义本身，坐标轴、单位和执行频率仍属于环境/机器人接口。[2]</li><li><strong>OpenVLA 2024 的 tokenization 不是 FAST</strong>。OpenVLA 是“每个动作维度一个离散 token”的标量方案；FAST 是后续的 action-window 频域/BPE 路线。两者不能因为都输出 token 就混写。[1][3]</li><li><strong>本地 OpenPiVLA 页不能用 OpenVLA 源码补证据</strong>。其中的 FAST、Qwen3-VL、assistant-side JSON/token、action horizon 10 与归档 97.4% 都需要 openpi/FAST 或本地 artifact 单独证明。[3]</li></ol>
+<h2 id="2">2. 证据层级与审计范围</h2>
+<table><thead><tr><th>层级</th><th>本页使用方式</th><th>能支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td>论文原文</td><td>OpenVLA v3 的 <code>3.2</code>、<code>3.3</code>、<code>3.4</code>、<code>3.5</code>、<code>6</code></td><td>方法定义、旗舰模型、公开实验和局限</td><td>frozen commit 的逐行行为；个人项目事实</td></tr>
+<tr><td>frozen official repo</td><td>commit <code>c8f03f...</code> 的 Python/README/config</td><td>tokenizer、mask、I/O、normalization、训练/推理路径</td><td>本地 OpenPiVLA 实际采用了同一实现</td></tr>
+<tr><td>本地项目页</td><td><code>../../03_openpivla_action_modeling.html</code></td><td>当前整理出的口述口径和待补证据项</td><td>未附原始 config/log 的强指标与因果归因</td></tr>
+<tr><td>同源推断</td><td>由论文与 frozen code 联合推出</td><td>tensor contract、公式到代码的映射</td><td>未出现的 action axis、controller、真实 rollout 行为</td></tr>
+</tbody></table>
+<p>本页只审计原始 OpenVLA 主路径。OpenVLA-OFT、π0/π0.5、openpi、FAST、ACT、Diffusion Policy 与 Flow Matching 分属后续 source batch，除边界提示外不在这里提前总结其实现。</p>
+<h2 id="3">3. 架构与输入输出合同</h2>
+<h3 id="3-1">3.1 旗舰架构</h3>
+<p>论文与 README 将 <code>openvla-7b</code> 描述为：Prismatic 7B VLM，视觉侧融合 DINOv2 与 SigLIP，语言侧使用 Llama-2。[1][2] 冻结代码把这一声明落实为：</p>
+<pre><code class="language-text">RGB image
+  ├─ DINOv2 ViT patches ─┐
+  └─ SigLIP ViT patches ─┴─ concatenate channel features
+                                  │
+                                  v
+                         fused MLP projector
+                                  │
+                                  v
+task prompt tokens + projected image patches + Llama-2
+                                  │
+                                  v
+                         autoregressive action tokens
+                                  │
+                                  v
+                      scalar decode + denormalization</code></pre>
+<p>代码证据：</p>
+<ul><li><a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/conf/models.py#L491-L497"><code>conf/models.py#L491-L497</code></a>：224px DINO-SigLIP、Llama-2 7B 与 fused GELU MLP 配置。</li><li><a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/models/backbones/vision/dinosiglip_vit.py#L20-L29"><code>dinosiglip_vit.py#L20-L29</code></a> 与 <a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/models/backbones/vision/dinosiglip_vit.py#L142-L160"><code>#L142-L160</code></a>：两个视觉 encoder 的具体标识和 patch feature 拼接。</li><li><a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/models/vlms/prismatic.py#L38-L75"><code>prismatic.py#L38-L75</code></a>：vision backbone、LLM backbone 与 projector 三部分。</li><li><a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/models/vlms/prismatic.py#L367-L420"><code>prismatic.py#L367-L420</code></a>：视觉 patch 被投影后插在 BOS 与其余文本 token 之间，patch labels 设为 <code>IGNORE_INDEX</code>。</li></ul>
+<p><strong>面试安全说法</strong>：OpenVLA 的“action head”不是独立连续 MLP；在原始路径里，Llama-2 的 LM head 直接预测被复用为 action vocabulary 的 token，<code>ActionTokenizer</code> 负责非参数化的连续值 ↔ token 映射。</p>
+<h3 id="3-2-i-o">3.2 训练样本 I/O</h3>
+<p><code>RLDSBatchTransform</code> 直接读取：</p>
+<table><thead><tr><th>字段</th><th>frozen code 行为</th><th>shape / 语义</th></tr></thead><tbody>
+<tr><td><code>observation.image_primary[0]</code></td><td>变为 PIL image 后走 DINO/SigLIP transform</td><td>单张主视角 RGB</td></tr>
+<tr><td><code>task.language_instruction</code></td><td>decode、lowercase，写入固定问句 prompt</td><td>一条任务语言</td></tr>
+<tr><td><code>action[0]</code></td><td>q99 normalization 后逐维 tokenization</td><td>当前时刻动作向量 <code>a∈R^d</code></td></tr>
+<tr><td>proprio / history / extra view</td><td>默认不加载</td><td>原始旗舰路径不存在</td></tr>
+</tbody></table>
+<p>直接证据：</p>
+<ul><li><a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/vla/datasets/datasets.py#L38-L67"><code>datasets.py#L38-L67</code></a>：image、language、current action 和 labels 构造。</li><li><a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/vla/datasets/datasets.py#L91-L105"><code>datasets.py#L91-L105</code></a>：只加载 primary camera、<code>load_proprio=False</code>、<code>window_size=1</code>、<code>future_action_window_size=0</code>。</li><li>论文 <a href="https://arxiv.org/html/2406.09246v3#S6"><code>Section 6</code></a>：明确将多图、proprio 与 observation history 列为未来工作。</li></ul>
+<p>因此，<code>VLA-ARCH-004</code> 的正确回答不能说“OpenVLA 已把多视角和 proprio 全部融合”；它应以 OpenVLA 作为反例，再由 Octo/π 系列等后续来源补完整比较。</p>
+<h3 id="3-3-i-o">3.3 推理 I/O</h3>
+<p><code>predict_action</code> 的公开合同是：</p>
+<pre><code class="language-python">def predict_action(image, instruction, unnorm_key):
+    # 1. Build the same language prompt used during training.
+    prompt = build_prompt(instruction.lower())
+
+    # 2. Transform one RGB image and run autoregressive generation.
+    token_ids = generate(
+        image=image,
+        prompt=prompt,
+        max_new_tokens=get_action_dim(unnorm_key),
+    )
+
+    # 3. Decode exactly d final tokens to normalized scalar actions.
+    normalized_action = decode_last_d_tokens(token_ids)
+
+    # 4. Select dataset statistics and map normalized dimensions back to units.
+    return q99_unnormalize(normalized_action, stats=norm_stats[unnorm_key])</code></pre>
+<p>这段伪代码映射到 <a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/models/vlas/openvla.py#L35-L103"><code>openvla.py#L35-L103</code></a>。动作维数来自 <a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/models/vlas/openvla.py#L121-L131"><code>openvla.py#L121-L131</code></a> 中所选数据集统计的 <code>q01</code> 长度，而不是一个跨机器人固定常数。</p>
+<h2 id="4-action-normalization-tokenizer">4. Action normalization 与 tokenizer 的精确数学</h2>
+<h3 id="4-1-q01-q99">4.1 q01/q99 归一化</h3>
+<p>令原始动作 <code>a∈R^d</code>，训练集每维统计为 <code>q_i^{01}</code>、<code>q_i^{99}</code>，归一化 mask 为 <code>m_i∈{0,1}</code>。冻结实现等价于：</p>
+<div class="formula">\[
+\tilde a_i=
+\begin{cases}
+\operatorname{clip}\left(
+2\frac{a_i-q_i^{01}}{q_i^{99}-q_i^{01}+\epsilon}-1,\,-1,\,1
+\right), &amp; m_i=1,\\
+a_i, &amp; m_i=0.
+\end{cases}
+\]</div>
+<p>变量与直觉：<code>d</code> 是当前数据集 action dimension；q01/q99 把大部分训练动作铺到 [-1,1]，并通过 clipping 降低极端值对离散分辨率的影响。实现映射在 <a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/vla/datasets/rlds/utils/data_utils.py#L48-L103"><code>data_utils.py#L48-L103</code></a>，统计计算在 <a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/vla/datasets/rlds/utils/data_utils.py#L240-L260"><code>#L240-L260</code></a>。OXE 路径默认不归一化最后的 gripper 维，见 <a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/vla/datasets/rlds/oxe/materialize.py#L31-L43"><code>materialize.py#L31-L43</code></a>；具体 gripper 标准化仍受各 dataset transform 约束。</p>
+<h3 id="4-2-normalized-scalar-token-id">4.2 normalized scalar → token ID</h3>
+<p>令 <code>V</code> 为基础 tokenizer 的词表大小。代码构造 256 个均匀网格点</p>
+<div class="formula">\[
+e_j=-1+\frac{2j}{255},\qquad j=0,\ldots,255,
+\]</div>
+<p>然后对每个归一化标量做 <code>np.digitize</code>：</p>
+<div class="formula">\[
+b_i=\operatorname{digitize}(\operatorname{clip}(\tilde a_i,-1,1),e),\qquad
+t_i=V-b_i.
+\]</div>
+<p>这里 <code>b_i∈{1,\ldots,256}</code>，因此 <code>t_i</code> 落在词表末尾 256 个 ID。直觉是把每个动作维当作一个“特殊词”，使 LLM 能以标准 next-token prediction 生成动作。实现证据是 <a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/vla/action_tokenizer.py#L13-L47"><code>action_tokenizer.py#L13-L47</code></a>。</p>
+<h3 id="4-3-token-id-normalized-scalar">4.3 token ID → normalized scalar</h3>
+<p>代码以相邻网格点中心</p>
+<div class="formula">\[
+c_j=\frac{e_j+e_{j+1}}{2},\qquad j=0,\ldots,254
+\]</div>
+<p>作为重建值，并计算</p>
+<div class="formula">\[
+j_i=\operatorname{clip}(V-t_i-1,0,254),\qquad
+\hat{\tilde a}_i=c_{j_i}.
+\]</div>
+<p>变量与实现：<code>j_i</code> 是 255 个 center 的索引；由于 <code>np.digitize</code> 可能返回 256，代码把最后一个索引折叠到 <code>c_{254}</code>，见 <a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/vla/action_tokenizer.py#L49-L68"><code>action_tokenizer.py#L49-L68</code></a>。</p>
+<p><strong>论文—代码精确边界</strong>：</p>
+<ul><li>论文 <code>3.2</code> 的抽象表述是“每维 256 bins、得到 0…255 的整数、覆盖末尾 256 tokens”。[1]</li><li>frozen code 的实际重建表有 255 个 center；最大端点对应的两个离散索引最终映射到同一个最后 center。[2]</li><li>因而面试中可说“论文层是 256-way action token；这个 commit 的 decode 有 255 个 center 并处理上端点”，不要无条件说“存在 256 个不同连续重建值”。</li></ul>
+<h3 id="4-4">4.4 反归一化</h3>
+<div class="formula">\[
+\hat a_i=
+\begin{cases}
+\frac{\hat{\tilde a}_i+1}{2}(q_i^{99}-q_i^{01})+q_i^{01}, &amp; m_i=1,\\
+\hat{\tilde a}_i, &amp; m_i=0.
+\end{cases}
+\]</div>
+<p>该公式直接映射 <a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/models/vlas/openvla.py#L89-L103"><code>openvla.py#L89-L103</code></a>。它只恢复数据集 action units；代码没有证明各轴最终如何进入某个 controller，因此 controller axis/order/频率仍需具体 eval 或机器人 wrapper 证据。</p>
+<h2 id="5-labels">5. 训练目标、labels 与监控指标</h2>
+<p>令 <code>y_1,\ldots,y_T</code> 是 prompt、可选 stop token 与 action tokens 组成的语言序列，<code>M_k</code> 表示第 <code>k</code> 个 label 是否参与 loss。训练目标为：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{CE}}
+=-\frac{1}{\sum_k M_k}
+\sum_{k=1}^{T}M_k\log p_\theta(y_k\mid y_{&lt;k},I),
+\]</div>
+<p>其中 <code>I</code> 是投影后的图像 patch 条件。<code>RLDSBatchTransform</code> 把 prompt 部分设为 <code>IGNORE_INDEX=-100</code>；<code>PrismaticVLM.forward</code> 又给插入的视觉 patch 位置补 <code>IGNORE_INDEX</code>。默认 <code>predict_stop_token=True</code> 时，代码保留 <code>len(action)+1</code> 个尾部 labels，意味着 action token 加 stop/EOS；关闭后再 mask 最后一位。[2]</p>
+<p>实现链：</p>
+<ol><li><a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/vla/datasets/datasets.py#L44-L67"><code>datasets.py#L44-L67</code></a>：prompt/action token 序列和 prefix mask。</li><li><a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/models/vlms/prismatic.py#L388-L420"><code>prismatic.py#L388-L420</code></a>：图像 patch 插入及 patch-label mask。</li><li><a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/training/strategies/base_strategy.py#L285-L332"><code>base_strategy.py#L285-L332</code></a>：<code>output.loss.backward()</code> 是优化路径；action token accuracy 与 continuous L1 在其后计算并提交为 metrics。</li></ol>
+<p><strong>关键面试防线</strong>：</p>
+<ul><li>不能说“OpenVLA 用 L1 直接回归连续动作”；它用 token CE 训练。</li><li>也不能说“训练 loss 包含所有文本位置”；prompt 与 image patch labels 被 mask。</li><li>连续 L1 是将 argmax token 解码后的离线量化/预测误差指标，不等于 closed-loop success。</li></ul>
+<h2 id="6-action-chunk">6. 全量微调、单图限制与 action chunk 边界</h2>
+<h3 id="6-1">6.1 旗舰训练是全量微调</h3>
+<p>论文 <code>3.4</code> 说明最终训练中微调全部 7B 参数，并认为 vision encoder fine-tuning 对精细控制重要。[1] frozen config 的旗舰 OXE 变体继承 <code>freeze_vision_backbone=False</code>、<code>freeze_llm_backbone=False</code>；<code>train.py</code> 将其解析为 <code>vla-full-train</code>。[2]</p>
+<ul><li><a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/conf/vla.py#L63-L91"><code>conf/vla.py#L63-L91</code></a></li><li><a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/conf/vla.py#L124-L136"><code>conf/vla.py#L124-L136</code></a></li><li><a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/vla-scripts/train.py#L159-L180"><code>train.py#L159-L180</code></a></li></ul>
+<p>LoRA、冻结视觉 encoder、只解冻最后一层是支持的适配选项，不是旗舰预训练 recipe 的同义词。</p>
+<h3 id="6-2-base-openvla-chunk-policy">6.2 base OpenVLA 不是 chunk policy</h3>
+<p>论文的对照实验把 matched Diffusion Policy 配置成与 OpenVLA 一样：单图、无 proprio、无历史、单步相对动作；<code>Section 6</code> 又把 action chunking 列为未来改进方向。[1] frozen dataset config 的 <code>future_action_window_size=0</code> 与之对齐。[2]</p>
+<p>所以：</p>
+<ul><li>“OpenVLA 支持自回归生成多个 action dimensions”不等于“它预测未来 H 步 action chunk”。</li><li>生成 <code>d</code> 个 token 是一个 <code>d</code> 维当前动作，不是 <code>H×d</code> 的时间窗口。</li><li>OpenPiVLA 页面里的 <code>horizon=10</code> 必须由 openpi/FAST 或本地 eval config 证明，不能回填成 OpenVLA 机制。</li></ul>
+<h2 id="7-claim-to-code">7. Claim-to-code 总表</h2>
+<table><thead><tr><th>Claim</th><th>论文证据</th><th>frozen code 证据</th><th>判定</th><th>面试口径</th></tr></thead><tbody>
+<tr><td>视觉侧融合 DINOv2 + SigLIP，语言侧 Llama-2 7B</td><td>Abstract / <code>3.4</code></td><td><code>conf/models.py</code>、<code>dinosiglip_vit.py</code></td><td>direct</td><td>“Prismatic VLM backbone，融合两套视觉特征后投影进 Llama-2”</td></tr>
+<tr><td>输入为 image + language</td><td><code>3.2</code></td><td><code>RLDSBatchTransform</code>、<code>predict_action</code></td><td>direct</td><td>“旗舰路径是单 RGB 主视角 + 任务语言”</td></tr>
+<tr><td>默认包含 proprio / history / multi-view</td><td><code>6</code> 明确列为未来工作</td><td><code>load_proprio=False</code>、primary-only、window=1</td><td>rejected</td><td>不得这样描述原始 OpenVLA</td></tr>
+<tr><td>每个动作维度离散为 action token</td><td><code>3.2</code></td><td><code>ActionTokenizer</code></td><td>direct with nuance</td><td>论文 256-way；代码精确讲 256 token IDs / 255 centers</td></tr>
+<tr><td>占用 Llama 词表末尾 256 token</td><td><code>3.2</code></td><td><code>V-b_i</code> 映射</td><td>direct</td><td>“复用 least-used tail tokens，不新增完整 256 special tokens”</td></tr>
+<tr><td>训练用 action-token CE</td><td><code>3.2</code></td><td>masked labels + <code>output.loss.backward</code></td><td>direct</td><td>CE 是优化目标；L1 是 metric</td></tr>
+<tr><td>生成长度是固定 7</td><td>README Bridge 示例是 7-DoF</td><td><code>get_action_dim(unnorm_key)</code></td><td>rejected as universal</td><td>维度由 dataset norm stats 决定</td></tr>
+<tr><td>q01/q99 normalization</td><td><code>3.2</code></td><td><code>BOUNDS_Q99</code> 与 unnormalize</td><td>direct</td><td>训练、checkpoint 与 eval 必须共享同一 stats key</td></tr>
+<tr><td>原始 OpenVLA 使用 action chunk</td><td><code>6</code> 列为未来方向</td><td><code>future_action_window_size=0</code></td><td>rejected</td><td>单步动作；chunk 属其他路线/后续改造</td></tr>
+<tr><td>OpenVLA code 证明本地 FAST/Qwen/97.4%</td><td>无</td><td>无</td><td>rejected</td><td>只能进入 OpenPiVLA 独立证据合同</td></tr>
+</tbody></table>
+<h2 id="8-openpivla-fast">8. 与 OpenPiVLA / FAST 的真实性边界</h2>
+<table><thead><tr><th>名称</th><th>本页已核实的 action 表示</th><th>与本地项目的关系</th><th>当前状态</th></tr></thead><tbody>
+<tr><td>OpenVLA</td><td>q01/q99 scalar normalization → 每维离散 token → LM next-token CE → 单步动作</td><td>只能提供 action-token 对照和审计方法</td><td>upstream verified</td></tr>
+<tr><td>FAST</td><td>action window 的频域变换、量化与 BPE</td><td>本地页主要口述机制；不能由 OpenVLA 证明</td><td>下一个 source batch</td></tr>
+<tr><td>openpi / π0</td><td>本页不展开；需核对 flow action expert、state/action mask、solver</td><td>本地项目命名和 policy/eval contract 的主要上游候选</td><td>下一个 source batch</td></tr>
+<tr><td>本地 Qwen formal reproduction</td><td>assistant-side action JSON/token + LoRA</td><td>工程折中与训练语义恢复，不等同于 OpenVLA tokenizer 或原 action expert</td><td>local artifact pending</td></tr>
+<tr><td><code>224_h10_40000</code> / 97.4%</td><td>与 OpenVLA paper/repo 无直接关系</td><td>strongest archived eval，需 checkpoint + summary + protocol</td><td>local evidence pending</td></tr>
+</tbody></table>
+<p>对本地项目最重要的改写原则：</p>
+<ol><li>讲“action token”时先报具体 tokenizer 名称，不把 OpenVLA scalar bins、FAST 和 JSON serialization 混成同一算法。</li><li>讲“horizon”时说明它是 dataset target horizon、model output horizon 还是 controller execution/replan interval。</li><li>讲“97.4%”时先报 run/checkpoint/protocol，再讲方法；不能用上游 architecture 代替本地归因证据。</li></ol>
+<h2 id="9-phase-0">9. 对 Phase 0 题目的支持状态</h2>
+<table><thead><tr><th>Question ID</th><th>OpenVLA 证据覆盖</th><th>状态</th><th>仍缺</th></tr></thead><tbody>
+<tr><td>VLA-ARCH-001</td><td>VLM 通过可执行 action token 成为 policy</td><td>ready for OpenVLA example</td><td>传统 policy 与其他 VLA 对照</td></tr>
+<tr><td>VLA-ARCH-002</td><td>单图、语言、dataset-specific action stats 与 output</td><td>ready for OpenVLA subtype</td><td>generic proprio/multi-view schema</td></tr>
+<tr><td>VLA-ARCH-003</td><td>vision backbone + projector + LLM；无独立 continuous head</td><td>partial</td><td>π0 action expert / continuous heads</td></tr>
+<tr><td>VLA-ARCH-004</td><td>直接证明原 OpenVLA 缺 multi-view/proprio/history</td><td>negative evidence ready</td><td>Octo/π 系列正例</td></tr>
+<tr><td>VLA-ARCH-005</td><td>tokenization、mask、generation、decode、unnormalize 全链</td><td>ready</td><td>independent fact review</td></tr>
+<tr><td>VLA-ACT-002</td><td>q99 normalize / dataset-key unnormalize</td><td>ready for OpenVLA</td><td>openpi normalizer 与 controller</td></tr>
+<tr><td>VLA-ACT-003</td><td>quantile、网格、token、endpoint nuance</td><td>ready</td><td>量化误差实验与分布漂移案例</td></tr>
+<tr><td>VLA-ACT-004</td><td>tail-vocab mapping、begin index、decode</td><td>ready</td><td>FAST vocab/BPE 对照</td></tr>
+</tbody></table>
+<p>这些题仍然只是 <code>source-ready</code>，不是候选人已经掌握；正式题卡生成后仍应标为 <code>unseen</code>。</p>
+<h2 id="10">10. 风险与下一步</h2>
+<ol><li><strong>独立审查已完成</strong>：paper v3、frozen tokenizer/dataset/model/strategy 与 endpoint probe 已在 <a href="vol_03_openvla_endpoint_independent_fact_review.html">独立复核页</a> 直接核对，公共事实层为 <code>PASS WITH WARNING</code>；本页整体仍因本地项目边界保持 <code>WARN/PENDING</code>。</li><li><strong>paper/code 数值表述要分层</strong>：256 bins 是论文抽象；255 centers 是此 commit 的 decode 行为。</li><li><strong>checkpoint/config 仍是变量</strong>：Hugging Face exported implementation 与 Prismatic path 均存在，具体面试答案要报所使用路径。</li><li><strong>OpenPiVLA raw artifacts 未进入本页</strong>：不能据现有项目 HTML 确认 action axis、horizon、normalizer、controller 或 97.4% checkpoint。</li><li>π0、FAST 与 frozen <code>openpi</code> 已在后续 Audit B/E/F 页面分别复核；下一步只收集本地 OpenPiVLA checkpoint/action schema/normalization/controller artifact 或进行真实口述，不把 OpenVLA 上游合同迁移为个人项目事实。</li></ol>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Kim et al., <a href="https://arxiv.org/html/2406.09246v3">OpenVLA: An Open-Source Vision-Language-Action Model</a>, arXiv v3, 2024.</li><li><a href="https://github.com/openvla/openvla/tree/c8f03f48af692657d3060c19588038c7220e9af9">openvla/openvla</a>, frozen commit <code>c8f03f48af692657d3060c19588038c7220e9af9</code>, accessed 2026-07-16.</li><li>本地项目页：<a href="../../03_openpivla_action_modeling.html">OpenPiVLA：FAST 动作表示、Metax 迁移与策略评估复现</a>，当前为整理材料而非原始 artifact manifest。</li></ol>
+</article></body></html>

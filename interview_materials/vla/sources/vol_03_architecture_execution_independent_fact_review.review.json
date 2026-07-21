@@ -1,0 +1,41 @@
+{
+  "artifact": "sources/vol_03_architecture_execution_independent_fact_review.md",
+  "html": "sources/vol_03_architecture_execution_independent_fact_review.html",
+  "review_date": "2026-07-19",
+  "status": "independent_fact_reviewed",
+  "verdict": "PASS WITH WARNING",
+  "source_sha256": "7D4410DCAC384E663718B013DA5E4C298F87E63B16A024908EA8C433E15FD03E",
+  "evidence_cutoff": "2026-07-19",
+  "upstream": {
+    "rt2_revision": "arXiv 2307.15818v1",
+    "octo_revision": "arXiv 2405.12213v2",
+    "octo_commit": "241fb3514b7c40957a86d869fecb7c7fc353f540",
+    "openpi_commit": "15a9616a00943ada6c20a0f158e3adb39df2ccac",
+    "openvla_boundary": "covered by independent Audit A",
+    "pi0_flow_boundary": "covered by independent Audits B/E"
+  },
+  "checks": {
+    "primary_papers_and_frozen_code_read": "PASS",
+    "landscape_contract": "PASS WITH WARNING (token/readout/diffusion/flow routes separated; no cross-protocol ranking)",
+    "octo_readout_and_attention": "PASS (block-wise attention and passive readout semantics checked)",
+    "octo_loss_mask": "PASS (timestep/action conjunction and valid-count masked_mean checked)",
+    "octo_embodiment_slice": "PASS WITH WARNING (embodiment_action_dim and unnormalization slice checked; local schema unknown)",
+    "adaptation_routes": "PASS WITH WARNING (repo full/LoRA/head support is not a local training claim)",
+    "openpi_checkpoint_norm_transforms": "PASS (checkpoint type, norm asset and ordered transforms checked)",
+    "openpi_timing_scope": "PASS WITH WARNING (policy infer_ms covers sample_actions only, not end-to-end)",
+    "openpi_chunk_broker": "PASS WITH WARNING (cache/slice/requery/reset checked; stale/RPC/safety not covered)",
+    "droid_example_contract": "PASS WITH WARNING ([10,8] chunk and K=8 example-specific prefix checked)",
+    "synthetic_probes": "PASS (mask, norm, delta/absolute, broker and DROID prefix semantics)",
+    "html_static_validation": "PASS (one h1, MathJax, source metadata and local links)",
+    "browser_visual_check": "BLOCKED (file:// navigation restricted in current environment)",
+    "local_project_mapping": "PENDING (OpenPiVLA manifest/norm/schema/controller/latency/ownership missing)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Collect local OpenPiVLA checkpoint, tokenizer, norm, D/d/H/K, axis/unit and controller trace.",
+    "Instrument synchronized preprocess/model/transport/postprocess/queue timing on a real local request.",
+    "Execute parser/norm/padding/FIFO/stale/safety tests against the actual local rollout client.",
+    "Keep VLA-ARCH-007..012 and VLA-ACT-031..032 unseen until real oral practice."
+  ],
+  "next": "Run one VLA-ARCH-010/031 or OpenPiVLA ownership oral drill; do not generate new VOL 03 cards."
+}

@@ -1,0 +1,57 @@
+{
+  "artifact": "knowledge/vol_05_engineering_eval_eng012.md",
+  "html": "knowledge/vol_05_engineering_eval_eng012.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / VLA-ENG-012 / knowledge_14_of_44 / card_1_unseen",
+  "verdict": "WARN",
+  "source_sha256": "E7E851C69805371BAD3983785A77A83E2CCD1A01CA2AEA415263E3A044975784",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 13,
+    "new_nodes": 1,
+    "total_drafted_nodes": 14,
+    "covered_ids": [
+      "VLA-ENG-012"
+    ],
+    "drafted_cards_for_new_nodes": 1,
+    "practice_state": "not_started",
+    "difficulty": "L2",
+    "priority": "P1"
+  },
+  "source_scope": {
+    "source_freeze": "sources/vol_05_eng012_storage_formats_source_freeze.html",
+    "official_systems": [
+      "h5py 3.15.0",
+      "zarr-python v3.2.1",
+      "WebDataset frozen commit",
+      "Apache Parquet frozen format commit",
+      "PyArrow 22.0"
+    ],
+    "local_project_hook": "UWM/LIBERO DataLoader-only Zarr stall clue"
+  },
+  "checks": {
+    "bounded_slice": "PASS (only VLA-ENG-012 knowledge and its single card were drafted; ENG-013..016 remain deferred)",
+    "abstraction_boundary": "PASS (HDF5/Zarr array stores, WebDataset tar representation and Parquet columnar table are compared through workload rather than a universal ranking)",
+    "hdf5_semantics": "PASS WITH WARNING (contiguous/chunked layout, compression/resize and whole-chunk amplification sourced; concurrency excluded)",
+    "zarr_semantics": "PASS WITH WARNING (chunk/store/v3 sharding semantics sourced; cloud and performance superiority rejected)",
+    "webdataset_semantics": "PASS WITH WARNING (tar shard, basename grouping, sequential IterableDataset and shuffle buffer sourced; 3x-10x README claim not generalized)",
+    "parquet_semantics": "PASS WITH WARNING (row-group/column-chunk/page, metadata and PyArrow row-group access sourced; media-payload performance remains unverified)",
+    "formula": "PASS WITH WARNING (A_read is a correct logical/physical byte ratio and is explicitly not an HDF5 API or direct wall-time/FLOP estimator)",
+    "workload_mapping": "PASS WITH WARNING (random-window, sequential-stream, column-scan and hybrid layouts are benchmark shortlists, not final recommendations)",
+    "benchmark_contract": "PASS (cold/warm latency, logical/physical bytes, request/decode counts, worker/GPU wait, rank imbalance and failure radius included)",
+    "project_truth_boundary": "PASS (UWM stall remains a DataLoader-only local clue; no Zarr root cause, format conversion uplift or full-training speedup claimed)",
+    "minimum_module_contract": "PASS (intuition, mechanisms, formula, implementation mapping, pseudocode, trade-offs, bad cases, project hook and references included)",
+    "html_static_validation": "PASS (source SHA, one H1, fourteen H2, thirteen H3, two tables, seven code blocks and one formula block)",
+    "local_links": "PASS (all relative source/evidence links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "card": "PASS WITH WARNING (one atomic card generated separately and kept unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Independently review ENG-012 claim wording before changing the verdict from WARN.",
+    "Keep the VLA-ENG-012 atomic card unseen until the candidate answers it orally.",
+    "Collect a fixed request trace and matched candidate-layout benchmark before upgrading project performance claims.",
+    "Do not expand ENG-013..016 until their own source gates are ready."
+  ],
+  "next": "Run one-question-at-a-time oral practice for ENG-012 or begin an independent wording review; keep ENG-013..016 planned."
+}

@@ -1,0 +1,37 @@
+{
+  "artifact": "knowledge/vol_06_per007_open_vocabulary_grounding_pipeline.md",
+  "html": "knowledge/vol_06_per007_open_vocabulary_grounding_pipeline.html",
+  "source_freeze": "sources/vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / VLA-PER-007 / source_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "F058B5E2AFB127554FD8F6574C03C70446FC7909D963A3C33270E8FF534D7541",
+  "question_ids": [
+    "VLA-PER-007"
+  ],
+  "checks": {
+    "source_gate": "PASS WITH WARNING (Grounding DINO v5, pinned official repo, Transformers 4.57.1 and four local OPD files are frozen; local detector runtime artifacts remain missing)",
+    "architecture_pipeline": "PASS (feature enhancer, language-guided query selection, cross-modality decoder and QxL logits plus Qx4 box dataflow are separated)",
+    "prompt_token_contract": "PASS (raw/normalized prompt, candidate-label merge, punctuation, tokenizer/input_ids and max_text_len=256 truncation semantics are explained)",
+    "query_token_math": "PASS (dot-product logits, text-token padding mask, sigmoid and score-calibration boundary include variable and code mapping)",
+    "two_threshold_contract": "PASS (query/box gate and phrase-token gate use separate formulas, strict-greater-than semantics, edge cases and deterministic probes)",
+    "phrase_reconstruction": "PASS WITH WARNING (token indices, subwords, punctuation/remove_combined and Transformers input_ids decode are mapped; cross-version labels/text_labels types require golden tests)",
+    "box_and_nms_boundary": "PASS WITH WARNING (cxcywh-to-xyxy and PER-006 inverse are explicit; frozen helper has no NMS and any downstream policy remains unverified)",
+    "typed_manifest_and_pseudocode": "PASS (raw logits, prompt/revision, thresholds, phrase tokens, processed/raw boxes, optional NMS trace and validity are represented in auditable pseudocode)",
+    "explicit_vs_generative": "PASS (Grounding DINO-style detector and Qwen/OPD generative grounding are compared by tensors, scores, thresholds, parser and debugging artifacts)",
+    "failure_and_evaluation": "PASS (prompt, truncation, matching, query/phrase gates, geometry, duplicate, API and project failures lead to a matched evidence-first check order)",
+    "project_truth_boundary": "PASS (local OPD supports a generative tagged-coordinate pipeline hook; no GroundingDINO/NMS deployment, robot success, ownership or causal uplift is asserted)",
+    "cross_volume_dedup": "PASS (PER-006 preprocessing, PER-001 schema/coordinates, PER-008 representation, PER-009 loss and PER-010 metric responsibilities remain separate)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, nineteen H2, twelve H3, nine tables, five code blocks, eight local links, canonical/HTML/review SHA and anchors valid; zero formula-em/control-character issues)",
+    "browser_visual_check": "BLOCKED (in-app Browser URL policy rejected local file:// pages in this environment; static checks do not substitute for visual QA)",
+    "question_card": "PASS WITH WARNING (one VLA-PER-007 atomic card is synchronized and counted globally; it remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized VLA-PER-007 atomic card unseen until a real oral drill.",
+    "Archive an actual local detector checkpoint/config, raw QxL logits, input_ids and threshold/NMS traces before making detector-runtime claims.",
+    "Run matched threshold/calibration evaluation before comparing precision/recall or connecting grounding to action.",
+    "Do not create coaching_state.md or change mastery before a real oral drill."
+  ],
+  "next": "PER-009 source+knowledge+card are synchronized and unseen; generate only the PER-010 metric/parser source freeze next."
+}

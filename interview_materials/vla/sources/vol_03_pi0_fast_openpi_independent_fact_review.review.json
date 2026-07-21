@@ -1,0 +1,53 @@
+{
+  "artifact": "sources/vol_03_pi0_fast_openpi_independent_fact_review.md",
+  "html": "sources/vol_03_pi0_fast_openpi_independent_fact_review.html",
+  "review_date": "2026-07-19",
+  "status": "independent_fact_reviewed / audit_b / pi05_fast_norm_rollout_checked / PASS WITH WARNING",
+  "verdict": "PASS WITH WARNING",
+  "source_sha256": "E19A70F7B653F84B412EF1916BD1F70AF194F6DD396E64C5891DC29FD0EEE4B7",
+  "frozen_upstream": {
+    "pi05_paper": "arXiv 2504.16054v1",
+    "pi05_pdf_sha256": "6A1029FD8AB6944B74CF22F5E5D30E60BC15699D964B2900AF799B807A34B64C",
+    "fast_paper": "arXiv 2501.09747v1",
+    "fast_pdf_sha256": "3739B31F5FECDDE371509FF5BB13619979734E894A255A9B264253F4CC53934A",
+    "openpi_commit": "15a9616a00943ada6c20a0f158e3adb39df2ccac",
+    "fast_hub_revision": "ec4d7aa71691cac0b8bed6942be45684db2110f4",
+    "raw_file_sha256": {
+      "pi0_fast.py": "627332A555046F2744EF144C45F8BD3361A9820CF68854A4528D0FDBBA7E9AA3",
+      "pi0_config.py": "D321858C30B398126035EA2B6DA09E1C422EEEEBB5EBF8DF631DAF9DC77647FA",
+      "tokenizer.py": "965BE8B3C393A6811875BBC32DA9E01CC2F87802DE801CF7293E049748C",
+      "transforms.py": "A1B94E9E72849A18834778F229C6BB389A495EB7FBE0AA800EDEA728B9424FF4",
+      "libero_policy.py": "D8679D99FACC3FEF48DA07406081B20709ED872FCEFDF7DE67EDE99422D623FA",
+      "libero_main.py": "D53748C95804ADA559E3CA867305B8F755D8651C4C7F4E2723EF80AEA55A3943",
+      "training/config.py": "C34231F888AB5DC981D808765B3D98775AB845B04313BF53FCECD567C520B0D",
+      "fast_processor.py": "6F021CA1F4C1B194AB6FA399D80BAF3D642EADB17EFB8F73301E4AC401522C20",
+      "fast_config.json": "F40CFBB1020858FE1D48C0F946B0C1315A90D6E84AA82710036F24F4C167706A",
+      "norm_stats.md": "62E4A39EA7FCDAE53B4466942DB348C3E38FC016B7F7A5273CAFED649EBE614B"
+    }
+  },
+  "checks": {
+    "pi05_two_stage_recipe": "PASS (paper pre-training FAST discrete tokens and post-training continuous flow expert directly checked)",
+    "pi05_joint_loss_boundary": "PASS WITH WARNING (paper CE+flow objective separated from frozen Pi0(pi05=True) flow path; Pi0FAST CE path checked)",
+    "fast_algorithm": "PASS (quantile normalization, temporal DCT, scale-round, frequency-first flatten and BPE order checked)",
+    "fast_defaults_boundary": "PASS WITH WARNING (paper single-dataset vocab 1024 separated from Hub revision vocab 2048 and min_token -354)",
+    "fast_processor_normalization": "PASS (Hub processor and OpenPI FASTTokenizer do not perform q01/q99 normalization)",
+    "fast_mask_and_decode": "PASS WITH WARNING (prefix/postfix masks, truncation and zero fallback on malformed decode checked)",
+    "model_config_dimensions": "PASS (Pi0 D=32/H=50 and Pi0FAST D=32/H=32 frozen defaults checked)",
+    "padding_and_output_slice": "PASS WITH WARNING (PadStatesAndActions and Libero first-7 output slice checked; no positive local loss mask)",
+    "normalization_contract": "PASS WITH WARNING (stats alongside checkpoint, quantile formula and no automatic clip checked)",
+    "libero_rollout_contract": "PASS WITH WARNING (180-degree flip, resize, replan=5, 50 trials, seed=7 and success logging checked as official example only)",
+    "deterministic_probes": "PASS (DCT roundtrip, quantile out-of-range, pad/slice and queue probes reproduced expected boundaries)",
+    "project_truth_boundary": "PASS WITH WARNING (local class/checkpoint/revision/stats/axes/H/K/controller/eval/ownership remain open)",
+    "html_static_validation": "PASS (canonical/review SHA, one H1, zero formula-em pollution, zero control characters and no missing local links)",
+    "browser_visual_check": "PASS WITH WARNING (localhost desktop 1440x1000 and narrow 800x1000; one H1, academic TOC and no page-wide overflow verified)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the validated pi05/FAST/OpenPI facts and SHA/H1/formula/link contract synchronized.",
+    "Collect local OpenPiVLA model class, checkpoint, tokenizer revision, normalization assets, action schema, H/K, controller and eval artifacts.",
+    "Run positive local valid-dimension/loss-mask and malformed-token safety tests when project code is available.",
+    "Do not attribute upstream hybrid recipe, official example values or deterministic probes to the candidate.",
+    "Keep all 44 VOL 03 cards unseen until oral practice."
+  ],
+  "next": "Independently review Source Audit C ACT paper/code gap or run one real oral drill; keep all cards unseen."
+}

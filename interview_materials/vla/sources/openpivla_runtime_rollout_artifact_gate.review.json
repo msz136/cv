@@ -1,0 +1,40 @@
+{
+  "artifact": "sources/openpivla_runtime_rollout_artifact_gate.md",
+  "html": "sources/openpivla_runtime_rollout_artifact_gate.html",
+  "review_date": "2026-07-21",
+  "status": "local_direct_audit / immutable_summary_read / true_physics_rollout / WARN",
+  "verdict": "WARN",
+  "source_sha256": "A383592EB99F0332529C572AB20DE12C9D03AEFD29CB3AA16FC74CC5A7E5AB57",
+  "evidence_cutoff": "2026-07-21",
+  "local_sources": {
+    "project_root": "C:\\Users\\mousongzhe\\project\\openpivla_deployment",
+    "deployment_sha256": "C0A3DD0C0DA8C1C0D36023046D5337900A71680B413657BC9B1062EEF2EEA14E",
+    "rollout_summaries": {
+      "aloha_sim_real_rollout_20260608_154324": "27E4A04C01FD3AA6DDB387B59B519C4B3CC17DF94961EEB17686A160AECE1C13",
+      "aloha_sim_visual_rollout_real_v1": "CB1E331A82AE032C564FD74CE5F6E01CB1875EAC3A3DF4479943E7C8B4891687",
+      "libero_franka_true_rollout_v1": "341E77110D75E50B601A078923F51EF8FA39AAA045FA491843A1003B0320E1DB"
+    }
+  },
+  "checks": {
+    "deployment_record_read": "PASS (checkpoint/config/environment/result sections read)",
+    "aloha_summary_read": "PASS (3 episodes, 2/3 success, finite state, trajectory/video inventory)",
+    "aloha_visual_summary_read": "PASS (6 cameras, 2 episodes, 1/2 success, multiview artifacts)",
+    "libero_summary_read": "PASS (task-level 70-step model/no-op comparison, 0 reward, false success)",
+    "artifact_hashes": "PASS (deployment record and three summary JSON SHA-256 frozen)",
+    "claim_boundary": "PASS WITH WARNING (deployment/runtime separated from fine-tune, benchmark and ownership)",
+    "checkpoint_lineage": "PASS WITH WARNING for LIBERO load/serve/client (linked gate freezes Orbax restore, normalizer and connection logs); ALOHA load log and immutable checkpoint manifests remain absent",
+    "independent_scorer": "WARN (small smoke runs; no full benchmark matrix or independent scorer bundle)",
+    "ownership": "PENDING (candidate per-file role and pre-snapshot diff not confirmed)",
+    "html_static_validation": "PASS (one h1, source SHA, MathJax-safe template and local links)",
+    "browser_visual_check": "PASS WITH WARNING (localhost desktop 1440x1000 and narrow 800x1000; one H1, academic palette/serif, sticky-to-static TOC, contained tables/code/formulas, zero page-wide overflow)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "LIBERO load/serve/client log is now frozen; add per-file checkpoint and norm-stats SHA, exact argv and shared run UUID for an immutable manifest.",
+    "Run one matched LIBERO probe fixing observation keys, action shape, axis/order/unit, normalizer, controller and scorer.",
+    "Confirm candidate ownership and collaboration/tool-assistance boundary before using first-person contribution claims.",
+    "Keep ALOHA 2/3 and LIBERO 0/1 as smoke/deployment evidence, not generalized benchmark results.",
+    "Do not create or upgrade question-card mastery until a real oral answer is recorded."
+  ],
+  "next": "Collect the missing immutable checkpoint manifest or perform one matched LIBERO diagnostic probe; then map the new load-lineage evidence to a single unseen project question card."
+}

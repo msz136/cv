@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：PER-002 原子题卡</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_06_per002.md">
+<meta name="aris:source-sha256" content="3b12bf46f4df25440ab34ac39ad7cf78dbfe96ab04b3bd9993611f7688f4b073">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>3b12bf46f4df25440ab34ac39ad7cf78dbfe96ab04b3bd9993611f7688f4b073</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_06_per002.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#2d-grounding-3d-target">2D Grounding 如何变成可信的 3D Target</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：PER-002 原子题卡</h1>
+<div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-18 覆盖范围：<code>VLA-PER-002</code> 难度：L3 1 题 优先级：P0 1 题 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_06_per002_3d_lift_frame.html">PER-002 3D Lift / Frame Knowledge</a>；来源边界见 <a href="../sources/vol_06_per002_3d_lift_frame_source_freeze.html">Source Freeze</a>。</div>
+<h2 id="2d-grounding-3d-target">2D Grounding 如何变成可信的 3D Target</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>VLA-PER-002</b> · 一个 grounding point 怎样才能安全地进入 planner 或 controller？</summary>
+<p><strong>面试意图</strong>：判断你能否把深度、标定、frame、时间同步和不确定性组成可审计链路，而不是把二维中心直接当抓取点。</p>
+<p><strong>30 秒回答</strong>：先固定 rectified pixel、depth 单位和 <code>K/distortion</code>，用反投影得到 camera point，再用带时间戳的 <code>T_target←camera</code> 变到目标 frame；做 invalid/uncertainty gate 后才交给 planner。2D holdout 不等于 3D 或闭环成功。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：深度可来自 RGB-D、stereo、triangulation 或平面假设，记录单位、invalid 和 registration。对 rectified <code>(u,v,Z)</code>，<code>X=(u-cx)Z/fx</code>、<code>Y=(v-cy)Z/fy</code>、<code>Zc=Z</code>；再用 <code>T_target←camera(τ)</code> 变换，绑定 frame、timestamp、calibration revision。crop/letterbox 要先逆变换；depth 无效、TF 不同步或 uncertainty 超阈值就返回 invalid/safe branch。OpenCV/ROS 只支持机制；OPD 是 2D holdout，WAM 只有 camera/controller 字段，不能声称个人完成 3D lift。</p>
+<p><strong>诊断 / 证据</strong>：固定 <code>K/distortion/image_size</code>、depth unit、frame IDs 和 timestamp，使用 known geometry 做 pixel→camera→pixel roundtrip；再做 camera↔target 逆变换 smoke、静态/运动同步对照、invalid-depth 注入和 uncertainty gate。保存 calibration/reprojection error、TF revision、depth valid mask、planner input/output 与 controller trace；缺任一项就停在 projection/calibration 层。</p>
+<p><strong>项目挂钩</strong>：OPD 可用于说明 point/box/text 协议与静态 scorer；WAM manifest 可说明 camera、controller、horizon 的 rollout provenance。安全表达是“我能审计 3D lift 合同和缺口”，不把这些材料升级为抓取、导航或真机成功。</p>
+<p><strong>追问树</strong>：为什么 RGB 图像没有唯一深度？畸变 pixel 能否直接套 pinhole？<code>T_target←camera</code> 方向怎样核对？为什么要用 capture-time TF？depth 单位错会怎样？ROS REP-103 是项目事实吗？overlay 看起来对能否证明 controller 正确？</p>
+<p><strong>易错点</strong>：把 2D 中心当 3D 点；<code>K</code> 与 resize image size 不匹配；忽略畸变、padding、depth invalid 或 mm/m；camera→base 方向写反；使用最新而非 capture-time TF；只做 overlay 不做 roundtrip。</p>
+<p><strong>危险答案</strong>：说“有 RGB 就能恢复深度”“4×4 外参矩阵不需要 frame/时间戳”“ROS 轴序默认适用于所有项目”“3D 点生成就等于抓取成功”或“OPD/WAM 的静态/rollout证据证明 3D 泛化”。</p>
+<p><strong>来源</strong>：[1][2][3][4]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../knowledge/vol_06_per002_3d_lift_frame.html">PER-002 3D Lift / Frame Knowledge</a>：内参、深度、反投影、TF、同步、不确定性与证据阶梯。</li><li><a href="../sources/vol_06_per002_3d_lift_frame_source_freeze.html">PER-002 3D Lift / Frame Source Freeze</a>：OpenCV、ROS REP-103/105 与项目边界。</li><li><a href="https://github.com/opencv/opencv/tree/f7dd7df170add1655de75b5e95f20f41d2a88293">OpenCV calibration/depth tutorials</a>：camera matrix、distortion、stereo/depth 机制。</li><li><a href="https://github.com/ros-infrastructure/rep/tree/11ca24a41f31480dfb9562ba99f2a5b93d3ebda5">ROS REP-103/105</a>：单位、坐标和移动平台 frame convention。</li></ol>
+</article></body></html>

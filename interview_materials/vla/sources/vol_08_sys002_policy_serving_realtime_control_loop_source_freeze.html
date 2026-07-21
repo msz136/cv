@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 08 SYS-002 Source Freeze：Policy Serving 与 Real-time Control Loop</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.md">
+<meta name="aris:source-sha256" content="45d78013c69c5727017cea56c1c563333d92b173406104bc963a3ba31da2e694">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>45d78013c69c5727017cea56c1c563333d92b173406104bc963a3ba31da2e694</code>；生成自：<code>interview_materials\vla\sources\vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-revision-claim-boundary">2. 冻结来源、Revision、许可与 Claim Boundary</a></li><li><a href="#3-claim-registry-inference">3. Claim Registry：可写、需标 inference、必须拒绝</a></li><li><a href="#4-source-direct-serving-path-schema-boundary">4. Source-direct Serving Path 与 Schema Boundary</a></li><li><a href="#4-1-frozen-openpi">4.1 frozen OpenPI 最小路径</a></li><li><a href="#4-2-request-envelope-design-inference">4.2 建议冻结的 request envelope（design inference）</a></li><li><a href="#5-state-ownership">5. 状态所有权（State Ownership）</a></li><li><a href="#6-timing-deadline-action-freshness">6. Timing、Deadline 与 Action Freshness</a></li><li><a href="#6-1-critical-path">6.1 端到端 critical path</a></li><li><a href="#6-2-chunk">6.2 chunk后续动作也会变旧</a></li><li><a href="#6-3-deadline">6.3 deadline传播</a></li><li><a href="#7-admission-backpressure-batching-boundary">7. Admission、Backpressure 与 Batching Boundary</a></li><li><a href="#8-real-time-safety-fail-closed-boundary">8. Real-time 与 Safety 的 Fail-closed Boundary</a></li><li><a href="#8-1-soft-real-time-hard-real-time-rpc">8.1 soft real-time、hard real-time 与普通RPC</a></li><li><a href="#8-2-cancellation-physical-stop">8.2 cancellation不是physical stop</a></li><li><a href="#9">9. 本地项目证据与真实性边界</a></li><li><a href="#9-1-openpivla-local-direct">9.1 本轮重新哈希的 OpenPiVLA local-direct 文件</a></li><li><a href="#9-2">9.2 五项目边界</a></li><li><a href="#10-deterministic-source-probes">10. Deterministic Source Probes</a></li><li><a href="#11-knowledge">11. Knowledge 下游允许与禁止的命题</a></li><li><a href="#11-1-sys-vla-002-knowledge">11.1 可以进入 SYS-VLA-002 knowledge</a></li><li><a href="#11-2">11.2 不能进入强回答</a></li><li><a href="#12-source-gate">12. Source Gate 结论与下一切片</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 08 SYS-002 Source Freeze：Policy Serving 与 Real-time Control Loop</h1>
+<div class="meta">状态：<code>source_frozen / SYS-VLA-002 / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本页冻结 policy client/server、request/response、action chunk/replan、deadline/backpressure 与 real-time boundary 的来源和项目真实性边界；下游 knowledge/card 已在独立 bounded slice 生成，仍不改变 mastery，不把设计建议写成 OpenPI 或个人项目既有实现。 前置：<a href="vol_08_coding_system_design_coverage_gap_audit.html">VOL 08 Coverage-Gap Audit</a>、<a href="vol_08_sys001_vla_training_eval_platform_source_freeze.html">SYS-VLA-001</a>、<a href="vol_05_eng022_policy_server_resilience_source_freeze.html">ENG-022</a>、<a href="vol_05_eval013_end_to_end_latency_deadline_jitter_source_freeze.html">EVAL-013</a> 与 <a href="../evidence/projects/openpivla_ownership_ledger.html">OpenPiVLA Ownership Ledger</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>怎样把 VLA 模型接入实时控制环，而不把“有一个 WebSocket demo”误称为生产 policy service？需要冻结哪些 request/response schema、状态所有权、action chunk/replan、deadline、backpressure、batching、controller 与 fail-safe 边界，才能回答端到端系统设计追问？</p>
+<h2 id="1">1. 结论先行</h2>
+<ol><li>frozen OpenPI 提供了一个可核的最小 serving baseline：服务端连接后先发 metadata，再按 <code>recv observation → policy.infer → attach timing → send action result</code> 处理；同步客户端执行 <code>send → recv</code>。它没有显式 request ID、deadline、admission queue、dynamic batching、cancellation propagation 或 robot watchdog。</li><li>action-chunk 状态位于 client/consumer 侧：<code>ActionChunkBroker</code> 缓存上次结果与当前 cursor；LIBERO example 默认每 5 步重新请求并只执行 chunk 前 5 步，DROID example 以可配置 open-loop horizon 决定何时重新请求。以上是固定 example 合同，不是所有 VLA 的通用 H/K。</li><li>OpenPI 的 <code>server_timing.infer_ms</code> 与 <code>prev_total_ms</code> 只能支持 server-local timing；它不包含 observation capture、排队、网络、client postprocess、controller apply 或后续 chunk action age，不能证明 control-loop deadline。</li><li>CPython、Triton、gRPC 与 ROS 2 来源分别支持 bounded queue、batch queue policy、deadline/propagation、fresh sensor queue 与 real-time profiling机制；把这些机制组合成 VLA service 是本仓库的系统设计综合，不是 OpenPI 现状。</li><li>本地 OpenPiVLA 有 official WebSocket client 的 offline action-eval入口与 connect/infer timeout wrapper；另一个 ALOHA rollout 是 in-process policy + <code>ActionChunkBroker</code>，不是网络 policy server。它们支持 eval-interface engineering，不支持 production p99、batching、multi-robot fairness、cancel propagation、hard real-time 或 physical safety claim。</li><li>本轮14/14 deterministic source probes通过；但缺少可执行统一服务、schema version/request ID、端到端 timestamp trace、load/fault injection、controller watchdog/e-stop、formal checkpoint bundle 与候选人逐项 ownership，因此 verdict 保持 <code>WARN</code>。</li></ol>
+<h2 id="2-revision-claim-boundary">2. 冻结来源、Revision、许可与 Claim Boundary</h2>
+<p>所有公开 SHA 对2026-07-20重新取得的 pinned UTF-8 原文按 LF 计算；本地 SHA 对当前文件字节计算。<code>checked</code> 只证明指定来源仍可取得且内容 hash 匹配，不证明用户运行了该系统。</p>
+<table><thead><tr><th>ID</th><th>来源</th><th>类型 / revision / license</th><th>SHA-256</th><th>支持</th><th>不支持</th></tr></thead><tbody>
+<tr><td>S1</td><td>OpenPI <a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/serving/websocket_policy_server.py"><code>websocket_policy_server.py</code></a></td><td>official-code；<code>openpi@15a9616a...</code>；Apache-2.0</td><td><code>1370D345E6C3C5B8F15573050E485E60A5B423D1DF33E24B237805E6B442B026</code></td><td>metadata、msgpack、recv→infer→send、server timing 与 connection/error path</td><td>queue/batch/deadline/request ID/watchdog 已实现</td></tr>
+<tr><td>S2</td><td>OpenPI <a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/scripts/serve_policy.py"><code>scripts/serve_policy.py</code></a></td><td>official-code；同 commit/license</td><td><code>ECCC0448B4873FD30A1FFF3355C5DE7A7C227138E6DB04B7DCAA5BB38A6A5809</code></td><td>default/checkpoint policy、metadata、recorder 与 server 启动入口</td><td>production deployment、SLO、autoscaling</td></tr>
+<tr><td>S3</td><td>OpenPI <a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/policies/policy.py"><code>policy.py</code></a></td><td>official-code；同 commit/license</td><td><code>A2AC5236E23B11D0F5A840D4A8FEF148D89DBA921D5452EC5DFCD5A6FFA46F20</code></td><td>input/output transform、normalization、sampling 与 timing boundary</td><td>controller schema、network deadline、robot safety</td></tr>
+<tr><td>S4</td><td>OpenPI <a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/packages/openpi-client/src/openpi_client/websocket_client_policy.py"><code>websocket_client_policy.py</code></a></td><td>official-code；同 commit/license</td><td><code>36557CB0B91CCF31CD4FB4B508306850D76ED0FEB4028DAC5182D0F5A5D88005</code></td><td>connect/retry、metadata、同步 send/recv 与 error-string boundary</td><td>timeout/deadline/request ID/cancel 已实现</td></tr>
+<tr><td>S5</td><td>OpenPI <a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/packages/openpi-client/src/openpi_client/action_chunk_broker.py"><code>action_chunk_broker.py</code></a></td><td>official-code；同 commit/license</td><td><code>019B9D69CB26CC681331A2F95DBE60A2CC7B02D6D309C5D15B6457AB39798234</code></td><td>cached result、cursor、逐步 slice 与 horizon reset</td><td>stale-response ID、deadline 或安全检查</td></tr>
+<tr><td>S6</td><td>OpenPI <a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/examples/libero/main.py"><code>examples/libero/main.py</code></a></td><td>official-code；同 commit/license</td><td><code>D53748C95804ADA559E3CA867305B8F755D8651C4C7F4E2723EF80AEA55A3943</code></td><td><code>replan_steps=5</code>、chunk length assertion、执行前K步与 success logging</td><td>通用机器人K值、real-time SLO、真机安全</td></tr>
+<tr><td>S7</td><td>OpenPI <a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/examples/droid/main.py"><code>examples/droid/main.py</code></a></td><td>official-code；同 commit/license</td><td><code>4BDBDBDDE068EBB30BA90D62BF8C51DF156B4BAAE5C5AC5870C08F7B03D4AFC2</code></td><td>client query cadence、<code>[10,8]</code> example、env step 与 control-frequency sleep</td><td>通用action shape、deadline guarantee、用户项目实现</td></tr>
+<tr><td>S8</td><td>OpenPI <a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/LICENSE"><code>LICENSE</code></a></td><td>official-license；Apache-2.0</td><td><code>43070E2D4E532684DE521B885F385D0841030EFA2B1A20BAFB76133A5E1379C1</code></td><td>上述code许可边界</td><td>checkpoint/model-card许可自动相同</td></tr>
+<tr><td>S9</td><td>CPython <a href="https://github.com/python/cpython/blob/2931f2067a6ecdc52cb44f694ce14ab8b50b9a32/Doc/library/asyncio-queue.rst"><code>asyncio-queue.rst</code></a></td><td>official-doc；<code>cpython@2931f2...</code>；PSF-2.0</td><td><code>C7312064E8C18F1E45656BBABB59949CDD0ADF258F32595D073B2E66593244D2</code></td><td><code>maxsize</code>、blocking put、<code>QueueFull</code>、queue op无timeout参数</td><td>OpenPI 已使用此queue</td></tr>
+<tr><td>S10</td><td>CPython <a href="https://github.com/python/cpython/blob/2931f2067a6ecdc52cb44f694ce14ab8b50b9a32/Doc/library/asyncio-task.rst"><code>asyncio-task.rst</code></a></td><td>official-doc；同 commit/license</td><td><code>1D833356E1A5977399A0668EF7A07223DB793CC1A1BCAD4DAE4934D8D8434CD2</code></td><td><code>timeout</code>/<code>wait_for</code>、cancellation 与 TimeoutError 语义</td><td>GPU kernel 或 robot side-effect 已被取消</td></tr>
+<tr><td>S11</td><td>Triton <a href="https://github.com/triton-inference-server/server/blob/0ae38c793358f8db77a9cbc1d1bde984619d5c1b/docs/user_guide/model_configuration.md"><code>model_configuration.md</code></a> / <a href="https://github.com/triton-inference-server/server/blob/0ae38c793358f8db77a9cbc1d1bde984619d5c1b/docs/user_guide/batcher.md"><code>batcher.md</code></a></td><td>official-doc；<code>server@0ae38c...</code>；BSD-3-Clause</td><td>config <code>01E50042A66024AD5C9143E7AA3F43B0338F29F8EF6CC42979909589774B8151</code>；batcher <code>577E45C86B65A73E42ACA1BB406D48A5EDF25540E9312DE904388AE69C1F9505</code></td><td>batch dimension、preferred batch、queue delay/size、timeout action</td><td>VLA schema天然可batch或OpenPI使用Triton</td></tr>
+<tr><td>S12</td><td>gRPC <a href="https://github.com/grpc/grpc.io/blob/78db5a6f78ee0d3426cf53cee07739196d962ea2/content/en/docs/guides/deadlines.md">Deadlines</a></td><td>official-doc；<code>grpc.io@78db5a6...</code>；content CC BY 4.0 / samples Apache-2.0</td><td><code>E310A0E5A4BDC8F353EF04A641336D9A51176FFAA0BA0EE8B8B1AAD98263A900</code></td><td>deadline vs timeout、<code>DEADLINE_EXCEEDED</code>、server cancellation与propagation</td><td>OpenPI WebSocket 自动具有gRPC语义</td></tr>
+<tr><td>S13</td><td>ROS 2 <a href="https://github.com/ros2/design/blob/93a415bf928751d37fce6f83215c521658e20c93/articles/qos.md">QoS design</a></td><td>official-design；<code>ros2/design@93a415...</code>；Apache-2.0</td><td><code>E4C8F7A73ABBC2B367017C3A2E5637A9CCD3A2914F68D9F8BC92EE46DFE11E41</code></td><td>keep-last/depth、sensor timely-over-reliable设计边界</td><td>latest-wins必然适合action或保证稳定</td></tr>
+<tr><td>S14</td><td>ROS 2 <a href="https://github.com/ros2/demos/blob/54d49d22e898d796ea476c42268757ad422bf878/pendulum_control/README.md"><code>pendulum_control/README.md</code></a></td><td>official-code/doc；<code>ros2/demos@54d49d...</code>；Apache-2.0</td><td><code>55CF38FB84378228C3F031F88985A2BC016B7524B2BF79C6FB0978A43D29C3FF</code></td><td>deadline latency、page fault、memory lock、priority 与 latency spike boundary</td><td>WebSocket/JAX/Python loop是hard real-time</td></tr>
+</tbody></table>
+<p>许可复核：CPython <code>LICENSE</code> SHA <code>B0E25A78...10231</code>；Triton <code>LICENSE</code> SHA <code>179F3734...0036</code>；ROS design/demo <code>LICENSE</code> SHA 分别为 <code>0E18850F...B76A</code> / <code>CFC7749B...D30</code>；gRPC repo <code>LICENSE</code> SHA <code>9E3D1E4B...0201</code>。</p>
+<h2 id="3-claim-registry-inference">3. Claim Registry：可写、需标 inference、必须拒绝</h2>
+<table><thead><tr><th>Claim</th><th>类型</th><th>证据</th><th>Verdict / 边界</th></tr></thead><tbody>
+<tr><td>frozen OpenPI server按连接先发metadata，再循环recv→infer→send</td><td>official-code direct</td><td>S1</td><td><code>checked</code>；仅该commit</td></tr>
+<tr><td>frozen OpenPI client是同步send→recv并读取metadata</td><td>official-code direct</td><td>S4</td><td><code>checked</code>；没有因此获得deadline/cancel</td></tr>
+<tr><td>OpenPI返回server-local infer/previous-total timing</td><td>official-code direct</td><td>S1/S3</td><td><code>checked</code>；不等于E2E/action age</td></tr>
+<tr><td>action chunk cursor/client-side replan可由broker/examples实现</td><td>official-code direct</td><td>S5/S6/S7</td><td><code>checked</code>；H/K是example/config，不是标准</td></tr>
+<tr><td>bounded admission、dynamic batching、deadline propagation是生产设计所需机制</td><td>cross-source synthesis</td><td>S9–S13 + ENG-022/EVAL-013</td><td><code>inference / design requirement</code>；不得称OpenPI已实现</td></tr>
+<tr><td>observation queue可采用latest-wins/keep-last以限制staleness</td><td>same-source inference</td><td>S13</td><td>仅适合允许丢旧观测的协议；不能套到action或side effect</td></tr>
+<tr><td>Python WebSocket policy server满足hard real-time</td><td>unsupported</td><td>S1/S4/S14</td><td><code>rejected</code>；缺scheduler/memory/page-fault/deadline证据</td></tr>
+<tr><td>用户完成production policy service或multi-robot serving</td><td>unsupported personal claim</td><td>local evidence gate</td><td><code>rejected</code>；当前只有局部eval/rollout入口</td></tr>
+<tr><td>server timeout后物理robot一定停止</td><td>unsupported safety claim</td><td>S10 + missing controller evidence</td><td><code>rejected</code>；software cancel与physical stop分层</td></tr>
+</tbody></table>
+<h2 id="4-source-direct-serving-path-schema-boundary">4. Source-direct Serving Path 与 Schema Boundary</h2>
+<h3 id="4-1-frozen-openpi">4.1 frozen OpenPI 最小路径</h3>
+<pre><code class="language-text"># Official-code direct at openpi@15a9616a; not a production topology.
+client connect
+  &lt;- server metadata (one message)
+client pack(observation) -&gt; WebSocket bytes
+server unpack -&gt; policy.infer(observation)
+server attach server_timing -&gt; pack(action result)
+client recv -&gt; unpack(result)
+consumer selects/executes action rows</code></pre>
+<p>S1/S4直接支持消息顺序与msgpack边界。当前文件中没有正式 schema version、request ID、observation timestamp、absolute deadline、model revision echo、action expiry、controller acknowledgement 或 retry/idempotency key。metadata可以承载部分identity，但“可以承载”是设计可能性，不是当前字段已齐全。</p>
+<h3 id="4-2-request-envelope-design-inference">4.2 建议冻结的 request envelope（design inference）</h3>
+<p>后续knowledge只能把下列字段写成“面试设计合同”，不能写成OpenPI现有字段：</p>
+<table><thead><tr><th>类别</th><th>最小字段</th><th>作用</th></tr></thead><tbody>
+<tr><td>identity</td><td><code>request_id/session_id/robot_id/model_revision/schema_version</code></td><td>去重、路由、回包关联与审计</td></tr>
+<tr><td>observation</td><td><code>capture_ts/clock_id/camera_ids/state/action_history/prompt</code></td><td>计算age、保证camera/state语义</td></tr>
+<tr><td>timing</td><td><code>deadline_abs/enqueue_ts/infer_start/infer_end/send_ts</code></td><td>分段预算、deadline miss与first divergence</td></tr>
+<tr><td>output</td><td><code>action_chunk/H/D/frame/unit/normalizer_revision/valid_until</code></td><td>parser、denorm、slice与freshness</td></tr>
+<tr><td>control</td><td><code>replan_after_K/controller_mode/fallback_policy</code></td><td>明确谁执行几步、失败后谁接管</td></tr>
+</tbody></table>
+<h2 id="5-state-ownership">5. 状态所有权（State Ownership）</h2>
+<table><thead><tr><th>状态</th><th>frozen OpenPI 中的直接位置</th><th>系统设计追问</th><th>当前缺口</th></tr></thead><tbody>
+<tr><td>model/checkpoint/transforms</td><td>server policy object / serve entry</td><td>revision切换、warmup、load/readiness</td><td>no immutable runtime manifest in this node</td></tr>
+<tr><td>server metadata</td><td>server connection init → client cache</td><td>schema/model/norm identity是否完整</td><td>exact metadata fields depend on launcher/policy</td></tr>
+<tr><td>WebSocket connection</td><td>client object</td><td>reconnect、auth、timeout、half-open</td><td>no explicit per-call deadline in S4</td></tr>
+<tr><td>latest observation/env state</td><td>example consumer/client loop</td><td>capture clock、stale/drop、camera/state consistency</td><td>no shared envelope or timestamp trace</td></tr>
+<tr><td>action chunk cache/cursor</td><td><code>ActionChunkBroker._last_results/_cur_step</code> or example queue</td><td>H、K、replan trigger、old chunk disposal</td><td>no request ID/expiry/stale-response guard</td></tr>
+<tr><td>controller state/side effect</td><td>environment/robot wrapper outside policy server</td><td>apply ack、stop/hold/e-stop、exactly-once boundary</td><td>not proven by WebSocket response</td></tr>
+</tbody></table>
+<p>关键结论：模型服务完成“返回动作候选”不等于controller完成“安全执行”。server、client/broker、controller三层各自持有不同状态；没有显式ownership与ack时，timeout后无法仅凭server日志证明robot状态。</p>
+<h2 id="6-timing-deadline-action-freshness">6. Timing、Deadline 与 Action Freshness</h2>
+<h3 id="6-1-critical-path">6.1 端到端 critical path</h3>
+<p>令 \(t_c\) 为 observation capture，\(t_e\) 为 enqueue，\(t_i\) 为 inference start，\(t_r\) 为 response receive，\(t_p\) 为 postprocess完成，\(t_a\) 为 controller apply；则首动作端到端延迟为：</p>
+<div class="formula">\[
+T_{\mathrm{e2e}}
+=(t_e-t_c)+(t_i-t_e)+(t_r-t_i)+(t_p-t_r)+(t_a-t_p).
+\]</div>
+<p>变量解释：五项依次对应capture/serialize、queue/batch wait、infer+transport、parse/denorm/safety与controller handoff。S1只直接给出server infer和previous total的局部计时；完整分解来自EVAL-013的评估合同与本页系统综合，必须标为design instrumentation。</p>
+<h3 id="6-2-chunk">6.2 chunk后续动作也会变旧</h3>
+<p>若一次请求在 \(t_c\) 捕获观测并返回 \(H\) 步chunk，consumer实际执行前 \(K\le H\) 步，第 \(k\) 行动作的年龄为：</p>
+<div class="formula">\[
+A_k=t_{\mathrm{apply},k}-t_c,
+\qquad k=0,\ldots,K-1.
+\]</div>
+<p>变量解释：\(H\) 是模型输出horizon，\(K\) 是下一次query前执行行数。即使首行低延迟，后续 \(A_k\) 仍随控制周期增加；S5/S6/S7支持cursor与example replan行为，但没有替用户选择freshness阈值。</p>
+<h3 id="6-3-deadline">6.3 deadline传播</h3>
+<p>设caller绝对deadline为 \(D\)，任一层当前时刻为 \(t\)，剩余预算为：</p>
+<div class="formula">\[
+B_{\mathrm{remain}}=D-t.
+\]</div>
+<p>变量解释：S12区分deadline与timeout并描述propagation/cancellation；把该合同应用到WebSocket VLA服务是design inference。每层重新给一个完整timeout会放大总延迟，正确实现还需统一clock/跨主机同步策略、cancel acknowledgement和GPU/controller side-effect测试。</p>
+<h2 id="7-admission-backpressure-batching-boundary">7. Admission、Backpressure 与 Batching Boundary</h2>
+<ol><li><strong>bounded admission</strong>：S9说明<code>asyncio.Queue(maxsize)</code>达到上限后<code>put</code>阻塞，queue API自身无timeout参数；它提供机制，不说明OpenPI使用了该queue。</li><li><strong>batch formation</strong>：S11说明dynamic batching依赖batch dimension、preferred batch、queue delay、queue size和timeout action。VLA不同camera数、resolution、prompt、state/action shape、normalizer或controller contract不能只因同时到达就混batch。</li><li><strong>fresh observation</strong>：S13的sensor profile强调及时性与较小keep-last queue；这可以启发丢弃旧observation，但action/command通常具有side effect，不能无条件latest-wins。</li><li><strong>frozen OpenPI baseline</strong>：S1在每条收到的消息上直接调用<code>policy.infer</code>；S1/S4没有显式admission queue或batcher。因此“OpenPI支持多连接”与“服务已经有多机器人公平batch scheduler”是不同主张。</li></ol>
+<p>系统面试中必须同时回答吞吐和freshness：吞吐更高但action age越过deadline不是成功优化；无界queue把overload转成stale action与tail latency。</p>
+<h2 id="8-real-time-safety-fail-closed-boundary">8. Real-time 与 Safety 的 Fail-closed Boundary</h2>
+<h3 id="8-1-soft-real-time-hard-real-time-rpc">8.1 soft real-time、hard real-time 与普通RPC</h3>
+<p>S14把real-time profiling落到deadline miss latency、min/max/mean/std、page fault、memory lock和priority；即使平均值较好，最大latency spike仍可能不可接受。Python WebSocket + model inference只凭<code>infer_ms</code>不能升级为hard real-time。</p>
+<p>本节点允许的安全措辞：</p>
+<ul><li>“为控制环设计deadline/freshness/fallback接口”；</li><li>“使用ROS 2 real-time来源定义验证门”；</li><li>“当前服务路径是soft-real-time candidate / best-effort RPC”。</li></ul>
+<p>本节点拒绝的措辞：</p>
+<ul><li>“WebSocket天然实时”；</li><li>“timeout就保证robot停止”；</li><li>“server exception等同physical e-stop”；</li><li>“平均20ms证明20Hz闭环稳定”。</li></ul>
+<h3 id="8-2-cancellation-physical-stop">8.2 cancellation不是physical stop</h3>
+<p>S10/S12支持task/RPC cancellation语义；但GPU kernel、已发送controller command、robot inertia和外部side effect可能继续存在。后续knowledge必须把 <code>cancel compute</code>、<code>discard stale response</code>、<code>controller hold/stop</code>、<code>independent e-stop</code> 分成不同层，并把最后两层标为需要controller/robot direct evidence。</p>
+<h2 id="9">9. 本地项目证据与真实性边界</h2>
+<h3 id="9-1-openpivla-local-direct">9.1 本轮重新哈希的 OpenPiVLA local-direct 文件</h3>
+<table><thead><tr><th>文件</th><th>SHA-256 / bytes</th><th>直接支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td><code>scripts/eval_lerobot_action_server.py</code></td><td><code>B1B7FB9...AB4F39</code> / 19,702</td><td>official <code>WebsocketClientPolicy</code>、connect/infer alarm、<code>server_unavailable</code>/<code>infer_failed</code>、offline action metric入口</td><td>online controller、queue/batch、p99、cancel propagation</td></tr>
+<tr><td><code>scripts/run_aloha_sim_real_rollout.py</code></td><td><code>E583E477...91DE3</code> / 11,583</td><td>in-process <code>create_trained_policy</code> + <code>ActionChunkBroker</code>、env apply、episode trace入口</td><td>网络policy server或formal Qwen checkpoint闭环</td></tr>
+<tr><td><code>DEPLOYMENT.md</code></td><td><code>C0A3DD0C...A14E</code> / 28,695</td><td>official server/client/checkpoint path与报告边界</td><td>remote state、binary identity、无failure summary等于production SLO</td></tr>
+</tbody></table>
+<p><code>eval_lerobot_action_server.py</code>的alarm wrapper是process-local eval failure reporting；它没有证明server取消inference或robot停止。<code>run_aloha_sim_real_rollout.py</code>第172行创建in-process policy，第178行创建broker，第187–188行broker infer后直接apply action，因此不能称为WebSocket deployment。</p>
+<h3 id="9-2">9.2 五项目边界</h3>
+<table><thead><tr><th>项目</th><th>可用hook</th><th>当前不能说</th></tr></thead><tbody>
+<tr><td>OpenPiVLA</td><td>offline WebSocket action eval、in-process broker rollout、timeout/failure summary、H/D/parser风险</td><td>production service、formal checkpoint serving、p99/fairness、cancel→physical stop、个人完整ownership</td></tr>
+<tr><td>Robot Harness</td><td>tool polling timeout、cancel context、scope/lock cleanup与best-effort compensation</td><td>VLA inference batcher、action freshness、controller deadline或robot success</td></tr>
+<tr><td>OPD</td><td>training/eval data route与strict scorer</td><td>policy serving、closed-loop controller或fleet</td></tr>
+<tr><td>WAM</td><td>simulator rollout launcher、chunk/controller schema与diagnostic</td><td>network serving、hard real-time、真机watchdog或已验证checkpoint uplift</td></tr>
+<tr><td>UWM / LIBERO</td><td>simulator protocol、action/state/normalizer与rollout evidence</td><td>production policy service、multi-robot serving或跨协议真机泛化</td></tr>
+</tbody></table>
+<p>回答顺序保持 <code>public upstream → local-direct → inference/design → unverified</code>。系统设计能力可以口述，但“我建设并上线了该系统”必须另有local runtime、load/fault test与ownership证据。</p>
+<h2 id="10-deterministic-source-probes">10. Deterministic Source Probes</h2>
+<p>本轮从固定raw URL重新取源并执行14项字符串/顺序probe；这些probe验证本页引用的代码/文档锚点，不验证runtime性能。</p>
+<table><thead><tr><th>Probe</th><th>结果</th><th>检查内容</th></tr></thead><tbody>
+<tr><td>P01</td><td>PASS</td><td>server metadata send位于message loop之前</td></tr>
+<tr><td>P02</td><td>PASS</td><td>server <code>recv &lt; policy.infer &lt; send</code> 顺序</td></tr>
+<tr><td>P03</td><td>PASS</td><td>server含<code>infer_ms</code>与<code>prev_total_ms</code></td></tr>
+<tr><td>P04</td><td>PASS</td><td>server文件无deadline/request ID/asyncio queue/batcher显式实现</td></tr>
+<tr><td>P05</td><td>PASS</td><td>client infer为同步send→recv</td></tr>
+<tr><td>P06</td><td>PASS</td><td>client文件无timeout/deadline/request ID</td></tr>
+<tr><td>P07</td><td>PASS</td><td>broker含last-result、cursor、action-horizon reset</td></tr>
+<tr><td>P08</td><td>PASS</td><td>LIBERO为<code>replan_steps=5</code>且slice前K步</td></tr>
+<tr><td>P09</td><td>PASS</td><td>DROID含open-loop horizon、env step与control-frequency sleep</td></tr>
+<tr><td>P10</td><td>PASS</td><td>CPython bounded queue与external timeout contract</td></tr>
+<tr><td>P11</td><td>PASS</td><td>Triton queue delay/size/timeout policy入口</td></tr>
+<tr><td>P12</td><td>PASS</td><td>gRPC deadline propagation/timeout conversion入口</td></tr>
+<tr><td>P13</td><td>PASS</td><td>ROS 2 QoS keep-last/timely sensor/small depth入口</td></tr>
+<tr><td>P14</td><td>PASS</td><td>ROS 2 real-time page-fault/max-latency/memory-lock入口</td></tr>
+</tbody></table>
+<p>汇总：<code>14/14 PASS</code>。Negative probe只说明指定文件中未出现对应机制，不能证明整个upstream仓库或未来版本永远没有该能力。</p>
+<h2 id="11-knowledge">11. Knowledge 下游允许与禁止的命题</h2>
+<h3 id="11-1-sys-vla-002-knowledge">11.1 可以进入 SYS-VLA-002 knowledge</h3>
+<ol><li>frozen OpenPI request/response、metadata、timing与client-side chunk cursor的直接事实。</li><li>E2E latency、action age、deadline remaining budget三条公式及其source/inference标签。</li><li>server/client/controller三层state ownership与ack边界。</li><li>bounded admission、compatible batching、fresh-observation与side-effect action的差异。</li><li>soft/hard real-time、cancel compute与physical stop的分层。</li><li>五项目只能作为有证据的interface/gap hook。</li></ol>
+<h3 id="11-2">11.2 不能进入强回答</h3>
+<ol><li>OpenPI或个人项目已有生产级queue/batching/deadline/fairness/watchdog。</li><li><code>infer_ms</code>等于capture→apply E2E latency。</li><li>example的<code>H=10</code>、<code>K=5</code>、<code>[10,8]</code>是用户模型或所有机器人标准。</li><li>connection/timeout错误能够证明inflight compute取消、old action清空或robot停止。</li><li>official code、路径、root Git author或文档记录等于候选人个人端到端ownership。</li></ol>
+<h2 id="12-source-gate">12. Source Gate 结论与下一切片</h2>
+<p>本节点已达到<code>source_frozen</code>：14个公开source rows、8个OpenPI文件hash、CPython/Triton/gRPC/ROS机制边界、3个local-direct OpenPiVLA文件与14/14 probes均可复核。它仍是<code>WARN</code>，因为没有本地统一服务、immutable formal checkpoint bundle、versioned request/response trace、E2E timestamp、load/fault injection、controller acknowledgement、watchdog/e-stop与candidate role confirmation。</p>
+<p>下一 bounded slice：<strong>只生成 <code>SYS-VLA-002</code> knowledge page</strong>，把本source contract教学转译为requirements→API/schema→state→timing→backpressure→failure→project truth；不生成题卡，不启动<code>SYS-VLA-003</code>或<code>PER-019</code>，不创建<code>coaching_state.md</code>，不修改mastery。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Physical Intelligence, <a href="https://github.com/Physical-Intelligence/openpi/tree/15a9616a00943ada6c20a0f158e3adb39df2ccac">OpenPI <code>openpi@15a9616a</code></a>, Apache-2.0：S1–S8。</li><li>CPython, <a href="https://github.com/python/cpython/tree/2931f2067a6ecdc52cb44f694ce14ab8b50b9a32/Doc/library"><code>asyncio</code> queue/tasks docs at <code>2931f2</code></a>, PSF-2.0：S9–S10。</li><li>NVIDIA Triton Inference Server, <a href="https://github.com/triton-inference-server/server/tree/0ae38c793358f8db77a9cbc1d1bde984619d5c1b/docs/user_guide">docs at <code>0ae38c</code></a>, BSD-3-Clause：S11。</li><li>gRPC, <a href="https://github.com/grpc/grpc.io/blob/78db5a6f78ee0d3426cf53cee07739196d962ea2/content/en/docs/guides/deadlines.md">Deadlines at <code>grpc.io@78db5a6</code></a>：S12。</li><li>ROS 2, <a href="https://github.com/ros2/design/blob/93a415bf928751d37fce6f83215c521658e20c93/articles/qos.md">QoS design at <code>93a415</code></a> and <a href="https://github.com/ros2/demos/blob/54d49d22e898d796ea476c42268757ad422bf878/pendulum_control/README.md">pendulum control at <code>54d49d</code></a>, Apache-2.0：S13–S14。</li><li>本仓库 <a href="vol_05_eng022_policy_server_resilience_source_freeze.md">ENG-022 Policy Server Resilience</a>、<a href="vol_05_eval013_end_to_end_latency_deadline_jitter_source_freeze.md">EVAL-013 Latency/Deadline/Jitter</a>、<a href="vol_03_architecture_execution_independent_fact_review.md">VOL 03 Architecture/Execution Audit</a>。</li><li>本仓库 <a href="../evidence/projects/openpivla_claim_evidence_inventory.md">OpenPiVLA Inventory</a> / <a href="../evidence/projects/openpivla_ownership_ledger.md">Ownership Ledger</a> 与其余四项目 inventories/ledgers。</li></ol>
+</article></body></html>

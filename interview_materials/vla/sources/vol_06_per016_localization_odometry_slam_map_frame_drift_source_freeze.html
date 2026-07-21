@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 PER-016 Source Freeze：Localization、Odometry、SLAM、Map Frame 与 Drift</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per016_localization_odometry_slam_map_frame_drift_source_freeze.md">
+<meta name="aris:source-sha256" content="3d4993db740aa38bea34efc811014f086faa902339ec36233e75f65aeb2bb6ed">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>3d4993db740aa38bea34efc811014f086faa902339ec36233e75f65aeb2bb6ed</code>；生成自：<code>interview_materials\vla\sources\vol_06_per016_localization_odometry_slam_map_frame_drift_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-paper">2. Primary Paper 冻结矩阵</a></li><li><a href="#3-official-repository">3. Official Repository 冻结矩阵</a></li><li><a href="#4">4. 节点边界与依赖</a></li><li><a href="#5">5. 五个概念必须分开</a></li><li><a href="#6-typed-localization-slam-manifest">6. Typed Localization / SLAM Manifest</a></li><li><a href="#7-frame-tree-global-consistency-local-continuity">7. Frame Tree：Global Consistency 与Local Continuity分工</a></li><li><a href="#8-state-estimation-imu-propagation-update">8. State Estimation、IMU Propagation 与Update</a></li><li><a href="#9-front-end-back-end">9. Front-end 与Back-end</a></li><li><a href="#10-local-optimization-gauge">10. Local Optimization 与Gauge</a></li><li><a href="#11-keyframe-sliding-window-marginalization">11. Keyframe、Sliding Window 与Marginalization</a></li><li><a href="#12-loop-closure-relocalization-map-merge">12. Loop Closure、Relocalization 与Map Merge</a></li><li><a href="#12-1-loop-closure">12.1 Loop Closure合同</a></li><li><a href="#12-2">12.2 三者差别</a></li><li><a href="#13-drift-taxonomy">13. Drift Taxonomy 与可观性</a></li><li><a href="#14-learned-slam">14. Learned SLAM 的位置</a></li><li><a href="#15-ate-rpe-alignment-protocol">15. ATE、RPE 与Alignment Protocol</a></li><li><a href="#16-deterministic-probes">16. 十个Deterministic Probes</a></li><li><a href="#17-first-divergence-failure-diagnosis">17. First-divergence Failure Diagnosis</a></li><li><a href="#18-fail-closed-localization-pipeline">18. Fail-closed Localization Pipeline 伪代码</a></li><li><a href="#19-public-method-code-mapping">19. Public Method → Code Mapping</a></li><li><a href="#20-inventory-direct-audit">20. 本地五项目 Inventory 与Direct Audit</a></li><li><a href="#20-1-canonical-inventory">20.1 Canonical Inventory</a></li><li><a href="#20-2-robot-harness-local-direct-exceptions">20.2 Robot Harness Local-direct Exceptions</a></li><li><a href="#21-project-truth-boundary">21. Project Truth Boundary</a></li><li><a href="#22-source-gate">22. Source Gate 与下一切片</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 PER-016 Source Freeze：Localization、Odometry、SLAM、Map Frame 与 Drift</h1>
+<div class="meta">状态：<code>source_frozen / VLA-PER-016 / primary_official_checked / localization_slam_contract / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本source切片只冻结localization、visual/visual-inertial odometry、SLAM、<code>map→odom→base</code> frame语义、state estimation、front-end/back-end、loop closure、relocalization、map merge、drift与ATE/RPE protocol；下游knowledge与一张<code>unseen</code> atomic card已在后续两个独立bounded slices同步；不重写PER-002的calibration/TF基础、不重写PER-003的multi-view/time schema、不重写PER-005的navigation policy/planner，也不进入PER-017的belief/memory/exploration。</div>
+<h2 id="question">问题（Question）</h2>
+<p>面试官问“机器人怎样知道自己在哪里，odometry和SLAM有什么差别，loop closure如何修正drift，map/odom frame为什么要分开”时，怎样给出带sensor/config/map/protocol身份的回答；怎样区分连续但会漂的local odometry与可能跳变的global localization；怎样验证loop closure而不是把错误地点强行拉到一起；以及五个本地项目到底有什么SLAM证据。</p>
+<h2 id="1">1. 结论先行</h2>
+<ol><li>localization是“在已知或正在构建的地图中估计状态”，odometry主要累积相邻时刻运动，SLAM同时估计trajectory与map。三者输入、状态、地图假设与评估协议不同，不能用“都有pose输出”合并。</li><li><code>odom</code>应连续、适合局部控制，但允许长期无界漂移；<code>map</code>是global/world-fixed参考，长期更一致但loop closure或relocalization后可跳变。REP-105的典型链为<code>map→odom→base_link</code>，global correction应更新<code>map→odom</code>，不应伪造传感器或让局部控制直接吃全局跳变。</li><li>drift来自sensor bias/noise、scale、time/extrinsic误差、feature/scan association、rolling shutter、dynamic object、linearization与marginalization等。加IMU或loop closure可以改善某些可观性与长期一致性，不代表误差自动消失。</li><li>loop closure至少需要place candidate、geometric verification、relative transform与robust graph optimization。外观相似不是约束成立；false loop可能让全图“看起来闭合”但物理错误。</li><li>relocalization是在tracking lost或已有map条件下恢复当前pose；loop closure是识别当前trajectory与历史位置的重复并加入global constraint；map merging是对不同map/session建立变换并融合。三者不能互换。</li><li>ATE、RPE、drift%、lost/relocalization rate、loop precision/recall和map quality分别回答不同问题。ATE必须冻结SE(3)/Sim(3) alignment、时间关联、轨迹截断、单位、采样频率与failure denominator；对monocular轨迹做Sim(3)后不能再把scale正确性当已验证。</li><li>本地Robot Harness有2D occupancy、54,856点PCD、<code>reloc_map/poses.txt</code>、pixel/world变换和ROS2 state bridge，但fallback明确<code>runtimeReady=false/softwareOnly=true</code>；没有sensor packet、estimator config/checkpoint、live TF、pose graph、loop closure、ATE/RPE或matched robot trajectory。OPD、OpenPiVLA、WAM、UWM也没有当前可核SLAM runtime，因此保持<code>WARN</code>。</li></ol>
+<h2 id="2-primary-paper">2. Primary Paper 冻结矩阵</h2>
+<table><thead><tr><th>来源</th><th>固定版本 / 完整性</th><th>PDF SHA-256</th><th>本页实际支持</th><th>不支持</th></tr></thead><tbody>
+<tr><td>Campos et al., <a href="https://arxiv.org/pdf/2007.11898v2">ORB-SLAM3 v2</a></td><td>arXiv <code>2007.11898v2</code> / IEEE T-RO 2021；18页；全文解析；Atlas/tracking/local mapping/loop &amp; map merging视觉检查PDF p5</td><td><code>4D119517BE7565C9651FBF1E36A330D605B7A534D738558858C96FECA7B99156</code></td><td>visual/visual-inertial multi-map SLAM、tracking loss、relocalization、loop closure、map merging、Atlas</td><td>任意本地项目已集成、所有sensor条件都鲁棒、真机结果</td></tr>
+<tr><td>Qin et al., <a href="https://arxiv.org/pdf/1708.03852v1">VINS-Mono v1</a></td><td>arXiv <code>1708.03852v1</code> / IEEE T-RO 2018；17页；全文解析；VIO/relocalization/4-DoF pose graph视觉检查PDF p3</td><td><code>1F44F92F057CBB05A6570F14D2FE5CAE2B9736198A8EECA7C93438ADBC38A087</code></td><td>IMU preintegration、sliding-window optimization、marginalization、failure recovery、relocalization、4-DoF pose graph</td><td>无标定/同步也能工作、任意尺度与yaw可观、本地无人机结果</td></tr>
+<tr><td>Hess et al., <a href="https://research.google.com/pubs/archive/45466.pdf">Real-Time Loop Closure in 2D LIDAR SLAM</a></td><td>ICRA 2016 official PDF；8页；全文解析；local 2D SLAM/submap/scan matching视觉检查PDF p2</td><td><code>351EDB45CD478C8CF2E22E375B8565A7ABB3455E92F45E7A7F4163130BDE69A2</code></td><td>local scan matching/submaps、global loop constraint、sparse pose adjustment、occupancy update</td><td>视觉SLAM、3D semantics、ROS部署一定正确</td></tr>
+<tr><td>Teed &amp; Deng, <a href="https://arxiv.org/pdf/2108.10869v2">DROID-SLAM v2</a></td><td>arXiv <code>2108.10869v2</code> / NeurIPS 2021；15页；全文解析；frame graph/dense BA方法页视觉检查PDF p3</td><td><code>0E15F20BFF5F7CEAC468C2899BAAFC8C114A3018C7A7B213EED7C402E5CCEC90</code></td><td>learned iterative updates、dynamic frame graph、dense bundle adjustment、monocular/stereo/RGB-D</td><td>distribution shift免疫、部署实时性、loop/global consistency无条件成立</td></tr>
+<tr><td>Geneva et al., <a href="https://pgeneva.com/downloads/papers/Geneva2020ICRA.pdf">OpenVINS ICRA 2020</a></td><td>ICRA 2020 author PDF；7页；全文解析；on-manifold EKF state/covariance视觉检查PDF p2</td><td><code>194E432EDA4462DFB831108C62A486CA72BECC03C90DC53DB81087A04E683A11</code></td><td>modular EKF、IMU state propagation、MSCKF/SLAM feature update、calibration state、covariance</td><td>full loop-closing SLAM、global map consistency、任意项目已部署</td></tr>
+<tr><td>Rosinol et al., <a href="https://arxiv.org/pdf/1910.02490v3">Kimera v3</a></td><td>arXiv <code>1910.02490v3</code> / ICRA 2020；8页；全文解析；VIO/RPGO/metric-semantic architecture视觉检查PDF p3</td><td><code>B2C27E2B111D59C8560B6ACCE5BD58528E1C810AD66D853BAF42D9337A9789E9</code></td><td>VIO front/back end、preintegration/factor graph、loop detection、robust pose graph、metric-semantic stack</td><td>选定Kimera-VIO repo单独包含全部RPGO/semantics、本地语义地图结果</td></tr>
+</tbody></table>
+<p>六份PDF均检查<code>%PDF</code>、<code>%%EOF</code>并用<code>pypdf</code>读取全部页面；上述代表页另以Poppler 150 DPI渲染并视觉确认正文、公式、系统图和流程图清晰。解析与视觉检查只证明source可读，不证明论文算法在五项目中出现。</p>
+<h2 id="3-official-repository">3. Official Repository 冻结矩阵</h2>
+<table><thead><tr><th>官方仓库</th><th>固定revision / date / license</th><th>直接读取文件与SHA-256</th><th>支持边界</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/UZ-SLAMLab/ORB_SLAM3/tree/4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4">UZ-SLAMLab/ORB_SLAM3@4452a3c</a></td><td><code>4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4</code>；2022-02-10；GPL-3.0</td><td><code>README C043CB9E5136CC55323A7EF5C25B85E7BB28910679FC7B810FDA262F42E67507</code>；<code>LICENSE 53927BD0B739D38C87A0A82236FD9B070C2DFFF11C0C119BE50372005D5047AD</code>；<code>Tracking.h BA988CD16A0C49C69E5296B53E0B5896D53E936915CB61FAA4F7406EF1CE4FED</code>；<code>Tracking.cc A5828543839A42E0BB499E3325E32DDDFA20D5F7F00DB2D9B99F58F2FBDB9743</code>；<code>LoopClosing.cc B17BE9D654564603A409FC92213F6CCC889F6969426C04B8CD74BACBFEAF3B00</code>；<code>Atlas.cc E21F879FC9E811280C6158FE85FC955C6DF8FD0597A050664C3B1BBD2A788CF2</code></td><td>tracking states、<code>Relocalization</code>、new-map creation、loop/merge与Atlas map集合；不支持本地集成或无失败保证</td></tr>
+<tr><td><a href="https://github.com/HKUST-Aerial-Robotics/VINS-Mono/tree/90dabb5ec79946ae42fd2e1e91d4e69aabe1e25d">HKUST-Aerial-Robotics/VINS-Mono@90dabb5</a></td><td><code>90dabb5ec79946ae42fd2e1e91d4e69aabe1e25d</code>；2024-05-23；GPL-3.0</td><td><code>README 67BDD390A496E3BEBAECAF00BC5CDD3DB4B16BADD85D4BB618DF9475681F1B67</code>；<code>LICENCE 53927BD0B739D38C87A0A82236FD9B070C2DFFF11C0C119BE50372005D5047AD</code>；<code>estimator.cpp ED7694B267BFC63E9897CD26812B633239872D06DA34D12BE1BA89B0BA26A42C</code>；<code>integration_base.h B4AFEDE059BF546F8B82823CD17AD71E51CDCB9D75BA36C09BD06E89D5632D4B</code>；<code>pose_graph.cpp 4C4D94034CC7988F2822A06D38DFF51B9DB8E1CD0E3C30C99B93DC60D7D34FF3</code>；<code>pose_graph_node.cpp B6153CECE247D6704CF0123E791ED2582E162291629E3174A497BE58E5368C5F</code></td><td>preintegration/sliding window、loop detection、world↔VIO alignment、drift state与4-DoF optimize；不支持错误loop自动无害</td></tr>
+<tr><td><a href="https://github.com/cartographer-project/cartographer/tree/877157a0d91788a7700221d87232d412cb3c1ef4">cartographer-project/cartographer@877157a</a></td><td><code>877157a0d91788a7700221d87232d412cb3c1ef4</code>；2024-01-05；Apache-2.0</td><td><code>README 76EF5687E64FF7B419D96A4974B8A79A26EA078B698B3F4863BD258438FD2023</code>；<code>LICENSE 3DDF9BE5C28FE27DAD143A5DC76EEA25222AD1DD68934A047064E56ED2FA40C5</code>；<code>local_trajectory_builder_2d.cc A9FF133AE6A58ED81A7988AE450893AE2E85A9317FC4EC41AB0F3A0B577612B6</code>；<code>pose_graph_2d.cc 22050D76D1DD618B8C4D41EBEAF6196788E5F36DA0A7791D43D5E36277607E43</code>；<code>constraint_builder_2d.cc A03A964083330F3CDA4D3D1A1CF39F8CC8B36E32398782CE71D4259E28F8D991</code>；<code>optimization_problem_2d.cc 1DA2DDEB00FFC110877EC6C2820F397030D3F2EDFE5FF32C9A9A1087FBEA394C</code></td><td>local trajectory、scan match、node/submap constraints与global optimization；不支持具体robot sensor/TF配置正确</td></tr>
+<tr><td><a href="https://github.com/princeton-vl/DROID-SLAM/tree/2dfd39f0dcad44012ca7bbb8aa70b55edbfa9c99">princeton-vl/DROID-SLAM@2dfd39f</a></td><td><code>2dfd39f0dcad44012ca7bbb8aa70b55edbfa9c99</code>；2025-05-04；BSD-3-Clause</td><td><code>README C8A3FA5E27D904F6B1829A53E14250A54C409C5D26BF5D54C9DF7010C9BBA98D</code>；<code>LICENSE 4E5C4E3DDC06B6EF9EC8B24F57D6EDB7B8DEB12A32D8F7E525094B07E2D4C389</code>；<code>droid.py 35C7C0EE0FF83EA22808886BA6AB7EA354BD50592B3B249BAC887E24923ADF1B</code>；<code>factor_graph.py E491F3A5685CA08A4F2E6170B65878CBD87FC6E9E1D615D55BBBE611E07842E9</code>；<code>droid_backend.py 2066BB196294CEF776796C01FF8394740E81A36C670545D2F011B677C27D7E88</code>；<code>trajectory_filler.py 786EA1F95A9C95D529ACD07AF544920C8687D793589BF011FECEF36590D06A12</code></td><td>front/back end、factor graph update、trajectory fill与dense BA调用；不支持任意checkpoint/generalization/latency claim</td></tr>
+<tr><td><a href="https://github.com/rpng/open_vins/tree/69488123ed9362dd44b6f28e7f4680abbff1442b">rpng/open_vins@6948812</a></td><td><code>69488123ed9362dd44b6f28e7f4680abbff1442b</code>；2025-11-30；GPL-3.0</td><td><code>ReadMe F3E10779872D3FCD386E3FADDB543D264B896C8B64D258CE1DC7C31B3FD07518</code>；<code>LICENSE 230184F60BAE2FEAF244F10A8BAC053C8FF33A183BCC365B4D8B876D2B7F4809</code>；<code>VioManager.cpp 5E4C9B1AA087F7A7A89A5A093EAB7387734319481730EF78E497EC2CA9992D1C</code>；<code>Propagator.cpp B4F65173046D54DE5279CD1BD936F09C2E4B4CD49B46DF377B49D46E5C36D6DD</code>；<code>UpdaterMSCKF.cpp BEE6541A13C9F1CEB123B40D48AFEC4E8DC38280AB9B65519CF968C0644582DD</code>；<code>UpdaterSLAM.cpp FCA5D645773C896F4147EC6DE79B7AD2334D6C6E0ECA1208DC35B0B8A1F87CFD</code></td><td>propagation、clone/state/covariance、MSCKF/SLAM feature updates；不支持loop-closure pose graph或global map</td></tr>
+<tr><td><a href="https://github.com/MIT-SPARK/Kimera-VIO/tree/ce8c59b7b273ab5ac29db7e5572e1623760e19c7">MIT-SPARK/Kimera-VIO@ce8c59b</a></td><td><code>ce8c59b7b273ab5ac29db7e5572e1623760e19c7</code>；2025-02-10；BSD-2-Clause</td><td><code>README 212633EB938586E6E33993FAC21B639BCBACA858F1CDA2EF0F9EF157D7DE9772</code>；<code>LICENSE.BSD C3FE35DBF24E3476A7995B77F84A07394AAC21BAAB8CFB1E04CE2EE3BB770E28</code>；<code>StereoVisionImuFrontend.cpp DD94E4932EF15AE55541685D8198E18454440D1312AF5E3752B040DD61E149DB</code>；<code>ImuFrontend.cpp 1BE186920111327A42FA1D8BB4303CBCCB345BAF7673BBC491455ADFDFF088E5</code>；<code>VioBackend.cpp 7903CB92A876F03204B4F06B0CF4599C0409E52BF26B6E64F5F7C5A1F98883BA</code>；<code>LoopClosureDetector.cpp 2F878CDCD23BC71BE1CD02EB1A42FE338DC3B2ECDB3A4F9A4700C8D268345A10</code></td><td>stereo/IMU frontend、preintegration、factor-graph backend与loop candidate detection；完整RPGO/semantics仍跨repo/module</td></tr>
+</tbody></table>
+<p>36个文件均从上述fixed checkout按原始字节计算SHA-256。代码license不自动覆盖论文、dataset、sensor driver、camera model、vocabulary、pretrained weights、ROS package、地图资产或第三方依赖；面试中不能把开源license说成部署链已经合规。</p>
+<h2 id="4">4. 节点边界与依赖</h2>
+<table><thead><tr><th>相邻节点</th><th>已负责</th><th>PER-016只新增</th></tr></thead><tbody>
+<tr><td>PER-002</td><td>intrinsics/extrinsics、depth、pixel→camera→target、REP-103/105 frame基础</td><td>state estimate与map/odom语义怎样随时间更新</td></tr>
+<tr><td>PER-003</td><td>per-view camera/frame/time/presence与multi-view fusion schema</td><td>sensor stream如何进入estimator、timestamp/order gate与state history</td></tr>
+<tr><td>PER-005</td><td>map-free/map-based/waypoint policy、planner/controller/replan</td><td>planner消费的global pose/map revision是否可信</td></tr>
+<tr><td>PER-013/014</td><td>point/voxel/occupancy与3D semantic query</td><td>map geometry/semantic层使用哪个trajectory与map revision</td></tr>
+<tr><td>PER-015</td><td>action reachability、collision、controller gate</td><td>stale/jumped localization怎样使action candidate失效</td></tr>
+<tr><td>PER-017</td><td>belief、memory、frontier与active exploration</td><td>不在本页实现POMDP belief或探索策略</td></tr>
+</tbody></table>
+<p>ROS REP-105沿用PER-002固定commit <code>ros-infrastructure/rep@11ca24a41f31480dfb9562ba99f2a5b93d3ebda5</code>，<code>rep-0105.rst</code> SHA-256为<code>6BCA6AE2B392BBB8E95C283C672549B832C58128FEACCC4D77B6BF65534F565E</code>。它提供frame convention，不证明任一项目存在有效TF tree。</p>
+<h2 id="5">5. 五个概念必须分开</h2>
+<table><thead><tr><th>概念</th><th>典型输入</th><th>主要输出</th><th>是否维护map</th><th>典型失败</th></tr></thead><tbody>
+<tr><td>tracking</td><td>当前sensor与local map/reference frame</td><td>当前pose/state与tracking status</td><td>消费local map</td><td>feature不足、blur、dynamic</td></tr>
+<tr><td>odometry</td><td>连续camera/IMU/LiDAR/encoder</td><td>相对运动与连续local trajectory</td><td>可无global map</td><td>累积drift、scale/bias</td></tr>
+<tr><td>localization</td><td>sensor + 已知map</td><td>map-frame pose/covariance</td><td>消费fixed/revisioned map</td><td>wrong map、alias、kidnapped robot</td></tr>
+<tr><td>mapping</td><td>pose estimate + observations</td><td>occupancy/landmark/surface map</td><td>生成或更新map</td><td>pose error写进map</td></tr>
+<tr><td>SLAM</td><td>sensor stream</td><td>trajectory + map + graph/status</td><td>同时估计</td><td>wrong association、gauge、loop outlier</td></tr>
+</tbody></table>
+<p>“定位成功”至少要说明map UUID/revision、sensor contract、estimator revision、initialization、tracking state、pose timestamp与covariance；只有一个<code>x,y,yaw</code>或<code>localization_valid=true</code>字段不能证明这些条件。</p>
+<h2 id="6-typed-localization-slam-manifest">6. Typed Localization / SLAM Manifest</h2>
+<pre><code class="language-json">{
+  &quot;sensor_contract&quot;: {
+    &quot;camera_imu_lidar_encoder_ids&quot;: [],
+    &quot;intrinsics_extrinsics_sha256&quot;: &quot;...&quot;,
+    &quot;axis_unit&quot;: &quot;REP-103-like or explicit custom convention&quot;,
+    &quot;timestamp_clock_sync&quot;: &quot;...&quot;,
+    &quot;noise_bias_rolling_shutter_model&quot;: &quot;...&quot;
+  },
+  &quot;estimator_contract&quot;: {
+    &quot;family&quot;: &quot;VO | VIO | LiDAR odom | localization | SLAM&quot;,
+    &quot;paper_repo_commit_config_checkpoint&quot;: [],
+    &quot;initialization_and_scale&quot;: &quot;...&quot;,
+    &quot;frontend_backend_window_marginalization&quot;: &quot;...&quot;
+  },
+  &quot;frame_contract&quot;: {
+    &quot;map_odom_base_sensor&quot;: [],
+    &quot;transform_direction&quot;: &quot;T_target_source&quot;,
+    &quot;map_to_odom_authority&quot;: &quot;localizer_or_slam&quot;,
+    &quot;controller_local_frame&quot;: &quot;odom&quot;
+  },
+  &quot;state_contract&quot;: {
+    &quot;timestamp_ns&quot;: 0,
+    &quot;pose_velocity_bias_covariance&quot;: [],
+    &quot;tracking_state&quot;: &quot;initializing | tracking | recently_lost | lost | relocalized&quot;,
+    &quot;state_revision&quot;: &quot;...&quot;
+  },
+  &quot;map_contract&quot;: {
+    &quot;map_uuid_revision_sha256&quot;: &quot;...&quot;,
+    &quot;keyframe_landmark_submap_pose_graph_revision&quot;: &quot;...&quot;,
+    &quot;loop_constraints_and_rejections&quot;: [],
+    &quot;map_update_sequence&quot;: 0
+  },
+  &quot;evaluation_contract&quot;: {
+    &quot;dataset_split_sequence&quot;: &quot;...&quot;,
+    &quot;association_and_alignment&quot;: &quot;timestamp + SE3 | Sim3&quot;,
+    &quot;ate_rpe_drift_lost_relocal_loop_metrics&quot;: [],
+    &quot;failure_denominator&quot;: &quot;...&quot;
+  }
+}</code></pre>
+<p>同一个pose若缺map revision、estimator state或alignment protocol，既不可复算也不可用于比较；同一数值在<code>map</code>与<code>odom</code>中的控制语义也不同。</p>
+<h2 id="7-frame-tree-global-consistency-local-continuity">7. Frame Tree：Global Consistency 与Local Continuity分工</h2>
+<p>典型组合为：</p>
+<div class="formula">\[
+T^{\mathrm{map}}_{\mathrm{base}}(t)
+=
+T^{\mathrm{map}}_{\mathrm{odom}}(t)
+T^{\mathrm{odom}}_{\mathrm{base}}(t).
+\]</div>
+<p>变量解释：<code>T^A_B</code>把B-frame量变到A-frame；<code>odom→base</code>来自连续local odometry，<code>map→odom</code>来自global localization/SLAM correction。直觉是局部控制保持连续，而global loop/relocalization通过更新<code>map→odom</code>修正长期漂移。实现映射：consumer必须记录使用的frame、TF timestamp与revision；PER-015 action target若跨一次global correction必须重新验证，而不是把旧map pose静默复用。</p>
+<p>不能写成“map比odom更准所以控制一律用map”：global correction可产生跳变；若controller把跳变当真实速度，会形成危险命令。也不能写成“odom连续所以真实”：连续只是不跳，不代表长期无漂移。</p>
+<h2 id="8-state-estimation-imu-propagation-update">8. State Estimation、IMU Propagation 与Update</h2>
+<p>常见VIO状态可抽象为：</p>
+<div class="formula">\[
+\mathbf x_t=
+\left(
+R_t,\mathbf p_t,\mathbf v_t,
+\mathbf b^g_t,\mathbf b^a_t
+\right),
+\qquad
+P_{t|t-1}=F_tP_{t-1|t-1}F_t^\top+Q_t.
+\]</div>
+<p>变量解释：<code>R,p,v</code>是orientation、position、velocity，<code>b^g,b^a</code>是gyro/accelerometer bias，<code>P</code>是state covariance，<code>F,Q</code>是linearized transition与process noise。直觉是IMU高频propagation快速给pose，但noise和bias会让uncertainty增长；camera/feature update再约束状态。实现映射：OpenVINS <code>Propagator.cpp</code>负责propagation，<code>UpdaterMSCKF.cpp/UpdaterSLAM.cpp</code>负责不同feature update；代码存在不代表本地noise/calibration参数正确。</p>
+<p>VINS-Mono和Kimera使用preintegration把两个keyframes间许多IMU sample压成relative-motion factor，并在bias更新后修正。preintegration不是“把IMU平均一下”；它需要timestamp、gravity、bias、noise与camera–IMU extrinsic合同。</p>
+<h2 id="9-front-end-back-end">9. Front-end 与Back-end</h2>
+<pre><code class="language-text">sensor packets
+  -&gt; frontend: detect/track/scan-match, keyframe, candidate association
+  -&gt; local estimator: propagation + local window/filter update
+  -&gt; backend: factors/constraints, marginalization, robust optimization
+  -&gt; global layer: place recognition, geometric verification, pose graph/map merge
+  -&gt; typed map/odom state + covariance + tracking status</code></pre>
+<table><thead><tr><th>层</th><th>主要职责</th><th>失败证据</th></tr></thead><tbody>
+<tr><td>frontend</td><td>feature/scan/data association、motion filter、keyframe</td><td>inlier count、photometric/geometric residual、blur/dynamic mask</td></tr>
+<tr><td>local estimator</td><td>current state、bias、scale、local map/window</td><td>innovation、covariance、conditioning、lost state</td></tr>
+<tr><td>backend</td><td>nonlinear objective、marginalization、factor consistency</td><td>cost、marginal prior、factor residual、solver status</td></tr>
+<tr><td>global</td><td>place recognition、loop/map merge、global consistency</td><td>candidate score、geometric inliers、loop residual、graph delta</td></tr>
+</tbody></table>
+<p>前端“跟到了很多点”不等于后端状态正确；后端cost下降也不等于frame/time/scale合同正确。</p>
+<h2 id="10-local-optimization-gauge">10. Local Optimization 与Gauge</h2>
+<p>一般鲁棒估计目标可写为：</p>
+<div class="formula">\[
+\hat{\mathcal X}
+=
+\arg\min_{\mathcal X}
+\sum_{i\in\mathcal F}
+\rho_i\!\left(
+\|\mathbf r_i(\mathcal X;\mathbf z_i)\|_{\Sigma_i^{-1}}^2
+\right).
+\]</div>
+<p>变量解释：<code>\mathcal X</code>含poses、velocity、bias、landmarks或depth；<code>\mathcal F</code>是visual/IMU/scan/loop factors；<code>\rho</code>是robust loss；<code>\Sigma</code>是measurement covariance。直觉是不同sensor约束共同决定状态，outlier需要robust handling。实现映射：VINS sliding window、Cartographer scan/pose graph、DROID dense BA、Kimera factor graph使用不同residual和solver，不能只比较“都做optimization”。</p>
+<p>SLAM存在gauge freedom：没有anchor时，整条trajectory与map可共同平移/旋转而不改变relative residual；monocular还常有scale ambiguity。评估中的alignment处理gauge，但alignment本身必须进入协议身份。</p>
+<h2 id="11-keyframe-sliding-window-marginalization">11. Keyframe、Sliding Window 与Marginalization</h2>
+<p>保留所有frame会使状态与计算不断增长；keyframe/window只保留信息量更高的状态，并把旧变量影响压入prior。风险是：</p>
+<ul><li>marginalization linearization point固定后可能产生inconsistency；</li><li>错误data association可进入prior并长期影响；</li><li>window太短丢长期约束，太长增加latency/memory；</li><li>keyframe规则改变graph、loop candidate与metric，属于protocol identity。</li></ul>
+<p>VINS-Mono <code>estimator.cpp</code>与Kimera <code>VioBackend.cpp</code>支撑window/factor backend；OpenVINS clone/state management支撑filter family。不能把“filter一定快、optimization一定准”当普遍结论。</p>
+<h2 id="12-loop-closure-relocalization-map-merge">12. Loop Closure、Relocalization 与Map Merge</h2>
+<h3 id="12-1-loop-closure">12.1 Loop Closure合同</h3>
+<pre><code class="language-text">place candidate
+ -&gt; temporal / map exclusion
+ -&gt; descriptor or learned match
+ -&gt; geometric verification + relative pose
+ -&gt; robust residual / switch / inlier gate
+ -&gt; pose-graph optimization
+ -&gt; map-to-odom correction + map revision</code></pre>
+<p>pose graph可写为：</p>
+<div class="formula">\[
+\hat{\{T_i\}}
+=
+\arg\min_{\{T_i\}}
+\sum_{(i,j)\in\mathcal E}
+\rho\!\left(
+\left\|
+\operatorname{Log}\!\left(
+Z_{ij}^{-1}T_i^{-1}T_j
+\right)
+\right\|_{\Omega_{ij}}^2
+\right).
+\]</div>
+<p>变量解释：<code>Z_{ij}</code>是odometry或loop relative-pose measurement，<code>\Omega_{ij}</code>是information matrix，<code>T_i</code>是node pose。直觉是让graph中所有relative constraints尽量一致，同时让robust loss抑制outlier。实现映射：VINS <code>pose_graph.cpp</code>保存drift transform并做4-DoF optimization；ORB-SLAM3 <code>LoopClosing.cc</code>区分loop与merge；Cartographer构建node/submap constraint；Kimera论文的RPGO强调robust PGO。</p>
+<h3 id="12-2">12.2 三者差别</h3>
+<table><thead><tr><th>事件</th><th>触发</th><th>输出</th><th>不能偷换</th></tr></thead><tbody>
+<tr><td>relocalization</td><td>tracking lost / known map</td><td>current pose恢复、tracking state变化</td><td>不一定新增loop或改全图</td></tr>
+<tr><td>loop closure</td><td>current与history同地点</td><td>loop constraint、global correction</td><td>candidate不是verified constraint</td></tr>
+<tr><td>map merge</td><td>current map与another map/session重叠</td><td>inter-map transform与map fusion</td><td>不等于简单拼接point clouds</td></tr>
+</tbody></table>
+<p>ORB-SLAM3 Atlas在tracking lost时可新建map并尝试跨map relocalization/merge；VINS-Mono把relocalization与4-DoF global pose graph并发。公开机制不能反推用户项目具有相同thread/state machine。</p>
+<h2 id="13-drift-taxonomy">13. Drift Taxonomy 与可观性</h2>
+<table><thead><tr><th>Drift / failure</th><th>来源</th><th>第一检查</th></tr></thead><tbody>
+<tr><td>translation drift</td><td>incremental noise、poor geometry、scan/feature mismatch</td><td>RPE、inliers、motion excitation</td></tr>
+<tr><td>yaw drift</td><td>gyro bias、弱heading约束</td><td>bias、gravity alignment、loop</td></tr>
+<tr><td>scale drift</td><td>monocular gauge/weak excitation</td><td>sensor mode、Sim(3) vs SE(3)</td></tr>
+<tr><td>vertical drift</td><td>IMU bias/gravity/ground assumption</td><td>gravity、bias、frame convention</td></tr>
+<tr><td>time drift</td><td>clock skew、delayed packet、wrong interpolation</td><td>timestamp/clock/queue age</td></tr>
+<tr><td>map corruption</td><td>false loop、dynamic object、wrong map</td><td>loop residual、graph delta、map UUID</td></tr>
+<tr><td>tracking loss</td><td>blur、occlusion、textureless/dynamic scene</td><td>frontend status、relocalization log</td></tr>
+<tr><td>jump</td><td>global correction/relocalization</td><td>map→odom update、consumer frame</td></tr>
+</tbody></table>
+<p>IMU提高metric scale、gravity与short-term motion约束，但bias和extrinsic/time错误也会系统性污染估计；loop closure减长期drift，但false loop可能比不闭环更坏。</p>
+<h2 id="14-learned-slam">14. Learned SLAM 的位置</h2>
+<p>DROID-SLAM通过recurrent update operator在dynamic frame graph上预测correspondence update，再调用differentiable dense BA更新pose与inverse depth。它展示learned front/back-end coupling，但仍需要：</p>
+<ul><li>camera intrinsics与input preprocessing；</li><li>checkpoint/training-domain identity；</li><li>frame graph/keyframe/memory阈值；</li><li>inference latency与GPU memory；</li><li>trajectory filling、termination与failure status；</li><li>same-protocol ATE/RPE comparison。</li></ul>
+<p>所以“learned”不意味着不需要geometry/protocol；“端到端”也不意味着没有graph、BA或显式state。</p>
+<h2 id="15-ate-rpe-alignment-protocol">15. ATE、RPE 与Alignment Protocol</h2>
+<p>Absolute Trajectory Error在时间关联和alignment后可写为：</p>
+<div class="formula">\[
+\operatorname{ATE}_{\mathrm{RMSE}}
+=
+\sqrt{
+\frac1N
+\sum_{i=1}^{N}
+\left\|
+\operatorname{trans}\!\left(
+T_{\mathrm{align}}\hat T_i(T_i^*)^{-1}
+\right)
+\right\|_2^2
+}.
+\]</div>
+<p>变量解释：<code>\hat T_i</code>是estimate，<code>T_i^*</code>是ground truth，<code>T_{\mathrm{align}}</code>由SE(3)或Sim(3) alignment得到。直觉是比较global trajectory shape/pose；实现映射：必须记录association tolerance、alignment family、失败段与单位。给<code>[5,6,7]</code>对<code>[0,1,2]</code>做translation alignment可把raw RMSE 5降到0，说明alignment不是无关细节。</p>
+<p>Relative Pose Error可写为：</p>
+<div class="formula">\[
+E_i^{\Delta}
+=
+\left(
+(T_i^*)^{-1}T_{i+\Delta}^*
+\right)^{-1}
+\left(
+\hat T_i^{-1}\hat T_{i+\Delta}
+\right).
+\]</div>
+<p>变量解释：<code>\Delta</code>可按frame、time或distance定义。直觉是测local motion drift，较少受global offset影响。实现映射：probe中GT step为1、estimate step为1.1，translation RPE RMSE为0.1；必须报告<code>\Delta</code>和采样方式。</p>
+<table><thead><tr><th>Metric</th><th>主要回答</th><th>必须冻结</th></tr></thead><tbody>
+<tr><td>ATE</td><td>global trajectory一致性</td><td>association、SE3/Sim3、unit、failure truncation</td></tr>
+<tr><td>RPE</td><td>local incremental drift</td><td>delta definition、rotation/translation reduction</td></tr>
+<tr><td>drift %</td><td>路程归一化长期误差</td><td>segment length、route、loop policy</td></tr>
+<tr><td>lost/relocal</td><td>可用性与恢复</td><td>lost definition、timeout、denominator</td></tr>
+<tr><td>loop P/R</td><td>place/constraint质量</td><td>candidate vs verified、GT loop definition</td></tr>
+<tr><td>map quality</td><td>occupancy/mesh/landmark</td><td>pose source、coverage、resolution、threshold</td></tr>
+</tbody></table>
+<h2 id="16-deterministic-probes">16. 十个Deterministic Probes</h2>
+<table><thead><tr><th>Probe</th><th>固定输入</th><th>结果</th><th>教学结论</th></tr></thead><tbody>
+<tr><td>map/odom composition</td><td><code>map→odom=-2m</code>，<code>odom→base=10m</code></td><td><code>map→base=8m</code></td><td>frame chain必须显式</td></tr>
+<tr><td>SE(2) roundtrip</td><td>yaw 90°、t <code>[2,3]</code>、p <code>[1,0]</code></td><td>q <code>[2,4]</code>，inverse error <code>6.12e-17</code></td><td>方向/inverse可测</td></tr>
+<tr><td>covariance</td><td>P0 <code>.01</code>、Q <code>.04</code>、10步、R <code>.09</code></td><td>prior <code>.41</code>，K <code>.82</code>，post <code>.0738</code></td><td>无update uncertainty增长</td></tr>
+<tr><td>ATE alignment</td><td>GT <code>[0,1,2]</code>，est <code>[5,6,7]</code></td><td>raw 5，aligned 0</td><td>alignment属于metric身份</td></tr>
+<tr><td>RPE</td><td>GT step 1，est step 1.1</td><td>RMSE <code>.1</code></td><td>local drift与global offset分开</td></tr>
+<tr><td>false loop</td><td>chain x2=2，loop要求x2=0</td><td>residual 2&gt;.5，reject</td><td>candidate不能直接进graph</td></tr>
+<tr><td>scale protocol</td><td>est <code>[0,1.2,2.4]</code></td><td>SE3 RMSE <code>.1633</code>，Sim3 scale <code>.8333</code>后0</td><td>Sim3会隐藏scale error</td></tr>
+<tr><td>correction jump</td><td>map pose <code>10→8.6</code>，odom delta <code>.1</code></td><td>map delta <code>-1.4</code> vs odom <code>.1</code></td><td>controller避免global jump</td></tr>
+<tr><td>timestamp</td><td><code>[0,.1,.09]</code></td><td>non-monotonic reject</td><td>order/clock属于输入身份</td></tr>
+<tr><td>local fallback</td><td><code>runtimeReady=false/softwareOnly=true</code></td><td>localization gate false</td><td>map asset不等于live localization</td></tr>
+</tbody></table>
+<p>10个probe得到<code>10/10 expected decisions matched</code>。它们验证合同和metric反例，不是六个系统的benchmark复现。</p>
+<h2 id="17-first-divergence-failure-diagnosis">17. First-divergence Failure Diagnosis</h2>
+<table><thead><tr><th>表面症状</th><th>第一检查层</th><th>关键证据</th><th>常见误诊</th></tr></thead><tbody>
+<tr><td>pose整体翻转/旋转</td><td>frame direction/axis</td><td>T convention、REP/custom axes</td><td>调loop threshold</td></tr>
+<tr><td>开始即漂</td><td>init/scale/gravity</td><td>excitation、bias、sensor mode</td><td>只怪地图</td></tr>
+<tr><td>匀速累积误差</td><td>odometry frontend/local estimator</td><td>RPE、bias、inliers</td><td>直接加global BA</td></tr>
+<tr><td>某时刻突然跳</td><td>map→odom correction</td><td>loop/relocal event、graph delta</td><td>当真实高速运动</td></tr>
+<tr><td>闭环后全图扭曲</td><td>false loop/weight</td><td>geometric inliers、loop residual</td><td>说optimizer失败</td></tr>
+<tr><td>tracking反复lost</td><td>frontend/sensor</td><td>blur、texture、dynamic、timestamp</td><td>只加keyframes</td></tr>
+<tr><td>ATE很好但尺度错</td><td>alignment</td><td>Sim3/SE3与scale output</td><td>报metric scale成功</td></tr>
+<tr><td>map可见但机器人不动</td><td>localization/controller boundary</td><td>runtimeReady、pose age、frame</td><td>报SLAM成功</td></tr>
+<tr><td>同轨迹不同分数</td><td>evaluation protocol</td><td>association/alignment/truncation</td><td>报模型回归</td></tr>
+<tr><td>重启后位置错误</td><td>map/session identity</td><td>map UUID、load path、relocal log</td><td>归因random seed</td></tr>
+</tbody></table>
+<p>诊断顺序：<code>sensor/time/calibration → frame/init/scale → frontend association → local estimator/covariance → loop geometric gate → graph correction/map revision → metric protocol → planner/controller consumer</code>。</p>
+<h2 id="18-fail-closed-localization-pipeline">18. Fail-closed Localization Pipeline 伪代码</h2>
+<pre><code class="language-python">def update_localization(packet, manifest, estimator, map_bundle):
+    # 1. Reject missing identity; never guess sensor/frame/time/map revision.
+    require(packet, [&quot;sensor_id&quot;, &quot;timestamp_ns&quot;, &quot;frame_id&quot;, &quot;calibration_sha256&quot;])
+    require(manifest, [&quot;estimator_revision&quot;, &quot;frame_contract&quot;, &quot;evaluation_contract&quot;])
+    if packet.timestamp_ns &lt;= estimator.last_timestamp_ns:
+        return {&quot;status&quot;: &quot;reject&quot;, &quot;reason&quot;: &quot;NON_MONOTONIC_TIME&quot;}
+
+    # 2. Propagate local state and covariance with the frozen sensor model.
+    predicted = estimator.propagate(packet.imu, manifest.noise_bias_model)
+    if not predicted.finite or predicted.covariance_exceeds(manifest.local_risk_budget):
+        return {&quot;status&quot;: &quot;lost&quot;, &quot;reason&quot;: &quot;PROPAGATION_UNCERTAIN&quot;}
+
+    # 3. Frontend measurements may be absent or outliers; keep status explicit.
+    measurements = estimator.frontend(packet)
+    local = estimator.local_update(predicted, measurements)
+    if not local.valid:
+        relocalized = estimator.relocalize(packet, map_bundle)
+        if not relocalized.geometrically_verified:
+            return {&quot;status&quot;: &quot;lost&quot;, &quot;reason&quot;: &quot;RELOCALIZATION_FAILED&quot;}
+        local = relocalized.state
+
+    # 4. A place candidate is not a loop constraint until geometry passes.
+    candidate = estimator.detect_loop(local, map_bundle)
+    if candidate is not None:
+        verified = estimator.verify_loop(candidate, manifest.loop_gate)
+        if verified.accepted:
+            optimized = estimator.optimize_pose_graph(verified.constraint)
+            if optimized.max_residual &gt; manifest.graph_residual_limit:
+                return {&quot;status&quot;: &quot;reject_loop&quot;, &quot;reason&quot;: &quot;GRAPH_INCONSISTENT&quot;}
+            map_bundle = optimized.new_map_revision
+
+    # 5. Publish continuous odom-&gt;base and separately revisioned map-&gt;odom.
+    return {
+        &quot;status&quot;: &quot;tracking&quot;,
+        &quot;odom_to_base&quot;: local.odom_to_base,
+        &quot;map_to_odom&quot;: estimator.map_to_odom(map_bundle),
+        &quot;covariance&quot;: local.covariance,
+        &quot;map_revision&quot;: map_bundle.revision,
+        &quot;robot_success&quot;: None,
+    }</code></pre>
+<p>伪代码保留<code>initializing/tracking/lost/relocalized/reject_loop</code>状态与map revision；它是目标合同，不是五项目已有实现。生产系统还需queue/backpressure、sensor dropout、concurrent map update、TF cache、kidnapped-robot处理、watchdog与controller stop。</p>
+<h2 id="19-public-method-code-mapping">19. Public Method → Code Mapping</h2>
+<table><thead><tr><th>机制</th><th>fixed code</th><th>面试可讲</th><th>不能反推</th></tr></thead><tbody>
+<tr><td>tracking/relocal/map atlas</td><td>ORB-SLAM3 Tracking/LoopClosing/Atlas</td><td>lost/relocalization、loop vs merge、multi-map</td><td>local deployment</td></tr>
+<tr><td>sliding-window VIO</td><td>VINS estimator/IntegrationBase</td><td>preintegration、marginalization、bias/scale</td><td>arbitrary sensor robustness</td></tr>
+<tr><td>drift/pose graph</td><td>VINS pose_graph</td><td>world↔VIO transform、4-DoF optimize</td><td>false loop automatically rejected</td></tr>
+<tr><td>local/global LiDAR SLAM</td><td>Cartographer local builder/constraint/pose graph</td><td>submap、scan match、global loop</td><td>visual/map semantics</td></tr>
+<tr><td>learned dense BA</td><td>DROID droid/factor graph/backend</td><td>recurrent update + dense BA</td><td>checkpoint/latency/generalization</td></tr>
+<tr><td>modular EKF</td><td>OpenVINS manager/propagator/updaters</td><td>state/covariance、MSCKF vs SLAM update</td><td>full global SLAM</td></tr>
+<tr><td>VIO + loop candidate</td><td>Kimera frontend/backend/LCD</td><td>stereo+IMU、factor graph、loop detection</td><td>selected repo alone equals full Kimera stack</td></tr>
+</tbody></table>
+<h2 id="20-inventory-direct-audit">20. 本地五项目 Inventory 与Direct Audit</h2>
+<h3 id="20-1-canonical-inventory">20.1 Canonical Inventory</h3>
+<table><thead><tr><th>Inventory</th><th>Canonical SHA-256</th><th>当前安全结论</th></tr></thead><tbody>
+<tr><td><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD</a></td><td><code>C002B2275EB1F747E1E6F383CB271539F081AE8CCEE0C8D11AFC92EBABE99AFA</code></td><td>2D point/box/relation与static holdout；无sensor trajectory/SLAM</td></tr>
+<tr><td><a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA</a></td><td><code>13023578D1B7343083BEB588C7F8CE7B1BDC267E2BC834204D309106E8EA132A</code></td><td>image/language/action training与sim diagnostics；无localization/map graph</td></tr>
+<tr><td><a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness</a></td><td><code>71C3B62F52204574C1B854B554258DABC1856F5D9044EB9628280A32500A797F</code></td><td>occupancy/PCD/map/state bridge；fallback不是live localization</td></tr>
+<tr><td><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a></td><td><code>2362311B8D90A5B82D9D2D6333F5D376625CF2311DD7A3921F42B339BB55AFB4</code></td><td>video/action/world-model diagnostic；无sensor estimator/SLAM result</td></tr>
+<tr><td><a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM</a></td><td><code>C35C41D6248E3B072E9181F4AD3AAFA423631D74604207CB5AB65352105DD8A9</code></td><td>LIBERO/RoboCasa state/action protocol；sim state不是SLAM</td></tr>
+</tbody></table>
+<h3 id="20-2-robot-harness-local-direct-exceptions">20.2 Robot Harness Local-direct Exceptions</h3>
+<table><thead><tr><th>fixed file</th><th>SHA-256</th><th>直接发现</th><th>不能升级</th></tr></thead><tbody>
+<tr><td><code>server/sim/ros2_bridge.py</code></td><td><code>8291D64DE01AAC2EFDF52409008EFD7AE18C5FEC0BA7B9D4677F6636F8287A48</code></td><td>occupancy/PCD/reloc poses路径、pixel↔world、state file与fallback enrichment</td><td>estimator、live TF、loop closure</td></tr>
+<tr><td><code>server/sim/acerobotics_sim.py</code></td><td><code>E373090035AADBCBECD7016698175345804194CC727969ECC972AC97CCCE9EBE</code></td><td>simulator fixture含<code>localization_mode/map_id/valid</code>字段</td><td>field来自真实localizer</td></tr>
+<tr><td><code>server/tests/test_acerobotics_ros2_backend.py</code></td><td><code>A0FE082007E68BBFA8CA7A535E67ECBF5935B55DB28C52A449694B3C0773B1FB</code></td><td>fallback test断言<code>runtimeReady=false</code>与map asset</td><td>live runtime pass</td></tr>
+<tr><td><code>occupancy2d_map.json</code></td><td><code>40A2CE540AC214CABA987BB2BCF3542B197207A9F25D96298C2E65167808EA37</code></td><td>0/127/255语义、0.02m resolution、origin与conversion params</td><td>map trajectory/loop provenance</td></tr>
+<tr><td><code>world.pcd</code></td><td><code>494A53320AF2EC10C4D1AADD17CE0F7D943820BA34536C23871BB5CA711F0B42</code></td><td>PCD v0.7，<code>x y z intensity timestamp ring</code>，54,856点</td><td>active localization或semantic map</td></tr>
+<tr><td><code>reloc_map/poses.txt</code></td><td><code>C0FBC83966782D16A91886B7627CAF9597D87F076934CC7CBC097D851477315C</code></td><td>timestamp + pose/quaternion-like 8列asset</td><td>estimator/config/map UUID/online relocalization success</td></tr>
+</tbody></table>
+<p>定向测试<code>python -m pytest -q server/tests/test_acerobotics_ros2_backend.py::test_ros2_state_fallback_uses_real_sensebot_asset</code>结果为<code>1 passed</code>并有2条Tortoise <code>pk</code> deprecation warnings。它只证明offline fallback能装载real map asset；测试明确断言<code>runtimeReady is False</code>、<code>runtimeRealApiCalls is False</code>。OPD/OpenPiVLA/WAM/UWM的选定本地实现路径对<code>SLAM/odometry/map_frame/pose graph/loop closure/relocalization/drift</code>没有direct estimator命中；inventory不证明所有远端/历史分支绝对不存在。</p>
+<h2 id="21-project-truth-boundary">21. Project Truth Boundary</h2>
+<table><thead><tr><th>项目</th><th>当前可以讲</th><th>当前不能说</th><th>最小补强artifact</th></tr></thead><tbody>
+<tr><td>OPD</td><td>2D grounding可为localizer/semantic map提供上游观测</td><td>已做3D localization/semantic SLAM</td><td>sensor/pose/map manifest、trajectory与query绑定</td></tr>
+<tr><td>Robot Harness</td><td>map asset schema、pixel/world bridge、software-only state接口</td><td>已实现/部署SLAM、loop closure或可靠relocalization</td><td>sensor bag、calibration、estimator config/commit、TF/pose graph、ATE/RPE、live logs</td></tr>
+<tr><td>OpenPiVLA</td><td>policy消费image/state/action的接口诊断</td><td>policy结果证明localization正确</td><td>frame/pose lineage、localizer status、matched rollout</td></tr>
+<tr><td>WAM</td><td>video/world/action trace可讨论pose-error sensitivity</td><td>world model等于SLAM或定位提升</td><td>camera trajectory、estimator/map revision、paired evaluation</td></tr>
+<tr><td>UWM</td><td>simulator state/action protocol</td><td>simulator ground-truth state等于估计器输出</td><td>noisy observation estimator、pose protocol与raw trajectory</td></tr>
+</tbody></table>
+<p>安全回答顺序：<code>public method → fixed official code → local inventory → local-direct asset/interface → missing estimator/runtime → candidate ownership</code>。地图文件、字段名、ROS目录或Git author都不能替代个人实现与matched result证据。</p>
+<h2 id="22-source-gate">22. Source Gate 与下一切片</h2>
+<p>本轮已关闭：</p>
+<ul><li>六份primary paper完整PDF、SHA、全文解析与代表页视觉检查；</li><li>六个official repo固定commit/date/license，36个核心文件逐字节SHA；</li><li>localization/odometry/SLAM/relocalization/loop/map-merge边界；</li><li><code>map→odom→base</code>、typed manifest、state/covariance、front/back end、pose graph、drift与ATE/RPE protocol；</li><li>10个deterministic probes，全部命中预期结果；</li><li>五份canonical inventory、Robot Harness六个local-direct exceptions与一个fallback test的真实性边界。</li></ul>
+<p>仍为<code>WARN</code>：本地没有sensor bag/clock/calibration lineage、estimator config/checkpoint、live TF、pose/covariance stream、keyframe/landmark/submap/pose graph、loop accept/reject log、map UUID/revision、ATE/RPE trajectory bundle、lost/relocalization denominator、matched planner/controller episode或逐文件候选人ownership闭环。primary paper与official code不能替代这些artifact。</p>
+<p><code>VLA-PER-016 source freeze</code>、下游knowledge与一张atomic card已在三个独立bounded slices同步；新卡与其余266张题卡共267张均保持<code>unseen</code>，不创建<code>coaching_state.md</code>，不改变任何mastery。下一bounded slice只冻结<code>VLA-PER-017</code> belief/memory/frontier/active-exploration source；不生成其knowledge/card。</p>
+<h2 id="references">References</h2>
+<ol><li>Campos et al., <a href="https://arxiv.org/pdf/2007.11898v2">ORB-SLAM3 v2</a>；<a href="https://github.com/UZ-SLAMLab/ORB_SLAM3/tree/4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4">official code@4452a3c</a>。</li><li>Qin et al., <a href="https://arxiv.org/pdf/1708.03852v1">VINS-Mono v1</a>；<a href="https://github.com/HKUST-Aerial-Robotics/VINS-Mono/tree/90dabb5ec79946ae42fd2e1e91d4e69aabe1e25d">official code@90dabb5</a>。</li><li>Hess et al., <a href="https://research.google.com/pubs/archive/45466.pdf">Real-Time Loop Closure in 2D LIDAR SLAM</a>；<a href="https://github.com/cartographer-project/cartographer/tree/877157a0d91788a7700221d87232d412cb3c1ef4">Cartographer code@877157a</a>。</li><li>Teed &amp; Deng, <a href="https://arxiv.org/pdf/2108.10869v2">DROID-SLAM v2</a>；<a href="https://github.com/princeton-vl/DROID-SLAM/tree/2dfd39f0dcad44012ca7bbb8aa70b55edbfa9c99">official code@2dfd39f</a>。</li><li>Geneva et al., <a href="https://pgeneva.com/downloads/papers/Geneva2020ICRA.pdf">OpenVINS ICRA 2020</a>；<a href="https://github.com/rpng/open_vins/tree/69488123ed9362dd44b6f28e7f4680abbff1442b">official code@6948812</a>。</li><li>Rosinol et al., <a href="https://arxiv.org/pdf/1910.02490v3">Kimera v3</a>；<a href="https://github.com/MIT-SPARK/Kimera-VIO/tree/ce8c59b7b273ab5ac29db7e5572e1623760e19c7">Kimera-VIO code@ce8c59b</a>。</li><li>ROS REP-105，<a href="https://github.com/ros-infrastructure/rep/blob/11ca24a41f31480dfb9562ba99f2a5b93d3ebda5/rep-0105.rst">Coordinate Frames for Mobile Platforms@11ca24a</a>。</li><li><a href="vol_06_per002_3d_lift_frame_source_freeze.html">PER-002 3D Lift / Frame Source</a>、<a href="vol_06_per003_multiview_temporal_source_freeze.html">PER-003 Multi-view / Temporal Source</a>、<a href="vol_06_per005_navigation_policy_architecture_source_freeze.html">PER-005 Navigation Policy Source</a> 与 <a href="vol_06_per015_perception_action_reachability_uncertainty_failure_gate_source_freeze.html">PER-015 Perception→Action Gate Source</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD</a>、<a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA</a>、<a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness</a>、<a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a> 与 <a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM</a> Claim–Evidence Inventories。</li></ol>
+</article></body></html>

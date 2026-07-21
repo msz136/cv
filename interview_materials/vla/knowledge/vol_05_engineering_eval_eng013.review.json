@@ -1,0 +1,57 @@
+{
+  "artifact": "knowledge/vol_05_engineering_eval_eng013.md",
+  "html": "knowledge/vol_05_engineering_eval_eng013.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / VLA-ENG-013 / knowledge_15_of_44 / card_1_of_1_unseen",
+  "verdict": "WARN",
+  "source_sha256": "D3B0EB1004AE390AE9094EDA5A95218848CF69B081B6D73AB391BDABD36849B6",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 14,
+    "new_nodes": 1,
+    "total_drafted_nodes": 15,
+    "covered_ids": [
+      "VLA-ENG-013"
+    ],
+    "drafted_cards_for_new_nodes": 1,
+    "practice_state": "unseen",
+    "difficulty": "L2",
+    "priority": "P0"
+  },
+  "source_scope": {
+    "source_freeze": "sources/vol_05_eng013_reproducibility_source_freeze.html",
+    "official_docs": [
+      "PyTorch 2.13 Reproducibility",
+      "PyTorch 2.13 DataLoader/DistributedSampler",
+      "PyTorch 2.13 CPU/CUDA RNG state APIs",
+      "NumPy 1.26 random.seed"
+    ],
+    "local_project_hooks": [
+      "VOL 05 ENG-004..006 local artifact gate",
+      "UWM DataLoader-only stall clue",
+      "OpenPiVLA/OPD evidence inventories"
+    ]
+  },
+  "checks": {
+    "bounded_slice": "PASS (VLA-ENG-013 knowledge and its single atomic card are drafted; ENG-014..016 remain deferred)",
+    "reproducibility_strengths": "PASS WITH WARNING (seed, experiment replay, epoch-boundary and mid-epoch exact resume are explicitly separated)",
+    "sampler_semantics": "PASS WITH WARNING (constant dataset/order, common seed, drop_last and set_epoch sourced; cursor resume labeled engineering contract)",
+    "rng_ownership": "PASS (Python/NumPy/torch CPU/CUDA/worker/sampler layers separated)",
+    "resume_contract": "PASS WITH WARNING (model/optimizer/scaler/RNG/cursor/next IDs/prefetch bundle proposed; no local replay artifact)",
+    "formula": "PASS WITH WARNING (index-stream abstraction is labeled mechanism model, not PyTorch internal source equation)",
+    "project_truth_boundary": "PASS (no project sampler cursor, RNG bundle or precise resume claim upgraded)",
+    "minimum_module_contract": "PASS (intuition, official semantics, formulas, implementation mapping, replay pseudocode, trade-offs, bad cases and project boundary included)",
+    "html_static_validation": "PASS (source SHA, one H1, thirteen H2, eleven H3, three tables, six code blocks and one formula block)",
+    "local_links": "PASS (all relative source/audit/artifact links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "card": "PASS WITH WARNING (one atomic card drafted and kept unseen; no candidate answer exists)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Independently review ENG-013 wording before changing the verdict from WARN.",
+    "Collect epoch-boundary and mid-epoch fixed-request replay artifacts before upgrading project resume claims.",
+    "Keep the single VLA-ENG-013 atomic card unseen until a real oral answer is recorded.",
+    "Do not expand ENG-014..016 until their own source gates are ready."
+  ],
+  "next": "Run a one-question-at-a-time oral drill for ENG-013 or start ENG-014 source-first; keep ENG-014..016 undrafted until their source gates are ready."
+}

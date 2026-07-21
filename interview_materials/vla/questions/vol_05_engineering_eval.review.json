@@ -1,0 +1,73 @@
+{
+  "artifact": "questions/vol_05_engineering_eval.md",
+  "html": "questions/vol_05_engineering_eval.html",
+  "review_date": "2026-07-17",
+  "status": "drafted_batch1",
+  "verdict": "WARN",
+  "source_sha256": "C1EBFB0608AF37E47C9F71EEB592E2B2E108116AECA60DB8E61606FE5395CA05",
+  "question_count": 10,
+  "planned_volume_count": 44,
+  "covered_question_ids": [
+    "VLA-ENG-001",
+    "VLA-ENG-002",
+    "VLA-ENG-003",
+    "VLA-ENG-004",
+    "VLA-ENG-005",
+    "VLA-ENG-006",
+    "VLA-ENG-007",
+    "VLA-ENG-008",
+    "VLA-EVAL-001",
+    "VLA-EVAL-002"
+  ],
+  "remaining_question_count": 34,
+  "difficulty_distribution": {
+    "L1": 0,
+    "L2": 8,
+    "L3": 2
+  },
+  "priority_distribution": {
+    "P0": 10,
+    "P1": 0,
+    "P2": 0
+  },
+  "practice_distribution": {
+    "unseen": 10,
+    "weak": 0,
+    "pass": 0,
+    "strong": 0,
+    "stale": 0
+  },
+  "answer_length_chars": {
+    "short_answer_min": 153,
+    "short_answer_max": 180,
+    "short_answer_average": 170.3,
+    "short_answer_threshold": 180,
+    "mechanism_answer_min": 262,
+    "mechanism_answer_max": 346,
+    "mechanism_answer_average": 301.9,
+    "mechanism_answer_threshold": 350
+  },
+  "checks": {
+    "batch_boundary": "PASS (only VLA-ENG-001..008 and VLA-EVAL-001..002 were drafted; remaining 34 questions were not generated)",
+    "details_block_well_formed": "PASS (10/10 Markdown and HTML details/summary blocks balanced and rendered as foldable cards)",
+    "question_id_unique": "PASS (10 unique expected IDs)",
+    "required_fields": "PASS (intent, short answer, mechanism, diagnosis/evidence, project hook, follow-up, dangerous answer, source and state on every card)",
+    "answer_conciseness": "PASS (30-second answers <=180 chars; mechanism answers <=350 chars)",
+    "source_references": "PASS WITH WARNING (cards inherit the official-doc review, local ENG-004..006 artifact gate and project-inventory source set; binary/resume evidence remains pending)",
+    "project_truth_boundary": "PASS (project inventories are used only as bounded bad cases; no metric, checkpoint or deployment claim was upgraded)",
+    "practice_state": "PASS (all 10 cards are unseen)",
+    "local_links": "PASS (9 relative-link occurrences, 8 unique targets, none missing)",
+    "html_static_validation": "PASS (renderer SHA matches Markdown SHA; one H1, six H2, 10 foldable cards and 10 summaries)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static validation does not substitute for visual QA)",
+    "independent_fact_review": "PASS WITH WARNING (official-doc review is recorded in ../sources/vol_05_batch1_independent_fact_review.html; local resume/performance smoke remains pending)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep all 10 cards unseen until the candidate answers them orally.",
+    "Use the official-doc and local artifact-gate reviews as source gates; do not upgrade resume/performance evidence without binary/runtime artifacts.",
+    "Do not promote DataLoader-only speedups, proxy metrics, remote paths or formatter success to end-to-end robot evidence.",
+    "Do not draft VLA-ENG-009..022 or VLA-EVAL-003..022 until a later bounded source-ready batch is selected.",
+    "Run browser visual QA through a supported surface if one becomes available."
+  ],
+  "next": "Collect local checkpoint/resume/performance artifacts or begin one-question-at-a-time oral drills; keep the remaining 34 cards planned only."
+}

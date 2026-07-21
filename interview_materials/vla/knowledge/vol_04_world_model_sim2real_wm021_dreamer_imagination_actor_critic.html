@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 World Model / Sim2Real：Dreamer Imagination、Actor/Critic 与 Model Bias（WM-021）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm021_dreamer_imagination_actor_critic.md">
+<meta name="aris:source-sha256" content="fd703597a106868350d9e4aa11f777ab83e2102c635a3ec5ede863df8440fba3">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>fd703597a106868350d9e4aa11f777ab83e2102c635a3ec5ede863df8440fba3</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm021_dreamer_imagination_actor_critic.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 一句话直觉</a></li><li><a href="#2">2. 端到端数据流</a></li><li><a href="#2-1-replay-posterior-imagination">2.1 Replay posterior 是起点，不是整个 imagination</a></li><li><a href="#2-2-actor-critic">2.2 Actor 与 critic 的职责</a></li><li><a href="#3-lambda-return-target">3. Lambda-return 与 target 合同</a></li><li><a href="#4">4. 梯度边界与实现映射</a></li><li><a href="#5-model-bias-exploitation">5. Model bias 与 exploitation</a></li><li><a href="#6">6. 最小防护与评估</a></li><li><a href="#7">7. 可审计伪代码</a></li><li><a href="#8">8. 项目挂钩与真实性边界</a></li><li><a href="#9">9. 结论与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 World Model / Sim2Real：Dreamer Imagination、Actor/Critic 与 Model Bias（WM-021）</h1>
+<div class="meta">状态：<code>drafted / VLA-WM-021 / knowledge_23_of_44 / card_synced / WARN</code> 报告日期：2026-07-18 证据截止：2026-07-18 当前节点：<code>VLA-WM-021</code>；本页解释 Dreamer 的 imagined actor-critic 机制和 model-bias 边界，不声明本地复现。 前置：<a href="vol_04_world_model_sim2real_wm020_failure_diagnostics.html">WM-020 Failure Diagnostics</a>、<a href="../sources/vol_04_wm021_dreamer_imagination_actor_critic_source_freeze.html">WM-021 Source Freeze</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>Dreamer 如何在 latent imagination 中训练 actor/critic，为什么仍受 model bias 影响？回答必须拆开真实 replay 起点、prior imagination、reward/continue、lambda-return、梯度边界和真实闭环验证。</p>
+<h2 id="1">1. 一句话直觉</h2>
+<p>Dreamer 不让 actor 每次更新都与真实环境交互，而是从真实 replay 的 posterior state 出发，在 action-conditioned prior 中“想象”一段 latent trajectory，再用预测 reward/continue 计算 return，更新 actor 与 critic。省下真实交互成本的同时，也把 world model 的错误带进了训练：actor 可能学会让模型开心，而不是让真实环境成功。[1][2]</p>
+<h2 id="2">2. 端到端数据流</h2>
+<pre><code class="language-text">real replay observations
+        ↓ posterior filtering
+      s0=(h0,z0)
+        ↓ actor π(a|s) + prior dynamics
+   imagined s1...sH, r̂, ĉ
+        ↓ lambda-return / value target
+ actor loss + critic loss
+        ↓
+ simulator/real paired validation</code></pre>
+<h3 id="2-1-replay-posterior-imagination">2.1 Replay posterior 是起点，不是整个 imagination</h3>
+<p>RSSM 在真实序列上使用 observation posterior (q_phi(z_tmid h_t,x_t)) 更新 belief；imagination 从某个 replay state (s_0=(h_0,z_0)) 开始，之后由 prior (p_phi(z_{t+1}mid h_{t+1})) 和 actor 产生未来。若每一步都喂真实 observation，就变成 teacher-forced filtering，而不是纯 imagined rollout。[1][2]</p>
+<h3 id="2-2-actor-critic">2.2 Actor 与 critic 的职责</h3>
+<div class="formula">\[
+\pi_\theta(a_t\mid s_t)\quad\text{and}\quad v_\psi(s_t)\approx\mathbb E_{p_\phi,\pi_\theta}[G_t].
+\]</div>
+<p>变量解释：(pi_	heta) 是 actor 的动作分布，(v_psi) 是当前 world model 与 policy 下的未来回报估计，(s_t=(h_t,z_t)) 是 RSSM feature。actor 负责选动作，critic 负责提供 value baseline/target；两者都不等同于 reward、success classifier 或 termination head。</p>
+<h2 id="3-lambda-return-target">3. Lambda-return 与 target 合同</h2>
+<p>一个常见的抽象形式是：</p>
+<div class="formula">\[
+G_t^\lambda=r_t+\gamma c_t\left((1-\lambda)v_\psi(s_{t+1})+\lambda G_{t+1}^\lambda\right),
+\]</div>
+<p>其中 (r_t) 是 imagined reward，(c_t) 是 continuation，(gamma) 是 discount，(lambda) 控制多步 target 与 bootstrap value 的混合。代码映射通常包含 <code>lambda_return</code>、continuation mask、horizon truncation、target stop-gradient 和 value loss；具体 reward transform、symlog、reduction 与 config 必须按 frozen code 核对，不应把公式当作某项目默认值。[1][2]</p>
+<p>常见错误：</p>
+<ul><li>把 (c_t) 当作 reward 或把 terminal episode 继续 bootstrap；</li><li>用真实未来 observation 计算 target，却称它为 open-loop imagination；</li><li>只报告 imagined return，不保存 horizon、init、seed、controller 和 real/sim episode denominator；</li><li>把 critic 的 value 当作真实 success probability。</li></ul>
+<h2 id="4">4. 梯度边界与实现映射</h2>
+<p>DreamerV3 frozen reimplementation 的 <code>RSSM.observe</code>、<code>RSSM.imagine</code>、<code>RSSM.loss</code> 和 <code>Agent.loss</code> 可以映射到 filtering、prior rollout、KL/world loss 与 actor-critic imagination；repo README 明确它是 reimplementation，不应称为论文作者官方代码。[2]</p>
+<p>actor/critic 是否把梯度传回 world model，取决于 <code>stop_gradient</code>、actor/world update schedule、reward/representation gradient 配置和 loss scale。高分回答应先画：</p>
+<pre><code class="language-text">replay → posterior state → prior rollout → reward/value target
+          └─ world-model loss       └─ actor/critic loss</code></pre>
+<p>再指出每条边是否允许 gradient；不能笼统说“actor loss 端到端更新 RSSM”。</p>
+<h2 id="5-model-bias-exploitation">5. Model bias 与 exploitation</h2>
+<p>真实转移为 (F)，模型转移为 (hat F=F+epsilon)。即使单步误差很小，长 horizon 仍可能累积；更危险的是 actor 会主动选择模型高估 reward 的 OOD state，使：</p>
+<div class="formula">\[
+J_{\mathrm{imagined}}(\pi)\gg J_{\mathrm{real}}(\pi).
+\]</div>
+<p>这不是精确理论 bound，而是 model exploitation 的诊断表达。典型症状：imagined reward/value 上升但真实 success 不变；长 horizon 崩溃；模型对 action/uncertainty 不敏感；actor 进入训练数据没有覆盖的 latent 区域。World Models 早期的 dream controller 也说明了“在模型里成功”不能替代真实环境验证。[1][3]</p>
+<h2 id="6">6. 最小防护与评估</h2>
+<table><thead><tr><th>方法</th><th>要冻结的字段</th><th>目标</th><th>边界</th></tr></thead><tbody>
+<tr><td>horizon sweep</td><td>imagination H、execution prefix、per-offset metric</td><td>找 compounding gap</td><td>不等于 real generalization</td></tr>
+<tr><td>receding-horizon replan</td><td>replan interval、latency、controller</td><td>缩短开放环暴露</td><td>不证明 world model 正确</td></tr>
+<tr><td>uncertainty/disagreement</td><td>ensemble/seed/posterior、calibration</td><td>识别 OOD state</td><td>disagreement 未校准不等于风险</td></tr>
+<tr><td>replay refresh</td><td>real/data mix、coverage、revision</td><td>减少 state distribution gap</td><td>不自动消除 leakage/shortcut</td></tr>
+<tr><td>pessimistic value</td><td>penalty、ensemble lower bound</td><td>限制模型漏洞</td><td>不保证任务成功</td></tr>
+<tr><td>paired validation</td><td>same checkpoint/init/task/controller</td><td>对齐 imagined/sim/real</td><td>不同 protocol 不能直接比较</td></tr>
+</tbody></table>
+<p>至少同时报告 imagined return、per-offset open-loop error、action sensitivity、simulator/real episode success 和 failure trace；否则无法判断是 actor、critic、world model 还是 protocol 造成差异。[4]</p>
+<h2 id="7">7. 可审计伪代码</h2>
+<pre><code class="language-python">def train_imagined_actor_critic(agent, replay, protocol):
+    # 1. Encode real replay and choose a posterior state as imagination start.
+    start = agent.world_model.posterior_state(replay, protocol)
+
+    # 2. Roll out only with prior dynamics and actor actions; do not read future frames.
+    imagined = agent.world_model.imagine(start, agent.actor, protocol.horizon)
+
+    # 3. Predict reward/continuation and build a lambda-return target.
+    target = lambda_return(imagined.reward, imagined.continue_, agent.critic, protocol)
+
+    # 4. Apply the implementation&#x27;s explicit stop-gradient/gradient routing.
+    actor_loss, critic_loss = agent.imagined_losses(imagined, target, protocol)
+    return actor_loss, critic_loss, imagined</code></pre>
+<p>这段伪代码只说明 mechanism；真实实现还需保存 checkpoint、normalizer、horizon、reset/init、seed、controller、episode trace 和 metric script。</p>
+<h2 id="8">8. 项目挂钩与真实性边界</h2>
+<ul><li>UWM/LIBERO：可连接 action/image conditional loss、fixed/reset protocol、normalizer、horizon 和 rollout wrapper；当前无 Dreamer-style actor/critic imagination 或 model-bias ablation artifact。</li><li>WAM/Cosmos：可连接 world/value/action slots、offline proxy、planning 与 0-success；不能把离线 MSE 或 proxy 直接说成 imagined actor-critic 已验证。</li><li>OpenPiVLA、OPD、Robot Harness：可讨论 action schema、mask、scorer、timeout 和 episode trace，但不支持把通用 Dreamer 机制写成个人实现或收益。</li></ul>
+<h2 id="9">9. 结论与下一步</h2>
+<p>Dreamer 的关键链路是“真实 posterior 起点 → prior latent imagination → reward/continue → lambda-return → actor/critic”，关键风险是“actor 优化 world-model 的错误”。因此必须把 imagined proxy、open-loop、simulator 和 real success 分层，并审计 horizon、gradient routing、uncertainty、reset 和 controller。当前节点保持 <code>WARN</code>，题卡已同步并保持 <code>unseen</code>；下一步进行真实口述或补一个 paired artifact。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li><a href="../sources/vol_04_world_model_foundations_claim_to_code.html">World Model Foundations Audit A</a>。</li><li><a href="../sources/vol_04_world_model_foundations_independent_fact_review.html">DreamerV3 independent fact review</a>。</li><li><a href="../sources/vol_04_world_model_foundations_claim_to_code.html">World Models / PlaNet audit</a>。</li><li><a href="../knowledge/vol_04_world_model_sim2real_wm019.html">WM-019 Metric Boundary</a>。</li></ol>
+</article></body></html>

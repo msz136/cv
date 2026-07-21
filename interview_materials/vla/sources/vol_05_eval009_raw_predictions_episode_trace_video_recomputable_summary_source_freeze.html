@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 EVAL-009 Source Freeze：Raw Predictions、Episode Trace、Video 与可复算 Summary</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_eval009_raw_predictions_episode_trace_video_recomputable_summary_source_freeze.md">
+<meta name="aris:source-sha256" content="be6945d2475585f65cd74417070fbd4fee1b148660b35c139370935413b13dea">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>be6945d2475585f65cd74417070fbd4fee1b148660b35c139370935413b13dea</code>；生成自：<code>interview_materials\vla\sources\vol_05_eval009_raw_predictions_episode_trace_video_recomputable_summary_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、revision与边界</a></li><li><a href="#2-evidence-ladder">2. Evidence Ladder</a></li><li><a href="#3-canonical-bundle">3. Canonical Bundle</a></li><li><a href="#4-raw-record">4. Raw Record：保存模型输出，不只保存分数</a></li><li><a href="#4-1-static-prediction">4.1 Static prediction</a></li><li><a href="#4-2-rollout-step">4.2 Rollout step</a></li><li><a href="#5-episode-index-conservation">5. Episode Index与Conservation</a></li><li><a href="#6-video-sidecar-metric-numerator">6. Video是Sidecar，不是Metric Numerator</a></li><li><a href="#7-deterministic-reducer">7. Deterministic Reducer</a></li><li><a href="#8-integrity-provenance-gate">8. Integrity与Provenance Gate</a></li><li><a href="#9">9. 五项目边界</a></li><li><a href="#10-bundle-verifier">10. Bundle Verifier伪代码</a></li><li><a href="#11-source-gate">11. Source Gate结论与下一入口</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 EVAL-009 Source Freeze：Raw Predictions、Episode Trace、Video 与可复算 Summary</h1>
+<div class="meta">状态：<code>source_frozen / VLA-EVAL-009 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-18 证据截止：2026-07-18 本切片冻结raw row/step、episode trace、media sidecar、derived summary、checksum/provenance、reducer与独立复算合同；下游只生成一张<code>VLA-EVAL-009</code>原子题卡，VOL 05同步为knowledge/cards 31/44。</div>
+<h2 id="question">问题（Question）</h2>
+<p>“报告里有97.4”“有失败视频”“有JSONL trace”分别能证明什么？高分回答要把human-readable evidence与machine-recomputable evidence分开，确保summary能从固定raw records、scorer、exclusion与aggregation重新得到。</p>
+<h2 id="1-revision">1. 冻结来源、revision与边界</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>类型 / revision</th><th>SHA-256</th><th>支持范围</th></tr></thead><tbody>
+<tr><td>S1</td><td>RFC 8493, BagIt v1.0</td><td>IETF standard / October 2018</td><td><code>4964147d2e6e16442d4a6dbfbe68178a8f33c3e791c06d68a8b33f51ad821537</code></td><td>payload/tag manifest、checksum、complete与valid package；不定义VLA schema/metric</td></tr>
+<tr><td>S2</td><td>W3C PROV-DM</td><td>W3C Recommendation / 2013-04-30</td><td><code>5c925c21bc96c285b25017c3b90d82cf74251d07713b71fcb81ca60f873c9e88</code></td><td>entity/activity/agent、generation/usage/derivation/attribution与bundle；不证明本地ownership</td></tr>
+<tr><td>S3</td><td>Foxglove MCAP</td><td>official-code / commit <code>413b6b2aa49665ba4af25c718261f47ec61e9814</code>, MIT</td><td>README <code>d666ab2171490ce69d7b8aa2f6c850fcdf1a310a8d88424e07cfb81e5f5dfcab</code>; spec <code>64d1ae52d16d5ef32a6d857cd34cc866d5583db09a715afdafd7fcbf98e13caa</code>; Kaitai <code>7ae83a344d515c29ee4fb433f6dd6273296beceb3e4d41bce359012cd1e63be8</code>; LICENSE <code>da11235665c17d4c1634072dae92b8ba1b38d6fdde2ccf19a6bbede33253f58d</code></td><td>schema/channel/message、log/publish time、attachment/metadata、CRC/index/summary；不要求项目使用MCAP</td></tr>
+<tr><td>S4</td><td>EVAL-005/006/008与ENG-012</td><td>canonical local source freezes</td><td><code>16b6a4c7...804ff46</code>; <code>8a2ccfbc...320c20</code>; <code>580ac709...f37b0</code>; <code>f13c9524...d11f2f</code></td><td>aggregation、protocol identity、failure trace与storage-format前置合同</td></tr>
+<tr><td>S5</td><td>五项目inventories + WAM manifest</td><td>local evidence</td><td>full hashes见review</td><td>当前summary/raw/trace/video/checkpoint缺口；不升级项目metric</td></tr>
+</tbody></table>
+<p>完整本地SHA：EVAL-005 <code>16b6a4c7c8e284ca8bd8a7cc831c3fc553405668ea87a071c23147f8f804ff46</code>；EVAL-006 <code>8a2ccfbc382537d13e95feefe4ec146342d7478432a9a645344a64b302ccd054</code>；EVAL-008 <code>580ac70922472453c8806265b2fd4bae8dad7881bad3da2e8f211c870e1f37b0</code>；ENG-012 <code>f13c9524a9ebc182985772069bb4696058639527699bd9d627cbf2b863d11f2f</code>；WAM manifest <code>1ab8709201e2e75f580cb0aa0f8465defb546d63b2aab70a1752239a7da8f697</code>；五inventory为<code>66acc52c...aa291e</code>、<code>078c86b1...772d</code>、<code>728b8326...3674d</code>、<code>a3c644f9...ce293</code>、<code>0a68251d...12bb</code>。</p>
+<h2 id="2-evidence-ladder">2. Evidence Ladder</h2>
+<table><thead><tr><th>层</th><th>artifact</th><th>能证明</th><th>不能证明</th></tr></thead><tbody>
+<tr><td>L0 claim</td><td>简历/口述数字</td><td>存在一个claim</td><td>数字来源与正确性</td></tr>
+<tr><td>L1 summary</td><td>table/JSON aggregate</td><td>报告记录了分子分母/指标</td><td>raw records、排除、scorer可重算</td></tr>
+<tr><td>L2 raw rows</td><td>per-sample prediction或episode outcome</td><td>可重跑parser/scorer/reducer</td><td>checkpoint/protocol同源</td></tr>
+<tr><td>L3 aligned trace/media</td><td>step events、video、timestamp map</td><td>可诊断时序与失败</td><td>aggregate完整、因果root cause</td></tr>
+<tr><td>L4 immutable bundle</td><td>manifest、hash、schema、code、raw、summary</td><td>完整性与lineage可验证</td><td>他人已成功复算</td></tr>
+<tr><td>L5 independent recompute</td><td>clean-environment command + matching output</td><td>指标可复算</td><td>项目ownership或部署泛化</td></tr>
+</tbody></table>
+<h2 id="3-canonical-bundle">3. Canonical Bundle</h2>
+<pre><code class="language-text">eval_bundle/
+  bundle_manifest.json
+  protocol/protocol.json          # benchmark/env/controller/scorer/policy IDs
+  schema/raw_record.schema.json
+  raw/predictions.parquet         # or per-episode JSONL/MCAP
+  raw/episodes/episode_index.jsonl
+  media/video_index.jsonl
+  media/*.mp4                     # qualitative sidecars
+  code/reducer_revision.json
+  summary/metrics.json
+  summary/exclusions.jsonl
+  checksums/manifest-sha256.txt
+  README.md                       # exact verify/recompute commands</code></pre>
+<p>BagIt支持payload completeness与checksum validity；PROV-DM支持把raw entity、scoring activity、summary entity与responsible agent关联。格式可替换，但这些语义不能缺。</p>
+<h2 id="4-raw-record">4. Raw Record：保存模型输出，不只保存分数</h2>
+<h3 id="4-1-static-prediction">4.1 Static prediction</h3>
+<pre><code class="language-text">record_id, dataset/sample/revision, input_ref/hash, target_ref/hash,
+checkpoint_sha, processor/normalizer_sha, raw_output, parsed_output,
+parser/scorer_sha, valid, invalid_reason, metric_contribution,
+weight, split/pool/task labels</code></pre>
+<p>OPD类任务需同时保存原始文本/token输出与parsed box/point/text；否则无法区分模型能力、format、parser和scorer。</p>
+<h3 id="4-2-rollout-step">4.2 Rollout step</h3>
+<pre><code class="language-text">episode_id, step_id, env_time, wall_time, obs_refs/checksums,
+raw_action_chunk, decoded_action, controller_command, executed_state,
+reward, success_predicate, terminated, truncated, error/event,
+policy/server/client/protocol revisions</code></pre>
+<p>raw model output、decoded action、command与executed state是四个证据层，不能只留最终env action。</p>
+<h2 id="5-episode-index-conservation">5. Episode Index与Conservation</h2>
+<p>每个planned episode必须落入valid、excluded或missing：</p>
+<div class="formula">\[
+N_{planned}=N_{valid}+N_{excluded}+N_{missing}.
+\]</div>
+<p>变量解释：excluded需reason/code/version，missing是应有而未产出的记录。attempted、completed、valid、success分别统计；静默丢失失败episode会抬高success。</p>
+<p>episode index至少绑定task/init/seed、checkpoint、protocol SHA、trace/media路径与hash、outcome、exclusion、first error。sharded eval还需shard/rank/attempt、completion marker和duplicate resolution。</p>
+<h2 id="6-video-sidecar-metric-numerator">6. Video是Sidecar，不是Metric Numerator</h2>
+<p>视频用于人审与failure localization，但可能被裁剪、变速、掉帧、overlay或只保存best/worst cases。最小video index：</p>
+<pre><code class="language-text">episode_id, camera/view, file_sha256, codec/container,
+time_base/fps, frame_count, start/end time,
+frame_or_timestamp_to_step mapping, dropped_frames,
+overlay_source, raw_or_derived</code></pre>
+<p>summary不能从“数视频文件名里的success=True”生成；primary outcome来自machine-readable predicate/episode rows。视频与trace不同步时标<code>diagnostic-only</code>。</p>
+<p>MCAP提供带schema/channel、log/publish timestamp、attachment、metadata、CRC与index/summary的通用机器人日志容器；JSONL+Parquet+MP4也可达到同语义，不强制MCAP。</p>
+<h2 id="7-deterministic-reducer">7. Deterministic Reducer</h2>
+<p>设raw valid rows为<code>r_i</code>、固定scorer为<code>g</code>、聚合器为<code>A</code>：</p>
+<div class="formula">\[
+S_{recomputed}=A\big(\{g(r_i;P,S):valid_i=1\},W,E\big),
+\qquad
+|S_{reported}-S_{recomputed}|\le\epsilon.
+\]</div>
+<p>变量解释：<code>P</code>是protocol、<code>S</code>是scorer/parser revision、<code>W</code>是target weights、<code>E</code>是exclusion rules。integer count要求exact match；floating metric记录dtype、reduction order与tolerance。reducer必须输出分子/分母、per-task/slice与invalid/excluded counts。</p>
+<p>summary文件是derived cache，不是source of truth。改scorer时在同一raw rows上生成新summary并保留旧revision，不能覆盖历史。</p>
+<h2 id="8-integrity-provenance-gate">8. Integrity与Provenance Gate</h2>
+<ol><li><code>complete</code>：manifest列出的payload全在，planned/valid/excluded/missing守恒；</li><li><code>valid</code>：payload与tag checksums验证通过；</li><li><code>schema-valid</code>：required fields、types、IDs、finite/shape/time monotonic通过；</li><li><code>lineage-valid</code>：checkpoint/protocol/scorer/raw/summary形成PROV derivation；</li><li><code>recomputable</code>：clean command从raw生成同summary；</li><li><code>reviewable</code>：trace/video可由episode_id和timestamp交叉定位。</li></ol>
+<p>只有summary SHA不能证明raw完整；只有payload SHA也不能证明语义正确。</p>
+<h2 id="9">9. 五项目边界</h2>
+<ul><li><strong>WAM</strong>：一组CoffeePressButton episode0已有base/trained manifest、300-step JSONL、双视频与hash，达到L3 partial；checkpoint是远端引用、trained video跨output root、无target/scorer/multi-episode，因此不是完整可复算comparison。</li><li><strong>OpenPiVLA</strong>：97.4是committed report summary，缺checkpoint hash、raw per-suite summary与episodes，属L1；official-checkpoint diagnostic rollouts是另一lineage，不能补齐97.4。</li><li><strong>OPD</strong>：10k raw-holdout input manifest、by-format/by-pool tables与run summaries存在，但完整model raw predictions/weights/recompute bundle缺失；表格不能替代逐样本raw output+parser result。</li><li><strong>Robot Harness</strong>：metrics/report与部分manifest存在，但32B base/SFT/GRPO的n/scorer不同，缺共同suite raw predictions；browser是format-only，无真实runner episode/video。</li><li><strong>UWM</strong>：186/250 user-confirmed JSON与per-task summary存在，缺250 episode rows、checkpoint/normalizer hash、exact init与失败视频；属summary层，不是本地independent recompute。</li></ul>
+<h2 id="10-bundle-verifier">10. Bundle Verifier伪代码</h2>
+<pre><code class="language-python">def verify_and_recompute(bundle):
+    # Verify payload completeness and cryptographic integrity first.
+    manifest = load_manifest(bundle)
+    verify_all_paths_and_hashes(manifest)
+
+    # Validate raw schemas and account for every planned record.
+    rows = load_raw_rows(bundle)
+    validate_ids_shapes_times_and_lineage(rows, manifest)
+    assert_conservation(manifest, rows)
+
+    # Recompute from raw rows with frozen parser/scorer/exclusion/weights.
+    result = reduce_rows(rows, protocol=manifest.protocol,
+                         scorer=manifest.scorer,
+                         weights=manifest.weights,
+                         exclusions=manifest.exclusions)
+    compare_with_reported(result, bundle / &quot;summary/metrics.json&quot;)
+
+    # Media is cross-linked for diagnosis, not used as the primary numerator.
+    verify_media_step_alignment(bundle / &quot;media/video_index.jsonl&quot;, rows)
+    return result</code></pre>
+<p>这是artifact contract，不是五项目已实现bundle verifier。</p>
+<h2 id="11-source-gate">11. Source Gate结论与下一入口</h2>
+<p>EVAL-009保持<code>WARN</code>：raw/trace/video/summary证据梯度、bundle layout、conservation、checksum/provenance与deterministic recompute已冻结；五项目均未同时闭合immutable checkpoint/protocol、complete raw rows、scorer/reducer与独立复算。</p>
+<p>下一节点固定为<code>VLA-EVAL-010</code>：regression gate、golden set与canary rollout。真实口述前不创建<code>coaching_state.md</code>。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="https://www.rfc-editor.org/rfc/rfc8493">RFC 8493 BagIt</a>。</li><li><a href="https://www.w3.org/TR/2013/REC-prov-dm-20130430/">W3C PROV-DM</a>。</li><li><a href="https://github.com/foxglove/mcap/blob/413b6b2aa49665ba4af25c718261f47ec61e9814/website/docs/spec/index.md">MCAP frozen specification</a>。</li><li><a href="vol_05_eval005_aggregation_estimand_source_freeze.html">EVAL-005</a>、<a href="vol_05_eval006_benchmark_env_controller_scorer_versioning_source_freeze.html">EVAL-006</a>、<a href="vol_05_eval008_perception_action_controller_recovery_failure_taxonomy_source_freeze.html">EVAL-008</a>、<a href="vol_05_eng012_storage_formats_source_freeze.html">ENG-012</a>。</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest</a>与五项目inventories。</li></ol>
+</article></body></html>

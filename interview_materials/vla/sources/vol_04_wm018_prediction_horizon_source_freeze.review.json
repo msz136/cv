@@ -1,0 +1,42 @@
+{
+  "artifact": "sources/vol_04_wm018_prediction_horizon_source_freeze.md",
+  "html": "sources/vol_04_wm018_prediction_horizon_source_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "source_frozen / VLA-WM-018 / horizon-contract / WARN",
+  "verdict": "WARN",
+  "source_sha256": "6927970508D01F328AEF6CA629A72589D986A48B9AC811EB8EB6327907B00254",
+  "covered_question_ids": ["VLA-WM-018"],
+  "source_scope": {
+    "world_model_foundations": "sources/vol_04_world_model_foundations_claim_to_code.html",
+    "diffusion_policy": "sources/vol_03_diffusion_policy_claim_to_code.html",
+    "act": "sources/vol_03_act_claim_to_code.html",
+    "cosmos_wam": "sources/vol_04_cosmos_policy_wam_claim_to_code.html",
+    "uwm": "sources/vol_04_uwm_video_action_claim_to_code.html",
+    "schema": "sources/vol_04_wm017_heterogeneous_schema_source_freeze.html"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one WM-018 source freeze only; no knowledge/card generated)",
+    "horizon_taxonomy": "PASS (observation, prediction, execution, replan and imagination horizons separated)",
+    "physical_time_mapping": "PASS WITH WARNING (step count converted using control frequency/action repeat/timestamp)",
+    "diffusion_policy_boundary": "PASS (To/Tp/Ta, n_action_steps, replan and warm-start claim separated)",
+    "act_boundary": "PASS (chunk H, query frequency and temporal aggregation separated)",
+    "cosmos_uwm_boundary": "PASS (Cosmos 16/32-step configs and UWM action_len/frames labeled config-specific)",
+    "metric_boundary": "PASS (per-offset error, open-loop, latency, success and failure traces separated)",
+    "experiment_matrix": "PASS WITH WARNING (matched horizon/replan/imagination/padding sweeps listed but not run)",
+    "project_truth_boundary": "PASS (no personal horizon or uplift claim upgraded)",
+    "html_static_validation": "PASS (one H1, nine H2, one H3, four tables, one formula block and local links)",
+    "local_links": "PASS (all repository-local audit/schema links resolve)",
+    "source_sha": "PASS (canonical Markdown SHA matches HTML meta and review JSON)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "matched_horizon_ablation": "PENDING",
+    "closed_loop_trace": "PENDING",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Run matched prediction/execution/replan horizon sweeps with fixed checkpoint, data, controller and protocol.",
+    "Report per-offset error, effective target denominator, memory/step-time, action age and closed-loop success.",
+    "Freeze personal OpenPiVLA/UWM/WAM horizon and controller settings from config/checkpoint/eval artifacts.",
+    "WM-018 knowledge/card slice is complete; keep WM-019..038 as separate bounded slices."
+  ],
+  "next": "Run a WM-015/016/017/018 oral drill; keep WM-019..038 deferred and all cards unseen."
+}

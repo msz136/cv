@@ -1,0 +1,34 @@
+{
+  "artifact": "knowledge/vol_04_world_model_sim2real_wm013_latent_overshooting_multistep_consistency.md",
+  "html": "knowledge/vol_04_world_model_sim2real_wm013_latent_overshooting_multistep_consistency.html",
+  "source_freeze": "sources/vol_04_wm013_latent_overshooting_multistep_consistency_source_freeze.md",
+  "review_date": "2026-07-18",
+  "status": "drafted / VLA-WM-013 / knowledge_43_of_44 / card_synced",
+  "verdict": "WARN",
+  "source_sha256": "9eeb1afcbcaf3e76432e95ccaac99515000c63b6cf23a2bffb3cc625d8380d1d",
+  "covered_question_ids": ["VLA-WM-013"],
+  "checks": {
+    "single_node_scope": "PASS (overshooting/multi-step consistency only; WM-014 causal intervention excluded)",
+    "intuition_and_mechanism": "PASS (one-step exam analogy, d-step prior and learned-target boundary)",
+    "formula_explanations": "PASS (variables, intuition, implementation mapping and formal simplification warning follow display formulas)",
+    "objective_and_gradient": "PASS (posterior start, prior-only rollout, future target and d>1 stop-gradient covered)",
+    "implementation_contract": "PASS (previous action, use_obs, mask, free-nats, distance and reduction covered)",
+    "provenance_boundary": "PASS (proposed/optional PlaNet mechanism separated from final/default disabled path)",
+    "dreamer_boundary": "PASS (PlaNet overshooting not attributed to DreamerV3)",
+    "bias_and_compute": "PASS (target shortcut, multimodality, regularization, weighting, reset and compute risks covered)",
+    "pseudocode": "PASS (filter, prior-only rollout, target stop-gradient, terminal mask and per-distance audit commented)",
+    "project_evidence_boundary": "PASS (WAM/UWM not labeled overshooting implementations)",
+    "html_static_validation": "PASS (canonical SHA embedded; one H1, twenty-five H2 headings, two tables, formulas, commented pseudocode and MathJax rendered)",
+    "local_links": "PASS (WM-012/018/020/source and WAM/UWM inventory links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "question_card": "PASS WITH WARNING (one VLA-WM-013 atomic card synchronized and remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep VLA-WM-013 unseen until oral practice.",
+    "Collect local per-distance traces, D/beta ablations, compute accounting and closed-loop evidence.",
+    "Do not claim PlaNet final/default or DreamerV3 uses overshooting, or that WAM/UWM benefited from it.",
+    "Do not create coaching_state.md until an actual drill."
+  ],
+  "next": "Build only VLA-WM-014 action-conditioned correlation-versus-intervention next."
+}

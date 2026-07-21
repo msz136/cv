@@ -1,0 +1,49 @@
+{
+  "artifact": "knowledge/vol_06_per013_pointcloud_voxel_bev_occupancy.md",
+  "html": "knowledge/vol_06_per013_pointcloud_voxel_bev_occupancy.html",
+  "source_freeze": "sources/vol_06_per013_pointcloud_voxel_bev_occupancy_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / VLA-PER-013 / source_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "E8097EAA42EA9EABB34BD5B0B730C1AA0241A8E8DA0AB974BFFE92E110168A79",
+  "question_ids": [
+    "VLA-PER-013"
+  ],
+  "checks": {
+    "bounded_slice": "PASS (the VLA-PER-013 card is synchronized and an adjacent stale 'card not generated' sentence was repaired during the PER-014 knowledge slice; no PER-013 content expansion, mastery mutation or coaching_state.md)",
+    "source_gate": "PASS WITH WARNING (six complete version-pinned primary PDFs, six pinned official repositories, nine deterministic probes and five-project evidence review are inherited from the source freeze; OctoMap is supported by pinned official code rather than a frozen paper PDF)",
+    "knowledge_map_boundary": "PASS (PER-002 lift/frame, PER-003 multi-view/time, PER-008 representation choice, PER-012 dense perception, PER-014 semantic 3D grounding, PER-015 action gate and PER-016 SLAM remain distinct)",
+    "typed_representation_manifest": "PASS (source/time/frame/axis/unit, representation, range/origin/resolution, feature schema, sampling, aggregation, unknown policy, model revision, validity and age are explicit)",
+    "representation_selection": "PASS (point, dense/sparse voxel, pillar, height-compressed BEV, probabilistic octree and implicit occupancy are compared by retained information, conversion loss, query suitability and non-equivalence)",
+    "point_set_contract": "PASS (function-level permutation invariance is separated from order-sensitive sampling, tie-break, cap and neighborhood behavior)",
+    "pointnet2_contract": "PASS WITH WARNING (set abstraction, FPS, ball query/kNN, local shared PointNet and symmetric pooling are mapped to pinned paper/code; local config/checkpoint/runtime evidence remains absent)",
+    "sampling_contract": "PASS (FPS objective, start/outlier/complexity boundary, ball-versus-kNN density behavior, seed and coverage diagnostics are explicit without universal-accuracy claims)",
+    "voxelization_contract": "PASS WITH WARNING (floor quantization binds origin/range/axis/resolution, and boundary flip, cap/drop and negative-coordinate behavior are explicit; no local voxel tensor/manifest exists)",
+    "aggregation_contract": "PASS (MeanVFE formula, the [0,2] versus [1,1] alias, learned-VFE distinction and quantization/aggregation/truncation collisions are separated)",
+    "sparse_convolution_contract": "PASS WITH WARNING (coordinate-feature tensors and SubM/Sparse/Inverse output-site semantics are separated; coordinate/kernel/allocator overhead prevents an unconditional speed or memory claim)",
+    "pillar_bev_contract": "PASS WITH WARNING (spatial z-bin collapse is separated from per-point z features and C-times-D height compression; no local pillar/BEV encoder exists)",
+    "bevfusion_contract": "PASS WITH WARNING (camera view transform, LiDAR voxelization, shared physical plane, calibration/augmentation/time contract and autonomous-driving transfer boundary are explicit; no local matched ablation exists)",
+    "occupancy_contract": "PASS WITH WARNING (explicit grid, probabilistic octree and implicit function are distinct; unknown is not free, log-odds ray evidence and implicit surface threshold are explicit; none establishes collision safety)",
+    "memory_compute_contract": "PASS (dense cubic scaling, 1.907-GiB example, one-percent active feature estimate and omitted sparse/framework overhead are explicit)",
+    "conversion_metric_boundary": "PASS (coverage, collision/drop, active pattern, BEV geometry, observed occupancy and implicit-surface metrics are not conflated with semantic grounding, navigation, collision safety or robot success)",
+    "deterministic_probes": "PASS (nine fixed probes cover sampling, boundary, aggregation alias, memory, pillar height, threshold, map transform, PCD schema and repository path provenance)",
+    "failure_diagnosis": "PASS (twelve failure-to-field-to-probe paths and a schema-to-controller diagnostic order are included)",
+    "pseudocode": "PASS (commented fail-closed pseudocode checks physical identity, sampling identity, quantization loss, explicit representation branches and unknown-not-free occupancy updates)",
+    "robot_harness_mapping": "PASS WITH WARNING (pinned 2D tri-state occupancy, 54,856-point PCD schema and path/URL bridge support asset/interface facts only; PCD ingestion, voxel/BEV/OctoMap/learned occupancy, online perception, benefit and ownership are not inferred)",
+    "five_project_truth_boundary": "PASS (Robot Harness, OPD, OpenPiVLA, WAM and UWM claims are evidence-bounded; public mechanisms, local assets, target extensions, matched results and ownership remain separate)",
+    "interview_readiness": "PASS (a thirty-second answer, two-minute answer, seventeen follow-ups, ten dangerous-answer corrections and a whiteboard checklist are included)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, twenty-nine H2 including renderer TOC, twelve H3, twelve tables, six code blocks, ten formula blocks, balanced 48/48 inline and 10/10 display content MathJax delimiters, required palette/serif/sticky 260px TOC/900px breakpoint/print rules, synchronized canonical/HTML/review SHA, 40 unique IDs, 47 valid local or TOC links and zero formula-em/control-character issues after the adjacent state repair)",
+    "browser_visual_check": "BLOCKED (the existing in-app Browser file:// policy restriction remains; static checks do not substitute for desktop and narrow visual QA)",
+    "question_card": "PASS WITH WARNING (one L3/P1 VLA-PER-013 atomic card is synchronized, passes the 180/350-character gates and remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized VLA-PER-013 L3/P1 atomic card unseen until a real oral drill.",
+    "Archive any local point-cloud ingestion, frame/time manifest, voxel/pillar/BEV/occupancy config, checkpoint, raw tensor and matched evaluation if it exists.",
+    "For Robot Harness, distinguish asset provenance, map generation, bridge integration, planner consumption, third-party code and candidate ownership per file.",
+    "Add same-frame/range/resolution matched representation diagnostics before claiming point-versus-voxel-versus-BEV-versus-occupancy benefits.",
+    "Freeze the OctoMap primary paper PDF separately if it becomes reliably retrievable.",
+    "Do not create coaching_state.md or change mastery before a real oral drill."
+  ],
+  "next": "Generate exactly one VLA-PER-014 atomic card and keep it unseen; do not start PER-015 or change mastery in the same slice."
+}

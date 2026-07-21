@@ -1,0 +1,58 @@
+{
+  "artifact": "sources/vol_06_per008_representation_choice_source_freeze.md",
+  "html": "sources/vol_06_per008_representation_choice_source_freeze.html",
+  "review_date": "2026-07-20",
+  "status": "source_frozen / VLA-PER-008 / primary_official_checked / local_point_box_affordance_boundary / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "62856E6C9B96028D26DE6D5656140B05EFE15DCA192AF241BBA4EBFF31585825",
+  "scope": {
+    "question_id": "VLA-PER-008",
+    "primary_papers": 4,
+    "official_repositories": 4,
+    "official_repo_files": 10,
+    "repository_review_bridges": 2,
+    "local_files_directly_read": 5,
+    "deterministic_non_equivalence_probes": 3,
+    "knowledge_generated": 1,
+    "question_cards_generated": 1,
+    "practice_state": "260 generated cards unseen; PER-008 source+knowledge+card synchronized"
+  },
+  "frozen_revisions": {
+    "robopoint_paper": "arXiv:2406.10721v1 / 2024-06-15",
+    "robopoint_repo": "wentaoyuan/RoboPoint@206cb1e086fc3960a8673725a8540766655cd9c5",
+    "segment_anything_paper": "arXiv:2304.02643v1 / 2023-04-05",
+    "segment_anything_repo": "facebookresearch/segment-anything@dca509fe793f601edb92606367a655c15ac00fdf",
+    "kpam_paper": "arXiv:1903.06684v2 / updated 2019-10-29",
+    "kpam_repo": "weigao95/kPAM@7214936b619527aee3b02d5306ada15decb95140",
+    "where2act_paper": "arXiv:2101.02692v2 / updated 2021-08-10",
+    "where2act_repo": "daerduoCarey/where2act@1daf1a24f7a372599b211108fa851f7ec3581330",
+    "local_muxi": "756e27e16adcfb3ccbfe98c2920dda42095b127f"
+  },
+  "checks": {
+    "bounded_slice": "PASS (PER-008 source, knowledge and one atomic card remain synchronized; the later PER-009 triplet is separate and mastery is unchanged)",
+    "primary_and_official_sources": "PASS WITH WARNING (four version-pinned paper PDFs and four pinned official repositories were read with hashes; Where2Act README declares MIT but the pinned commit has no LICENSE file)",
+    "representation_taxonomy": "PASS (point, box, mask, semantic keypoint and action-conditioned affordance have separate minimum semantic contracts)",
+    "downstream_sufficiency": "PASS (representation choice is tied to consumer fields, label/inference cost, conversion loss, staleness and downstream failure rather than a density ranking)",
+    "non_equivalence": "PASS (mask-to-box loss, unlabeled-point-to-keypoint loss and point-to-affordance conditioning loss are frozen with three deterministic probes)",
+    "typed_manifest": "PASS (shared image/camera/time/revision/score/uncertainty fields and type-specific payloads are specified)",
+    "robopoint_contract": "PASS WITH WARNING (multiple normalized image points and mask-membership scoring are frozen; this does not prove 3D semantic keypoints, contact feasibility or local replication)",
+    "sam_contract": "PASS WITH WARNING (point/box/mask prompts, multimask output, mask quality and low-resolution logits are frozen; semantics and robot actionability remain external)",
+    "kpam_contract": "PASS WITH WARNING (semantic 3D keypoints, geometric costs/constraints and planning factorization are frozen; local implementation and platform execution are absent)",
+    "where2act_contract": "PASS WITH WARNING (per-point actionability, orientation proposal and critic score are frozen; scores are not cross-robot calibrated and license packaging is incomplete)",
+    "local_opd_boundary": "PASS WITH WARNING (five local files show point/box/text plus affordance-labelled point supervision; selected paths have no keypoint/SAM/mask encoding and no dense actionability/controller result)",
+    "cross_volume_dedup": "PASS (PER-001 coordinate/parser, PER-002 lift/frame, PER-006 image lineage, PER-007 detection, PER-009 loss, PER-010 metric, PER-012 methods and PER-015 action gate remain separate)",
+    "project_truth_boundary": "PASS (public method contracts, local point-format evidence, static absence and unverified robot/ownership claims are separated)",
+    "practice_state": "PASS (260 cards remain unseen; PER-008 occurs once and coaching_state.md is absent)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, fourteen H2, eight H3, seven tables, four code blocks, five local links, two formula blocks, canonical/HTML/review SHA and anchors valid; zero formula-em/control-character issues)",
+    "browser_visual_check": "BLOCKED (the previously confirmed in-app Browser file:// policy restriction remains; static checks do not substitute for desktop/narrow visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized VLA-PER-008 atomic card unseen until a real oral drill.",
+    "Archive any actual local mask, semantic-keypoint or dense affordance head/schema/parser artifact if one exists outside the selected paths.",
+    "Add action primitive, tool/gripper, state, direction and score-calibration fields before calling an affordance point executable.",
+    "Run matched downstream representation comparisons before claiming point/box/mask/keypoint/affordance superiority.",
+    "Keep all 260 cards unseen and do not create coaching_state.md before a real oral drill."
+  ],
+  "next": "PER-009 source+knowledge+card are synchronized and unseen; generate only the PER-010 metric/parser source freeze next."
+}

@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 03 VLA / Action：从多模态条件到可执行动作（完整卷）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_03_vla_action.md">
+<meta name="aris:source-sha256" content="09493517b12bf5abc57190ced4087f15f4fa68544a66edf18765c9f8099432ca">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>09493517b12bf5abc57190ced4087f15f4fa68544a66edf18765c9f8099432ca</code>；生成自：<code>interview_materials\vla\knowledge\vol_03_vla_action.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#section-1">目录</a></li><li><a href="#question">问题（Question）</a></li><li><a href="#section-3">一句话总口径</a></li><li><a href="#section-4">知识地图位置与批次边界</a></li><li><a href="#section-5">前置知识</a></li><li><a href="#section-6">完整卷做什么</a></li><li><a href="#section-7">仍不提前声称什么</a></li><li><a href="#vla-vlm-visuomotor-policy">VLA、VLM 与传统 visuomotor policy</a></li><li><a href="#section-9">先讲直觉</a></li><li><a href="#section-10">严谨定义</a></li><li><a href="#section-11">面试对比表</a></li><li><a href="#vla">VLA 输入输出合同与时间对齐</a></li><li><a href="#section-13">输入合同</a></li><li><a href="#section-14">时间对齐</a></li><li><a href="#section-15">两个已核实的具体实例</a></li><li><a href="#backbone-action-expert-policy-head-controller">Backbone、action expert、policy head 与 controller</a></li><li><a href="#section-17">职责不能混写</a></li><li><a href="#policy">Policy 是整条链</a></li><li><a href="#openvla-action-token">OpenVLA：逐标量 action token 路线</a></li><li><a href="#i-o">架构与 I/O</a></li><li><a href="#q01-q99-normalization">q01/q99 normalization</a></li><li><a href="#scalar-token">scalar → token</a></li><li><a href="#masked-token-ce">masked token CE</a></li><li><a href="#quantization">quantization 的三类代价</a></li><li><a href="#0-action-expert-flow-matching">π0：连续 action expert 与 Flow Matching</a></li><li><a href="#i-o-2">I/O 与架构</a></li><li><a href="#paper-convention">paper convention</a></li><li><a href="#code-convention">code convention</a></li><li><a href="#0-5-pi0fast">π0.5 不等于 Pi0FAST</a></li><li><a href="#vla-mask">VLA 架构路线、mask、适配与部署证据</a></li><li><a href="#vla-arch-007-rt-2-openvla-octo-0-head">VLA-ARCH-007：RT-2、OpenVLA、Octo、π0 不是同一 head 的尺寸变化</a></li><li><a href="#vla-arch-008-attention-visible-loss-visible">VLA-ARCH-008：attention-visible 与 loss-visible 是两件事</a></li><li><a href="#vla-arch-009-freeze-full-lora-expert">VLA-ARCH-009：freeze、full、LoRA 与独立 expert 的选择</a></li><li><a href="#vla-arch-010-schema">VLA-ARCH-010：异构动作要统一 schema，也要统一监督语义</a></li><li><a href="#vla-arch-011-pipeline">VLA-ARCH-011：延迟是 pipeline 向量，不是一个数字</a></li><li><a href="#vla-arch-012-paper-runtime-trace">VLA-ARCH-012：从 paper 一直核到 runtime trace</a></li><li><a href="#action-representation">Action representation 总览</a></li><li><a href="#section-38">五条路线各自建模什么</a></li><li><a href="#deterministic-regression">deterministic regression</a></li><li><a href="#cvae">CVAE 定义级边界</a></li><li><a href="#diffusion">diffusion 定义级边界</a></li><li><a href="#flow-diffusion">flow 与 diffusion 不只是“步数不同”</a></li><li><a href="#normalization-denormalization">Normalization / denormalization</a></li><li><a href="#0-success">为什么它是 0-success 高风险接口</a></li><li><a href="#inverse-consistency-test">最小 inverse-consistency test</a></li><li><a href="#section-46">常见穿帮说法</a></li><li><a href="#fast-action-token">FAST：频域 action token</a></li><li><a href="#section-48">它解决什么</a></li><li><a href="#section-49">算法</a></li><li><a href="#paper-artifact-model">paper / artifact / model 的默认值要分开</a></li><li><a href="#compression">compression 为什么不等于控制误差更小</a></li><li><a href="#act-cvae-action-chunk-temporal-ensemble">ACT：CVAE、Action Chunk 与 Temporal Ensemble</a></li><li><a href="#vla-act-011-h-k-r-control-period">VLA-ACT-011：H、K、R 与 control period</a></li><li><a href="#vla-act-012-cvae-transformer-chunk">VLA-ACT-012：CVAE-Transformer 如何并行输出 chunk</a></li><li><a href="#vla-act-013-style-latent-train-infer-gap">VLA-ACT-013：style latent 的 train / infer gap</a></li><li><a href="#vla-act-014-temporal-ensemble-target-time">VLA-ACT-014：temporal ensemble 融合相同 target time</a></li><li><a href="#vla-act-015-chunking-replan-ensemble">VLA-ACT-015：chunking、replan 与 ensemble 如何共同决定闭环</a></li><li><a href="#vla-act-016-chunk">VLA-ACT-016：chunk 太短或太长</a></li><li><a href="#vla-act-017-act-token-diffusion-flow">VLA-ACT-017：ACT 与 token、Diffusion / Flow 的归纳偏置</a></li><li><a href="#diffusion-policy-receding-horizon">Diffusion Policy：条件动作扩散与 Receding Horizon</a></li><li><a href="#vla-act-018">VLA-ACT-018：为什么适合多模态连续动作</a></li><li><a href="#vla-act-019-conditional-ddpm-noisy-action-target-condition">VLA-ACT-019：conditional DDPM 的 noisy action、target 与 condition</a></li><li><a href="#vla-act-020-schedule-prediction-type-horizon">VLA-ACT-020：schedule、prediction type 与 horizon 是三组合同</a></li><li><a href="#vla-act-021-receding-horizon-action-slice">VLA-ACT-021：receding-horizon 的 action slice 与执行</a></li><li><a href="#vla-act-022-sampler-warm-start">VLA-ACT-022：去噪步数、sampler 与 warm-start</a></li><li><a href="#flow-matching-cfm-ot-path-ode-0">Flow Matching：CFM、OT Path、ODE 与 π0</a></li><li><a href="#vla-act-023-probability-path-velocity-field">VLA-ACT-023：probability path 与 velocity field</a></li><li><a href="#vla-act-024-ot-path-target-velocity">VLA-ACT-024：线性 OT path 与 target velocity</a></li><li><a href="#vla-act-025-ode-solver-noise-action-chunk">VLA-ACT-025：ODE solver 如何从 noise 得到 action chunk</a></li><li><a href="#vla-act-026-diffusion-epsilon-flow-velocity">VLA-ACT-026：Diffusion epsilon 与 Flow velocity</a></li><li><a href="#vla-act-027-0-action-expert-condition-noisy-action">VLA-ACT-027：π0 action expert 的 condition 与 noisy action</a></li><li><a href="#vla-act-028-valid-dimensions-padding-loss-mask">VLA-ACT-028：valid dimensions、padding 与 loss mask</a></li><li><a href="#vla-act-029-conditional-dropout-guidance">VLA-ACT-029：conditional dropout / guidance</a></li><li><a href="#vla-act-030-loss-rollout">VLA-ACT-030：loss 正常但 rollout 失败的四层定位</a></li><li><a href="#action-dimension-padding-mask-slicing">Action dimension、padding、mask 与 slicing</a></li><li><a href="#model-d-environment-d">model D 与 environment d</a></li><li><a href="#training-loss-mask">training loss mask 是另一件事</a></li><li><a href="#mask">四个不同 mask</a></li><li><a href="#gripper-base-action">平移、旋转、gripper 与 base action</a></li><li><a href="#action-type">先报 action type，再报数值</a></li><li><a href="#translation">translation</a></li><li><a href="#rotation">rotation</a></li><li><a href="#gripper">gripper</a></li><li><a href="#base-action">base action</a></li><li><a href="#section-85">按语义组做统计</a></li><li><a href="#controller">模型输出到 controller 与最小闭环单测</a></li><li><a href="#vla-act-031-decode-unnorm-slice-schema-safety">VLA-ACT-031：decode、unnorm、slice、schema 与 safety 必须有序</a></li><li><a href="#vla-act-032">VLA-ACT-032：最小闭环测试要让错误可辨识</a></li><li><a href="#action-representation-2">如何选择 action representation</a></li><li><a href="#section-90">决策顺序</a></li><li><a href="#section-91">选择表</a></li><li><a href="#section-92">不能用单个指标选型</a></li><li><a href="#section-93">面试回答模板</a></li><li><a href="#pipeline">训练与闭环推理 Pipeline</a></li><li><a href="#batch">Batch 构造与训练</a></li><li><a href="#section-96">闭环推理</a></li><li><a href="#44">实现证据与 44 题覆盖</a></li><li><a href="#frozen-implementation-map">frozen implementation map</a></li><li><a href="#44-2">44 题覆盖矩阵</a></li><li><a href="#openpivla">OpenPiVLA 项目挂钩与真实性边界</a></li><li><a href="#section-101">可以安全连接的上游机制</a></li><li><a href="#section-102">不能自动写成本地事实</a></li><li><a href="#section-103">项目口述安全模板</a></li><li><a href="#bad-case">Bad Case 与最小检查清单</a></li><li><a href="#offline-loss-online-0-success">offline loss 正常、online 0-success 的排查顺序</a></li><li><a href="#section-106">最小单测矩阵</a></li><li><a href="#section-107">高危答案</a></li><li><a href="#section-108">后续工作</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 03 VLA / Action：从多模态条件到可执行动作（完整卷）</h1>
+<div class="meta">状态：<code>completion_reconciled_candidate / source_audits_warn / WARN</code> 报告日期：2026-07-19 证据截止：2026-07-19 完整覆盖：<code>VLA-ARCH-001..012</code>、<code>VLA-ACT-001..032</code>，共 44 题 适用岗位：VLA / 具身智能算法 / 多模态机器人策略 / Robot Learning 最后一批增量：补齐 RT-2/OpenVLA/Octo/π0 landscape、sequence/attention/loss mask、适配策略、异构动作、延迟与证据审计，以及 decode→controller 的执行闭环和最小单测。 项目边界：OpenPiVLA 的具体 checkpoint、Qwen/π 路径、action 轴序、horizon、normalization asset、97.4% protocol 与个人贡献仍须本地 artifact 证明。</div>
+<h2 id="section-1">目录</h2>
+<ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-4">知识地图位置与批次边界</a></li><li><a href="#vla-vlm-visuomotor-policy">VLA、VLM 与传统 visuomotor policy</a></li><li><a href="#vla">VLA 输入输出合同与时间对齐</a></li><li><a href="#backbone-action-expert-policy-head-controller">Backbone、action expert、policy head 与 controller</a></li><li><a href="#openvla-action-token">OpenVLA：逐标量 action token 路线</a></li><li><a href="#0-action-expert-flow-matching">π0：连续 action expert 与 Flow Matching</a></li><li><a href="#vla-mask">VLA 架构路线、mask、适配与部署证据</a></li><li><a href="#action-representation">Action representation 总览</a></li><li><a href="#normalization-denormalization">Normalization / denormalization</a></li><li><a href="#fast-action-token">FAST：频域 action token</a></li><li><a href="#act-cvae-action-chunk-temporal-ensemble">ACT：CVAE、Action Chunk 与 Temporal Ensemble</a></li><li><a href="#diffusion-policy-receding-horizon">Diffusion Policy：条件动作扩散与 Receding Horizon</a></li><li><a href="#flow-matching-cfm-ot-path-ode-0">Flow Matching：CFM、OT Path、ODE 与 π0</a></li><li><a href="#action-dimension-padding-mask-slicing">Action dimension、padding、mask 与 slicing</a></li><li><a href="#gripper-base-action">平移、旋转、gripper 与 base action</a></li><li><a href="#controller">模型输出到 controller 与最小闭环单测</a></li><li><a href="#action-representation-2">如何选择 action representation</a></li><li><a href="#pipeline">训练与闭环推理 Pipeline</a></li><li><a href="#44">实现证据与 44 题覆盖</a></li><li><a href="#openpivla">OpenPiVLA 项目挂钩与真实性边界</a></li><li><a href="#bad-case">Bad Case 与最小检查清单</a></li><li><a href="#section-108">后续工作</a></li><li><a href="#references">参考文献（References）</a></li></ol>
+<h2 id="question">问题（Question）</h2>
+<p>本卷回答一条从“模型类别”到“机器人执行”的最短闭环：</p>
+<pre><code class="language-text"># Full-volume chain: each arrow remains an auditable interface.
+RGB / language / proprioception / masks / timestamps
+                         ↓
+       VLM backbone or visuomotor encoder
+                         ↓
+ scalar/FAST token / ACT CVAE / Diffusion / Flow expert
+                         ↓
+        decode → denormalize → valid-dim slice
+                         ↓
+       controller units → execute → observe again</code></pre>
+<p>面试官常以这些问题连续追问：</p>
+<ul><li>VLA 相比 VLM 多了什么，为什么不能把 action token 当普通文本？</li><li>多视角图像、语言和 proprioception 如何进入模型，时间是谁对齐的？</li><li>OpenVLA 与 π0 的 action output 为什么一个是 token、一个是 continuous flow？</li><li>FAST 为什么先做 DCT，再做 BPE？token 少是否就一定更准？</li><li>ACT 的 posterior latent 为什么训练可见 action、推理却固定 \(z=0\)？temporal ensemble 融合的究竟是哪几个预测？</li><li>Diffusion Policy 的 \(T_o/T_p/T_a\)、diffusion steps 与真实 replan interval 为什么是五条不同时间轴？</li><li>训练 action dimension 与机器人执行 dimension 不同时，padding、loss mask 和 slicing 怎样证明正确？</li><li>translation、rotation、gripper、base velocity 的单位和统计能否混在一起归一化？</li><li>如果 offline loss 正常但 rollout 0-success，应先查模型还是 action interface？</li></ul>
+<h3 id="section-3">一句话总口径</h3>
+<div class="meta">VLA 的核心不是“让 VLM 输出一个动作字符串”，而是建立从多模态观测到可执行控制量的完整策略合同：输入必须有视角、时间与 mask；输出必须有表示、shape、尺度与 axis 语义；训练目标、decode、denormalization、slicing、replan 和 controller 必须前后一致。</div>
+<h2 id="section-4">知识地图位置与批次边界</h2>
+<h3 id="section-5">前置知识</h3>
+<ul><li>VOL 01：observation/state/action、坐标系、控制频率、Transformer、mask 与 closed loop。</li><li>VOL 02：BC/SFT 的监督语义、token CE、连续 loss、offline proxy 与 online success。</li></ul>
+<h3 id="section-6">完整卷做什么</h3>
+<table><thead><tr><th>范围</th><th>本批深度</th><th>依据</th></tr></thead><tbody>
+<tr><td>VLA definition / I/O</td><td>机制级</td><td>RT-2、OpenVLA、π0 与 frozen repos</td></tr>
+<tr><td>OpenVLA scalar token</td><td>公式 + code mapping</td><td>Source Audit A</td></tr>
+<tr><td>π0 flow action expert</td><td>公式 + paper/code convention</td><td>Source Audit B</td></tr>
+<tr><td>FAST tokenizer</td><td>DCT/round/BPE + frozen Hub code</td><td>Source Audit B</td></tr>
+<tr><td>ACT CVAE / chunk / temporal ensemble</td><td>公式 + code mapping</td><td>Source Audit C</td></tr>
+<tr><td>Diffusion Policy</td><td>epsilon/sample target、scheduler、horizon、rollout</td><td>Source Audit D</td></tr>
+<tr><td>Flow Matching / π0</td><td>CNF/CFM、OT path、ODE、time/sign 与 padding/debug</td><td>Source Audit E</td></tr>
+<tr><td>RT-2 / OpenVLA / Octo / π0 landscape</td><td>backbone、action representation、training route</td><td>Source Audit F</td></tr>
+<tr><td>sequence / mask / adaptation / latency</td><td>attention/loss、full/head/LoRA、timing decomposition</td><td>Source Audit F</td></tr>
+<tr><td>output → controller / tests</td><td>decode、unnorm、slice、axis/unit、queue、safety</td><td>Source Audit F</td></tr>
+<tr><td>continuous / token / CVAE / diffusion / flow taxonomy</td><td>机制级对照</td><td>primary papers + Source Audits</td></tr>
+<tr><td>action semantics / normalization / valid dimensions</td><td>tensor contract + design checklist</td><td>openpi docs/code + robotics representation source</td></tr>
+</tbody></table>
+<h3 id="section-7">仍不提前声称什么</h3>
+<ol><li>ACT、Diffusion、Flow 的 upstream implementation 不证明本地 OpenPiVLA 采用相同 head、scheduler、solver 或 rollout。</li><li>Source Audit E 的通用 CFG example 不证明 frozen openpi Pi0 已启用 guidance。</li><li>不用 openpi example config 证明本地 OpenPiVLA 的 H、D、K 或 controller。</li><li>不因知识页生成就创建 mastered/pass 状态；后续题卡仍从 unseen 开始。</li></ol>
+<h2 id="vla-vlm-visuomotor-policy">VLA、VLM 与传统 visuomotor policy</h2>
+<h3 id="section-9">先讲直觉</h3>
+<ul><li><strong>VLM</strong> 回答“图里有什么、任务是什么意思”，输出通常是文本或语义表示。</li><li><strong>传统 visuomotor policy</strong> 直接把传感器观测映射到机器人动作，常为任务专用，未必继承大规模语言视觉预训练。</li><li><strong>VLA</strong> 把视觉、语言和机器人动作放进一个端到端策略合同，既利用 VLM 的语义先验，又必须输出能经过机器人接口执行的 action。</li></ul>
+<p>RT-2 将机器人动作表达为 text tokens，与视觉语言任务共同训练，并把这类模型称为 Vision-Language-Action model。[1] OpenVLA 延续离散 action token 路线，而 π0 让 VLM context 条件化一个连续 action expert。[2][4]</p>
+<h3 id="section-10">严谨定义</h3>
+<p>给定观测历史 \(o_{\le t}\)、任务条件 \(c\) 和可能的机器人 state/proprioception \(q_t\)，策略建模：</p>
+<div class="formula">\[
+\pi_\theta(A_t\mid o_{\le t},c,q_t),
+\qquad
+A_t=[a_t,\ldots,a_{t+H-1}].
+\]</div>
+<p>变量解释：\(\pi_\theta\) 是整个 policy，不只是 action head；\(A_t\in\mathbb{R}^{H\times d}\) 可以是 H 步连续动作，也可以先被编码成 token sequence。H=1 时是单步 action。实现映射：OpenVLA 原始旗舰路径实际为单图 + 语言 → 单步 d 维动作；π0 paper/openpi 支持多图、state 和 H 步 chunk。[2][3][4][6]</p>
+<p>VLA 与 VLM 的分界不在模型名字，而在<strong>是否存在可训练、可解码、可执行、可评估的 action contract</strong>。如果模型只输出“move left”而没有 axis、unit、controller 和闭环执行定义，它仍是语义 planner/VLM component，不是完整低层 VLA policy。</p>
+<h3 id="section-11">面试对比表</h3>
+<table><thead><tr><th>维度</th><th>VLM</th><th>传统 visuomotor policy</th><th>VLA</th></tr></thead><tbody>
+<tr><td>输入</td><td>image/video + text</td><td>image/state/history</td><td>image/text/state/history 的组合</td></tr>
+<tr><td>输出</td><td>text、box、embedding</td><td>continuous/discrete robot action</td><td>token action、continuous head 或生成式 action chunk</td></tr>
+<tr><td>预训练</td><td>web vision-language 常见</td><td>task/robot data 为主</td><td>VLM prior + robot trajectory adaptation</td></tr>
+<tr><td>语言泛化</td><td>核心能力</td><td>可选</td><td>通常是关键条件</td></tr>
+<tr><td>执行合同</td><td>通常没有 controller action</td><td>必须有</td><td>必须有，且更容易被 token/normalization 掩盖</td></tr>
+<tr><td>评估</td><td>VQA/caption/grounding</td><td>task success / control metrics</td><td>既要语义泛化，也要 closed-loop success</td></tr>
+</tbody></table>
+<p>这张表是职责分类，不意味着 VLA 在任何任务上都优于小型 visuomotor policy。数据不足、延迟严格或语言无关时，较小的专用 policy 可能更合适。</p>
+<h2 id="vla">VLA 输入输出合同与时间对齐</h2>
+<h3 id="section-13">输入合同</h3>
+<p>通用 VLA observation 可以写为：</p>
+<div class="formula">\[
+o_t=
+\left(
+\{I_{\tau_v}^{v},m_v,\tau_v\}_{v=1}^{V},
+\ell,
+q_{\tau_q},
+h_t
+\right).
+\]</div>
+<p>变量解释：\(I_{\tau_v}^{v}\) 是第 v 路相机在时间 \(\tau_v\) 的图像；\(m_v\) 是该 view 是否有效的 mask；\(\ell\) 是语言指令；\(q_{\tau_q}\) 是 proprioception；\(h_t\) 是可选历史/记忆。直觉是“多模态输入”不只是拼字段，还必须说明每个字段何时采样、是否缺失。openpi model boundary 接收已经对齐和 resize 的 arrays；时间同步通常应在数据转换或环境 wrapper 完成，不能假设 Transformer 自动修正 timestamp mismatch。[6][12]</p>
+<p>最小字段表：</p>
+<table><thead><tr><th>字段</th><th>必须说明</th><th>常见失败</th></tr></thead><tbody>
+<tr><td>image/view</td><td>camera name、shape、颜色空间、resize/crop/flip、mask</td><td>训练/推理视角或翻转不一致</td></tr>
+<tr><td>language</td><td>instruction 来源、模板、tokenizer、截断长度</td><td>prompt 模板改变 action positions</td></tr>
+<tr><td>proprio</td><td>axis order、unit、frame、timestamp、normalization</td><td>位置/速度混淆；state 与图像错帧</td></tr>
+<tr><td>history</td><td>window、stride、padding、causal rule</td><td>history 泄漏未来或顺序颠倒</td></tr>
+<tr><td>action target</td><td>type、H、d、control frequency、absolute/delta</td><td>label 与执行频率不匹配</td></tr>
+<tr><td>dataset identity</td><td>norm stats key、embodiment/control mode</td><td>使用错误 checkpoint assets</td></tr>
+</tbody></table>
+<h3 id="section-14">时间对齐</h3>
+<p>若以 control tick \(t_k\) 为监督锚点，可定义：</p>
+<div class="formula">\[
+I_k^v=I^v_{\arg\min_{\tau}|\,\tau-t_k\,|},
+\quad
+q_k=\operatorname{interp}(q,t_k),
+\quad
+A_k=[a(t_k),a(t_k+\Delta t),\ldots,a(t_k+(H-1)\Delta t)].
+\]</div>
+<p>变量解释：图像可用 nearest timestamp，连续 proprio 可插值，action label 按控制周期 \(\Delta t\) 构造 H 步窗口。该式是通用数据设计合同，不是对 OpenVLA/openpi 某个未读 converter 的事实声明。实现中应记录最大时间差阈值、缺帧 mask 和 episode 边界；窗口越界时不可把下一 episode 的动作拼进来。</p>
+<h3 id="section-15">两个已核实的具体实例</h3>
+<ul><li>OpenVLA frozen flagship：<code>image_primary[0]</code> + language + <code>action[0]</code>；默认 <code>load_proprio=False</code>、<code>window_size=1</code>、<code>future_action_window_size=0</code>，即单图、无 proprio/history、单步动作。[2][3][12]</li><li>π0/openpi：论文为 2–3 张图 + language + proprio，H=50；frozen Pi0Config 默认有三个 image slots、state [B,32]、actions [B,50,32]，但 config 可覆盖。[4][6][12]</li></ul>
+<h2 id="backbone-action-expert-policy-head-controller">Backbone、action expert、policy head 与 controller</h2>
+<h3 id="section-17">职责不能混写</h3>
+<table><thead><tr><th>组件</th><th>主要输入</th><th>主要输出</th><th>负责什么</th><th>不负责什么</th></tr></thead><tbody>
+<tr><td>vision encoder / VLM backbone</td><td>image + language</td><td>contextual tokens</td><td>视觉语义、语言条件与预训练知识</td><td>不自动定义机器人 axis/unit</td></tr>
+<tr><td>projector / modality adapter</td><td>visual/state features</td><td>shared-width tokens</td><td>对齐 embedding space</td><td>不等于完整 action policy</td></tr>
+<tr><td>action tokenizer</td><td>continuous action / chunk</td><td>token IDs 或 inverse</td><td>非参数化/轻量表示转换</td><td>不负责 closed-loop control</td></tr>
+<tr><td>policy head</td><td>context embedding</td><td>action logits/continuous params</td><td>直接预测 action distribution</td><td>不一定能表达复杂多模态</td></tr>
+<tr><td>action expert</td><td>context + noisy/latent action</td><td>velocity/noise/action</td><td>独立建模 robot-specific action</td><td>仍需要 normalizer 与 controller</td></tr>
+<tr><td>output transform</td><td>model output</td><td>dataset action</td><td>decode、denorm、slice、axis conversion</td><td>不学习环境 dynamics</td></tr>
+<tr><td>controller</td><td>dataset/env action</td><td>actuator command</td><td>position/velocity/torque loop、安全限制</td><td>不解释任务语言</td></tr>
+</tbody></table>
+<p>OpenVLA 没有独立 continuous action head：Llama LM head 预测 tail-vocabulary action tokens，ActionTokenizer 做 scalar ↔ token 映射。[2][3][12] π0 则以 VLM prefix 条件化 300M action expert，expert 输出 H×D flow velocity，再由 solver 得到连续 chunk。[4][6][12]</p>
+<h3 id="policy">Policy 是整条链</h3>
+<div class="formula">\[
+\pi_{\mathrm{exec}}
+=
+\mathcal{C}
+\circ\mathcal{S}
+\circ\mathcal{U}
+\circ\mathcal{D}
+\circ f_\theta
+\circ\mathcal{P},
+\]</div>
+<p>变量解释：\(\mathcal{P}\) 是输入 preprocess/normalize，\(f_\theta\) 是模型，\(\mathcal{D}\) 是 token/flow decode，\(\mathcal{U}\) 是 unnormalize，\(\mathcal{S}\) 是有效维度与 axis 选择，\(\mathcal{C}\) 是 controller。直觉是任何一个函数错，closed-loop policy 都会错；只验证 \(f_\theta\) 的 loss 不能证明 \(\pi_{\mathrm{exec}}\) 正确。openpi Policy.infer 的 transform 顺序直接体现了这一组合。[6][12]</p>
+<h2 id="openvla-action-token">OpenVLA：逐标量 action token 路线</h2>
+<h3 id="i-o">架构与 I/O</h3>
+<p>OpenVLA flagship 基于 Prismatic 7B：视觉侧融合 DINOv2 与 SigLIP patch features，经 projector 输入 Llama-2 7B；LM head 自回归生成动作 token。[2][3][12]</p>
+<pre><code class="language-text"># OpenVLA flagship path at the audited commit.
+one primary RGB + task prompt
+        ↓
+DINOv2/SigLIP features → projector → Llama-2
+        ↓
+d tail-vocabulary token IDs
+        ↓
+scalar centers → dataset q01/q99 unnormalize
+        ↓
+one d-dimensional action</code></pre>
+<p>注意：生成 d 个 token 表示“一个动作的 d 个维度”，不是 H=d 的未来时间窗口。frozen dataset default 的 <code>future_action_window_size=0</code> 与论文把 action chunking 列为未来方向相一致。[2][3][12]</p>
+<h3 id="q01-q99-normalization">q01/q99 normalization</h3>
+<p>对真实 action 第 i 维：</p>
+<div class="formula">\[
+\tilde a_i=
+\operatorname{clip}
+\left(
+2\frac{a_i-q_i^{01}}{q_i^{99}-q_i^{01}+\varepsilon}-1,
+-1,1
+\right).
+\]</div>
+<p>变量解释：\(q_i^{01},q_i^{99}\) 是当前 dataset/embodiment 的分位统计；\(\tilde a_i\) 进入 scalar tokenizer。OpenVLA frozen preprocessing 对受 mask 管理的维度显式 clip 到 [-1,1]。直觉是压缩 outlier 影响；代价是超出区间的不同物理动作可能饱和到同一 endpoint。[3][12]</p>
+<h3 id="scalar-token">scalar → token</h3>
+<p>frozen code 构造 256 个均匀 threshold/edge values（论文则抽象为 256 bins）：</p>
+<div class="formula">\[
+e_j=-1+\frac{2j}{255},\quad j=0,\ldots,255,
+\qquad
+t_i=V-\operatorname{digitize}(\tilde a_i,e).
+\]</div>
+<p>变量解释：V 是 base tokenizer vocabulary size；<code>np.digitize</code> 在 clip 后返回 \(b_i\in\{1,\ldots,256\}\)，所以 \(t_i=V-b_i\) 恰好占用末尾 256 个 token IDs。直觉是把每个 normalized scalar 变成 LLM 可预测的“词”。实现风险是 token offset、special-token collision 和 tokenizer version；不能只看输出 ID 在词表范围内。[3][12]</p>
+<p>frozen decoder 使用 255 个相邻 endpoint center：</p>
+<div class="formula">\[
+c_j=\frac{e_j+e_{j+1}}{2},\quad j=0,\ldots,254,
+\qquad
+\hat{\tilde a}_i=c_{\operatorname{clip}(V-t_i-1,0,254)}.
+\]</div>
+<p>变量解释：论文写 256-way bins、索引 0..255；该 commit 实际用 256 个 thresholds 编码、255 个相邻 centers 解码。编码的 \(b=255\) 与 \(b=256\) 都被 clip 到 center index 254，因此两个最高 token IDs 重建为同一个 \(0.996078\ldots\) center。面试中应把 paper abstraction、encoder token count 与 decoder reconstruction cardinality 分层说明。[2][3][12]</p>
+<h3 id="masked-token-ce">masked token CE</h3>
+<div class="formula">\[
+\mathcal L_{\mathrm{OpenVLA}}
+=-\frac{\sum_k m_k\log p_\theta(y_k\mid y_{&lt;k},I)}
+{\sum_k m_k}.
+\]</div>
+<p>变量解释：\(m_k\) 只让 action tail 和配置允许的 stop/EOS label 参加 loss；prompt 与插入的 image patch positions 使用 IGNORE_INDEX。连续 L1 是 argmax token decode 后的 metric，不是优化目标，也不等于 online success。[3][12]</p>
+<h3 id="quantization">quantization 的三类代价</h3>
+<ol><li><strong>Resolution</strong>：有限 centers 带来不可消除的 reconstruction error。</li><li><strong>Saturation</strong>：q01/q99 外被 clip 后失去幅度差异。</li><li><strong>Distribution shift</strong>：换 robot/dataset 却沿用旧 stats，会让相同 token 对应错误物理尺度。</li></ol>
+<h2 id="0-action-expert-flow-matching">π0：连续 action expert 与 Flow Matching</h2>
+<h3 id="i-o-2">I/O 与架构</h3>
+<p>π0 paper 定义：</p>
+<div class="formula">\[
+o_t=[I_t^1,\ldots,I_t^n,\ell_t,q_t],
+\qquad
+A_t=[a_t,\ldots,a_{t+H-1}]\in\mathbb{R}^{H\times D}.
+\]</div>
+<p>变量解释：论文实验用 2–3 路 RGB、language、joint state，H=50；frozen openpi 默认 D=32、H=50。D 是 model action dimension，不代表每个 robot 都有 32 个真实 actuator dimensions。[4][6][12]</p>
+<p>VLM 产生 image/language prefix；π0 的 suffix 含一个 continuous state token 与 H 个 noisy-action tokens。action expert 输出每个 noisy-action token 的 D 维 velocity。采样时 prefix KV cache 只算一次，每个 integration step 重算 suffix。[6][12]</p>
+<h3 id="paper-convention">paper convention</h3>
+<div class="formula">\[
+A^\tau=\tau A+(1-\tau)\epsilon,
+\qquad
+u_{\mathrm{paper}}=A-\epsilon,
+\quad \epsilon\sim\mathcal N(0,I).
+\]</div>
+<p>变量解释：\(\tau=0\) 是 noise、\(\tau=1\) 是 data；网络学习沿直线路径的 velocity。训练目标是 \(v_\theta(A^\tau,o)\) 与 \(A-\epsilon\) 的 MSE，作用张量为 [B,H,D]。[4]</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{flow}}
+=
+\mathbb E\left[
+\frac{1}{HD}
+\left\|v_\theta(A^\tau,o)-(A-\epsilon)\right\|_2^2
+\right].
+\]</div>
+<p>变量解释：frozen compute_loss 先对 D 求 mean，train.py 再对 H 和 batch 求 mean；公开主路径未显示额外 valid-dimension mask。若某个本地项目 D 大于真实 d，是否对 padding dimensions 监督为零或使用 mask，必须读本地 batch/loss，而不能由 output slicing 反推。[6][12]</p>
+<h3 id="code-convention">code convention</h3>
+<p>openpi 反向参数化时间：</p>
+<div class="formula">\[
+x_t=t\epsilon+(1-t)A,
+\qquad
+u_{\mathrm{code}}=\epsilon-A.
+\]</div>
+<p>变量解释：代码从 t=1 noise 以 \(dt=-1/N\) 积分到 t=0 data，默认 N=10。令 \(\tau=1-t\)，则 path point 相同，且 \(u_{\mathrm{code}}=-u_{\mathrm{paper}}\)、\(d\tau=-dt\)，所以最终 ODE 轨迹等价。[6][12]</p>
+<h3 id="0-5-pi0fast">π0.5 不等于 Pi0FAST</h3>
+<div class="meta">2026-07-19 <a href="../sources/vol_03_pi0_fast_openpi_independent_fact_review.html">Audit B 独立复核</a> 已直接核对 π0.5 paper 的 FAST-pretrain/flow-posttrain hybrid、frozen <code>Pi0(pi05=True)</code> 与 <code>Pi0FAST</code> 分叉；FAST Hub normalization、model default 与 <code>pi0_fast_libero</code> 的 D=7/H=10 override 也已分层。local OpenPiVLA 仍需 artifact，相关题卡保持 <code>unseen/WARN</code>。</div>
+<p>π0.5 paper 的完整 recipe 在预训练用 FAST action-token CE，post-training 加连续 action expert，并联合优化 CE + flow loss；推理使用 text token 后接 10 步 flow sampling。[5] frozen openpi 的 <code>Pi0(pi05=True)</code> 直接证实 state 进入离散 prompt、timestep 用 adaRMSNorm 注入，但审计的 <code>compute_loss</code> 只返回 flow MSE。独立 <code>Pi0FAST</code> class 才实现 FAST-token CE。[6][12]</p>
+<p>因此：</p>
+<ul><li>π0.5 paper = hybrid training design；</li><li>frozen Pi0(pi05=True) = released flow architecture path；</li><li>Pi0FAST = independent autoregressive FAST model type。</li></ul>
+<p>三者不能只按名称合并。</p>
+<h2 id="vla-mask">VLA 架构路线、mask、适配与部署证据</h2>
+<div class="meta">本节对应 <code>VLA-ARCH-007..012</code>。四方法比较、Octo frozen code 与 openpi serving path 来自 <a href="../sources/vol_03_architecture_execution_claim_to_code.html">Source Audit F</a>，并已完成 <a href="../sources/vol_03_architecture_execution_independent_fact_review.html">独立事实复核</a>；比较机制，不横比不同 protocol 的 success rate。[19][20][21][27]</div>
+<h3 id="vla-arch-007-rt-2-openvla-octo-0-head">VLA-ARCH-007：RT-2、OpenVLA、Octo、π0 不是同一 head 的尺寸变化</h3>
+<p><strong>直觉</strong>：四者都从视觉/任务条件产生机器人动作，但“动作放在哪里、用什么 loss 学、推理要循环什么”完全不同。先说 action representation，再谈 backbone size，能避免只背模型名称。</p>
+<table><thead><tr><th>方法</th><th>backbone / condition</th><th>action representation</th><th>训练主路线</th><th>推理循环</th></tr></thead><tbody>
+<tr><td>RT-2</td><td>PaLI-X 5B/55B 或 PaLM-E 12B</td><td>pose/gripper 等连续维 uniform 256 bins 后成为 action tokens，另有 termination</td><td>预训练 VLM 上混合 web + robot data co-fine-tune</td><td>自回归生成 action token；论文部署用 cloud TPU</td></tr>
+<tr><td>OpenVLA</td><td>DINOv2 + SigLIP → projector → Llama-2 7B</td><td>当前动作每个 scalar 占一个 tail-vocab token</td><td>OXE robot data 上 full fine-tune；official repo 另支持 LoRA</td><td>生成 (d) 个 token → scalar decode → q01/q99 unnorm</td></tr>
+<tr><td>Octo</td><td>27M/93M block-wise transformer；image tokenizer + frozen T5-base</td><td>action readout latent 条件化 diffusion head，公开 pretrain config 为 H=4、D=7</td><td>800k OXE trajectories 预训练；新域 head-only/head-MLP-only/full FT</td><td>backbone 一次产生 readout；diffusion head 多步去噪 chunk</td></tr>
+<tr><td>π0</td><td>PaliGemma 2B VLM + 约 300M action expert</td><td>(H\times D) noisy continuous chunk 的 flow velocity</td><td>cross-embodiment pretrain + task post-train；openpi 提供 full/LoRA 示例</td><td>prefix KV 一次；expert 做多步 Euler/ODE update</td></tr>
+</tbody></table>
+<p>RT-2 的论文 tokenization 还随 VLM 而变：PaLI-X 复用整数 token，PaLM-E 覆写 256 个低频 token。OpenVLA 的 frozen implementation 则使用 Llama tail vocab 和特定 255-center decode nuance。它们同属“action as token”范式，但不能交换 tokenizer 细节。[1][2][3][21]</p>
+<p><strong>回答收口</strong>：RT-2 强调 web knowledge co-fine-tuning 与 action-as-text；OpenVLA 将这条路线开放到 7B/OXE；Octo 用小型 modular transformer/readout/diffusion 做可适配 generalist policy；π0 用大 VLM context + 小 continuous expert 做 flow chunk。项目选型要再看 data、latency、H/K 与 controller，而不是把年份当排序。</p>
+<h3 id="vla-arch-008-attention-visible-loss-visible">VLA-ARCH-008：attention-visible 与 loss-visible 是两件事</h3>
+<p><strong>直觉</strong>：token 在序列里出现，只说明它可能参与计算；是否能看见别的位置由 attention mask 决定，是否直接产生监督由 label/loss mask 决定。</p>
+<p>对自回归 action-token 路线：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{AR}}
+=-\frac{\sum_i m_i\log p_\theta(y_i\mid y_{&lt;i},c)}
+{\sum_i m_i+\epsilon}.
+\]</div>
+<p>变量与实现：(y_i) 是 token，(c) 是图像/任务条件，(m_i) 是 label mask。OpenVLA prompt labels 与插入的 visual patch labels 是 <code>IGNORE_INDEX</code>，action tail 与默认 stop token 才参加 CE；因而“patch 被 action token attend”与“patch 自己有 CE label”完全不同。[2][3][21]</p>
+<p>三种典型 layout：</p>
+<pre><code class="language-text"># OpenVLA: action values themselves are autoregressive labels.
+[image patches / prompt] -&gt; [a_1] [a_2] ... [a_d] [EOS?]
+
+# Octo: readout tokens are latent queries; a separate diffusion loss supervises actions.
+[task prefix] [obs(t-1), readout(t-1)] [obs(t), readout(t)] -&gt; H x D
+
+# pi0: prefix conditions a continuous noisy-action suffix under a block mask.
+[image + language prefix] [state + noisy action_1 ... noisy action_H] -&gt; velocity</code></pre>
+<p>代码块说明：Octo readout 只读取 task/observation/自身 readout，不被 observation 反向读取；π0 action suffix 是连续 latent，不是 LM action label。位置改变会影响 positional embedding、causal context、KV cache 与 loss alignment；一次 off-by-one 就可能把 prompt/EOS 当 action，或让 action 看见未来 label。[6][20][21]</p>
+<p>Octo 的 timestep/action target mask 是正例：</p>
+<div class="formula">\[
+M_{b,w,h,d}=T_{b,w}\land A_{b,w,h,d},
+\qquad
+\mathcal L=\operatorname{continuous\_loss}(\hat z,z;M).
+\]</div>
+<p>变量与实现：(T) 排除 history padding，(A) 排除 action padding；(b,w,h,d) 是 batch/window/horizon/action dimension。frozen MSE 与 diffusion head 都使用 conjunction。[20] 相比之下，frozen Pi0 flow loss 对 configured D 全维 mean；不能泛称“所有 VLA 都自动 mask padding”。[18][21]</p>
+<h3 id="vla-arch-009-freeze-full-lora-expert">VLA-ARCH-009：freeze、full、LoRA 与独立 expert 的选择</h3>
+<p><strong>直觉</strong>：这不是四个互斥模型名，而是“允许哪些参数适应新数据”的容量预算。数据少、domain 接近时先限制更新；camera/objects/dynamics 变化大时才逐步解冻。</p>
+<table><thead><tr><th>方式</th><th>主要更新</th><th>合适情形</th><th>风险</th></tr></thead><tbody>
+<tr><td>freeze VLM / head-only</td><td>projector/readout/action head</td><td>新 action space、小数据、视觉语义接近</td><td>backbone domain gap 无法纠正</td></tr>
+<tr><td>full FT</td><td>vision/projector/LLM/action modules</td><td>数据足、视觉与控制都明显变化</td><td>显存高、遗忘、过拟合</td></tr>
+<tr><td>LoRA / adapter</td><td>selected linear layers 的低秩增量</td><td>需要更多容量但显存有限</td><td>rank/target modules 与 base revision 约束能力</td></tr>
+<tr><td>independent action expert</td><td>大 VLM 提供 context，小 expert 专门建模 action</td><td>continuous chunk、需要独立 target/width</td><td>context/expert interface 与联合训练更复杂</td></tr>
+</tbody></table>
+<p>LoRA 可写为：</p>
+<div class="formula">\[
+W&#x27;=W+\frac{\alpha}{r}BA,
+\quad
+A\in\mathbb R^{r\times i},\;B\in\mathbb R^{o\times r},
+\quad r\ll\min(i,o).
+\]</div>
+<p>变量与实现：(W) 是 frozen base weight，(r) 是 rank。OpenVLA official finetune 使用 PEFT <code>all-linear</code> LoRA；openpi LIBERO low-memory config 同时选择 PaliGemma/action-expert LoRA variant 和匹配 freeze filter；Octo 则明确提供 <code>head_only</code>、<code>head_mlp_only</code>、<code>full</code>。[2][7][20][21]</p>
+<p><strong>证据边界</strong>：OpenVLA flagship 论文结果来自 full fine-tuning；repo 支持 LoRA 不代表主结果或本地 checkpoint 使用 LoRA。项目回答必须补 trainable-parameter log、base/adapter revisions、rank、target modules、merge/load order。</p>
+<h3 id="vla-arch-010-schema">VLA-ARCH-010：异构动作要统一 schema，也要统一监督语义</h3>
+<p>令 embodiment \(e\) 的真实动作宽度为 \(d_e\)，模型宽度为 \(D\ge d_e\)，\(P_e\) 把真实维写进统一空间，\(S_e=P_e^\top\) 取回：</p>
+<div class="formula">\[
+\bar a^{(e)}=P_e a^{(e)},
+\qquad
+\hat a^{(e)}=S_e\hat{\bar a},
+\qquad
+m^{(e)}_j=\mathbf{1}\!\left[j\in\operatorname{Im}(P_e)\right].
+\]</div>
+<p>变量与实现：\(P_e\) 只定义维度位置，不会自动统一 absolute/delta、frame、unit、rotation 或 gripper polarity。openpi <code>PadStatesAndActions</code> 只做 zero-pad；Octo <code>action_pad_mask</code> 则是 loss 中的显式有效维正例。[7][20][21]</p>
+<p>masked objective：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{valid}}
+=
+\frac{
+\sum_{b,h,j}m_{b,h,j}\,
+\ell\!\left(\hat{\bar a}_{b,h,j},\bar a_{b,h,j}\right)
+}{
+\sum_{b,h,j}m_{b,h,j}+\varepsilon
+}.
+\]</div>
+<p>变量与实现：\(m\) 应覆盖 timestep 与 action dimension；若直接对 \(D\) 维 mean，padding zeros 也会产生“逼近 0”的监督，并把有效维梯度按 \(d_e/D\) 稀释或改变。推理 slice 并不能修复训练 target 已被污染的问题。[18][20][21]</p>
+<p>跨机器人至少逐组记录：translation axis/frame/unit/type，rotation representation/order/unit，gripper range/polarity，base semantics，control frequency/dt，以及 modality/timestep/action masks。只写“统一成 32D”不是 action unification 设计。</p>
+<h3 id="vla-arch-011-pipeline">VLA-ARCH-011：延迟是 pipeline 向量，不是一个数字</h3>
+<p>远程 chunk query 的端到端时间可拆为：</p>
+<div class="formula">\[
+T_{\mathrm{e2e}}=
+T_{\mathrm{capture}}+T_{\mathrm{pre}}+T_{\uparrow}
++T_{\mathrm{vision/prefill}}+N T_{\mathrm{step}}
++T_{\mathrm{post}}+T_{\downarrow}+T_{\mathrm{queue}}.
+\]</div>
+<p>变量与实现：token policy 的 (N) 是 action token length；FAST 是可变压缩序列长度；diffusion/flow 是 denoise/NFE steps。是否缓存 vision/prefix、每 step 跑大 backbone 还是小 expert，必须看源码。[12][21]</p>
+<ul><li>RT-2 论文在其 multi-TPU cloud protocol 下报告 55B 为 1–3 Hz、5B 约 5 Hz；这包含历史网络/服务条件，不能外推本地 GPU。[1]</li><li>FAST 论文的指定 4090 测量中，π0 flow 约 100 ms/chunk、π0-FAST 约 750 ms/chunk；Source Audit B 将差异映射到 10 次小 expert 与 30–60 次大 VLM token decode。[7][12]</li><li>openpi <code>Policy.infer</code> 的 <code>policy_timing.infer_ms</code> 包围 model sampling；server <code>infer_ms</code> 包围完整 policy infer，<code>prev_total_ms</code> 才进一步覆盖上一轮 recv/unpack/send。它们仍未拆出 vision、每步 sampler 和 queue。[6][21]</li></ul>
+<p>测量时报告 warm-up、device sync、batch/dtype、payload bytes、H/K、NFE/token length、cache、p50/p95；在异步 GPU 上直接用未同步 wall clock 会低估 kernel 时间。</p>
+<h3 id="vla-arch-012-paper-runtime-trace">VLA-ARCH-012：从 paper 一直核到 runtime trace</h3>
+<p><strong>直觉</strong>：模型名是线索，不是合同。真实 I/O 需要四层证据闭环：</p>
+<pre><code class="language-text"># Each layer answers a different question; none may be skipped.
+paper/version
+  -&gt; repo commit + license + model/loss/infer path
+  -&gt; checkpoint manifest + config + tokenizer + norm assets
+  -&gt; runtime request/response + transforms + queue + controller trace</code></pre>
+<p>代码块说明：paper 支持方法定义；repo 支持该 commit 的实现；checkpoint 决定实际权重/资产；runtime 才证明线上收发、denorm、轴序和执行。</p>
+<p>openpi <code>create_trained_policy</code> 展示了正确的资产绑定：从 checkpoint 加载 model weight，norm stats 默认取 checkpoint <code>assets/&lt;asset_id&gt;</code>；input 依次做 repack/data transform、normalize、model transform；output 依次做 model transform、unnormalize、data/repack transform。[6][21] OpenVLA 的 <code>unnorm_key</code> 同样决定 action dim 和 q01/q99；多 dataset stats 不显式选 key 会拒绝推理。[2][3]</p>
+<p>最小 manifest 应有：paper/repo revision、model class、weight hash/shape、base+adapter、tokenizer/processor revision、image views/resize、state/action schema、H/D/K、norm asset/hash、sampler/NFE、output transform、controller mode/frequency、eval checkpoint/task/trial/seed。对 OpenPiVLA，这些仍是待取证项，不能由上游 Source Audit F 自动补齐。</p>
+<h2 id="action-representation">Action representation 总览</h2>
+<h3 id="section-38">五条路线各自建模什么</h3>
+<table><thead><tr><th>路线</th><th>抽象分布/目标</th><th>优点倾向</th><th>主要风险</th><th>本批证据深度</th></tr></thead><tbody>
+<tr><td>deterministic continuous regression</td><td>\(\hat A=f_\theta(o)\)，MSE/Huber</td><td>简单、低 decode latency</td><td>多模态 label 下均值化</td><td>通用机制</td></tr>
+<tr><td>scalar discrete token</td><td>\(p(y_{1:d}\mid o)\)</td><td>复用 LM next-token infra</td><td>量化、offset、AR latency</td><td>OpenVLA 深入</td></tr>
+<tr><td>CVAE action chunk</td><td>\(p(A\mid o)=\int p(A\mid o,z)p(z\mid o)dz\)</td><td>latent 表达 sequence variation</td><td>posterior collapse、train/infer latent gap</td><td>ACT paper/code 深入</td></tr>
+<tr><td>diffusion action</td><td>conditional denoising / score</td><td>适合多峰、高维 continuous action</td><td>多步 sampling、scheduler contract</td><td>Diffusion Policy paper/code 深入</td></tr>
+<tr><td>flow action</td><td>conditional velocity field + ODE</td><td>连续多模态、solver 明确</td><td>time convention、integration latency</td><td>π0 特化深入</td></tr>
+</tbody></table>
+<p>表中“优点倾向”不是跨 benchmark 排名。数据、网络规模、H、controller frequency 和 implementation 都会改变结果。</p>
+<h3 id="deterministic-regression">deterministic regression</h3>
+<div class="formula">\[
+\mathcal L_{\mathrm{reg}}
+=
+\mathbb E_{(o,A)\sim\mathcal D}
+\left[
+\|f_\theta(o)-A\|_2^2
+\right].
+\]</div>
+<p>变量解释：若同一个 o 在数据中对应左右绕行等多个可行动作，MSE 的条件最优解倾向于条件均值，可能生成物理上不属于任何 mode 的动作。若任务近似单峰、action 定义稳定且延迟严格，direct regression 仍是重要 baseline。</p>
+<h3 id="cvae">CVAE 定义级边界</h3>
+<div class="formula">\[
+\mathcal L_{\mathrm{CVAE}}
+=
+\mathbb E_{q_\phi(z\mid o,A)}
+\left[-\log p_\theta(A\mid o,z)\right]
++
+\beta D_{\mathrm{KL}}
+\left(q_\phi(z\mid o,A)\,\|\,p(z\mid o)\right).
+\]</div>
+<p>变量解释：z 是 sequence/style latent；训练 encoder 可看见 action target，推理只能从 prior 采样或取固定 latent。冻结 ACT path 具体采用 <code>[CLS]+qpos+actions</code> posterior、learned action queries，并在推理固定 \(z=0\)；详见后续 ACT 小节。[9][14]</p>
+<h3 id="diffusion">diffusion 定义级边界</h3>
+<p>Diffusion Policy 将 visuomotor policy 表示为 conditional denoising diffusion process，并强调 multimodal action distribution、visual conditioning 与 receding-horizon control。[10] Batch 2A 后续小节展开 frozen epsilon/sample target、global condition、DDPM/DDIM 与 \(T_o/T_p/T_a\)。</p>
+<h3 id="flow-diffusion">flow 与 diffusion 不只是“步数不同”</h3>
+<ul><li>diffusion 常学习 noise、score 或 data parameterization，并依赖 noise schedule 与 stochastic/deterministic sampler；</li><li>flow matching 学给定 probability path 的 velocity field，通过 ODE solver transport noise 到 data；</li><li>两者都可迭代生成 continuous chunk，但训练 target、time convention 与 solver 不同。</li></ul>
+<p>本页后续 Flow Matching 小节从 Source Audit E 回填一般 CNF/CFM、OT path、ODE 与 π0 特化；仍不把 current supporting package 冒充 2022 论文历史实现。</p>
+<h2 id="normalization-denormalization">Normalization / denormalization</h2>
+<h3 id="0-success">为什么它是 0-success 高风险接口</h3>
+<p>神经网络只在 normalized space 学习；controller 在 physical units 执行。若训练与推理的 stats key、axis order 或 action type 不一致，模型可在 normalized space 得到很低 loss，却输出错误量级或错误轴的物理动作。</p>
+<p>openpi 的 quantile mapping 为：</p>
+<div class="formula">\[
+\tilde a_i=
+2\frac{a_i-q_i^{01}}
+{q_i^{99}-q_i^{01}+\varepsilon}-1,
+\qquad
+a_i=
+\frac{\tilde a_i+1}{2}
+\left(q_i^{99}-q_i^{01}+\varepsilon\right)+q_i^{01}.
+\]</div>
+<p>变量解释：该 frozen transform 不显式 clip；因此 q01/q99 外值可落在 [-1,1] 之外。Policy factory 从 checkpoint assets 加载训练期 norm stats，输入 sample 前 normalize，output transform 后 unnormalize。[6][12]</p>
+<p>OpenVLA 与 openpi 的差别：</p>
+<table><thead><tr><th>维度</th><th>OpenVLA audited path</th><th>openpi audited path</th></tr></thead><tbody>
+<tr><td>stats</td><td>dataset-specific q01/q99</td><td>checkpoint asset norm stats</td></tr>
+<tr><td>quantile mapping</td><td>对受管维度 clip [-1,1]</td><td>quantile transform 无显式 clip</td></tr>
+<tr><td>tokenization</td><td>normalize 后 scalar bin</td><td>flow 直接用 continuous normalized；FAST 再 DCT/BPE</td></tr>
+<tr><td>inverse</td><td>token center 后 q01/q99 inverse</td><td>model output transform 后 inverse</td></tr>
+<tr><td>extra padded dims</td><td>dataset-specific</td><td>stats 未覆盖的尾维保持原值，再 output slice</td></tr>
+</tbody></table>
+<h3 id="inverse-consistency-test">最小 inverse-consistency test</h3>
+<div class="formula">\[
+\max_{a\in\mathcal T}
+\left\|
+\operatorname{unnorm}(\operatorname{norm}(a))-a
+\right\|_\infty
+&lt;\delta.
+\]</div>
+<p>变量解释：\(\mathcal T\) 至少包含训练分位内样本、q01/q99 endpoint、outlier、constant dimension 与 padding dimension；\(\delta\) 按物理单位设定。对于有 clip 的 pipeline，outlier 不应期待严格可逆，而应显式测试 saturation behavior。</p>
+<h3 id="section-46">常见穿帮说法</h3>
+<ul><li>错：“归一化只是数值稳定性，不影响策略语义。”</li><li>对：“归一化 stats 与 axis order 共同定义 token/continuous output 的物理意义，是 checkpoint contract。”</li><li>错：“FAST 会自动把任何机器人 action 处理到统一尺度。”</li><li>对：“FAST Hub processor 从 DCT 开始；调用者先做 dataset/embodiment normalization。”</li></ul>
+<h2 id="fast-action-token">FAST：频域 action token</h2>
+<div class="meta">FAST 的 quantile normalization、DCT/round/BPE 顺序、paper vocab=1024 与 Hub vocab=2048、以及 processor 不自动做 normalization，已在 <a href="../sources/vol_03_pi0_fast_openpi_independent_fact_review.html">Audit B 独立复核</a> 直接核对；这里的上游默认值不等于本地 tokenizer revision。</div>
+<h3 id="section-48">它解决什么</h3>
+<p>逐 timestep、逐 scalar tokenization 会让高频 action window 产生大量相邻高度相关 token；autoregressive model 可能靠复制最近 token 获得低 loss，而没有学到整段动作形状。FAST 先把时间序列变到频域，让低频整体趋势先出现，再用 BPE 压缩重复系数。[7][8]</p>
+<h3 id="section-49">算法</h3>
+<p>对 normalized action chunk \(\tilde A\in\mathbb{R}^{H\times D}\)，每维沿时间轴做 DCT：</p>
+<div class="formula">\[
+C_j^i=\operatorname{DCT}(\tilde a_{1:H}^i),
+\qquad
+\bar C_j^i=\operatorname{round}(\gamma C_j^i).
+\]</div>
+<p>变量解释：i 是 action dimension，j 是 frequency index，\(\gamma\) 控制量化精度/压缩率。FAST paper 单数据集实验使用 scale 10；frozen FAST+ Hub processor 也使用 scale 10。[7][8][12]</p>
+<p>按 frequency-first 展开并做 BPE：</p>
+<div class="formula">\[
+z=[
+\bar C_0^1,\ldots,\bar C_0^D,
+\bar C_1^1,\ldots,\bar C_1^D,\ldots],
+\qquad
+y_{1:L}=\operatorname{BPE}_{\Phi}(z).
+\]</div>
+<p>变量解释：先排所有维度的低频 coefficient，再进入高频；L 是可变 token length；\(\Phi\) 是唯一 learned 的 BPE vocabulary。frozen Hub code 对 [H,D] 的 DCT array 做 row-major flatten，正好得到 frequency-first 顺序。[7][8][12]</p>
+<p>inverse decode：</p>
+<div class="formula">\[
+\hat{\tilde A}
+=
+\operatorname{IDCT}\!\left(
+\frac{
+\operatorname{unflatten}\!\left(
+\operatorname{BPE}^{-1}(y;\Phi);H,D
+\right)
+}{\gamma}
+\right).
+\]</div>
+<p>变量解释：decode 恢复 normalized H×D chunk，之后仍需 checkpoint-matched unnormalize。Hub decoder 需要 H 与 D；reshape 失败时 frozen code 会返回 zero coefficients，因此部署应增加显式 error/telemetry，而不是静默执行零动作。[8][12]</p>
+<h3 id="paper-artifact-model">paper / artifact / model 的默认值要分开</h3>
+<table><thead><tr><th>对象</th><th>scale</th><th>vocab</th><th>H / D</th></tr></thead><tbody>
+<tr><td>FAST paper 单数据集实验</td><td>10</td><td>1024</td><td>1-second chunk，依 control frequency</td></tr>
+<tr><td>frozen FAST+ Hub</td><td>10</td><td>2048</td><td>decode 时传入或缓存</td></tr>
+<tr><td>openpi Pi0FASTConfig default</td><td>external</td><td>external</td><td>H=32, D=32</td></tr>
+<tr><td>openpi LIBERO example config</td><td>external</td><td>external</td><td>H=10, D=7</td></tr>
+</tbody></table>
+<p>不能用最后一行证明本地 OpenPiVLA H=10。</p>
+<h3 id="compression">compression 为什么不等于控制误差更小</h3>
+<p>至少分开五个量：</p>
+<ol><li>token count / compression ratio；</li><li>normalized reconstruction error；</li><li>next-token training loss；</li><li>physical-unit trajectory error；</li><li>closed-loop task success。</li></ol>
+<p>BPE 减少重复 zero tokens、缩短 AR sequence，论文消融在其任务上提升 policy performance；但更短 token sequence 不在数学上保证更小 reconstruction error，更不保证跨 controller 的 success 提升。[7]</p>
+<h2 id="act-cvae-action-chunk-temporal-ensemble">ACT：CVAE、Action Chunk 与 Temporal Ensemble</h2>
+<div class="meta">本节对应 <code>VLA-ACT-011..017</code>。直接证据来自 ACT arXiv v1 与 <code>tonyzhaozh/act@742c753...</code>；它是 continuous action-chunk CVAE，不是 action-token VLA，也不能证明个人 OpenPiVLA 使用 ACT head。[9][14]</div>
+<h3 id="vla-act-011-h-k-r-control-period">VLA-ACT-011：H、K、R 与 control period</h3>
+<p>先把四个时间量拆开：</p>
+<table><thead><tr><th>量</th><th>记号</th><th>回答什么</th><th>frozen ACT</th></tr></thead><tbody>
+<tr><td>prediction horizon / chunk size</td><td>\(H\)</td><td>一次 forward 输出几步</td><td><code>num_queries</code></td></tr>
+<tr><td>execution window</td><td>\(K\)</td><td>一个预测 chunk 实际连续执行几步</td><td>无独立 CLI field</td></tr>
+<tr><td>query / replan interval</td><td>\(R\)</td><td>相邻两次 policy inference 间隔几步</td><td><code>query_frequency</code></td></tr>
+<tr><td>control period</td><td>\(\Delta t\)</td><td>每个环境 action 的物理周期</td><td>sim <code>DT=0.02</code></td></tr>
+</tbody></table>
+<p>若 episode 有 \(T\) 个 control steps，无 temporal aggregation 且 \(K=R=H\)，policy query 数近似：</p>
+<div class="formula">\[
+N_{\mathrm{query}}\approx\left\lceil\frac{T}{H}\right\rceil.
+\]</div>
+<p>变量与实现：\(H\) 是 model tensor 的时间维；\(K/R\) 属于 rollout。冻结 ACT 的无 aggregation 分支每 \(H\) 步 query 一次并消费整段；开启 aggregation 后 \(R=K=1\)，但 model \(H\) 不变。[14]</p>
+<p>概念上 \(K\) 与 \(R\) 仍可不同：异步 controller 可先提交较长 queue，却在 queue 未耗尽前生成新计划。不能只看到 <code>chunk_size=100</code> 就说“100 步后才闭环”。</p>
+<h3 id="vla-act-012-cvae-transformer-chunk">VLA-ACT-012：CVAE-Transformer 如何并行输出 chunk</h3>
+<p>训练期 posterior encoder 与 decoder 的数据流：</p>
+<pre><code class="language-text"># The posterior sees proprioception and the supervised action chunk.
+[CLS] + projected qpos + projected actions[0:H]
+                 |
+       Transformer encoder
+                 |
+          mu, logvar [B,32]
+                 |
+       reparameterized z [B,32]
+
+# The decoder consumes current observation and H learned query slots.
+shared multi-camera ResNet + qpos token + z token
+                 |
+       Transformer encoder/decoder
+                 |
+       H learned action queries
+                 |
+          actions [B,H,14]</code></pre>
+<p>代码映射：posterior 不看图像，使用 <code>[CLS]+qpos+actions</code>；相机共享 ResNet18，feature maps 沿 spatial width 拼接；decoder 的 <code>nn.Embedding(num_queries, hidden_dim)</code> 是 \(H\) 个 learned output slots，一次 forward 并行得到：</p>
+<div class="formula">\[
+\operatorname{ACT}_\theta(o_t,z)
+=
+\left(
+\hat a_t^{(t)},\ldots,\hat a_{t+H-1}^{(t)}
+\right)
+\in\mathbb R^{H\times14}.
+\]</div>
+<p>变量说明：上标 \((t)\) 是 query time，下标是目标物理时刻；14D 是该双臂 setup 的公开 action shape，不是所有机器人通用维数。论文描述 fixed/sinusoidal queries，但 frozen code 实际使用 learned <code>nn.Embedding</code>，回答实现时必须保留此差异。[9][14]</p>
+<h3 id="vla-act-013-style-latent-train-infer-gap">VLA-ACT-013：style latent 的 train / infer gap</h3>
+<p>训练 posterior 为：</p>
+<div class="formula">\[
+q_\phi(z\mid q_t,A_t)
+=
+\mathcal N\!\left(
+\mu_\phi,\operatorname{diag}(\exp\ell_\phi)
+\right),
+\quad
+z=\mu_\phi+\exp(\tfrac12\ell_\phi)\odot\epsilon,
+\quad
+\epsilon\sim\mathcal N(0,I).
+\]</div>
+<p>变量与实现：\(A_t\in\mathbb R^{H\times14}\)，\(z\in\mathbb R^{32}\)，\(\ell_\phi\) 是 <code>logvar</code>。target chunk 帮助 posterior 压缩 demonstration style，reparameterization 让 reconstruction gradient 通过 sampling。[14]</p>
+<p>推理时 frozen code 不运行 posterior，也不从 prior 随机采样，而是：</p>
+<div class="formula">\[
+z_{\mathrm{test}}=0=\mathbb E_{\mathcal N(0,I)}[z].
+\]</div>
+<p>这使 evaluation deterministic。它的边界是：训练期 latent 能表达多样性，不等于部署会随机探索多个 mode。若面试回答“ACT 推理采多个 \(z\) 再挑最好动作”，与该 commit 不符。[9][14]</p>
+<p>KL 与 reconstruction 的总目标为：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{ACT}}
+=
+\mathcal L_{L1}^{\mathrm{code}}
++\beta\,
+\frac1B\sum_b\frac12
+\sum_{j=1}^{32}
+\left(
+\mu_{b,j}^2+\exp\ell_{b,j}-1-\ell_{b,j}
+\right).
+\]</div>
+<p>变量与实现：\(\beta\) 是 <code>kl_weight</code>；公开 recipe 使用 10，但不是跨任务常数。论文 Algorithm 1 写 MSE，方法正文与 frozen <code>policy.py</code> 用 L1；安全口径必须说“paper algorithm 存在不一致，正文/代码是 L1 + KL”。[9][14]</p>
+<h3 id="vla-act-014-temporal-ensemble-target-time">VLA-ACT-014：temporal ensemble 融合相同 target time</h3>
+<p>query time \(q\) 会预测 \(q,\ldots,q+H-1\)。当前 target time \(t\) 可由这些历史 query 覆盖：</p>
+<div class="formula">\[
+\mathcal Q_t
+=
+\{q\mid \max(0,t-H+1)\le q\le t\}.
+\]</div>
+<p>变量与实现：每个 \(q\in\mathcal Q_t\) 都产生对<strong>同一个</strong> \(a_t\) 的估计 \(\hat a_t^{(q)}\)；代码把 chunk 写入二维 <code>all_time_actions[q,q:q+H]</code> 后读取 column \(t\)。这不是把 \(a_{t-1},a_t,a_{t+1}\) 做普通时域平滑。[14]</p>
+<p>按 oldest-to-newest 排列 \(q_0&lt;\cdots&lt;q_{n-1}\)：</p>
+<div class="formula">\[
+w_i=\exp(-mi),
+\qquad
+a_t^{\mathrm{exec}}
+=
+\frac{\sum_iw_i\hat a_t^{(q_i)}}{\sum_iw_i}.
+\]</div>
+<p>变量与代码映射：\(m=0.01\) 是 frozen decay；<code>np.arange</code> 从 oldest row 开始，因此 \(w_0\) 最大，<strong>最旧预测权重最高</strong>。快速变化环境中这也可能保留 stale plan；“新预测权重最大”是对此实现的错误复述。[9][14]</p>
+<h3 id="vla-act-015-chunking-replan-ensemble">VLA-ACT-015：chunking、replan 与 ensemble 如何共同决定闭环</h3>
+<p>frozen rollout 有两种极端：</p>
+<table><thead><tr><th>模式</th><th>model \(H\)</th><th>query interval \(R\)</th><th>execute \(K\)</th><th>新 observation 如何进入</th></tr></thead><tbody>
+<tr><td><code>temporal_agg=False</code></td><td>不变</td><td>\(H\)</td><td>\(H\)</td><td>chunk 边界</td></tr>
+<tr><td><code>temporal_agg=True</code></td><td>不变</td><td>1</td><td>1</td><td>每个 control step</td></tr>
+</tbody></table>
+<p>因此 chunking 是<strong>预测表示</strong>，replanning 是<strong>反馈频率</strong>，ensemble 是<strong>重叠预测融合</strong>。一次输出 \(H\) 步不等于必须 open-loop 执行 \(H\) 步；反过来，每步 query 也不意味着 model horizon 变成 1。[14]</p>
+<pre><code class="language-python">def act_closed_loop_step(obs, t, policy, prediction_table, temporal_agg):
+    # Query every step with aggregation, otherwise only at chunk boundaries.
+    if temporal_agg or t % policy.horizon == 0:
+        chunk = policy(obs, z=zeros())  # Frozen inference uses z=0.
+
+    if temporal_agg:
+        # Store each query&#x27;s predictions under their physical target times.
+        add_overlapping_chunk(prediction_table, query_time=t, chunk=chunk)
+
+        # Fuse predictions that all target the current physical time t.
+        normalized_action = ensemble_same_target_time(prediction_table[t])
+    else:
+        # Execute one cached slot; fresh observation changes the next chunk only.
+        normalized_action = chunk[t % policy.horizon]
+
+    # Denormalize to absolute joint-position targets before env.step.
+    return denormalize(normalized_action)</code></pre>
+<p>伪代码映射 frozen rollout 的两条 path；真实项目要另报异步 queue、safety clip、action semantics 与 \(K/R\) 是否解耦。</p>
+<h3 id="vla-act-016-chunk">VLA-ACT-016：chunk 太短或太长</h3>
+<table><thead><tr><th>\(H\)</th><th>主要收益</th><th>主要代价</th></tr></thead><tbody>
+<tr><td>太短 / \(H=1\)</td><td>反馈及时、单次输出小</td><td>query 多、长程 coherence 弱、易受局部噪声影响</td></tr>
+<tr><td>中等</td><td>sequence coherence 与 responsiveness 折中</td><td>需要按任务/控制频率调</td></tr>
+<tr><td>太长</td><td>policy calls 少、覆盖长动作片段</td><td>stale tail、长序列建模难、query slots 计算/显存增加</td></tr>
+</tbody></table>
+<p>若无 aggregation，最坏 observation staleness 约为：</p>
+<div class="formula">\[
+\Delta t_{\mathrm{stale,max}}\approx(H-1)\Delta t.
+\]</div>
+<p>变量与直觉：\(\Delta t\) 是 control period；扰动刚发生在 chunk 首步后，最迟到下一 chunk 才进入 policy。ACT 论文的特定 ablation 在 \(H=100\) 附近最好、200/400 略降，只能说明其协议中的折中，不能背成通用最优 horizon。[9][14]</p>
+<p>开启 temporal ensemble 可把 feedback interval 降到 1，却把 inference 从约 \(T/H\) 次提高到 \(T\) 次，并引入 overlapping buffer 与 stale-weight 风险。选 \(H\) 时必须同时报 \(K,R,\Delta t\) 和 policy latency。</p>
+<h3 id="vla-act-017-act-token-diffusion-flow">VLA-ACT-017：ACT 与 token、Diffusion / Flow 的归纳偏置</h3>
+<table><thead><tr><th>路线</th><th>训练 target</th><th>生成计算</th><th>多模态/随机性</th><th>部署重点</th></tr></thead><tbody>
+<tr><td>ACT</td><td>continuous chunk L1 + CVAE KL</td><td>一次 parallel query decode</td><td>train latent；frozen test \(z=0\) deterministic</td><td>H/K/R、temporal ensemble</td></tr>
+<tr><td>OpenVLA</td><td>scalar token CE</td><td>AR 生成 d 个 token</td><td>categorical decoding</td><td>bin/offset/单步</td></tr>
+<tr><td>FAST</td><td>frequency/BPE token CE</td><td>AR variable-length tokens</td><td>token decoding</td><td>tokenizer H/D/revision</td></tr>
+<tr><td>Diffusion Policy</td><td>epsilon/sample MSE</td><td>\(K_d\) scheduler steps</td><td>Gaussian trajectory init</td><td>\(T_o/T_p/T_a/K_d\)</td></tr>
+<tr><td>π0 Flow</td><td>velocity MSE</td><td>\(N_f\) ODE/Euler steps</td><td>Gaussian action init</td><td>time/sign/NFE/H/K</td></tr>
+</tbody></table>
+<p>ACT 的强归纳偏置是“用 \(H\) 个 query 一次给出连续 chunk，并可对重叠 chunk 融合”；它没有量化/AR token latency，也没有 diffusion/flow 的多步 sampler，但 frozen test latent 固定为零，部署多模态性弱于随机生成路线。方法选择必须用同协议的 latency、physical error 与 closed-loop success，而不是按“生成式”标签排序。[14][15][16]</p>
+<h2 id="diffusion-policy-receding-horizon">Diffusion Policy：条件动作扩散与 Receding Horizon</h2>
+<div class="meta">本节对应 <code>VLA-ACT-018..022</code>。直接证据来自 Diffusion Policy arXiv v5、<code>real-stanford/diffusion_policy@5ba07ac...</code> 与其固定的 <code>diffusers=0.11.1</code>；warm-start、loss denominator、boundary padding 与 inference-step 数已独立复核，local runtime 仍 WARN。[10][15][26]</div>
+<h3 id="vla-act-018">VLA-ACT-018：为什么适合多模态连续动作</h3>
+<p>Diffusion Policy 直接建模整个 continuous trajectory 的条件分布：</p>
+<div class="formula">\[
+p_\theta(A_t\mid O_t),
+\qquad
+A_t\in\mathbb R^{T_p\times D_a},
+\quad
+O_t=(o_{t-T_o+1},\ldots,o_t).
+\]</div>
+<p>变量与直觉：\(T_o\) 是 observation horizon，\(T_p\) 是 prediction horizon，\(D_a\) 是 action dimension。随机 Gaussian trajectory 经过 conditional denoising 得到一条连贯 action sequence；不同 initial noise 可落到不同动作 mode。[10][15]</p>
+<p>它不是每个 timestep 独立采样：</p>
+<div class="formula">\[
+p_\theta(A_t\mid O_t)
+\ne
+\prod_{h=0}^{T_p-1}p_\theta(a_{t+h}\mid O_t).
+\]</div>
+<p>实现映射：UNet/Transformer 都以 <code>[B,T_p,D_a]</code> 为整体对象，temporal network 在同一次 denoising 过程中耦合相邻 action。多模态性来自 sequence-level stochastic generation，不等于线上必须保持随机；固定 generator 或 deterministic DDIM 会改变部署行为。[15]</p>
+<h3 id="vla-act-019-conditional-ddpm-noisy-action-target-condition">VLA-ACT-019：conditional DDPM 的 noisy action、target 与 condition</h3>
+<p>clean trajectory \(A^0\) 在随机 diffusion timestep \(k\) 加噪：</p>
+<div class="formula">\[
+A^k
+=
+\sqrt{\bar\alpha_k}A^0
++\sqrt{1-\bar\alpha_k}\epsilon,
+\qquad
+\epsilon\sim\mathcal N(0,I).
+\]</div>
+<p>变量与实现：\(\bar\alpha_k\) 来自 scheduler 的 beta/noise schedule；frozen policy 用 <code>noise_scheduler.add_noise(trajectory, noise, timesteps)</code> 构造 <code>noisy_trajectory</code>，shape 不变。[10][15]</p>
+<p>默认 epsilon objective：</p>
+<div class="formula">\[
+\mathcal L_\epsilon
+=
+\mathbb E
+\left[
+\left\|
+\epsilon-\epsilon_\theta(O_t,A^k,k)
+\right\|_2^2
+\right].
+\]</div>
+<p>变量与实现：condition \(O_t\) 在 default image-hybrid path 经 vision encoder 展平成 <code>global_cond</code>；trajectory 只含 action channels。frozen policy 也支持 <code>prediction_type="sample"</code> 时 target 为 clean \(A^0\)，但 policy code 没实现 <code>v_prediction</code> target，即使底层 diffusers scheduler 支持该 branch。[15]</p>
+<h3 id="vla-act-020-schedule-prediction-type-horizon">VLA-ACT-020：schedule、prediction type 与 horizon 是三组合同</h3>
+<p>frozen policy target 为：</p>
+<div class="formula">\[
+y=
+\begin{cases}
+\epsilon,&amp;\texttt{prediction\_type=epsilon},\\
+A^0,&amp;\texttt{prediction\_type=sample}.
+\end{cases}
+\]</div>
+<p>变量与边界：prediction type 决定 model output 的监督语义；scheduler 决定如何从 \(A^0\) 构造 \(A^k\) 以及如何解释 model output 做 reverse step。只改 config 字符串而不改 target builder，会训练错误 objective。[15]</p>
+<p>必须同时报告五条时间轴：</p>
+<table><thead><tr><th>时间量</th><th>field</th><th>作用</th></tr></thead><tbody>
+<tr><td>observation horizon</td><td><code>n_obs_steps = T_o</code></td><td>condition 用几帧</td></tr>
+<tr><td>prediction horizon</td><td><code>horizon = T_p</code></td><td>diffusion trajectory 长度</td></tr>
+<tr><td>action slice</td><td><code>n_action_steps = T_a</code></td><td>policy 返回几步</td></tr>
+<tr><td>replan interval</td><td>wrapper / <code>steps_per_inference</code></td><td>多久重新观测/query</td></tr>
+<tr><td>diffusion iterations</td><td><code>num_inference_steps = K_d</code></td><td>一次 query 内去噪几次</td></tr>
+</tbody></table>
+<p>noise schedule 控制不同 \(k\) 的 signal-to-noise；\(T_p\) 控制 sequence length；\(K_d\) 控制 reverse approximation compute。三者互相关联但不能互换。frozen boundary padding 重复 episode 首尾 target，且 policy 拒绝 <code>valid_mask</code>，重复值会作为普通 target 进入 MSE。[15]</p>
+<h3 id="vla-act-021-receding-horizon-action-slice">VLA-ACT-021：receding-horizon 的 action slice 与执行</h3>
+<p>论文定义：</p>
+<div class="formula">\[
+O_t=(o_{t-T_o+1},\ldots,o_t),
+\qquad
+A_t=(a_t,\ldots,a_{t+T_p-1}).
+\]</div>
+<p>policy 生成 \(T_p\) 步后，从最后一帧 observation 对齐：</p>
+<div class="formula">\[
+\hat A_t^{\mathrm{return}}
+=
+\operatorname{Unnormalize}
+\left(
+X^{(0)}_{:\,T_o-1:T_o-1+T_a,\,:D_a}
+\right).
+\]</div>
+<p>变量与实现：slice start 是 <code>T_o-1</code>，\(T_a\) 是返回 action 数。simulation 的 <code>MultiStepWrapper</code> 通常顺序执行整段 \(T_a\) 后再给新 observation；real script 可一次提交更长 timestamped queue，却由 <code>steps_per_inference</code> 更早触发新 query。提交长度不等于重规划间隔。[15]</p>
+<pre><code class="language-python">def diffusion_receding_horizon(obs_history, policy, env):
+    # Encode exactly To recent observations as the diffusion condition.
+    condition = policy.encode_observations(obs_history[:policy.To])
+
+    # One query starts from a fresh Gaussian action trajectory [Tp, Da].
+    trajectory = randn([policy.Tp, policy.action_dim])
+    for k in policy.scheduler.timesteps:
+        # Predict epsilon or clean sample according to the checkpoint contract.
+        model_output = policy.model(trajectory, k, global_cond=condition)
+        trajectory = policy.scheduler.step(model_output, k, trajectory).prev_sample
+
+    # Return Ta actions aligned with the most recent observation.
+    actions = unnormalize(trajectory[policy.To - 1:policy.To - 1 + policy.Ta])
+
+    # The rollout wrapper decides how many returned actions execute before replan.
+    return env.step(actions)</code></pre>
+<p>伪代码表达 frozen global-conditioning/simulation 主链；real robot 的 timestamp queue 与 query schedule 需要单独建模，不能由 <code>T_a</code> 推断。</p>
+<h3 id="vla-act-022-sampler-warm-start">VLA-ACT-022：去噪步数、sampler 与 warm-start</h3>
+<p>一次 inference 可写成：</p>
+<div class="formula">\[
+X^{(K_d)}\sim\mathcal N(0,I),
+\qquad
+X^{(k-1)}
+=
+\operatorname{SchedulerStep}
+\left(
+X^{(k)},f_\theta(X^{(k)},k,O_t)
+\right).
+\]</div>
+<p>变量与实现：\(K_d\) 是 denoising iterations；DDPM 通常保留 stochastic reverse transition，DDIM 可在抽稀 time grid 上做更确定的更新。减少 \(K_d\) 会降低 query compute，但改变 reverse approximation，不保证 success 单调不变。[10][15]</p>
+<p>版本边界必须原样保留：</p>
+<ul><li>paper main text 的 real-world 例子写 100 train / 10 DDIM eval；</li><li>paper v5 real table rows 出现 16 eval；</li><li>frozen real configs 写 8；</li><li><code>eval_real_robot.py</code> runtime 又强制 16。</li></ul>
+<p>paper 称 receding-horizon 可 warm-start 下一次 inference；frozen major policy classes 每次从 <code>torch.randn</code> 重启，并拒绝 <code>past_action</code>。所以只能说“paper 提供设计选项，当前审计 commit 未实现”。如果自行实现 warm-start，要对齐已执行 prefix、新 observation、trajectory shift 和 scheduler noise level，并用 latency/stability ablation 证明收益。[15]</p>
+<h2 id="flow-matching-cfm-ot-path-ode-0">Flow Matching：CFM、OT Path、ODE 与 π0</h2>
+<div class="meta">本节对应 <code>VLA-ACT-023..030</code>。基础定义来自 Flow Matching arXiv v2；现代 <code>facebookresearch/flow_matching@11568d3...</code> 只作 path/solver API 补证，不冒充 2022 历史实现；π0/openpi 特化沿用 Source Audit B/E 的 frozen 版本。[16][17][18] 2026-07-19 的 <a href="../sources/vol_03_flow_pi0_time_sign_independent_fact_review.html">独立事实复核</a> 已直接核对 Theorem 2、paper <code>sigma_min</code> endpoint、time/sign/dt、Beta 换元与 10-step oracle；项目 runtime 与口述仍 <code>WARN/unseen</code>。</div>
+<h3 id="vla-act-023-probability-path-velocity-field">VLA-ACT-023：probability path 与 velocity field</h3>
+<p>Continuous Normalizing Flow（CNF）用 vector field 定义 sample trajectory：</p>
+<div class="formula">\[
+\frac{d}{dt}\phi_t(x)=v_t(\phi_t(x)),
+\qquad
+\phi_0(x)=x,
+\qquad
+p_t=[\phi_t]_*p_0.
+\]</div>
+<p>变量与直觉：\(p_0\) 是 source/noise distribution，\(p_t\) 是中间 probability path，\(\phi_t(x)\) 是一个 sample 的 ODE trajectory，\(v_t\) 告诉当前位置下一瞬间往哪里走。path 是分布随时间的变化，不是一条具体 action curve。[17]</p>
+<p>Flow Matching 让 network \(v_\theta\) 拟合生成 path 的 target field \(u_t\)：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{FM}}
+=
+\mathbb E_{t,x\sim p_t}
+\left[
+\|v_\theta(x,t)-u_t(x)\|_2^2
+\right].
+\]</div>
+<p>变量与实现：直接 marginal \(u_t\) 通常难算；Conditional Flow Matching（CFM）对每个 data endpoint \(x_1\) 采 conditional path \(p_t(x\mid x_1)\) 与可计算的 \(u_t(x\mid x_1)\)。论文 Theorem 2 在 \(p_t(x)&gt;0\) 的假设下证明两项目标相差与 \(\theta\) 无关的常数，因此 gradients identical；这不等于逐 sample target 或 loss 数值相同。[16][17]</p>
+<p>“simulation-free training”表示训练可直接采 path point/target，不需先积分 ODE；inference 仍需 solver。</p>
+<h3 id="vla-act-024-ot-path-target-velocity">VLA-ACT-024：线性 OT path 与 target velocity</h3>
+<p>基础论文的 Gaussian conditional OT path 是：</p>
+<div class="formula">\[
+x_t=
+\left[1-(1-\sigma_{\min})t\right]x_0+tx_1,
+\qquad
+\dot x_t=x_1-(1-\sigma_{\min})x_0.
+\]</div>
+<p>变量与边界：\(x_0\sim\mathcal N(0,I)\)，\(x_1\sim q\)；当 \(t=1\) 时仍有 \(\sigma_{\min}x_0\)，所以 paper endpoint 是 data point 周围的小 Gaussian。不能说原论文所有 OT 公式都令 \(\sigma_{\min}=0\)。[16][17]</p>
+<p>现代 package 的 <code>CondOTProbPath</code> 使用 exact endpoint，即 \(\sigma_{\min}=0\) 特例：</p>
+<div class="formula">\[
+x_t=(1-t)x_0+tx_1,
+\qquad
+u_t=x_1-x_0.
+\]</div>
+<p>变量与实现：<code>CondOTScheduler</code> 返回 \(\alpha_t=t,\sigma_t=1-t,\dot\alpha_t=1,\dot\sigma_t=-1\)；<code>AffineProbPath.sample</code> 产生 <code>x_t</code> 与 <code>dx_t</code>。continuous example 手写 velocity MSE：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{CFM}}
+=
+\mathbb E_{t,x_0,x_1}
+\left[
+\|v_\theta(x_t,t)-(x_1-x_0)\|_2^2
+\right].
+\]</div>
+<p>公式映射：\(x_1\) 在 VLA 中可替换成 normalized \(H\times D\) action chunk，\(x_0\) 是同形状 Gaussian。conditional target 对一对 endpoints 是常量，不等于 marginal field 在全空间是常量。[16][18]</p>
+<h3 id="vla-act-025-ode-solver-noise-action-chunk">VLA-ACT-025：ODE solver 如何从 noise 得到 action chunk</h3>
+<p>给定 learned velocity，Euler update 为：</p>
+<div class="formula">\[
+x_{k+1}
+=
+x_k+\Delta t\,v_\theta(x_k,t_k,c),
+\qquad
+t_{k+1}=t_k+\Delta t.
+\]</div>
+<p>变量与实现：\(c\) 是 observation condition；\(x_k\in\mathbb R^{B\times H\times D}\) 是当前 noisy action state。现代 package 的 <code>ODESolver</code> 可调用 Euler、midpoint、Heun 或 adaptive <code>dopri5</code>；fixed step 要报 grid/step size，adaptive solver 要报 tolerance 与实际 NFE。[18]</p>
+<p>openpi 的 code convention 从 \(t=1\) noise 以 \(\Delta t=-1/N\) 走到 \(t=0\) data，默认 \(N=10\)：</p>
+<div class="formula">\[
+x_{k+1}=x_k-\frac1N v_\theta^{\mathrm{code}}(x_k,t_k,o).
+\]</div>
+<p>变量与边界：10 是一次 query 内的 flow integration steps，不是 action horizon \(H\)、执行前缀 \(K\) 或 control steps。prefix image/language KV cache 只计算一次，每个 Euler step 重算 state/noisy-action/time suffix。[6][16]</p>
+<h3 id="vla-act-026-diffusion-epsilon-flow-velocity">VLA-ACT-026：Diffusion epsilon 与 Flow velocity</h3>
+<table><thead><tr><th>维度</th><th>Frozen Diffusion Policy</th><th>π0 / openpi Flow</th></tr></thead><tbody>
+<tr><td>time</td><td>discrete scheduler index \(k\)</td><td>continuous \(t/\tau\)</td></tr>
+<tr><td>noisy sample</td><td>scheduler <code>add_noise</code></td><td>explicit affine interpolation</td></tr>
+<tr><td>default target</td><td>epsilon</td><td>path velocity</td></tr>
+<tr><td>inference</td><td>DDPM/DDIM scheduler step</td><td>ODE/Euler step</td></tr>
+<tr><td>compute count</td><td>\(K_d\) denoising iterations</td><td>\(N_f\) field evaluations</td></tr>
+<tr><td>horizon</td><td>\(T_p/T_a/R\)</td><td>\(H/K/R\)</td></tr>
+</tbody></table>
+<p>两项常见 loss：</p>
+<div class="formula">\[
+\mathcal L_\epsilon
+=
+\mathbb E\|\epsilon-\epsilon_\theta(O,A^k,k)\|_2^2,
+\qquad
+\mathcal L_v
+=
+\mathbb E\|u_t-v_\theta(o,x_t,t)\|_2^2.
+\]</div>
+<p>变量与直觉：两者都可从 Gaussian trajectory 开始、都可能使用 MSE，也都能建模 continuous multimodal chunks；但 target、time parameterization 和 sampler contract 不同。Flow Matching 论文还允许 diffusion probability paths，所以“完全无关”与“只是少几步 diffusion”都错误。[15][16][17]</p>
+<p>采样步数不是定义：Diffusion 可用少步 DDIM，Flow 也可用很多 ODE steps。延迟必须按 model size、NFE、vision/prefix、transport 与 hardware 实测。</p>
+<h3 id="vla-act-027-0-action-expert-condition-noisy-action">VLA-ACT-027：π0 action expert 的 condition 与 noisy action</h3>
+<p>π0 将 data endpoint 具体化为 normalized action chunk：</p>
+<div class="formula">\[
+A^\tau=\tau A+(1-\tau)\epsilon,
+\qquad
+u_{\mathrm{paper}}=A-\epsilon,
+\quad
+A,\epsilon\in\mathbb R^{B\times H\times D}.
+\]</div>
+<p>变量与架构：\(A\) 是 target chunk，\(\epsilon\) 是 Gaussian source；图像与语言进入 VLM prefix，state、noisy action 与 flow time 进入 action-expert suffix，<code>action_out_proj</code> 输出同形状 velocity。[4][6][16]</p>
+<p>frozen openpi 使用反向坐标：</p>
+<div class="formula">\[
+x_t=t\epsilon+(1-t)A,
+\qquad
+u_{\mathrm{code}}=\epsilon-A,
+\qquad
+t=1-\tau.
+\]</div>
+<p>变量与等价性：\(d\tau=-dt\)，同时 \(u_{\mathrm{code}}=-u_{\mathrm{paper}}\)，所以 \(u_{\mathrm{code}}dt=u_{\mathrm{paper}}d\tau\)。只说时间反向而漏掉 velocity sign，不足以证明 trajectory 等价。[16]</p>
+<p>π0 的 timestep 也不是 uniform：若 \(y\sim\operatorname{Beta}(1.5,1)\)、\(\tau=0.999(1-y)\)，则 openpi time：</p>
+<div class="formula">\[
+t=1-\tau=0.001+0.999y.
+\]</div>
+<p>这直接映射 code 的 <code>Beta(1.5,1)*0.999+0.001</code>，强调 high-noise training region；它是 recipe weighting，不是 Flow Matching 的普遍定义。[4][6][16]</p>
+<h3 id="vla-act-028-valid-dimensions-padding-loss-mask">VLA-ACT-028：valid dimensions、padding 与 loss mask</h3>
+<p>若真实 action dimension 是 \(d\)，model capacity 是 \(D\ge d\)，理想 valid-mask velocity loss 为：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{masked}}
+=
+\frac{
+\sum_{b,h,j}m_{b,h,j}(v_{b,h,j}-u_{b,h,j})^2
+}{
+\sum_{b,h,j}m_{b,h,j}+\varepsilon_0
+}.
+\]</div>
+<p>变量与实现要求：\(m\) 同时表达有效 horizon slot 与有效 action axis；它必须来自 dataset/action schema，不能由 inference output slicing 反推。[16]</p>
+<p>frozen Pi0 实际先对 configured \(D\) 直接 mean：</p>
+<div class="formula">\[
+\ell_{b,h}
+=
+\frac1D\sum_{j=1}^{D}
+(v_{b,h,j}-u_{b,h,j})^2,
+\]</div>
+<p>训练脚本再对 batch/horizon mean。若 <code>PadStatesAndActions</code> 将真实 \(d\) 补到 \(D\)，padding targets 也进入 gradient 与 denominator；模型可学零，但大量容易维会稀释 effective-action loss。<code>PadStatesAndActions</code>、attention mask、token loss mask、action valid mask 与 output slice 是五个不同层次。[6][16]</p>
+<h3 id="vla-act-029-conditional-dropout-guidance">VLA-ACT-029：conditional dropout / guidance</h3>
+<p>现代 flow package 的 image example 在训练随机丢 label condition，推理组合 conditional/unconditional velocities：</p>
+<div class="formula">\[
+v_{\mathrm{cfg}}
+=
+(1+s)v_{\mathrm{cond}}-s\,v_{\mathrm{uncond}}.
+\]</div>
+<p>变量与实现：\(s\) 是 guidance scale；\(s\ne0\) 时每次 ODE function evaluation 实际要两次 model forward。这个 example 支持 CFG 机制，不证明 frozen openpi Pi0 action path 已实现 condition dropout/guidance。[16][18]</p>
+<p>迁移到 action policy 前必须定义 drop 什么：</p>
+<ul><li>只 drop language，保留 images/state；</li><li>drop task condition 但保留安全/本体状态；</li><li>或完全 unconditional branch。</li></ul>
+<p>风险包括 double NFE latency、过大 velocity/action magnitude、破坏 smoothness、弱化视觉反馈或生成与 controller constraints 不一致的动作。验收要比较 task compliance、diversity、safety、success 与 latency，不只看 velocity loss。</p>
+<h3 id="vla-act-030-loss-rollout">VLA-ACT-030：loss 正常但 rollout 失败的四层定位</h3>
+<table><thead><tr><th>层</th><th>Flow 必查</th><th>Diffusion 必查</th><th>共用接口</th></tr></thead><tbody>
+<tr><td>A target/path</td><td>endpoint、time、velocity sign</td><td>add-noise、prediction type</td><td>shape/dtype/mask</td></tr>
+<tr><td>B sampler</td><td>grid、dt、NFE、solver</td><td>scheduler version、Kd、step order</td><td>fixed-noise reproducibility</td></tr>
+<tr><td>C transforms</td><td>norm、d/D、valid mask</td><td>norm、padding、clip_sample</td><td>axis/unit/action type</td></tr>
+<tr><td>D controller</td><td>H/K/R、queue</td><td>Tp/Ta/R、timestamp queue</td><td>camera/state time、安全与终止</td></tr>
+</tbody></table>
+<p>先用 oracle target 测算法不变量。openpi time convention 下，固定 \(A,\epsilon\)：</p>
+<div class="formula">\[
+x_t=t\epsilon+(1-t)A,
+\qquad
+u_t=\epsilon-A.
+\]</div>
+<p>变量与测试：用 oracle \(v=u_t\) 从同一 noise 做完整 Euler integration，应恢复 \(A\)；失败说明 target/sign/grid 有错，尚未轮到模型 capacity。之后依次做 tiny-batch overfit、norm round-trip、per-axis sentinel 和 bypass-model controller test。[16]</p>
+<pre><code class="language-python">def debug_generative_action_policy(batch, policy, controller):
+    # A. Check target/path algebra with fixed action, noise and time.
+    assert_oracle_solver_recovers_target(batch.actions)
+
+    # B. Freeze observation/noise and sweep solver or scheduler steps.
+    endpoints = sweep_sampling_steps(policy, fixed_noise=True)
+    assert_no_sign_or_step_order_failure(endpoints)
+
+    # C. Verify checkpoint stats, valid dimensions, axes and units.
+    assert_normalization_roundtrip(batch.action_schema)
+    run_per_axis_sentinel_tests(policy.output_transform)
+
+    # D. Bypass the model with a known-safe action fixture.
+    assert_controller_queue_and_replan(controller, batch.safe_fixture)</code></pre>
+<p>伪代码是可执行检查顺序，不代表本地 OpenPiVLA 已完成这些 tests。只有 checkpoint、action schema、solver/scheduler、H/K/R 与 eval artifacts 齐全后，才能把 failure 归因到个人项目模型。[16]</p>
+<h2 id="action-dimension-padding-mask-slicing">Action dimension、padding、mask 与 slicing</h2>
+<h3 id="model-d-environment-d">model D 与 environment d</h3>
+<p>令真实 action \(a\in\mathbb R^d\)，model action dimension 为 D 且 \(d\le D\)。zero-pad 与 output selection 可写为：</p>
+<div class="formula">\[
+a^{model}=Pa=
+\begin{bmatrix}I_d\\0\end{bmatrix}a,
+\qquad
+a^{env}=Sa^{model},
+\quad
+S=\begin{bmatrix}I_d&amp;0\end{bmatrix},
+\quad SP=I_d.
+\]</div>
+<p>变量解释：P 对应输入/target padding，S 对应 output slicing。openpi <code>PadStatesAndActions</code> 将尾维补零；LIBERO output transform 返回前 7 维。<code>Pi0Config</code> 默认 D=32，<code>Pi0FASTConfig</code> 默认 D=32/H=32；官方 <code>pi0_fast_libero</code> training config 才显式 override 为 D=7/H=10。[6][12]</p>
+<h3 id="training-loss-mask">training loss mask 是另一件事</h3>
+<p>理想的 valid-dimension masked loss 可写为：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{valid}}
+=
+\frac{
+\sum_{b,h,i}
+m_{bhi}
+\left(\hat a_{bhi}-a_{bhi}\right)^2
+}{
+\sum_{b,h,i}m_{bhi}+\varepsilon
+}.
+\]</div>
+<p>变量解释：\(m_{bhi}=1\) 表示该 batch/example、horizon、dimension 有真实语义；mask 可同时处理 embodiment-specific dims、episode-end horizon padding 和缺失 label。实现映射必须指出 mask 来自哪个 batch field。frozen π0 main loss 对 D 直接 mean，output slicing 发生在推理 transform；所以“有 slicing”不能证明“训练已 mask padding loss”。[6][12]</p>
+<h3 id="mask">四个不同 mask</h3>
+<table><thead><tr><th>Mask</th><th>管什么</th><th>错误后果</th></tr></thead><tbody>
+<tr><td>image mask</td><td>view 是否真实存在</td><td>zero image 被当有效 view</td></tr>
+<tr><td>token input mask</td><td>padding token 是否参加 attention</td><td>无效 token 污染 context</td></tr>
+<tr><td>token loss mask</td><td>哪些 output token 参加 CE</td><td>prompt/visual/token padding 被错误监督</td></tr>
+<tr><td>action valid-dim/horizon mask</td><td>哪些 H×D target 有物理语义</td><td>padding dims 或越界 future actions 污染 loss</td></tr>
+</tbody></table>
+<p>openpi LIBERO 对缺失 right-wrist image 的 mask 在 Pi0 与 Pi0FAST 路径不同，这是 frozen code behavior；本地模型必须按实际 architecture 验证，不能照抄 bool 值。[6][12]</p>
+<h2 id="gripper-base-action">平移、旋转、gripper 与 base action</h2>
+<h3 id="action-type">先报 action type，再报数值</h3>
+<p>同一个 7D/8D vector 可表示完全不同控制语义：</p>
+<ul><li>joint position / joint delta / joint velocity；</li><li>end-effector position + orientation；</li><li>gripper absolute position、binary open/close 或 delta；</li><li>mobile base x-y velocity；</li><li>torque/force。</li></ul>
+<p>openpi norm_stats 文档说明，其默认 π layout 将前 6/14 维用于左右 arm joint angles、gripper 分列，mobile base 使用 dim 14–15 velocity；DROID 的 8D 却是 7 维 joint velocity + gripper，15 Hz。[6] 因而 shape 相同不等于 action contract 相同。</p>
+<h3 id="translation">translation</h3>
+<p>必须说明：</p>
+<ul><li>absolute pose 还是 \(\Delta x,\Delta y,\Delta z\)；</li><li>world/base/tool/camera frame；</li><li>meter、centimeter 还是 normalized unit；</li><li>每 control tick 的 delta 还是每 second velocity。</li></ul>
+<p>将位置 delta 当 velocity 会额外乘/除控制周期，造成量级错误。</p>
+<h3 id="rotation">rotation</h3>
+<p>常见表示：</p>
+<table><thead><tr><th>表示</th><th>维度</th><th>优点</th><th>风险</th></tr></thead><tbody>
+<tr><td>Euler angles</td><td>3</td><td>直观</td><td>singularity、周期跳变、轴顺序</td></tr>
+<tr><td>axis-angle / rotation vector</td><td>3</td><td>适合小旋转增量</td><td>接近 π 的不连续与 branch</td></tr>
+<tr><td>quaternion</td><td>4</td><td>避免 Euler singularity</td><td>unit norm、q 与 -q 双覆盖</td></tr>
+<tr><td>6D rotation</td><td>6</td><td>对 neural regression 更连续</td><td>需正交化还原 rotation matrix</td></tr>
+</tbody></table>
+<p>Zhou 等指出 3D rotation 在 4D 或以下欧氏表示中存在连续性问题，并提出 5D/6D continuous representation 用于学习。[11] 这不是说所有 policy 都必须用 6D；小角度 delta control、现有 controller API 与 dataset compatibility 仍可能使 axis-angle/quaternion 更合适。</p>
+<p>若使用 quaternion \(r\in\mathbb R^4\)，至少检查：</p>
+<div class="formula">\[
+\hat r=\frac{r}{\|r\|_2+\varepsilon},
+\qquad
+R(\hat r)=R(-\hat r).
+\]</div>
+<p>变量解释：第一式保证 unit quaternion；第二式说明双覆盖，同一个旋转有两个相反符号表示。dataset 若不做 hemisphere/sign canonicalization，MSE 会把等价旋转误当作相距很远。</p>
+<h3 id="gripper">gripper</h3>
+<p>gripper 常为 absolute [0,1]、binary 或 position/velocity。不要把它与 arm delta 用完全相同的 loss/normalization 假设。OpenVLA OXE materialization 可对最后 gripper 维采用不同 normalization mask；openpi 文档将 gripper position 定义为 0 fully open、1 fully closed，但具体 dataset transform 仍需核对。[3][6][12]</p>
+<h3 id="base-action">base action</h3>
+<p>mobile base 常用 \(v_x,v_y,\omega_z\) 或只用 x-y velocity。必须说明 robot/body frame、最大速度、安全裁剪与是否和 arm 同频执行。public openpi default layout 只列 x-y base velocity，不能据此推断本地项目也有 \(\omega_z\)。[6]</p>
+<h3 id="section-85">按语义组做统计</h3>
+<div class="formula">\[
+\tilde a_i=
+\mathcal N_{g(i)}(a_i;\eta_{g(i)}),
+\]</div>
+<p>变量解释：\(g(i)\) 把 dimension i 分到 translation、rotation、gripper、base 等语义组，\(\eta_g\) 是对应 stats/scale。实现中仍通常逐维保存数值，但审计时按语义组检查单位、outlier 与 inverse behavior，避免把不同物理量只因相邻排列而当作同分布。</p>
+<h2 id="controller">模型输出到 controller 与最小闭环单测</h2>
+<div class="meta">本节对应 <code>VLA-ACT-031..032</code>。上游 decode/unnorm/queue、Octo mask 与 openpi broker/DROID example 已独立复核；本地 OpenPiVLA 的 axis、unit、controller mode 与 safety policy 仍需项目 artifact。[21][27]</div>
+<h3 id="vla-act-031-decode-unnorm-slice-schema-safety">VLA-ACT-031：decode、unnorm、slice、schema 与 safety 必须有序</h3>
+<p><strong>直觉</strong>：模型输出只是 model-space tensor。只有经过正确 tokenizer/solver、正确 normalization asset、正确维度和物理语义，再被 controller 接收，才是可执行动作。</p>
+<p>令 raw model output 为 (z)，decoder 为 (mathcal D)，反归一化为 (mathcal U)，有效维选择为 (S_e)，frame/unit/absolute-delta 映射为 (mathcal R_e)，安全投影为 (Pi_{\mathcal A_e})：</p>
+<div class="formula">\[
+a^{\mathrm{ctrl}}
+=\Pi_{\mathcal A_e}\!\left(
+\mathcal R_e\!\left(S_e\,\mathcal U(\mathcal D(z))\right)
+\right).
+\]</div>
+<p>变量与实现：(mathcal A_e) 是 controller 可接受的动作集合。顺序不能任意交换：normalized-space clip 与 physical velocity clip 不同；先 slice 再用 D 维 stats 与先 unnorm 再 slice 只有在 stats padding 规则匹配时才可能等价。[2][6][20][21]</p>
+<table><thead><tr><th>路线</th><th>已核实输出链</th><th>仍不属于模型的部分</th></tr></thead><tbody>
+<tr><td>OpenVLA</td><td>生成 d 个 token → tail-vocab decode → q01/q99 unnorm</td><td>axis/unit/frame/controller</td></tr>
+<tr><td>Octo</td><td>diffusion action → embodiment D slice → mean/std 或 p01/p99 unnorm</td><td>robot-specific controller wrapper</td></tr>
+<tr><td>openpi flow</td><td>sampled H×D → model outputs → checkpoint unnorm → dataset/repack outputs</td><td>local eval client 的 K/axis/safety</td></tr>
+<tr><td>Pi0FAST</td><td>AR tokens → FAST inverse → H×D → checkpoint unnorm/output transforms</td><td>同上</td></tr>
+</tbody></table>
+<p>若 dataset 是部分 delta、controller 接 absolute，公开 openpi 式向量情况可写：</p>
+<div class="formula">\[
+a^{\mathrm{abs}}_{t:t+H-1}
+=a^{\mathrm{data}}_{t:t+H-1}+m_\Delta\odot q_t,
+\qquad
+a^{\mathrm{ctrl}}=s_e\odot R_ea^{\mathrm{abs}}.
+\]</div>
+<p>变量与实现：(m_\Delta) 选择 delta dimensions，(q_t) 是当前 state，(R_e) 处理轴序/坐标，(s_e) 处理单位。真实 rotation 可能需要 (SO(3)) composition，不能默认向量加法。openpi <code>AbsoluteActions</code> 只能证明按 mask 给前若干维加 state；本地 (R_e,s_e) 仍需 wrapper 与 sentinel trace。[7][21]</p>
+<p>openpi DROID example 是一条具体而非通用的 execution contract：远程返回 <code>[10,8]</code>，client 按 index 取一行、二值化 gripper、clip <code>[-1,1]</code>、调用 <code>env.step</code> 并按数据频率 sleep。[21] 面试中可以用它解释 chain，但不能把它的 8D schema 套到 OpenPiVLA。</p>
+<h3 id="vla-act-032">VLA-ACT-032：最小闭环测试要让错误可辨识</h3>
+<p><strong>直觉</strong>：全 0/random tensor 很难发现 transpose、错轴和重复行。用 prime/one-hot sentinel，让每个 horizon row 和 action dimension 都不同，再逐层断言。</p>
+<table><thead><tr><th>测试</th><th>sentinel / 故障注入</th><th>必须断言</th></tr></thead><tbody>
+<tr><td>parser boundary</td><td>min/max token、EOS、越界/短序列</td><td>只接受 action token；严格得到 H×D</td></tr>
+<tr><td>norm round-trip</td><td>q01/mean/q99、gripper mask</td><td><code>unnorm(norm(a))≈a</code>；masked 维不变</td></tr>
+<tr><td>padding</td><td>valid dims 放互异质数，padding 放大常数</td><td>loss/output 对 padding sentinel 不敏感；slice 只保留 d</td></tr>
+<tr><td>axis/unit</td><td>每组维度 one-hot</td><td>controller 轴、符号、m/cm、rad/deg 精确匹配</td></tr>
+<tr><td>FIFO chunk</td><td>row 编码为 0..H-1</td><td>连续 K 次严格输出 0..K-1，不重复/跳步</td></tr>
+<tr><td>replan/reset</td><td>第 K 步新 chunk，episode 中途 reset</td><td>只在定义边界切换；旧 queue 不泄漏</td></tr>
+<tr><td>stale RPC</td><td>延迟、乱序、重复 response ID、断连</td><td>旧 response 被丢弃；超时进入 fail-safe</td></tr>
+<tr><td>safety</td><td>NaN/Inf/超限 velocity/workspace pose</td><td>reject/投影规则明确，保留原值与触发日志</td></tr>
+<tr><td>mock controller</td><td>完整 request→一次 <code>step</code></td><td>最终 dtype/shape/value/dt 全部匹配</td></tr>
+</tbody></table>
+<p>openpi frozen <code>ActionChunkBroker</code> 在 cache 为空时 query，随后按 <code>_cur_step</code> slice，到 configured horizon 清空；manual test 只断言每步 shape。[9][21] 因此项目 test 仍需补 request ID、axis/unit、NaN、安全和组合顺序。</p>
+<pre><code class="language-python">def test_closed_loop_contract(policy_stub, broker, parser, output_transform, mock_env):
+    # Unique rows and dimensions expose transpose, wrong-slice and repeated-row bugs.
+    sentinel = make_prime_sentinel_chunk(horizon=4, model_dim=8, valid_dim=7)
+    policy_stub.return_value = {&quot;actions&quot;: sentinel, &quot;request_id&quot;: 42}
+
+    # Execute K=2 actions; FIFO must consume rows 0 and 1 exactly once.
+    a0 = broker.infer(make_observation(request_id=42))[&quot;actions&quot;]
+    a1 = broker.infer(make_observation(request_id=42))[&quot;actions&quot;]
+    assert not_equal(a0, a1)
+
+    # Apply the declared parse -&gt; denorm -&gt; slice -&gt; schema -&gt; safety sequence.
+    c0 = output_transform(parser(a0))
+    c1 = output_transform(parser(a1))
+    assert c0.shape == c1.shape == (7,)
+    assert all_finite_and_within_limits(c0, c1)
+
+    # The final assertion is at the controller boundary, not only model tensors.
+    mock_env.step(c0)
+    assert mock_env.last_action == expected_controller_sentinel(row=0)</code></pre>
+<p>代码块说明：真实 suite 还要固定 norm stats hash、tokenizer revision、frame transform、controller mode、control dt 与 timeout policy。合成单测证明接口不变量，不替代 benchmark rollout。</p>
+<h2 id="action-representation-2">如何选择 action representation</h2>
+<h3 id="section-90">决策顺序</h3>
+<ol><li>先定 action contract：type、d、H、control frequency、controller。</li><li>再看 conditional action 是否明显多模态。</li><li>确定 inference latency 和 replan budget。</li><li>检查 robot data 规模与 VLM token infrastructure。</li><li>评估 normalized reconstruction 与 physical-unit error。</li><li>最后才选 head/tokenizer，不以论文名替代需求。</li></ol>
+<h3 id="section-91">选择表</h3>
+<table><thead><tr><th>场景</th><th>优先考虑</th><th>原因</th><th>必查反例</th></tr></thead><tbody>
+<tr><td>近单峰、严格低延迟、数据有限</td><td>direct regression</td><td>pipeline 最短、debug 简单</td><td>mode averaging、uncertainty</td></tr>
+<tr><td>已有 autoregressive VLM、action 低频/短</td><td>scalar token</td><td>复用 LM head/CE</td><td>quantization、AR latency</td></tr>
+<tr><td>高频 1-second chunks、需要 token route</td><td>FAST</td><td>频域压缩减少相关冗余</td><td>tokenizer revision、H/D reshape</td></tr>
+<tr><td>示范存在 sequence style variation</td><td>CVAE/ACT family</td><td>latent sequence model</td><td>posterior collapse、latent inference</td></tr>
+<tr><td>continuous action 多峰、采样预算充足</td><td>diffusion</td><td>generative continuous distribution</td><td>schedule/steps/latency</td></tr>
+<tr><td>想用 continuous transport + ODE/action expert</td><td>flow</td><td>velocity target + solver</td><td>time convention、solver stability</td></tr>
+</tbody></table>
+<h3 id="section-92">不能用单个指标选型</h3>
+<p>FAST paper 报告其 π0-FAST AR inference 比 π0 flow 慢；这是特定 hardware/model 的 measurement，不是“flow 永远更快”。direct regression loss 低也可能 mode-average；token CE 低也可能只复制相邻动作；diffusion/flow offline sample quality 好也可能因 denorm/controller 错误而 0-success。[7][10][12]</p>
+<h3 id="section-93">面试回答模板</h3>
+<div class="meta">我会先固定 action type、H、d、控制频率与 replan budget，再判断条件分布是否多模态。若近单峰且延迟严格，continuous regression 是强 baseline；若要复用 VLM autoregressive head，考虑 scalar token 或 FAST，但要核 tokenizer、量化与 AR latency；若需要连续多模态生成，比较 diffusion 与 flow 的 target、sampling steps 和 action expert 成本。最后用 physical-unit reconstruction、latency 和 closed-loop success 联合验收。</div>
+<h2 id="pipeline">训练与闭环推理 Pipeline</h2>
+<h3 id="batch">Batch 构造与训练</h3>
+<pre><code class="language-python">def build_and_train_vla_step(raw_episode, tick, model, representation, norm_stats):
+    # 1. Align camera views and proprioception to one control tick.
+    images, image_masks = align_views(raw_episode, tick)
+    state = interpolate_proprio(raw_episode, tick)
+
+    # 2. Build an H-step target without crossing the episode boundary.
+    actions, horizon_mask = build_action_window(raw_episode, tick)
+
+    # 3. Normalize with the exact stats attached to this dataset/checkpoint.
+    norm_state = normalize_state(state, norm_stats)
+    norm_actions = normalize_actions(actions, norm_stats)
+
+    # 4. Convert only the action target into the selected representation.
+    if representation == &quot;openvla_scalar&quot;:
+        targets, loss_mask = scalar_action_tokens(norm_actions, horizon_mask)
+    elif representation == &quot;fast&quot;:
+        targets, loss_mask = fast_frequency_tokens(norm_actions, horizon_mask)
+    elif representation == &quot;act_cvae&quot;:
+        # ACT posterior may see qpos/actions during training; padded slots need masks.
+        targets, loss_mask = act_chunk_targets(norm_actions, horizon_mask)
+    elif representation == &quot;diffusion&quot;:
+        # Diffusion target semantics depend on scheduler prediction_type.
+        targets, loss_mask = sample_diffusion_target(norm_actions, horizon_mask)
+    elif representation == &quot;pi0_flow&quot;:
+        targets, loss_mask = sample_flow_target(norm_actions, horizon_mask)
+    else:
+        targets, loss_mask = continuous_targets(norm_actions, horizon_mask)
+
+    # 5. Model inputs keep view/state masks separate from target loss masks.
+    output = model(images, image_masks, norm_state, targets)
+    loss = masked_objective(output, targets, loss_mask)
+    return loss</code></pre>
+<p>伪代码是通用审计模板：OpenVLA 原始路径没有多视角/state/H&gt;1；ACT posterior 的 train/infer 输入不同；Diffusion target 必须与 scheduler prediction type 一致；π0 flow 不把 actions 变成 token；Pi0FAST 的 tokenization 与 loss mask 由 transforms 构造。真实实现应替换函数名并链接具体 code。[3][6][12][14][15]</p>
+<h3 id="section-96">闭环推理</h3>
+<pre><code class="language-python">def closed_loop_step(env, policy, checkpoint_assets, replan_steps):
+    # 1. Observe fresh images/state; preserve camera names and timestamps.
+    raw_obs = env.get_observation()
+
+    # 2. Reuse training-time preprocessing and checkpoint normalization stats.
+    model_obs = policy.input_transforms(raw_obs, checkpoint_assets)
+
+    # 3. Sample either tokens or a continuous action chunk.
+    raw_model_output = policy.model.sample_actions(model_obs)
+
+    # 4. Decode representation, unnormalize, select valid dimensions and convert axes/units.
+    action_chunk = policy.output_transforms(raw_model_output, checkpoint_assets)
+
+    # 5. Execute only K actions, then re-observe; H and K are different contracts.
+    for action in action_chunk[:replan_steps]:
+        checked_action = safety_clip_and_validate(action)
+        obs, reward, done, info = env.step(checked_action)
+        if done or info.get(&quot;success&quot;, False):
+            break
+    return info</code></pre>
+<p>变量映射：model horizon H 由 checkpoint/config 决定；replan_steps=K 由 rollout client 决定。openpi LIBERO example 默认 K=5，而 Pi0/Pi0FAST configs 可有不同 H。ActionChunkBroker 又可消费整段 H 后再 infer，证明 H 和 K 不是同义词。[6][12]</p>
+<h2 id="44">实现证据与 44 题覆盖</h2>
+<h3 id="frozen-implementation-map">frozen implementation map</h3>
+<table><thead><tr><th>机制</th><th>关键路径</th><th>已核实事实</th></tr></thead><tbody>
+<tr><td>OpenVLA data contract</td><td><code>prismatic/vla/datasets/datasets.py</code></td><td>primary image、language、current action；default no proprio/history/future</td></tr>
+<tr><td>OpenVLA tokenizer</td><td><code>prismatic/vla/action_tokenizer.py</code></td><td>tail vocab、256 token IDs、255 reconstruction centers nuance</td></tr>
+<tr><td>OpenVLA inference</td><td><code>prismatic/models/vlas/openvla.py</code></td><td>generated length from dataset action dim、decode、unnorm</td></tr>
+<tr><td>OpenVLA training</td><td><code>base_strategy.py</code> / VLM labels</td><td>token CE optimized；continuous L1 metric</td></tr>
+<tr><td>π0 shape</td><td><code>src/openpi/models/pi0_config.py</code></td><td>default three images、state [B,32]、actions [B,50,32]</td></tr>
+<tr><td>π0 flow</td><td><code>src/openpi/models/pi0.py</code></td><td>code convention、flow MSE、10-step default、prefix KV cache</td></tr>
+<tr><td>π0.5 state/time</td><td><code>pi0_config.py</code> / <code>pi0.py</code> / <code>tokenizer.py</code></td><td>discrete state prompt、adaRMSNorm</td></tr>
+<tr><td>Pi0FAST CE</td><td><code>src/openpi/models/pi0_fast.py</code></td><td>prefix-LM attention、postfix masked next-token CE</td></tr>
+<tr><td>FAST integration</td><td><code>tokenizer.py</code> / <code>transforms.py</code></td><td>Hub processor、tail vocab mapping、token decode → H×D</td></tr>
+<tr><td>policy transforms</td><td><code>policy_config.py</code> / <code>policy.py</code></td><td>checkpoint stats、normalize/sample/unnormalize/output order</td></tr>
+<tr><td>LIBERO action interface</td><td><code>libero_policy.py</code> / <code>examples/libero/main.py</code></td><td>8D state、7D output、K=5 default、image rotation</td></tr>
+<tr><td>ACT posterior / decoder</td><td><code>detr/models/detr_vae.py</code> / <code>transformer.py</code></td><td><code>[CLS]+qpos+actions</code>、32D latent、H learned queries、<code>[B,H,14]</code>；论文 fixed/sinusoidal query 与 frozen code 有差异</td></tr>
+<tr><td>ACT loss / rollout</td><td><code>policy.py</code> / <code>imitate_episodes.py</code></td><td>masked L1 但 full <code>B×H×D</code> mean、KL、<code>z=0</code>、整段执行与 temporal ensemble；oldest row 权重最大、zero sentinel 有边界</td></tr>
+<tr><td>Diffusion training</td><td><code>diffusion_unet_hybrid_image_policy.py</code></td><td><code>[B,Tp,Da]</code>、epsilon/sample target、global condition、masked MSE</td></tr>
+<tr><td>Diffusion inference</td><td>policy / scheduler / runners</td><td>Gaussian restart、DDPM/DDIM、<code>To-1</code> action slice、sim/real replan distinction</td></tr>
+<tr><td>Flow Matching path/solver</td><td><code>flow_matching/path/affine.py</code> / <code>solver/ode_solver.py</code></td><td>exact CondOT path、velocity target、Euler/adaptive ODE API</td></tr>
+<tr><td>RT-2 / Octo landscape</td><td>RT-2 §3.2–3.3、Octo §III、<code>octo_pretrain_config.py</code></td><td>action-as-token、800k OXE、27M/93M、T5/image tokenizers、H=4/D=7 diffusion config</td></tr>
+<tr><td>Octo mask/readout</td><td><code>octo_module.py</code> / <code>action_heads.py</code></td><td>block-wise attention、readout isolation、timestep/action conjunction mask、embodiment slice</td></tr>
+<tr><td>Adaptation modes</td><td>OpenVLA <code>vla-scripts/finetune.py</code>、Octo <code>finetune_config.py</code>、openpi <code>training/config.py</code></td><td>full/head-only/head-MLP-only/LoRA boundaries；不替代本地 trainable log</td></tr>
+<tr><td>Serving/timing/queue</td><td>openpi <code>policy.py</code>、<code>websocket_policy_server.py</code>、<code>action_chunk_broker.py</code></td><td>model/server/total timing、ordered output transforms、chunk cache/slice/reset</td></tr>
+<tr><td>Controller contract tests</td><td>Source Audit F test matrix</td><td>parser、norm、padding、axis/unit、FIFO/replan、stale RPC、safety 与 mock step 设计</td></tr>
+</tbody></table>
+<p>详细 frozen commit 与逐行解释见 <a href="../sources/vol_03_openvla_claim_to_code.html">Source Audit A</a>、<a href="../sources/vol_03_pi0_fast_openpi_claim_to_code.html">Source Audit B</a>、<a href="../sources/vol_03_act_claim_to_code.html">Source Audit C</a>、<a href="../sources/vol_03_diffusion_policy_claim_to_code.html">Source Audit D</a>、<a href="../sources/vol_03_flow_matching_pi0_claim_to_code.html">Source Audit E</a> 与 <a href="../sources/vol_03_architecture_execution_claim_to_code.html">Source Audit F</a>。</p>
+<h3 id="44-2">44 题覆盖矩阵</h3>
+<table><thead><tr><th>ID</th><th>本页答案位置</th><th>当前证据状态</th><th>后续缺口</th></tr></thead><tbody>
+<tr><td>VLA-ARCH-001</td><td>VLA/VLM/visuomotor 对比</td><td>source-ready</td><td>更多 landscape 对比在 ARCH-007</td></tr>
+<tr><td>VLA-ARCH-002</td><td>I/O 字段表与 policy contract</td><td>source-ready</td><td>local OpenPiVLA contract</td></tr>
+<tr><td>VLA-ARCH-003</td><td>component responsibility table</td><td>source-ready</td><td>local model class</td></tr>
+<tr><td>VLA-ARCH-004</td><td>view/state/timestamp alignment</td><td>design-ready + upstream examples</td><td>local converter timestamps</td></tr>
+<tr><td>VLA-ARCH-005</td><td>OpenVLA normalize/token/CE/decode</td><td>source-ready / WARN</td><td>independent endpoint review</td></tr>
+<tr><td>VLA-ARCH-006</td><td>π0 prefix/suffix/flow/solver</td><td>source-ready / WARN</td><td>independent convention review</td></tr>
+<tr><td>VLA-ARCH-007</td><td>RT-2/OpenVLA/Octo/π0 landscape</td><td>independent-fact-reviewed / WARN</td><td>local architecture mapping</td></tr>
+<tr><td>VLA-ARCH-008</td><td>token/readout/suffix layout、attention/loss mask</td><td>independent-fact-reviewed / WARN</td><td>local layout sentinel test</td></tr>
+<tr><td>VLA-ARCH-009</td><td>freeze/full/head/LoRA/action expert</td><td>independent-fact-reviewed / WARN</td><td>target data/hardware ablation</td></tr>
+<tr><td>VLA-ARCH-010</td><td>unified D/d、Octo valid mask、padding risk</td><td>independent-fact-reviewed / WARN</td><td>local positive mask evidence</td></tr>
+<tr><td>VLA-ARCH-011</td><td>latency components、NFE/token/transport/queue</td><td>independent-fact-reviewed / WARN</td><td>local synchronized timing</td></tr>
+<tr><td>VLA-ARCH-012</td><td>paper→repo→checkpoint→runtime audit</td><td>independent-fact-reviewed / WARN</td><td>local manifest/trace</td></tr>
+<tr><td>VLA-ACT-001</td><td>five-route taxonomy</td><td>source-ready / WARN</td><td>independent cross-method review</td></tr>
+<tr><td>VLA-ACT-002</td><td>checkpoint norm contract</td><td>source-ready</td><td>local norm assets/tests</td></tr>
+<tr><td>VLA-ACT-003</td><td>OpenVLA quantile/bin trade-offs</td><td>source-ready / WARN</td><td>distribution-shift experiment</td></tr>
+<tr><td>VLA-ACT-004</td><td>tail vocab offset/collision/decode</td><td>source-ready / WARN</td><td>tokenizer version test</td></tr>
+<tr><td>VLA-ACT-005</td><td>FAST motivation</td><td>source-ready</td><td>independent review</td></tr>
+<tr><td>VLA-ACT-006</td><td>DCT/round/BPE/inverse</td><td>source-ready / WARN</td><td>reconstruction test</td></tr>
+<tr><td>VLA-ACT-007</td><td>compression vs control metrics</td><td>source-ready</td><td>local closed-loop ablation</td></tr>
+<tr><td>VLA-ACT-008</td><td>P/S、valid mask、slicing</td><td>source-ready as contract</td><td>local loss mask</td></tr>
+<tr><td>VLA-ACT-009</td><td>action type/unit/rotation/gripper/base</td><td>design-ready</td><td>local controller schema</td></tr>
+<tr><td>VLA-ACT-010</td><td>representation decision table</td><td>design-ready</td><td>JD / hardware-specific constraints</td></tr>
+<tr><td>VLA-ACT-011</td><td>ACT H/K/R/\(\Delta t\)</td><td>source-ready / WARN</td><td>local rollout values</td></tr>
+<tr><td>VLA-ACT-012</td><td>ACT posterior、decoder、learned queries</td><td>independent-fact-reviewed / WARN</td><td>local ACT usage and oral drill</td></tr>
+<tr><td>VLA-ACT-013</td><td>CVAE posterior、KL、test \(z=0\)</td><td>independent-fact-reviewed / WARN</td><td>latent ablation</td></tr>
+<tr><td>VLA-ACT-014</td><td>overlapping target-time ensemble</td><td>independent-fact-reviewed / WARN</td><td>local queue and sentinel test</td></tr>
+<tr><td>VLA-ACT-015</td><td>chunk / replan / ensemble modes</td><td>independent-fact-reviewed / WARN</td><td>local queue mapping</td></tr>
+<tr><td>VLA-ACT-016</td><td>horizon trade-off</td><td>independent-fact-reviewed / WARN</td><td>target hardware/task sweep</td></tr>
+<tr><td>VLA-ACT-017</td><td>ACT/token/Diffusion/Flow comparison</td><td>independent-fact-reviewed / WARN</td><td>comparable local ablation; Diffusion audit remains WARN</td></tr>
+<tr><td>VLA-ACT-018</td><td>sequence-level conditional diffusion</td><td>independent-fact-reviewed / WARN</td><td>fixed-noise diversity test</td></tr>
+<tr><td>VLA-ACT-019</td><td>noisy action、epsilon/sample target、condition</td><td>independent-fact-reviewed / WARN</td><td>local valid-mask evidence</td></tr>
+<tr><td>VLA-ACT-020</td><td>schedule/prediction type/five time axes</td><td>independent-fact-reviewed / WARN</td><td>v-pred extension if selected</td></tr>
+<tr><td>VLA-ACT-021</td><td><code>To-1</code> slice、sim/real replan</td><td>independent-fact-reviewed / WARN</td><td>local controller queue</td></tr>
+<tr><td>VLA-ACT-022</td><td>DDPM/DDIM、steps、warm-start gap</td><td>independent-fact-reviewed / WARN</td><td>target hardware telemetry</td></tr>
+<tr><td>VLA-ACT-023</td><td>CNF path、sample trajectory、velocity field</td><td>source-ready</td><td>independent theorem review</td></tr>
+<tr><td>VLA-ACT-024</td><td>paper \(\sigma_{\min}\) 与 exact-linear CFM</td><td>source-ready / WARN</td><td>hand derivation</td></tr>
+<tr><td>VLA-ACT-025</td><td>ODE/Euler、time grid、NFE</td><td>source-ready</td><td>target hardware telemetry</td></tr>
+<tr><td>VLA-ACT-026</td><td>Diffusion epsilon vs Flow velocity</td><td>source-ready / WARN</td><td>controlled local comparison</td></tr>
+<tr><td>VLA-ACT-027</td><td>π0 prefix/suffix、time/sign、Beta recipe</td><td>source-ready / WARN</td><td>local model class</td></tr>
+<tr><td>VLA-ACT-028</td><td>masked ideal vs frozen all-D mean</td><td>source-ready / WARN</td><td>positive local mask evidence</td></tr>
+<tr><td>VLA-ACT-029</td><td>generic flow CFG mechanism</td><td>source-ready with warning</td><td>action-policy implementation</td></tr>
+<tr><td>VLA-ACT-030</td><td>four-layer target→controller debug</td><td>source-ready as framework</td><td>local test artifacts</td></tr>
+<tr><td>VLA-ACT-031</td><td>decode→unnorm→slice→schema→safety→controller</td><td>independent-fact-reviewed / WARN</td><td>local axis/unit/controller</td></tr>
+<tr><td>VLA-ACT-032</td><td>parser/FIFO/replan/stale/safety/mock tests</td><td>independent-fact-reviewed / WARN</td><td>local executable tests</td></tr>
+</tbody></table>
+<p>“source-ready”仍不是“reviewed”。Source Audit C 的 ACT、Audit D 的 Diffusion Policy 与 Audit F 的 architecture/execution 已完成独立事实复核（见 <a href="../sources/vol_03_act_independent_fact_review.html">ACT 独立复核</a>、<a href="../sources/vol_03_diffusion_policy_independent_fact_review.html">Diffusion 独立复核</a> 与 <a href="../sources/vol_03_architecture_execution_independent_fact_review.html">Architecture/Execution 独立复核</a>）；local runtime 与口述训练仍为 WARN/PENDING。</p>
+<h2 id="openpivla">OpenPiVLA 项目挂钩与真实性边界</h2>
+<h3 id="section-101">可以安全连接的上游机制</h3>
+<ul><li>OpenVLA 提供 scalar action-token baseline 和 token/CE/unnorm 审计方法。</li><li>FAST 提供 action-window DCT/round/BPE 表示。</li><li>π0/openpi 提供 multi-view/state/action expert、flow sampling、normalization 与 output transform 的公开候选机制。</li><li>ACT 提供 CVAE action chunk、learned query 与 same-target-time temporal ensemble 的对照机制。</li><li>Diffusion Policy 提供 conditional trajectory diffusion、scheduler 与 receding-horizon 的对照机制。</li><li>openpi LIBERO example 提供 H/K、image transform、state/action slicing 的接口检查范式。</li><li>Octo 提供 block-wise mask、readout 与有效 action-dimension mask 的正例；可用于审查“padding 是否真的不进 loss”。</li><li>Source Audit F 提供 paper→repo→checkpoint→runtime 的证据链、延迟分层和 parser/queue/safety 单测模板。</li></ul>
+<h3 id="section-102">不能自动写成本地事实</h3>
+<table><thead><tr><th>Claim</th><th>为什么不能由本页证明</th><th>需要的本地 artifact</th></tr></thead><tbody>
+<tr><td>使用 Qwen3-VL 或某个 π checkpoint</td><td>upstream model 不等于 local load path</td><td>config、checkpoint manifest、startup log</td></tr>
+<tr><td>使用 FAST+ revision ec4d7aa...</td><td>default Hub string 未 pin local cache</td><td>tokenizer config/cache/revision</td></tr>
+<tr><td>horizon=10</td><td>official example 可覆盖 config</td><td>dataset target、model output shape、eval config</td></tr>
+<tr><td>action axes/units</td><td>shape 不能推出 controller semantics</td><td>schema、norm stats、output transform</td></tr>
+<tr><td>formal JSON/token supervision</td><td>OpenVLA/FAST 都不等于 local formatter</td><td>prompt formatter、labels、loss mask、parser</td></tr>
+<tr><td>97.4%</td><td>upstream 不含该 local eval</td><td>checkpoint ID、suite、tasks、trials、seed、summary</td></tr>
+<tr><td>本人创新 action expert/FAST</td><td>公开设计属于 upstream</td><td>local diff、设计记录、run ledger、ownership</td></tr>
+</tbody></table>
+<h3 id="section-103">项目口述安全模板</h3>
+<div class="meta">上游机制上，我会把 OpenVLA scalar token、FAST frequency token 和 π0 flow action expert 分开解释。对我的项目，我只在本地 config、checkpoint、formatter、norm stats 与 rollout summary 能对应时，才说明实际采用哪条路径。当前整理页中的 97.4%、horizon 和 Qwen/π 关系仍需 artifact reconciliation，因此不会用 upstream repo 代替项目证据。</div>
+<h2 id="bad-case">Bad Case 与最小检查清单</h2>
+<h3 id="offline-loss-online-0-success">offline loss 正常、online 0-success 的排查顺序</h3>
+<ol><li><strong>Action semantics</strong>：position/velocity/delta、axis order、frame、unit。</li><li><strong>Normalization</strong>：asset_id、q01/q99、clip policy、inverse consistency。</li><li><strong>Dimension</strong>：D、d、padding、valid loss mask、output slicing。</li><li><strong>Tokenizer/decode</strong>：revision、offset、EOS、H/D reshape、malformed fallback。</li><li><strong>Observation</strong>：camera name、flip/resize、image mask、state timestamp。</li><li><strong>Chunk loop</strong>：H、K、queue reset、control frequency、episode termination。</li><li><strong>Model target</strong>：CE label positions、ACT L1/KL 与 pad denominator、Diffusion prediction type/scheduler、Flow time/velocity sign。</li><li><strong>最后才谈 capacity/data</strong>：先排除接口错误，再归因模型不足。</li></ol>
+<h3 id="section-106">最小单测矩阵</h3>
+<table><thead><tr><th>Test</th><th>输入</th><th>断言</th></tr></thead><tbody>
+<tr><td>norm round-trip</td><td>q01/q99 内 action</td><td>inverse error &lt; δ</td></tr>
+<tr><td>saturation</td><td>q01/q99 外 action</td><td>clip/no-clip behavior 与设计一致</td></tr>
+<tr><td>axis impulse</td><td>单维非零动作</td><td>只有预期 actuator/axis 响应</td></tr>
+<tr><td>padding</td><td>d&lt;D 的 target</td><td>extra dims 的 loss/output 行为有显式断言</td></tr>
+<tr><td>token round-trip</td><td>scalar / FAST known chunk</td><td>decode shape、误差、offset 正确</td></tr>
+<tr><td>missing view</td><td>zero image + mask false/true</td><td>architecture-specific mask 正确</td></tr>
+<tr><td>chunk queue</td><td>H&gt;K、episode reset</td><td>执行正好 K 步并清空旧 queue</td></tr>
+<tr><td>stale RPC / safety</td><td>乱序 response、NaN/Inf、超限 action</td><td>旧 response 丢弃；fail-safe/投影日志正确</td></tr>
+<tr><td>temporal ensemble</td><td>三个 query 覆盖同一 target time</td><td>ordering、weights 与 valid sentinel 正确</td></tr>
+<tr><td>diffusion scheduler</td><td>fixed clean/noise/timestep</td><td>add-noise target 与 reverse prediction type 一致</td></tr>
+<tr><td>controller rate</td><td>constant velocity/delta</td><td>单位与 \(\Delta t\) 转换正确</td></tr>
+</tbody></table>
+<h3 id="section-107">高危答案</h3>
+<ul><li>“VLA 就是 VLM 多一个 action head。”</li><li>“OpenVLA 一次生成 H 步，因为会生成很多 token。”</li><li>“FAST 是把每个 action scalar 分 bin。”</li><li>“π0.5 和 Pi0FAST 是同一个模型。”</li><li>“padding 后推理 slice 掉，所以训练 loss 不会受影响。”</li><li>“ACT 推理会随机采多个 style latent，再挑最优 chunk。”</li><li>“temporal ensemble 给最新预测最高权重，或平滑相邻物理时刻。”</li><li>“Diffusion Policy 的 horizon、返回 action 数、replan interval 和去噪步数是同一个量。”</li><li>“paper 提 warm-start，所以 frozen repo 默认复用上一段 trajectory。”</li><li>“8D action 就是 xyz + rotation + gripper。”</li><li>“offline action loss 下降说明机器人 success 会提升。”</li></ul>
+<h2 id="section-108">后续工作</h2>
+<p>本页已完成 VOL 03 的 44/44 知识节点，但仍是 <code>review_pending / WARN</code>，不等于已掌握。下一步顺序：</p>
+<ol><li>44-card completion reconciliation 已完成；A–F source audits 的独立事实复核仍保持 WARN/PENDING，不提前升 reviewed。</li><li>对应 44 道原子题卡全部保持 unseen，等待真实口述。</li><li>Source Batch C 已完成：ACT paper/repo 的 CVAE latent、chunk query、masked L1 + KL、full-mean padding dilution、learned query 与 temporal ensemble ordering 已独立复核；见 <a href="../sources/vol_03_act_claim_to_code.html">ACT Claim-to-Code</a> 与 <a href="../sources/vol_03_act_independent_fact_review.html">ACT 独立复核</a>。</li><li>Source Batch D 已完成：Diffusion Policy paper/repo 的 target、scheduler、horizon、loss denominator、boundary padding、warm-start 边界与 receding-horizon 已独立复核；见 <a href="../sources/vol_03_diffusion_policy_claim_to_code.html">Diffusion Policy Claim-to-Code</a> 与 <a href="../sources/vol_03_diffusion_policy_independent_fact_review.html">Diffusion 独立复核</a>。</li><li>Source Batch E 已完成：Flow Matching foundation、CFM/OT path、ODE、π0/openpi 时间换元与 Diffusion 对照；见 <a href="../sources/vol_03_flow_matching_pi0_claim_to_code.html">Flow Matching / π0 Claim-to-Code</a>。</li><li>Source Batch F 已完成：RT-2/OpenVLA/Octo/π0 architecture、mask、adaptation、latency、checkpoint audit、transform/broker/controller test 已独立复核；见 <a href="../sources/vol_03_architecture_execution_claim_to_code.html">Architecture &amp; Execution Claim-to-Code</a> 与 <a href="../sources/vol_03_architecture_execution_independent_fact_review.html">独立复核</a>。</li><li>下一阶段只做一题 <code>VLA-ARCH-010/031</code>、ACT/Diffusion 或 OpenPiVLA ownership 真实口述；不再新增 VOL 03 卡，不把页面生成计入掌握分数。</li></ol>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Brohan et al., <a href="https://arxiv.org/abs/2307.15818">RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control</a>, arXiv v1, 2023.</li><li>Kim et al., <a href="https://arxiv.org/html/2406.09246v3">OpenVLA: An Open-Source Vision-Language-Action Model</a>, arXiv v3, 2024.</li><li><a href="https://github.com/openvla/openvla/tree/c8f03f48af692657d3060c19588038c7220e9af9">openvla/openvla</a>, frozen commit <code>c8f03f48af692657d3060c19588038c7220e9af9</code>.</li><li>Black et al., <a href="https://arxiv.org/html/2410.24164v4">π0: A Vision-Language-Action Flow Model for General Robot Control</a>, arXiv v4, 2024.</li><li>Black et al., <a href="https://arxiv.org/html/2504.16054v1">π0.5: a Vision-Language-Action Model with Open-World Generalization</a>, arXiv v1, 2025.</li><li><a href="https://github.com/Physical-Intelligence/openpi/tree/15a9616a00943ada6c20a0f158e3adb39df2ccac">Physical-Intelligence/openpi</a>, frozen commit <code>15a9616a00943ada6c20a0f158e3adb39df2ccac</code>, Apache-2.0.</li><li>Pertsch et al., <a href="https://arxiv.org/html/2501.09747v1">FAST: Efficient Action Tokenization for Vision-Language-Action Models</a>, arXiv v1, 2025.</li><li><a href="https://huggingface.co/physical-intelligence/fast/tree/ec4d7aa71691cac0b8bed6942be45684db2110f4">physical-intelligence/fast</a>, frozen revision <code>ec4d7aa71691cac0b8bed6942be45684db2110f4</code>, Apache-2.0.</li><li>Zhao et al., <a href="https://arxiv.org/abs/2304.13705">Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware</a>, ACT, arXiv v1, 2023.</li><li>Chi et al., <a href="https://arxiv.org/abs/2303.04137">Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</a>, arXiv v5, 2024.</li><li>Zhou et al., <a href="https://arxiv.org/abs/1812.07035">On the Continuity of Rotation Representations in Neural Networks</a>, CVPR 2019.</li><li>本仓库逐行证据页：<a href="../sources/vol_03_openvla_claim_to_code.html">OpenVLA Source Audit A</a>；<a href="../sources/vol_03_pi0_fast_openpi_claim_to_code.html">π0 / π0.5 / FAST / openpi Source Audit B</a>。</li><li>本地项目入口：<a href="../../03_openpivla_action_modeling.html">OpenPiVLA：FAST 动作表示、Metax 迁移与策略评估复现</a>。该页不是缺失 raw artifacts 的替代证据。</li><li><a href="../sources/vol_03_act_claim_to_code.html">ACT CVAE、Action Chunk 与 Temporal Ensemble Source Audit C</a>，frozen commit <code>742c753c0d4a5d87076c8f69e5628c79a8cc5488</code>。</li><li><a href="../sources/vol_03_diffusion_policy_claim_to_code.html">Diffusion Policy 条件扩散、Horizon 与 Receding-Horizon Source Audit D</a>，frozen commit <code>5ba07ac6661db573af695b419a7947ecb704690f</code>。</li><li><a href="../sources/vol_03_flow_matching_pi0_claim_to_code.html">Flow Matching 基础、π0 特化与 ODE Source Audit E</a>，用于 ACT/Diffusion/Flow 方法边界与 Batch 2B 知识/题卡。</li><li>Lipman et al., <a href="https://arxiv.org/html/2210.02747v2">Flow Matching for Generative Modeling</a>, arXiv <code>2210.02747v2</code>, 2023。</li><li><a href="https://github.com/facebookresearch/flow_matching/tree/11568d37f8d5a080e12aa7b5305d9c35ae07d136">facebookresearch/flow_matching</a>, frozen commit <code>11568d37f8d5a080e12aa7b5305d9c35ae07d136</code>, CC BY-NC 4.0；后续维护包，不作为 2022 历史实现。</li><li>Octo Model Team et al., <a href="https://arxiv.org/html/2405.12213v2">Octo: An Open-Source Generalist Robot Policy</a>, arXiv <code>2405.12213v2</code>, 2024；<a href="https://arxiv.org/html/2405.12213v2#S3.SS1">§III-A Architecture</a>。</li><li><a href="https://github.com/octo-models/octo/tree/241fb3514b7c40957a86d869fecb7c7fc353f540">octo-models/octo</a>, frozen commit <code>241fb3514b7c40957a86d869fecb7c7fc353f540</code>, MIT；block-wise transformer、action head、mask 与 fine-tune config。</li><li><a href="../sources/vol_03_architecture_execution_claim_to_code.html">VLA 架构、适配、延迟与动作执行 Source Audit F</a>，用于 <code>VLA-ARCH-007..012</code> 与 <code>VLA-ACT-031..032</code> 的 claim-to-code 边界。</li><li><a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA Claim–Evidence Inventory</a>。</li><li><a href="../evidence/projects/openpivla_ownership_ledger.html">OpenPiVLA Ownership Ledger</a>。</li><li><a href="../sources/vol_03_completion_fact_reconciliation.html">VOL 03 44-Card Completion Reconciliation</a>。</li><li><a href="../sources/vol_03_act_independent_fact_review.html">ACT CVAE / Action Chunk / Temporal Ensemble 独立事实复核</a>，2026-07-19。</li><li><a href="../sources/vol_03_diffusion_policy_independent_fact_review.html">Diffusion Policy 条件扩散独立事实复核</a>，frozen commit <code>5ba07ac6661db573af695b419a7947ecb704690f</code>，2026-07-19。</li><li><a href="../sources/vol_03_architecture_execution_independent_fact_review.html">VLA 架构、Mask、适配与执行独立事实复核</a>，RT-2/Octo/openpi direct source hashes 与 probes，2026-07-19。</li></ol>
+</article></body></html>

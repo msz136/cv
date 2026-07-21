@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 World Model / Sim2Real：Imagined/OOD Value Calibration 与 Pessimism（WM-029）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm029_imagined_ood_value_calibration_pessimism.md">
+<meta name="aris:source-sha256" content="1629cad67a32361cb7842b52c01c9f3fdccf94438bb0ac571471a1a4ed1c8ffa">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>1629cad67a32361cb7842b52c01c9f3fdccf94438bb0ac571471a1a4ed1c8ffa</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm029_imagined_ood_value_calibration_pessimism.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 面试结论</a></li><li><a href="#2">2. 失准的四条链</a></li><li><a href="#2-1-support-shift">2.1 Support shift</a></li><li><a href="#2-2-world-error-value-error">2.2 World error + value error</a></li><li><a href="#2-3-horizon-bootstrap">2.3 Horizon / bootstrap</a></li><li><a href="#2-4-optimizer-s-curse">2.4 Optimizer&#x27;s curse</a></li><li><a href="#3-calibration-ranking-uncertainty">3. Calibration、ranking、uncertainty 分开测</a></li><li><a href="#4-success-probability-calibration">4. Success probability calibration</a></li><li><a href="#5-return-value-regression-calibration">5. Return/value regression calibration</a></li><li><a href="#6-uncertainty-proxy">6. Uncertainty proxy 怎样验</a></li><li><a href="#7-pessimism">7. Pessimism 方法对比</a></li><li><a href="#7-1-lcb-scorer">7.1 LCB scorer</a></li><li><a href="#7-2-mopo-reward-penalty">7.2 MOPO reward penalty</a></li><li><a href="#7-3-cql-q-regularization">7.3 CQL Q regularization</a></li><li><a href="#7-4-support-fallback">7.4 Support/fallback</a></li><li><a href="#8-frozen-cosmos-exact-boundary">8. Frozen Cosmos exact boundary</a></li><li><a href="#9">9. 评估矩阵</a></li><li><a href="#10">10. 可审计伪代码</a></li><li><a href="#11-wam">11. WAM 项目真实性</a></li><li><a href="#12">12. 结论与下一入口</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 World Model / Sim2Real：Imagined/OOD Value Calibration 与 Pessimism（WM-029）</h1>
+<div class="meta">状态：drafted / VLA-WM-029 / knowledge_31_of_44 / card_synced / WARN 报告日期：2026-07-18 证据截止：2026-07-18 当前节点：解释 value OOD failure、calibration/uncertainty/ranking 与 pessimism 选择，不宣称本地 WAM 已实施。 前置：<a href="vol_04_world_model_sim2real_wm024_reward_value_success_termination.html">WM-024 Value Semantics</a>、<a href="vol_04_world_model_sim2real_wm028_routing_slot_mask_loss_weight.html">WM-028 Routing / Mask / Weight</a>、<a href="../sources/vol_04_wm029_imagined_ood_value_calibration_pessimism_source_freeze.html">WM-029 Source Freeze</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>value 在 imagined/OOD state 上为何容易失准，如何做 calibration 或 pessimism？回答必须区分 support shift、world bias、ranking、uncertainty、calibration 与不同 pessimistic interventions。</p>
+<h2 id="1">1. 面试结论</h2>
+<p>value 通常在 replay/demo/rollout label 上训练，planning 却查询 policy proposal 经 learned world model 生成的 future；state、action、horizon 离开数据支持后，world error 与 value extrapolation 叠加。best-of-N 又最大化估计值，容易选中高估误差。</p>
+<p>先明确 value 是 return、Q 还是 success probability，再分别看 calibration、ranking 与 uncertainty-error correlation。Pessimism 可以在 scorer 做 LCB、在 model rollout 做 MOPO reward penalty、在 offline Q training 做 CQL，或直接约束 support/缩短 horizon/fallback；它们不是同一种方法。</p>
+<h2 id="2">2. 失准的四条链</h2>
+<h3 id="2-1-support-shift">2.1 Support shift</h3>
+<div class="formula">\[
+(s,a)\sim d_{\mathcal D}
+\quad\neq\quad
+(\hat s,a)\sim d_{\hat T}^{\pi}.
+\]</div>
+<p>变量解释：左侧是训练数据 occupancy，右侧是 policy 在 learned dynamics 中的 imagined occupancy。Value 在右侧属于 extrapolation，offline MAE 低也不保证可靠。[1][2]</p>
+<h3 id="2-2-world-error-value-error">2.2 World error + value error</h3>
+<div class="formula">\[
+\hat V(\hat s&#x27;)-V(s&#x27;)=
+[\hat V(\hat s&#x27;)-V(\hat s&#x27;)]
++[V(\hat s&#x27;)-V(s&#x27;)].
+\]</div>
+<p>变量解释：第一项是 value extrapolation，第二项是 world transition 把 future state 推错；需要 real-vs-imagined paired future 才能拆分。</p>
+<h3 id="2-3-horizon-bootstrap">2.3 Horizon / bootstrap</h3>
+<div class="formula">\[
+\hat Q(s,a)=\hat r(s,a)+\gamma E_{\hat T}[\hat V(s&#x27;)].
+\]</div>
+<p>变量解释：Bellman-style Q 会递推 reward、transition 与 next-value error。Cosmos value frame 使用 rollout return，不等于经典 Q；但长 horizon、return/timeout label 与 imagined shift 仍需审计。</p>
+<h3 id="2-4-optimizer-s-curse">2.4 Optimizer's curse</h3>
+<div class="formula">\[
+\hat V_i=V_i+\epsilon_i,
+\qquad i^*=\arg\max_{i\le N}\hat V_i.
+\]</div>
+<p>变量解释：best-of-N 同时选择真实 value 与正向估计噪声；N 增大可能提升 proposal coverage，也可能放大 top-tail overestimate。必须做 N sweep 和 oracle/random/mean selector 对照。</p>
+<h2 id="3-calibration-ranking-uncertainty">3. Calibration、ranking、uncertainty 分开测</h2>
+<table><thead><tr><th>属性</th><th>核心问题</th><th>指标</th><th>常见误用</th></tr></thead><tbody>
+<tr><td>calibration</td><td>预测数值与经验频率/return 是否匹配？</td><td>reliability、ECE、bias、coverage</td><td>把低 MAE 当 calibrated</td></tr>
+<tr><td>ranking</td><td>候选顺序是否正确？</td><td>pairwise/rank correlation、selected regret</td><td>calibrated 就一定会选对</td></tr>
+<tr><td>uncertainty</td><td>高不确定是否对应高 error？</td><td>disagreement-error、risk-coverage</td><td>std 就是置信区间</td></tr>
+<tr><td>accuracy</td><td>平均预测误差多大？</td><td>MAE/RMSE/NLL/Brier</td><td>平均好就代表 top tail 好</td></tr>
+</tbody></table>
+<h2 id="4-success-probability-calibration">4. Success probability calibration</h2>
+<p>若 value 明确定义为 success probability：</p>
+<div class="formula">\[
+\operatorname{ECE}=
+\sum_{m=1}^{M}\frac{|B_m|}{n}
+|\operatorname{acc}(B_m)-\operatorname{conf}(B_m)|.
+\]</div>
+<p>变量解释：\(B_m\) 是 confidence bin。应同时给 reliability diagram、bin count、Brier/NLL，并按 task/support/depth 分层。ECE 是 binning 近似与不全面的 scalar summary；temperature scaling 面向 classification logits，不能直接校准任意 clipped return。[3]</p>
+<h2 id="5-return-value-regression-calibration">5. Return/value regression calibration</h2>
+<p>若 target 是 discounted return：</p>
+<ul><li>报 MAE/RMSE/bias，但另报 rank 与 selected regret；</li><li>按 in-support/imagined、rollout depth、task、return bucket 分层；</li><li>若输出 interval，报告 coverage 与 width，并冻结构造方法；</li><li>保存 pre-clip/post-clip，检查 0/1 saturation；</li><li>用 fixed candidate 的 trusted simulator/real outcome 做 top-tail calibration。</li></ul>
+<p>Value 处于 \([0,1]\) 不代表它是 calibrated success probability；先回到 WM-024 的 label contract。</p>
+<h2 id="6-uncertainty-proxy">6. Uncertainty proxy 怎样验</h2>
+<p>PETS 的 bootstrapped probabilistic dynamics ensemble可以分开 epistemic/aleatoric，并用 particles 传播 uncertainty。[4] 实际项目里应检查：</p>
+<ol><li>disagreement 与 absolute error 是否单调相关；</li><li>risk-coverage：拒绝最高 uncertainty 后错误/成功如何变；</li><li>in-support 与 OOD bucket 的 coverage；</li><li>ensemble 成员是否真正独立，还是同模型 seed/dropout/sample；</li><li>低 disagreement 是否出现共错。</li></ol>
+<p>没有这些验证，\(\sigma\) 只是 heuristic score。</p>
+<h2 id="7-pessimism">7. Pessimism 方法对比</h2>
+<h3 id="7-1-lcb-scorer">7.1 LCB scorer</h3>
+<div class="formula">\[
+V_{LCB}=\mu-\beta\sigma.
+\]</div>
+<p>变量解释：适合不改训练、只改 candidate selector；\(\beta\) 需在 held-out/paired episodes 上 sweep。若 \(\sigma\) 未校准，LCB 不是置信下界。</p>
+<h3 id="7-2-mopo-reward-penalty">7.2 MOPO reward penalty</h3>
+<div class="formula">\[
+\tilde r(s,a)=\hat r(s,a)-\lambda u(s,a).
+\]</div>
+<p>变量解释：在 learned-model MDP 内惩罚 uncertain transition；理论下界要求 admissible error estimator。MOPO 实践 variance estimator 自身被论文标为 heuristic。[1]</p>
+<h3 id="7-3-cql-q-regularization">7.3 CQL Q regularization</h3>
+<div class="formula">\[
+\mathcal L_{CQL}=\alpha E_s
+\left[\log\sum_a e^{Q(s,a)}-E_{a\sim\mathcal D}Q(s,a)\right]
++\mathcal L_{Bellman}.
+\]</div>
+<p>变量解释：压低广泛/OOD action Q、相对数据 action 更保守；lower-bound 有算法条件，不是任意 pointwise 保证。生成式 value frame 没有这套 Q objective。[2]</p>
+<h3 id="7-4-support-fallback">7.4 Support/fallback</h3>
+<p>限制 action 距 behavior、缩短 model horizon、降低 N、拒绝 high-risk candidate、退回 direct policy、replan/recovery。它们往往比“假设 score 已校准”更安全。</p>
+<h2 id="8-frozen-cosmos-exact-boundary">8. Frozen Cosmos exact boundary</h2>
+<table><thead><tr><th>行为</th><th>Frozen code</th><th>面试边界</th></tr></thead><tbody>
+<tr><td>value transform</td><td>latent mean → \((z+1)/2\) → clip [0,1]</td><td>bounded 不等于 calibrated probability</td></tr>
+<tr><td>ensemble</td><td>同一模型，不同 seed 与 denoising steps</td><td>sample dispersion，不是 independent-model epistemic</td></tr>
+<tr><td>LCB</td><td>post-clip mean - 1×std</td><td>fixed heuristic，非覆盖保证</td></tr>
+<tr><td>defaults</td><td>ensemble off，aggregation average</td><td>支持 LCB 不等于默认使用</td></tr>
+<tr><td>vote threshold</td><td>0.05</td><td>未核验为 calibrated threshold</td></tr>
+<tr><td>ALOHA recipe</td><td>majority-mean、N=8</td><td>不外推 LIBERO/RoboCasa/WAM</td></tr>
+</tbody></table>
+<p>由代码推断：先 clip 再算 std 可能在 0/1 saturation 降低 observed dispersion。应配对保存 pre/post-clip predictions 验证，不能直接宣称该推断已造成失败。[5]</p>
+<h2 id="9">9. 评估矩阵</h2>
+<ol><li>label audit：return、gamma、horizon、terminal/timeout、success predicate。</li><li>in-support：MAE/bias/reliability/rank。</li><li>imagined shift：real-vs-imagined future/value paired error，按 depth。</li><li>uncertainty：disagreement-error、coverage-risk、共错率。</li><li>selector：same candidates 下 random/mean/LCB/β sweep/oracle replay。</li><li>planning：N、world samples、depth、latency 与 closed-loop success。</li><li>failure：selected candidate 的 perception/world/value/controller first divergence。</li></ol>
+<h2 id="10">10. 可审计伪代码</h2>
+<pre><code class="language-python">def compare_value_selectors(fixed_candidates, sampler, trusted_outcome, betas):
+    # 1. Reuse identical action/future candidates for every selector.
+    ledger = []
+    for candidate in fixed_candidates:
+        # 2. Preserve raw and clipped samples; std is only a proxy.
+        raw = sampler(candidate, save_preclip=True)
+        clipped = clip01(raw)
+        outcome = trusted_outcome(candidate)
+        ledger.append({&quot;candidate&quot;: candidate, &quot;raw&quot;: raw, &quot;clipped&quot;: clipped, &quot;outcome&quot;: outcome})
+
+    # 3. Sweep beta and report stratified calibration, ranking and regret.
+    return evaluate_mean_lcb_oracle(ledger, betas, by=[&quot;task&quot;, &quot;support&quot;, &quot;depth&quot;])</code></pre>
+<p>这不是 WAM 已执行代码；真实运行必须绑定 proposal/world/value checkpoint、candidate、future、seed、N、latency 和 episode key。</p>
+<h2 id="11-wam">11. WAM 项目真实性</h2>
+<p>WAM inventory 没有 value prediction/label bundle、candidate ledger、pre/post-clip samples、selector sweep 或 planning episodes。单 episode action trace、future proxy 和历史 MSE 不能证明 value calibration/pessimism。</p>
+<p>安全说法：“我会先分层校准与 ranking，再验证 uncertainty-error correlation，最后对 fixed candidates 做 mean/LCB/β/N/depth 的闭环对照。”不能说“已用 CQL/MOPO/LCB 提升 WAM planning”。</p>
+<h2 id="12">12. 结论与下一入口</h2>
+<p>imagined value 失准来自 support shift、world bias、value extrapolation、horizon 与 selector bias。Calibration、ranking、uncertainty 和 pessimism 必须分层；任何 LCB 只有在 uncertainty proxy 被验证后才有工程意义。</p>
+<p>下一节点 <code>VLA-WM-030</code> 进入 test-time planning 的 N、world rollout、value scoring、通信和 latency budget。题卡保持 unseen；真实口述前不创建 coaching state。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li><a href="../sources/vol_04_wm029_imagined_ood_value_calibration_pessimism_source_freeze.html">WM-029 Source Freeze</a>。</li><li><a href="vol_04_world_model_sim2real_wm024_reward_value_success_termination.html">WM-024 Value Semantics</a>。</li><li>Guo et al., <a href="https://arxiv.org/abs/1706.04599v2">Calibration</a>。</li><li>Chua et al., <a href="https://arxiv.org/abs/1805.12114v2">PETS</a>。</li><li><a href="../sources/vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos Policy / WAM Audit</a>。</li><li>Yu et al., <a href="https://arxiv.org/abs/2005.13239v6">MOPO</a>。</li><li>Kumar et al., <a href="https://arxiv.org/abs/2006.04779v3">CQL</a>。</li><li><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM Claim–Evidence Inventory</a>。</li></ol>
+</article></body></html>

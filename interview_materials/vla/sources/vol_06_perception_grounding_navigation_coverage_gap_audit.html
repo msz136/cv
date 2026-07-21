@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：Coverage-Gap Audit</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_perception_grounding_navigation_coverage_gap_audit.md">
+<meta name="aris:source-sha256" content="e51749e5b199b94da24d237cb1cbf3c5650b6f99aaaf234150bb3e8df95dac21">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>e51749e5b199b94da24d237cb1cbf3c5650b6f99aaaf234150bb3e8df95dac21</code>；生成自：<code>interview_materials\vla\sources\vol_06_perception_grounding_navigation_coverage_gap_audit.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 本次审计依据</a></li><li><a href="#3">3. 当前资产盘点</a></li><li><a href="#4-stable-id">4. 整卷 Stable-ID 合同</a></li><li><a href="#5-source-queue">5. Source Queue 与冻结边界</a></li><li><a href="#6">6. 项目挂钩与真实性边界</a></li><li><a href="#7-vol-06">7. VOL 06 退出条件</a></li><li><a href="#7-1-coverage-complete">7.1 Coverage complete</a></li><li><a href="#7-2-reviewed">7.2 Reviewed</a></li><li><a href="#7-3-drilled">7.3 Drilled</a></li><li><a href="#7-4-visual-evidence-boundary">7.4 Visual / evidence boundary</a></li><li><a href="#8">8. 缺口优先级与下一切片</a></li><li><a href="#references">参考入口（References）</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：Coverage-Gap Audit</h1>
+<div class="meta">审计日期：2026-07-20 状态：<code>coverage_contract_frozen / planned_20 / sources_19 / knowledge_19 / cards_19 / per018_independent_fact_reviewed / per019_triplet_synced / missing_sources_1 / missing_knowledge_1 / missing_cards_1 / WARN</code> 审计对象：VOL 06 已有 source/knowledge/card、全局 Knowledge Map、Repository Completion Audit、GitHub skeleton guidance、五项目 evidence inventory 与导航 artifact gate。 核心边界：本报告冻结整卷范围与退出条件；不把 planned/source/knowledge-only ID 计入题库，不生成占位卡，不把公开 perception/navigation 机制写成个人项目成果。</div>
+<h2 id="question">问题（Question）</h2>
+<p>现有 <code>VLA-PER-001..005</code> 是否足以支持“VOL 06 Perception / Grounding / Navigation 已完成”？如果不足，缺失的是哪些不可合并的知识节点、来源门、项目证据门和真实训练门？</p>
+<h2 id="1">1. 结论先行</h2>
+<ol><li>二十个节点覆盖 image/token contract 与 grounding representation → 3D lift → multi-view/time → VLN/ObjectNav protocol → navigation architecture → open-vocabulary grounding → matching/loss → metric/parser → pseudo-label/noise/calibration/leakage → segmentation/depth/keypoint/affordance → point/voxel/BEV/occupancy → 3D grounding/spatial relation/open-vocabulary 3D scene → perception/action feasibility → localization/odometry/SLAM/map-frame/drift → belief/memory/frontier/active-exploration → navigation BC/DAgger/RL/exposure bias → navigation evaluation/failure → robustness/safety主链；<code>PER-001..020</code>已有source/knowledge/card，二十张卡均为 <code>unseen/WARN</code>。</li><li>image preprocessing/token contract由PER-006独立承载；open-vocabulary inference由PER-007承载；PER-008..018均已按独立source→knowledge→card切片同步。PER-018独立事实复核重新命中7/7 PDF、10/10 official files、10/10 probes、8/8 local files，并确认R2R student-forcing的限定语境与pinned Habitat done-mask版本差异；完整评估与robustness/safety仍没有独立节点。</li><li>VOL 06 整卷冻结为 <strong>20 个原子节点</strong>：当前source为<code>20/20=100%</code>，knowledge为<code>20/20=100%</code>，card为<code>20/20=100%</code>；PER-001..020三联件同步，二十张题卡保持<code>unseen</code>。</li><li>五项目中有 interface/provenance hook，但 <a href="../evidence/projects/per004_navigation_artifact_gate.html">PER-004 Navigation Artifact Gate</a> 重算为 <code>0</code> 个 local-direct VLN/ObjectNav episode bundle；因此不得产生个人导航成功率、SPL 或真实机器人 claim。</li><li>覆盖完成、事实审查、项目证据、HTML 生命周期和口述 mastery 分开计数。即使未来达到 20/20 页面覆盖，没有真实回答、visual QA 或项目 artifact 时也不能写成 <code>drilled/done</code>。</li></ol>
+<h2 id="2">2. 本次审计依据</h2>
+<table><thead><tr><th>依据</th><th>实际支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td><a href="00_github_guidance_and_sources.html">GitHub Source Scout</a></td><td>WinstonJQ 骨架规则：主索引、分卷、Markdown canonical、折叠题卡、review、L1/L2/L3、题目前置清单</td><td>具体 VLA/perception 技术事实或题目频次</td></tr>
+<tr><td><a href="../knowledge/00_vla_knowledge_map.html">VLA Knowledge Map</a></td><td>VOL 06 范围为 image/token、point/box/text、3D geometry、multi-view、VLN/ObjectNav、grounding quality</td><td>现有五页已经覆盖所有原子问题</td></tr>
+<tr><td><a href="repository_completion_audit.html">Repository Completion Audit</a></td><td>当前全局276 cards；VOL 06有20个完整节点，整卷退出条件仍未满足</td><td>planned ID、source或knowledge自动成为已生成题卡</td></tr>
+<tr><td><a href="vol_06_per001_grounding_coordinate_source_freeze.html">PER-001 Source Freeze</a></td><td>point/box/text、parser、坐标逆变换、OPD truth boundary</td><td>3D、action success 或个人导航结果</td></tr>
+<tr><td><a href="vol_06_per002_3d_lift_frame_source_freeze.html">PER-002 Source Freeze</a></td><td>calibration/depth/back-projection/frame/TF 合同</td><td>本地 3D round-trip 或 controller success</td></tr>
+<tr><td><a href="vol_06_per003_multiview_temporal_source_freeze.html">PER-003 Source Freeze</a></td><td>camera/frame/time/presence 与 fusion schema</td><td>本地 multi-camera calibration、sync 或 ablation</td></tr>
+<tr><td><a href="vol_06_per004_vln_objectnav_source_freeze.html">PER-004 Source Freeze</a></td><td>VLN/ObjectNav/REVERIE task、episode、stop、SR/SPL 协议</td><td>用户复现 benchmark 或真实导航</td></tr>
+<tr><td><a href="vol_06_per005_navigation_policy_architecture_source_freeze.html">PER-005 Source Freeze</a></td><td>map-free/map-based/waypoint/planner/controller taxonomy</td><td>用户实现、matched ablation 或 ownership</td></tr>
+<tr><td><a href="vol_06_per008_representation_choice_source_freeze.html">PER-008 Source Freeze</a> / <a href="../knowledge/vol_06_per008_representation_choice.html">Knowledge</a> / <a href="../questions/vol_06_per008.html">Card</a></td><td>point/box/mask/semantic-keypoint/affordance语义、选择、转换损失与OPD边界</td><td>local dense affordance、matched ablation或robot result</td></tr>
+<tr><td><a href="vol_06_per009_grounding_matching_negative_loss_source_freeze.html">PER-009 Source Freeze</a> / <a href="../knowledge/vol_06_per009_grounding_matching_negative_loss.html">Knowledge</a> / <a href="../questions/vol_06_per009.html">Card</a></td><td>Hungarian/token negatives/focal/L1/GIoU/reduction、本地CE/top1/KL、typed manifest、面试诊断与2500行metrics边界</td><td>first-party criterion、checkpoint/holdout/robot绑定</td></tr>
+<tr><td><a href="vol_06_per010_grounding_metric_parser_protocol_source_freeze.html">PER-010 Source Freeze</a> / <a href="../knowledge/vol_06_per010_grounding_metric_parser_protocol.html">Knowledge</a> / <a href="../questions/vol_06_per010.html">Card</a></td><td>strict/lenient parser、IoU/Acc、RefExp/COCO、PCK/mask-hit/fixed-distance Hit、denominator、protocol identity、面试诊断与项目边界</td><td>raw prediction reconciliation、parser v2 rerun与robot结果</td></tr>
+<tr><td><a href="vol_06_per012_segmentation_depth_keypoint_affordance_source_freeze.html">PER-012 Source Freeze</a> / <a href="../knowledge/vol_06_per012_segmentation_depth_keypoint_affordance.html">Knowledge</a> / <a href="../questions/vol_06_per012.html">Card</a></td><td>segmentation task、relative/metric depth、3D surface、semantic keypoint、primitive-conditioned affordance、typed composition、atomic answer与OPD point-only边界</td><td>local dense checkpoint、metric-depth/camera bundle、planner/controller episode或robot success</td></tr>
+<tr><td><a href="vol_06_per013_pointcloud_voxel_bev_occupancy_source_freeze.html">PER-013 Source Freeze</a> / <a href="../knowledge/vol_06_per013_pointcloud_voxel_bev_occupancy.html">Knowledge</a> / <a href="../questions/vol_06_per013.html">Card</a></td><td>PointNet++/VoxelNet/PointPillars/Minkowski/BEVFusion/occupancy contracts、九个probe、教学诊断、atomic answer与Harness 2D-map/PCD boundary</td><td>local learned 3D encoder、matched benefit、robot result或ownership</td></tr>
+<tr><td><a href="vol_06_per014_3d_grounding_spatial_relation_open_vocabulary_source_freeze.html">PER-014 Source Freeze</a> / <a href="../knowledge/vol_06_per014_3d_grounding_spatial_relation_open_vocabulary.html">Knowledge</a> / <a href="../questions/vol_06_per014.html">Card</a></td><td>ScanRefer/ReferIt3D/OpenScene/OpenMask3D/LERF/ConceptFusion、六类output、typed manifest、relation、score/metric、diagnostic、155/335字符atomic answer与五项目真实性边界</td><td>local 3D semantic head/map/checkpoint/raw query/robot result或ownership</td></tr>
+<tr><td><a href="vol_06_per015_perception_action_reachability_uncertainty_failure_gate_source_freeze.html">PER-015 Source Freeze</a> / <a href="../knowledge/vol_06_per015_perception_action_reachability_uncertainty_failure_gate.html">Knowledge</a> / <a href="../questions/vol_06_per015.html">Card</a></td><td>Modern Robotics/MoveIt/OMPL/TRAC-IK/CLIPort/KnowNo、typed action manifest、九层gate、10个probe、first-divergence diagnosis、141/257字符atomic answer与五项目direct audit</td><td>本地完整gate/runtime、robot success或ownership</td></tr>
+<tr><td><a href="vol_06_per016_localization_odometry_slam_map_frame_drift_source_freeze.html">PER-016 Source Freeze</a> / <a href="../knowledge/vol_06_per016_localization_odometry_slam_map_frame_drift.html">Knowledge</a> / <a href="../questions/vol_06_per016.html">Card</a></td><td>ORB-SLAM3/VINS-Mono/Cartographer/DROID-SLAM/OpenVINS/Kimera、REP-105、typed manifest、state/covariance、pose graph、drift、ATE/RPE、10个probe、179/350字符回答与Harness map/PCD真实性边界</td><td>本地SLAM estimator/runtime、trajectory bundle、robot localization结果或ownership</td></tr>
+<tr><td><a href="vol_06_per017_belief_memory_frontier_active_exploration_source_freeze.html">PER-017 Source Freeze</a> / <a href="../knowledge/vol_06_per017_belief_memory_frontier_active_exploration.html">Knowledge</a> / <a href="../questions/vol_06_per017.html">Card</a></td><td>POMDP/Bayes/zero-likelihood、三类memory、typed manifest、known-free/unknown frontier、IG/utility、revisit/stuck、metric contract、10 probes、172/315字符回答、诊断与五项目direct audit</td><td>local exploration runtime/episode、checkpoint/result或ownership</td></tr>
+<tr><td><a href="vol_06_per018_navigation_bc_dagger_rl_exposure_bias_source_freeze.html">PER-018 Source Freeze</a> / <a href="../knowledge/vol_06_per018_navigation_bc_dagger_rl_exposure_bias.html">Knowledge</a> / <a href="../questions/vol_06_per018.html">Card</a> / <a href="vol_06_per018_navigation_bc_dagger_rl_exposure_bias_independent_fact_review.html">Independent Review</a></td><td>BC/forcing/DAgger/GAE/PPO-DDPPO、7 PDFs/96页、10 official files rehash、10 probes、8 local files、两档回答、诊断与单张unseen题卡</td><td>local navigation DAgger/PPO runtime、matched episode/result、ownership与真实口述</td></tr>
+<tr><td><a href="vol_06_per019_navigation_evaluation_failure_source_freeze.html">PER-019 Source Freeze</a></td><td>stop-gated success、POINT/VIEW_POINTS geodesic、SPL/SoftSPL、split/denominator、failure taxonomy、10 source probes与五项目truth boundary</td><td>local navigation bundle、统一scorer、per-episode trace、个人导航结果或ownership</td></tr>
+<tr><td><a href="vol_06_per020_robustness_safety_fallback_source_freeze.html">PER-020 Source Freeze</a></td><td>corruption family/severity、clean-shift protocol、dataset-shift uncertainty、risk-coverage、queue flush、fallback/recovery/E-stop、10 source probes与五项目truth boundary</td><td>local shifted-input bundle、逐step risk log、hardware E-stop audit、个人OOD或安全结果</td></tr>
+<tr><td><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a></td><td>local point/box/text route、scorer 与 leakage 边界</td><td>3D grounding、closed-loop manipulation 或 navigation success</td></tr>
+</tbody></table>
+<h2 id="3">3. 当前资产盘点</h2>
+<table><thead><tr><th>层</th><th>已有</th><th>目标</th><th>覆盖</th><th>仍开放的门</th></tr></thead><tbody>
+<tr><td>generated question cards</td><td>20</td><td>20</td><td>100%</td><td><code>PER-001..020</code>已生成且unseen</td></tr>
+<tr><td>source freeze</td><td>20</td><td>20</td><td>100%</td><td>PER-001..019与PER-020 source已冻结；PER-020 knowledge/card仍后置</td></tr>
+<tr><td>knowledge nodes</td><td>20</td><td>20</td><td>100%</td><td>PER-001..020已生成；全部对应题卡保持unseen</td></tr>
+<tr><td>question card</td><td>20</td><td>20</td><td>100%</td><td>PER-001..020均有单张原子卡；仍未进行真实口述</td></tr>
+<tr><td>oral drill</td><td>0</td><td>最少 8</td><td>0%</td><td>二十张已有卡仍全部 <code>unseen</code></td></tr>
+<tr><td>local-direct navigation bundle</td><td>0</td><td>不强制有正结果，但必须保持 truth boundary</td><td>—</td><td>episode/scene/start/goal/action/denominator/failure trace 缺失</td></tr>
+<tr><td>browser desktop/narrow QA</td><td>0</td><td>当前卷页面均需验收</td><td>0%</td><td><code>file://</code> 策略阻断；静态检查不能替代视觉 QA</td></tr>
+</tbody></table>
+<h2 id="4-stable-id">4. 整卷 Stable-ID 合同</h2>
+<p>权威题目清单为 <a href="../questions/vol_06_perception_grounding_navigation.question_list.md">VOL 06 Phase 0 Question List</a>。规划 20 个节点，按 12 个 P0、8 个 P1 分层；以下只给出聚类，不重复清单全文。</p>
+<table><thead><tr><th>学习簇</th><th>IDs</th><th>现有 / 规划</th><th>核心缺口</th></tr></thead><tbody>
+<tr><td>输入与 2D grounding</td><td><code>001,006..012</code></td><td>8 complete / 8</td><td>独立fact review、local dense artifact与真实drill仍开放</td></tr>
+<tr><td>3D、多视角与动作接口</td><td><code>002,003,013..015</code></td><td>5 complete / 5</td><td>独立fact review、本地physical-gate runtime与真实drill仍开放</td></tr>
+<tr><td>导航任务、地图与训练</td><td><code>004,005,016..018</code></td><td>5 triplets / 5</td><td>学习簇覆盖完成；独立fact review与真实drill仍开放</td></tr>
+<tr><td>评估、鲁棒性与安全</td><td><code>019,020</code></td><td>2 source + 2 knowledge + 2 cards / 2 nodes</td><td>PER-019/020 source+knowledge+card均同步；真实口述仍缺</td></tr>
+</tbody></table>
+<p>依赖主链：</p>
+<pre><code class="language-text"># Planned IDs are registry entries, not generated mastery.
+PER-006 image/token
+  -&gt; PER-007 open-vocab grounding
+  -&gt; PER-008 representation choice
+  -&gt; PER-009 loss/matching -&gt; PER-010 metric/parser -&gt; PER-011 pseudo-label/noise
+  -&gt; PER-012 segmentation/depth/keypoint/affordance
+
+PER-002 3D lift + PER-003 multi-view
+  -&gt; PER-013 3D representation -&gt; PER-014 3D grounding
+  -&gt; PER-015 perception-to-action gate
+
+PER-004 task contract + PER-005 policy architecture + PER-016 SLAM
+  -&gt; PER-017 memory/exploration -&gt; PER-018 IL/RL training
+  -&gt; PER-019 evaluation/failure -&gt; PER-020 robustness/safety</code></pre>
+<h2 id="5-source-queue">5. Source Queue 与冻结边界</h2>
+<p>下表是后续逐节点 source freeze 的检索队列，不表示已经核验完成。只有读取 primary paper、official code/docs 或本地 artifact 并记录 revision 后，才能进入知识页。</p>
+<table><thead><tr><th>IDs</th><th>待冻结的来源类型</th><th>本仓库可复用入口</th><th>当前状态</th></tr></thead><tbody>
+<tr><td><code>006</code></td><td>VLM/ViT 官方 image processor、resize/crop/patch/position contract</td><td>GitHub Source Scout 中的 Qwen3-VL frozen repo；VOL 01/03 vision-token pages</td><td><code>source + knowledge + card synchronized / unseen</code></td></tr>
+<tr><td><code>007</code></td><td>Grounding/open-vocabulary detection primary paper与 official code；matching、two-threshold、phrase与NMS boundary</td><td>PER-001 Grounding DINO；PER-006 image contract；OPD inventory</td><td><code>source + knowledge + card synchronized / unseen</code></td></tr>
+<tr><td><code>008</code></td><td>point/box/mask/keypoint/affordance primary papers与official output contracts</td><td>PER-001/007；RoboPoint/SAM/kPAM/Where2Act；OPD local point evidence</td><td><code>source + knowledge + card / unseen</code></td></tr>
+<tr><td><code>009</code></td><td>grounding loss/matching primary/official sources</td><td>PER-007/008 source gates；GroundingDINO/DETR/HF；OPD train artifacts</td><td><code>source + knowledge + card synchronized / unseen</code></td></tr>
+<tr><td><code>010</code></td><td>grounding metric/parser primary/official sources</td><td>PER-001；PER-007/008 source gates；OPD scorer inventory</td><td><code>source + knowledge + card synchronized / unseen</code></td></tr>
+<tr><td><code>011</code></td><td>noisy/pseudo-label、confidence calibration、curriculum与data leakage primary/official sources</td><td>FixMatch/Noisy Student/calibration/leakage来源、OPD mix/cache/online/holdout</td><td><code>source+knowledge+card synced / unseen</code></td></tr>
+<tr><td><code>012</code></td><td>segmentation/depth/keypoint/affordance concrete methods</td><td>Mask2Former/SAM/Depth Anything V2/kPAM/Where2Act、OPD point-only audit</td><td><code>source+knowledge+card synced / unseen</code></td></tr>
+<tr><td><code>013</code></td><td>point-cloud/voxel/BEV/occupancy representation与sampling</td><td>PointNet++/VoxelNet/PointPillars/Minkowski/BEVFusion/Occupancy Networks/OctoMap、Harness map/PCD</td><td><code>source+knowledge+card / unseen</code></td></tr>
+<tr><td><code>014</code></td><td>3D grounding、spatial relation、open-vocabulary 3D scene primary/official sources</td><td>ScanRefer/ReferIt3D/OpenScene/OpenMask3D/LERF/ConceptFusion；PER-007/013；五项目inventories与direct exceptions</td><td><code>source + knowledge + card synchronized / unseen</code></td></tr>
+<tr><td><code>015</code></td><td>reachability/uncertainty primary sources</td><td>PER-002/003/013/014、Modern Robotics/MoveIt/OMPL/TRAC-IK/CLIPort/KnowNo、VOL 03 action contract</td><td><code>source+knowledge+card synced / unseen</code></td></tr>
+<tr><td><code>016</code></td><td>SLAM/odometry/map-frame/drift primary paper、official code与REP-105 frame contract</td><td>ORB-SLAM3/VINS-Mono/Cartographer/DROID-SLAM/OpenVINS/Kimera；Harness map/PCD/reloc assets</td><td><code>source + knowledge + card synced / unseen</code></td></tr>
+<tr><td><code>017</code></td><td>POMDP belief、active exploration/memory、frontier、coverage/revisit primary + official code</td><td>Kaelbling/Yamauchi/Neural-SLAM/OccupancyAnticipation/SemExp/PONI/Exploring Exploration/EmbodiedQA；PER-004/005/016</td><td><code>source + knowledge + card synced / unseen</code></td></tr>
+<tr><td><code>018</code></td><td>VLN IL/RL、teacher forcing与exposure bias primary + official benchmark code</td><td>DAgger/Scheduled Sampling/R2R/VLN-CE/DD-PPO/PPO/GAE；VLN-CE/Habitat/R2R official code；PER-004/005与VOL 02</td><td><code>source + knowledge + card synchronized / unseen</code></td></tr>
+<tr><td><code>019</code></td><td>official navigation measures、SPL/benchmark protocol、statistical reporting</td><td>PER-004、VOL 05 evaluation、PER-004 artifact gate</td><td><code>source + knowledge + card synchronized / unseen</code></td></tr>
+<tr><td><code>020</code></td><td>sensor/domain randomization、uncertainty/safety/fallback primary + simulator docs</td><td>VOL 04 Sim2Real Audit D、VOL 05 failure taxonomy、Hendrycks/Ovadia/Safety Gym</td><td><code>source + knowledge synchronized / card pending</code></td></tr>
+</tbody></table>
+<h2 id="6">6. 项目挂钩与真实性边界</h2>
+<table><thead><tr><th>项目</th><th>可用 hook</th><th>当前不能说</th></tr></thead><tbody>
+<tr><td>OPD</td><td>point/box/text route、affordance-labelled point supervision、Visual Genome 2D image spatial-relation数据与strict/protocol-fixed/lenient scorer</td><td>3D relation frame、3D semantic grounding、closed-loop grasp/navigation、单因素 uplift 或未确认 ownership</td></tr>
+<tr><td>Robot Harness</td><td>semantic-navigation tool schema、2D tri-state occupancy、non-semantic PCD与tool-call/eval interface</td><td>language-queryable 3D map、personal VLN/ObjectNav policy、physical navigation episode 或 success/SPL</td></tr>
+<tr><td>OpenPiVLA</td><td>image/language/action schema、normalization/controller contract 风险</td><td>使用 grounding/SLAM/navigation module，或 formal rollout 已闭环</td></tr>
+<tr><td>WAM</td><td>camera/controller/provenance 与有限 paired diagnostic</td><td>multi-view fusion、3D target、navigation success 或真机 Sim2Real</td></tr>
+<tr><td>UWM / LIBERO</td><td>simulated manipulation protocol与 camera/action schema</td><td>VLN/ObjectNav、mobile navigation、跨协议真实泛化</td></tr>
+</tbody></table>
+<p>面试回答必须按 <code>public upstream mechanism → local interface/evidence → inference → unverified</code> 分层。Git author、official example、字段名或工具描述不能自动成为个人贡献。</p>
+<h2 id="7-vol-06">7. VOL 06 退出条件</h2>
+<h3 id="7-1-coverage-complete">7.1 Coverage complete</h3>
+<ol><li><code>VLA-PER-001..020</code> 全部有唯一 source/knowledge/card 三联件，卷级 question list 与索引同步。</li><li>每张卡包含 stable ID、难度/优先级、短答、机制展开、来源、项目挂钩、易错点、追问与练习状态。</li><li>P0/P1 节点均有 primary/official source revision；discovery list 或跨卷引用不能单独支撑强技术答案。</li></ol>
+<h3 id="7-2-reviewed">7.2 Reviewed</h3>
+<ol><li>20 个节点的 canonical/HTML/review SHA、单 H1、ID、锚点、公式、表格和本地链接通过。</li><li>四个学习簇各完成至少一个独立 fact-review slice；高风险 metric、3D frame、navigation stop/success 与 project truth boundary 必须覆盖。</li><li>Project hook 只引用 evidence inventory/ownership ledger；缺本地 bundle 时明确说“没有直接证据”。</li></ol>
+<h3 id="7-3-drilled">7.3 Drilled</h3>
+<ol><li>至少完成 8 个真实口述 drill，四个学习簇各至少 1 题，其中至少 2 题带项目追问。</li><li>只有真实回答后才创建/更新 coaching state；状态变化必须有回答、反馈、日期和 next review。</li><li>覆盖完成或 HTML 生成不改变 <code>unseen/weak/pass/strong/stale</code>。</li></ol>
+<h3 id="7-4-visual-evidence-boundary">7.4 Visual / evidence boundary</h3>
+<ol><li>支持的本地页面表面恢复后，对卷级入口与代表性原子页做 desktop/narrow QA；当前 <code>BLOCKED</code> 不能写成 PASS。</li><li>不强制虚构正向导航结果；如果没有 local-direct bundle，退出时应保留“无个人导航结果”的真实边界。</li></ol>
+<h2 id="8">8. 缺口优先级与下一切片</h2>
+<table><thead><tr><th>优先级</th><th>缺口</th><th>原因</th><th>下一动作</th></tr></thead><tbody>
+<tr><td>P0-1</td><td>真实口述与 navigation artifact</td><td>二十张卡均 unseen，local-direct bundle 仍为0</td><td>先做一题真实口述或收集 immutable episode bundle</td></tr>
+</tbody></table>
+<p>下一 bounded slice：只做一题真实口述或独立 fact review；不修改任何mastery。local-direct navigation/robustness bundle继续保留为证据队列。</p>
+<h2 id="references">参考入口（References）</h2>
+<ol><li><a href="../questions/vol_06_perception_grounding_navigation.question_list.md">VOL 06 Phase 0 Question List</a></li><li><a href="00_github_guidance_and_sources.md">GitHub Source Scout</a></li><li><a href="../knowledge/00_vla_knowledge_map.md">VLA Knowledge Map</a></li><li><a href="repository_completion_audit.md">Repository Completion Audit</a></li><li><a href="vol_06_per001_grounding_coordinate_source_freeze.md">PER-001 Source Freeze</a></li><li><a href="vol_06_per002_3d_lift_frame_source_freeze.md">PER-002 Source Freeze</a></li><li><a href="vol_06_per003_multiview_temporal_source_freeze.md">PER-003 Source Freeze</a></li><li><a href="vol_06_per004_vln_objectnav_source_freeze.md">PER-004 Source Freeze</a></li><li><a href="vol_06_per005_navigation_policy_architecture_source_freeze.md">PER-005 Source Freeze</a></li><li><a href="../evidence/projects/per004_navigation_artifact_gate.md">PER-004 Navigation Artifact Gate</a></li><li><a href="../evidence/projects/opd_claim_evidence_inventory.md">OPD Claim–Evidence Inventory</a></li><li><a href="vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.md">PER-007 Open-vocabulary Grounding Pipeline Source Freeze</a></li><li><a href="../knowledge/vol_06_per007_open_vocabulary_grounding_pipeline.md">PER-007 Open-vocabulary Grounding Pipeline Knowledge</a></li><li><a href="../questions/vol_06_per007.md">PER-007 Open-vocabulary Grounding Atomic Card</a></li><li><a href="vol_06_per008_representation_choice_source_freeze.md">PER-008 Representation Choice Source Freeze</a></li><li><a href="../knowledge/vol_06_per008_representation_choice.md">PER-008 Representation Choice Knowledge</a></li><li><a href="../questions/vol_06_per008.md">PER-008 Representation Choice Atomic Card</a></li><li><a href="vol_06_per009_grounding_matching_negative_loss_source_freeze.md">PER-009 Grounding Matching / Negative / Loss Source Freeze</a></li><li><a href="../knowledge/vol_06_per009_grounding_matching_negative_loss.md">PER-009 Grounding Matching / Negative / Loss Knowledge</a></li><li><a href="../questions/vol_06_per009.md">PER-009 Grounding Matching / Negative / Loss Atomic Card</a></li><li><a href="vol_06_per010_grounding_metric_parser_protocol_source_freeze.md">PER-010 Grounding Metric / Parser / Protocol Source Freeze</a></li><li><a href="../knowledge/vol_06_per010_grounding_metric_parser_protocol.md">PER-010 Grounding Metric / Parser / Protocol Knowledge</a></li><li><a href="../questions/vol_06_per010.md">PER-010 Grounding Metric / Parser / Protocol Atomic Card</a></li><li><a href="vol_06_per011_pseudo_label_teacher_noise_calibration_leakage_source_freeze.md">PER-011 Pseudo-label / Teacher Noise / Calibration / Leakage Source Freeze</a></li><li><a href="../knowledge/vol_06_per011_pseudo_label_teacher_noise_calibration_leakage.md">PER-011 Pseudo-label / Teacher Noise / Calibration / Leakage Knowledge</a></li><li><a href="../questions/vol_06_per011.md">PER-011 Pseudo-label / Teacher Noise / Calibration / Leakage Atomic Card</a></li><li><a href="vol_06_per012_segmentation_depth_keypoint_affordance_source_freeze.md">PER-012 Segmentation / Depth / Keypoint / Affordance Source Freeze</a></li><li><a href="../knowledge/vol_06_per012_segmentation_depth_keypoint_affordance.md">PER-012 Segmentation / Depth / Keypoint / Affordance Knowledge</a></li><li><a href="../questions/vol_06_per012.md">PER-012 Segmentation / Depth / Keypoint / Affordance Atomic Card</a></li><li><a href="vol_06_per013_pointcloud_voxel_bev_occupancy_source_freeze.md">PER-013 Point Cloud / Voxel / BEV / Occupancy Source Freeze</a></li><li><a href="../knowledge/vol_06_per013_pointcloud_voxel_bev_occupancy.md">PER-013 Point Cloud / Voxel / BEV / Occupancy Knowledge</a></li><li><a href="../questions/vol_06_per013.md">PER-013 Point Cloud / Voxel / BEV / Occupancy Atomic Card</a></li><li><a href="vol_06_per014_3d_grounding_spatial_relation_open_vocabulary_source_freeze.md">PER-014 3D Grounding / Spatial Relation / Open-vocabulary 3D Scene Source Freeze</a></li><li><a href="../knowledge/vol_06_per014_3d_grounding_spatial_relation_open_vocabulary.md">PER-014 3D Grounding / Spatial Relation / Open-vocabulary 3D Scene Knowledge</a></li><li><a href="../questions/vol_06_per014.md">PER-014 3D Grounding / Spatial Relation / Open-vocabulary 3D Scene Atomic Card</a></li><li><a href="vol_06_per015_perception_action_reachability_uncertainty_failure_gate_source_freeze.md">PER-015 Perception→Action / Reachability / Uncertainty / Failure Gate Source Freeze</a></li><li><a href="../knowledge/vol_06_per015_perception_action_reachability_uncertainty_failure_gate.md">PER-015 Perception→Action / Reachability / Uncertainty / Failure Gate Knowledge</a></li><li><a href="../questions/vol_06_per015.md">PER-015 Perception→Action / Reachability / Uncertainty / Failure Gate Atomic Card</a></li><li><a href="vol_06_per016_localization_odometry_slam_map_frame_drift_source_freeze.md">PER-016 Localization / Odometry / SLAM / Map-frame / Drift Source Freeze</a></li><li><a href="../knowledge/vol_06_per016_localization_odometry_slam_map_frame_drift.md">PER-016 Localization / Odometry / SLAM / Map-frame / Drift Knowledge</a></li><li><a href="../questions/vol_06_per016.md">PER-016 Localization / Odometry / SLAM / Map-frame / Drift Atomic Card</a></li><li><a href="vol_06_per017_belief_memory_frontier_active_exploration_source_freeze.md">PER-017 Belief / Memory / Frontier / Active Exploration Source Freeze</a></li><li><a href="../knowledge/vol_06_per017_belief_memory_frontier_active_exploration.md">PER-017 Belief / Memory / Frontier / Active Exploration Knowledge</a></li><li><a href="../questions/vol_06_per017.md">PER-017 Belief / Memory / Frontier / Active Exploration Atomic Card</a></li><li><a href="vol_06_per018_navigation_bc_dagger_rl_exposure_bias_source_freeze.md">PER-018 Navigation BC / DAgger / RL / Exposure Bias Source Freeze</a></li></ol>
+</article></body></html>

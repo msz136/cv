@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：CUDA / MACA / ROCm 兼容性与算子验证（ENG-014）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eng014.md">
+<meta name="aris:source-sha256" content="58c9824dae2fdb81419d291690db0949075681755605a81aa9669cd345bb00f9">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>58c9824dae2fdb81419d291690db0949075681755605a81aa9669cd345bb00f9</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eng014.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1">1. 短答：为什么“能启动”不等于“兼容”</a></li><li><a href="#2">2. 六层兼容性合同</a></li><li><a href="#2-1">2.1 直觉</a></li><li><a href="#2-2">2.2 层次、失败模式与证据</a></li><li><a href="#3-cuda-hip-rocm-maca">3. CUDA、HIP/ROCm 与 MACA：可复用层和必须重验层</a></li><li><a href="#3-1-cuda-driver-compatibility">3.1 CUDA：异步执行与 driver compatibility 各自有边界</a></li><li><a href="#3-2-hip-rocm-kernel">3.2 HIP/ROCm：接口复用降低改动，不等于 kernel 复用</a></li><li><a href="#3-3-maca-cuda-like-surface">3.3 MACA：CUDA-like surface 仍依赖专用软件栈</a></li><li><a href="#4-operator-matrix">4. 最小 operator matrix：把“可用”变成可审计行</a></li><li><a href="#4-1">4.1 必须固定的字段</a></li><li><a href="#4-2-forward-backward-smoke">4.2 forward/backward smoke 的顺序</a></li><li><a href="#5-parity">5. 数值 parity 与同步计时</a></li><li><a href="#6">6. 迁移验证伪代码</a></li><li><a href="#7-openpivla">7. OpenPiVLA 项目映射与真实性边界</a></li><li><a href="#8-trade-off-bad-case">8. Trade-off、追问与 bad case</a></li><li><a href="#8-1-trade-off">8.1 Trade-off</a></li><li><a href="#8-2-bad-case">8.2 高概率 bad case</a></li><li><a href="#9">9. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：CUDA / MACA / ROCm 兼容性与算子验证（ENG-014）</h1>
+<div class="meta">状态：<code>drafted / knowledge_16_of_44 / cards_15_of_44_unseen / review_warn</code> 报告日期：2026-07-17 证据截止：2026-07-17 当前节点：<code>VLA-ENG-014</code>；来源已冻结，题卡继续后置。 来源入口：<a href="../sources/vol_05_eng014_hardware_operator_compatibility_source_freeze.html">ENG-014 Hardware / Operator Compatibility Source Freeze</a>。 核心边界：<code>torch.cuda</code> API 能调用、driver compatibility 或 eager fallback 只证明某一层；不自动证明第三方算子、通信、数值、性能或 VLA 闭环等价。</div>
+<h2 id="question">问题（Question）</h2>
+<p><code>VLA-ENG-014</code>：VLA 训练或部署从 CUDA 迁移到 MACA、ROCm 等后，怎样判断“能运行”与“算子/数值/性能兼容”？</p>
+<p>面试中不要把兼容性回答成一个布尔值。我会先定位通过了哪一层，再说明下一层仍缺什么 artifact：device/runtime、framework/build、operator/kernel、communication、numerical/runtime、workload/eval。</p>
+<h2 id="section-2">知识地图位置与前置依赖</h2>
+<pre><code class="language-text">device/runtime → framework/build → operator/kernel → communication
+       → numerical/runtime → VLA data/checkpoint/controller/eval</code></pre>
+<p>前置：</p>
+<ul><li><code>VLA-ENG-003</code> 的 DataLoader/preprocess/GPU/sync 吞吐分解。</li><li><code>VLA-ENG-004..006</code> 的 DDP/FSDP/ZeRO、AMP、checkpoint/load smoke 合同。</li><li><code>VLA-ENG-007..008</code> 的 policy server、action parser、denorm、frame/controller contract。</li><li>ENG-014 source freeze 中的 PyTorch 2.13 CUDA/HIP/extension、ROCm matrix、NVIDIA Compatibility、MetaX mcPytorch/mcTriton 来源。</li></ul>
+<h2 id="1">1. 短答：为什么“能启动”不等于“兼容”</h2>
+<p><strong>30 秒回答</strong>：我把迁移拆成六层：先确认 device/runtime 和 PyTorch build，再逐个验证目标 operator 的 forward/backward、dtype、shape、layout；之后验证 DDP/FSDP 所需通信，做同步后的数值 parity 和 p50/p95 latency，最后检查 checkpoint、action parser、denorm、controller 与闭环 eval 是否仍是同一合同。PyTorch HIP 复用 <code>torch.cuda</code> 接口能降低 Python 层改动，但不保证 CUDA extension、Triton、FlashAttention 或 MACA custom kernel 自动等价。OpenPiVLA 的 eager/MACA 证据目前只支持稳定性和可诊断 call graph，不能说性能 uplift。</p>
+<h2 id="2">2. 六层兼容性合同</h2>
+<h3 id="2-1">2.1 直觉</h3>
+<p>把 VLA 从 CUDA 搬到另一个后端，像把机器人产线搬到另一座工厂：Python API 是操作台，下面还有驱动、编译器、kernel、通信和验收流程。操作台能打开，只说明入口存在；不说明每个按钮、速度和成品质量都一样。</p>
+<h3 id="2-2">2.2 层次、失败模式与证据</h3>
+<table><thead><tr><th>层</th><th>面试要问</th><th>典型失败</th><th>最小证据</th></tr></thead><tbody>
+<tr><td>L0 device/runtime</td><td>设备、driver、runtime、共享库是否匹配？</td><td><code>is_available=False</code>、动态库缺失、容器看不到设备</td><td>环境 manifest、device query、版本打印</td></tr>
+<tr><td>L1 framework/build</td><td>wheel/build 是否针对该 backend？</td><td>CUDA wheel 与 MACA/ROCm runtime 不匹配；Python/framework 不在支持矩阵</td><td><code>torch.__version__</code>、backend version、安装来源</td></tr>
+<tr><td>L2 operator/kernel</td><td>op 是否注册且覆盖 forward/backward、dtype、shape、layout？</td><td>attention、量化、稀疏或 custom extension 缺失/fallback</td><td>op matrix、编译日志、forward/backward smoke</td></tr>
+<tr><td>L3 communication</td><td>DDP/FSDP/ZeRO 所需 collective 是否可用且语义一致？</td><td>collective backend unavailable、all-reduce 失败、rank 不同步</td><td>process-group init、collective parity、rank 日志</td></tr>
+<tr><td>L4 numerical/runtime</td><td>精度、随机性、stream、同步、内存行为能否接受？</td><td>FP16/BF16 overflow、未同步计时、跨 stream 竞态</td><td>reference parity、grad check、同步计时</td></tr>
+<tr><td>L5 workload/eval</td><td>VLA 数据、权重、parser、controller、闭环协议是否一致？</td><td>训练能跑但动作轴序/单位/反归一化错误</td><td>lineage、eval manifest、rollout trace</td></tr>
+</tbody></table>
+<p>这六层是工程验证模型，不是单一厂商的 API 公式。安全句式是：“我先证明 L0/L1 可启动，再用 L2/L3 smoke，最后用 L4 数值/性能和 L5 任务协议闭环；前一层通过不能替代后一层。”</p>
+<h2 id="3-cuda-hip-rocm-maca">3. CUDA、HIP/ROCm 与 MACA：可复用层和必须重验层</h2>
+<h3 id="3-1-cuda-driver-compatibility">3.1 CUDA：异步执行与 driver compatibility 各自有边界</h3>
+<p>PyTorch 2.13 CUDA 文档说明 GPU 操作默认异步排队；同一 stream 内按顺序执行，不同 stream 需要显式同步或事件建立依赖。NVIDIA CUDA Compatibility 文档则描述 minor-version 与 forward compatibility 的支持模型，并保留 feature limitation、平台和 GPU 前提。</p>
+<p>因此，driver/toolkit 兼容只回答“某类运行时组合能否被支持”，不回答第三方 kernel 的 ABI、编译目标、依赖库、shape/dtype 覆盖或性能。未经 <code>torch.cuda.synchronize()</code> / CUDA Event 的一次 wall-clock 也不能作为算子性能证据。</p>
+<h3 id="3-2-hip-rocm-kernel">3.2 HIP/ROCm：接口复用降低改动，不等于 kernel 复用</h3>
+<p>PyTorch HIP 文档把 HIP 定义为 ROCm 的 C++ dialect，并说明 PyTorch for HIP 有意复用 <code>torch.cuda</code> interfaces。这样高层 Python 代码可能少改，但 <code>.cu</code> extension、第三方 wheel、通信 backend 和特定 kernel 仍要走自己的编译/运行 gate。</p>
+<p>ROCm compatibility matrix 把 PyTorch、Python、GPU、OS、driver/firmware 作为组合进行验证。面试中应说“选择矩阵中已验证的组合”，而不是只报一个 ROCm 版本。</p>
+<h3 id="3-3-maca-cuda-like-surface">3.3 MACA：CUDA-like surface 仍依赖专用软件栈</h3>
+<p>MetaX <code>mcPytorch@b3db5e</code> README 说明其在 PyTorch 2.4 基础上增加 MetaX GPU 支持，并要求 MACA driver、compiler、数学/算子库和通信库配套；安装/运行还依赖 <code>MACA_PATH</code>、<code>MACA_CLANG_PATH</code> 等环境变量。它支持“高层 PyTorch 使用方式相近”的表述，但不能推出任意 upstream CUDA wheel 或 custom extension 无需重编译。</p>
+<p>MetaX <code>mcTriton@7dd407</code> README 要求从 mcPytorch 安装包获取 MetaX LLVM，并使用 MACA-specific build script。因此 Triton/custom-kernel 兼容必须单独记录 compiler、SDK、build log 和运行 parity，不能由 Python 模型启动替代。</p>
+<h2 id="4-operator-matrix">4. 最小 operator matrix：把“可用”变成可审计行</h2>
+<h3 id="4-1">4.1 必须固定的字段</h3>
+<p>一个 operator row 至少固定 <code>backend</code>、<code>framework build</code>、<code>op/version</code>、<code>dtype</code>、<code>shape</code>、<code>layout/stride</code>、<code>requires_grad</code>、<code>forward/backward</code>、<code>reference</code>、<code>stream/sync</code>、<code>status</code>。VLA 还要加入 action horizon、图像尺寸、batch、mask 和 controller-facing output shape。</p>
+<table><thead><tr><th>维度</th><th>最小取值示例</th><th>不固定的后果</th></tr></thead><tbody>
+<tr><td>backend</td><td>CUDA / MACA / ROCm</td><td>相同 Python 代码可能走不同 dispatch</td></tr>
+<tr><td>dtype</td><td>FP32 / FP16 / BF16（按后端支持）</td><td>accumulation、overflow 和容差不可比</td></tr>
+<tr><td>shape</td><td>tiny、真实 batch、边界 horizon/sequence</td><td>非典型 shape 可能 fallback 或报错</td></tr>
+<tr><td>layout</td><td>contiguous / non-contiguous、channels-last（若用）</td><td>stride 变化会改变 kernel 路径</td></tr>
+<tr><td>grad</td><td>forward-only / backward / optimizer step</td><td>推理通过不等于训练闭环可用</td></tr>
+<tr><td>async</td><td>default stream / explicit stream</td><td>未同步计时或跨 stream 竞态</td></tr>
+<tr><td>distributed</td><td>单卡 / 2-rank init + all-reduce</td><td>单卡通过不能推出通信可用</td></tr>
+<tr><td>VLA contract</td><td>mask、denorm、parser、controller</td><td>kernel 通过不等于动作可执行</td></tr>
+</tbody></table>
+<h3 id="4-2-forward-backward-smoke">4.2 forward/backward smoke 的顺序</h3>
+<ol><li>冻结 backend build、device visibility、dtype、shape、layout 和随机输入。</li><li>先跑 forward，再在可训练 op 上跑 backward/optimizer step。</li><li>收集 missing kernel、fallback、warning、梯度和显存异常。</li><li>与冻结 reference backend 比较输出、梯度和 action contract。</li><li>只有在同步方式明确后，才记录 warm-up 后 p50/p95 latency。</li></ol>
+<h2 id="5-parity">5. 数值 parity 与同步计时</h2>
+<p>令 (y_{mathrm{ref}}) 是 reference backend 输出，(y_b) 是待测 backend 输出，(epsilon) 防止参考范数为零。可以使用相对误差作为项目验证指标：</p>
+<div class="formula">\[
+e_{\mathrm{rel}}(b)=\frac{\lVert y_b-y_{\mathrm{ref}}\rVert_2}{\max(\lVert y_{\mathrm{ref}}\rVert_2,\epsilon)}
+\]</div>
+<p>变量解释：(b) 是待测 backend，(y) 可以是 forward 输出、gradient 或最终 action tensor。它是本项目的 parity 设计，不是 CUDA/ROCm 官方保证；必须固定同一输入、dtype、shape 和随机协议，并按 op 设定 tolerance。对 action 还要检查反归一化后的单位、轴序与 controller 输入。</p>
+<p>GPU 计时要等待异步队列完成：</p>
+<div class="formula">\[
+T_{\mathrm{ms}}=t_{\mathrm{end}}-t_{\mathrm{start}},\qquad
+t_{\mathrm{start}},t_{\mathrm{end}}\text{ 在对应 device/stream 完成同步后读取}
+\]</div>
+<p>这里的同步不是一个返回时间戳的数学函数：实现可在计时前后调用 <code>torch.cuda.synchronize()</code>，或用 CUDA Event 记录并在完成后读取 elapsed time。HIP 复用 PyTorch CUDA interface，但 MACA 的同步 API、Event 精度和 stream 行为仍需实测；不能从 CUDA 文档直接外推。</p>
+<h2 id="6">6. 迁移验证伪代码</h2>
+<pre><code class="language-python">def verify_operator_case(case, reference_backend):
+    # 1. Freeze backend build, visibility, dtype, shape, layout and input seed.
+    env = load_backend_manifest(case.backend, case.framework_build)
+    x = make_fixed_input(case.shape, case.dtype, case.layout, seed=case.seed)
+
+    # 2. Run forward and, when trainable, backward/optimizer smoke.
+    y = run_forward(case.op, x, backend=case.backend)
+    if case.requires_grad:
+        reduce_for_smoke(y).backward()
+
+    # 3. Synchronize before timing; asynchronous wall-clock is not sufficient.
+    synchronize_backend(case.backend)
+    latency = timed_p50_p95(case.op, x, warmup=case.warmup)
+
+    # 4. Compare with a frozen reference using declared tolerance, not exact bytes.
+    y_ref = run_forward(case.op, x, backend=reference_backend)
+    rel_error = l2(y - y_ref) / max(l2(y_ref), case.eps)
+
+    # 5. Persist fallback warnings, gradients, latency and artifact hashes.
+    return record_matrix_row(case, rel_error, latency, collect_runtime_warnings())</code></pre>
+<p>这是验证顺序的机制模型：environment → forward/backward → synchronize → parity/latency → artifact row。<code>synchronize_backend</code>、tolerance 和 fallback warning 的具体 API 必须由各 backend 实现，伪代码本身不是任何厂商的兼容性证明。</p>
+<h2 id="7-openpivla">7. OpenPiVLA 项目映射与真实性边界</h2>
+<p>本地 <a href="../sources/openpivla_batch2_evidence_freeze.html">OpenPiVLA Batch 2 证据冻结</a> 直接支持：formal trainer 将 attention 参数设为 <code>eager</code>，训练循环使用 Qwen <code>outputs.loss</code>；public smoke 能走 <code>(B,15,72)</code> 占位 tensor 和 tiny step。当前快照没有 formal checkpoint binary、immutable raw log、parser roundtrip、custom-op matrix 或 profiler。</p>
+<p>因此项目中可以说：</p>
+<div class="meta">我在 C500/MACA 迁移时先把 attention 走 eager，目标是避开已记录的 flash-attention / position-id 兼容失败点，让训练、保存和诊断路径先可执行。这个证据只说明 local call graph 和 smoke contract 可读；我不会把它说成 eager 比 flash 快，也不会说所有 custom op、AMP、通信和 action parser 已经兼容。下一步要用固定输入做 forward/backward parity，再补同步计时、dtype/shape 矩阵和 checkpoint→eval roundtrip。</div>
+<table><thead><tr><th>口径</th><th>证据等级</th><th>面试安全表述</th></tr></thead><tbody>
+<tr><td><code>attn_implementation=eager</code> 调用位置</td><td>local-direct</td><td>兼容性/稳定性选择</td></tr>
+<tr><td>public smoke <code>(B,15,72)</code></td><td>local-direct</td><td>占位 tensor contract 能走 tiny step</td></tr>
+<tr><td>MACA 性能优于 CUDA/flash</td><td>unverified</td><td>没有 profiler/matched benchmark，不能说</td></tr>
+<tr><td>所有算子/第三方库已适配</td><td>unverified</td><td>没有 operator matrix/build log/fallback audit，不能说</td></tr>
+<tr><td>三后端闭环成功率等价</td><td>unverified</td><td>没有同一 checkpoint、eval manifest、rollout trace，不能说</td></tr>
+</tbody></table>
+<h2 id="8-trade-off-bad-case">8. Trade-off、追问与 bad case</h2>
+<h3 id="8-1-trade-off">8.1 Trade-off</h3>
+<ul><li>更强的 parity/determinism 需要更多同步、固定输入与 artifact，可能牺牲吞吐。</li><li>纯 Python/eager fallback 往往先提高可诊断性，但不自动带来性能提升。</li><li>为某个 backend 重编译 custom kernel 可能恢复功能，却引入 compiler/SDK/ABI 的新维护面。</li><li>单卡 operator smoke 成本低，但不能替代 2-rank collective、真实 batch 和 closed-loop rollout。</li></ul>
+<h3 id="8-2-bad-case">8.2 高概率 bad case</h3>
+<ol><li>只检查 <code>torch.cuda.is_available()</code>，忽略 wheel、driver、共享库和 backend version。</li><li>CUDA/HIP 复用 <code>torch.cuda</code> API 后，误以为 <code>.cu</code> extension、Triton 或 FlashAttention 自动可用。</li><li>未同步就比较一次 wall-clock，把 enqueue 时间当成 kernel latency。</li><li>forward 能跑就宣称训练可用，实际 backward、BF16、非 contiguous layout 或 all-reduce 失败。</li><li>eager 在 MACA 上能启动，就把它包装成性能 uplift 或 benchmark 因果。</li></ol>
+<h2 id="9">9. 结论与下一步</h2>
+<p>硬件迁移的核心不是替换一个 device 字符串，而是逐层闭合 runtime、build、operator、communication、numerical/runtime 和 VLA workload/eval 合同。PyTorch HIP 的 <code>torch.cuda</code> interface reuse 可以降低高层代码改动；ROCm compatibility matrix、NVIDIA compatibility 文档与 MetaX mcPytorch/mcTriton README 同时提醒版本、工具链和 kernel 仍需独立验证。当前个人项目只拥有 eager/MACA local call graph 与 smoke 级证据，仍不能声称算子 parity、性能提升或三后端闭环等价。</p>
+<p>下一步：补独立 operator wording review 与 backend×dtype×shape×layout×grad smoke 计划；然后再决定是否生成 <code>VLA-ENG-014</code> 单张题卡。题卡生成后默认保持 <code>unseen</code>，不会因页面生成升级掌握状态。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="https://docs.pytorch.org/docs/2.13/notes/cuda.html">PyTorch 2.13 CUDA semantics</a>。GPU 异步、stream、synchronize 与 device visibility。</li><li><a href="https://docs.pytorch.org/docs/2.13/notes/hip.html">PyTorch 2.13 HIP (ROCm) semantics</a>。HIP dialect 与 <code>torch.cuda</code> interface reuse。</li><li><a href="https://docs.pytorch.org/docs/2.13/cpp_extension.html">PyTorch 2.13 C++/CUDA extension</a>。<code>CUDAExtension</code>、<code>with_cuda</code>、Ninja 和显式 build contract。</li><li><a href="https://rocm.docs.amd.com/en/latest/compatibility/compatibility-matrix.html">ROCm 7.14.0 compatibility matrix</a>。framework/Python/GPU/OS/driver 组合验证。</li><li><a href="https://docs.nvidia.com/deploy/cuda-compatibility/">NVIDIA CUDA Compatibility</a>。minor-version / forward compatibility 与限制。</li><li><a href="https://github.com/MetaX-MACA/mcPytorch/tree/b3db5eed6a6e330133cd3d4b173f8da392aa6bcb">MetaX-MACA mcPytorch@b3db5e</a>。PyTorch 2.4 / MACA 环境与工具链边界。</li><li><a href="https://github.com/MetaX-MACA/mcTriton/tree/7dd407c26568fceaca44cb894138e5202d369805">MetaX-MACA mcTriton@7dd407</a>。MetaX LLVM 与 MACA-specific build path。</li><li>本仓库 <a href="../sources/vol_05_eng014_hardware_operator_compatibility_source_freeze.html">ENG-014 Source Freeze</a> 与 <a href="../sources/openpivla_batch2_evidence_freeze.html">OpenPiVLA Batch 2 证据冻结</a>。</li></ol>
+</article></body></html>

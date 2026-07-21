@@ -1,0 +1,72 @@
+{
+  "artifact": "sources/vol_04_batch1_independent_fact_review.md",
+  "html": "sources/vol_04_batch1_independent_fact_review.html",
+  "review_date": "2026-07-16",
+  "status": "reviewed_slice",
+  "verdict": "WARN",
+  "source_sha256": "115eed1c2c3d0d98adc46acde2e8effe12f0305b2f7ea2a81c7fa3ffac2503c1",
+  "scope": {
+    "question_ids": [
+      "VLA-WM-039",
+      "VLA-WM-040",
+      "VLA-WM-041",
+      "VLA-WM-042",
+      "VLA-WM-043",
+      "VLA-WM-044"
+    ],
+    "method": "Independent HTTP reads of frozen primary paper and official-code revisions; no local training/eval execution",
+    "evidence_cutoff": "2026-07-16"
+  },
+  "sources_checked": [
+    {
+      "label": "UWM paper",
+      "type": "primary",
+      "revision": "arXiv 2504.02792v3",
+      "supports": ["Table II average 0.79", "3 finetune seeds", "50 OOD initializations", "object initialization range +0.03", "background-object removal", "intervals across seeds"]
+    },
+    {
+      "label": "UWM eval_robomimic.py",
+      "type": "official-code",
+      "revision": "b7d4067c8859775e5b08f681e76d538015cdd445",
+      "supports": ["env.seed(e) then env.reset", "rollout_length passed to wrapper", "no explicit warmup in the eval entrypoint"]
+    },
+    {
+      "label": "UWM robomimic wrapper",
+      "type": "official-code",
+      "revision": "b7d4067c8859775e5b08f681e76d538015cdd445",
+      "supports": ["history padding on reset", "action-sequence stepping", "max episode length", "reset_to_state exists but is not the default eval path"]
+    },
+    {
+      "label": "Cosmos LIBERO runner",
+      "type": "official-code",
+      "revision": "18a2accadf4e7a3531e56754102af5a24d2316da",
+      "supports": ["chunk_size 16", "num_open_loop_steps 16", "action denoise 5", "future/value denoise 1", "50 trials per task", "chunk consistency assertion"]
+    },
+    {
+      "label": "WorldGym OpenVLA runner and scorer",
+      "type": "official-code",
+      "revision": "709665b29f5c95124e7dbc05b0d4d47cd353de97",
+      "supports": ["trial PNG initialization", "generated-video rollout", "GPT-4o discrete scorer", "trial-score aggregation"]
+    }
+  ],
+  "checks": {
+    "uwm_paper_protocol": "PASS (direct primary-source text checked)",
+    "uwm_repo_reset_boundary": "PASS (direct frozen-code paths checked)",
+    "cosmos_runner_defaults": "PASS (direct frozen-code config and assertions checked)",
+    "worldgym_proxy_boundary": "PASS (direct frozen-code runner/scorer paths checked)",
+    "framework_vs_fact_classification": "PASS (12-field tuple, paired effect, factorial ablation, consistency suite and failure taxonomy are labeled as framework/design)",
+    "six_card_coverage": "PASS WITH WARNING (WM-039/040/041/044 have direct source anchors; WM-042/043 are source-consistent diagnostic frameworks, not executed claims)",
+    "project_truth_boundary": "PASS (74.4%, 92.8%, 84/118 and MSE remain claim-only)",
+    "local_artifacts": "MISSING (no local checkpoint/config/normalizer/episode bundle found)",
+    "browser_visual_check": "BLOCKED (in-app Browser URL policy rejects file:// local pages; static HTML checks do not substitute for visual QA)",
+    "oral_drill": "PENDING",
+    "html_static_validation": "PASS (one H1, 11 H2 sections, 2 tables, 1 commented pseudocode block, source SHA rendered)"
+  },
+  "open_items": [
+    "Do not treat source verification as local reproduction or personal ownership evidence.",
+    "Collect UWM and WAM checkpoint/config/normalizer/controller/episode artifacts before strengthening project answers.",
+    "Run browser visual QA through a user-approved supported surface; current file:// navigation is blocked.",
+    "Keep all six cards unseen until oral practice."
+  ],
+  "next": "Use this review record to update the six-card/knowledge review ledgers, then stop; the next bounded slice requires local artifacts or a separate source-ready knowledge batch."
+}

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 EVAL-008 Source Freeze：Perception / Action / Controller / Recovery Failure Taxonomy</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_eval008_perception_action_controller_recovery_failure_taxonomy_source_freeze.md">
+<meta name="aris:source-sha256" content="580ac70922472453c8806265b2fd4bae8dad7881bad3da2e8f211c870e1f37b0">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>580ac70922472453c8806265b2fd4bae8dad7881bad3da2e8f211c870e1f37b0</code>；生成自：<code>interview_materials\vla\sources\vol_05_eval008_perception_action_controller_recovery_failure_taxonomy_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、revision、许可与边界</a></li><li><a href="#2-effect-mode-cause-detection-recovery">2. Effect、Mode、Cause、Detection 与 Recovery 分开</a></li><li><a href="#3-first-verified-divergence">3. First Verified Divergence</a></li><li><a href="#4-taxonomy">4. 四层主taxonomy与交叉层</a></li><li><a href="#4-1-perception-state-estimation">4.1 Perception / State Estimation</a></li><li><a href="#4-2-policy-action-action-interface">4.2 Policy / Action 与 Action Interface</a></li><li><a href="#4-3-controller-execution">4.3 Controller / Execution</a></li><li><a href="#4-4-recovery-supervision">4.4 Recovery / Supervision</a></li><li><a href="#4-5-cross-cutting-protocol-environment-scorer">4.5 Cross-cutting Protocol / Environment / Scorer</a></li><li><a href="#5">5. 最小归因实验</a></li><li><a href="#6-detector-recovery">6. Detector 与 Recovery 指标</a></li><li><a href="#7">7. 五项目边界</a></li><li><a href="#8-failure-ledger">8. Failure Ledger 伪代码</a></li><li><a href="#9-source-gate">9. Source Gate 结论与下一入口</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 EVAL-008 Source Freeze：Perception / Action / Controller / Recovery Failure Taxonomy</h1>
+<div class="meta">状态：<code>source_frozen / VLA-EVAL-008 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-18 证据截止：2026-07-18 本切片冻结 failure effect / mode / cause、first verified divergence、perception/action-interface/controller/recovery 分层、runtime detection 与 recovery outcome；下游只生成一张 <code>VLA-EVAL-008</code> 原子题卡，VOL 05 同步为 knowledge/cards 30/44。</div>
+<h2 id="question">问题（Question）</h2>
+<p>一个episode失败后，怎样判断是感知、policy/action、action interface、controller/execution还是recovery失败？强回答不是看视频后贴单标签，而是沿可观测链找到<strong>最早被证据验证的偏差</strong>，把failure effect、observable mode、root-cause hypothesis和recovery result分开。</p>
+<pre><code class="language-text">raw observation -&gt; perception/state estimate -&gt; policy proposal
+ -&gt; decode/denorm/frame transform -&gt; controller command/executed state
+ -&gt; environment transition/success scorer -&gt; detector/recovery -&gt; resume/abort</code></pre>
+<h2 id="1-revision">1. 冻结来源、revision、许可与边界</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>类型 / revision</th><th>SHA-256</th><th>支持范围</th></tr></thead><tbody>
+<tr><td>S1</td><td>NASA GSFC-HDBK-8004, <em>Guideline for FMEA and Risk Assessment</em></td><td>official handbook / Baseline, change 0, 2024-08-20</td><td>page <code>c661245f1ade662bb71c0d786bfd85a1eb41ebadf0d5b916d1fc71223167315c</code>; PDF <code>88e2f1a7a5ff96e264ff91bbac985a7711422c6608ceab58b36dfb24ac7dc8fb</code></td><td>failure mode/effect/criticality作为随设计更新的living risk ledger；不提供VLA专用标签</td></tr>
+<tr><td>S2</td><td>Agia et al., <em>Sentinel</em></td><td>primary / CoRL 2024, arXiv <code>2410.04640</code>; official-code commit <code>6dc89ca4cb30f75ce834811c2d1b31f7ffadf7b5</code>, MIT</td><td>paper response <code>d226a4323f2990f2ef8cf3c4c478c92bb8d5f1bf9281f7d70d98e325e1836516</code>; README <code>85d63068108ce3d26ecf58ad65620dd8574a1a3d041934c0d18bae629213c6de</code>; LICENSE <code>92d4dfb71ad0b8827bcf0552b8064da4e7a8caacbc926c4d2a2f41a71dd58d16</code></td><td>erratic/temporal-action-consistency与task-progression detector互补、failure detection需要成功/失败样本；detector类别不等于root cause</td></tr>
+<tr><td>S3</td><td>Duan et al., <em>AHA</em></td><td>primary / ICLR 2025, arXiv <code>2410.00371</code>; official-code commit <code>0d39c0591566ddaf997be5822f3dead8e08501aa</code>, NVIDIA License</td><td>paper response <code>b8f9dde4991904f1bd147b7a6bfcacd6a4b2fb286cd7079629e24333d872b54d</code>; README <code>81a8fc37adb71d2293d996ccfd46cff5405d45ad2618696a94817998fea779c0</code>; LICENSE <code>f79d806b9a5512efced76b1df421a369ddf04ef48fbd7d98e61d4c6a4109b06f</code></td><td>从机器人失败轨迹做视觉语言检测/解释；natural-language explanation仍需trace/intervention核验</td></tr>
+<tr><td>S4</td><td>Liu et al., <em>REFLECT</em></td><td>primary / CoRL 2023, arXiv <code>2306.15724</code>; official-code commit <code>0ac7458735fba606151df851491124486dc8b489</code>, MIT</td><td>paper response <code>2403884d0142ce09ec68d569a95bc4be302d3663169cd3cde70bc7ababa897bc</code>; README <code>9849012a3165390d516586ae8b83e338afa101842cb889f32395766178572817</code>; LICENSE <code>076eb1a8b4e161bf953019c9f54c1e052d2f65f05c53a4fa0c5ef1489d1ffe11</code></td><td>multisensory hierarchical summary、execution/planning failure explanation与correction plan；不保证perception或correction正确</td></tr>
+<tr><td>S5</td><td>Thananjeyan et al., <em>Recovery RL</em></td><td>primary / RA-L + ICRA 2021, arXiv <code>2010.15920v2</code>; official-code commit <code>084c968538850e82776564e07b9dcdffca369936</code>, MIT</td><td>paper response <code>68d42ec218715e5b08663d064e853d96b4428c83f9c650655969db506bf3eb8b</code>; README <code>47c35b98d3b4c12fb000c6fba9e79edecef32f1aa866f110ef93d6c62e9c3211</code>; <code>qrisk.py</code> <code>d85f65466609a0a76bee6c57ef462fe46b099f10c8c127a47a650747c67470e3</code>; LICENSE <code>cdbab599401d78c531d8662377974326f2ba9e347559eda288652f4761145e83</code></td><td>task policy与recovery policy分离、risk trigger与recovery zone；不是任意VLA的默认recovery实现</td></tr>
+<tr><td>S6</td><td><code>ros-controls/ros2_control</code> Controller Manager / Hardware docs</td><td>official-code / commit <code>e4ebcc352d9aeb69969308428b051bdd3105b88f</code>, Apache-2.0</td><td>userdoc <code>cf3af601c715499e37408420a355f092176707912e542feb549ccac0a1f038a1</code>; hardware doc <code>0349b40119198da85257daca285bf5baccd2fd81f2d5f60fc7cb0eead4014f0a</code>; LICENSE <code>cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30</code></td><td>hardware read/write与controller update error、deactivation/fallback、overrun/diagnostics；不证明本地项目使用ROS2或fallback成功</td></tr>
+<tr><td>S7</td><td>本地机制来源</td><td>canonical source freezes</td><td>hashes见下</td><td>action interface、WM failure probe、first-failure ladder与grounding边界</td></tr>
+<tr><td>S8</td><td>五项目inventories与WAM paired trace</td><td>local evidence</td><td>hashes见下</td><td>当前可见failure symptom、trace与缺口；不自动支持root cause</td></tr>
+</tbody></table>
+<p>本地来源SHA：architecture/execution <code>bef8ebb6540644cdbab76a92adaa71ba97523c17e04ce19632b71d54b11db809</code>；WM-020 <code>4053bb051296bcc785a3e1b7f7ddf0a0c75339dcb4f8c84aed755b49888c06dd</code>；VOL 05基础页 <code>19965c8d0620255e794b6ffa2b6fb791a80bf36f61e9c7cb699972b8a9ebc547</code>；PER-001 <code>345b7601602d0800e669f85ce1d8b8d77760c3022beab48e44e7ce7b11cc803b</code>；WAM paired trace <code>913d68cb1e7be44fd108d2a06509d33ea04462b255a153af030b2f3c0a603fb5</code>；五inventory分别为 <code>66acc52c...aa291e</code>、<code>078c86b1...772d</code>、<code>728b8326...3674d</code>、<code>a3c644f9...ce293</code>、<code>0a68251d...12bb</code>（完整值见各review）。</p>
+<h2 id="2-effect-mode-cause-detection-recovery">2. Effect、Mode、Cause、Detection 与 Recovery 分开</h2>
+<table><thead><tr><th>层</th><th>回答什么</th><th>例子</th></tr></thead><tbody>
+<tr><td>failure effect</td><td>最终发生了什么</td><td>timeout、success=false、碰撞、未抓起</td></tr>
+<tr><td>failure symptom/mode</td><td>trace中哪里偏离</td><td>mask缺失、action跳变、tracking error、detector未触发</td></tr>
+<tr><td>root cause</td><td>为什么偏离</td><td>相机错帧、训练分布缺口、轴序错误、控制饱和</td></tr>
+<tr><td>detection</td><td>何时、依据什么报警</td><td>action inconsistency、VLM progress monitor、joint limit</td></tr>
+<tr><td>recovery outcome</td><td>报警后是否安全恢复</td><td>stop、regrasp、replan、human takeover、abort</td></tr>
+</tbody></table>
+<p>视频里“夹爪没抓住”是effect；它可能来自目标pose错、gripper action错、axis/unit转换错、controller未跟踪或接触物理变化。没有matched probe时root cause保持<code>unknown</code>。</p>
+<h2 id="3-first-verified-divergence">3. First Verified Divergence</h2>
+<p>为每层定义偏差证据 <code>D_l</code>，最早已验证层为：</p>
+<div class="formula">\[
+l^*=\min\{l:D_l=1\ \land\ evidence_l=\text{verified}\}.
+\]</div>
+<p>变量解释：<code>l</code>按observe→perceive→policy→transform→control→transition→score→recovery排序；<code>D_l=1</code>表示该层违反冻结合同。<code>l*</code>是<strong>最早验证偏差</strong>，不是必然root cause；上游缺日志时不得把下游首个可见症状冒充上游正常。</p>
+<p>事件记录：</p>
+<pre><code class="language-text">episode_id, protocol_sha, t_first_symptom, t_detected,
+raw_obs_ref, estimate_ref, policy_input/output_ref,
+decoded_action, controller_command, executed_state,
+effect, mode_labels, primary_layer, cause_hypotheses,
+evidence_grade, detector, recovery_action, recovery_outcome</code></pre>
+<h2 id="4-taxonomy">4. 四层主taxonomy与交叉层</h2>
+<h3 id="4-1-perception-state-estimation">4.1 Perception / State Estimation</h3>
+<ul><li>raw sensor missing/stale/corrupt、camera/time/view错配；</li><li>object/point/box/pose/state误检、漏检、identity swap、coordinate transform错误；</li><li>language grounding或subgoal state estimate错误。</li></ul>
+<p>需要raw frame/timestamp/calibration、ground-truth或第二传感器/人工标注对照。VLM解释文本不是ground truth。</p>
+<h3 id="4-2-policy-action-action-interface">4.2 Policy / Action 与 Action Interface</h3>
+<ul><li>在正确输入下，subgoal、motion mode、action chunk或停止决策不合任务；</li><li>action token/parser失败，shape/H/D、valid mask、axis/unit/frame、normalization/denormalization、clipping、H/K切片错误；</li><li>temporally erratic actions或consistent-but-no-progress。</li></ul>
+<p>policy failure与interface failure必须分开：先做sentinel action、encode/decode/denorm roundtrip，再讨论模型策略。</p>
+<h3 id="4-3-controller-execution">4.3 Controller / Execution</h3>
+<ul><li>command未被执行、tracking error、IK infeasible、joint/velocity/torque saturation；</li><li>latency/queue/overrun、controller state错误、hardware read/write error；</li><li>collision/contact/gripper/slip与安全限制触发。</li></ul>
+<p>保存policy action、transformed command、joint/state反馈和controller lifecycle。<code>ros2_control</code>的fallback只有在接口可用、配置正确时才可能激活，必须在仿真测试。</p>
+<h3 id="4-4-recovery-supervision">4.4 Recovery / Supervision</h3>
+<ul><li>detector miss、false alarm、检测太晚；</li><li>recovery eligibility或trigger错误；</li><li>safe stop/rollback/regrasp/replan/human intervention失败；</li><li>recovery oscillation、恢复后未验证、resume造成二次失败。</li></ul>
+<p>Recovery RL支持一种risk-based task/recovery切换：</p>
+<div class="formula">\[
+a_t=\begin{cases}
+\pi_{rec}(s_t), &amp; Q_{risk}(s_t,\pi_{task}(s_t))&gt;\tau,\\
+\pi_{task}(s_t), &amp; \text{otherwise}.
+\end{cases}
+\]</div>
+<p>变量解释：<code>Q_risk</code>是constraint-risk critic、<code>tau</code>是冻结threshold。该式说明detector/trigger与recovery action分开；本仓库五项目均没有证据表明实现了此机制。</p>
+<h3 id="4-5-cross-cutting-protocol-environment-scorer">4.5 Cross-cutting Protocol / Environment / Scorer</h3>
+<p>invalid reset、asset/version漂移、timeout/termination语义、success predicate/scorer bug会制造“模型失败”。先通过EVAL-006 protocol identity和EVAL-007 coverage gate，才进入模型归因。</p>
+<h2 id="5">5. 最小归因实验</h2>
+<table><thead><tr><th>假设</th><th>matched intervention</th><th>支持该层的证据</th><th>仍不能推出</th></tr></thead><tbody>
+<tr><td>perception</td><td>用verified state/人工pose替换estimate，其他不变</td><td>policy/rollout恢复且raw→estimate已有偏差</td><td>detector为何错的最终原因</td></tr>
+<tr><td>policy</td><td>verified observation下与expert/paired policy比较proposal</td><td>错误在transform前已出现</td><td>training data是唯一原因</td></tr>
+<tr><td>interface</td><td>sentinel逐维roundtrip、identity normalizer、固定H/K</td><td>parser/axis/unit/frame前后不一致</td><td>learned policy本身差</td></tr>
+<tr><td>controller</td><td>同command replay，比较commanded/executed state</td><td>tracking/limit/error在controller层出现</td><td>上游完全正确</td></tr>
+<tr><td>recovery</td><td>matched failed states上比较trigger/action</td><td>detection delay、false alarm、conditional recovery outcome</td><td>recovery提升总体成功的因果结论</td></tr>
+</tbody></table>
+<p>单episode可以生成hypothesis，不能confirm root cause。确认至少需要matched replay/intervention、复现、修复与同协议rerun。</p>
+<h2 id="6-detector-recovery">6. Detector 与 Recovery 指标</h2>
+<div class="formula">\[
+\mathrm{Recall}_{fail}=\frac{TP}{TP+FN},\quad
+\mathrm{Precision}_{alarm}=\frac{TP}{TP+FP},\quad
+\Delta t=t_{detect}-t_{first\_observable}.
+\]</div>
+<p>还要报告false alarms/episode或hour、failure-family confusion、eligible recovery count、triggered count、conditional recovery success、post-recovery task success、unsafe violations与human interventions。只收失败episode无法估precision/false-positive；只报“恢复成功率”而不报eligible/triggered denominator会选择性偏高。</p>
+<p>Sentinel把temporally inconsistent erratic failure与temporally consistent no-progress分给互补detector，说明单一monitor会漏掉另一类；其detector输出仍不是perception/controller root-cause label。</p>
+<h2 id="7">7. 五项目边界</h2>
+<ul><li><strong>WAM</strong>：CoffeePressButton episode0有base/trained 300-step action trace与<code>success=false</code>，range差异只能启动interface/controller排查；缺checkpoint binary、target、multi-episode与修复rerun，不能确认gripper/high-sigma/root cause或“0-success benchmark”。</li><li><strong>OpenPiVLA</strong>：recipe/smoke的<code>D=72</code>与formal formatter <code>limit=16</code>是action-interface risk；缺formal Qwen checkpoint→controller rollout，official checkpoint diagnostics不能归为formal policy failure。</li><li><strong>OPD</strong>：point strict=0可能是parser/format/scorer failure，也可能是geometry/grounding failure；先拆parse-valid、protocol-fixed strict与lenient geometry，不能直接说“不会point”。</li><li><strong>Robot Harness</strong>：源码支持timeout/cancel/best-effort compensation和structured error，是orchestration recovery contract；没有视觉、低层controller、物理执行与runner trace，不能报robot recovery success。</li><li><strong>UWM</strong>：task-level summary与moka/mug低分只能定位effect slice；没有raw video/state/action/controller/first-divergence trace，perception/contact/planning原因均为hypothesis。</li></ul>
+<h2 id="8-failure-ledger">8. Failure Ledger 伪代码</h2>
+<pre><code class="language-python">def attribute_and_recover(trace, frozen_contracts, detectors, recovery):
+    # Validate protocol and raw trace before blaming the learned policy.
+    validate_protocol_and_reset(trace, frozen_contracts)
+
+    # Compare each adjacent interface and keep unknown when evidence is absent.
+    divergences = compare_layers(
+        trace, layers=[&quot;observation&quot;, &quot;perception&quot;, &quot;policy&quot;, &quot;transform&quot;,
+                       &quot;controller&quot;, &quot;environment&quot;, &quot;scorer&quot;])
+    primary = earliest_verified(divergences)
+
+    # Detection is a separate prediction task with latency and false alarms.
+    alarm = detectors.evaluate(trace)
+    action = recovery.choose(trace) if alarm.triggered else &quot;continue&quot;
+
+    # Verify safe state and task outcome before resuming execution.
+    outcome = execute_verify_or_abort(action, trace)
+    return write_failure_ledger(trace, primary, alarm, action, outcome)</code></pre>
+<p>这是artifact contract，不是五项目已实现系统。</p>
+<h2 id="9-source-gate">9. Source Gate 结论与下一入口</h2>
+<p>EVAL-008保持<code>WARN</code>：failure mode/effect/cause、first verified divergence、四层taxonomy、detector与recovery指标已冻结；五项目均没有完整layer-aligned trace + matched intervention + fix/rerun闭环，因此不产生root-cause或recovery强claim。</p>
+<p>下一内容节点固定为<code>VLA-EVAL-009</code>：raw predictions、episode trace、video与可复算summary。真实口述前不创建<code>coaching_state.md</code>。</p>
+<h2 id="references">References</h2>
+<ol><li>NASA <a href="https://standards.nasa.gov/standard/GSFC/GSFC-HDBK-8004">GSFC-HDBK-8004</a>。</li><li>Agia et al., <a href="https://arxiv.org/abs/2410.04640">Sentinel</a> / <a href="https://github.com/agiachris/sentinel/tree/6dc89ca4cb30f75ce834811c2d1b31f7ffadf7b5">official repo</a>。</li><li>Duan et al., <a href="https://arxiv.org/abs/2410.00371">AHA</a> / <a href="https://github.com/NVlabs/AHA/tree/0d39c0591566ddaf997be5822f3dead8e08501aa">official repo</a>。</li><li>Liu et al., <a href="https://arxiv.org/abs/2306.15724">REFLECT</a> / <a href="https://github.com/real-stanford/reflect/tree/0ac7458735fba606151df851491124486dc8b489">official repo</a>。</li><li>Thananjeyan et al., <a href="https://arxiv.org/abs/2010.15920">Recovery RL</a> / <a href="https://github.com/abalakrishna123/recovery-rl/tree/084c968538850e82776564e07b9dcdffca369936">official repo</a>。</li><li><code>ros2_control</code> <a href="https://github.com/ros-controls/ros2_control/blob/e4ebcc352d9aeb69969308428b051bdd3105b88f/controller_manager/doc/userdoc.rst">Controller Manager</a>与<a href="https://github.com/ros-controls/ros2_control/blob/e4ebcc352d9aeb69969308428b051bdd3105b88f/hardware_interface/doc/hardware_components_userdoc.rst">Hardware Components</a>。</li><li><a href="vol_03_architecture_execution_claim_to_code.html">Architecture / Execution Audit</a>、<a href="vol_04_wm020_failure_diagnostics_source_freeze.html">WM-020</a>、<a href="vol_06_per001_grounding_coordinate_source_freeze.html">PER-001</a>。</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest</a>与五项目inventories。</li></ol>
+</article></body></html>

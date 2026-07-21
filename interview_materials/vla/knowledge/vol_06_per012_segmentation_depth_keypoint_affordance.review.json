@@ -1,0 +1,45 @@
+{
+  "artifact": "knowledge/vol_06_per012_segmentation_depth_keypoint_affordance.md",
+  "html": "knowledge/vol_06_per012_segmentation_depth_keypoint_affordance.html",
+  "source_freeze": "sources/vol_06_per012_segmentation_depth_keypoint_affordance_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / VLA-PER-012 / source_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "92EAC7125AA585A6DC2DB83F1E78DE2AE5E13352D38E835AA1CFEE21E2782320",
+  "question_ids": [
+    "VLA-PER-012"
+  ],
+  "checks": {
+    "bounded_slice": "PASS (the later VLA-PER-012 card-only slice synchronized the knowledge state; no PER-013 artifact, mastery mutation or coaching_state.md)",
+    "source_gate": "PASS WITH WARNING (five version-pinned primary papers, pinned official repositories, deterministic probes and five local OPD files are inherited from the source freeze; no local dense-perception checkpoint, metric-depth/camera bundle or robot episode evidence exists)",
+    "knowledge_map_boundary": "PASS (PER-002 lift/frame, PER-006 preprocessing, PER-008 representation choice, PER-009 loss, PER-010 metric/parser, PER-011 teacher noise, PER-013/014 3D representation/grounding and PER-015 action gate remain distinct)",
+    "typed_dense_record": "PASS (sample/image/camera/time, model/preprocess/task/prompt, payload, coordinate/unit, score semantics, validity, transform revision and age are explicit)",
+    "segmentation_taxonomy": "PASS (semantic, instance, panoptic and promptable tasks are separated by prediction unit, output, same-class behavior, stuff support, downstream use and metric)",
+    "mask2former_contract": "PASS WITH WARNING (query class/mask outputs, Hungarian responsibility, class+sigmoid-mask+Dice supervision and three task-specific postprocess paths are explained; local runtime config/checkpoint/dataset evidence remains absent)",
+    "sam_contract": "PASS WITH WARNING (prompt types, multimask candidates, original-resolution masks, predicted quality and low-resolution logits are explained; category, temporal identity and robot-success calibration are not inferred)",
+    "depth_contract": "PASS WITH WARNING (relative, metric, sensor and aligned-relative outputs differ in unit, ambiguity and backprojection eligibility; metric use still requires checkpoint, range, dataset, validity, camera and registration evidence)",
+    "depth_anything_mapping": "PASS WITH WARNING (relative ReLU output, separate metric Sigmoid-times-max-depth path, 518/aspect-ratio/14-multiple preprocessing and original-shape interpolation are mapped to code; no local metric reproduction is claimed)",
+    "depth_to_3d": "PASS WITH WARNING (pixel backprojection and mask-conditioned surface require metric depth, original pixels, intrinsics, validity, registration, TF and time; the weakest-link scale counterexample is explicit)",
+    "kpam_contract": "PASS WITH WARNING (semantic ID, instance/category, 3D frame, visibility, covariance and planning cost/constraint are explicit; detector/planner/execution artifacts remain absent)",
+    "where2act_contract": "PASS WITH WARNING (ActionScore, Actor, Critic and point/orientation/primitive/state-conditioned success semantics are explicit; cross-robot calibration and safe execution are absent)",
+    "composed_pipeline": "PASS (task-typed segmentation, metric geometry, semantic keypoint, primitive-conditioned proposal and planner/IK/collision/controller gates preserve upstream identities and failure boundaries)",
+    "objective_metric_boundary": "PASS (mask task metrics, aligned relative depth, metric depth, semantic keypoint and interaction-success metrics are not conflated with each other or robot success)",
+    "pseudocode": "PASS (commented fail-closed pseudocode checks immutable model/camera identity, typed segmentation, metric valid depth, timestamped lift, keypoint uncertainty and downstream feasibility gates)",
+    "local_opd_mapping": "PASS WITH WARNING (five pinned local scripts support affordance-labelled point/box/text supervision and static evaluation only; zero selected-path matches do not exclude remote, historical or unarchived dense-perception artifacts)",
+    "diagnosis_and_interview_readiness": "PASS (ten failure-to-probe paths, a thirty-second answer, a two-minute answer, fourteen follow-ups, eight dangerous-answer corrections and a whiteboard checklist are included)",
+    "project_truth_boundary": "PASS (public mechanisms, local OPD point-only evidence, target extensions, missing artifacts, candidate ownership and robot non-equivalence are separated)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, twenty-three H2 including renderer TOC, twenty-six H3, seven tables, nine code blocks, seven formula blocks, balanced 24/24 inline and 8/8 display MathJax delimiters, required palette/serif/sticky 260px TOC/900px breakpoint/print rules, synchronized canonical/HTML/review SHA, 48 unique IDs, valid local links/anchors and zero formula-em/control-character issues)",
+    "browser_visual_check": "BLOCKED (the existing in-app Browser file:// policy restriction remains; static checks do not substitute for desktop/narrow visual QA)",
+    "question_card": "PASS WITH WARNING (one L3/P1 VLA-PER-012 atomic card is synchronized, passes the 180/350-character gates and remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized VLA-PER-012 L3/P1 atomic card unseen until a real oral drill.",
+    "Archive any local segmentation/depth/keypoint/affordance checkpoint, preprocess config, raw output, camera/frame/time manifest and matched evaluation if it exists.",
+    "For metric depth, freeze checkpoint hash, training dataset, unit/range, intrinsics, registration, validity and cross-domain residuals.",
+    "For keypoint and affordance proposals, archive semantic covariance, primitive/state/orientation scores, planner rejection reasons and episode traces.",
+    "Verify Mask2Former dependencies and every Depth Anything checkpoint license before reuse or distribution.",
+    "Do not create coaching_state.md or change mastery before a real oral drill."
+  ],
+  "next": "Generate only the VLA-PER-013 point-cloud/voxel/BEV/occupancy representation source freeze; do not generate its knowledge/card or change mastery in the same slice."
+}

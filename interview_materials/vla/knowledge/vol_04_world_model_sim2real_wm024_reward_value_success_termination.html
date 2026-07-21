@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 World Model / Sim2Real：Reward、Value、Success Classifier 与 Termination Predictor（WM-024）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm024_reward_value_success_termination.md">
+<meta name="aris:source-sha256" content="f4def849f8461a5b78e9ecd0d931c8f26c073391af970806aca8d32826ffad56">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>f4def849f8461a5b78e9ecd0d931c8f26c073391af970806aca8d32826ffad56</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm024_reward_value_success_termination.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 一句话区分</a></li><li><a href="#2">2. 标签合同与时间粒度</a></li><li><a href="#3">3. 数学关系</a></li><li><a href="#4-world-model-dreamer-wam-cosmos">4. World model、Dreamer 与 WAM/Cosmos 映射</a></li><li><a href="#5-success-done-timeout">5. Success、done、timeout 的区别</a></li><li><a href="#6">6. 反例与失败诊断</a></li><li><a href="#7">7. 可审计伪代码</a></li><li><a href="#8">8. 项目挂钩与证据边界</a></li><li><a href="#9">9. 结论</a></li></ol></nav>
+<h1>VOL 04 World Model / Sim2Real：Reward、Value、Success Classifier 与 Termination Predictor（WM-024）</h1>
+<div class="meta">状态：drafted / VLA-WM-024 / knowledge_26_of_44 / card_synced / WARN 报告日期：2026-07-18 证据截止：2026-07-18 当前节点：区分四种“好坏/结束”信号，不把 value score、success predicate 和 termination 混为一谈。 前置：<a href="vol_04_world_model_sim2real_wm023_open_loop_receding_horizon.html">WM-023 Open-loop / Receding-horizon</a>、<a href="../sources/vol_04_wm024_reward_value_success_termination_source_freeze.html">WM-024 Source Freeze</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>reward model、value function、success classifier 与 termination predictor 如何区分？回答必须同时覆盖时间粒度、标签来源、训练目标、规划用途、bootstrap mask 和评估 protocol。</p>
+<h2 id="1">1. 一句话区分</h2>
+<ul><li><strong>Reward \(r_t\)</strong>：这一步转移即时得到多少任务信号。</li><li><strong>Value \(V^\pi(s_t)\)</strong>：在指定 policy、reward、discount 和终止规则下，从当前状态往后预计累计多少回报。</li><li><strong>Success classifier/predicate</strong>：这条 episode 或某个阶段是否满足任务成功规则，或分类器对成功的概率。</li><li><strong>Termination predictor</strong>：episode 是否结束，或下一步是否仍 continuation；结束原因可能是成功、失败、碰撞、死亡、timeout 或异常。</li></ul>
+<p>最容易穿帮的说法是“value 就是成功率”或“done 就是 success”。只有在明确的稀疏奖励、固定 horizon、固定 policy 和校准条件下，value 才可能与成功概率有特定关系；一般不能直接替换。</p>
+<h2 id="2">2. 标签合同与时间粒度</h2>
+<table><thead><tr><th>量</th><th>标签粒度</th><th>典型输入</th><th>输出/用途</th><th>不能推出</th></tr></thead><tbody>
+<tr><td>reward head</td><td>每步 transition</td><td>state、action、next state 或 latent</td><td>reward prediction、RL target、dense shaping</td><td>终局成功、长期价值</td></tr>
+<tr><td>value / Q head</td><td>state 或 state-action</td><td>当前 belief、policy、action</td><td>critic、bootstrap、candidate ranking</td><td>成功概率、动作可执行性</td></tr>
+<tr><td>success predicate/classifier</td><td>episode/阶段</td><td>trajectory、终局 state、task 条件</td><td>eval、稀疏监督、终局筛选</td><td>dense credit、是否 timeout</td></tr>
+<tr><td>termination/continuation head</td><td>每步边界</td><td>state、next state、environment flag</td><td>reset、return mask、rollout 截断</td><td>成功或失败原因</td></tr>
+</tbody></table>
+<p>“reward model” 还可能指人类偏好模型或语言模型 judge；此时 label 不是环境 transition reward，校准和部署对象也不同。面试中先确认命名，再讨论公式。</p>
+<h2 id="3">3. 数学关系</h2>
+<p>带 continuation 的 return 可以写成：</p>
+<div class="formula">\[
+G_t=r_t+\gamma c_tG_{t+1},\qquad
+V^\pi(s_t)=\mathbb E_{\pi,p}\left[
+\sum_{k\ge0}\gamma^k
+\left(\prod_{i=0}^{k-1}c_{t+i}\right)r_{t+k}
+\mid s_t\right].
+\]</div>
+<p>变量解释：\(r_t\) 是即时 reward，\(c_t\) 表示 episode 是否继续，\(\gamma\) 是 discount；\(V^\pi\) 还依赖 policy \(\pi\) 和 transition distribution \(p\)。代码里 continuation/terminal mask 决定是否 bootstrap，timeout 是否截断也必须显式记录。</p>
+<p>Q function 还条件于动作：</p>
+<div class="formula">\[
+Q^\pi(s_t,a_t)=
+\mathbb E\left[r_t+\gamma c_tV^\pi(s_{t+1})\mid s_t,a_t\right].
+\]</div>
+<p>因此 value scorer 可以比较候选 action，但它是模型/策略条件的预期回报；success predicate 是终局规则，两者的误差模式不同。</p>
+<h2 id="4-world-model-dreamer-wam-cosmos">4. World model、Dreamer 与 WAM/Cosmos 映射</h2>
+<p>Dreamer 风格的 world model 通常有 observation/reconstruction、reward 和 continuation heads；actor 在 imagined state 上选动作，critic 对 continuation-weighted multi-step return 提供 baseline/target。reward head 的当前输出不是 critic value，continuation 也不是 success classifier。[1]</p>
+<p>Cosmos/WAM audit 中，rollout 的 future index 与 Monte-Carlo return 构成 value target；state-value 与 Q variants 通过不同 condition/mask 读取状态或 action。value frame aggregation 产生的高分可用于 candidate ranking，但 direct policy 同时输出 value 不代表 direct eval 一定用 value 选动作。[2]</p>
+<p>规划时至少要保存：</p>
+<ol><li>candidate action / future state；</li><li>value 或 Q score、scorer revision；</li><li>success predicate 与 learned classifier probability；</li><li>termination reason、timeout/truncated；</li><li>selected 和 unselected 的真实 outcome。</li></ol>
+<p>只保存 top value 会隐藏 value optimism、future OOD 和 scorer mismatch。</p>
+<h2 id="5-success-done-timeout">5. Success、done、timeout 的区别</h2>
+<p>success 是任务语义，通常由环境的 check_success、终局阈值或学习分类器给出；termination 是 episode 控制流。一个 episode 可以：</p>
+<ul><li>成功后 termination；</li><li>失败/碰撞后 termination；</li><li>到达最大 horizon 的 timeout/truncation；</li><li>发生异常或手动停止。</li></ul>
+<p>某些 LIBERO/Cosmos wrapper 把 env.done 或 env._check_success 写进 success record，但等价性依赖代码版本和 wrapper。严谨日志至少包含 success predicate revision、success step、termination_reason、truncated、exception 与 denominator rule。[3]</p>
+<p>WorldGym 的 VLM reward/proxy 仍应与 simulator predicate、real-robot success 分开；proxy 可以作为排序或诊断，不应直接并入闭环成功率。[3][4]</p>
+<h2 id="6">6. 反例与失败诊断</h2>
+<table><thead><tr><th>现象</th><th>误判</th><th>正确检查</th></tr></thead><tbody>
+<tr><td>reward loss 下降、success 不变</td><td>reward head 已证明控制变好</td><td>action intervention、per-step reward、closed-loop predicate</td></tr>
+<tr><td>value 高、候选失败</td><td>value 等于 success probability</td><td>calibration、rank correlation、selected-vs-random</td></tr>
+<tr><td>classifier probability 高、环境失败</td><td>classifier 是真值</td><td>OOD holdout、阈值、视频与 predicate 对照</td></tr>
+<tr><td>done 高、success 异常高</td><td>done 一定表示成功</td><td>termination_reason、timeout/truncated、wrapper revision</td></tr>
+<tr><td>critic 不稳定</td><td>只是 value 网络容量不足</td><td>terminal/truncation mask、discount、return denominator</td></tr>
+<tr><td>跨任务 value 不可比</td><td>一个全局阈值即可</td><td>reward scale、horizon、task-wise calibration</td></tr>
+</tbody></table>
+<h2 id="7">7. 可审计伪代码</h2>
+<pre><code class="language-python">def audit_episode(step_records, task_contract):
+    # 1. Keep step-level reward/continuation separate from terminal success.
+    rewards = [row.reward for row in step_records]
+    continuation = [row.continue_flag for row in step_records]
+    returns = discounted_return(rewards, continuation, task_contract.gamma)
+
+    # 2. Evaluate the task predicate and preserve the actual termination reason.
+    success = task_contract.check_success(step_records)
+    reason = infer_termination_reason(step_records)
+
+    # 3. Do not overwrite value, classifier probability or success with done.
+    return {
+        &quot;return&quot;: returns,
+        &quot;success&quot;: success,
+        &quot;termination_reason&quot;: reason,
+        &quot;truncated&quot;: reason == &quot;timeout&quot;,
+    }</code></pre>
+<p>实现重点是字段隔离：reward 用于 return，continuation 用于 bootstrap，success 用于任务评价，termination 用于控制流；任何合并都必须在 protocol 中显式说明。</p>
+<h2 id="8">8. 项目挂钩与证据边界</h2>
+<p>Cosmos/WAM 可以挂 action/future/value slots、Monte-Carlo return、value ranking；UWM/LIBERO 可以挂 fixed init、success predicate、horizon、normalizer 和 denominator；OpenPiVLA/Robot Harness 可以挂 scorer、timeout、controller trace。但当前工作区没有统一 reward/value/success/termination artifact、校准曲线或 paired candidate bundle。安全表达是“我能审计四类标签及其协议”，不能声称公开 value 或 benchmark success 已证明个人闭环收益。</p>
+<h2 id="9">9. 结论</h2>
+<p>高分回答的边界是：<strong>reward 是一步信号，value/Q 是 policy-conditioned 的未来回报，success 是任务级结果，termination 是 episode 控制流；reward 与 continuation 进入 return，value 可用于排序但不自动等于成功概率，done 也不自动等于 success。</strong></p>
+<p>本节点保持 WARN，题卡保持 unseen；真实口述前不创建 coaching state。</p>
+<p>参考：<a href="../sources/vol_04_wm024_reward_value_success_termination_source_freeze.html">WM-024 Source Freeze</a>、<a href="../sources/vol_04_world_model_foundations_claim_to_code.html">Dreamer/World Model audit</a>、<a href="../sources/vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos/WAM audit</a>、<a href="../sources/vol_04_benchmark_evidence_claim_to_protocol.html">Benchmark protocol audit</a>、<a href="vol_04_world_model_sim2real_wm023_open_loop_receding_horizon.html">WM-023</a>。</p>
+</article></body></html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-012 Source Freeze：RSSM / Dreamer Posterior、Prior、KL Balancing 与 Imagined Rollout</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm012_rssm_dreamer_posterior_prior_kl_imagination_source_freeze.md">
+<meta name="aris:source-sha256" content="c5f8a2dd056736a8b7338cd76116631a8bf42a3d10c05e86d6bb4cfbf64ae6e0">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>c5f8a2dd056736a8b7338cd76116631a8bf42a3d10c05e86d6bb4cfbf64ae6e0</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm012_rssm_dreamer_posterior_prior_kl_imagination_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 冻结结论</a></li><li><a href="#2">2. 一手来源与冻结快照</a></li><li><a href="#3">3. 与相邻节点的边界</a></li><li><a href="#4-pomdp-belief-state">4. POMDP 与 belief state 直觉</a></li><li><a href="#5-rssm">5. RSSM 的时间递推</a></li><li><a href="#6-prior-posterior">6. Prior 与 posterior</a></li><li><a href="#7-action-conditioned-generative-model">7. Action-conditioned generative model</a></li><li><a href="#8-approximate-posterior">8. Approximate posterior</a></li><li><a href="#9-sequential-elbo">9. Sequential ELBO 从哪里来</a></li><li><a href="#10-kl">10. KL 的双重职责</a></li><li><a href="#11-dreamerv2-kl-balancing">11. DreamerV2 的 KL balancing</a></li><li><a href="#12-dreamerv3-dyn-rep">12. DreamerV3 的 dyn / rep 分离</a></li><li><a href="#13-v2-balancing-v3-dyn-rep">13. V2 balancing 与 V3 dyn/rep 不能混写</a></li><li><a href="#14-free-bits">14. Free bits 的诊断边界</a></li><li><a href="#15-reset">15. Reset 与时间索引</a></li><li><a href="#16-frozen-code-categorical-state">16. Frozen code 的 categorical state</a></li><li><a href="#17-replay-posterior">17. Replay posterior 起点</a></li><li><a href="#18-imagined-rollout">18. Imagined rollout 的递推</a></li><li><a href="#19-imagination-trajectory">19. Imagination trajectory 的联合分布</a></li><li><a href="#20-imagination">20. 为什么不必在 imagination 中解码像素</a></li><li><a href="#21-future-leakage-imagination">21. Future leakage 与伪 imagination</a></li><li><a href="#22">22. 最小可审计伪代码</a></li><li><a href="#23">23. 最小诊断矩阵</a></li><li><a href="#24-matched-ablation-trace">24. Matched ablation / trace</a></li><li><a href="#25">25. 高频失败诊断</a></li><li><a href="#26">26. 项目真实性边界</a></li><li><a href="#27-claim-ledger">27. Claim ledger</a></li><li><a href="#28">28. 仍待独立复核与补证据</a></li><li><a href="#29">29. 参考来源</a></li><li><a href="#30">30. 下一节点</a></li></ol></nav>
+<h1>VOL 04 WM-012 Source Freeze：RSSM / Dreamer Posterior、Prior、KL Balancing 与 Imagined Rollout</h1>
+<div class="meta">冻结日期：2026-07-18 状态：source_frozen / VLA-WM-012 / knowledge_synced / card_synced / WARN 覆盖题目：VLA-WM-012 本轮边界：只冻结 RSSM 的 action-conditioned sequential latent model、posterior/prior 因子分解、KL 双重职责、DreamerV2 KL balancing、DreamerV3 dyn/rep + free bits，以及从 replay posterior state 到 pure-prior imagination 的推导与实现映射；不重复 WM-011 的五类 objective 语义，不展开 WM-021 的 actor/critic return 优化，也不把公开 Dreamer 机制写成本地 WAM/UWM 实现。</div>
+<h2 id="1">1. 冻结结论</h2>
+<ol><li>RSSM 把 model state 拆为 deterministic recurrent state \(h_t\) 与 stochastic state \(z_t\)：\(h_t\) 汇总历史/action，\(z_t\) 表达当前一步的不确定表示。</li><li>posterior \(q(z_t\mid h_t,o_t)\) 在 filtering/training 时读取当前 observation；prior \(p(z_t\mid h_t)\) 不读当前 observation，因而才能在未来 observation 不存在时 rollout。</li><li>单个 \(D_{\mathrm{KL}}(q\|p)\) 同时承担“训练 prior 追 posterior”和“约束 posterior 不要偏离 prior”两种职责；KL balancing 用 stop-gradient 与权重拆开两条梯度路径。</li><li>DreamerV2 的 balancing 是 \(\alpha D_{\mathrm{KL}}(\operatorname{sg}(q)\|p)+(1-\alpha)D_{\mathrm{KL}}(q\|\operatorname{sg}(p))\)，论文取 \(\alpha=0.8\)；DreamerV3 改为独立 dyn/rep loss、不同 scale 与 1 nat free bits。二者相关但不能混成同一 exact objective。</li><li>imagined rollout 必须从 replay 中过滤得到的 posterior state 起步；起点之后只由 policy action、deterministic transition 与 prior sampling推进，不能读取未来 encoder token/observation。</li><li>posterior fit、one-step KL 或 imagined return 都不证明 long-horizon/closed-loop 有效；需要 reset/time-index test、prior-only trace、action intervention、horizon curve 与项目证据。</li></ol>
+<h2 id="2">2. 一手来源与冻结快照</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>冻结版本与响应 SHA-256</th><th>本节点支持</th><th>不能外推</th></tr></thead><tbody>
+<tr><td>S1</td><td>Hafner et al., <em>PlaNet</em></td><td>arXiv <code>1811.04551</code>；ar5iv response <code>6a9bed11e5963626016235227ab85594ae5d42773e675860788c51a071929a97</code></td><td>RSSM deterministic/stochastic state、latent planning 与 posterior/prior 基础</td><td>DreamerV2/V3 exact KL 配置</td></tr>
+<tr><td>S2</td><td>Hafner et al., <em>Dream to Control</em>（DreamerV1）</td><td>arXiv <code>1912.01603</code>；ar5iv response <code>a9e11616b9bc421ac9886ad78fd2bfd1ac0bc1a44e9f6333a9c068da5eb52fec</code></td><td>latent imagination、analytic-gradient behavior learning 与 replay belief 起点</td><td>DreamerV2 categorical state/KL balancing、V3 exact loss</td></tr>
+<tr><td>S3</td><td>Hafner et al., <em>Mastering Atari with Discrete World Models</em>（DreamerV2）</td><td>arXiv <code>2010.02193</code>；ar5iv response <code>4679cffcc4cd621d2adb7aca04cc3cfc60bf8f7f994c2678a9174ee2043039b1</code></td><td>categorical RSSM、sequential VAE、KL 双重职责、\(\alpha=0.8\) balancing、imagination MDP</td><td>DreamerV3 free-bits/scale 或个人项目结果</td></tr>
+<tr><td>S4</td><td>Hafner et al., <em>DreamerV3</em></td><td>arXiv <code>2301.04104</code>；arXiv HTML response <code>7ce561853df3b35ccf0316476b3f7538b60117feb358bd562dc279f0d5067a26</code></td><td>RSSM factorization、prediction/dynamics/representation loss、1 nat free bits、imagined representations</td><td>frozen reimplementation 的全部 defaults 或本地复现</td></tr>
+<tr><td>S5</td><td><code>danijar/dreamerv3</code> frozen code</td><td>commit <code>e3f02248693a79dc8b0ebd62c93683888ddaccfe</code>；<code>rssm.py</code> <code>d6d50166914e94fb8bd17a5d5dbda9d42cdd37b85819bb1e9fff3a64d4ad2eb6</code>；<code>agent.py</code> <code>adce8e4274bc098c218bf9a20fd3327545f0ad7d850b5fe328597382e91b5269</code>；<code>configs.yaml</code> <code>9dff9c7062e3e33951cb54c6dd4b598aaf7e56e18e2cff39c812eaa797bcfcfc</code>；README <code>a4d8e77c07a876a7f528aa204fbc910812c5ca96bcfb67709b366f8ff0d3ed6b</code></td><td>reset/observe/imagine/starts/loss、categorical shape、dyn/rep/free_nats、Agent imagination 路径</td><td>论文作者官方代码、checkpoint reproduction、个人 ownership</td></tr>
+<tr><td>S6</td><td><a href="vol_04_world_model_foundations_claim_to_code.html">Source Audit A</a> 与 <a href="vol_04_world_model_foundations_independent_fact_review.html">独立事实复核</a></td><td>canonical SHA <code>bb48af7605688132ddd589109c8417dd0ebfe65f504a98cf5ab660f01e34ba7b</code> / <code>da16c172179cae926d329259e76955a55555fe53a15233f265d1f74a3d421ae4</code></td><td>WM-012 允许逐节点生成；repo provenance 与 PlaNet overshooting 边界</td><td>local Dreamer run</td></tr>
+<tr><td>S7</td><td><a href="vol_04_wm011_objective_semantics_source_freeze.html">WM-011 Objective Semantics</a> 与 <a href="vol_04_wm021_dreamer_imagination_actor_critic_source_freeze.html">WM-021 Actor/Critic</a></td><td>canonical SHA <code>7632d05497acd5170a5955a1c7eda2e68f40df39257f2d343229a61eba9d7b35</code> / <code>de2bd8a1652e28c0ba5c4ec389574040e2bc06bfe63ce057764dbe9c3e11f4ca</code></td><td>相邻节点去重边界</td><td>本节点已做 actor/critic 或 objective ablation</td></tr>
+<tr><td>S8</td><td><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a>、<a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO</a> inventories</td><td>canonical SHA <code>078c86b1484fe38fdd136428123c9529c6b750dfea5e031ec506cf617517772d</code> / <code>728b8326dc345072886d0909fe2b8d81dfde3993771e7febed446d471bd3674d</code></td><td>项目机制与真实性边界</td><td>个人 RSSM/Dreamer implementation 或收益</td></tr>
+</tbody></table>
+<p><strong>Provenance warning：</strong>S5 README 明确称该仓库为 DreamerV3 reimplementation，并与 Google/DeepMind 无关。本页只能说“该 frozen reimplementation 的代码路径”。</p>
+<h2 id="3">3. 与相邻节点的边界</h2>
+<table><thead><tr><th>节点</th><th>已回答</th><th>WM-012 只补什么</th></tr></thead><tbody>
+<tr><td>WM-004</td><td>encoder、RSSM、decoder/reward/continue 的数据流</td><td>sequential latent factorization 与推导</td></tr>
+<tr><td>WM-011</td><td>reconstruction、dyn/rep、reward、continue、perceptual 各监督什么</td><td>KL 为什么有两条梯度职责</td></tr>
+<tr><td>WM-021</td><td>imagined actor/critic、lambda-return 与 model bias</td><td>imagination 轨迹本身如何从 posterior 起点生成</td></tr>
+</tbody></table>
+<p>WM-012 不重新解释每个 head 的完整 loss，也不推导 actor/critic loss；它负责把“训练 belief”与“预测未来”之间的数学和代码桥梁闭合。</p>
+<h2 id="4-pomdp-belief-state">4. POMDP 与 belief state 直觉</h2>
+<p>机器人 observation \(o_t\) 只看到环境的一部分；单帧无法唯一确定速度、遮挡物、接触模式或任务阶段。RSSM 用：</p>
+<ul><li>\(h_t\)：deterministic memory，汇总历史 latent 和 action；</li><li>\(z_t\)：stochastic representation，容纳当前 observation 带来的新信息与多可能状态。</li></ul>
+<p>组合 state \(s_t=(h_t,z_t)\) 是 learned belief，不是真实物理 state 的保证。若 observation/history 不充分或 objective 允许 shortcut，belief 仍会丢失 action-critical 信息。</p>
+<h2 id="5-rssm">5. RSSM 的时间递推</h2>
+<div class="formula">\[
+h_t=f_\phi(h_{t-1},z_{t-1},a_{t-1}).
+\]</div>
+<p>变量解释：\(f_\phi\) 是 deterministic recurrent transition，输入前一步 memory、stochastic state 与已执行 action。直觉是先用“过去 + 动作”推到当前预测上下文。实现映射：S5 <code>_observe</code> 在读取当前 token 前先调用 <code>_core(deter, stoch, action)</code>；reset 时旧 carry/action 被 mask。</p>
+<h2 id="6-prior-posterior">6. Prior 与 posterior</h2>
+<div class="formula">\[
+\hat z_t\sim p_\phi(z_t\mid h_t),
+\qquad
+z_t\sim q_\phi(z_t\mid h_t,o_t).
+\]</div>
+<p>变量解释：prior \(p_\phi\) 只依赖历史汇总 \(h_t\)，posterior \(q_\phi\) 额外读取当前 observation。直觉是 prior 回答“没看当前帧时我预测会在哪”，posterior 回答“看到当前帧后我相信在哪”。实现映射：S5 <code>_prior(deter)</code> 输出 prior logits；<code>_observe</code> 将 encoder token 与 deter 拼接后输出 posterior logits并采样 stochastic state。</p>
+<h2 id="7-action-conditioned-generative-model">7. Action-conditioned generative model</h2>
+<p>给定动作序列，最小因子分解可写为：</p>
+<div class="formula">\[
+p_\phi(o_{1:T},r_{1:T},c_{1:T},z_{1:T}\mid a_{0:T-1})
+=\prod_{t=1}^{T}
+p_\phi(z_t\mid h_t)
+p_\phi(o_t\mid h_t,z_t)
+p_\phi(r_t\mid h_t,z_t)
+p_\phi(c_t\mid h_t,z_t).
+\]</div>
+<p>变量解释：\(c_t\) 是 continuation/discount target；\(h_t\) 由前式确定。直觉是 prior 生成 latent，heads 再生成可观测/任务信号。实现映射：具体 observation key、reward/continue 的时间索引和 likelihood 必须按 dataset/config 冻结；该式是跨版本抽象，不是 S5 的 tensor dump。</p>
+<h2 id="8-approximate-posterior">8. Approximate posterior</h2>
+<p>真实 posterior \(p(z_{1:T}\mid o,r,c,a)\) 难以直接计算，RSSM 用 observation-conditioned approximation：</p>
+<div class="formula">\[
+q_\phi(z_{1:T}\mid o_{1:T},a_{0:T-1})
+=\prod_{t=1}^{T}q_\phi(z_t\mid h_t,o_t).
+\]</div>
+<p>变量解释：每一步 posterior 使用当前 encoder token 和 action/history memory。直觉是按时间进行 filtering，而不是一次读取整段未来。实现映射：训练时必须检查 encoder/attention 是否意外看到 \(o_{t+1:T}\)；否则表面是 posterior，实际发生 future leakage。</p>
+<h2 id="9-sequential-elbo">9. Sequential ELBO 从哪里来</h2>
+<p>由变分下界：</p>
+<div class="formula">\[
+\log p_\phi(o,r,c\mid a)
+\ge
+\mathbb E_{q_\phi}\left[
+\sum_{t=1}^{T}
+\left(
+\log p_\phi(o_t,r_t,c_t\mid h_t,z_t)
+-D_{\mathrm{KL}}\!\left(q_\phi(z_t\mid h_t,o_t)\|p_\phi(z_t\mid h_t)\right)
+\right)
+\right].
+\]</div>
+<p>变量解释：第一项奖励 latent 解释 observation/reward/continue；KL 让 posterior 与可预测 prior 对齐。直觉是 sequential VAE：既要“看到当前帧能编码”，又要“只靠历史动作能预测”。实现映射：Dreamer 实际会拆 prediction/dynamics/representation loss、加权、free bits、symlog 或不同 likelihood；不能把抽象 ELBO 当 exact config。</p>
+<h2 id="10-kl">10. KL 的双重职责</h2>
+<p>同一个 \(D_{\mathrm{KL}}(q\|p)\) 对两组参数有不同作用：</p>
+<ol><li>固定 posterior，更新 prior：让 transition predictor 追上 observation-derived representation；</li><li>固定 prior，更新 posterior：限制 encoder 不要把每帧编码成难以预测的任意信息。</li></ol>
+<p>若 prior 尚差却强力把 posterior 拉向 prior，representation 可能变得容易预测但信息不足；若只训练 prior 不约束 posterior，posterior 可能塞入大量当前帧细节，prior 永远追不上。</p>
+<h2 id="11-dreamerv2-kl-balancing">11. DreamerV2 的 KL balancing</h2>
+<p>DreamerV2 将两条梯度路径显式写成：[S3]</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{KL-bal}}
+=\alpha D_{\mathrm{KL}}\!\left(\operatorname{sg}(q)\|p\right)
++(1-\alpha)D_{\mathrm{KL}}\!\left(q\|\operatorname{sg}(p)\right),
+\qquad \alpha=0.8.
+\]</div>
+<p>变量解释：第一项只更新 prior，第二项只更新 posterior；\(\alpha=0.8\) 是 DreamerV2 论文 setting，不是所有 Dreamer 默认。直觉是先让困难的 transition prior 更快追 posterior，避免坏 prior 过早压扁 representation。实现映射：审计时分别记录两项、梯度范数和 entropy，不能只看合并 KL。</p>
+<h2 id="12-dreamerv3-dyn-rep">12. DreamerV3 的 dyn / rep 分离</h2>
+<p>DreamerV3 写为：[S4]</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{dyn}}
+=\max\!\left(1,
+D_{\mathrm{KL}}[\operatorname{sg}(q_\phi)\|p_\phi]
+\right),
+\]</div>
+<div class="formula">\[
+\mathcal L_{\mathrm{rep}}
+=\max\!\left(1,
+D_{\mathrm{KL}}[q_\phi\|\operatorname{sg}(p_\phi)]
+\right).
+\]</div>
+<p>变量解释：dyn 更新 sequence prior，rep 约束 representation；<code>max(1,·)</code> 是 1 nat free bits。直觉是低于阈值时不继续为压小 KL 牺牲 prediction 信息。实现映射：S5 <code>RSSM.loss</code> 逐行对应两条 KL 与 <code>jnp.maximum</code>；frozen config 的 <code>loss_scales</code> 为 <code>dyn:1.0, rep:0.1</code>。</p>
+<h2 id="13-v2-balancing-v3-dyn-rep">13. V2 balancing 与 V3 dyn/rep 不能混写</h2>
+<p>共同点：都用 stop-gradient 拆 prior-learning 与 posterior-regularization。</p>
+<p>差异：</p>
+<ul><li>DreamerV2 用一个 α-balanced 表达，论文给 \(\alpha=0.8\)；</li><li>DreamerV3 用两个命名 loss、各自 scale，并加 1 nat free bits；</li><li>S5 frozen config 是 V3 reimplementation 的 <code>dyn=1.0, rep=0.1</code>，不能写成“使用 α=0.8”。</li></ul>
+<p>面试中可说“同属 KL gradient balancing 思路”，但必须按版本报 exact formula/config。</p>
+<h2 id="14-free-bits">14. Free bits 的诊断边界</h2>
+<p>free bits 不是“免 KL”或“保证不 collapse”。当 raw KL 低于 1 nat 时，clipped loss 对继续压低 KL 不再提供梯度；但 prediction loss、representation capacity、decoder shortcut 与数据仍决定 latent 是否有用。</p>
+<p>至少记录：raw KL、clipped KL、低于阈值比例、prior/posterior entropy、categorical usage、decoder/reward/continue fit、action sensitivity 与 rollout horizon error。只记录 clipped <code>loss/dyn=1</code> 会隐藏 raw KL 已经接近 0 还是刚低于 1。</p>
+<h2 id="15-reset">15. Reset 与时间索引</h2>
+<p>S5 <code>_observe</code> 的顺序是：</p>
+<ol><li>用 <code>reset</code> mask 掉旧 \((h,z)\) 与 previous action；</li><li>用 \((h_{t-1},z_{t-1},a_{t-1})\) 更新 \(h_t\)；</li><li>将 \(h_t\) 与当前 token \(e(o_t)\) 生成 posterior \(z_t\)。</li></ol>
+<p>因此 batch 中传给 RSSM 的 action 必须是与当前 observation 对齐的 previous action。若错用 \(a_t\)、reset 前动作或跨 episode carry，会产生一位偏移或 episode leakage；模型仍可能靠 observation 重建而掩盖错误。</p>
+<h2 id="16-frozen-code-categorical-state">16. Frozen code 的 categorical state</h2>
+<p>S5 <code>initial</code> 创建：</p>
+<pre><code class="language-text">deter: [B, deter]
+stoch: [B, stoch, classes]</code></pre>
+<p><code>_logit</code> 输出 <code>[... , stoch, classes]</code>，<code>_dist</code> 构造 categorical/one-hot distribution 并跨 stochastic variables 聚合 KL。shape 与 <code>unimix</code> 来自 config；它证明 frozen implementation 的表示形式，不代表所有 RSSM 都必须使用 categorical latent。</p>
+<h2 id="17-replay-posterior">17. Replay posterior 起点</h2>
+<p>S5 <code>RSSM.loss/observe</code> 先对 replay sequence 生成 posterior entries；<code>starts(entries, carry, nlast)</code> 从最后 \(K\) 个 posterior entries reshape 出 imagination starts。<code>Agent.loss</code> 中 \(K=\min(\texttt{imag_last},T)\)（未设置时受代码/config语义控制），再调用 <code>dyn.imagine(..., H)</code>。</p>
+<p>起点是“由真实 replay 过滤得到的 belief state”，不是纯 prior 随机状态，也不是每个 imagined step 都重新读取真实 observation。</p>
+<h2 id="18-imagined-rollout">18. Imagined rollout 的递推</h2>
+<p>给定 \(s_0=(h_0,z_0)\sim q_{\mathrm{replay}}\)，每一步：</p>
+<div class="formula">\[
+\hat a_t\sim\pi(\cdot\mid \hat h_t,\hat z_t),
+\]</div>
+<div class="formula">\[
+\hat h_{t+1}=f_\phi(\hat h_t,\hat z_t,\hat a_t),
+\qquad
+\hat z_{t+1}\sim p_\phi(\cdot\mid\hat h_{t+1}).
+\]</div>
+<p>变量解释：帽号表示 imagined variable；从第一个 transition 起 stochastic state 只来自 prior。直觉是 actor 提 action，world model 预测 consequence，再循环。实现映射：S5 <code>imagine(single=True)</code> 先在 carry 上采 action，再 <code>_core</code>、<code>_prior</code>、sample；sequence mode 用 scan 重复 \(H\) 步。</p>
+<h2 id="19-imagination-trajectory">19. Imagination trajectory 的联合分布</h2>
+<div class="formula">\[
+p(\hat z_{1:H},\hat a_{0:H-1}\mid s_0)
+=\prod_{t=0}^{H-1}
+\pi(\hat a_t\mid\hat s_t)
+p_\phi(\hat z_{t+1}\mid\hat h_{t+1}).
+\]</div>
+<p>变量解释：\(s_0\) 来自 replay posterior，后续 transition 由 policy 与 prior 决定。reward/continue/value heads 可在 \(\hat s_t\) 上查询，但不改变“未来 observation 不可见”的条件。实现映射：保存 start episode/time index、start state、action、prior logits/sample、horizon、random seed 与 reset/continue handling。</p>
+<h2 id="20-imagination">20. 为什么不必在 imagination 中解码像素</h2>
+<p>actor/critic 只需 latent feature、predicted reward/continue/value；每步解码 RGB 会增加计算，而且视觉细节不一定是 behavior learning 所需。DreamerV2 明确在 behavior learning 时不预测 image，以并行模拟大量 latent trajectory。[S3]</p>
+<p>但“不解码”也会失去直观诊断。实践中可离线解码少量 trace 检查 hallucination，同时以 latent/action/reward/continue 与真实 cloned-state rollout 为主证据；漂亮视频不能替代因果验证。</p>
+<h2 id="21-future-leakage-imagination">21. Future leakage 与伪 imagination</h2>
+<p>以下任一情况都会破坏 pure-prior rollout：</p>
+<ul><li>imagined step 继续喂 \(o_{t+1}\) 或其 encoder token；</li><li>bidirectional encoder/attention 在 posterior 时读到未来帧；</li><li>action 与 observation 索引错位，使“未来 action”进入当前 transition；</li><li>reset/padding mask 让上一 episode state 泄漏；</li><li>evaluation 用 posterior trajectory，却称 open-loop prior trajectory。</li></ul>
+<p>最小单元测试：在 rollout 起点后替换/清空未来 observation，prior trajectory 应不变；posterior filtering trajectory应随 observation intervention 改变。</p>
+<h2 id="22">22. 最小可审计伪代码</h2>
+<pre><code class="language-python">def rssm_filter_then_imagine(batch, rssm, policy, horizon):
+    # 1. Encode only the replay observations allowed at each filtering step.
+    tokens = encode_causally(batch.observation)
+
+    # 2. Previous actions and reset masks must align with the current observation.
+    entries, posterior = rssm.observe(tokens, batch.previous_action, batch.is_first)
+
+    # 3. Keep prior-learning and posterior-regularization gradients separate.
+    prior = rssm.prior(posterior.deter)
+    dyn = kl(stop_gradient(posterior.dist), prior).clamp_min(1.0)
+    rep = kl(posterior.dist, stop_gradient(prior)).clamp_min(1.0)
+
+    # 4. Choose replay posterior states as starts, then remove future observations.
+    starts = select_posterior_starts(entries, batch.valid_mask)
+    imagined = rssm.imagine(starts, policy, horizon=horizon)
+
+    # 5. Audit actions, prior logits/samples and horizon-wise drift independently.
+    return imagined, audit_kl_and_rollout(dyn, rep, posterior, prior, imagined)</code></pre>
+<p>伪代码是 S1–S8 的工程综合；<code>clamp_min(1.0)</code> 和 categorical latent 映射 S4/S5，不能泛化成所有 RSSM 默认。</p>
+<h2 id="23">23. 最小诊断矩阵</h2>
+<table><thead><tr><th>Probe</th><th>证明什么</th><th>不能证明</th></tr></thead><tbody>
+<tr><td>posterior reconstruction/head fit</td><td>filtering state 含 target 信息</td><td>prior 可预测</td></tr>
+<tr><td>one-step prior↔posterior KL</td><td>局部分布对齐</td><td>long-horizon稳定</td></tr>
+<tr><td>raw/clipped KL + entropy/usage</td><td>free-bits、collapse/underuse 迹象</td><td>downstream success</td></tr>
+<tr><td>future-observation removal</td><td>imagination 未显式读未来</td><td>无间接 leakage/shortcut</td></tr>
+<tr><td>action swap/zero/random</td><td>prior 对 action 是否敏感</td><td>consequence 与环境一致</td></tr>
+<tr><td>horizon-wise prior rollout</td><td>compounding 与 drift</td><td>closed-loop可执行</td></tr>
+<tr><td>cloned-state alignment</td><td>同 start/action 的模型/环境 consequence</td><td>real-robot transfer</td></tr>
+<tr><td>actor/critic success</td><td>behavior 层结果</td><td>RSSM 每个机制都正确</td></tr>
+</tbody></table>
+<h2 id="24-matched-ablation-trace">24. Matched ablation / trace</h2>
+<p>固定 data、steps、architecture、optimizer、seed、posterior encoder、heads 与 eval：</p>
+<table><thead><tr><th>arm</th><th>目的</th></tr></thead><tbody>
+<tr><td>no-KL / tiny-KL diagnostic</td><td>检查 posterior 任意编码与 prior 追不上</td></tr>
+<tr><td>unbalanced KL</td><td>基准 ELBO 梯度耦合</td></tr>
+<tr><td>V2-style α sweep</td><td>prior/posterior gradient权重敏感性</td></tr>
+<tr><td>V3 dyn/rep scale sweep</td><td>独立 scale 与 free-bits敏感性</td></tr>
+<tr><td>posterior rollout</td><td>teacher-forced/filtering 上界诊断</td></tr>
+<tr><td>prior-only rollout</td><td>真正 imagination/open-loop</td></tr>
+<tr><td>shuffled/zero action</td><td>action dependence 反例</td></tr>
+</tbody></table>
+<p>报告 prediction loss、raw/clipped KL、entropy/usage、gradient norm、one-step/open-loop error、action sensitivity、reward/continue calibration、closed-loop success、compute 与 seed CI。不同 latent type/capacity 不能只改 KL 系数后直接比较。</p>
+<h2 id="25">25. 高频失败诊断</h2>
+<table><thead><tr><th>症状</th><th>首查</th></tr></thead><tbody>
+<tr><td>posterior 好、prior 差</td><td>action/time index、prior capacity、KL gradient、future shortcut</td></tr>
+<tr><td>raw KL≈0、表示无信息</td><td>posterior collapse、decoder/reward shortcut、free-bits日志</td></tr>
+<tr><td>raw KL 很大不降</td><td>prior capacity、action missing、reset leakage、posterior塞细节</td></tr>
+<tr><td>dyn=rep=1 长期不动</td><td>raw KL 与 clipping ratio；不要只看 clipped scalar</td></tr>
+<tr><td>prior 不随 action 变</td><td>action mask/order/scale、data coverage、core input</td></tr>
+<tr><td>horizon 增长即崩</td><td>one-step-only fit、model bias、latent sampling、terminal handling</td></tr>
+<tr><td>episode 开头异常</td><td>previous-action/reset/carry off-by-one</td></tr>
+<tr><td>imagined return 好、real 差</td><td>转 WM-021 的 model exploitation、value calibration 与 paired rollout</td></tr>
+</tbody></table>
+<h2 id="26">26. 项目真实性边界</h2>
+<p>WAM/Cosmos 当前材料是 diffusion latent slot、condition/loss mask、action/future/value 与 planning/eval contract，不是 RSSM。UWM 是 shared diffusion 的 action/video modeling，也不是 Dreamer posterior/prior implementation。两者可用于回答“为什么需要可预测 latent/action-conditioned future”，但不能说“项目使用了 RSSM、KL balancing 或 Dreamer imagination”。</p>
+<p>安全口径：</p>
+<div class="meta">我能从 sequential ELBO 推导 posterior/prior 与 KL 的双重职责，并按 frozen Dreamer code 解释 filtering→posterior starts→prior-only imagination；我的 WAM/UWM 项目不是 RSSM 实现，当前也没有本地 Dreamer checkpoint/trace，所以只讲机制和可执行审计，不声称个人复现或收益。</div>
+<h2 id="27-claim-ledger">27. Claim ledger</h2>
+<table><thead><tr><th>Claim</th><th>来源</th><th>等级</th><th>状态</th></tr></thead><tbody>
+<tr><td>RSSM 组合 deterministic memory 与 stochastic latent</td><td>S1–S4</td><td>primary</td><td>checked</td></tr>
+<tr><td>posterior 读 observation、prior 用于不读未来的 imagination</td><td>S1–S5</td><td>primary + frozen code</td><td>checked</td></tr>
+<tr><td>DreamerV2 KL balancing 使用 α=0.8 的两条 stop-gradient 路径</td><td>S3</td><td>primary</td><td>checked / version-specific</td></tr>
+<tr><td>DreamerV3 分 dyn/rep、1 nat free bits，S5 scale 1.0/0.1</td><td>S4/S5</td><td>primary + frozen code</td><td>checked / config-specific</td></tr>
+<tr><td>S5 imagination 从 replay posterior entries 起步后只用 prior</td><td>S5</td><td>frozen code</td><td>checked</td></tr>
+<tr><td>WAM/UWM 使用 RSSM/Dreamer 或已证明其收益</td><td>S8</td><td>missing / contradicted by architecture boundary</td><td>rejected</td></tr>
+</tbody></table>
+<h2 id="28">28. 仍待独立复核与补证据</h2>
+<ol><li>primary/frozen-code 事实已复核，本节点独立事实复核仍标 <code>PENDING</code>。</li><li>需要 local causal encoder test、previous-action/reset alignment test、raw/clipped KL trace 与 categorical usage。</li><li>需要 posterior-vs-prior horizon curve、action intervention、cloned-state consequence 与 checkpoint/config SHA。</li><li>若未来项目采用 RSSM，需补 module path、local diff、run ledger、ownership 与 actor/critic gradient boundary。</li><li>浏览器 <code>file://</code> visual QA 受策略阻断，只能做 renderer/static/link validation。</li><li>没有真实口述，不创建 <code>coaching_state.md</code>，题卡保持 <code>unseen</code>。</li></ol>
+<h2 id="29">29. 参考来源</h2>
+<ol><li>Hafner et al., <a href="https://arxiv.org/abs/1811.04551"><em>Learning Latent Dynamics for Planning from Pixels</em></a>, 2019.</li><li>Hafner et al., <a href="https://arxiv.org/abs/1912.01603"><em>Dream to Control: Learning Behaviors by Latent Imagination</em></a>, 2020.</li><li>Hafner et al., <a href="https://arxiv.org/abs/2010.02193"><em>Mastering Atari with Discrete World Models</em></a>, 2021.</li><li>Hafner et al., <a href="https://arxiv.org/abs/2301.04104"><em>Mastering Diverse Domains through World Models</em></a>, 2023/2025.</li><li><code>danijar/dreamerv3@e3f02248693a79dc8b0ebd62c93683888ddaccfe</code>: <a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/README.md">README</a>, <a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/dreamerv3/rssm.py"><code>rssm.py</code></a>, <a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/dreamerv3/agent.py"><code>agent.py</code></a>, <a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/dreamerv3/configs.yaml"><code>configs.yaml</code></a>.</li><li><a href="vol_04_world_model_foundations_claim_to_code.html">VOL 04 Source Audit A</a> 与 <a href="vol_04_world_model_foundations_independent_fact_review.html">独立事实复核</a>。</li><li><a href="vol_04_wm011_objective_semantics_source_freeze.html">WM-011 Objective Semantics</a> 与 <a href="vol_04_wm021_dreamer_imagination_actor_critic_source_freeze.html">WM-021 Dreamer Actor/Critic</a>。</li><li><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a> 与 <a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO</a> evidence inventories。</li></ol>
+<h2 id="30">30. 下一节点</h2>
+<p>完成本节点后，VOL 04 进入 42/44；下一 bounded slice 只做 <code>VLA-WM-013</code>（latent overshooting 或 multi-step consistency loss 解决什么、可能带来什么偏差），不跨到 WM-014。</p>
+</article></body></html>

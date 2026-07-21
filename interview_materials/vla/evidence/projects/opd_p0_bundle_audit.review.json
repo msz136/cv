@@ -1,0 +1,38 @@
+{
+  "artifact": "evidence/projects/opd_p0_bundle_audit.md",
+  "html": "evidence/projects/opd_p0_bundle_audit.html",
+  "review_date": "2026-07-21",
+  "status": "p0_audited / protocol-bounded / raw-prediction-missing / ownership-pending",
+  "verdict": "WARN",
+  "source_sha256": "5E98B4877BA6C8D21A617E53326A9F473CB968DFBA5273CA63241196D5103FE3",
+  "scope": {
+    "project": "OPD / VLM Grounding",
+    "p0_fields": 10,
+    "holdout_rows": 10000,
+    "raw_predictions_present": false,
+    "checkpoint_verified": false,
+    "matched_ablation_present": false,
+    "causal_claims_promoted": 0,
+    "question_cards_changed": 0,
+    "coaching_state_created": false
+  },
+  "checks": {
+    "data_route": "PASS WITH WARNING (five expert mix, image-hash split and route metadata local-direct)",
+    "distillation": "PASS WITH WARNING (coldstart/student rollout/full-vocab KL documented; isolated ablation missing)",
+    "holdout_leakage": "PASS (quota, dedupe and leakage audit recorded)",
+    "checkpoint_curve": "PASS WITH WARNING (by-format/by-pool tables; no global-best claim)",
+    "scorer_protocol": "FAIL TO PROMOTE (three point protocols exist but scorer/prompt hash bundle incomplete)",
+    "lineage": "FAIL TO PROMOTE (OPD final and OPD5000 are separate runs; no unified immutable manifest)",
+    "raw_prediction_gate": "FAIL TO PROMOTE (weights/raw predictions/optimizer excluded from local snapshot)",
+    "ownership_gate": "PENDING (13-row ledger; candidate confirmation and operator/reviewer open)",
+    "renderer": "PASS (ARIS academic v1 HTML rendered from Markdown)",
+    "browser_visual_check": "PENDING (browser connector unavailable)"
+  },
+  "open_items": [
+    "Freeze code/config/data/scorer/checkpoint parent hashes for OPD final, coldstart500 and OPD5000.",
+    "Rerun base/SFT-only/coldstart-only/OPD on the same 10k holdout and retain per-sample JSON.",
+    "Freeze strict/protocol-fixed/lenient point scorer and prompt hashes.",
+    "Answer OWN-OPD-001 with concrete data/route/training ownership and collaboration boundary."
+  ],
+  "next": "Keep OPD PARTIAL/WARN; ask one ownership question only and do not promote causal uplift or checkpoint ownership."
+}

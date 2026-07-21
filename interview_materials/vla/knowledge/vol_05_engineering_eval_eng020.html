@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：Secret Lifecycle、数据权限与日志脱敏（ENG-020）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eng020.md">
+<meta name="aris:source-sha256" content="d29698ea1deb0659e88129a7273d682e369e8f5ab4e7185f82b0d64aa2e85514">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>d29698ea1deb0659e88129a7273d682e369e8f5ab4e7185f82b0d64aa2e85514</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eng020.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1-secret-capability-allowlist">1. 短答：短期 secret、最小 capability、allowlist 日志</a></li><li><a href="#2-threat-model-api-key">2. Threat Model：安全不是只搜 API key</a></li><li><a href="#3-secret-lifecycle">3. Secret Lifecycle：值只在需要时短暂存在</a></li><li><a href="#3-1">3.1 生命周期合同</a></li><li><a href="#3-2-manifest-reference">3.2 Manifest 只存 reference</a></li><li><a href="#4-authorization">4. Authorization：主体、动作、资源、上下文都要进入决策</a></li><li><a href="#4-1-principal-capability">4.1 Principal × Capability</a></li><li><a href="#5">5. 数据权限：可读取不等于可训练、可展示、可导出</a></li><li><a href="#6-kubernetes-secret">6. Kubernetes Secret：对象存在不等于安全</a></li><li><a href="#7-allowlist-redact">7. 日志脱敏：先 allowlist，再 redact</a></li><li><a href="#7-1-sensitive-field-registry">7.1 Sensitive-field registry</a></li><li><a href="#7-2-hash">7.2 为什么普通 hash 也可能不安全</a></li><li><a href="#8-robot-harness-hook">8. Robot Harness：局部 hook 可以讲，系统闭环不能讲</a></li><li><a href="#9-uwm-openpivla-opd-wam">9. UWM、OpenPiVLA、OPD 与 WAM 证据边界</a></li><li><a href="#10">10. 安全证据分层</a></li><li><a href="#11-secure-job">11. Secure Job 伪代码</a></li><li><a href="#12">12. 验证矩阵</a></li><li><a href="#13-trade-off-bad-case">13. Trade-off、bad case 与追问</a></li><li><a href="#13-1-trade-off">13.1 Trade-off</a></li><li><a href="#13-2-bad-case">13.2 高概率 bad case</a></li><li><a href="#13-3">13.3 面试追问</a></li><li><a href="#14">14. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：Secret Lifecycle、数据权限与日志脱敏（ENG-020）</h1>
+<div class="meta">状态：<code>drafted / knowledge_22_of_44 / card_1_of_1_unseen / review_warn</code> 报告日期：2026-07-17 证据截止：2026-07-17 当前节点：<code>VLA-ENG-020</code>；来源已冻结，单张题卡同步生成并保持 <code>unseen</code>。 来源入口：<a href="../sources/vol_05_eng020_secret_permission_logging_source_freeze.html">ENG-020 Secret / Permission / Logging Source Freeze</a>。 核心边界：OWASP、Kubernetes、NIST 给出安全基线；本地只有 Robot Harness 的特定 token-mask/scope hook 与训练项目暴露面，不能声称 secret manager、IAM、data governance 或审计体系已闭环。</div>
+<h2 id="question">问题（Question）</h2>
+<p><code>VLA-ENG-020</code>：VLA 训练、评估与机器人 Agent 同时接触模型仓库/云/机器人 token、私有数据、checkpoint、内部路径和多模态日志时，怎样设计 secret 生命周期、最小权限、数据 purpose gate、日志脱敏和可验证审计？</p>
+<p>回答应按五层展开：</p>
+<ol><li><strong>识别资产与泄露面</strong>：secret、sensitive data、infra metadata、model artifact；</li><li><strong>管理 secret lifecycle</strong>：lease、inject、use、rotate/expire、revoke、zeroize；</li><li><strong>每请求授权</strong>：deny-by-default、least privilege、subject/action/resource/context；</li><li><strong>日志 allowlist + redaction</strong>：不复制 token/原始多模态内容；</li><li><strong>用负向证据证明</strong>：canary、expired/revoked、over-privilege、wrong-purpose、audit-tamper 和 incident drill。</li></ol>
+<h2 id="section-2">知识地图位置与前置依赖</h2>
+<pre><code class="language-text">ENG-009 data/provenance + ENG-019 config/run identity
+                         ↓
+asset classification → secret lease + data purpose authorization
+                         ↓
+least-privilege capability → train/eval/agent/publisher isolation
+                         ↓
+allowlisted event → structured redaction → protected audit sink
+                         ↓
+canary / deny-case / rotation / incident drill
+                         ↓
+ENG-021 model/processor/normalizer package gate</code></pre>
+<p>前置：</p>
+<ul><li><code>VLA-ENG-009</code>：dataset revision、provenance 和 transform manifest。</li><li><code>VLA-ENG-018/019</code>：logical run/attempt identity、effective config 和 secret redaction flag。</li><li>VOL 07 Robot Harness：request token、scope、tool registry 与 history exposure。</li><li><code>VLA-ENG-021</code>：模型/processor/normalizer 打包将在独立节点展开。</li></ul>
+<h2 id="1-secret-capability-allowlist">1. 短答：短期 secret、最小 capability、allowlist 日志</h2>
+<p><strong>30 秒回答</strong>：secret 用短期、最小 scope lease，在运行时注入，只在 manifest 留 provider/key-version reference；所有数据、checkpoint、robot/tool 请求按 subject/action/resource/purpose 每次鉴权，默认拒绝。日志先按 schema allowlist，再删除 token 和原始敏感多模态内容，audit sink 防篡改。最后用 canary、过期/撤销 token、越权和错误 purpose 做负向验证。当前项目只有局部 hook，不能说安全闭环。</p>
+<h2 id="2-threat-model-api-key">2. Threat Model：安全不是只搜 API key</h2>
+<table><thead><tr><th>资产</th><th>示例</th><th>主要风险</th></tr></thead><tbody>
+<tr><td>secret/authenticator</td><td>HF/W&amp;B/cloud token、robot access token、DB/object-store credential</td><td>repo/CLI/env/exception/tool payload/log 泄露；长期共享</td></tr>
+<tr><td>sensitive data</td><td>prompt、图像/视频/音频、位姿/轨迹、位置、订单/业务字段</td><td>未授权训练、debug sample/gallery 外传、retention 超期</td></tr>
+<tr><td>infrastructure metadata</td><td>hostname/IP、bucket/path、checkpoint/model location、robot/user ID</td><td>内部拓扑暴露、资源枚举、跨系统关联</td></tr>
+<tr><td>model artifact</td><td>checkpoint、adapter、processor、normalizer、embedding</td><td>过宽读写、错误 publish、继承训练数据限制</td></tr>
+<tr><td>audit evidence</td><td>authorization decision、secret use、incident timeline</td><td>未授权改删、无法追责、日志本身含敏感值</td></tr>
+</tbody></table>
+<p>需要同时覆盖：静态 hardcode、运行时过权、日志/异常泄露、artifact 误发布、撤销不生效和 audit 被篡改。secret scanner 只是其中一层；“没有命中 regex”不等于系统安全。</p>
+<h2 id="3-secret-lifecycle">3. Secret Lifecycle：值只在需要时短暂存在</h2>
+<pre><code class="language-text">REQUEST → AUTHORIZE → ISSUE/LEASE → INJECT → USE
+   ↑                                  ↓
+REVOKE ← ROTATE/EXPIRE ← AUDIT ← ZEROIZE</code></pre>
+<h3 id="3-1">3.1 生命周期合同</h3>
+<ul><li><strong>Issue/lease</strong>：优先 workload identity 或短期 credential；scope 只覆盖当前 job/request/resource。</li><li><strong>Inject</strong>：secret manager、read-only volume、sidecar 或 workload identity；不用代码常量、CLI、普通 config/manifest。</li><li><strong>Use</strong>：不进入 checkpoint、experiment tracker、exception、tool payload 或 debug dump。</li><li><strong>Rotate/expire</strong>：支持 overlap/grace、renewal 和中途失效；行为与训练 retry/checkpoint 合同对齐。</li><li><strong>Revoke</strong>：compromise/离职/job 结束可快速撤销；失败默认 deny，不回退到共享静态 token。</li><li><strong>Zeroize/audit</strong>：清理临时材料；audit 只记 subject/resource/action/result/provider reference，不记 secret value。</li></ul>
+<p>OWASP 要求 secret 仅对需要者可见、可撤销、可轮换且永不记录明文。环境变量只是载体：仍可能进入 process dump、child process、debug source、exception 或 tracker。[1]</p>
+<h3 id="3-2-manifest-reference">3.2 Manifest 只存 reference</h3>
+<pre><code class="language-json">{
+  &quot;secret_ref&quot;: {
+    &quot;provider&quot;: &quot;example-secret-provider&quot;,
+    &quot;key_name&quot;: &quot;model_registry_read&quot;,
+    &quot;version_or_lease_id&quot;: &quot;opaque-reference&quot;,
+    &quot;scope&quot;: [&quot;model:read&quot;],
+    &quot;issued_to&quot;: &quot;train-attempt-ref&quot;,
+    &quot;expires_at&quot;: &quot;timestamp&quot;,
+    &quot;raw_value_persisted&quot;: false
+  }
+}</code></pre>
+<p><code>opaque-reference</code> 只是示例 schema，不是 credential。不要默认保存 raw secret 的普通 hash：低熵密码/token 可能被离线猜测，稳定 digest 还可能造成跨日志关联。</p>
+<h2 id="4-authorization">4. Authorization：主体、动作、资源、上下文都要进入决策</h2>
+<div class="formula">\[
+allow=Policy(subject,action,resource,context),\qquad default=deny
+\]</div>
+<p>变量和实现映射：<code>subject</code> 是 user/service account/job/robot session；<code>action</code> 是 read/write/list/delete/execute/publish；<code>resource</code> 是 dataset shard/checkpoint/log/robot/tool；<code>context</code> 包括 purpose、scope、environment、time、attempt 和 approval。policy engine 每个请求重新计算，不能只靠 UI 隐藏按钮或 job 启动时一次检查。</p>
+<p>NIST AC-3 要求按批准 authorization 执行访问；AC-6 要求用户和代表用户的进程只拥有完成任务所需权限。OWASP 也强调 least privilege、deny by default 与 validate every request。[2][3]</p>
+<h3 id="4-1-principal-capability">4.1 Principal × Capability</h3>
+<table><thead><tr><th>Principal</th><th>允许读</th><th>允许写/执行</th><th>明确禁止</th></tr></thead><tbody>
+<tr><td>preprocess</td><td>approved raw revision</td><td>derived temp/version</td><td>checkpoint/final、其他 dataset</td></tr>
+<tr><td>train</td><td>approved dataset/base model/normalizer</td><td>attempt temp、checkpoint generation、metrics</td><td>删除 raw data、覆盖他人 final、全 bucket list</td></tr>
+<tr><td>eval</td><td>immutable checkpoint/frozen eval protocol</td><td>attempt-scoped result/summary</td><td>训练数据写、checkpoint overwrite</td></tr>
+<tr><td>policy/Agent</td><td>approved model、当前 request/scope</td><td>scoped tool/robot action、audit event</td><td>任意 robot/tool、训练数据、cloud admin token</td></tr>
+<tr><td>publisher</td><td>committed artifact + review decision</td><td>immutable release/pointer</td><td>训练执行、raw data/secret read</td></tr>
+</tbody></table>
+<p>把 preprocess/train/eval/publish 拆成独立 identity，能缩小 blast radius，也能让 incident/ownership attribution 更清楚。</p>
+<h2 id="5">5. 数据权限：可读取不等于可训练、可展示、可导出</h2>
+<p>数据 permission manifest：</p>
+<pre><code class="language-text">dataset_id / immutable_revision / owner
+classification / license_or_consent / approved_purpose
+allowed_principals / allowed_actions / environment
+retention / deletion / export / derived_artifact_policy
+approval_ref / policy_revision / audit_sink</code></pre>
+<p>VLA/具身数据可能含人脸、语音、家庭/工厂布局、位置、机器人序列号和业务对象。限制不仅跟随 raw sample，还可能传递到 embedding、checkpoint、processor stats、failure video、episode trace 和 case gallery。</p>
+<p>工程规则：</p>
+<ol><li><code>train-only</code>、<code>eval-only</code>、<code>internal-debug</code>、<code>publishable</code> 目的分开；</li><li>split/protocol manifest 引用 permission revision；</li><li>derived artifact 计算继承/去标识后的新 classification；</li><li>retention 到期触发删除或审批续期；</li><li>wrong-purpose/export principal 必须 deny，并保存不含原始内容的 audit reason。</li></ol>
+<p>OWASP/NIST 支持授权原则，但具体 license、consent、purpose 和组织 policy 仍需项目 owner/法务/数据治理证据，不能由代码扫描替代。</p>
+<h2 id="6-kubernetes-secret">6. Kubernetes Secret：对象存在不等于安全</h2>
+<p>Kubernetes 官方明确：Secret 默认在 API server 底层 data store 未加密，base64 只是编码；应启用 encryption at rest、least-privilege Secret RBAC，并考虑 external Secret store。[4]</p>
+<p>训练集群最低 gate：</p>
+<ul><li>每个 job/service 独立 service account；禁止 namespace-wide Secret list/watch。</li><li>只挂载当前 job 所需 key；read-only、最小文件权限和非 root container。</li><li>保护 etcd、backup、API audit、support bundle 和 pod debug dump。</li><li>禁止把 Secret YAML、decoded value 或全量 env dump 上传 tracker。</li><li>演练 running job 的 lease renewal、rotation/revocation、fail-closed 与 recovery 行为。</li></ul>
+<p>危险说法：“用了 Kubernetes Secret 所以已经加密”“base64 防止泄露”“env 引用不会被日志打出来”。</p>
+<h2 id="7-allowlist-redact">7. 日志脱敏：先 allowlist，再 redact</h2>
+<div class="formula">\[
+L=Redact\!\left(Allowlist(E,S)\right)
+\]</div>
+<p>变量和实现映射：<code>E</code> 是原始 event，<code>S</code> 是 versioned logging schema；<code>Allowlist</code> 只选业务/诊断必需字段，<code>Redact</code> 再按字段类型删除、遮蔽、tokenize 或转成受控 reference。allowlist-first 比单纯 denylist/regex 更能防新 key、嵌套 payload 和 exception string 绕过。[2]</p>
+<h3 id="7-1-sensitive-field-registry">7.1 Sensitive-field registry</h3>
+<table><thead><tr><th>字段</th><th>默认处理</th><th>安全替代</th></tr></thead><tbody>
+<tr><td>access/refresh token、password、private key</td><td>删除</td><td>provider/key-version reference、auth result</td></tr>
+<tr><td>Authorization/cookie/DB connection</td><td>删除</td><td>credential class、scope、allow/deny</td></tr>
+<tr><td>prompt/image/audio/video/trajectory</td><td>默认不记原文</td><td>request ID、content hash、classification、受控 artifact ref</td></tr>
+<tr><td>path/host/robot/user ID</td><td>scoped mask/tokenize</td><td>attempt-scoped pseudonym；必要时 threat-reviewed HMAC ref</td></tr>
+<tr><td>stack trace/tool payload</td><td>schema filter + length cap</td><td>error class、owner、correlation ID</td></tr>
+<tr><td>audit decision</td><td>保留并防篡改</td><td>subject/resource ref、policy revision、decision、reason</td></tr>
+</tbody></table>
+<p>OWASP Logging 明确列出 access token、password、encryption key 等通常不应直接记录；NIST AU-9 要求保护 audit 信息和 logging tools 不受未授权访问、修改与删除。[2][3]</p>
+<h3 id="7-2-hash">7.2 为什么普通 hash 也可能不安全</h3>
+<ul><li>低熵 user/robot/phone/order ID 可被字典枚举；</li><li>跨系统稳定 hash 会形成可关联 identifier；</li><li>secret digest 会向攻击者提供验证 oracle；</li><li>content hash 可能证明某个敏感样本存在。</li></ul>
+<p>若确需关联，优先使用 scoped、rotatable HMAC/pseudonym，并定义 key owner、scope、retention 和 re-identification 权限；这仍需 threat review，不是万能脱敏。</p>
+<h2 id="8-robot-harness-hook">8. Robot Harness：局部 hook 可以讲，系统闭环不能讲</h2>
+<p>直接证据：</p>
+<ul><li><code>AgentDeps/runtime</code> 传递 request <code>access_token</code>、scope、robot 与 cancel context；registry 按 tool name/allowed robot scope 过滤。</li><li>tool payload 写日志前，registry 把 <code>__access_token</code> 改为 <code>***</code>；dedup key 排除 token、request 和 robot metadata。</li><li>semantic-navigation 使用命名 credential，并在缺失时失败；没有发现硬编码值被复制到本报告。</li><li>history 压缩/移除 action-tool history，减少 runtime exposure，但不等于正式 privacy/retention policy。</li></ul>
+<p>安全表述：</p>
+<div class="meta">“Robot Harness 当前有 request scope 和针对 <code>__access_token</code> 的定点日志遮蔽，且 token 不进入 dedup hash。这证明一个具体 hook，不证明所有 header/cookie/nested payload、TTL/rotation/revoke、secret manager、RBAC 或 audit protection 已闭环。”</div>
+<p>高风险边界：mask 只匹配特定 key；换成 <code>authorization</code>、<code>cookie</code>、nested <code>headers</code>、exception string 或二进制字段可能绕过。因此需要 versioned sensitive-field registry 和 nested property tests。</p>
+<h2 id="9-uwm-openpivla-opd-wam">9. UWM、OpenPiVLA、OPD 与 WAM 证据边界</h2>
+<table><thead><tr><th>项目</th><th>已有 direct evidence</th><th>仍缺/暴露面</th></tr></thead><tbody>
+<tr><td>UWM</td><td>launcher 未启用 shell xtrace；显式设置 runtime env</td><td>stdout 打印 run/log/checkpoint/internal path；无 secret manager/env allowlist/data-purpose/retention artifact</td></tr>
+<tr><td>OpenPiVLA</td><td>formal plan 与 checkpoint state 保存训练参数</td><td><code>vars(args)</code> 全量序列化没有 generic redaction；path/data/model metadata 进入 artifact</td></tr>
+<tr><td>OPD</td><td>partial run summary 保存 model/data/teacher paths</td><td>无 sensitive schema、purpose/permission、retention、secret scan result</td></tr>
+<tr><td>WAM</td><td>inventory 未发现 local runtime/config/log bundle</td><td>无法评价 credential/IAM/logging；保持 unverified</td></tr>
+</tbody></table>
+<p>OpenPiVLA smoke 的 <code>private_data_deployed=false</code> 只描述该 smoke artifact，不证明 formal run 的数据授权。selected-file scan 未发现 secret-named hardcoded string literal 或 unmasked secret identifier 直接进入选定 log sink，但只覆盖八个文件；Git history、container layer、runtime env、tracker、checkpoint 和对象存储仍未检查。</p>
+<h2 id="10">10. 安全证据分层</h2>
+<table><thead><tr><th>层</th><th>检查对象</th><th>最小 artifact</th></tr></thead><tbody>
+<tr><td>static</td><td>working tree、Git history、config、image/layer</td><td>scanner rule/revision、canary、findings location、false-negative boundary</td></tr>
+<tr><td>runtime</td><td>env/process/volume/core dump/exception</td><td>injection method、lease/TTL、negative run、no-fallback result</td></tr>
+<tr><td>logging</td><td>stdout/stderr、tool payload、tracker、audit sink</td><td>schema revision、redaction tests、no-canary scan、tamper protection</td></tr>
+<tr><td>data</td><td>raw/derived dataset、sample/gallery/video</td><td>permission manifest、purpose/retention/export decision</td></tr>
+<tr><td>artifact</td><td>checkpoint/package/processor/normalizer</td><td>sensitive scan、classification inheritance、publisher gate</td></tr>
+<tr><td>incident</td><td>compromise/expiry/revoke/rotation</td><td>timeline、blast radius、revocation latency、recovery result</td></tr>
+</tbody></table>
+<p>只做 static scan 不能升级为“生产安全”；只有把运行时、权限、日志、数据、artifact 和 incident drill 连起来，才是可抗追问的证据。</p>
+<h2 id="11-secure-job">11. Secure Job 伪代码</h2>
+<pre><code class="language-python">def launch_secure_job(request, policy, secret_provider, log_schema):
+    # 1. Validate subject/action/resource/purpose on every request; default deny.
+    decision = policy.authorize(request.subject, request.action,
+                                request.resource, request.context)
+    assert decision.allowed
+
+    # 2. Lease short-lived scoped references; never persist raw secret values.
+    leases = secret_provider.lease(
+        decision.secret_refs, ttl=request.max_runtime, scope=decision.scope
+    )
+
+    # 3. Log only schema-approved fields and protect the audit sink.
+    logger = secure_logger(log_schema, sensitive_fields=decision.sensitive_fields)
+    logger.audit(decision.without_secret_values())
+
+    try:
+        # 4. Execute with least-privilege data/model/checkpoint capabilities.
+        return run_job(request, leases, logger, capabilities=decision.capabilities)
+    finally:
+        # 5. Revoke/zeroize, then scan all outputs for a synthetic canary.
+        secret_provider.revoke(leases)
+        zeroize_local_material(leases)
+        assert no_secret_canary_in_outputs(request.attempt_id)</code></pre>
+<p>伪代码表达 authorize→lease→redact→run→revoke/zeroize→canary 的顺序；policy engine、workload identity、secret provider、secure logger、audit protection 和 scanner 必须由真实系统实现并留 artifact。</p>
+<h2 id="12">12. 验证矩阵</h2>
+<table><thead><tr><th>Case</th><th>注入/动作</th><th>通过条件</th></tr></thead><tbody>
+<tr><td>hardcoded</td><td>synthetic canary 写入 test fixture</td><td>scanner 阻断；报告不复制 value</td></tr>
+<tr><td>CLI/process</td><td>canary 作为 CLI arg</td><td>拒绝或改 secure injection；history/process list 无明文</td></tr>
+<tr><td>env/log</td><td>allowlisted/non-allowlisted env canary</td><td>resolver/log/exception/tracker/artifact 无 raw canary</td></tr>
+<tr><td>nested payload</td><td>nested header/body/cookie 放 canary</td><td>structured redactor 删除；fallback/length cap 不绕过</td></tr>
+<tr><td>expired/revoked</td><td>过期或中途撤销 lease</td><td>fail closed、无 static fallback、audit reason 完整</td></tr>
+<tr><td>over-privilege</td><td>train job 删除 raw data/覆盖 final</td><td>deny；resource 不变；audit 记录</td></tr>
+<tr><td>wrong purpose</td><td>eval-only data 用于 train/export</td><td>deny；purpose/policy revision 可解释</td></tr>
+<tr><td>audit tamper</td><td>非授权主体改删 log</td><td>阻断或告警；audit evidence 可验证</td></tr>
+<tr><td>incident rotation</td><td>模拟 credential compromise</td><td>撤销/轮换/刷新/重启语义和 blast radius 可量化</td></tr>
+</tbody></table>
+<p>验收指标可以报告 detection coverage、false positive/negative、redaction escape count、revocation latency、denied-action count、audit integrity result；不能只写“扫描通过”。</p>
+<h2 id="13-trade-off-bad-case">13. Trade-off、bad case 与追问</h2>
+<h3 id="13-1-trade-off">13.1 Trade-off</h3>
+<ul><li>短期 credential 降低 blast radius，但要求 renewal/expiry 与长训练 checkpoint/retry 协调。</li><li>allowlist 日志更安全，却可能减少 debug 信息；用 correlation ID + 受控 artifact escalation 补偿。</li><li>数据权限拆分增加运维成本，但能阻止 train/eval/publish 角色越权。</li><li>audit 保留越久越利于调查，也增加隐私和攻击面；需要 retention/minimization。</li><li>generic redaction 更稳健，但过度 mask 会破坏诊断；schema version 与 sampled review 要并行。</li></ul>
+<h3 id="13-2-bad-case">13.2 高概率 bad case</h3>
+<ol><li>token 写在 CLI、shell history、Docker ENV/ARG 或配置文件。</li><li>Kubernetes Secret 只做 base64，未开 at-rest encryption/RBAC。</li><li>为复现 dump 全部 env、args、tool payload 和 stack trace。</li><li>一个共享 token 同时拥有 dataset read、checkpoint delete 和 final publish。</li><li>只 mask <code>token</code> key，漏掉 nested header/cookie/connection string。</li><li>路径可访问就默认可训练/可展示，忽略 license/consent/purpose。</li><li>scanner 零告警就宣称全仓、历史、runtime 和 artifact 无 secret。</li><li>audit log 可被同一 train job 改删，事故后无法取证。</li></ol>
+<h3 id="13-3">13.3 面试追问</h3>
+<ol><li>env var 与 Kubernetes Secret 为什么都不等于完整 secret management？</li><li>长训练中 token 过期或轮换怎么办？</li><li>train/eval/publisher 为什么要不同 identity？</li><li>怎样保证 dataset permission 传递到 checkpoint 和 failure video？</li><li>allowlist-first 为什么比 regex denylist 更稳？</li><li>为什么普通 hash 仍可能泄露或关联敏感 ID？</li><li>Robot Harness 当前 mask 能被哪些 nested payload 绕过？</li><li>怎样证明撤销、越权拒绝和 audit protection 真正工作？</li></ol>
+<h2 id="14">14. 结论与下一步</h2>
+<p>可靠安全合同把 secret、authorization、data permission、logging 和 audit 放在同一链路：短期 scoped secret 只在运行时出现；每请求按 subject/action/resource/purpose 默认拒绝；train/eval/Agent/publisher capability 分离；日志先 allowlist 再结构化 redaction；audit sink 防篡改；最后用 canary、expiry/revoke、over-privilege、wrong-purpose 和 incident rotation 证明。</p>
+<p>当前 Robot Harness 能证明一个具体 token-mask/scope hook，UWM/OpenPiVLA/OPD 能证明真实 args/path/summary exposure；但统一 secret manager、IAM、data governance、generic redaction、audit protection 和全链路 drill 仍缺。因此本节点保持 <code>WARN</code>，题卡保持 <code>unseen</code>。下一步可口述 <code>VLA-ENG-020</code>，或补 nested-redaction/expired-token/permission-deny artifact；<code>VLA-ENG-021</code> 继续后置。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_05_eng020_secret_permission_logging_source_freeze.html">ENG-020 Source Freeze</a>：官方 revision/SHA、本地 selected-file scan 与真实性边界。</li><li>OWASP, <a href="https://github.com/OWASP/CheatSheetSeries/blob/ae0b3f22f5b24381455f742af9b5fa84063ad770/cheatsheets/Secrets_Management_Cheat_Sheet.md">Secrets Management</a>、<a href="https://github.com/OWASP/CheatSheetSeries/blob/ae0b3f22f5b24381455f742af9b5fa84063ad770/cheatsheets/Logging_Cheat_Sheet.md">Logging</a> 与 <a href="https://github.com/OWASP/CheatSheetSeries/blob/ae0b3f22f5b24381455f742af9b5fa84063ad770/cheatsheets/Authorization_Cheat_Sheet.md">Authorization</a>。</li><li>Kubernetes, <a href="https://github.com/kubernetes/website/blob/5e1d1bde0ca03efe09608d59c573d6ec87052c24/content/en/docs/concepts/configuration/secret.md">Secrets</a> 与 <a href="https://github.com/kubernetes/website/blob/5e1d1bde0ca03efe09608d59c573d6ec87052c24/content/en/docs/concepts/security/secrets-good-practices.md">Good Practices</a>。</li><li>NIST, <a href="https://github.com/usnistgov/oscal-content/blob/78650f02ad9321bb7b817846f8fbd4f2bcd620de/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json">SP 800-53 Rev.5 OSCAL</a>：AC-3、AC-6、AU-9、IA-5。</li><li>Pydantic, <a href="https://github.com/pydantic/pydantic-settings/blob/1d0ea26f9e04ec9e20767d70e4508bb33c8708e7/docs/index.md">pydantic-settings 2.14.1</a>：debug source secret warning。</li><li>本仓库，<a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness Inventory</a>、<a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA Inventory</a>、<a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Inventory</a>、<a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM Inventory</a> 与 <a href="vol_05_engineering_eval_eng019.html">ENG-019 Config Resolution</a>。</li></ol>
+</article></body></html>

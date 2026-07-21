@@ -1,0 +1,79 @@
+{
+  "artifact": "questions/vol_06_per016.md",
+  "html": "questions/vol_06_per016.html",
+  "question_list": "questions/vol_06_per016.question_list.md",
+  "knowledge": "knowledge/vol_06_per016_localization_odometry_slam_map_frame_drift.md",
+  "source_freeze": "sources/vol_06_per016_localization_odometry_slam_map_frame_drift_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / VLA-PER-016 / card_1_of_1",
+  "verdict": "WARN",
+  "source_sha256": "768ED52EC5DA08D3BBA1C3825381C5A1653EA30FEDCF07987F74DC927798D4F7",
+  "question_count": 1,
+  "covered_question_ids": [
+    "VLA-PER-016"
+  ],
+  "difficulty_distribution": {
+    "L1": 0,
+    "L2": 0,
+    "L3": 1,
+    "L4": 0,
+    "L5": 0
+  },
+  "priority_distribution": {
+    "P0": 0,
+    "P1": 1
+  },
+  "practice_distribution": {
+    "unseen": 1,
+    "weak": 0,
+    "pass": 0,
+    "strong": 0,
+    "stale": 0
+  },
+  "answer_length_chars": {
+    "short_answer_min": 179,
+    "short_answer_max": 179,
+    "short_answer_average": 179,
+    "short_answer_threshold": 180,
+    "mechanism_answer_min": 350,
+    "mechanism_answer_max": 350,
+    "mechanism_answer_average": 350,
+    "mechanism_answer_threshold": 350
+  },
+  "checks": {
+    "bounded_slice": "PASS (exactly one VLA-PER-016 atomic card is created from synchronized source and knowledge; no PER-017 artifact, mastery mutation or coaching_state.md)",
+    "details_block_well_formed": "PASS (1/1 Markdown and HTML details/summary block is balanced and foldable)",
+    "question_id_unique": "PASS (VLA-PER-016 occurs once; the global registry synchronizes to 267 unique generated cards)",
+    "required_fields": "PASS (intent, short answer, mechanism, diagnosis/evidence, project hook, follow-up, easy-error, dangerous answer, sources and state are present)",
+    "answer_conciseness": "PASS (30-second answer 179 chars; mechanism answer 350 chars)",
+    "source_references": "PASS WITH WARNING (PER-016 source/knowledge plus pinned ORB-SLAM3, VINS-Mono, Cartographer, DROID-SLAM, OpenVINS, Kimera and five project inventories are cited; no complete local SLAM runtime exists)",
+    "concept_taxonomy": "PASS (tracking, odometry, localization, mapping and SLAM are separated by input, state, map assumption and failure instead of collapsed into pose output)",
+    "typed_identity": "PASS (sensor, clock, calibration, noise, estimator/config/checkpoint and map revision precede state or metric claims)",
+    "map_odom_contract": "PASS (continuous odom->base is separated from revisioned and potentially jumping map->odom; controller-consumer risk is explicit)",
+    "state_covariance_preintegration": "PASS WITH WARNING (pose/velocity/bias/covariance, propagation/update, preintegration and filter/window distinctions remain in the compact card; no local configuration is claimed)",
+    "frontend_backend_contract": "PASS (frontend association, local estimation, backend factors and global layer retain separate responsibilities and failure evidence)",
+    "loop_relocal_merge": "PASS (candidate, geometry, relative transform, robust graph residual and map revision are ordered; relocalization, loop closure and map merge are distinct)",
+    "drift_taxonomy": "PASS (translation, yaw, scale, vertical, time, map corruption, lost and jump are retained in the diagnostic and follow-up structure)",
+    "metric_alignment_boundary": "PASS (ATE, RPE, timestamp association, SE3/Sim3, delta, unit and lost denominator are explicit; Sim3-aligned ATE is not promoted to metric-scale validity)",
+    "learned_slam_boundary": "PASS WITH WARNING (DROID remains a learned-update plus graph/dense-BA system and is not presented as geometry-free, domain-robust or locally deployed)",
+    "deterministic_probes": "PASS (all ten fixed map/odom composition, SE2 roundtrip, covariance, ATE, RPE, false-loop, scale, correction-jump, timestamp and local-fallback probes remain in the compact card)",
+    "diagnostic_order": "PASS (sensor/time through calibration/frame, initialization, frontend, local state, loop gate, map revision, metric and planner/controller consumer follows first divergence)",
+    "robot_harness_boundary": "PASS WITH WARNING (occupancy, 54,856-point PCD, reloc poses, bridge and one software-only fallback test support asset/interface facts only; no estimator, live TF, graph or trajectory metric exists)",
+    "other_project_boundary": "PASS (OPD stays a 2D upstream hook, OpenPiVLA a policy interface, WAM a video/world/action diagnostic and UWM simulator-state protocol; none is promoted to SLAM evidence)",
+    "five_project_truth_boundary": "PASS (public mechanism, local asset/interface, missing runtime/result and candidate ownership remain separate)",
+    "html_static_validation": "PASS (ARIS academic v1; source SHA synchronized; one H1, three H2 including TOC, one foldable summary, two unique IDs, required palette/serif/sticky 260px TOC/900px breakpoint/print rules and zero formula-em/control-character issues)",
+    "local_links": "PASS (nine knowledge, source and evidence HTML href occurrences resolve locally)",
+    "browser_visual_check": "BLOCKED (the existing in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "practice_state": "PASS (card remains unseen; all 267 generated cards remain unseen, no oral answer was provided and coaching_state.md is absent)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep VLA-PER-016 unseen until the candidate answers it orally.",
+    "Archive a typed sensor/map/estimator manifest and raw packet, TF, pose, covariance, graph and loop reports if a local localization system exists.",
+    "Add SE3/Sim3 trajectory evaluation with association, ATE/RPE, drift, lost/relocalization denominator and raw per-frame errors.",
+    "For Robot Harness, bind occupancy/PCD/reloc assets to their producing estimator and a live state stream before making SLAM claims.",
+    "Confirm candidate ownership per local file and design decision; public repositories, map assets, paths and Git identity are insufficient.",
+    "Do not create coaching_state.md until an actual oral drill is completed."
+  ],
+  "next": "Freeze only the VLA-PER-017 belief/memory/frontier/active-exploration source in the next bounded slice; do not generate its knowledge/card or change mastery in the same slice."
+}

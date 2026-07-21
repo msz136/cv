@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 World Model / Sim2Real：核心面试题卡（Foundations + Evaluation）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\vol_04_world_model_sim2real.md">
+<meta name="aris:source-sha256" content="23f6b5ac581229cd7a2210296268fd8669a841588adae0e5f0e2af3a38c86636">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>23f6b5ac581229cd7a2210296268fd8669a841588adae0e5f0e2af3a38c86636</code>；生成自：<code>interview_materials\vla\questions\vol_04_world_model_sim2real.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#a-world-model">A. World Model 基础与范式</a></li><li><a href="#e-world-model">E. World Model 评估与失败归因</a></li><li><a href="#section-3">参考来源</a></li></ol></nav>
+<h1>VOL 04 World Model / Sim2Real：核心面试题卡（Foundations + Evaluation）</h1>
+<div class="meta">状态：<code>drafted / aggregate_cards_44_of_44 / WARN</code> 更新日期：2026-07-19 基础页题卡：<code>VLA-WM-001..010</code>、<code>VLA-WM-039..044</code>（16 / 44） 独立原子题卡：<code>VLA-WM-011..038</code>（28 / 44） VOL 04 aggregate cards：44 / 44；练习状态全部 <code>unseen</code> 难度：L1 1 题 / L2 7 题 / L3 8 题 优先级：P0 11 题 / P1 5 题 练习状态：全部 <code>unseen</code> 使用方式：先闭卷说 30 秒版本，再展开机制与诊断；未真实口述前不得改为 pass/strong。 深度来源：<a href="../knowledge/vol_04_world_model_sim2real.html">VOL 04 Foundations + Evaluation 知识页</a>；本页不替代 UWM/WAM 的 checkpoint、config、normalizer 或 episode artifacts。</div>
+<h2 id="a-world-model">A. World Model 基础与范式</h2>
+<details class="qa">
+<summary><span class="lv lv-l1">L1</span> <span class="freq">P0</span> <b>VLA-WM-001</b> · 什么是 world model？它与 policy、environment simulator、reward/value model 分别是什么关系？</summary>
+<p><strong>面试意图</strong>：检查你能否先划清模块职责，再讨论 architecture 或项目收益。</p>
+<p><strong>30 秒回答</strong>：world model 是给定历史与候选动作、预测未来 observation/state/latent、reward 或 continuation 的条件模型。policy 选动作，真实 environment/simulator 产生 transition，reward 给即时信号，value 估计长期回报；world model 本身不等于规划器。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：先报概率合同 <code>history + action + task -&gt; future variables</code>。World Models 用 VAE+MDN-RNN 学 latent future，PlaNet 用 latent dynamics 在线规划，Dreamer 从 posterior belief 出发用 prior imagination 训练 actor/critic。一个视频生成器只有在动作合同、horizon、reward/termination 或 decision utility 可验证时才承担 world-model 角色；否则它只是视觉预测器。learned model 也不等于环境本体。</p>
+<p><strong>诊断 / 消融</strong>：逐项问推理时是否查询 future、由谁选 action、reward/value 是否独立、预测是否进入 controller；用 no-world、auxiliary-world、planning-world 三组合同对照。</p>
+<p><strong>项目挂钩</strong>：讲 WAM/UWM 时先说明 world head 是训练辅助还是 rollout-time query；上游结构和项目页数字都不是个人已验证结果。</p>
+<p><strong>追问树</strong>：没有像素 decoder 还能叫 world model 吗？reward model 算 world model 吗？world model 与 simulator 的关键差别是什么？</p>
+<p><strong>危险答案</strong>：把 world model 等同于“能生成视频”，或说它天然包含 policy、value 和 controller。</p>
+<p><strong>来源</strong>：[1][2][17][18][19][20]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-WM-002</b> · world model 应建模 observation、state、latent、reward、termination 中哪些变量？</summary>
+<p><strong>面试意图</strong>：判断你是否会按用途设计 I/O，而不是机械堆齐所有 head。</p>
+<p><strong>30 秒回答</strong>：没有固定全家桶。感知侧输入 observation；高维或部分可观测任务常用 latent/belief；planning/RL 通常需要 reward 与 continuation。privileged simulator state 只可作监督或诊断，不能泄漏到部署输入；每个字段还要冻结时序、mask、horizon 和终止语义。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：POMDP 中真实 state 转移、observation 由 state 产生；模型可用 encoder 与 recurrent belief 近似 state。decoder 保留可重建信息，reward head 给一步信号，continuation 决定 imagined return 是否跨过 terminal。纯 auxiliary model 可只学 latent future；queryable simulator 则必须输出 planner 真正需要的 future/reward/termination。privileged simulator state 只能在明确 flag 下作 target/probe。</p>
+<p><strong>诊断 / 消融</strong>：做字段级 ablation：去 decoder、reward、continuation 或 privileged target；分别报告 representation probe、open-loop error、return 与 closed-loop success。</p>
+<p><strong>项目挂钩</strong>：核对 UWM/WAM 数据中 camera、proprio、action、future/value slot 与 mask；缺 local schema 时不猜哪些字段真正训练。</p>
+<p><strong>追问树</strong>：termination 与 truncation 为什么不能合并？latent 是否必须能解码图像？privileged state 怎样避免泄漏？</p>
+<p><strong>危险答案</strong>：说 world model 必须同时预测像素、state、reward、value 和 done，或把 simulator state 当部署输入。</p>
+<p><strong>来源</strong>：[1][2][17][20]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P1</span> <b>VLA-WM-003</b> · deterministic dynamics 与 probabilistic dynamics 各自能表达什么不确定性？</summary>
+<p><strong>面试意图</strong>：检查你能否区分点预测、多未来、数据噪声与模型知识不足。</p>
+<p><strong>30 秒回答</strong>：deterministic dynamics 给点估计，稳定但会平均多未来；probabilistic dynamics 输出分布，可表达 aleatoric 多模态。epistemic 来自覆盖不足，通常需 ensemble 或 posterior/disagreement；单个随机模型不自动代表 epistemic uncertainty。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：deterministic 常以 MSE 拟合条件均值，适合低噪声 state 和短 horizon；Gaussian/mixture/categorical latent/diffusion 可表示多未来，但要冻结采样 seed、temperature 与 likelihood/denoise 合同。ensemble 的成员差异可作为 epistemic proxy，但若成员训练高度相关或未校准，disagreement 也不等于真实风险。选择取决于是否存在遮挡、接触、多解和 planning 风险。</p>
+<p><strong>诊断 / 消融</strong>：比较 deterministic、single stochastic、ensemble 的 NLL/coverage、horizon error、calibration 与 risk-sensitive planning success，不能只看 sample 多样性。</p>
+<p><strong>项目挂钩</strong>：UWM/video diffusion 的采样随机性最多先证明多样性；没有 ensemble/calibration 和环境对照，不能称本地 epistemic risk 已解决。</p>
+<p><strong>追问树</strong>：为什么 MSE 会模糊多未来？aleatoric 能否靠更多数据消除？ensemble disagreement 什么时候失真？</p>
+<p><strong>危险答案</strong>：说 deterministic 模型没有任何不确定性，或把 diffusion 的 sampling noise 直接称为 epistemic uncertainty。</p>
+<p><strong>来源</strong>：[1][2][17][19][20]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>VLA-WM-004</b> · latent world model 的 encoder、transition、decoder、reward 与 continuation head 如何连接？</summary>
+<p><strong>面试意图</strong>：考查你能否把 RSSM 的 filtering、imagination、loss 与 actor/critic 数据流连起来。</p>
+<p><strong>30 秒回答</strong>：encoder 编码 observation；posterior 用当前观测更新 latent belief，prior 仅靠历史 latent 和 action 想象未来。decoder、reward、continuation head 从 belief 预测观测、回报与是否继续；训练对齐 prior/posterior，规划时不能读取未来观测。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：DreamerV3 风格 RSSM 由 deterministic state <code>h</code> 与 stochastic state <code>z</code> 构成：<code>observe</code> 做 posterior filtering，<code>imagine</code> 做 action-conditioned prior rollout，dyn/rep KL 用不同 stop-gradient 方向，free-nats 防止过度压 KL。world heads 分别有 target、scale、mask；actor/critic 从 replay posterior start 出发在 prior 中 rollout reward/continue。danijar repo 是 reimplementation，不是论文官方代码。</p>
+<p><strong>诊断 / 消融</strong>：检查 posterior-vs-prior gap、KL/free-nats、各 head loss、posterior collapse；做 future-observation leakage test 和 prior-only horizon rollout。</p>
+<p><strong>项目挂钩</strong>：项目若声称使用 RSSM，必须给 local module/config/checkpoint/tensor trace；不能用 Dreamer upstream code 代替本人实现证据。</p>
+<p><strong>追问树</strong>：posterior/prior 为什么分开？continuation 怎样影响 return？decoder 去掉会怎样？PlaNet overshooting 能否直接归给 DreamerV3？</p>
+<p><strong>危险答案</strong>：让 imagination 读取未来 observation，或称 danijar/dreamerv3 为 Google/DeepMind 官方代码。</p>
+<p><strong>来源</strong>：[1][2][17][20][21]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-WM-005</b> · one-step prediction 好为什么不代表 multi-step rollout 可靠？</summary>
+<p><strong>面试意图</strong>：检查你是否理解 teacher-forced 分布与自回归状态漂移。</p>
+<p><strong>30 秒回答</strong>：one-step 每次站在真实 history 上；open-loop 从第二步开始吃自己的预测。局部误差会被 dynamics sensitivity 反复传播，rollout 还会进入训练外 state；背景占优、action ignoring 或 continuation/contact 漏建模都可能让平均 MSE 很低但长时轨迹失真。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：把第 j 步局部误差记为 <code>e_j</code>、局部放大因子记为 <code>L</code>，h-step error 会累积近似加权项；当 L&gt;1 或 state OOD 时增长更快。pixel MSE 可能被静态背景主导，latent/reward loss 也只证明对应 target fit。正确评估要画 teacher-forced 与 autoregressive <code>error_by_horizon</code>，固定 action/seed/reset，并配 task-object pose、contact、action sensitivity 和 continuation error。</p>
+<p><strong>诊断 / 消融</strong>：做 horizon 1/4/8/... sweep、真实-history vs predicted-history 对照、action swap、对象区域/状态指标与 terminal audit。</p>
+<p><strong>项目挂钩</strong>：UWM/WAM 离线 future MSE 下降只能说相应 split/horizon 拟合改善，不能直接升级为 LIBERO success。</p>
+<p><strong>追问树</strong>：为什么背景会掩盖错误？L 是什么直觉量？open-loop 好是否就等于 closed-loop 好？</p>
+<p><strong>危险答案</strong>：只报一个平均 one-step MSE，就声称 world model 可做长时 planning。</p>
+<p><strong>来源</strong>：[1][2][17][19][20]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-WM-006</b> · teacher forcing、open-loop rollout 与 scheduled sampling 的分布差异是什么？</summary>
+<p><strong>面试意图</strong>：判断你能否从训练输入来源解释 exposure bias，而不是只背术语。</p>
+<p><strong>30 秒回答</strong>：teacher forcing 始终喂真实前一步，训练稳定但模型没见过自己的错误状态；open-loop 始终回灌预测，用来暴露 compounding；scheduled sampling 按 schedule 混用真实/预测输入，试图缩小 gap，但会引入新的训练分布和目标不一致，不能替代 open/closed-loop 评测。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：scheduled sampling 可用 Bernoulli mask 决定每步取 ground truth 还是 model prediction，必须记录 teacher probability、stop-gradient、padding 与 episode boundary。它可能让模型适应有限预测噪声，也可能破坏序列目标的一致性；若 action、termination 或 schema 本身错，混入预测输入只会适应错误。评测要在同 start/action/seed 下分别跑 teacher-forced、autoregressive 和 closed loop。</p>
+<p><strong>诊断 / 消融</strong>：对 schedule、prediction detach 与 rollout horizon 做 sweep；分报 one-step、open-loop、closed-loop，不把三种 MSE 合并。</p>
+<p><strong>项目挂钩</strong>：若项目只保存 teacher-forced future loss，就不能宣称训练已覆盖 rollout-state distribution；需要 config 和真实 open-loop trace。</p>
+<p><strong>追问树</strong>：scheduled sampling 为什么有 bias？预测输入是否 detach？closed loop 与 open loop 的 observation 来源有何不同？</p>
+<p><strong>危险答案</strong>：说 scheduled sampling 一定消除 exposure bias，或把 teacher-forced validation 当 autoregressive rollout。</p>
+<p><strong>来源</strong>：[1][2][17][19]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-WM-007</b> · aleatoric 与 epistemic uncertainty 如何区分，分别怎样影响 planning？</summary>
+<p><strong>面试意图</strong>：考查你能否把 uncertainty 分类落实为校准、拒答和风险敏感决策。</p>
+<p><strong>30 秒回答</strong>：aleatoric 是同一条件下环境本身有多种结果，更多同分布数据也未必消失；epistemic 是模型没覆盖或不知道，补数据/ensemble 可能降低。planning 中前者需要对多 outcome 做期望或约束，后者应触发 pessimism、abstention、fallback 或补采数据；两者都必须校准。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：单模型分布内部 variance 可近似 aleatoric，不同 ensemble 成员预测均值的 variance 可近似 epistemic，但这是估计框架。风险目标可写成 predicted return 减 uncertainty penalty；beta 决定保守度。必须验证 coverage、reliability、OOD detection 与 success/constraint trace。高 disagreement 可能来自成员不稳定，低 disagreement 也可能是共同过拟合，不能把数值直接当安全保证。</p>
+<p><strong>诊断 / 消融</strong>：做 in-distribution/OOD calibration、ensemble size、risk beta、abstention threshold 与 fallback 对照，同时报告成功率和 constraint violation。</p>
+<p><strong>项目挂钩</strong>：当前 UWM/WAM 没有 local ensemble/calibration artifact；安全说法是会这样设计，而不是已解决不确定性。</p>
+<p><strong>追问树</strong>：diffusion 多样性属于哪类？更多数据对两类 uncertainty 的作用？pessimism 过强会怎样？</p>
+<p><strong>危险答案</strong>：把 sample variance 当完整 epistemic uncertainty，或声称 uncertainty penalty 天然保证安全。</p>
+<p><strong>来源</strong>：[1][2][17][19][20]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-WM-008</b> · video generation model 何时可以叫 actionable world model，何时只是视觉预测器？</summary>
+<p><strong>面试意图</strong>：检查你能否从“画面逼真”推进到 action intervention 和 decision utility。</p>
+<p><strong>30 秒回答</strong>：至少过四关：候选动作以真实 axis/unit/time 进入模型；固定起点换动作时 future 有差异；差异方向与 simulator/真实 intervention 对齐；这些 future 能改善候选筛选或失败发现。只有视频质量、FVD/PSNR 或文本动作条件，最多说明视觉预测，不证明 actionable dynamics。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：先做 action swap、magnitude、gripper、noop、order tests，复用 observation 与 sampler seed；再从 cloned state 执行动作，比 object pose、joint/contact delta。sensitivity 只证明模型有反应，alignment 才说明方向对；短时 alignment 也不证明长 horizon。decision utility 还要比较 proxy rank、planning selector 与 same-protocol closed-loop，同时记录 latency 和 failure cases。</p>
+<p><strong>诊断 / 消融</strong>：action-free、shuffled-action、correct-action 三组；pixel/feature/pose/contact 与 closed-loop 指标分层报告。</p>
+<p><strong>项目挂钩</strong>：UWM/Cosmos 是上游 action-conditioned 例子；没有 local checkpoint 和 intervention trace，不能说本人已验证物理正确。</p>
+<p><strong>追问树</strong>：action sensitivity 高为什么仍可能错？文本条件算 action 吗？FVD 能证明什么？</p>
+<p><strong>危险答案</strong>：说“生成视频很真实，所以模型理解动作和物理”。</p>
+<p><strong>来源</strong>：[1][2][3][4][17]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P1</span> <b>VLA-WM-009</b> · world model 作为 policy auxiliary representation 与作为可查询 simulator 有何区别？</summary>
+<p><strong>面试意图</strong>：判断你是否会区分训练辅助目标与 test-time model-based planning。</p>
+<p><strong>30 秒回答</strong>：auxiliary 训练时加 future/world loss，推理可不用 world head，收益靠公平的 action-only vs +world 消融。queryable simulator 推理时 rollout 候选的 future/reward/termination 后选择，更依赖 OOD action 覆盖、校准与 latency。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：auxiliary 目标可改善共享表示，也可能因 gradient conflict、shortcut 或额外数据混杂而负迁移；必须记录 routing、loss mask、weight 与 gradient scope。queryable 模式要记录 proposal N、world/value checkpoint、rollout/denoise steps、selector、replan 和 cost。训练时出现 world loss 不等于 model-based control；planning uplift 也不能只归因 world head，除非 value、N 与 protocol 有消融。</p>
+<p><strong>诊断 / 消融</strong>：action-only、+world、planning-world 三臂；再分 world/value/N/selector 与 latency，比较同 init closed loop。</p>
+<p><strong>项目挂钩</strong>：WAM 项目叙述先说明现有 run 是 multi-task pretraining、direct policy 还是 planning；缺 runtime trace 时不混写。</p>
+<p><strong>追问树</strong>：无 decoder 的 latent auxiliary 算 world model 吗？为什么 planning 更怕 OOD action？额外视频数据怎样控制？</p>
+<p><strong>危险答案</strong>：看到 future loss 就说系统在推理时用 world model 规划。</p>
+<p><strong>来源</strong>：[1][2][4][17]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>VLA-WM-010</b> · model bias 与 rollout compounding error 如何导致“想象中很好、真实执行失败”？</summary>
+<p><strong>面试意图</strong>：考查你能否解释 planner exploitation，并设计候选级别的归因实验。</p>
+<p><strong>30 秒回答</strong>：transition 偏差随 horizon 累积并把 rollout 推入 OOD；planner 又会选择 world/value 最乐观的候选，N 越大越易命中幻觉、物理漏洞或 value 高估。再叠加 normalizer、controller、contact 与 recovery mismatch，imagined return 高不等于真实成功。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：把候选固定后保存 imagined future、value、uncertainty，并从 cloned env state 执行 selected 与 random/median control。按 horizon 比 transition delta、constraint violation 和 rank；做 N、selector、horizon sweep。如果 selected candidate 的 model score 升而真实 return 降，是 optimizer's curse 信号。再查 action transform/controller tracking、terminal/contact 和首次偏离后的 recovery，避免把接口失败全归给 backbone。</p>
+<p><strong>诊断 / 消融</strong>：random/median/top selector、N/horizon、oracle-state/value、model bypass 与 controller replay；记录 first divergence。</p>
+<p><strong>项目挂钩</strong>：WAM/UWM 的 0-success 或高 proxy 低 success 只能先按这条链诊断；无 raw episodes 时不声称已定位 root cause。</p>
+<p><strong>追问树</strong>：为什么 N 增大可能更差？怎样区分 transition bias 与 value bias？receding horizon 能完全解决吗？</p>
+<p><strong>危险答案</strong>：认为更多候选和更长 rollout 必然更好，或只凭最后失败帧归因 world-model backbone。</p>
+<p><strong>来源</strong>：[1][2][4][16][17][19][20]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="e-world-model">E. World Model 评估与失败归因</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>VLA-WM-039</b> · UWM / LIBERO 的 checkpoint、normalizer、init、warmup、horizon 与 rollout 数怎样构成 strict protocol？</summary>
+<p><strong>面试意图</strong>：判断你能否把“严格评测”落实成可重放合同，而不是只对齐 task 名和 rollout 数。</p>
+<p><strong>30 秒回答</strong>：strict protocol 是模型、初态和执行判定的完整合同。我会冻结 task/init、warmup、观测预处理、action/normalizer、H/K、controller/Hz、horizon、success predicate、随机性、trial 聚合，以及 checkpoint/code/runtime；任何字段不一致都先视为不同协议。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：把协议写成 \(\mathcal P=(S,I,W,O,A,K,C,H,Y,R,N,M)\)，每个 run 保存 checkpoint/config/stats SHA，每个 episode 保存 task、init、seed、success、step、异常与 trace hash。比较 A/B 时复用同一 <code>pair_id=(task, init, seed)</code>，从 immutable episode records 聚合结果。UWM 论文 Table II OOD init、官方仓库 random-reset runner 与本地 fixed-pruned-init claim 分属三个 setting，不能因任务和 50 rollouts 相同就混名。</p>
+<p><strong>诊断 / 消融</strong>：先做 protocol manifest diff；若任一字段未知就阻断分数比较。补齐后只改一个因素并做 same-init paired rerun，同时保留 invalid episode 与预先声明的清洗规则。</p>
+<p><strong>项目挂钩</strong>：现阶段可讲“我识别并拆开了三种协议”；74.4%/92.8% 仍缺 checkpoint、stats、init、chunk/horizon 和逐 episode 记录，只能标为 <code>claim-only</code>。</p>
+<p><strong>追问树</strong>：为什么 H 与 K 都要冻结？warmup 是否计入 horizon？macro/micro average 怎样选？paired episode 为什么能减少 init 难度噪声？</p>
+<p><strong>危险答案</strong>：说“用了相同 LIBERO 任务、50 次 rollout，所以就是 strict reproduction”。</p>
+<p><strong>来源</strong>：[1][3][6][7][8][9][14]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-WM-040</b> · world model open-loop prediction metric 与 closed-loop policy success 怎样建立但不夸大关联？</summary>
+<p><strong>面试意图</strong>：检查你能否分清 proxy 的证据层级，并设计它与真实行为指标的验证关系。</p>
+<p><strong>30 秒回答</strong>：分层报告 component、one-step、open-loop、WM proxy、sim success 和 real success。低层变好只证明对应 target/horizon；要在多个 policy variant 上检验 proxy 与同协议闭环的排名和不确定性，不能用单点替代真实评测。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：one-step error 在 rollout 中会被局部 dynamics sensitivity 与 OOD state 逐步放大，因此至少画 <code>error_by_horizon</code> 并标明 teacher-forced 还是 autoregressive。proxy 验证需要预先定义多个真实不同的 checkpoint，在同一 task distribution 上得到 proxy \(q_j\) 与 closed-loop success \(p_j\)，检查 rank consistency、seed/CI 和 bad cases。即使排序稳定，也只支持已测 policy/task/scorer 版本，不能声称数值等价或替代 sim/real。</p>
+<p><strong>诊断 / 消融</strong>：做 horizon sweep、action-conditioned counterfactual 和多 checkpoint rank test；分别报告 action/future/value component metric、proxy、sim 与 real，不用 total loss 掩盖断点。</p>
+<p><strong>项目挂钩</strong>：WorldGym 可作为 deployment 前筛选框架；UWM/WAM 的离线 MSE 或生成质量不能自动升级为 LIBERO success，更不能写成 Sim2Real。</p>
+<p><strong>追问树</strong>：为什么单个 checkpoint 不能谈相关性？Spearman 高说明什么、不说明什么？image MSE 更低但 success 更差有哪些原因？</p>
+<p><strong>危险答案</strong>：说“open-loop 指标越好，closed-loop success 必然越高”，或用 simulator success 证明真实机器人泛化。</p>
+<p><strong>来源</strong>：[1][2][3][4][6][12][13]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>VLA-WM-041</b> · offline future/action/value loss 下降但 online success 不变时，如何设计消融？</summary>
+<p><strong>面试意图</strong>：考查你是否能把多目标收益拆成可归因实验，而不是从 total loss 直接推断策略提升。</p>
+<p><strong>30 秒回答</strong>：做 action-only、+world、+value、all 的 2×2 消融，四臂共享数据、初始化、预算和协议，并在相同 init 上 paired eval。分报 component loss、action sensitivity、value calibration、闭环结果与开销，定位 offline→online 断点及 interaction。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：对结果 \(Y_{w,v}\) 分解 world 主效应、value 主效应和 \(world\times value\) interaction；A11 更好不代表两个 auxiliary 单独都有效。若 +world 额外使用更多视频，需再控制 data amount。action MSE 降但 success 不变先查 norm/axis 与 rollout-state shift；value MSE 降但 best-of-N 变差查 OOD overestimate；A10 好、A11 差则查 gradient conflict、label 与 weight。每个 cell 要多 train seed，并在同一 episode pair 上报告 online uncertainty。</p>
+<p><strong>诊断 / 消融</strong>：补 gradient cosine/weight sweep、expert-state 对 rollout-state error、random/median/top selector 与 planning-N sweep；同时 diff run manifest，避免 checkpoint/protocol 漂移冒充目标冲突。</p>
+<p><strong>项目挂钩</strong>：WAM 的 MSE、84/118 和 0-success 目前缺 local checkpoint 与 raw episodes；只能用它们说明要做哪组消融，不能据此声称 auxiliary 已带来收益。</p>
+<p><strong>追问树</strong>：为什么 all 更好不能归因两个 auxiliary？如何控制额外数据量？value optimizer's curse 是什么？四臂预算怎样对齐？</p>
+<p><strong>危险答案</strong>：只比较 action-only 与 all，看到 total loss 下降就说 world/value 对 policy 都有帮助。</p>
+<p><strong>来源</strong>：[1][3][4][6][10][11][15]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-WM-042</b> · 如何检测 hallucination、physical inconsistency、action insensitivity 与 causal inconsistency？</summary>
+<p><strong>面试意图</strong>：判断你能否从“视频看起来合理”推进到可干预、可度量的 world-model 一致性测试。</p>
+<p><strong>30 秒回答</strong>：hallucination 是生成无依据状态；physical inconsistency 是违反几何或接触约束；action insensitivity 是换动作而 future 几乎不变；causal inconsistency 是会变但方向错误。固定起点和噪声做反事实，再从 cloned simulator state 执行动作并对齐环境变化方向。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：action swap、magnitude sweep、gripper 正反、noop 和时间置换先测模型是否使用 action；再从同一 simulator state 执行 baseline/candidate action，比较预测与环境中的 object pose、joint/contact delta，而不是只比像素。按 horizon 统计 error 与 penetration、悬浮、关节越界、对象守恒等 violation。高 sensitivity 也可能是噪声放大，只有与环境 intervention 方向一致才支持局部 causal alignment，仍不证明长时真实物理。</p>
+<p><strong>诊断 / 消融</strong>：每对反事实复用 observation、start state 与 sampler seed；按 axis、magnitude、gripper、order 和 horizon 分桶，并区分视频/VLM proxy 与 simulator-state ground truth。</p>
+<p><strong>项目挂钩</strong>：可为 UWM/Cosmos world head设计这套 test suite；没有 local checkpoint 和执行 trace 前，不能声称已验证物理正确或真实机器人因果性。</p>
+<p><strong>追问树</strong>：action sensitivity 高为什么仍可能错？只有视频时怎样标记物理 judge？为什么要 clone state？如何检测 gripper sign 反转？</p>
+<p><strong>危险答案</strong>：用 PSNR、FVD 或“视频看起来逼真”直接证明模型理解动作和物理。</p>
+<p><strong>来源</strong>：[1][2][3][4][6][7][10]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-WM-043</b> · 失败轨迹怎样按 perception、dynamics、contact、planning、controller 和 recovery 分层回写数据？</summary>
+<p><strong>面试意图</strong>：检查你是否会定位第一处可观测断点，并把失败路由到正确的数据、代码、目标或评测 owner。</p>
+<p><strong>30 秒回答</strong>：0-success 时别猜 backbone；按 protocol/checkpoint→observation→action/controller→dynamics/contact→planning/value→recovery 找断点。接口 bug 修代码与单测，覆盖缺口补数据，world/contact/value/recovery 各回写自己的目标。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：每个 episode 对齐 raw/model observation、normalized/raw/env action、queue/controller state、predicted/real pose、contact、candidate/value 和 success trace。先排 protocol、checkpoint 与 normalizer，再找最早时间戳：flip/时序错、axis/gripper 错、stale chunk、跟踪误差、接触丢失、value 选错或恢复失败。只路由证据确认的 family；action contract 错误不能当新标签训练，recovery 缺口应采 first-deviation 后的 corrective trajectory。</p>
+<p><strong>诊断 / 消融</strong>：做 manifest diff、image/timestamp replay、action round-trip、expert action replay、K/latency sweep、cloned-state intervention、contact trace、N/selector/calibration sweep与 predicate audit。</p>
+<p><strong>项目挂钩</strong>：WAM 的 0-success 或 UWM 单条失败先当待分类 episode；没有完整 trace 时只描述诊断计划，不把它包装成本人已修复的模型问题。</p>
+<p><strong>追问树</strong>：为什么先查 protocol？first divergence 与最终 failure label 有何区别？哪些失败该补数据、哪些只该修 harness？</p>
+<p><strong>危险答案</strong>：看到最后抓取失败就归因 perception/backbone，或把所有失败轨迹无差别加入训练集。</p>
+<p><strong>来源</strong>：[1][4][5][6][9][11]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>VLA-WM-044</b> · 如何从 paper/repo/checkpoint/eval harness 核对 world model 的真实训练和 rollout 合同？</summary>
+<p><strong>面试意图</strong>：考查你能否建立完整证据链，并把上游方法、运行结果与个人贡献分开。</p>
+<p><strong>30 秒回答</strong>：把 claim 拆成方法、配置、指标、协议和 ownership，再核对 paper→repo→checkpoint/assets→runtime→local diff。每层注明支持与不支持什么；revision、artifact 或 protocol 有缺口就降为 claim-only，并按最弱证据原子表述。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：paper 证明方法与论文 setting，不证明当前 default；repo 证明某 commit 的路径，不证明论文 run；checkpoint/stats 证明资产存在，不证明能加载或成功；runtime 需要 exact controller/protocol 与 episode records；ownership 还需 local diff、design note 和命令/日志。ledger 含 claim、source、supports、does-not-support、protocol、artifact SHA、ownership、verdict，并区分 primary、official-code、local-evidence、inference、unverified。</p>
+<p><strong>诊断 / 消融</strong>：逐原子寻找 evidence chain；对缺口提出最小补件，如 env patch、stats SHA、load log、paired episode JSONL 或 local diff。只比较协议相同的 run，并对数字、因果和个人贡献分别给 verdict。</p>
+<p><strong>项目挂钩</strong>：74.4%/92.8%、WAM MSE/84/118 与 upstream UWM/Cosmos 结构当前不能串成“我的严格复现/创新”；安全说法是已完成 source audit，raw artifacts 仍待补。</p>
+<p><strong>追问树</strong>：repo default 能否证明论文实验？checkpoint 能加载是否证明分数？团队成果怎样标个人 ownership？哪类证据可把 claim-only 升级？</p>
+<p><strong>危险答案</strong>：把论文数字、官方 baseline、本地 smoke test 和个人贡献合成一条强叙事。</p>
+<p><strong>来源</strong>：[1][2][3][4][5][6][7][10][14][15]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-3">参考来源</h2>
+<p>本页是 VOL 04 的基础与评估入口；WM-011..038 的长知识页和折叠题卡位于同目录的独立原子文件，主入口与总索引按 aggregate 计数，不重复粘贴正文。</p>
+<ol><li><a href="../knowledge/vol_04_world_model_sim2real.html">VOL 04 Batch 1 完整知识页</a>；canonical <a href="../knowledge/vol_04_world_model_sim2real.md">Markdown</a>。</li><li><a href="../sources/vol_04_world_model_foundations_claim_to_code.html">Source Audit A：World Model Foundations</a>。</li><li><a href="../sources/vol_04_uwm_video_action_claim_to_code.html">Source Audit B：UWM Video / Action Diffusion</a>。</li><li><a href="../sources/vol_04_cosmos_policy_wam_claim_to_code.html">Source Audit C：Cosmos Policy / WAM</a>。</li><li><a href="../sources/vol_04_sim2real_claim_to_mechanism.html">Source Audit D：Sim2Real</a>。</li><li><a href="../sources/vol_04_benchmark_evidence_claim_to_protocol.html">Source Audit E：Benchmark / Evidence</a>。</li><li>Zhu et al., <a href="https://arxiv.org/html/2504.02792v3">Unified World Models</a>, arXiv <code>2504.02792v3</code>。</li><li>WEIRDLabUW, <a href="https://github.com/WEIRDLabUW/unified-world-model/tree/b7d4067c8859775e5b08f681e76d538015cdd445"><code>unified-world-model@b7d4067</code></a>，frozen tree 未发现 LICENSE。</li><li>Lifelong Robot Learning, <a href="https://github.com/Lifelong-Robot-Learning/LIBERO/tree/8f1084e3132a39270c3a13ebe37270a43ece2a01"><code>LIBERO@8f1084e</code></a>，MIT。</li><li>Kim et al., <a href="https://arxiv.org/html/2601.16163v1">Cosmos Policy</a>, arXiv <code>2601.16163v1</code>。</li><li>NVIDIA, <a href="https://github.com/NVlabs/cosmos-policy/tree/18a2accadf4e7a3531e56754102af5a24d2316da"><code>cosmos-policy@18a2acc</code></a>，Apache-2.0 code。</li><li>Quevedo et al., <a href="https://arxiv.org/abs/2506.00613v3">WorldGym</a>, arXiv <code>2506.00613v3</code>。</li><li><a href="https://github.com/world-model-eval/world-model-eval/tree/709665b29f5c95124e7dbc05b0d4d47cd353de97"><code>world-model-eval@709665b</code></a>，frozen tree 未发现 LICENSE。</li><li>本地待核验材料：<a href="../../05_uwm_libero_eval_protocol.html">UWM / LIBERO 项目页</a>；数字不替代 raw run artifacts。</li><li>本地待核验材料：<a href="../../04_cosmos_wam_multitask_training.html">Cosmos / WAM 项目页</a>；数字不替代 checkpoint 与 episode evidence。</li><li><a href="../sources/vol_04_batch1_independent_fact_review.html">VOL 04 Batch 1 独立事实复核</a>；该记录只核对上游 frozen source，不替代本地 runtime artifacts 或真实口述。</li><li><a href="../sources/vol_04_world_model_foundations_independent_fact_review.html">VOL 04 Foundations 独立事实复核</a>；该记录核对 World Models、PlaNet、DreamerV3 paper/repo 与实现边界。</li><li>Ha &amp; Schmidhuber, <a href="https://arxiv.org/abs/1803.10122">World Models</a>, 2018。</li><li>Hafner et al., <a href="https://arxiv.org/abs/1811.04551">PlaNet</a>, 2019。</li><li>Hafner et al., <a href="https://arxiv.org/abs/2301.04104">DreamerV3</a>, 2023/2025。</li><li><a href="https://github.com/danijar/dreamerv3/tree/e3f02248693a79dc8b0ebd62c93683888ddaccfe"><code>danijar/dreamerv3@e3f0224</code></a>，MIT；README 明示为 reimplementation。</li></ol>
+</article></body></html>

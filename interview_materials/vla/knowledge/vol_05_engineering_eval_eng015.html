@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：Activation Checkpointing、CPU/NVMe Offload 与吞吐（ENG-015）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eng015.md">
+<meta name="aris:source-sha256" content="7b14b98a021f86c08f1b86dae9a3fbfc9fed4615b6530200082345978665cedd">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>7b14b98a021f86c08f1b86dae9a3fbfc9fed4615b6530200082345978665cedd</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eng015.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1">1. 短答：先分清机制，再谈收益</a></li><li><a href="#2">2. 直觉：训练显存像一间有不同货架的仓库</a></li><li><a href="#3">3. 四种机制的对象与生命周期</a></li><li><a href="#4-activation-checkpointing-rng">4. Activation checkpointing：重算区域和 RNG 合同</a></li><li><a href="#4-1">4.1 机制与公式</a></li><li><a href="#4-2">4.2 为什么随机操作是风险点</a></li><li><a href="#4-3-reentrant-non-reentrant">4.3 reentrant / non-reentrant 面试口径</a></li><li><a href="#5-cpu-nvme-offload-state">5. CPU/NVMe offload：state 归属与传输路径</a></li><li><a href="#5-1-fsdp-cpu-offload">5.1 FSDP CPU offload</a></li><li><a href="#5-2-zero-offload-zero-infinity">5.2 ZeRO-Offload 与 ZeRO-Infinity</a></li><li><a href="#5-3-cpu-nvme">5.3 CPU 与 NVMe 的工程账本</a></li><li><a href="#6">6. 选择策略：先定位账本中的最大项</a></li><li><a href="#7-matched-a-b">7. 最小 matched A/B 协议</a></li><li><a href="#7-1">7.1 固定合同</a></li><li><a href="#7-2-parity">7.2 指标和 parity</a></li><li><a href="#7-3-resume-gate">7.3 resume gate</a></li><li><a href="#8-upstream">8. 验证伪代码（工程合同，不是 upstream 实现）</a></li><li><a href="#9-uwm-opd">9. 项目映射：UWM / OPD 能说到哪里</a></li><li><a href="#10-trade-off-bad-case">10. Trade-off、bad case 与追问</a></li><li><a href="#10-1-trade-off">10.1 常见 trade-off</a></li><li><a href="#10-2-bad-case">10.2 高概率 bad case</a></li><li><a href="#10-3">10.3 面试追问顺序</a></li><li><a href="#11">11. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：Activation Checkpointing、CPU/NVMe Offload 与吞吐（ENG-015）</h1>
+<div class="meta">状态：<code>drafted / knowledge_17_of_44 / card_1_of_1_unseen / review_warn</code> 报告日期：2026-07-17 证据截止：2026-07-17 当前节点：<code>VLA-ENG-015</code>；来源已冻结，单张题卡同步生成并保持 <code>unseen</code>。 来源入口：<a href="../sources/vol_05_eng015_activation_offload_source_freeze.html">ENG-015 Activation Checkpointing / Offload Source Freeze</a>。 核心边界：activation checkpointing 是重算换显存；CPU/NVMe offload 是 state 归属变化；显存下降、吞吐提升和完整 resume 都必须用 workload 级 artifact 分别证明。</div>
+<h2 id="question">问题（Question）</h2>
+<p><code>VLA-ENG-015</code>：当 VLA 训练显存不够时，activation checkpointing、CPU/NVMe offload 应该怎样选择？如何证明没有用显存收益换来不可接受的吞吐、数值或恢复风险？</p>
+<p>面试中先回答两个分类问题：<strong>哪类 tensor 被省略或搬走？什么时候需要它？</strong> 然后再回答测量问题：<strong>峰值显存、step time、数值 parity 和 resume 是否在同一协议下验证？</strong></p>
+<h2 id="section-2">知识地图位置与前置依赖</h2>
+<pre><code class="language-text">数据等待/有效 batch（ENG-003/005）
+        ↓
+显存账本 → activation checkpoint / FSDP CPU / ZeRO CPU-NVMe
+        ↓
+step-time 分解 → checkpoint lineage / replay（ENG-006/013）
+        ↓
+VLA action shape、normalizer、controller 和 closed-loop eval（ENG-008/EVAL-001）</code></pre>
+<p>前置：</p>
+<ul><li><code>VLA-ENG-003</code>：DataLoader、GPU、同步与吞吐分解。</li><li><code>VLA-ENG-004..006</code>：DDP/FSDP/ZeRO、effective batch、checkpoint lineage。</li><li><code>VLA-ENG-013</code>：RNG、sampler cursor 与 resume smoke。</li><li><a href="../sources/vol_05_eng015_activation_offload_source_freeze.html">ENG-015 Source Freeze</a>：PyTorch 2.13、DeepSpeed frozen commit 与本地 artifact gate。</li></ul>
+<h2 id="1">1. 短答：先分清机制，再谈收益</h2>
+<p><strong>30 秒回答</strong>：activation checkpointing 不保存一部分 forward activation，在 backward 时重算，主要换取 GPU activation 显存；FSDP CPU offload 把参数、梯度等 state 移到 CPU，ZeRO-Offload/Infinity 还可把分片 state 放到 CPU/NVMe。它们的代价分别是重算、传输、CPU/I/O 等待和恢复复杂度。我要在固定 code/data/effective batch/world-size 下同时测 peak memory、p50/p95 step time、数值 parity 和 fixed-next-batch resume；当前 UWM/OPD 只有配置与 report，不能声称吞吐或恢复收益。</p>
+<h2 id="2">2. 直觉：训练显存像一间有不同货架的仓库</h2>
+<p>参数、梯度、optimizer state、activation、teacher 和临时 buffer 不是同一种货物：</p>
+<ul><li>activation checkpointing 是“只保留检查点，其他中间货物需要时重新生产”；</li><li>CPU offload 是“把不在当前计算路径的货物放到旁边的仓库”；</li><li>NVMe offload 是“把更多货物放到容量更大的但更慢的仓库”；</li><li>ZeRO/FSDP sharding 是“不同工位只保留自己负责的份额”。</li></ul>
+<p>因此，“GPU 变空了”不等于“工厂每分钟产量变高”：重新生产、搬运、排队和同步可能把节省的空间换成时间。</p>
+<h2 id="3">3. 四种机制的对象与生命周期</h2>
+<table><thead><tr><th>机制</th><th>主要对象</th><th>何时发生</th><th>主要收益</th><th>主要代价/边界</th></tr></thead><tbody>
+<tr><td>activation checkpointing</td><td>forward 中间 activation</td><td>backward 需要梯度时重算</td><td>降低 (M_{\mathrm{act}})</td><td>额外 FLOPs；随机函数需处理 RNG；非纯函数可能导致错误梯度</td></tr>
+<tr><td>FSDP CPU offload</td><td>FSDP 参数；<code>offload_params=True</code> 时梯度也到 CPU</td><td>参数不参与计算时、梯度归约后</td><td>降低 GPU 参数/梯度驻留</td><td>CPU↔GPU copy；optimizer step 在 CPU；CPU-offload 下 accumulation 有限制</td></tr>
+<tr><td>ZeRO-Offload</td><td>ZeRO-2 的 optimizer/gradient state</td><td>state update 与归约路径</td><td>降低 GPU optimizer/gradient state</td><td>CPU 内存与 host compute；不能当作 activation checkpoint</td></tr>
+<tr><td>ZeRO-Infinity</td><td>ZeRO-3 的分片参数/梯度/optimizer state，可到 CPU/NVMe</td><td>gather、partition、offload 生命周期</td><td>扩大可容纳的 model-state 容量</td><td>NVMe latency/bandwidth、buffer/prefetch、I/O overlap 与调度复杂度</td></tr>
+</tbody></table>
+<p>PyTorch 2.13 的 checkpoint 文档把 activation checkpointing 定义为 compute-for-memory trade-off，并说明 <code>use_reentrant=False</code> 是推荐实现；FSDP 文档说明 <code>CPUOffload(offload_params=True)</code> 会让参数和梯度进入 CPU，optimizer step 在 CPU。DeepSpeed 冻结文档则把 activation checkpointing 与 ZeRO state offload 作为不同 API/配置族，不能用一个机制替代另一个机制。[1–4]</p>
+<h2 id="4-activation-checkpointing-rng">4. Activation checkpointing：重算区域和 RNG 合同</h2>
+<h3 id="4-1">4.1 机制与公式</h3>
+<p>普通训练可近似写成：</p>
+<div class="formula">\[
+M_{\mathrm{peak}} \approx M_{\mathrm{param}}+M_{\mathrm{grad}}+M_{\mathrm{optim}}+M_{\mathrm{act}}+M_{\mathrm{temp}}+M_{\mathrm{fragment}}
+\]</div>
+<p>activation checkpointing 主要减少需要长期保存的 (M_{\mathrm{act}})，但不会自动消除参数、optimizer、临时 buffer、通信峰值或 allocator fragmentation。实现上，checkpoint segment 的 forward 输出不保存全部内部 intermediates；backward 再次调用同一函数得到梯度所需的值。</p>
+<p>若一次 step 的原始时间为 (T_0)，checkpoint 后可写成工程上的近似：</p>
+<div class="formula">\[
+T_{\mathrm{ckpt}} \approx T_0 + T_{\mathrm{recompute}} + T_{\mathrm{rng}} + T_{\mathrm{sync}}
+\]</div>
+<p>其中 (T_{\mathrm{recompute}}) 是重算时间，(T_{\mathrm{rng}}) 是保存/恢复随机状态的开销，(T_{\mathrm{sync}}) 是必须等待的同步。这个式子是 workload 分解，不是 PyTorch 官方性能公式；是否能被通信/数据加载 overlap，必须实测。</p>
+<h3 id="4-2">4.2 为什么随机操作是风险点</h3>
+<p>PyTorch 文档说明默认 checkpoint 逻辑会保存 CPU 与一个设备类型的 RNG state；关闭 <code>preserve_rng_state</code> 可以省开销，但若 segment 含 dropout 或随机 augmentation，前后执行可能不再等价。多设备时只保存一个设备类型也有明确边界。</p>
+<p>所以验证时至少固定：随机输入、dropout policy、CPU/CUDA RNG state、checkpoint segment、<code>use_reentrant</code>、dtype 和 world-size。不能因为 loss 曲线还能下降，就说 checkpoint 版本与 baseline 完全等价。</p>
+<h3 id="4-3-reentrant-non-reentrant">4.3 reentrant / non-reentrant 面试口径</h3>
+<p>安全回答不是背 API 差异，而是说明选择理由：使用官方推荐的 non-reentrant 路径时，仍要检查函数是否纯、输入输出是否满足 autograd 约束、随机状态是否可复现；如果沿用 reentrant 旧路径，就必须说明其限制和版本合同。任何“只包一层 <code>checkpoint()</code> 就没有副作用”的回答都不完整。</p>
+<h2 id="5-cpu-nvme-offload-state">5. CPU/NVMe offload：state 归属与传输路径</h2>
+<h3 id="5-1-fsdp-cpu-offload">5.1 FSDP CPU offload</h3>
+<p>FSDP 的 <code>CPUOffload</code> 不是普通的 <code>tensor.to("cpu")</code>。官方语义是：当参数不参与计算时可放在 CPU；<code>offload_params=True</code> 时梯度也 offload 到 CPU，optimizer step 在 CPU。FSDP 文档还警告 CPU offloading 下不能把 <code>no_sync()</code> 之外的 gradient accumulation 当成无条件支持，因为归约梯度处理可能得到错误结果。</p>
+<p>因此一个 FSDP A/B 至少要记录：<code>sharding_strategy</code>、wrap policy、offload 参数、optimizer device、gradient accumulation、CPU pinned memory、copy/compute overlap 和 peak GPU/CPU memory。只改 config 不等于对应 run 已按该语义执行。</p>
+<h3 id="5-2-zero-offload-zero-infinity">5.2 ZeRO-Offload 与 ZeRO-Infinity</h3>
+<p>DeepSpeed 的 ZeRO 文档把 model states 分为 optimizer states、gradients、parameters：Stage 1/2/3 逐步增加分片对象；ZeRO-Offload 在 ZeRO-2 路径中把 optimizer/gradient states 放到 CPU；ZeRO-Infinity 在 ZeRO-3 上扩展到 CPU 与 NVMe memory，并提供 <code>offload_optimizer</code>、<code>offload_param</code> 与 <code>nvme_path</code> 配置示例。</p>
+<p>这说明 offload 的对象和时机与 activation checkpointing 不同：checkpointing 让某些 activation 不常驻；ZeRO offload 让 state 在不同设备层级间流动。DeepSpeed 文档提到 bandwidth utilization、overlap 和 memory-centric tiling，但这些是系统设计能力或目标，不是当前机器上“吞吐提升”的证据。</p>
+<h3 id="5-3-cpu-nvme">5.3 CPU 与 NVMe 的工程账本</h3>
+<p>对每个 step，可把时间拆成：</p>
+<div class="formula">\[
+T_{\mathrm{step}} = T_{\mathrm{data}}+T_{\mathrm{fwd}}+T_{\mathrm{recompute}}+T_{\mathrm{bwd}}+T_{\mathrm{copy}}+T_{\mathrm{comm}}+T_{\mathrm{io}}+T_{\mathrm{sync}}
+\]</div>
+<p>(T_{\mathrm{copy}}) 覆盖 CPU↔GPU，(T_{\mathrm{io}}) 覆盖 NVMe 读写和 queue wait；(T_{\mathrm{comm}}) 覆盖 sharding/gather/partition。有效吞吐 (S=\mathrm{effective\ samples}/T_{\mathrm{step}}) 只有在 effective batch、数据、warm-up、precision、world-size 和测量窗口相同的情况下才可比较。</p>
+<h2 id="6">6. 选择策略：先定位账本中的最大项</h2>
+<table><thead><tr><th>观察到的瓶颈</th><th>先试什么</th><th>必须测什么</th><th>不能直接说什么</th></tr></thead><tbody>
+<tr><td>activation 峰值高，参数/optimizer 尚可</td><td>activation checkpointing</td><td>peak memory、recompute ms、RNG/determinism、step p50/p95</td><td>“一定更快”</td></tr>
+<tr><td>参数/梯度/optimizer 占满 GPU，CPU 余量足</td><td>FSDP CPU 或 ZeRO CPU offload</td><td>GPU/CPU memory、copy、CPU optimizer、accumulation 语义</td><td>“activation 也被 offload”</td></tr>
+<tr><td>model states 超过 CPU 容量，NVMe 较快</td><td>ZeRO-Infinity / NVMe</td><td>NVMe bandwidth、queue wait、buffer hit、I/O overlap</td><td>“NVMe 保持原吞吐”</td></tr>
+<tr><td>多 teacher/action expert 造成临时峰值</td><td>先做 live-state/temporary-buffer ledger</td><td>teacher residency、peak timeline、通信/同步</td><td>“只调 batch size 就解决”</td></tr>
+</tbody></table>
+<p>先用 profiling 证明峰值来源，再选择机制；否则很容易把 activation 问题误诊成 optimizer state 问题，或把 PCIe/I/O 等待误诊成 DataLoader stall。</p>
+<h2 id="7-matched-a-b">7. 最小 matched A/B 协议</h2>
+<h3 id="7-1">7.1 固定合同</h3>
+<p>每个 baseline/candidate run 固定：</p>
+<ul><li>code commit、framework/backend、driver/SDK 与 world-size；</li><li>model、optimizer、teacher 数量、dtype、sequence/action horizon；</li><li>dataset/transform manifest、split、effective batch、gradient accumulation；</li><li>checkpoint segment、offload device、CPU pinned memory、NVMe path/buffer；</li><li>warm-up 数、测量窗口、同步方式、失败重试和 telemetry schema。</li></ul>
+<h3 id="7-2-parity">7.2 指标和 parity</h3>
+<p>相对误差可作为统一的工程检查：</p>
+<div class="formula">\[
+e_{\mathrm{rel}}=\frac{\lVert y_{\mathrm{candidate}}-y_{\mathrm{baseline}}\rVert_2}{\max(\lVert y_{\mathrm{baseline}}\rVert_2,\epsilon)}
+\]</div>
+<p>这里 (y) 可以是 forward 输出、gradient、归一化 action 或 denormalized controller input；(epsilon) 防止零范数。容差按 dtype、算子和 action contract 声明，不能把不同硬件要求成字节级相同。</p>
+<p>吞吐同时报告 peak GPU/CPU/NVMe memory、step p50/p95、samples/s、recompute/copy/comm/io/data_wait buckets、overflow/scaler state 和 closed-loop protocol。只报一个 final samples/s，无法说明收益来自哪里。</p>
+<h3 id="7-3-resume-gate">7.3 resume gate</h3>
+<p>offload 版本的 checkpoint bundle 至少包含：model/optimizer/scheduler/scaler、offload 配置、code/data manifest、CPU/CUDA/Python/NumPy RNG、sampler/cursor、normalizer/processor、expected next sample IDs。保存能 load 只证明序列化入口可读；必须做 fixed-next-batch 或 one-step replay，才能讨论中途恢复。</p>
+<h2 id="8-upstream">8. 验证伪代码（工程合同，不是 upstream 实现）</h2>
+<pre><code class="language-python">def compare_memory_policy(baseline_cfg, candidate_cfg, fixed_requests):
+    # 1. Freeze code/data/effective-batch/world-size before changing memory policy.
+    baseline = launch_run(baseline_cfg, fixed_requests, warmup=10)
+    candidate = launch_run(candidate_cfg, fixed_requests, warmup=10)
+
+    # 2. Collect peak memory and wait buckets, not only one final throughput number.
+    fields = [&quot;peak_gpu&quot;, &quot;peak_cpu&quot;, &quot;nvme_io&quot;, &quot;recompute_ms&quot;, &quot;copy_ms&quot;, &quot;step_ms&quot;]
+    base_metrics = collect_metrics(baseline, fields=fields)
+    cand_metrics = collect_metrics(candidate, fields=fields)
+
+    # 3. Compare fixed-batch outputs, gradients and scaler/overflow state.
+    parity = compare_fixed_batch(baseline, candidate, tolerance=candidate_cfg.tolerance)
+
+    # 4. Resume from candidate and compare the next sample IDs and one-step result.
+    resume = fixed_next_batch_resume_smoke(candidate, fixed_requests)
+
+    # 5. Keep the verdict WARN when memory drops but parity/throughput/resume is missing.
+    return summarize(base_metrics, cand_metrics, parity, resume)</code></pre>
+<p>伪代码表达的是验证顺序：固定 workload → 记录峰值/等待 → parity → resume。<code>launch_run</code>、<code>collect_metrics</code> 和 <code>fixed_next_batch_resume_smoke</code> 需要在具体 PyTorch/FSDP/DeepSpeed 环境实现；代码本身不是性能或恢复证明。</p>
+<h2 id="9-uwm-opd">9. 项目映射：UWM / OPD 能说到哪里</h2>
+<p>本仓库 <a href="../sources/vol_05_local_artifact_gate_eng004_006.html">ENG-004..006 Local Artifact Gate</a> 盘点到：</p>
+<ul><li>UWM 有 8 卡训练 summary、DeepSpeed/effective config、action normalizer 和 checkpoint load report；某条 effective config 明确 <code>zero_optimization.stage=0</code>。</li><li>OPD 有 ZeRO-2/3 配置和 final-only/no-optimizer-state manifest；这是 config/manifest evidence，不是性能或完整 resume evidence。</li><li>当前快照没有 <code>.pt/.pth/.ckpt/.safetensors/.bin</code> checkpoint binary，也没有 optimizer/scheduler/scaler/RNG/sampler lineage、matched throughput A/B 或 fixed-batch continuation。</li></ul>
+<p>安全回答：</p>
+<div class="meta">我会先用显存账本判断瓶颈来自 activation、state 还是 temporary buffer，再决定 checkpoint 或 offload。当前项目能支持我讨论 UWM/OPD 的配置和 checkpoint 风险，但还不能说 activation checkpointing/NVMe offload 已经带来吞吐提升或无损 resume。下一步要补固定 effective batch 的 A/B、profiler wait buckets、binary/optimizer bundle 和 next-batch replay。</div>
+<table><thead><tr><th>口径</th><th>证据等级</th><th>面试安全表达</th></tr></thead><tbody>
+<tr><td>UWM/OPD 的 ZeRO/offload 配置</td><td>local-direct</td><td>存在配置或设计 hook</td></tr>
+<tr><td>checkpoint save/load report</td><td>local-direct + report-supported path</td><td>有 metadata/report；binary 不在当前 snapshot</td></tr>
+<tr><td>activation checkpoint 机制能降低 activation 驻留</td><td>primary mechanism</td><td>机制上可行；本地幅度待 profile</td></tr>
+<tr><td>CPU/NVMe offload 提高吞吐</td><td>unverified</td><td>没有 matched A/B，不能说</td></tr>
+<tr><td>offload 后可无损中途恢复</td><td>unverified</td><td>没有 optimizer/RNG/sampler/fixed-batch smoke，不能说</td></tr>
+</tbody></table>
+<h2 id="10-trade-off-bad-case">10. Trade-off、bad case 与追问</h2>
+<h3 id="10-1-trade-off">10.1 常见 trade-off</h3>
+<ul><li>activation checkpoint 减少显存，但重算可能让 step time 上升；随机状态保存还会增加开销。</li><li>CPU offload 释放 GPU，但 CPU optimizer、PCIe/NVLink copy 和 pinned-memory 管理可能成为新瓶颈。</li><li>NVMe offload 扩大容量，但 queue、带宽、buffer/prefetch 和 I/O overlap 决定实际结果。</li><li>ZeRO 分片/offload 降低单卡 state，但 gather/partition 与 external parameter 访问增加系统复杂度。</li></ul>
+<h3 id="10-2-bad-case">10.2 高概率 bad case</h3>
+<ol><li>只看到 peak GPU memory 下降，就宣称吞吐提升。</li><li>把 activation checkpointing 和 optimizer/parameter offload 混为同一个开关。</li><li>用不同 effective batch、warm-up 或 world-size 做 A/B。</li><li><code>checkpoint.load()</code> 成功就宣称 optimizer、RNG、sampler 和下一批样本都恢复。</li><li>只比较 final loss，不检查 overflow、gradient、action denorm 和 controller roundtrip。</li><li>把 DeepSpeed 文档中“支持 CPU/NVMe”写成当前项目已经完成 NVMe benchmark。</li></ol>
+<h3 id="10-3">10.3 面试追问顺序</h3>
+<ol><li>你的峰值显存具体由哪一项占主导？</li><li>为什么不用 checkpoint，而是 offload？</li><li>CPU/NVMe 的 copy/I/O 是否与计算 overlap？怎么测？</li><li>A/B 如何固定 effective batch 和测量窗口？</li><li>offload checkpoint 如何证明下一批数据、optimizer 和 RNG 都一致？</li><li>如果显存下降 30% 但 p95 step time 上升，是否接受？取决于什么 deployment/training constraint？</li></ol>
+<h2 id="11">11. 结论与下一步</h2>
+<p>面试中的完整回答应形成一条证据链：先做显存账本，区分 activation 与 model state；再选 checkpoint、CPU offload 或 NVMe hierarchy；最后用 matched A/B 同时报 memory、step-time、parity、resume 和 VLA closed-loop contract。PyTorch/DeepSpeed 官方文档支持这些机制的语义，不替代本地 workload benchmark。</p>
+<p>当前节点已完成知识页和一张 <code>unseen</code> 题卡；仍保持 <code>WARN</code>，因为本地没有 checkpoint binary、matched throughput A/B 或 fixed-next-batch replay。下一步可以进行 ENG-015 一题口述或补本地 artifact；ENG-016 student + multiple teachers 继续后置。</p>
+<h2 id="references">References</h2>
+<ol><li>PyTorch 2.13，<a href="https://docs.pytorch.org/docs/2.13/checkpoint.html">torch.utils.checkpoint</a>：activation recompute、<code>use_reentrant</code>、RNG preservation 与 determinism 边界。</li><li>PyTorch 2.13，<a href="https://docs.pytorch.org/docs/2.13/fsdp.html">Fully Sharded Data Parallel</a>：<code>CPUOffload</code>、参数/梯度归属、CPU optimizer 与限制。</li><li>Microsoft DeepSpeed，<a href="https://github.com/microsoft/DeepSpeed/blob/de1846cf6fbdd6f1c2adf046f319791ca78cc547/docs/code-docs/source/activation-checkpointing.rst"><code>activation-checkpointing.rst</code></a>：activation partitioning、CPU checkpointing、contiguous memory optimizations 与 RNG tracker。</li><li>Microsoft DeepSpeed，<a href="https://github.com/microsoft/DeepSpeed/blob/de1846cf6fbdd6f1c2adf046f319791ca78cc547/docs/code-docs/source/zero3.rst"><code>zero3.rst</code></a>：ZeRO stages、CPU/NVMe offload、memory-centric tiling 与 assumptions。</li><li>ZeRO-Offload，<a href="https://arxiv.org/abs/2101.06840">arXiv:2101.06840</a>：CPU offload 论文背景。</li><li>ZeRO-Infinity，<a href="https://arxiv.org/abs/2104.07857">arXiv:2104.07857</a>：CPU/NVMe hierarchy 论文背景。</li><li>本仓库，<a href="../sources/vol_05_eng015_activation_offload_source_freeze.html">ENG-015 Source Freeze</a> 与 <a href="../sources/vol_05_local_artifact_gate_eng004_006.html">ENG-004..006 Local Artifact Gate</a>。</li></ol>
+</article></body></html>

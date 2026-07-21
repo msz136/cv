@@ -1,0 +1,39 @@
+{
+  "artifact": "sources/vol_04_wm031_reality_gap_taxonomy_source_freeze.md",
+  "html": "sources/vol_04_wm031_reality_gap_taxonomy_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-WM-031 / knowledge_synced / card_synced",
+  "verdict": "WARN",
+  "source_sha256": "d25897218b4a276a0d9a981c826e8680ba21db7e64b298963eace10184877a97",
+  "frozen_sources": {
+    "tobin": "arXiv:1703.06907v1 / ar5iv UTF-8 SHA-256 faba518e98357c65a59d41f340bb723d4bb84c50eb359813597daab113dcd33a",
+    "peng": "arXiv:1710.06537v3 / ar5iv UTF-8 SHA-256 29d5e90f2a01e918bacb9d2a3e31622fc68018063be2bece6d86d2e0fca8a1b3",
+    "tan": "arXiv:1804.10332v2 / ar5iv UTF-8 SHA-256 c34db6210074989010a635a11705e17da4a38d4b105e471159a9cc832a120a49",
+    "openai_dexterous": "arXiv:1808.00177v5 / ar5iv UTF-8 SHA-256 826fb63d545518661a10b9cac05110bf7c813e88f99698d3b9e98cb313f81e93",
+    "official_docs": "MuJoCo stable, OpenCV 4.13.0 page and robosuite 1.5 docs accessed 2026-07-18",
+    "local_audits": "Sim2Real Audit D, Benchmark Audit E and Evidence Manifest"
+  },
+  "checks": {
+    "batch_boundary": "PASS (only VLA-WM-031 frozen; WM-032..038 remain deferred)",
+    "primary_source_scope": "PASS (visual, dynamics, actuator/latency/contact and stochastic examples tied to four primary papers)",
+    "taxonomy": "PASS AS SYNTHESIS (visual/sensor, dynamics/contact, control/timing, task/protocol and stochasticity separated)",
+    "contact_boundary": "PASS (contact identified as dynamics/control cross-layer; detailed methods deferred to WM-036)",
+    "safety_boundary": "PASS (safety/recovery treated as response contract, not a substitute gap cause)",
+    "protocol_boundary": "PASS (task/init/language/horizon/success/randomness separated from physics)",
+    "stochastic_time_scales": "PASS (episode, step, correlated drift and rare event separated)",
+    "first_failure_ladder": "PASS (protocol, replay, action round-trip, free-space, contact, task and repeat gates explicit)",
+    "project_evidence_boundary": "PASS (no project promoted from simulator/interface evidence to real-hardware transfer)",
+    "html_static_validation": "PASS (canonical SHA embedded; one H1, thirteen H2 headings, six tables, formulas, commented flow and MathJax rendered)",
+    "local_links": "PASS (Audit D/E and Evidence Manifest links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "independent_fact_review": "PASS WITH WARNING (reconciled by vol_04_sim2real_independent_fact_review.md; taxonomy remains engineering synthesis)"
+  },
+  "open_items": [
+    "Collect protocol-complete real camera/controller/paired sim-real episode/contact/safety evidence before any transfer claim.",
+    "Preserve the six-layer Audit D synthesis warning; it is a diagnostic contract, not a single-paper taxonomy.",
+    "Do not use simulator success, deployment entrypoints or interface traces as real-hardware Sim2Real evidence.",
+    "Keep VLA-WM-031 unseen until oral practice.",
+    "Do not create coaching_state.md until an actual drill."
+  ],
+  "next": "Build only VLA-WM-032 visual/domain randomization next; keep WM-033..038 deferred."
+}

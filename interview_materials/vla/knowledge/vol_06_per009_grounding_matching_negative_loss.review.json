@@ -1,0 +1,39 @@
+{
+  "artifact": "knowledge/vol_06_per009_grounding_matching_negative_loss.md",
+  "html": "knowledge/vol_06_per009_grounding_matching_negative_loss.html",
+  "source_freeze": "sources/vol_06_per009_grounding_matching_negative_loss_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / VLA-PER-009 / source_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "619D683E638DA847DC9BCC66FF396DEFABE9D9FB4E1399C2062BE8FD92D458D0",
+  "question_ids": [
+    "VLA-PER-009"
+  ],
+  "checks": {
+    "source_gate": "PASS WITH WARNING (four version-pinned primary papers, pinned GroundingDINO code, Transformers 4.57.1 implementation bridge and five local OPD artifacts are inherited from the frozen source; the first-party pinned repo lacks a complete matcher/criterion body)",
+    "training_dataflow_and_schema": "PASS (B/Q/L query-token logits, normalized boxes, label maps, text masks, assignments and distributed GT-box denominator are explicit)",
+    "matching_vs_final_loss": "PASS (pairwise token/L1/GIoU cost, discrete Hungarian assignment and post-assignment differentiable criterion are separated, including auxiliary re-matching)",
+    "negative_taxonomy": "PASS WITH WARNING (matched positive, non-target token, unmatched query, padding and dataset/hard negatives are separated; dataset-level negative and mining recipes remain unverified)",
+    "focal_l1_giou": "PASS (focal alpha/gamma semantics, matched-only box supervision, cxcywh/corner mapping and metric/loss boundary are explained with formulas and deterministic probes)",
+    "reduction_and_distributed": "PASS WITH WARNING (valid-token numerator, GT-box denominator, per-rank averaging, sample/route/batch order and auxiliary/encoder branches are explicit; exact local runtime world size/config is not archived)",
+    "weight_discrepancy": "PASS WITH WARNING (Grounding DINO v5 narrative and Table 8 conflict on classification matching/final weights; HF 4.57.1 aligns with Table 8 and is treated as version-specific)",
+    "local_objective_lineage": "PASS WITH WARNING (assistant-token SFT, routed object/region top-1 CE and generated-response full-vocabulary KL are mapped without calling them Hungarian detector losses; SFT model-internal CE reduction remains unproven by the wrapper)",
+    "zero_loss_and_metrics_boundary": "PASS WITH WARNING (SafeTrainer fallback is included in the event-ledger requirement; 2500 raw metric rows and summary arithmetic support only optimization-trace claims, not holdout or robot uplift)",
+    "typed_manifest_and_pseudocode": "PASS (objective family, schemas, positive map, costs, coefficients, masks, reduction order, worker counts, auxiliary branches, fallback events and raw loss dict are captured; pseudocode separates matcher, criterion and weight dictionary)",
+    "failure_and_interview_readiness": "PASS (schema/map, matching, negative, box, reduction, auxiliary, SFT, route and evidence failures lead to a contract-first diagnostic order, two-minute answer, follow-ups and dangerous answers)",
+    "cross_volume_dedup": "PASS (PER-001 schema/parser, PER-006 lineage, PER-007 inference, PER-008 representation, PER-010 metrics, PER-011 teacher noise and PER-015 action gate remain separate)",
+    "project_truth_boundary": "PASS (public detector mechanisms, local CE/top1/KL evidence, local optimization trace and missing checkpoint/eval/ownership evidence are separated)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, twenty-one H2 including the TOC heading, fourteen H3, nine tables, five code blocks, six formula blocks, canonical/HTML/review SHA synchronized, required palette/serif/sticky 260px TOC/900px breakpoint/print rules present, and zero formula-em or control-character issues)",
+    "browser_visual_check": "BLOCKED (the previously confirmed in-app Browser file:// policy restriction remains; static checks do not substitute for desktop and narrow visual QA)",
+    "question_card": "PASS WITH WARNING (one PER-009 atomic card is synchronized and counted globally; it remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized VLA-PER-009 atomic card unseen until a real oral drill.",
+    "Archive exact local command/config/checkpoint/model class, raw component losses, denominators and zero-loss/dummy/retry events.",
+    "Bind the 2500-row optimization trace to immutable checkpoints and same-protocol holdout raw predictions before claiming quality uplift.",
+    "Treat Grounding DINO classification coefficients as revision/config-dependent because paper narrative and Table 8 disagree.",
+    "Do not create coaching_state.md or change mastery before a real oral drill."
+  ],
+  "next": "Generate only the VLA-PER-010 metric/parser source freeze; do not generate its knowledge/card or change mastery in the same slice."
+}

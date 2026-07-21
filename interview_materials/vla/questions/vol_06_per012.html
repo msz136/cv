@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：PER-012 原子题卡</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\vol_06_per012.md">
+<meta name="aris:source-sha256" content="82305a7c18397e0ccee925207ac122b4b7eaa182e6c4a02188746278563db2bc">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>82305a7c18397e0ccee925207ac122b4b7eaa182e6c4a02188746278563db2bc</code>；生成自：<code>interview_materials\vla\questions\vol_06_per012.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#segmentation-depth-semantic-keypoint-manipulation-affordance">Segmentation、Depth、Semantic Keypoint 与 Manipulation Affordance</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：PER-012 原子题卡</h1>
+<div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-20 覆盖范围：<code>VLA-PER-012</code> 难度：L3 1 题 优先级：P1 1 题 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_06_per012_segmentation_depth_keypoint_affordance.html">PER-012 Segmentation / Depth / Keypoint / Affordance Knowledge</a>；来源边界见 <a href="../sources/vol_06_per012_segmentation_depth_keypoint_affordance_source_freeze.html">PER-012 Source Freeze</a>。</div>
+<h2 id="segmentation-depth-semantic-keypoint-manipulation-affordance">Segmentation、Depth、Semantic Keypoint 与 Manipulation Affordance</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-PER-012</b> · 如何把segmentation、depth、keypoint与affordance串成机器人可用的操作目标？为什么单模块高分不等于robot success？</summary>
+<p><strong>面试意图</strong>：判断你能否先冻结segmentation/depth/keypoint/affordance的task、unit、frame与score semantics，再把2D输出组合成3D proposal并经过planner/controller gate；同时识别public method、本地point supervision和真实机器人闭环之间的证据边界。</p>
+<p><strong>30 秒回答</strong>：先冻结task/unit：四类mask不等价，relative depth不能当米。mask与metric depth对齐原图、内参和时间才能lift；keypoint需语义ID、frame与不确定性，affordance绑定点、方向、primitive和state，最后过IK、碰撞与控制门。OPD证明affordance-labelled point监督。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：Mask2Former的class+mask需按semantic/instance/panoptic分别后处理；SAM的prompt、多候选和quality没有类别、跨帧身份或robot校准。Depth Anything V2 relative路径是ReLU图，metric路径是独立checkpoint与Sigmoid×max_depth，resize只恢复shape。只有米制depth与mask、原像素、内参、配准和时间一致才能lift。kPAM keypoint带语义ID、visibility、covariance与frame；Where2Act proposal绑定点、方向、primitive和state，最终过reachability、IK、collision与controller。</p>
+<p><strong>诊断 / 证据</strong>：按first-divergence检查task/schema→prompt/candidate policy→model/checkpoint/license→pre/postprocess→depth relative/metric、unit/range/validity→RGB-depth registration、intrinsics、TF/time→semantic keypoint identity/visibility/covariance→affordance primitive/state/orientation→planner rejection与episode trace。确定性probe应覆盖two-mug semantic/instance差异、同click的SAM multimask、relative scale×2、metric <code>max_depth=20/80</code>、resize后仅shape恢复、同坐标不同keypoint语义、同点push/pull score变化，以及正确mask+错误depth导致3D整体漂移。</p>
+<p><strong>项目挂钩</strong>：本地OPD的ShareRobot <code>affordance{x,y}</code>被缩放为0..1000并写成<code>&lt;point&gt;[[x,y]]&lt;/point&gt;</code>；prompt虽写actionable location，训练与评估仍走point/box/text target、parser和static metric。选定五个文件没有显式SAM/mask polygon/depth/keypoint实现命中，这只支持“affordance-labelled point supervision”，不排除远端或未归档路径，也不证明dense affordance、metric 3D、planner/controller、robot result或个人ownership。WAM、OpenPiVLA、UWM与Harness只能作为待补artifact的接口对照。</p>
+<p><strong>追问树</strong>：semantic、instance、panoptic、promptable mask如何区分？Mask2Former为何统一架构却不能统一metric？SAM quality代表什么、不代表什么？relative depth为何不能直接反投影？metric <code>max_depth</code>怎样绑定checkpoint？resize回原图为何不等于camera registration？mask边界为何产生飞点？semantic keypoint比普通point多哪些字段？kPAM怎样把keypoint转成cost/constraint？Where2Act的ActionScore、Actor、Critic分别做什么？affordance为何绑定primitive与state？proposal高分为何还要IK/collision/controller？OPD point target和Where2Act有何本质差别？</p>
+<p><strong>易错点</strong>：把任意mask当category+instance；把SAM quality当robot-success confidence；把relative depth或手乘常数叫米制；把output resize当intrinsics/registration恢复；忽略invalid depth、边界飞点、frame和staleness；把无名point叫semantic keypoint；把actionable文本叫primitive-conditioned affordance；用2D IoU替代3D/episode metric；把公开模型、代码零匹配或Git身份升级为本地集成、效果或个人贡献。</p>
+<p><strong>危险答案</strong>：说“有mask就知道抓哪个”“Depth Anything输出就是米”“resize回原图就对齐相机”“一个point就是keypoint”“SAM/affordance分数高就直接执行”“OPD已经实现SAM+depth+kPAM+Where2Act完整栈”，却不交代task、checkpoint、unit、camera/frame/time、primitive、planner/controller、raw artifact与ownership缺口。</p>
+<p><strong>来源</strong>：[1][2][3][4][5][6][7][8]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../knowledge/vol_06_per012_segmentation_depth_keypoint_affordance.html">PER-012 Segmentation / Depth / Keypoint / Affordance Knowledge</a>：typed composition、方法合同、诊断顺序、项目边界与面试模板。</li><li><a href="../sources/vol_06_per012_segmentation_depth_keypoint_affordance_source_freeze.html">PER-012 Source Freeze</a>：固定paper/code revision、SHA、license、本地OPD audit与deterministic probes。</li><li>Cheng et al., <a href="https://arxiv.org/abs/2112.01527v3">Mask2Former v3</a>；<a href="https://github.com/facebookresearch/Mask2Former/tree/9b0651c6c1d5b3af2e6da0589b719c514ec0d69a">official repository</a>。</li><li>Kirillov et al., <a href="https://arxiv.org/abs/2304.02643v1">Segment Anything v1</a>；<a href="https://github.com/facebookresearch/segment-anything/tree/dca509fe793f601edb92606367a655c15ac00fdf">official repository</a>。</li><li>Yang et al., <a href="https://arxiv.org/abs/2406.09414v2">Depth Anything V2 v2</a>；<a href="https://github.com/DepthAnything/Depth-Anything-V2/tree/a561b849ebae10a6f5ef49e26c83cbbcd36c71bf">official repository</a>。</li><li>Gao &amp; Tedrake, <a href="https://arxiv.org/abs/1903.06684v2">kPAM v2</a>；<a href="https://github.com/weigao95/kPAM/tree/7214936b619527aee3b02d5306ada15decb95140">official repository</a>。</li><li>Mo et al., <a href="https://arxiv.org/abs/2101.02692v2">Where2Act v2</a>；<a href="https://github.com/daerduoCarey/where2act/tree/1daf1a24f7a372599b211108fa851f7ec3581330">official repository</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>。</li></ol>
+</article></body></html>

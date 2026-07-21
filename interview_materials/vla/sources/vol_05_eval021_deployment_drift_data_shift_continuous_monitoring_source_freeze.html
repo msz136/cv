@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 EVAL-021 Source Freeze：Deployment Drift、Data Shift 与持续监控</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_eval021_deployment_drift_data_shift_continuous_monitoring_source_freeze.md">
+<meta name="aris:source-sha256" content="6a7ed605bcb6f9a65b8ea2e0a60efd295fd8093fb2441cd56bcab1b992ee2ab9">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>6a7ed605bcb6f9a65b8ea2e0a60efd295fd8093fb2441cd56bcab1b992ee2ab9</code>；生成自：<code>interview_materials\vla\sources\vol_05_eval021_deployment_drift_data_shift_continuous_monitoring_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、Revision 与边界</a></li><li><a href="#2-drift-taxonomy">2. Drift Taxonomy：先问什么分布变了</a></li><li><a href="#3-reference-window-current-window">3. Reference Window 与 Current Window 合同</a></li><li><a href="#4-monitoring-plane">4. 五层 Monitoring Plane</a></li><li><a href="#5-schema-skew-consecutive-span-drift">5. Schema、Skew 与 Consecutive-span Drift</a></li><li><a href="#6-high-dimensional-embedding-drift-mmd">6. High-dimensional / Embedding Drift 与 MMD</a></li><li><a href="#7-streaming-change-detector-adwin">7. Streaming Change Detector：ADWIN 的位置</a></li><li><a href="#8-fixed-window-rolling-window-seasonality">8. Fixed Window、Rolling Window 与 Seasonality</a></li><li><a href="#9-drift-detection-performance-impact">9. Drift Detection 不等于 Performance Impact</a></li><li><a href="#10-coverage-missingness-selective-labels">10. Coverage、Missingness 与 Selective Labels</a></li><li><a href="#11-alert-fatigue">11. 多重检验、重复窗口与 Alert Fatigue</a></li><li><a href="#12-threshold-severity-contract">12. Threshold 与 Severity Contract</a></li><li><a href="#13-drift-response-state-machine">13. Drift → Response State Machine</a></li><li><a href="#14-retrain-recalibrate-rollback">14. Retrain / Recalibrate / Rollback 如何选</a></li><li><a href="#15-artifact-bundle">15. 最小 Artifact Bundle</a></li><li><a href="#16">16. 持续监控伪代码</a></li><li><a href="#17-evidence-mapping">17. 五项目 Evidence Mapping</a></li><li><a href="#18">18. 常见失败模式</a></li><li><a href="#19-claim-ladder">19. Claim Ladder 与下一入口</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 05 EVAL-021 Source Freeze：Deployment Drift、Data Shift 与持续监控</h1>
+<div class="meta">状态：<code>source_frozen / VLA-EVAL-021 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-19 证据截止：2026-07-19 本切片冻结deployment reference/current windows、data/label/concept/protocol/system/scorer drift、schema/skew/drift comparator、two-sample与streaming detector、coverage/performance/safety/latency联合监控、告警治理、drift→impact→response边界及五项目真实性；只服务<code>VLA-EVAL-021</code>，EVAL-022后置。</div>
+<h2 id="question">问题（Question）</h2>
+<p>VLA部署后，摄像头、场景、任务、机器人、用户指令、controller、模型bundle或scorer都会变化。怎样及时发现分布变化，并判断它是否真的影响成功率、安全和实时性？可信持续监控不是“embedding距离超过阈值就自动重训”，而是冻结reference/current窗口和sampling unit，分层监控data quality、coverage、system、policy behavior与delayed outcome；drift alert只触发调查，只有same-protocol影响验证、root-cause定位和gated update完成后才允许rollback、recalibrate或retrain。</p>
+<h2 id="1-revision">1. 冻结来源、Revision 与边界</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>类型 / revision / license</th><th>SHA-256</th><th>支持范围</th><th>不支持</th></tr></thead><tbody>
+<tr><td>S1</td><td>NIST AI 100-1, <em>Artificial Intelligence Risk Management Framework (AI RMF 1.0)</em> + AI RMF Playbook</td><td>official final framework；January 2023；Playbook页面2026-07-19抓取；页面/出版物许可未在本冻结中断言</td><td>PDF <code>7576edb531d9848825814ee88e28b1795d3a84b435b4b797d3670eafdc4a89f1</code>；Playbook page <code>392d55aa40658cbd0eebedd3c928dc4f400066b1696f50ca6e59b2ae723be48a</code></td><td>deployed AI ongoing testing/monitoring、risk tracking、反馈、recalibration/removal、disengage/deactivate、post-deployment monitoring/change management；data/model/concept drift可能触发更频繁维护</td><td>给出VLA drift统计量、窗口、阈值或自动重训标准；五项目已部署或符合NIST治理</td></tr>
+<tr><td>S2</td><td>TensorFlow Data Validation guide + <code>tensorflow/metadata</code> schema</td><td>official docs；guide 2026-07-19抓取；official-code commit <code>f4f0753311ec2cfdedc84f09889f713b43f74d7a</code>（2026-06-09）；Apache-2.0</td><td>guide <code>82ad2183c5cffad0e6cb57eec82fbf3be4ae90a7b4afcab08ba667d985006f4e</code>；API snapshot <code>8c70d02357b63ad507ef0909f683e877b521843f636de943b03cf2ecd774ef25</code>；<code>schema.proto</code> <code>c29fb7b8381489fd65373b6b11ae58e77796e42faa0e42d6c10eb039a85c8695</code>；LICENSE <code>9df6cd8aaf0768103846a8502186ed55a54a45c3f7cd9fce531b573cd400d8d9</code></td><td>training-serving skew、consecutive-span drift、schema environments、L-infinity/Jensen–Shannon comparator与threshold字段</td><td>检测到feature drift等于模型质量下降；guide示例<code>0.01</code>是VLA通用阈值；TFDV直接覆盖图像、轨迹或闭环因果</td></tr>
+<tr><td>S3</td><td>Gretton et al., <em>A Kernel Two-Sample Test</em></td><td>primary paper；JMLR 13, 2012；论文许可未在本冻结中断言</td><td>PDF <code>236e1e59ca080d36c59958777c523afdeb8b496871ed50bd21665312c8013f28</code></td><td>two-sample hypothesis、Maximum Mean Discrepancy（MMD）、characteristic RKHS与quadratic/linear-time估计边界</td><td>任意embedding上的MMD告警自动代表semantic或performance drift；本页阈值、kernel或窗口已预注册</td></tr>
+<tr><td>S4</td><td><code>online-ml/river</code> ADWIN implementation</td><td>official-code；commit <code>5eed38dfd25183049de733b3016ff1edb84266e5</code>（2026-07-07）；BSD-3-Clause</td><td>API snapshot <code>3fb7a6e68654c7534ad7b8e1786e5ade849114b07834bf00df426a7945f82aa2</code>；<code>river/drift/adwin.py</code> <code>beb3f8aac9d1796a73974c4c0059e36315096a9f6c053eceee8ca414bccf17c1</code>；LICENSE <code>e87f2c8f1ba611702af10cba745e6ceb773d32310135ed55aa2722c55dd0d077</code></td><td>adaptive window、两个子窗口均值比较、<code>delta/clock/min_window/grace_period</code>与检测延迟/误报trade-off</td><td>ADWIN在任意VLA telemetry上自动检测真正concept drift；检测点就是cause或release decision</td></tr>
+<tr><td>S5</td><td>本地前置节点</td><td>canonical local prerequisites</td><td>EVAL-006 <code>8a2ccfbc382537d13e95feefe4ec146342d7478432a9a645344a64b302ccd054</code>；EVAL-007 <code>66800fd21d8d2ebb786b0f8d3234c2613b427a986f41432f93cba99c3596e278</code>；EVAL-009 <code>be6945d2475585f65cd74417070fbd4fee1b148660b35c139370935413b13dea</code>；EVAL-010 <code>512d9e16b392e7258358c0092dff6ff5049890040d8d5efd1fdadfe7048b2911</code>；EVAL-011 <code>c4a085e96e8ae6ed4d22660b49d26d8faad0b338e8990b132ae3288ee28eb0dd</code>；EVAL-012 <code>7360b1ae5eadef08620f91c510df9b98a958f0992a153c59c49de0577f821478</code>；EVAL-013 <code>9b47d6cd3dbea63e16d80c2fd25c7d68d1aa8f642b11b75913eb58f7449470bb</code>；EVAL-017 <code>15f22c200c5b143a789a0152ba8be189533f70cf4ad89612d50717c7ae54c739</code>；EVAL-019 <code>01446407420dae1382eaccf503b66e1a06b2017e46a10b81bd13af81dc9568a0</code>；EVAL-020 <code>c85f5ca7ac79d3e942b0ba29916212435d7fe58ab6a28c254e1e25868a51397d</code></td><td>protocol identity、coverage、raw telemetry、regression/canary、offline-online、robustness、latency、selection与incident闭环</td><td>五项目已有live monitor、alert backtest、drift-impact因果或自动响应系统</td></tr>
+<tr><td>S6</td><td>五项目claim–evidence inventories</td><td>local evidence</td><td>Harness <code>66acc52c685d5ace6926a42976b7ba59b6f889d6848f74bfd8216cad92aa291e</code>；OPD <code>0a68251de06bc8494b7d2be5e6dc169fc860a629c2f312e623db69ed29db12bb</code>；OpenPiVLA <code>a3c644f949295d72889b2acf6456bfd050e05c147b14381bbb067504a34ce293</code>；WAM <code>078c86b1484fe38fdd136428123c9529c6b750dfea5e031ec506cf617517772d</code>；UWM <code>728b8326dc345072886d0909fe2b8d81dfde3993771e7febed446d471bd3674d</code></td><td>static manifests、protocol conflicts、failure signals与future monitoring设计输入</td><td>任一项目已有timestamped deployment stream、online labels、SLO、drift alarm或update governance闭环</td></tr>
+</tbody></table>
+<p>S1—S4冻结持续治理、data validation、two-sample与stream change detection的公共边界；S5—S6将其映射到VLA。本页的drift taxonomy、monitoring planes、alert budget、response state machine和项目monitor schema是source-consistent engineering synthesis，不冒充NIST、TensorFlow、Gretton、River或项目原生实现。</p>
+<h2 id="2-drift-taxonomy">2. Drift Taxonomy：先问什么分布变了</h2>
+<p>设时刻/窗口<code>t</code>的联合分布为：</p>
+<div class="formula">\[
+P_t(X,Y)=P_t(Y\mid X)P_t(X).
+\]</div>
+<p>变量解释：<code>X</code>可包含图像、语言、proprioception、robot/site/controller和task context；<code>Y</code>是成功、安全、人工标签或期望动作。直觉：输入变了与“同样输入下正确行为规则变了”不是同一种问题。实现映射：reference/current窗口分别保存feature、context和delayed outcome；缺<code>Y</code>时不能确认concept/performance drift。</p>
+<table><thead><tr><th>类型</th><th>变化对象</th><th>VLA例子</th><th>只能安全得出的结论</th></tr></thead><tbody>
+<tr><td>schema / quality drift</td><td>shape、dtype、missing、range、timestamp</td><td>camera key缺失、7D/12D action、NaN、stale frame</td><td>输入合同变化或数据损坏</td></tr>
+<tr><td>covariate / data drift</td><td><code>P_t(X)</code></td><td>光照、视角、物体、task mix、语言、robot/site</td><td>current input与reference不同</td></tr>
+<tr><td>label / prior shift</td><td><code>P_t(Y)</code></td><td>success/failure比例或人工类别先验变</td><td>outcome mix变化；原因未知</td></tr>
+<tr><td>concept drift</td><td>`P_t(Y</td><td>X)`</td><td>同场景下安全动作/成功判定随controller或业务规则变</td><td>需标签或可信outcome验证</td></tr>
+<tr><td>protocol drift</td><td>eval/serve tuple变</td><td>init、warmup、scorer、prompt/parser改变</td><td>指标不可直接纵向比较</td></tr>
+<tr><td>model / bundle drift</td><td>weights/processor/normalizer变</td><td>silent checkpoint或stats切换</td><td>lineage变化，不自动等于质量变化</td></tr>
+<tr><td>system drift</td><td>latency/resource/runtime变</td><td>queue age、GPU/driver、network、tool failure</td><td>执行条件变化</td></tr>
+<tr><td>behavior drift</td><td>policy output分布变</td><td>action saturation、chunk/replan、tool depth、fallback</td><td>policy行为变化；好坏需outcome</td></tr>
+<tr><td>scorer drift</td><td>success/reward/judge变</td><td>threshold、VLM judge、parser revision</td><td>measurement system变化</td></tr>
+</tbody></table>
+<p>deployment drift是上表多种变化的总称，不应只等同<code>P(X)</code>。</p>
+<h2 id="3-reference-window-current-window">3. Reference Window 与 Current Window 合同</h2>
+<p>每个monitor先冻结：</p>
+<ul><li>reference是training、validation、last-known-good production还是season-matched历史；</li><li>current窗口按event、episode、robot-hour、site-day还是task-init pair聚合；</li><li>window length、stride、minimum support、late-arrival与dedupe；</li><li>model/processor/normalizer/controller/scorer bundle SHA；</li><li>task/site/robot/camera/language/format等slice；</li><li>seasonality、maintenance、rollout/canary与planned campaign标记；</li><li>invalid/missing/abstain/timeout如何计数。</li></ul>
+<p>如果current窗口混入新模型、新site和新scorer，告警只能说“bundle/context一起变了”。必须先按lineage和context分层，再比较分布。</p>
+<h2 id="4-monitoring-plane">4. 五层 Monitoring Plane</h2>
+<pre><code class="language-text">Plane 0 identity/provenance
+ -&gt; Plane 1 data quality + coverage
+ -&gt; Plane 2 system/latency/resource
+ -&gt; Plane 3 policy behavior + safety proxies
+ -&gt; Plane 4 delayed outcome + human/incident feedback</code></pre>
+<table><thead><tr><th>Plane</th><th>代表信号</th><th>为什么不能省</th></tr></thead><tbody>
+<tr><td>identity</td><td>code/model/data/processor/normalizer/controller/scorer SHA</td><td>先区分drift与silent version change</td></tr>
+<tr><td>data quality</td><td>schema、missing、range、timestamp、camera、language、task mix</td><td>最快发现接口/采集问题</td></tr>
+<tr><td>system</td><td>capture→apply latency、queue age、timeout、OOM、fallback</td><td>模型没变也会闭环退化</td></tr>
+<tr><td>behavior</td><td>action norm/saturation、chunk/replan、tool route、abstain、unsafe proxy</td><td>outcome到达前的早期信号</td></tr>
+<tr><td>outcome</td><td>per-task success、forbidden effect、recovery、human override、incident</td><td>验证drift是否产生真实影响</td></tr>
+</tbody></table>
+<p>单一overall dashboard会把critical slice、invalid和新support稀释掉。</p>
+<h2 id="5-schema-skew-consecutive-span-drift">5. Schema、Skew 与 Consecutive-span Drift</h2>
+<p>TFDV明确区分training-serving <code>skew</code>与不同training day/span之间的<code>drift</code>，在schema中提供<code>skew_comparator</code>和<code>drift_comparator</code>；官方schema定义<code>infinity_norm</code>、<code>jensen_shannon_divergence</code>及threshold字段。[S2]</p>
+<p>对离散类别比例<code>p_j,q_j</code>，L-infinity距离为：</p>
+<div class="formula">\[
+D_{\infty}(p,q)=\max_j|p_j-q_j|.
+\]</div>
+<p>变量解释：<code>j</code>是task、format、language、camera-present或tool类别。直觉：找出占比变化最大的类别。实现映射：输出max-difference category、reference/current count和support；TFDV guide中的<code>0.01</code>只是示例阈值，不能复制为VLA默认阈值。[S2]</p>
+<p>Jensen–Shannon divergence可写为：</p>
+<div class="formula">\[
+JS(p,q)=\frac12 KL(p\|m)+\frac12 KL(q\|m),\qquad m=\frac{p+q}{2}.
+\]</div>
+<p>变量解释：<code>m</code>是两分布混合，<code>KL</code>是Kullback–Leibler divergence。直觉：以共同中间分布对称比较两侧。实现映射：binning、unknown category、smoothing与单位必须冻结；高JS仍只表示分布不同，不证明性能下降。</p>
+<h2 id="6-high-dimensional-embedding-drift-mmd">6. High-dimensional / Embedding Drift 与 MMD</h2>
+<p>对reference samples<code>X={x_i}_{i=1}^m</code>、current samples<code>Y={y_j}_{j=1}^n</code>，RKHS中的population MMD为：</p>
+<div class="formula">\[
+\operatorname{MMD}[\mathcal F,p,q]
+=\sup_{f\in\mathcal F}\left(E_p[f(X)]-E_q[f(Y)]\right).
+\]</div>
+<p>变量解释：<code>F</code>取characteristic RKHS unit ball时可区分分布；kernel、bandwidth和embedding extractor决定敏感方向。直觉：寻找最能区分两个窗口的函数。实现映射：冻结encoder SHA、layer/pooling、normalization、kernel/bandwidth、sample unit与permutation/bootstrap方法，并保存witness/top slices。[S3]</p>
+<p>MMD适合多维image/text/state embedding，但有三重风险：encoder自身换版、support/seasonality混杂、统计显著但业务效应极小。必须与raw feature、coverage和outcome panel共同解释。</p>
+<h2 id="7-streaming-change-detector-adwin">7. Streaming Change Detector：ADWIN 的位置</h2>
+<p>River的ADWIN维护可变长度窗口，将其分成两个子窗口比较均值；<code>delta</code>控制显著性，<code>clock</code>控制检查频率，<code>min_window_length/grace_period</code>控制最小证据与冷启动。[S4]</p>
+<p>可输入的标量包括：</p>
+<ul><li>success/failure或human override；</li><li>timeout/fallback/invalid indicator；</li><li>action saturation、queue age、latency；</li><li>per-episode error或calibration residual。</li></ul>
+<p>不能把任意高维embedding先压成一个无语义分数再称concept drift。ADWIN检测的是输入序列统计变化；autocorrelation、campaign切换、模型发布和site maintenance仍需进入解释。</p>
+<h2 id="8-fixed-window-rolling-window-seasonality">8. Fixed Window、Rolling Window 与 Seasonality</h2>
+<table><thead><tr><th>设计</th><th>优点</th><th>风险</th></tr></thead><tbody>
+<tr><td>frozen training reference</td><td>语义稳定</td><td>可能把合法业务演化持续报警</td></tr>
+<tr><td>last-known-good production</td><td>接近真实流量</td><td>reference可能已经慢性漂移</td></tr>
+<tr><td>rolling recent window</td><td>适应季节变化</td><td>渐进退化被reference吞掉</td></tr>
+<tr><td>season-matched reference</td><td>减少昼夜/班次/任务campaign混杂</td><td>需更多历史support</td></tr>
+<tr><td>canary-control concurrent</td><td>最接近因果比较</td><td>需路由、pairing和安全权限</td></tr>
+</tbody></table>
+<p>建议同时保留长期anchor、season-matched和concurrent control三类reference；rolling window不能成为唯一真相。</p>
+<h2 id="9-drift-detection-performance-impact">9. Drift Detection 不等于 Performance Impact</h2>
+<p>需要三步证据：</p>
+<pre><code class="language-text">drift signal
+ -&gt; localized affected slice / first divergence
+ -&gt; matched or controlled outcome degradation</code></pre>
+<p>对同一slice的reference/current风险估计，可报告：</p>
+<div class="formula">\[
+\widehat{\Delta R}_s=\widehat R_{current,s}-\widehat R_{reference,s}.
+\]</div>
+<p>变量解释：<code>R</code>可为failure、forbidden effect、deadline miss或human override rate，<code>s</code>是预注册slice。直觉：先问变化有没有落到真实风险上。实现映射：给support、cluster-aware interval、same scorer和lineage；没有标签时只标<code>impact_pending</code>，不能由MMD/JS替代。</p>
+<p>若outcome延迟，应保存prediction/episode ID与后续label join ledger，监控label coverage和delay分布，防止“只有容易回传的case有标签”。</p>
+<h2 id="10-coverage-missingness-selective-labels">10. Coverage、Missingness 与 Selective Labels</h2>
+<p>必须监控：</p>
+<ul><li>planned/observed/valid/labeled/invalid/timeout守恒；</li><li>per-task/site/robot/camera/language/format support；</li><li>label arrival rate、delay、human escalation与override；</li><li>fallback/abstain后是否仍有outcome；</li><li>新category/unknown token/empty mask；</li><li>sampling、retention与privacy删减是否改变可见分布。</li></ul>
+<p>只看已成功完成或已有label的episode会产生survivorship/selection bias。monitor本身也要有coverage SLO。</p>
+<h2 id="11-alert-fatigue">11. 多重检验、重复窗口与 Alert Fatigue</h2>
+<p>若有<code>d</code>个feature、<code>s</code>个slice、<code>w</code>个窗口与多个statistics，每分钟独立用<code>p&lt;0.05</code>会产生大量false alarms。工程合同至少包含：</p>
+<ul><li>primary monitors与diagnostic monitors分级；</li><li>family-wise/FDR或confirmatory rerun策略；</li><li>minimum effect size与minimum support；</li><li>consecutive-window、cooldown、hysteresis与dedupe；</li><li>expected alerts/day、page budget与owner；</li><li>known campaign/maintenance suppression但保留audit log；</li><li>false-positive/false-negative backtest与detection delay。</li></ul>
+<p>p-value回答“在null下多极端”，不等于effect重要，也不等于cause；阈值应在历史incident、synthetic shift与normal variation上backtest。</p>
+<h2 id="12-threshold-severity-contract">12. Threshold 与 Severity Contract</h2>
+<table><thead><tr><th>状态</th><th>例子</th><th>默认动作</th></tr></thead><tbody>
+<tr><td>INFO</td><td>identity一致、轻微distribution movement</td><td>记录，不page</td></tr>
+<tr><td>WARN</td><td>effect threshold超过且连续窗口成立</td><td>slice诊断、加采样/label</td></tr>
+<tr><td>CRITICAL</td><td>safety/deadline/forbidden effect或大范围unknown</td><td>限权、fallback、rollback/canary stop</td></tr>
+<tr><td>INCONCLUSIVE</td><td>support/labels/scorer不足</td><td>不自动PASS/FAIL，补证据</td></tr>
+</tbody></table>
+<p>critical安全信号不能等待overall success显著下降；反之，单个embedding p-value也不能触发全量rollback。</p>
+<h2 id="13-drift-response-state-machine">13. Drift → Response State Machine</h2>
+<pre><code class="language-text">OBSERVING
+ -&gt; ALERT_CANDIDATE
+ -&gt; VALIDATED_SIGNAL (identity/support/statistic checked)
+ -&gt; IMPACT_PENDING / IMPACT_CONFIRMED
+ -&gt; TRIAGED_CAUSE
+ -&gt; MITIGATE / ROLLBACK / RECALIBRATE / RETRAIN_CANDIDATE
+ -&gt; OFFLINE_REGRESSION
+ -&gt; SHADOW / CANARY
+ -&gt; RELEASED or REJECTED
+ -&gt; NEW_REFERENCE_APPROVAL</code></pre>
+<p>自动响应最多应停在安全限权/已预注册fallback；自动重训、自动替换reference或自动全量发布会把反馈、selection和holdout污染隐藏起来。[S1][S5]</p>
+<h2 id="14-retrain-recalibrate-rollback">14. Retrain / Recalibrate / Rollback 如何选</h2>
+<table><thead><tr><th>观察</th><th>优先动作</th><th>不能直接做</th></tr></thead><tbody>
+<tr><td>schema/processor错配</td><td>block/load gate或修接口</td><td>用更多数据掩盖</td></tr>
+<tr><td>normalizer/action scale漂移</td><td>校验stats与recalibrate候选</td><td>未验证就全量替换</td></tr>
+<tr><td>input shift但outcome稳定</td><td>扩充stress/audit，观察</td><td>自动重训</td></tr>
+<tr><td>confirmed outcome degradation</td><td>定位slice/cause，再定data/model/controller修复</td><td>只按overall微调</td></tr>
+<tr><td>system latency drift</td><td>capacity/queue/runtime修复</td><td>把问题归因模型权重</td></tr>
+<tr><td>scorer drift</td><td>双跑旧/新scorer并重建comparability</td><td>把历史曲线直接拼接</td></tr>
+<tr><td>safety critical</td><td>限权/fallback/rollback</td><td>等待统计平均显著</td></tr>
+</tbody></table>
+<p>任何candidate update都要回到EVAL-010/017/019/020：regression、shadow/canary、selection/fresh audit和incident verification。</p>
+<h2 id="15-artifact-bundle">15. 最小 Artifact Bundle</h2>
+<pre><code class="language-text">monitoring/
+  monitor_registry.json
+  reference_window_manifest.json
+  current_window_manifests.jsonl
+  lineage_and_context_registry.jsonl
+  schema_quality_stats.parquet
+  coverage_label_delay.parquet
+  system_latency_resource.parquet
+  behavior_safety_proxies.parquet
+  delayed_outcomes.parquet
+  slice_drift_statistics.parquet
+  mmd_kernel_encoder_spec.json
+  streaming_detector_state.json
+  alert_thresholds_and_budget.json
+  alert_incident_join.jsonl
+  response_decisions.jsonl
+  update_release_ledger.jsonl
+  reference_promotion_approvals.jsonl
+  checksums/manifest-sha256.txt
+  reproduce_monitoring.ps1</code></pre>
+<p><code>monitor_registry</code>逐项登记signal、unit、window、reference、slice、statistic、effect threshold、owner、retention与action；<code>reference_promotion</code>必须审批，不能让rolling current自动成为新的good baseline。</p>
+<h2 id="16">16. 持续监控伪代码</h2>
+<pre><code class="language-python">def monitor_vla_window(reference, current, registry):
+    # 1. Bind every row to one immutable deployment and scorer lineage.
+    assert_identity_and_context(current, registry.bundle_contract)
+
+    # 2. Check support and raw contracts before running statistical detectors.
+    quality = validate_schema_missing_range_time(current, registry.schema)
+    coverage = compute_planned_valid_labeled_conservation(current)
+
+    # 3. Detect feature, embedding and streaming changes per registered slice.
+    drift = run_registered_two_sample_and_stream_tests(
+        reference, current, registry.detectors
+    )
+
+    # 4. Join delayed outcomes; a drift signal alone does not prove impact.
+    impact = estimate_same_protocol_slice_risk_differences(
+        reference, current, registry.outcome_contract
+    )
+
+    # 5. Apply alert budgets and route only evidence-complete decisions.
+    alerts = validate_effect_support_persistence(drift, impact, registry.alerts)
+    return persist_alert_and_response_ledger(quality, coverage, drift, impact, alerts)</code></pre>
+<p>伪代码是未来验收合同，不代表五项目已有deployment telemetry或monitoring service。</p>
+<h2 id="17-evidence-mapping">17. 五项目 Evidence Mapping</h2>
+<table><thead><tr><th>项目</th><th>当前可作为reference/diagnostic的证据</th><th>Future monitors</th><th>不能说 / 缺口</th></tr></thead><tbody>
+<tr><td>OPD</td><td>static train/eval manifests；raw-holdout format/pool quotas；original strict/protocol-fixed/lenient协议差异；checkpoint by-pool表</td><td>pool/format/language/image support，strict reject、parse/OOB、box/point/text metric，embedding与delayed human quality；全部绑定prompt/parser/scorer SHA</td><td>没有timestamped serving stream、online label、alert/backtest；不能称已检测deployment drift或自动更新</td></tr>
+<tr><td>Robot Harness</td><td>task/tool schema、SFT/GRPO route/reward与静态eval summaries；safety multi-step failure</td><td>task/tool/version mix、tool-call depth、argument/schema reject、auth/timeout/cancel/side effect、fallback、human override和safety outcome</td><td>约<code>38–44%</code> safety tool accuracy是静态failure evidence，不是live SLO；缺共同scorer/n、request trace与deployment stream</td></tr>
+<tr><td>OpenPiVLA</td><td>multiple lineage、processor/normalizer/action-shape资料、formal Qwen eager路径与diagnostics</td><td>checkpoint/processor/normalizer identity、camera/state/action schema、action norm/saturation、chunk/replan、load reject、capture→apply latency、task success</td><td>无formal checkpoint binary、统一online scorer、timestamped telemetry或real deployment；eager不等于drift fix</td></tr>
+<tr><td>WAM</td><td>base/trained单episode、三camera字段、5k/10k单sample future proxy与若干failure hypotheses</td><td>camera presence/age、conditioning/sigma、action/gripper、world/value proxy、closed-loop success/recovery、resource/latency；均需同lineage</td><td>单episode/单sample不能建立reference distribution、threshold或concept drift；无deployment labels与monitor service</td></tr>
+<tr><td>UWM / LIBERO</td><td>fixed-pruned-init <code>186/250</code>与reset-style <code>232/250</code>是不同protocol；task map、normalizer/action contract与DataLoader wait smoke</td><td>task/init/scene/camera、normalizer/action saturation、chunk/replan、per-task success/recovery、data wait/step time、checkpoint/scorer identity</td><td><code>0.928→0.744</code>是protocol distribution sensitivity，不是时间drift或model degradation；缺raw 250 episodes、timestamped stream、paired labels与alerts</td></tr>
+</tbody></table>
+<p>五项目都只提供monitor schema输入或离线reference候选，没有C3 deployment monitoring证据。本节点不新增“线上监控”“自动漂移检测”“自动重训”“production SLO”或ownership结论。</p>
+<h2 id="18">18. 常见失败模式</h2>
+<table><thead><tr><th>失败模式</th><th>症状</th><th>修复</th></tr></thead><tbody>
+<tr><td>drift=degradation</td><td>MMD/JS高就宣称性能差</td><td>join outcome与same-protocol impact</td></tr>
+<tr><td>one overall monitor</td><td>rare safety/task被稀释</td><td>coverage cube与critical slices</td></tr>
+<tr><td>rolling baseline only</td><td>慢性退化被reference吞掉</td><td>frozen anchor + seasonal + concurrent control</td></tr>
+<tr><td>silent lineage mix</td><td>新旧model/scorer混窗</td><td>immutable lineage/context split</td></tr>
+<tr><td>p-value paging</td><td>高频窗口大量误报</td><td>effect/support/persistence/alert budget</td></tr>
+<tr><td>auto-retrain loop</td><td>告警即抓当前数据重训</td><td>evidence gate、fresh audit、shadow/canary</td></tr>
+<tr><td>missing-label blindness</td><td>只监控有label成功case</td><td>label coverage/delay与selective outcome</td></tr>
+<tr><td>proxy-only safety</td><td>action norm正常就称安全</td><td>forbidden/human/incident outcome</td></tr>
+<tr><td>protocol shift called drift</td><td>reset/fixed或scorer变更拼曲线</td><td>protocol namespace与comparability gate</td></tr>
+<tr><td>reference promotion leak</td><td>current自动变baseline</td><td>approval、audit与rollback reference</td></tr>
+</tbody></table>
+<h2 id="19-claim-ladder">19. Claim Ladder 与下一入口</h2>
+<table><thead><tr><th>级别</th><th>可接受表述</th><th>所需证据</th></tr></thead><tbody>
+<tr><td>C0</td><td>设计VLA drift/monitoring schema</td><td>本页、registry与source freeze</td></tr>
+<tr><td>C1</td><td>生成离线reference/current统计</td><td>immutable windows、lineage、coverage与recompute</td></tr>
+<tr><td>C2</td><td>alert在历史/synthetic shift上有效</td><td>threshold backtest、false alert、delay和slice evidence</td></tr>
+<tr><td>C3</td><td>drift与部署impact被验证</td><td>timestamped telemetry、delayed labels、same-protocol control与incident join</td></tr>
+<tr><td>C4</td><td>response/update长期有效</td><td>rollback/recalibrate/retrain gate、shadow/canary、reference governance与复发统计</td></tr>
+</tbody></table>
+<p>当前五项目最多提供C0/C1输入，不到C2 alert backtest或C3 deployment impact。本节点保持<code>WARN</code>；下一内容节点固定为<code>VLA-EVAL-022</code>：paper→repo→checkpoint→runtime→ownership evidence audit。本切片不生成EVAL-022，也不创建<code>coaching_state.md</code>。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>NIST, <a href="https://doi.org/10.6028/NIST.AI.100-1"><em>Artificial Intelligence Risk Management Framework (AI RMF 1.0)</em></a>, January 2023；<a href="https://www.nist.gov/itl/ai-risk-management-framework/nist-ai-rmf-playbook">AI RMF Playbook</a>。</li><li>TensorFlow, <a href="https://www.tensorflow.org/tfx/data_validation/get_started"><em>Get started with TensorFlow Data Validation</em></a>；<code>tensorflow/metadata</code> <a href="https://github.com/tensorflow/metadata/blob/f4f0753311ec2cfdedc84f09889f713b43f74d7a/tensorflow_metadata/proto/v0/schema.proto"><code>schema.proto</code>@<code>f4f0753</code></a>。</li><li>Gretton et al., <a href="https://www.jmlr.org/papers/v13/gretton12a.html"><em>A Kernel Two-Sample Test</em></a>, JMLR 13, 2012。</li><li>River, <a href="https://github.com/online-ml/river/blob/5eed38dfd25183049de733b3016ff1edb84266e5/river/drift/adwin.py"><code>ADWIN</code>@<code>5eed38d</code></a>；Bifet &amp; Gavaldà, <em>Learning from Time-Changing Data with Adaptive Windowing</em>, 2007。</li><li><a href="vol_05_eval006_benchmark_env_controller_scorer_versioning_source_freeze.html">EVAL-006 Protocol Versioning</a>、<a href="vol_05_eval007_init_seed_task_coverage_difficulty_source_freeze.html">EVAL-007 Coverage</a>、<a href="vol_05_eval009_raw_predictions_episode_trace_video_recomputable_summary_source_freeze.html">EVAL-009 Recomputable Bundle</a>、<a href="vol_05_eval010_regression_gate_golden_set_canary_rollout_source_freeze.html">EVAL-010 Regression</a>、<a href="vol_05_eval011_offline_metric_online_success_correlation_source_freeze.html">EVAL-011 Offline–Online</a>、<a href="vol_05_eval012_ood_perturbation_occlusion_viewpoint_robustness_matrix_source_freeze.html">EVAL-012 Robustness</a>、<a href="vol_05_eval013_end_to_end_latency_deadline_jitter_source_freeze.html">EVAL-013 Latency</a>、<a href="vol_05_eval017_simulator_shadow_real_robot_gate_source_freeze.html">EVAL-017 Release Gate</a>、<a href="vol_05_eval019_checkpoint_selection_pareto_holdout_overfit_source_freeze.html">EVAL-019 Selection</a>与<a href="vol_05_eval020_incident_timeline_root_cause_bugfix_verification_source_freeze.html">EVAL-020 Incident</a>。</li><li><a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness</a>、<a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD</a>、<a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA</a>、<a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a>与<a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO</a> inventories。</li></ol>
+</article></body></html>

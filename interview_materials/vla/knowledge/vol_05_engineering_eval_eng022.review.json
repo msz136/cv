@@ -1,0 +1,60 @@
+{
+  "artifact": "knowledge/vol_05_engineering_eval_eng022.md",
+  "html": "knowledge/vol_05_engineering_eval_eng022.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / VLA-ENG-022 / knowledge_24_of_44 / card_1_of_1_unseen",
+  "verdict": "WARN",
+  "source_sha256": "54A62867476F91242E91B482284975F9AB40F932C0299E286259E6C91D282889",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 23,
+    "new_nodes": 1,
+    "total_drafted_nodes": 24,
+    "covered_ids": ["VLA-ENG-022"],
+    "drafted_cards_for_new_nodes": 1,
+    "practice_state": "unseen",
+    "difficulty": "L3",
+    "priority": "P0"
+  },
+  "source_scope": {
+    "source_freeze": "sources/vol_05_eng022_policy_server_resilience_source_freeze.html",
+    "official_docs": [
+      "CPython asyncio Queue",
+      "CPython asyncio timeout/wait_for",
+      "NVIDIA Triton model configuration",
+      "NVIDIA Triton dynamic batcher",
+      "Physical Intelligence OpenPI WebSocket policy server/serve entry/policy"
+    ],
+    "local_project_hooks": [
+      "OpenPiVLA connect/infer timeout and server_unavailable/infer_failed reports",
+      "OpenPiVLA official WebSocket client/server deployment and rollout paths",
+      "Robot Harness polling timeout, cancel context, lock cleanup, compensation and scope",
+      "OpenPiVLA and Robot Harness evidence inventories"
+    ]
+  },
+  "checks": {
+    "bounded_slice": "PASS (one VLA-ENG-022 knowledge node and one atomic card are drafted; later resilience nodes remain deferred)",
+    "admission_backpressure": "PASS WITH WARNING (bounded queue/maxsize, overload actions, queue metrics and freshness budget explicit; local policy queue not proven)",
+    "batching_shape": "PASS WITH WARNING (compatible batch key, max batch/queue delay and VLA shape/freshness constraints explicit; A/B missing)",
+    "deadline_cancellation": "PASS WITH WARNING (stage budget, cancellation propagation and leaked-task evidence explicit; end-to-end implementation unverified)",
+    "fallback_safety": "PASS WITH WARNING (TTL/action-age/bundle/watchdog/side-effect contract explicit; local safe fallback absent)",
+    "openpi_boundary": "PASS (OpenPI per-request WebSocket infer/timing/error baseline not upgraded to dynamic batching/SLO/fairness)",
+    "project_truth_boundary": "PASS (OpenPiVLA offline timeout reports and Robot Harness tool hooks kept below policy-server resilience claims)",
+    "formula_and_schema": "PASS (admission predicate, total latency/freshness formulas, batch key and fallback matrix mapped)",
+    "pseudocode": "PASS (admission→queue→batch→deadline→infer→validate→controller/fallback order shown; APIs remain contracts)",
+    "verification_matrix": "PASS (burst, batch wait, shape, queue/infer timeout, disconnect, malformed action, worker failure, retry storm and recovery cases explicit)",
+    "minimum_module_contract": "PASS (intuition, definitions, formulas, queue/batch/deadline/fallback mechanics, project hooks, trade-offs, bad cases and references included)",
+    "html_static_validation": "PASS (source SHA, one H1, fourteen H2, eleven H3, two tables, four code/state blocks and two formula blocks)",
+    "local_links": "PASS (ENG-017/018/021, source freeze and project inventory links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Define and execute a policy-server admission/batching contract with Qmax, max batch, queue delay, fairness and action-freshness budgets.",
+    "Run cancellation/leaked-task, burst/timeout/disconnect/retry-storm/worker-failure drills with p50/p95/p99 and action-age metrics.",
+    "Bind safe fallback to ENG-021 verified bundle, TTL, controller watchdog and audit events.",
+    "Keep VLA-ENG-022 unseen until a real oral answer is recorded.",
+    "Do not generate later resilience nodes in this increment."
+  ],
+  "next": "Run a one-question oral drill for VLA-ENG-022 or collect queue/SLO/fallback artifacts; keep later resilience nodes deferred."
+}

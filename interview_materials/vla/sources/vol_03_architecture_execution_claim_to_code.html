@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 03 Source Audit F：VLA 架构、适配、延迟与动作执行 Claim-to-Code</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_03_architecture_execution_claim_to_code.md">
+<meta name="aris:source-sha256" content="b3436c6a0cb2daefc9050c2955f05a078439671287907e20a9d38b26b97bced2">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>b3436c6a0cb2daefc9050c2955f05a078439671287907e20a9d38b26b97bced2</code>；生成自：<code>interview_materials\vla\sources\vol_03_architecture_execution_claim_to_code.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 版本、来源与证据边界</a></li><li><a href="#3-vla-arch-007">3. `VLA-ARCH-007`：四条代表路线如何比较</a></li><li><a href="#3-1-landscape-table">3.1 landscape table</a></li><li><a href="#4-vla-arch-008-sequence-layout-attention-loss">4. `VLA-ARCH-008`：sequence layout、attention 与 loss 语义</a></li><li><a href="#4-1-layout-token">4.1 三种 layout 不能只画成同一条 token 串</a></li><li><a href="#5-vla-arch-009-lora-action-expert">5. `VLA-ARCH-009`：冻结、全量、LoRA 与 action expert 的取舍</a></li><li><a href="#5-1">5.1 它们分别在改什么</a></li><li><a href="#5-2">5.2 面试决策顺序</a></li><li><a href="#6-vla-arch-010-embodiment-action-padding-loss">6. `VLA-ARCH-010`：跨 embodiment action 统一与 padding loss</a></li><li><a href="#6-1-schema">6.1 schema 统一检查表</a></li><li><a href="#7-vla-arch-011">7. `VLA-ARCH-011`：延迟如何分层而不是猜瓶颈</a></li><li><a href="#7-1-timing-pseudocode">7.1 可执行 timing pseudocode</a></li><li><a href="#8-vla-arch-012-paper-repo-checkpoint-i-o">8. `VLA-ARCH-012`：paper / repo / checkpoint / I/O 证据审计</a></li><li><a href="#8-1">8.1 四层证据不能互相替代</a></li><li><a href="#9-vla-act-031-controller">9. `VLA-ACT-031`：模型输出到 controller 的有序链</a></li><li><a href="#9-1">9.1 一般形式</a></li><li><a href="#9-2-axis-unit">9.2 axis/unit 映射必须显式</a></li><li><a href="#10-vla-act-032-parser-queue-replan-safety">10. `VLA-ACT-032`：parser、queue、replan 与 safety 的最小闭环测试</a></li><li><a href="#10-1">10.1 必测矩阵</a></li><li><a href="#11-claim-to-code-matrix">11. Claim-to-code matrix</a></li><li><a href="#12">12. 公源 / 本地项目边界</a></li><li><a href="#13">13. 题目覆盖与剩余验证</a></li><li><a href="#14-references">14. 参考文献（References）</a></li></ol></nav>
+<h1>VOL 03 Source Audit F：VLA 架构、适配、延迟与动作执行 Claim-to-Code</h1>
+<div class="meta">审计日期：2026-07-19 状态：<code>independent_fact_reviewed / landscape_mask_transform_queue_checked / local_runtime_pending / WARN</code> 论文范围：RT-2 <code>2307.15818v1</code>、OpenVLA <code>2406.09246v3</code>、Octo <code>2405.12213v2</code>、π0 <code>2410.24164v4</code> 官方仓库：<code>openvla/openvla@c8f03f48...</code>、<code>octo-models/octo@241fb351...</code>、<code>Physical-Intelligence/openpi@15a9616a...</code> 对应题目：<code>VLA-ARCH-007..012</code>、<code>VLA-ACT-031..032</code> 本页问题：四类代表性 VLA/GRP 的 backbone、action representation 与训练路线如何比较？sequence layout、attention/loss mask、适配策略、异构动作、延迟和 checkpoint contract 怎样逐项核实？模型输出又怎样经过 decode、反归一化、切片、坐标/单位转换、chunk queue 与安全约束进入 controller？</div>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>RT-2、OpenVLA、Octo 与 π0 不是同一条 action head 路线的不同尺寸</strong>。RT-2/OpenVLA 把离散动作写进语言 token 空间；Octo 用 block-wise transformer 的 readout token 条件化 diffusion action head；π0 用 VLM prefix 条件化约 300M continuous action expert，并通过 Flow Matching 生成 chunk。[1][2][3][4]</li><li><strong>sequence layout 同时决定“谁能看谁”和“谁被监督”</strong>。attention mask 决定信息流，label/loss mask 决定梯度流；action token 出现在序列里不等于它参加 loss，反之 readout token 不必是 action label，也能通过独立 action loss 得到梯度。[2][3][5][6]</li><li><strong>冻结、全量微调、LoRA 与独立 action expert 是四种不同的容量—显存—遗忘权衡</strong>。OpenVLA flagship 是全量微调；其官方 finetune 脚本支持 all-linear LoRA。Octo 官方 recipe 提供 <code>head_only</code>、<code>head_mlp_only</code>、<code>full</code>；openpi 同时给出 full 与 VLM/action-expert LoRA 配置。不能把“repo 支持 LoRA”说成“论文主结果由 LoRA 得到”。[2][5][7]</li><li><strong>异构 action space 必须同时有表示映射和有效维 mask</strong>。Octo 是本批正例：<code>timestep_pad_mask &amp; action_pad_mask</code> 进入 MSE/diffusion loss，推理又用 embodiment action dimension 限制 padded diffusion 维；openpi π0 frozen loss 对配置的全部 D 维求 mean，是此前审计的负例边界。[5][6][8]</li><li><strong>延迟不能只报一个 <code>infer_ms</code></strong>。至少要拆 capture/preprocess、vision/prefix、token decode 或 NFE、output transform、serialization/network、queue wait 与 controller tick。openpi 同时记录 model sampling、server infer 和上一请求 total time，可作为分层 instrumentation 起点，但这些字段仍不能自动分离视觉编码与每步 sampler。[7][9]</li><li><strong>真实推理合同不在论文标题里</strong>。需要形成 <code>paper → repo commit → config/model class → checkpoint manifest → norm stats → input/output transforms → rollout client → controller</code> 的闭环；只核对模型权重或只看到 success rate 都不够。[2][5][7]</li><li><strong>动作执行是有序函数复合</strong>：decode、denormalize、valid-dimension slicing、absolute/delta 恢复、轴序/坐标/单位映射、安全投影、queue/replan，任何一步换序都可能产生“loss 正常、rollout 0-success”。OpenVLA、Octo 与 openpi 都能证明 decode/unnorm 的一部分；本地 OpenPiVLA 的 axis、unit 和 controller 仍未取证。[2][6][7]</li><li><strong>最小闭环单测必须使用可辨识 sentinel，不是只检查 shape</strong>。需要验证 parser/token 边界、norm round-trip、padding 不变量、轴序和单位、chunk FIFO、replan 边界、stale response、安全裁剪与一次 mock-controller execution。[6][7][10]</li></ol>
+<h2 id="2">2. 版本、来源与证据边界</h2>
+<table><thead><tr><th>来源</th><th>冻结版本</th><th>本页用途</th><th>不能证明什么</th></tr></thead><tbody>
+<tr><td>RT-2 paper</td><td>arXiv <code>2307.15818v1</code></td><td>PaLI-X/PaLM-E、256-bin action tokens、web+robot co-fine-tuning、cloud serving frequency</td><td>公开 repo 的具体 tensor/layout；本地模型实现</td></tr>
+<tr><td>OpenVLA paper + repo</td><td>arXiv <code>2406.09246v3</code>；<code>c8f03f48af692657d3060c19588038c7220e9af9</code></td><td>Prismatic-7B、action-only labels、full FT / LoRA、token decode 与 q01/q99 unnorm</td><td>本地 OpenPiVLA 是同一 checkpoint 或同一 tokenizer</td></tr>
+<tr><td>Octo paper + repo</td><td>arXiv <code>2405.12213v2</code>；<code>241fb3514b7c40957a86d869fecb7c7fc353f540</code>，MIT</td><td>block-wise attention、readout/diffusion head、三种 FT mode、action padding mask、sample/unnorm</td><td>Octo 指标可与 RT-2/OpenVLA/π0 直接横比</td></tr>
+<tr><td>π0 paper + openpi</td><td>arXiv <code>2410.24164v4</code>；<code>15a9616a00943ada6c20a0f158e3adb39df2ccac</code>，Apache-2.0</td><td>VLM + action expert、LoRA、output transforms、timing、websocket、chunk broker、DROID execution</td><td>私有 π0 data recipe；本地 OpenPiVLA 的 checkpoint/controller</td></tr>
+<tr><td>本仓 Source Audits A/B/E</td><td>2026-07-16 canonical pages</td><td>OpenVLA token 端点、π0 time convention、FAST/flow latency、padding loss 边界</td><td>independent fact review 或个人项目事实</td></tr>
+</tbody></table>
+<p>Octo clone 在本次审计中执行 <code>git rev-parse HEAD</code> 得到 <code>241fb351...</code>，最后提交日期为 2024-07-30；不能把“2026-07-16 访问到的 HEAD”误写成“2026 年新实现”。RT-2 本页只使用论文与项目页，不声称审计到官方训练源码。</p>
+<h2 id="3-vla-arch-007">3. <code>VLA-ARCH-007</code>：四条代表路线如何比较</h2>
+<h3 id="3-1-landscape-table">3.1 landscape table</h3>
+<table><thead><tr><th>方法</th><th>backbone / condition encoder</th><th>action representation</th><th>原始训练路线</th><th>推理关键循环</th><th>面试边界</th></tr></thead><tbody>
+<tr><td>RT-2</td><td>PaLI-X 5B/55B 或 PaLM-E 12B</td><td>6-DoF pose delta、gripper、termination；连续维 uniform 256 bins 后变成整数 token</td><td>预训练 VLM 上用 robot action data 与原 web data co-fine-tune</td><td>自回归生成 action token；大模型由 multi-TPU cloud service 提供</td><td>两种 VLM tokenizer 的 action-token 占位方式不同；不是公开 OpenVLA code</td></tr>
+<tr><td>OpenVLA</td><td>Prismatic-7B：DINOv2 + SigLIP → projector → Llama-2 7B</td><td>当前动作每个 scalar 一个 tail-vocabulary token</td><td>OXE robot data 上全量微调 7B；官方另有 LoRA finetune 脚本</td><td>生成 d 个 token → 255-center nuance decode → dataset q01/q99 unnorm</td><td>flagship 基础路径是单主视角、单步、无 proprio/history</td></tr>
+<tr><td>Octo</td><td>27M/93M transformer；轻量 CNN image tokenizer + frozen T5-base language encoder</td><td>learned action readout → diffusion action head，默认公开 pretrain config 为 H=4、max D=7</td><td>800k OXE trajectories 预训练；新域可 head-only / head-MLP-only / full FT</td><td>transformer 一次产生 readout embedding；diffusion head 迭代去噪 chunk</td><td>它是 generalist robot policy，不是把大型生成式 VLM LM head 直接当 action head</td></tr>
+<tr><td>π0</td><td>PaliGemma 2B VLM + 约 300M action expert</td><td>H×D continuous action chunk 的 flow velocity</td><td>跨 embodiment 预训练，再对目标数据 post-train；公开 openpi 提供 full/LoRA 示例</td><td>prefix KV 一次，action suffix 做多步 Euler/ODE 更新</td><td>paper data mixture 与公开 repo recipe 不等价；controller 在模型外</td></tr>
+</tbody></table>
+<p>RT-2 的 action token 和 co-fine-tuning 证据来自论文 §3.2：连续维 uniform 256 bins；PaLI-X 复用整数 token，PaLM-E 覆写 256 个低频 token；web 与 robot data 同批混合并提高 robot sampling weight。[1] §3.3 报告论文部署下 55B 为 1–3 Hz、5B 约 5 Hz，这些是 cloud TPU protocol 的历史测量，不是现代单机基准。[1]</p>
+<p>OpenVLA 的架构、全量微调与 code endpoint 已在 <a href="vol_03_openvla_claim_to_code.html">Source Audit A</a> 核实。Octo 论文明确给出 27M/93M checkpoint、800k Open X-Embodiment trajectories、language/goal-image instruction、diffusion head 与 action chunk。[3] frozen pretrain config 将 T5-base encoder 设为 <code>finetune_encoder=False</code>，action readout 接 <code>DiffusionActionHead(H=4,D=7)</code>，并冻结 <code>*hf_model*</code>。[5]</p>
+<p>π0 的 prefix/suffix、action expert 和 Flow Matching 已在 <a href="vol_03_pi0_fast_openpi_claim_to_code.html">Source Audit B</a> 与 <a href="vol_03_flow_matching_pi0_claim_to_code.html">Source Audit E</a> 核实。比较时应对齐任务、机器人、数据、trial、controller 和 success predicate；上表只比较机制，不做成功率排名。</p>
+<h2 id="4-vla-arch-008-sequence-layout-attention-loss">4. <code>VLA-ARCH-008</code>：sequence layout、attention 与 loss 语义</h2>
+<h3 id="4-1-layout-token">4.1 三种 layout 不能只画成同一条 token 串</h3>
+<pre><code class="language-text"># RT-2 / OpenVLA: action itself occupies autoregressive label positions.
+[image patches / prompt tokens] -&gt; [a_1 token] [a_2 token] ... [a_d token] [EOS?]
+
+# Octo: action readout is a latent query; continuous action is supervised in a separate head.
+[task prefix] [obs(t-1), readout(t-1)] [obs(t), readout(t)] -&gt; diffusion H x D
+
+# pi0: condition prefix and continuous noisy-action suffix use a custom block mask.
+[image + language prefix] [state token + noisy action_1 ... noisy action_H] -&gt; H x D velocity</code></pre>
+<p>代码块说明：三者都使用 transformer，但 action 的“位置”分别是 LM label、readout latent 和 continuous suffix latent。把它们都叫 action token 会掩盖监督目标与 attention 方向。</p>
+<p>对自回归 token 路线，令 (y_i) 为第 (i) 个 token，(m_i\in\{0,1\}) 为 label mask，则：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{AR}}
+=-\frac{\sum_i m_i\log p_\theta(y_i\mid y_{&lt;i},c)}
+{\sum_i m_i+\epsilon}.
+\]</div>
+<p>变量与实现：(c) 是图像/任务条件；causal attention 决定 (y_i) 可读取哪些前缀，(m_i) 决定哪些位置产生 CE 梯度。OpenVLA <code>RLDSBatchTransform</code> 把 prompt prefix 设为 <code>IGNORE_INDEX=-100</code>，默认保留 action tokens 与 stop token；插入的 image patches 也补 <code>IGNORE_INDEX</code>。[2] 因此 attention-visible 不等于 loss-visible。</p>
+<p>Octo 的 frozen <code>octo_module.py</code> 将 task 作为 prefix；同 timestep 的 observation groups 互相注意并看历史；readout 可读取 task/observation/自身 readout，却不被 observation 写回。其源码注释甚至记录 v1.5 修复过 attention mask 的 off-by-one bug，说明 mask 不是展示性元数据。[5]</p>
+<p>Octo 的 action loss 使用两类 mask：</p>
+<div class="formula">\[
+M_{b,w,h,d}=T_{b,w}\land A_{b,w,h,d},
+\qquad
+\mathcal L_{\mathrm{Octo}}
+=\operatorname{continuous\_loss}(\hat z,z;M).
+\]</div>
+<p>变量与实现：(T) 是 observation-history <code>timestep_pad_mask</code>，(A) 是 <code>action_pad_mask</code>；(b,w,h,d) 分别为 batch、history window、action horizon、model action dimension。frozen MSE 与 diffusion head 都先构造这个 conjunction，再调用 <code>continuous_loss</code>。[6] 这既阻止 padded history 产生监督，也阻止异构 embodiment 的 padded action dimensions 污染 target。</p>
+<p>π0 / Pi0FAST 的 prefix/postfix attention、AR mask 与 token loss mask 已在 Source Audit B 精确展开；特别是 frozen Pi0 continuous loss 对配置 D 全维 mean，没有 Octo 式有效维 mask。面试时应说“不同实现的 mask 正例/负例”，不能泛称“VLA 都会自动 mask padding”。</p>
+<h2 id="5-vla-arch-009-lora-action-expert">5. <code>VLA-ARCH-009</code>：冻结、全量、LoRA 与 action expert 的取舍</h2>
+<h3 id="5-1">5.1 它们分别在改什么</h3>
+<table><thead><tr><th>路线</th><th>更新参数</th><th>优点</th><th>主要风险</th><th>官方证据例</th></tr></thead><tbody>
+<tr><td>freeze backbone / head-only</td><td>只训 projector、readout 或 action head</td><td>显存小、语义先验稳定、少数据不易过拟合</td><td>domain gap 无法进入视觉/语言表征；head 容量成为瓶颈</td><td>Octo <code>head_only</code> 冻结 <code>octo_transformer.*</code></td></tr>
+<tr><td>head-MLP-only</td><td>冻结 transformer 与 readout attention，只训 head MLP</td><td>比 head-only 更强约束，便于快速适配 action space</td><td>不能改变 readout 如何从 context 聚合</td><td>Octo <code>head_mlp_only</code> 额外冻结 MAP probe/attention</td></tr>
+<tr><td>full fine-tuning</td><td>更新 vision/projector/LLM/action modules</td><td>最大任务适配容量；可调整视觉细粒度特征</td><td>显存与通信大、灾难遗忘、少数据过拟合</td><td>OpenVLA flagship；Octo <code>full</code>；openpi LIBERO full config</td></tr>
+<tr><td>LoRA / adapter</td><td>对选定线性层学习低秩增量</td><td>训练参数和 optimizer state 小，checkpoint 易管理</td><td>rank/target module 可能限制容量；base revision 与 adapter 必须配对</td><td>OpenVLA all-linear LoRA；openpi VLM + action-expert LoRA</td></tr>
+<tr><td>independent action expert</td><td>保留大 VLM context，另训较小 continuous expert</td><td>robot action 的宽度/目标与 VLM 解耦；多步 flow 的单步计算较小</td><td>context bottleneck、expert 与 backbone 联调复杂</td><td>π0 2B VLM + 300M expert</td></tr>
+</tbody></table>
+<p>LoRA 对冻结权重 (W\in\mathbb R^{o\times i}) 学习低秩增量：</p>
+<div class="formula">\[
+W&#x27;=W+\frac{\alpha}{r}BA,
+\qquad
+A\in\mathbb R^{r\times i},\;B\in\mathbb R^{o\times r}.
+\]</div>
+<p>变量与实现：(r\ll\min(i,o)) 是 rank，(alpha) 是 scale。OpenVLA official finetune 用 PEFT <code>target_modules="all-linear"</code>；openpi LIBERO low-memory 配置把 PaliGemma 与 action expert 都换成 LoRA variant，并用匹配 config 的 <code>get_freeze_filter()</code> 冻结非 LoRA 权重。[2][7] 这证明“支持怎样适配”，不证明某个本地 checkpoint 实际采用该路线。</p>
+<h3 id="5-2">5.2 面试决策顺序</h3>
+<ol><li>先看 dataset size/diversity、视觉 domain shift、语言变化、action schema 变化和显存预算。</li><li>若只是新 action 维度、视觉近似且数据少，先 head-only / adapter；若 camera、objects、dynamics 变化明显，考虑解冻视觉/projector。</li><li>若语义与控制都显著变化且有足够数据，再 full FT；同时保留 upstream/task eval 监控遗忘。</li><li>对 LoRA 必报 base checkpoint revision、target modules、rank、merge 状态和加载顺序。</li><li>对 action expert 必报 context interface、expert width、训练 target、是否共同更新 VLM，以及 sampling NFE。</li></ol>
+<h2 id="6-vla-arch-010-embodiment-action-padding-loss">6. <code>VLA-ARCH-010</code>：跨 embodiment action 统一与 padding loss</h2>
+<p>设 robot (e) 的真实动作 (a^{(e)}\in\mathbb R^{d_e})，模型统一宽度为 (D\ge d_e)。用 embedding matrix (P_e\in\{0,1\}^{D\times d_e}) 写入统一空间，用 selection matrix (S_e=P_e^\top) 取回：</p>
+<div class="formula">\[
+\bar a^{(e)}=P_ea^{(e)},
+\qquad
+\hat a^{(e)}=S_e\hat{\bar a},
+\qquad
+m^{(e)}_j=\mathbb 1[j\in\operatorname{Im}(P_e)].
+\]</div>
+<p>变量与实现：(P_e) 只能表示“维度放到哪里”，不能自动统一 axis、unit、absolute/delta、rotation 或 gripper semantics；这些还需要 schema transform。openpi <code>PadStatesAndActions</code> 只做 zero-pad，不能据此假设 loss mask 存在。[7]</p>
+<p>正确的 masked continuous objective 应明确 normalization 和有效维：</p>
+<div class="formula">\[
+\mathcal L_{mathrm{valid}}
+=\frac{\sum_{b,h,j}m_{b,h,j}\ell(\hat{\bar a}_{b,h,j},\bar a_{b,h,j})}
+{\sum_{b,h,j}m_{b,h,j}+\epsilon}.
+\]</div>
+<p>变量与实现：(m) 同时排除 padding timestep 与 padding dimension；Octo 的 <code>action_pad_mask</code> 是直接正例。[6] 若对全部 D 维 mean，zero padded axes 也会产生“逼近 0”的监督，并随 (d_e/D) 改变有效维梯度占比。此前 frozen π0 审计只看到 all-D mean，因此本地若声称避免 padding loss，必须提供自己的 mask path。</p>
+<h3 id="6-1-schema">6.1 schema 统一检查表</h3>
+<table><thead><tr><th>字段</th><th>必须记录</th><th>常见错误</th></tr></thead><tbody>
+<tr><td>translation</td><td>x/y/z axis、frame、m 或 cm、absolute/delta/velocity</td><td>只按列号 pad，未统一 frame/unit</td></tr>
+<tr><td>rotation</td><td>Euler/quaternion/6D、顺序、弧度/角度、delta composition</td><td>quaternion sign、Euler order 或单位不一致</td></tr>
+<tr><td>gripper</td><td>position/velocity/binary、open polarity、range</td><td>把 continuous gripper 当普通 z-score 维</td></tr>
+<tr><td>base</td><td>vx/vy/yaw-rate 或 pose、body/world frame</td><td>mobile-base 维与 arm 维错位</td></tr>
+<tr><td>timestep</td><td>control frequency、label horizon、timestamp</td><td>同一个 delta 在不同 dt 下物理量不同</td></tr>
+<tr><td>mask</td><td>timestep/action/modality valid mask</td><td>只 pad input，不 mask target/loss</td></tr>
+</tbody></table>
+<h2 id="7-vla-arch-011">7. <code>VLA-ARCH-011</code>：延迟如何分层而不是猜瓶颈</h2>
+<p>对一次远程 chunk query，端到端延迟写为：</p>
+<div class="formula">\[
+T_{\mathrm{e2e}}=
+T_{\mathrm{capture}}+T_{\mathrm{pre}}+T_{\uparrow}
++T_{\mathrm{vision/prefill}}+N\,T_{\mathrm{decode/step}}
++T_{\mathrm{post}}+T_{\downarrow}+T_{\mathrm{queue}}.
+\]</div>
+<p>变量与实现：(N=d) 可表示 OpenVLA/RT-2 的 action-token 数；对 Pi0FAST 是可变 FAST token length；对 flow/diffusion 是 NFE/denoise steps。<code>vision/prefill</code> 是否可缓存、每步是否只跑 action expert，取决于真实实现。openpi <code>Policy.infer</code> 的 <code>policy_timing.infer_ms</code> 只包围 <code>sample_actions</code>；server 的 <code>server_timing.infer_ms</code> 包围完整 policy infer，<code>prev_total_ms</code> 还包括 recv/unpack/send 的上一轮总时长。[7][9]</p>
+<p>RT-2 论文的 55B 1–3 Hz / 5B 约 5 Hz 包含其 cloud serving protocol，说明 network 不能从大模型部署中忽略，但不能直接外推 openpi。FAST 论文在指定 4090 实现下报告 π0 flow 约 100 ms/chunk、π0-FAST 约 750 ms/chunk；解释是后者用 2B backbone 自回归生成约 30–60 tokens，前者做 10 次较小 expert step。[11] 这同样只是 source-specific measurement。</p>
+<h3 id="7-1-timing-pseudocode">7.1 可执行 timing pseudocode</h3>
+<pre><code class="language-python">def timed_policy_query(raw_obs, client, policy, controller):
+    # Synchronize device events; otherwise asynchronous GPU work makes timers invalid.
+    t0 = sync_clock()
+    obs = preprocess_and_resize(raw_obs)
+    t_pre = sync_clock()
+
+    # Measure serialization/transport separately from server-side model timing.
+    response = client.infer(obs)
+    t_roundtrip = sync_clock()
+
+    # Read server/model fields, then time local parse, denorm, slicing and safety.
+    model_ms = response[&quot;policy_timing&quot;][&quot;infer_ms&quot;]
+    server_ms = response[&quot;server_timing&quot;][&quot;infer_ms&quot;]
+    action_chunk = parse_and_validate(response[&quot;actions&quot;])
+    env_actions = output_transform_and_safety(action_chunk)
+    t_post = sync_clock()
+
+    # Queue wait and controller step need their own timestamp at the consumer side.
+    controller.enqueue(env_actions)
+    return make_timing_record(t0, t_pre, t_roundtrip, t_post, model_ms, server_ms)</code></pre>
+<p>代码块说明：真实 CUDA/JAX 计时需 device synchronization 与 warm-up；至少报告 p50/p95、payload bytes、H/K、NFE/token length、batch、dtype、device、是否缓存 prefix。只报一次 wall clock 不足以定位瓶颈。</p>
+<h2 id="8-vla-arch-012-paper-repo-checkpoint-i-o">8. <code>VLA-ARCH-012</code>：paper / repo / checkpoint / I/O 证据审计</h2>
+<h3 id="8-1">8.1 四层证据不能互相替代</h3>
+<table><thead><tr><th>层</th><th>要回答的问题</th><th>最小 artifact</th><th>典型误判</th></tr></thead><tbody>
+<tr><td>paper</td><td>方法声称什么、实验 protocol 是什么</td><td>版本号、section/table、公式</td><td>用 paper 抽象当 frozen code 细节</td></tr>
+<tr><td>repo</td><td>某 commit 实际实现什么</td><td>commit、license、model class、loss/infer path</td><td>用 main HEAD 解释旧 checkpoint</td></tr>
+<tr><td>checkpoint</td><td>权重对应什么模型与资产</td><td>manifest/config、weight shape/hash、tokenizer、norm stats</td><td>只凭目录名猜 backbone/H/D</td></tr>
+<tr><td>runtime</td><td>真正收发和执行什么</td><td>startup log、request/response schema、transforms、rollout trace</td><td>模型 output shape 对就认为 controller 正确</td></tr>
+</tbody></table>
+<p>openpi <code>create_trained_policy</code> 是正例：先从 checkpoint 判断 JAX/PyTorch weight，再由 training config 构造 model/data config；norm stats 默认从 checkpoint <code>assets/&lt;asset_id&gt;</code> 读取，随后固定 input transforms → normalize → model transforms，以及 model outputs → unnormalize → data/repack outputs 的顺序。[7] OpenVLA 的 <code>unnorm_key</code> 同样决定生成 token 数和 q01/q99 stats；多 dataset checkpoint 不显式选择 key 会报错。[2]</p>
+<pre><code class="language-python">def audit_vla_release(paper, repo, checkpoint, runtime_sample):
+    # Freeze provenance before reading implementation claims.
+    assert paper.version and repo.commit and repo.license
+
+    # Reconstruct the model from the exact checkpoint config, not a similarly named default.
+    manifest = load_checkpoint_manifest(checkpoint)
+    assert hash_file(checkpoint.weights) == manifest.weight_sha256
+    assert manifest.model_class == runtime_sample.startup_model_class
+
+    # Verify tokenizer, normalization assets and tensor contract as one bundle.
+    assert manifest.tokenizer_revision == runtime_sample.tokenizer_revision
+    assert manifest.norm_asset_id == runtime_sample.norm_asset_id
+    assert runtime_sample.output_shape == (manifest.horizon, manifest.action_dim)
+
+    # Trace one sentinel action through decode -&gt; unnorm -&gt; schema -&gt; controller.
+    trace = replay_sentinel(runtime_sample)
+    assert trace.controller_action == trace.expected_controller_action
+    return trace</code></pre>
+<p>代码块说明：这是审计框架，不声称本地已有这些字段。对 OpenPiVLA，checkpoint、Qwen/π model class、tokenizer revision、norm asset、H/D/K、axis/unit、rollout trace 与 97.4% eval summary 仍待本地 artifact。</p>
+<h2 id="9-vla-act-031-controller">9. <code>VLA-ACT-031</code>：模型输出到 controller 的有序链</h2>
+<h3 id="9-1">9.1 一般形式</h3>
+<p>令模型原始输出为 \(z\)，token/FAST/flow decoder 为 \(\mathcal D\)，反归一化为 \(\mathcal U\)，有效维选择为 \(S_e\)，absolute/delta 与 frame/unit 映射为 \(\mathcal R_e\)，安全投影为 \(\Pi_{\mathcal A_e}\)：</p>
+<div class="formula">\[
+a^{\mathrm{ctrl}}
+=\Pi_{\mathcal A_e}\!\left(
+\mathcal R_e\!\left(S_e\,\mathcal U(\mathcal D(z))\right)
+\right).
+\]</div>
+<p>变量与实现：(mathcal A_e) 是 robot/controller 允许的动作集合。函数顺序不能随意交换：例如在 normalized space clip 与在物理 velocity space clip 的含义不同；delta action 必须在正确 state/frame 上恢复。openpi 的 <code>Policy.infer</code> 明确在 model sampling 后执行 output transform，<code>policy_config</code> 把 <code>model_transforms.outputs</code>、<code>Unnormalize</code>、dataset outputs 和 repack outputs 依次组合。[7]</p>
+<p>具体公开实现边界：</p>
+<ul><li>OpenVLA：生成数量由 dataset stats 的 action dim 决定；token decode 后按 q01/q99 与 optional mask unnormalize。它没有证明 controller axis/unit。[2]</li><li>Octo：<code>sample_actions</code> 用 <code>embodiment_action_dim=len(stats["mean"])</code> 限制 diffusion padded 维，再 slice 到 stats 长度并用 mean/std 或 p01/p99 unnormalize。[6]</li><li>openpi：FAST path 先 <code>ExtractFASTActions</code>；continuous/FAST 共同经过 checkpoint norm stats 的 <code>Unnormalize</code>；<code>AbsoluteActions</code> 可按 mask 把 delta 加回 state；具体 data output transform 还可能重排 robot schema。[7]</li><li>openpi DROID example：server 返回 <code>[10,8]</code>，client 取 chunk 当前行、二值化 gripper、clip 到 <code>[-1,1]</code>，再 <code>env.step</code>，并按数据采集频率 sleep。[10] 这是 DROID example 的合同，不是通用 controller 标准。</li></ul>
+<h3 id="9-2-axis-unit">9.2 axis/unit 映射必须显式</h3>
+<p>若 dataset delta (a^{\mathrm{data}}) 与 controller action 的轴序/单位关系为矩阵 (R_e) 和 scale (s_e)，且部分维为 absolute 恢复，则可写：</p>
+<div class="formula">\[
+a^{\mathrm{abs}}_{t:t+H-1}
+=a^{\mathrm{data}}_{t:t+H-1}+m_\Delta\odot q_t,
+\qquad
+a^{\mathrm{ctrl}}=s_e\odot R_e a^{\mathrm{abs}}.
+\]</div>
+<p>变量与实现：(m_\Delta) 只在 delta dimensions 为 1，(q_t) 是当前 state；真实 rotation 可能需要群上的 composition，不能总用向量加法。openpi <code>AbsoluteActions</code> 只对 mask 覆盖的前 dims 加 state，是可核代码例；本地 axis matrix、unit scale 与 rotation semantics 仍需 controller wrapper 证明。[7]</p>
+<h2 id="10-vla-act-032-parser-queue-replan-safety">10. <code>VLA-ACT-032</code>：parser、queue、replan 与 safety 的最小闭环测试</h2>
+<h3 id="10-1">10.1 必测矩阵</h3>
+<table><thead><tr><th>Test ID</th><th>输入 sentinel / 扰动</th><th>应检查的不变量</th><th>能抓住的错误</th></tr></thead><tbody>
+<tr><td>T1 parser boundary</td><td>最小/最大合法 token、EOS、越界 token、短 chunk</td><td>非 action token 被拒绝；shape 恰为 H×D</td><td>vocab offset、EOS 混入、silent reshape</td></tr>
+<tr><td>T2 norm round-trip</td><td>每维 <code>q01/mean/q99</code> 与 gripper mask</td><td><code>unnorm(norm(a))≈a</code>；masked dim 原值保留</td><td>stats key/revision、广播维错误</td></tr>
+<tr><td>T3 padding sentinel</td><td>valid dims 放互异质数，padding 放大常数</td><td>slice 后只保留 d；loss 对 padding sentinel 不变</td><td>padding loss 污染、wrong-axis slice</td></tr>
+<tr><td>T4 frame/unit</td><td>x/y/z/rot/gripper 各放独立 one-hot</td><td>controller 对应轴、符号、单位精确匹配</td><td>frame rotation、cm/m、degree/radian、gripper polarity</td></tr>
+<tr><td>T5 FIFO chunk</td><td>chunk 行编码为 step index 0..H-1</td><td>连续 K 次输出严格 0..K-1，无重复/跳步</td><td>off-by-one、queue reset 错误</td></tr>
+<tr><td>T6 replan</td><td>第 K 步注入新观测/新 chunk</td><td>只在定义边界切换；旧 chunk 不泄漏</td><td>H/K 混淆、stale chunk</td></tr>
+<tr><td>T7 stale/RPC</td><td>延迟、乱序、断连、重复 response ID</td><td>超时 fail-safe；旧 response 不覆盖新 plan</td><td>网络乱序与无 request id</td></tr>
+<tr><td>T8 safety</td><td>NaN/Inf/超限 velocity/workspace pose</td><td>reject 或投影；记录原值与触发规则</td><td><code>np.clip</code> 吞掉 NaN、错误空间裁剪</td></tr>
+<tr><td>T9 mock controller</td><td>完整 request → one mock <code>step</code></td><td>controller 收到预期 dtype/shape/value/time</td><td>单模块都通过但组合换序</td></tr>
+</tbody></table>
+<p>openpi frozen <code>ActionChunkBroker</code> 只在 cache 为空时 query inner policy，按 <code>_cur_step</code> slice，并在达到 configured action horizon 后清空；manual test 只验证每步 shape。[9] 这提供最小行为实现，但没有覆盖 request ID、stale response、NaN、axis/unit 或 safety。因此项目级 test 必须扩展。</p>
+<pre><code class="language-python">def test_closed_loop_contract(policy_stub, parser, output_transform, broker, mock_env):
+    # Each row and dimension is unique, so transpose/slice/queue bugs cannot hide behind zeros.
+    sentinel = make_prime_sentinel_chunk(horizon=4, model_dim=8, valid_dim=7)
+    policy_stub.return_value = {&quot;actions&quot;: sentinel, &quot;request_id&quot;: 42}
+
+    # Execute K=2 rows; the broker must consume rows 0 and 1 exactly once.
+    a0 = broker.infer(make_observation(request_id=42))[&quot;actions&quot;]
+    a1 = broker.infer(make_observation(request_id=42))[&quot;actions&quot;]
+    assert not_equal(a0, a1)
+
+    # Parse, unnormalize, slice, map axes/units and apply safety in the declared order.
+    c0 = output_transform(parser(a0))
+    c1 = output_transform(parser(a1))
+    assert c0.shape == c1.shape == (7,)
+    assert all_finite_and_within_limits(c0, c1)
+
+    # A mock controller checks the final physical contract, not only intermediate tensors.
+    mock_env.step(c0)
+    assert mock_env.last_action == expected_controller_sentinel(row=0)</code></pre>
+<p>代码块说明：使用质数/one-hot sentinel 是为了让 transpose、错轴、padding 与重复行产生可观察差异；真实测试还需固定 norm stats、frame transform、controller mode 和 control dt。</p>
+<h2 id="11-claim-to-code-matrix">11. Claim-to-code matrix</h2>
+<table><thead><tr><th>Claim</th><th>paper</th><th>frozen repo</th><th>判定</th><th>关键证据</th></tr></thead><tbody>
+<tr><td>RT-2 有 PaLI-X/PaLM-E 两个 backbone family</td><td>direct</td><td>本页未审计 repo</td><td>paper-direct</td><td>RT-2 §3.1 / appendix</td></tr>
+<tr><td>RT-2 action 连续维为 uniform 256 bins 并映射成 token</td><td>direct</td><td>本页未审计 repo</td><td>paper-direct</td><td>RT-2 §3.2</td></tr>
+<tr><td>RT-2 主 recipe 混合 web + robot co-fine-tuning</td><td>direct</td><td>本页未审计 repo</td><td>paper-direct</td><td>RT-2 §3.2</td></tr>
+<tr><td>OpenVLA flagship 是 DINOv2+SigLIP / Llama-2 7B，full FT</td><td>direct</td><td>direct</td><td>source-ready / WARN</td><td>Source Audit A</td></tr>
+<tr><td>OpenVLA loss 只监督 action tail 与可选 stop，patch labels ignore</td><td>paper overview</td><td>direct</td><td>source-ready</td><td><code>datasets.py</code> / <code>modeling_prismatic.py</code></td></tr>
+<tr><td>Octo 是 27M/93M transformer generalist policy，800k OXE</td><td>direct</td><td>checkpoint config compatible</td><td>source-ready</td><td>Octo abstract / §III</td></tr>
+<tr><td>Octo block-wise attention 的 readout 只读 condition</td><td>direct</td><td>direct</td><td>source-ready</td><td><code>octo_module.py</code></td></tr>
+<tr><td>Octo diffusion loss 排除 padded timestep/action dims</td><td>method overview</td><td>direct</td><td>source-ready</td><td><code>action_heads.py</code></td></tr>
+<tr><td>Octo 支持 head-only/head-MLP-only/full FT</td><td>paper + docs</td><td>direct config</td><td>source-ready</td><td><code>finetune_config.py</code></td></tr>
+<tr><td>π0 是 2B VLM + 300M action expert continuous flow</td><td>direct</td><td>direct config/path</td><td>source-ready / WARN</td><td>Source Audits B/E</td></tr>
+<tr><td>openpi 支持 full 与 LoRA LIBERO adaptation</td><td>不属于 π0 paper 主结果</td><td>direct</td><td>repo-supported option</td><td><code>training/config.py</code></td></tr>
+<tr><td>openpi output transforms 从 model decode 到 unnorm/data outputs 有序组合</td><td>architecture overview</td><td>direct</td><td>source-ready</td><td><code>policy_config.py</code></td></tr>
+<tr><td>openpi timing 已完全拆分 vision、expert、network 与 queue</td><td>no</td><td>no</td><td>rejected</td><td>当前只有 model/server/previous total 三层</td></tr>
+<tr><td>本地 OpenPiVLA 采用上述任一 checkpoint/H/D/K/controller</td><td>no</td><td>no</td><td>unverified</td><td>需要本地 artifacts</td></tr>
+</tbody></table>
+<h2 id="12">12. 公源 / 本地项目边界</h2>
+<table><thead><tr><th>本地 claim</th><th>最小证据</th><th>当前状态</th></tr></thead><tbody>
+<tr><td>base 是 OpenVLA、Pi0、Pi0FAST、π0.5 或自定义 Qwen route</td><td>startup config、model class、checkpoint manifest、forward/loss path</td><td>pending</td></tr>
+<tr><td>frozen/full/LoRA/action-expert adaptation</td><td>train config、trainable-parameter log、adapter/base revisions</td><td>pending</td></tr>
+<tr><td>H/D/K 与 action schema</td><td>dataset target、model output、queue/replan config、controller wrapper</td><td>pending</td></tr>
+<tr><td>padding 不污染 loss</td><td>actual loss mask、synthetic padding sentinel test</td><td>pending</td></tr>
+<tr><td>end-to-end latency</td><td>synchronized p50/p95 timing ledger + payload/device/NFE/token length</td><td>pending</td></tr>
+<tr><td>decode/denorm/slice/axis/unit 正确</td><td>tokenizer/norm assets、output transform、mock controller trace</td><td>pending</td></tr>
+<tr><td>97.4% 与 checkpoint 对应</td><td>eval summary、checkpoint ID/hash、task/trial/split/seed/protocol</td><td>pending</td></tr>
+<tr><td>personal contribution</td><td>local diff、设计记录、run ledger、ownership boundary</td><td>pending</td></tr>
+</tbody></table>
+<p>本页所有架构、loss、transform 与 serving 实现都属于上游公开设计。除非本地 diff 与运行 artifact 另行证明，不得写成本人的原创贡献，也不得用 upstream example 的 <code>[10,8]</code>、H=50 或某个 norm asset 推断本地值。</p>
+<h2 id="13">13. 题目覆盖与剩余验证</h2>
+<table><thead><tr><th>Question ID</th><th>本页支持</th><th>状态</th><th>仍缺</th></tr></thead><tbody>
+<tr><td>VLA-ARCH-007</td><td>RT-2/OpenVLA/Octo/π0 landscape</td><td>independent-fact-reviewed / WARN</td><td>local architecture mapping</td></tr>
+<tr><td>VLA-ARCH-008</td><td>token/readout/suffix layout、attention/loss masks</td><td>independent-fact-reviewed / WARN</td><td>local layout sentinel test</td></tr>
+<tr><td>VLA-ARCH-009</td><td>freeze/full/head/LoRA/expert decision</td><td>independent-fact-reviewed / WARN</td><td>target hardware/data ablation</td></tr>
+<tr><td>VLA-ARCH-010</td><td>unified D/d、Octo positive mask、openpi negative boundary</td><td>independent-fact-reviewed / WARN</td><td>local mask evidence</td></tr>
+<tr><td>VLA-ARCH-011</td><td>latency equation、RT-2/FAST context、openpi timings</td><td>independent-fact-reviewed / WARN</td><td>local synchronized timing</td></tr>
+<tr><td>VLA-ARCH-012</td><td>paper→repo→checkpoint→runtime audit</td><td>independent-fact-reviewed / WARN</td><td>local manifest and trace</td></tr>
+<tr><td>VLA-ACT-031</td><td>decode→unnorm→slice→schema→safety→controller</td><td>independent-fact-reviewed / WARN</td><td>local axis/unit/controller</td></tr>
+<tr><td>VLA-ACT-032</td><td>parser/queue/replan/safety test matrix</td><td>independent-fact-reviewed / WARN</td><td>local executable tests</td></tr>
+</tbody></table>
+<p>RT-2/Octo 论文措辞、Octo <code>continuous_loss</code> denominator、openpi output transform、broker 与 DROID example 已在 <a href="vol_03_architecture_execution_independent_fact_review.html">独立事实复核页</a> 核对。下一步只进行一题真实口述或补本地 manifest/trace；所有 8 张卡继续 <code>unseen</code>。</p>
+<h2 id="14-references">14. 参考文献（References）</h2>
+<ol><li>Brohan et al., <a href="https://arxiv.org/abs/2307.15818">RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control</a>, arXiv v1, 2023；<a href="https://ar5iv.labs.arxiv.org/html/2307.15818#S3.SS2">§3.2 Robot-Action Fine-tuning</a>；<a href="https://ar5iv.labs.arxiv.org/html/2307.15818#S3.SS3">§3.3 Real-Time Inference</a>。</li><li>Kim et al., <a href="https://arxiv.org/html/2406.09246v3">OpenVLA</a>, arXiv v3；<a href="https://github.com/openvla/openvla/tree/c8f03f48af692657d3060c19588038c7220e9af9"><code>openvla/openvla@c8f03f48</code></a>；<a href="vol_03_openvla_claim_to_code.html">Source Audit A</a>。重点代码：<a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/vla/datasets/datasets.py#L44-L67"><code>datasets.py#L44-L67</code></a>、<a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/extern/hf/modeling_prismatic.py#L388-L410"><code>modeling_prismatic.py#L388-L410</code></a>、<a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/vla-scripts/finetune.py#L98-L103"><code>finetune.py#L98-L103</code></a>、<a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/vla-scripts/finetune.py#L172-L182"><code>#L172-L182</code></a>、<a href="https://github.com/openvla/openvla/blob/c8f03f48af692657d3060c19588038c7220e9af9/prismatic/models/vlas/openvla.py#L80-L103"><code>openvla.py#L80-L103</code></a>。</li><li>Octo Model Team et al., <a href="https://arxiv.org/html/2405.12213v2">Octo: An Open-Source Generalist Robot Policy</a>, arXiv v2, 2024；<a href="https://arxiv.org/html/2405.12213v2#S3.SS1">§III-A Architecture</a>、<a href="https://arxiv.org/html/2405.12213v2#S3.SS3">§III-C Training Objective</a>。</li><li>Black et al., <a href="https://arxiv.org/html/2410.24164v4">π0</a>, arXiv v4；<a href="vol_03_pi0_fast_openpi_claim_to_code.html">Source Audit B</a>；<a href="vol_03_flow_matching_pi0_claim_to_code.html">Source Audit E</a>。</li><li><a href="https://github.com/octo-models/octo/tree/241fb3514b7c40957a86d869fecb7c7fc353f540"><code>octo-models/octo@241fb351</code></a>, MIT. 重点：<a href="https://github.com/octo-models/octo/blob/241fb3514b7c40957a86d869fecb7c7fc353f540/octo/model/octo_module.py#L24-L63"><code>octo_module.py#L24-L63</code></a>、<a href="https://github.com/octo-models/octo/blob/241fb3514b7c40957a86d869fecb7c7fc353f540/octo/model/octo_module.py#L138-L168"><code>#L138-L168</code></a>、<a href="https://github.com/octo-models/octo/blob/241fb3514b7c40957a86d869fecb7c7fc353f540/octo/model/octo_module.py#L241-L268"><code>#L241-L268</code></a>、<a href="https://github.com/octo-models/octo/blob/241fb3514b7c40957a86d869fecb7c7fc353f540/scripts/configs/octo_pretrain_config.py#L45-L62"><code>octo_pretrain_config.py#L45-L62</code></a>、<a href="https://github.com/octo-models/octo/blob/241fb3514b7c40957a86d869fecb7c7fc353f540/scripts/configs/octo_pretrain_config.py#L107-L125"><code>#L107-L125</code></a>。</li><li>Octo action contract：<a href="https://github.com/octo-models/octo/blob/241fb3514b7c40957a86d869fecb7c7fc353f540/octo/model/components/action_heads.py#L175-L207"><code>action_heads.py#L175-L207</code></a>、<a href="https://github.com/octo-models/octo/blob/241fb3514b7c40957a86d869fecb7c7fc353f540/octo/model/components/action_heads.py#L466-L526"><code>#L466-L526</code></a>、<a href="https://github.com/octo-models/octo/blob/241fb3514b7c40957a86d869fecb7c7fc353f540/octo/model/components/action_heads.py#L540-L610"><code>#L540-L610</code></a>、<a href="https://github.com/octo-models/octo/blob/241fb3514b7c40957a86d869fecb7c7fc353f540/octo/model/octo_model.py#L174-L250"><code>octo_model.py#L174-L250</code></a>。</li><li><a href="https://github.com/Physical-Intelligence/openpi/tree/15a9616a00943ada6c20a0f158e3adb39df2ccac"><code>Physical-Intelligence/openpi@15a9616a</code></a>, Apache-2.0. 重点：<a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/policies/policy_config.py#L16-L64"><code>policy_config.py#L16-L64</code></a>、<a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/policies/policy_config.py#L75-L94"><code>#L75-L94</code></a>、<a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/transforms.py#L115-L181"><code>transforms.py#L115-L181</code></a>、<a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/transforms.py#L204-L244"><code>#L204-L244</code></a>、<a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/transforms.py#L328-L337"><code>#L328-L337</code></a>、<a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/training/config.py#L651-L698"><code>training/config.py#L651-L698</code></a>。</li><li><a href="vol_03_flow_matching_pi0_claim_to_code.html">Source Audit E：Flow Matching / π0</a>，frozen Pi0 all-D mean 与有效维 mask 边界。</li><li>openpi serving / queue：<a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/policies/policy.py#L68-L105"><code>policy.py#L68-L105</code></a>、<a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/serving/websocket_policy_server.py#L48-L72"><code>websocket_policy_server.py#L48-L72</code></a>、<a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/packages/openpi-client/src/openpi_client/websocket_client_policy.py#L46-L54"><code>websocket_client_policy.py#L46-L54</code></a>、<a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/packages/openpi-client/src/openpi_client/action_chunk_broker.py#L10-L50"><code>action_chunk_broker.py#L10-L50</code></a>。</li><li>openpi DROID example：<a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/examples/droid/main.py#L113-L156"><code>examples/droid/main.py#L113-L156</code></a>；manual shape/broker test：<a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/policies/policy_test.py#L9-L34"><code>policy_test.py#L9-L34</code></a>。</li><li>Pertsch et al., <a href="https://arxiv.org/html/2501.09747v1">FAST</a>, arXiv v1；latency 条件与路径已在 <a href="vol_03_pi0_fast_openpi_claim_to_code.html">Source Audit B</a> 核对。</li><li><a href="vol_03_architecture_execution_independent_fact_review.html">VLA 架构、Mask、适配与执行独立事实复核</a>，RT-2/Octo/openpi direct source hashes 与 synthetic probes，2026-07-19。</li></ol>
+</article></body></html>

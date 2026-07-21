@@ -1,0 +1,60 @@
+{
+  "artifact": "sources/vol_05_eng018_scheduler_preemption_retry_source_freeze.md",
+  "html": "sources/vol_05_eng018_scheduler_preemption_retry_source_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "source_frozen / VLA-ENG-018_planned / WARN",
+  "verdict": "WARN",
+  "source_sha256": "2BF3B402A9332BDD06269F74872F36700B206890CD2E5D392B20EE1FEA14B85B",
+  "coverage": {
+    "knowledge_id": "VLA-ENG-018",
+    "topic": "scheduler / preemption / retry / idempotent training jobs",
+    "official_pages_checked": 6,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "pytorch_docs": "2.13 elastic run + quickstart + distributed checkpoint",
+    "kubernetes_docs": "Job + Pod Lifecycle rolling pages accessed 2026-07-17",
+    "deepspeed": "de1846cf6fbdd6f1c2adf046f319791ca78cc547",
+    "related_local_audits": [
+      "sources/vol_05_local_artifact_gate_eng004_006.html",
+      "sources/vol_05_eng013_reproducibility_source_freeze.html",
+      "evidence/projects/openpivla_claim_evidence_inventory.html",
+      "evidence/projects/opd_claim_evidence_inventory.html"
+    ]
+  },
+  "normalized_main_text_sha256": {
+    "pytorch_torchrun": "77d82a42359b5f76a07260cdd9c44abd3a5002a8fff4fd54b59f64a43342560e",
+    "pytorch_elastic_quickstart": "55a15d33aabcabb70aa529730c4dee30d979e77a9620015beb3f4b379bb5daf2",
+    "pytorch_distributed_checkpoint": "937dfc304fe1162f9a0276e651eb8a0afac039c485946447b3b5d73a35240468",
+    "kubernetes_job": "ec66af818bd901c6b68e2da133ffcaf3933d295daa53d37cbc2ada3e60e792ff",
+    "kubernetes_pod_lifecycle": "d9d1d6cdd3573d7329eba94aeb99adeed750a1dbab6d7bafdb07bc00634d3e92"
+  },
+  "raw_source_sha256": {
+    "deepspeed_model_checkpointing_rst": "1687250240dca70a3e3a448c47604277b5818dc1af93dca5e54a1a7baa205c11"
+  },
+  "checks": {
+    "bounded_slice": "PASS (source freeze plus one downstream ENG-018 knowledge node/card; ENG-019 remains deferred)",
+    "elastic_identity": "PASS WITH WARNING (logical run, attempt, worker group, rank/world-size and restart count separated; rank stability not assumed)",
+    "idempotency_duplicate_execution": "PASS WITH WARNING (Kubernetes duplicate/concurrent execution boundary sourced; exactly-once not inferred)",
+    "preemption_signal": "PASS WITH WARNING (TERM/SIGTERM, grace period and KILL boundary sourced; checkpoint completion not guaranteed)",
+    "checkpoint_generation": "PASS WITH WARNING (DCP multi-file/load-time reshard and DeepSpeed save/load sourced; manifest-last atomic commit is engineering contract)",
+    "retry_protocol": "PASS (attempt temp dirs, stable operation keys, dedupe, immutable promotion and failure markers defined)",
+    "project_truth_boundary": "PASS (UWM/OPD/OpenPiVLA metadata/final-only/remote-path evidence separated from missing binary, attempt ledger and preemption drills)",
+    "formula_and_state_machine": "PASS (idempotency equation, identity table, checkpoint generation and retry state machine explained)",
+    "pseudocode": "PASS (commented committed-load/safe-boundary-save/atomic-promotion/retryable-exit order; scheduler APIs remain placeholders)",
+    "html_static_validation": "PASS (source SHA, one H1, thirteen H2, two H3, seven tables, four commented code/state blocks and one formula block)",
+    "local_links": "PASS (artifact gate, reproducibility and project inventory relative links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the generated ENG-018 card unseen until a real oral answer is recorded.",
+    "Collect full checkpoint binary plus optimizer/scheduler/scaler/RNG/sampler/normalizer and per-file manifest hashes.",
+    "Run SIGTERM-at-microstep/optimizer/checkpoint, worker-crash, duplicate-attempt, storage-failure and world-size-change drills.",
+    "Measure checkpoint duration against grace budget and record lost/replayed steps, duplicate side effects and recovery time.",
+    "Keep ENG-019 config/run-identity merge deferred."
+  ],
+  "next": "Run a one-question ENG-018 oral drill or collect binary/full-state/preemption/retry artifacts; keep ENG-019 deferred."
+}

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-023 Source Freeze：Open-loop Plan 与 Receding-horizon Replanning</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm023_open_loop_receding_horizon_source_freeze.md">
+<meta name="aris:source-sha256" content="7f37930bf857614a3275228887fcf35382bd1823f3ca87c78e0555875519aa3c">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>7f37930bf857614a3275228887fcf35382bd1823f3ca87c78e0555875519aa3c</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm023_open_loop_receding_horizon_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 问题与结论边界</a></li><li><a href="#2">2. 来源冻结</a></li><li><a href="#3">3. 统一时间轴与术语</a></li><li><a href="#4">4. 三种执行架构</a></li><li><a href="#4-1-receding-horizon">4.1 严格同步 receding horizon</a></li><li><a href="#4-2-overlap">4.2 异步 overlap</a></li><li><a href="#4-3-replan">4.3 事件触发 replan</a></li><li><a href="#5-h-k">5. \(H\) 与 \(K\) 的机制权衡</a></li><li><a href="#6">6. 最小可复现实验合同</a></li><li><a href="#7-source-gate">7. Source gate 结论与下一步</a></li><li><a href="#section-11">参考来源</a></li></ol></nav>
+<h1>VOL 04 WM-023 Source Freeze：Open-loop Plan 与 Receding-horizon Replanning</h1>
+<div class="meta">审计日期：2026-07-18 状态：source_frozen / VLA-WM-023 / downstream_pending / WARN 覆盖题目：VLA-WM-023 本轮边界：冻结 open-loop execution、receding-horizon replanning、prediction horizon \(H\)、execution horizon \(K\)、推理 latency 与 action freshness 的权衡；不把公开 benchmark 或指定硬件 wall-clock 写成个人项目结果。</div>
+<h2 id="1">1. 问题与结论边界</h2>
+<p>题目：<strong>open-loop plan 与 receding-horizon replanning 如何权衡 latency、鲁棒性和 horizon？</strong></p>
+<p>冻结结论：</p>
+<ol><li><strong>open-loop 是执行合同，不等于模型没有闭环能力。</strong>策略在一次观测后生成一段动作，并在 \(K\) 个控制步内不重新查询高层策略；低层 controller 仍可能执行 rate limit、clip 和安全检查。\(K\) 越大，推理成本可以摊薄，动作序列也更连续，但新观测不能及时纠偏。</li><li><strong>receding horizon 是滚动闭环。</strong>模型可预测 \(H\) 步，但只执行前 \(K\) 步，随后获取新 observation、丢弃或重用旧计划并重新规划；PlaNet 的算法返回当前时刻的 first-action mean，并在下一 observation 后重新初始化 action-sequence belief。[S1]</li><li><strong>\(H\) 与 \(K\) 不是同一个旋钮。</strong>\(H\) 决定看多远、训练/采样要覆盖多长未来；\(K\) 决定多久暴露在 stale plan 下。通常要求 \(1\le K\le H\)，但不能从论文默认值推导出普适最优值。</li><li><strong>latency 约束先于“更频繁重规划”。</strong>若一次端到端推理、通信和排队延迟为 \(L\)，控制周期为 \(\Delta t\)，同步执行至少要检查 \(L\lesssim K\Delta t\) 与 queue underflow；异步执行还要记录 action timestamp、版本、取消/拼接规则，不能只看平均 FPS。</li><li><strong>证据必须做 matched sweep。</strong>固定 checkpoint、normalizer、denoise steps、reset、controller、任务和 success predicate，分别扫 \(H\)、\(K\)、人为注入 latency 与扰动，报告 success、阶段恢复、p50/p95 latency、action age、queue underrun、jitter 和每步失败位置。当前工作区没有 WM-023 的本地 planning runtime、paired sweep 或 ownership artifact，因此只冻结可审计机制，不宣称个人结果。</li></ol>
+<h2 id="2">2. 来源冻结</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>冻结版本</th><th>可支持</th><th>不能支持</th><th>状态</th></tr></thead><tbody>
+<tr><td>S1</td><td>Hafner et al., Learning Latent Dynamics for Planning from Pixels / PlaNet</td><td>arXiv:1811.04551v5，2019-06-04</td><td>latent CEM、每时刻规划、返回 first action、belief 在新 observation 后重置、过长 planning horizon 扩大搜索空间并可能变差</td><td>用户项目已采用 PlaNet 或某个 \(H/K\) 已最优</td><td>primary / checked</td></tr>
+<tr><td>S2</td><td>Chi et al., Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</td><td>arXiv:2303.04137v5，2024-03-14</td><td>\(T_o/T_p/T_a\) 三种 horizon；\(T_a\) 步 action 在不 re-plan 下执行；action horizon 的 temporal-consistency / responsiveness trade-off；latency 定义</td><td>任意 diffusion policy 的默认 \(T_a\)、真实部署 latency 或本地成功率</td><td>primary / checked</td></tr>
+<tr><td>S3</td><td>real-stanford/diffusion_policy</td><td>commit 5ba07ac6661db573af695b419a7947ecb704690f，Apache-2.0</td><td>n_obs_steps、n_action_steps、horizon、policy 输出切片与 n_action_steps 相关的 execution contract；n_latency_steps 数据 padding 入口</td><td>本机运行速度、checkpoint 兼容性或用户项目采用该 commit</td><td>official-code / checked</td></tr>
+<tr><td>S4</td><td>Zhao et al., Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware / ACT</td><td>arXiv:2304.13705v1；官方 repo commit 742c753c0d4a5d87076c8f69e5628c79a8cc5488</td><td>action chunking 减少有效 horizon；temporal ensembling 以更高 query frequency 融合重叠 chunk；代码中的 query_frequency=1 与 overlap aggregation</td><td>chunking 必然提升所有任务、ACT 的结果可外推到其他 VLA</td><td>primary + official-code / checked</td></tr>
+<tr><td>S5</td><td>Cosmos Policy / WAM claim-to-code audit</td><td>本地 frozen audit，Cosmos repo commit 18a2accadf4e7a3531e56754102af5a24d2316da</td><td>LIBERO 16×7 默认全 16 步 open-loop；RoboCasa 32×7、默认执行前 16 步再 requery；论文/代码指定硬件的 5-step/1-step chunk wall-clock 语境；必须固定 action queue 与 protocol</td><td>公开 98.5%/67.1% 是本地结果、用户 planner 已复现、指定硬件数字等于本机 latency</td><td>local audit / WARN</td></tr>
+<tr><td>S6</td><td>WM-019 Metric Boundary 与 WM-022 MPC/CEM/MPPI</td><td>本地 canonical + review</td><td>teacher-forced/open-loop/proxy/simulator/real 的 metric 分层；\(N/H/K\)、scorer、controller、latency、selected/unselected trace 的 protocol 要求</td><td>open-loop proxy 等于 closed-loop success；单次 best score 等于因果提升</td><td>local audit / WARN</td></tr>
+</tbody></table>
+<h2 id="3">3. 统一时间轴与术语</h2>
+<p>设控制周期为 \(\Delta t=1/f_{\mathrm{ctrl}}\)，一次高层推理与通信总延迟为 \(L_{\mathrm{e2e}}\)：</p>
+<table><thead><tr><th>量</th><th>含义</th><th>典型问题</th></tr></thead><tbody>
+<tr><td>\(T_o\) / \(O\)</td><td>输入 observation history</td><td>过短看不到速度/接触趋势；过长增加编码与缓存成本</td></tr>
+<tr><td>\(H\) / \(T_p\)</td><td>prediction / planning horizon</td><td>太短没有提前量；太长扩大 model error、搜索空间或 denoising compute</td></tr>
+<tr><td>\(K\) / \(T_a\)</td><td>execution horizon / chunk prefix</td><td>太短 replan 频繁、latency 和 jitter；太长 action stale、扰动恢复慢</td></tr>
+<tr><td>\(L_{\mathrm{e2e}}\)</td><td>observation→inference→queue→controller 延迟</td><td>不能用平均 FPS 代替 p95 action age</td></tr>
+<tr><td>\(A_j\)</td><td>第 \(j\) 个执行动作的 observation age</td><td>open-loop 中 \(A_j\) 随 \(j\) 增长</td></tr>
+</tbody></table>
+<p>在一次 chunk 内，第 \(j\) 个动作（\(j=0,\ldots,K-1\)）的近似 observation age 为：</p>
+<div class="formula">\[
+A_j \approx L_{\mathrm{e2e}}+j\Delta t .
+\]</div>
+<p>变量解释：\(L_{\mathrm{e2e}}\) 是拿到 observation 到第一条可执行 action 的延迟，\(j\Delta t\) 是 chunk 内等待时间；实现中应从 timestamped observation、policy output、queue enqueue/dequeue 和 controller apply 事件计算，而不是只记录模型 forward time。</p>
+<h2 id="4">4. 三种执行架构</h2>
+<h3 id="4-1-receding-horizon">4.1 严格同步 receding horizon</h3>
+<p>每次 observation 后完成推理，执行 \(K\) 步，等待下一次 observation。它最容易审计，但当 \(L_{\mathrm{e2e}}&gt;K\Delta t\) 时会出现动作断流或不得不降低控制频率。\(K=1\) 的“每步重规划”只有在系统真的能按周期完成推理时才成立。</p>
+<h3 id="4-2-overlap">4.2 异步 overlap</h3>
+<p>当前 chunk 执行时，后台线程准备下一 chunk；到达 splice point 时切换。它可以摊薄 latency，但必须处理 stale output、observation version、取消旧 future、队列深度和 fallback。后台结果晚到时不能静默覆盖更新的计划。</p>
+<h3 id="4-3-replan">4.3 事件触发 replan</h3>
+<p>默认执行较长 prefix，若检测到视觉偏移、接触异常、value disagreement、action-age 超阈值或安全事件则提前 replan。事件触发降低平均 compute，但阈值、false positive、fallback 和最坏延迟必须进入协议；不能只报平均成功率。</p>
+<h2 id="5-h-k">5. \(H\) 与 \(K\) 的机制权衡</h2>
+<table><thead><tr><th>调整</th><th>可能收益</th><th>代价/风险</th><th>最小证据</th></tr></thead><tbody>
+<tr><td>增大 \(H\)，固定 \(K\)</td><td>看到更远目标、允许长程动作规划</td><td>world/value error、搜索/denoise 成本和 OOD 未来增大</td><td>matched \(H\) sweep、per-offset error、p95 latency</td></tr>
+<tr><td>减小 \(H\)，固定 \(K\)</td><td>计算快、预测分布较近</td><td>可能只会局部贪心，接触前没有提前量</td><td>同一 \(K\) 的 long-task success 与 first-failure stage</td></tr>
+<tr><td>减小 \(K\)</td><td>更快使用新 observation，抗扰动、动作 age 小</td><td>replan 次数和通信/推理负担增大；多模态策略可能出现 chunk switch 抖动</td><td>\(K\) sweep、jitter、queue underrun、recovery latency</td></tr>
+<tr><td>增大 \(K\)</td><td>amortize inference、动作连续、减少 query</td><td>open-loop drift、终止/碰撞响应晚、执行器不再按当前状态匹配</td><td>action-age 曲线、扰动恢复、每步成功率</td></tr>
+</tbody></table>
+<p>可把选型写成工程决策而非“固定公式最优”：</p>
+<div class="formula">\[
+K^\*=\arg\min_K
+\left[
+\lambda_{\mathrm{compute}}\frac{L_{\mathrm{e2e}}}{K\Delta t}
+\lambda_{\mathrm{stale}}E_{\mathrm{drift}}(K)
+\lambda_{\mathrm{switch}}E_{\mathrm{chunk\_switch}}(K)
+\lambda_{\mathrm{risk}}E_{\mathrm{safety}}(K)
+\right],
+\qquad 1\le K\le H .
+\]</div>
+<p>变量解释：第一项表示每个动作摊到的推理负担，第二项表示 stale plan/扰动造成的偏差，第三项表示频繁换 chunk 的不连续，第四项表示安全事件成本；\(\lambda\) 是业务权重。这是用于设计 sweep 的抽象目标，不是论文报告的统一定理，也不能由它生成个人指标。</p>
+<h2 id="6">6. 最小可复现实验合同</h2>
+<p>固定 checkpoint、dataset statistics、\(T_o\)、denoising steps、controller、reset/init、camera preprocessing、success predicate、episode denominator 和随机种子，然后执行：</p>
+<ol><li><strong>matched \(K\) sweep</strong>：例如 \(K\in\{1,4,8,16\}\)，固定 \(H\)，记录 success、stage recovery、\(A_j\)、p50/p95 latency、queue underrun、action jerk/jitter。</li><li><strong>matched \(H\) sweep</strong>：固定 \(K\)，对比 short/medium/long horizon，记录 per-offset action/state error、first failure stage 与 compute。</li><li><strong>latency injection</strong>：在相同 checkpoint 下人为注入 0、1、2、4 个 control-step delay，区分 pure compute delay、queue delay 和 controller delay。</li><li><strong>perturbation test</strong>：在抓取、接触或目标移动阶段加入可复现扰动，对比 open-loop prefix 与提前 replan 的 recovery latency。</li><li><strong>overlap consistency</strong>：对同一 observation 重复采样 chunk，统计重叠 action 的 disagreement；若使用 temporal ensemble，记录权重、有效 query frequency 和 edge handling。</li></ol>
+<p>每条 episode 至少保存 obs_timestamp、policy_start/end、chunk_id、model_revision、action_age、queue_depth、replan_reason、fallback、termination_reason 和 per-step success/constraint 字段。</p>
+<h2 id="7-source-gate">7. Source gate 结论与下一步</h2>
+<p>本 source freeze 为 WARN：open-loop/receding-horizon 的时间轴、\(H/K\) 语义、同步/异步执行和最小 matched sweep 已冻结；WM-023 本地 planning runtime、同 checkpoint 的 \(H/K\) 曲线、扰动 episode、latency trace 与 ownership 仍缺。下游知识页和题卡可以写机制与审计合同，但不能写个人“降低 latency”或“提升鲁棒性”。</p>
+<h2 id="section-11">参考来源</h2>
+<ol><li>Hafner et al., <a href="https://arxiv.org/abs/1811.04551">Learning Latent Dynamics for Planning from Pixels</a>，arXiv v5；PlaNet paper 与 Algorithm 2。</li><li>Chi et al., <a href="https://arxiv.org/abs/2303.04137">Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</a>，arXiv v5；<a href="https://github.com/real-stanford/diffusion_policy/tree/5ba07ac6661db573af695b419a7947ecb704690f">official repository</a>。</li><li>Zhao et al., <a href="https://arxiv.org/abs/2304.13705">Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware</a>，arXiv v1；<a href="https://github.com/tonyzhaozh/act/tree/742c753c0d4a5d87076c8f69e5628c79a8cc5488">official ACT repository</a>。</li><li><a href="vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos Policy / WAM claim-to-code audit</a>。</li><li><a href="../knowledge/vol_04_world_model_sim2real_wm019.html">WM-019 Metric Boundary</a>。</li><li><a href="vol_04_wm022_mpc_cem_mppi_best_of_n_source_freeze.html">WM-022 MPC/CEM/MPPI/Best-of-N Source Freeze</a>。</li></ol>
+</article></body></html>

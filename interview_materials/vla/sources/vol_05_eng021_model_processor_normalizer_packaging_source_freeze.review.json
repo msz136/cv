@@ -1,0 +1,78 @@
+{
+  "artifact": "sources/vol_05_eng021_model_processor_normalizer_packaging_source_freeze.md",
+  "html": "sources/vol_05_eng021_model_processor_normalizer_packaging_source_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "source_frozen / VLA-ENG-021 / knowledge_drafted / card_1_of_1_unseen / WARN",
+  "verdict": "WARN",
+  "source_sha256": "3159FD3B7E3331394ACE1415B071E487CFEBFB8A2BA06B94A7508803AE672BEA",
+  "coverage": {
+    "knowledge_id": "VLA-ENG-021",
+    "topic": "model/processor/normalizer packaging, checkpoint lineage, action schema and runtime compatibility",
+    "official_pages_checked": 17,
+    "local_files_checked": 8,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "huggingface_transformers": "150eb7c9ed4091294c829fa0e9466b090cb0f87f",
+    "huggingface_hub": "b2ae5b6a898d5303e55c256aa714f9f9a1f4bd70",
+    "huggingface_safetensors": "6eb4dc9a28ebce297606e0f4836bbf28839cacef",
+    "physical_intelligence_openpi": "15a9616a00943ada6c20a0f158e3adb39df2ccac"
+  },
+  "raw_source_sha256": {
+    "transformers_model_docs": "e8c0b2fe13997464b39ad89b24138cdff4979cdf074d04d70b48131eae85e3bf",
+    "transformers_processors_docs": "cd830dd43eb219ba6a07cb816ab61c6872711ab8c0301c9f406a16ef0aba5014",
+    "transformers_configuration_docs": "902911a9c7684ffe45f9a804bc44b77136fc908c23d113d377479f118d71f63e",
+    "transformers_modeling_utils": "d8bf1879d6f582888b6cf47b4d63070260285a3bd1dc94ce7e1373304f74168a",
+    "transformers_processing_utils": "d49b92aba8a755e6d93928a5fec94950004a5bc53a48746f9b83dd04cb7edacd",
+    "transformers_configuration_utils": "c00dcc84295a7867156aae2e0952c4e7d2ae1cafef1a1d965fb4d3f741ae2bf0",
+    "hub_snapshot_download": "8dd5f2108fded3418b79322ceabefcdcc6cee7e01d4b69c2a30d9aaa5833cb54",
+    "hub_file_download": "8d2c2be997bd093d2149c020119851c772c5dc146065264ba29b58c28b50c62b",
+    "safetensors_readme": "0a932f120de5c2477b286cae5517b6fec5e1d3ed64a19b99ccfc0a8504db7b13",
+    "openpi_readme": "567fc57766bd736664f50126cab8145af4071ca16cc5e238f2b11e369169c3b5",
+    "openpi_model": "0d74bc1d8f4623ac3d8e543710b8bf75f9b95e588a3ebf6127c659e001385cff",
+    "openpi_checkpoints": "3cc32682ec3609e9075dabd991488edb9d7f6c045443f58963d733f99c468dbd",
+    "openpi_pi0_config": "d321858c30b398126035ea2b6da09e1c422eeeebb5ebf8df631daf9dc77647fa",
+    "openpi_normalize": "6c2cea4946fb07e51801530400d2b2fd94730e195cd290d6b6960114eca9739d",
+    "openpi_transforms": "a1b94e9e72849a18834778f229c6bb389a495eb7fbe0aa800edea728b9424ff4",
+    "openpi_data_loader": "4d0b055ac28527c1ab1f0ba7496057722c7c748c88564a8de2ff4fac650e97c9",
+    "openpi_policy": "a2ac5236e23b11d0f5a840d4a8fef148d89dba921d5452ec5dfcd5a6ffa46f20",
+    "openpi_pi0": "24b32d7c6ed5e409459afa8ca5af96a4dae09c2dcdf48e828907e411f4f12342"
+  },
+  "local_evidence_sha256": {
+    "openpivla_formal_train": "51B67D3E04496E68076BF6461506141EBCDDF9A82E6C30AF1FDC0F1F2CCC6F94",
+    "openpivla_data": "32C6AA76929D941C4832D2EB4C2550527D3E607E31C2A9F5507CC76EEEDBC2EC",
+    "openpivla_recipes": "397D1B384A2BD93D9DC81B7003E6AB7BFAC3FC458EA04008197C3F503F9D780E",
+    "openpivla_deployment": "C0A3DD0C0DA8C1C0D36023046D5337900A71680B413657BC9B1062EEF2EEA14",
+    "openpivla_model_probe": "29C74C88D54F4A6A233C085139AF352D9C28E7E61152554F84DB5ABCE686B3DC",
+    "uwm_opd_artifact_gate": "reviewed_in_vol_05_local_artifact_gate_eng004_006",
+    "openpivla_inventory": "reviewed_in_openpivla_claim_evidence_inventory",
+    "uwm_opd_inventory": "reviewed_in_project_inventories"
+  },
+  "checks": {
+    "bounded_slice": "PASS (source freeze plus one ENG-021 knowledge node and one unseen card; ENG-022 remains deferred)",
+    "model_packaging": "PASS WITH WARNING (config/weights/shards/revision/strict-load contract sourced; local bundle not verified)",
+    "processor_contract": "PASS WITH WARNING (tokenizer/image processor/config revision and save/load semantics sourced; formal processor revision missing)",
+    "normalizer_contract": "PASS WITH WARNING (OpenPI NormStats asset/save/load and transform order sourced; local normalizer-to-checkpoint binding missing)",
+    "safetensors_boundary": "PASS WITH WARNING (tensor-only safe/lazy/header semantics sourced; processor/action/controller semantics remain external)",
+    "openpi_boundary": "PASS (params/assets/train_state/norm-stats/shape/transforms separated; not generalized to all VLA systems)",
+    "project_truth_boundary": "PASS (OpenPiVLA/UWM/OPD paths and metadata are not upgraded to local checkpoint-verified or closed-loop compatibility)",
+    "verification_matrix": "PASS (missing processor, revision drift, shape/normalizer/transform mismatch, shard omission, backend, controller and rollback cases explicit)",
+    "pseudocode": "PASS (strict manifest/hash/load/fixed-batch/action-roundtrip order shown; APIs remain engineering contracts)",
+    "html_static_validation": "PASS (source SHA, one H1, thirteen H2, five H3, five tables, two code blocks and one formula block)",
+    "local_links": "PASS (ENG-018/019/020, artifact gate and project inventories resolve)",
+    "secret_value_handling": "PASS (only paths, identifiers and hashes recorded; no credential values copied)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Obtain an immutable model/processor/normalizer/config bundle with per-file hashes and model revision.",
+    "Run strict independent load smoke with missing/unexpected key report, fixed-batch output diff and action/controller round-trip.",
+    "Bind normalizer stats, action schema, transform revision and checkpoint lineage to one manifest.",
+    "Verify DROID/MindCube action dimension, axis/unit/frame and formal `limit=16` versus `H=15,D=72` representation semantics.",
+    "Run backend/dtype/operator compatibility and rollback tests; keep remote path/report evidence below checkpoint-verified.",
+    "Keep ENG-021 unseen until a real oral answer or stronger bundle evidence is available; keep ENG-022 packaging/serving resilience deferred."
+  ],
+  "next": "Synchronize source/index state and run the ENG-021 one-question oral drill; keep ENG-022 deferred."
+}

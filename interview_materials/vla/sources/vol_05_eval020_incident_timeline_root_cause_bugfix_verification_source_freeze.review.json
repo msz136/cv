@@ -1,0 +1,46 @@
+{
+  "artifact": "sources/vol_05_eval020_incident_timeline_root_cause_bugfix_verification_source_freeze.md",
+  "html": "sources/vol_05_eval020_incident_timeline_root_cause_bugfix_verification_source_freeze.html",
+  "review_date": "2026-07-19",
+  "status": "source_frozen / VLA-EVAL-020 / knowledge_drafted / card_1_of_1_unseen / WARN",
+  "verdict": "WARN",
+  "source_sha256": "c85f5ca7ac79d3e942b0ba29916212435d7fe58ab6a28c254e1e25868a51397d",
+  "coverage": {
+    "knowledge_id": "VLA-EVAL-020",
+    "public_source_groups_checked": 4,
+    "project_inventories_checked": 5,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "sre_book": "Google SRE Postmortem Culture official page / SHA-256 885916e3c46dfb2cf3a506435f9df60ca1bf3e491e521725705f7202ac12eb49",
+    "sre_workbook": "Google SRE Workbook Postmortem Culture official page / SHA-256 68a91385357957faa3d46927b88af63e047cd5e0b228c52a024c6093c24e0018",
+    "incident_lifecycle": "NIST SP 800-61r3 final April 2025 / landing and PDF SHA-256 frozen / security-specific scope retained",
+    "bisect": "git/git commit 41365c2a9ba347870b80881c0d67454edd22fd49 / git-bisect docs and GPL-2.0 COPYING hashes frozen",
+    "local_prerequisites": "EVAL-008/009/010/013/014/018 and five project inventory canonical hashes frozen"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one EVAL-020 source, knowledge node and unseen card; EVAL-021 deferred)",
+    "source_freeze": "PASS (postmortem culture, incident lifecycle, bisect and local causal/verification prerequisites frozen)",
+    "semantic_ladder": "PASS (incident, symptom, divergence, hypothesis, contributing/proximate/root cause, mitigation, recovery, fix and prevention separated)",
+    "timeline_contract": "PASS (event/observe/write/infer time, clock error, provenance and partial-order boundary explicit)",
+    "root_cause_boundary": "PASS (temporal order, rollback, one rerun and first bad commit rejected as automatic proof)",
+    "bisect_boundary": "PASS (stable oracle, buildability, monotonicity and external-state requirements explicit)",
+    "verification_contract": "PASS (same-protocol red-to-green, unaffected controls, fresh neighbors and uncertainty)",
+    "artifact_contract": "PASS (incident, timeline, divergence, hypothesis, reproducer, bisect, fix, regression, recovery and action-item bundle)",
+    "project_truth_boundary": "PASS (OPD protocol-local and UWM DataLoader-only evidence not extrapolated end-to-end)",
+    "canonical_sha": "PASS (Markdown, HTML metadata and review SHA match)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, twenty-two H2, eight tables, six code blocks, two formula blocks, zero formula em; serif/sticky/900px rules present)",
+    "local_links": "PASS",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Do not close root cause as confirmed without a reproducible failure, targeted intervention and matched verification.",
+    "Keep rollback/recovery evidence separate from corrective fix and prevention evidence.",
+    "Do not extrapolate OPD protocol formatting or UWM DataLoader smoke to whole-model or end-to-end root cause.",
+    "Do not create coaching_state.md before a real oral response."
+  ],
+  "next": "Proceed only to VLA-EVAL-021 deployment drift, data shift and continuous monitoring; keep VLA-EVAL-020 WARN/unseen."
+}

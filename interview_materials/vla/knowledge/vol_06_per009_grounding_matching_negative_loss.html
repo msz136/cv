@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：Grounding Matching、Negative 与 Loss Reduction（PER-009）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per009_grounding_matching_negative_loss.md">
+<meta name="aris:source-sha256" content="619d683e638da847dc9bcc66ff396defabe9d9fb4e1399c2062be8fd92d458d0">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>619d683e638da847dc9bcc66ff396defabe9d9fb4e1399c2062be8fd92d458d0</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per009_grounding_matching_negative_loss.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与边界</a></li><li><a href="#1-30">1. 30秒直觉：先分配责任，再计算梯度</a></li><li><a href="#2-detector-tensor">2. Detector训练数据流与Tensor合同</a></li><li><a href="#2-1-schema">2.1 最小schema</a></li><li><a href="#2-2-positive-token-map">2.2 Positive token map为什么重要</a></li><li><a href="#3-matching-cost-final-training-loss">3. Matching Cost与Final Training Loss必须分开</a></li><li><a href="#3-1-pairwise-cost-hungarian-assignment">3.1 Pairwise cost与Hungarian assignment</a></li><li><a href="#3-2-cost-loss">3.2 为什么cost不是loss</a></li><li><a href="#4-negative-taxonomy">4. Negative Taxonomy：至少拆成五类</a></li><li><a href="#4-1-query-token-target-matrix">4.1 Query-token target matrix</a></li><li><a href="#4-2">4.2 五类概念不能合并</a></li><li><a href="#5-focal-loss">5. Focal Loss：处理不平衡，不负责采样</a></li><li><a href="#6-l1-giou-matched-box-pairs">6. L1与GIoU：只监督Matched Box Pairs</a></li><li><a href="#7-reduction-objective">7. Reduction顺序属于Objective合同</a></li><li><a href="#7-1-detector-classification-box-denominator">7.1 Detector classification与box denominator</a></li><li><a href="#7-2-weighted-total-auxiliary-encoder">7.2 Weighted total、auxiliary与encoder分支</a></li><li><a href="#8-grounding-dino">8. Grounding DINO权重冲突：版本门比背数字重要</a></li><li><a href="#9-opd-objective-lineage">9. 本地OPD三条Objective Lineage</a></li><li><a href="#9-1-assistant-token-sft">9.1 Assistant-token SFT</a></li><li><a href="#9-2-routed-object-region-top-1-ce">9.2 Routed object/region top-1 CE</a></li><li><a href="#9-3-online-full-vocabulary-teacher-kl">9.3 Online full-vocabulary teacher KL</a></li><li><a href="#10-loss-hungarian-detector-loss">10. 为什么三条本地Loss都不是Hungarian Detector Loss</a></li><li><a href="#11-2500-metrics">11. 2500行Metrics应该怎样解释</a></li><li><a href="#12-typed-loss-manifest">12. Typed Loss Manifest</a></li><li><a href="#13-step">13. 可审计训练Step伪代码</a></li><li><a href="#14-failure-taxonomy">14. Failure Taxonomy与诊断顺序</a></li><li><a href="#15">15. 面试回答模板、追问与危险答案</a></li><li><a href="#15-1">15.1 两分钟结构化回答</a></li><li><a href="#15-2">15.2 高频追问</a></li><li><a href="#15-3">15.3 危险答案</a></li><li><a href="#16-project-truth-boundary">16. Project Truth Boundary与补证顺序</a></li><li><a href="#17">17. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：Grounding Matching、Negative 与 Loss Reduction（PER-009）</h1>
+<div class="meta">状态：<code>drafted / VLA-PER-009 / source_synced / card_synced / WARN</code> 报告日期：2026-07-20 证据截止：2026-07-20 来源入口：<a href="../sources/vol_06_per009_grounding_matching_negative_loss_source_freeze.html">PER-009 Source Freeze</a>。 前置知识：<a href="vol_06_per001_grounding_coordinate.html">PER-001 Point / Box / Text Contract</a>、<a href="vol_06_per006_image_preprocess_token_camera_contract.html">PER-006 Image / Token / Camera</a>、<a href="vol_06_per007_open_vocabulary_grounding_pipeline.html">PER-007 Open-vocabulary Grounding</a>、<a href="vol_06_per008_representation_choice.html">PER-008 Representation Choice</a>。 原子题卡：<a href="../questions/vol_06_per009.html">VLA-PER-009</a>（<code>unseen</code>）。</div>
+<h2 id="question">问题（Question）</h2>
+<p>Grounding detector训练时，Hungarian matching到底匹配什么？matching cost和最终training loss有什么区别？未匹配query、非目标token、padding、negative image与hard negative分别如何进入目标？focal、L1、GIoU、auxiliary loss又如何reduction？最后，本地OPD的assistant-token CE、routed top-1 CE和online teacher-KL能不能讲成Grounding DINO式detector loss？</p>
+<p>本页用一条可审计链回答：</p>
+<pre><code class="language-text">prediction/target schema + positive token map
+  -&gt; pairwise cost matrix
+  -&gt; Hungarian one-to-one assignment
+  -&gt; matched/unmatched token targets
+  -&gt; classification + localization components
+  -&gt; token/object/sample/batch/worker reduction
+  -&gt; auxiliary/encoder branches + diagnostics
+  -&gt; project-specific objective and evidence boundary</code></pre>
+<h2 id="section-2">知识地图位置与边界</h2>
+<pre><code class="language-text">PER-001 schema / coordinate / parser
+  -&gt; PER-006 image-token-camera-time lineage
+  -&gt; PER-007 open-vocabulary inference dataflow
+  -&gt; PER-008 output representation choice
+  -&gt; PER-009 training matching / negative / loss / reduction
+  -&gt; PER-010 metric / parser / protocol comparability
+  -&gt; PER-011 pseudo-label / teacher noise
+  -&gt; PER-015 perception-to-action gate</code></pre>
+<p>PER-009只负责训练目标。它不把loss下降解释成IoU/PCK/Recall提升，不评价teacher是否可靠，也不从offline objective推出controller或robot success。VOL 01已讲CE、KL、focal等通用数学；本页新增grounding tensor、assignment、mask、distributed denominator和本地代码映射。</p>
+<h2 id="1-30">1. 30秒直觉：先分配责任，再计算梯度</h2>
+<p>最短可用回答是：</p>
+<div class="meta">Set-prediction detector先构造每个query和每个GT之间的class/token、L1与GIoU cost，再用Hungarian算法做一对一assignment；这个cost只决定“谁负责谁”，不是最终反向传播的loss。assignment之后，matched query有token与box监督，unmatched query通常仍作为classification negative，但没有box target。padding必须被mask掉，不能当negative。最终loss的组件、权重和reduction必须按paper revision与runtime config冻结。本地OPD所读代码是生成式CE/KL lineage，没有query set、Hungarian或L1/GIoU head，所以不能口述成detector criterion。</div>
+<p>面试中最容易失分的四个混淆：</p>
+<ol><li>把Hungarian cost当作可直接求梯度的total loss；</li><li>把padding、unmatched query、wrong token与negative image都叫“负样本”；</li><li>只背<code>1/5/2</code>或<code>2/5/2</code>，却不说matching/final与版本位置；</li><li>看见本地有grounding数据与loss曲线，就声称训练了Grounding DINO或grounding质量提升。</li></ol>
+<h2 id="2-detector-tensor">2. Detector训练数据流与Tensor合同</h2>
+<h3 id="2-1-schema">2.1 最小schema</h3>
+<p>以冻结的Transformers 4.57.1 Grounding DINO bridge为例：</p>
+<table><thead><tr><th>对象</th><th>Shape / 语义</th><th>必须冻结的约束</th></tr></thead><tbody>
+<tr><td><code>logits</code></td><td><code>[B,Q,L]</code>，query×text-token logits</td><td><code>L</code>是当前prompt token positions，不是固定class数</td></tr>
+<tr><td><code>pred_boxes</code></td><td><code>[B,Q,4]</code>，normalized <code>cxcywh</code></td><td>GIoU前转换为corner format</td></tr>
+<tr><td><code>labels[b].class_labels</code></td><td><code>[M_b]</code></td><td>索引当前sample的label/phrase map</td></tr>
+<tr><td><code>labels[b].boxes</code></td><td><code>[M_b,4]</code>，normalized <code>cxcywh</code></td><td>sample间GT数量可变</td></tr>
+<tr><td><code>label_maps[b]</code></td><td><code>[C_b,L]</code></td><td>class/phrase映射到一个或多个token positions</td></tr>
+<tr><td><code>text_mask</code></td><td><code>[B,Q,L]</code> bool</td><td>只让有效attention positions进入classification loss</td></tr>
+<tr><td><code>indices[b]</code></td><td><code>(query_idx,target_idx)</code></td><td>Hungarian一对一assignment</td></tr>
+<tr><td><code>num_boxes</code></td><td>scalar</td><td>跨worker平均GT数并至少为1</td></tr>
+</tbody></table>
+<h3 id="2-2-positive-token-map">2.2 Positive token map为什么重要</h3>
+<p>Open-vocabulary grounding不一定把类别轴做成固定的<code>C</code>个object classes，而是让query与text tokens对齐。一个phrase可能覆盖多个subword token，因此target需要<code>phrase/class -&gt; token positions</code>的映射。</p>
+<p>冻结的first-party GroundingDINO代码从character spans构造固定宽度positive map，并在phrase内部做token归一化；Transformers 4.57.1则按delimiter与special-token group构造label map。两条map construction没有golden test时不能当成bitwise或语义完全等价。</p>
+<h2 id="3-matching-cost-final-training-loss">3. Matching Cost与Final Training Loss必须分开</h2>
+<h3 id="3-1-pairwise-cost-hungarian-assignment">3.1 Pairwise cost与Hungarian assignment</h3>
+<p>令query (i)与GT (j)的pairwise cost为：</p>
+<div class="formula">\[
+C_{ij}=\lambda_{\mathrm{cls}}C^{\mathrm{token}}_{ij}
++\lambda_1\lVert \hat b_i-b_j\rVert_1
++\lambda_G\bigl(-\operatorname{GIoU}(\hat b_i,b_j)\bigr),
+\qquad
+\hat\sigma=\arg\min_{\sigma}\sum_j C_{\sigma(j),j}.
+\]</div>
+<p>变量解释：\(\hat b_i\)和\(b_j\)是predicted/target normalized boxes；\(C^{\mathrm{token}}_{ij}\)是query对目标phrase tokens聚合后的classification cost；\(\lambda_{\mathrm{cls}},\lambda_1,\lambda_G\)是matching阶段权重；\(\hat\sigma\)是离散的一对一assignment。直觉上，先比较所有“query负责GT”的候选代价，再选全局最小组合。实现映射：Transformers bridge计算focal-style token cost、<code>torch.cdist(..., p=1)</code>和negative GIoU，再调用SciPy <code>linear_sum_assignment</code>。证据边界：该式概括version-pinned paper/implementation bridge，不证明本地OPD存在matcher。</p>
+<p>一个2×2 probe足以说明“全局”而非逐行贪心：对<code>[[0.2,1.3],[1.2,0.1]]</code>，assignment是<code>q0→t0,q1→t1</code>，总cost为<code>0.3</code>；交换后为<code>2.5</code>。这个probe只验证assignment逻辑，不验证任何模型预测正确。</p>
+<h3 id="3-2-cost-loss">3.2 为什么cost不是loss</h3>
+<table><thead><tr><th>比较项</th><th>Matching cost</th><th>Final training loss</th></tr></thead><tbody>
+<tr><td>作用</td><td>选择离散assignment</td><td>对选定targets形成梯度</td></tr>
+<tr><td>输入</td><td>所有query×GT pair</td><td>matched pairs + classification negatives</td></tr>
+<tr><td>权重</td><td>matcher coefficients</td><td>criterion coefficients</td></tr>
+<tr><td>形式</td><td>可为排序友好的近似cost</td><td>按实现定义的可微loss</td></tr>
+<tr><td>输出</td><td>integer index pairs</td><td>scalar与per-component loss dict</td></tr>
+</tbody></table>
+<p>即便两边都写class/L1/GIoU，它们也可以有不同系数和具体公式。auxiliary decoder层在冻结bridge里还会重新matching，不能默认所有层复用final layer的assignment。</p>
+<h2 id="4-negative-taxonomy">4. Negative Taxonomy：至少拆成五类</h2>
+<h3 id="4-1-query-token-target-matrix">4.1 Query-token target matrix</h3>
+<p>冻结bridge先建立全零<code>target_classes_onehot</code>，再只在matched query位置写入目标phrase的token map：</p>
+<pre><code class="language-text">matched query + target phrase tokens -&gt; positive target 1
+matched query + other valid tokens  -&gt; negative target 0
+unmatched query + all valid tokens  -&gt; negative target 0
+padding/out-of-attention positions  -&gt; masked out; no loss</code></pre>
+<p>因此该实现中的background并不是DETR categorical classifier末尾一个独立<code>no-object</code>类，而是“对所有有效text tokens均为0”的binary target。</p>
+<h3 id="4-2">4.2 五类概念不能合并</h3>
+<table><thead><tr><th>类型</th><th>在冻结实现中的语义</th><th>是否进入loss</th><th>不应偷换成</th></tr></thead><tbody>
+<tr><td>matched positive token</td><td>query对应GT phrase token</td><td>正focal target</td><td>整个phrase只有一个固定class ID</td></tr>
+<tr><td>matched query的其他有效token</td><td>wrong/non-target token</td><td>负focal target</td><td>dataset negative image</td></tr>
+<tr><td>unmatched query</td><td>所有有效token target为0</td><td>classification negative；无box target</td><td>padding或显式no-object class</td></tr>
+<tr><td>padding/special masked position</td><td>无有效监督语义</td><td>由<code>text_mask</code>或<code>-100</code>排除</td><td>easy negative</td></tr>
+<tr><td>dataset/hard negative</td><td>负图、wrong prompt、挖掘样本等recipe</td><td>取决于数据构造</td><td>focal loss自动提供的能力</td></tr>
+</tbody></table>
+<p>focal loss可以降低easy-negative dominance，但不会自动构造negative image、选择hard negatives或修正错误标签。负样本的“来源”与loss的“加权方式”是两个不同设计层。</p>
+<h2 id="5-focal-loss">5. Focal Loss：处理不平衡，不负责采样</h2>
+<p>对binary target，令\(p_t\)为正确标签的模型概率：</p>
+<div class="formula">\[
+\operatorname{FL}(p_t)
+=-\alpha_t(1-p_t)^\gamma\log p_t.
+\]</div>
+<p>变量解释：\(\alpha_t\)平衡positive/negative类别；\(\gamma\)控制well-classified example的down-weighting；冻结的GroundingDINO/HF相关路径使用<code>alpha=0.25</code>、<code>gamma=2</code>。直觉上，\(p_t\to1\)时，modulating factor \((1-p_t)^\gamma\)快速变小。实现映射：先做<code>binary_cross_entropy_with_logits(reduction="none")</code>，再乘modulating factor与alpha，最后按冻结reduction聚合。证据边界：该式不证明概率校准、negative coverage或最佳超参数。</p>
+<p>确定性probe中，对negative target取\(\alpha_t=0.75,\gamma=2\)：\(p_t=0.99\)时loss约<code>7.54e-7</code>，\(p_t=0.5\)时约<code>0.129965</code>，hard/easy约<code>1.72e5</code>倍。这只说明easy negative被强烈降权，不说明hard-negative mining已经发生。</p>
+<h2 id="6-l1-giou-matched-box-pairs">6. L1与GIoU：只监督Matched Box Pairs</h2>
+<p>assignment之后，box supervision可写为：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{box}}
+=\frac{1}{N_{\mathrm{gt}}}
+\sum_{(i,j)\in\hat\sigma}
+\left[
+\lambda_1\lVert\hat b_i-b_j\rVert_1
++\lambda_G\bigl(1-\operatorname{GIoU}(\hat b_i,b_j)\bigr)
+\right].
+\]</div>
+<p>变量解释：\(\hat\sigma\)是matching pairs；\(N_{\mathrm{gt}}\)是跨worker平均后且至少为1的GT box数；L1作用在normalized <code>cxcywh</code>，GIoU前转corner format。直觉上，L1直接约束坐标，GIoU补充overlap与relative geometry，特别是在boxes不重叠时仍能提供区分。实现映射：冻结HF base loss分别做elementwise L1求和和<code>1-diag(generalized_box_iou)</code>求和，再除<code>num_boxes</code>。证据边界：training GIoU loss不是PER-010的evaluation IoU protocol。</p>
+<p>unmatched query没有box target，因此不会进入L1/GIoU；但它仍可在classification tensor里产生负监督。这正是“no box loss”不等于“no gradient”。</p>
+<h2 id="7-reduction-objective">7. Reduction顺序属于Objective合同</h2>
+<h3 id="7-1-detector-classification-box-denominator">7.1 Detector classification与box denominator</h3>
+<p>冻结HF GroundingDINO classification bridge对<code>text_mask</code>后的valid query-token loss求sum，再除<code>num_boxes</code>。因此：</p>
+<ul><li>unmatched-query negatives进入numerator；</li><li>padding不进入numerator；</li><li>denominator是GT box count，不是valid token数、query数或batch size；</li><li>prompt长度或query数改变时，negative数量及loss scale可能改变。</li></ul>
+<p>base criterion先统计local GT count；distributed/Accelerate初始化时跨rank reduce，再除world size并<code>clamp(min=1)</code>。它近似“每worker平均GT数”，不是global token mean。复现时必须保存world size、per-rank targets、gradient accumulation与empty-target batch行为。</p>
+<h3 id="7-2-weighted-total-auxiliary-encoder">7.2 Weighted total、auxiliary与encoder分支</h3>
+<p>Transformers 4.57.1的version-specific总loss可概括为：</p>
+<div class="formula">\[
+\mathcal L
+=2\mathcal L_{\mathrm{ce}}
++\lambda_{\mathrm{bbox}}\mathcal L_1
++\lambda_{\mathrm{giou}}\mathcal L_{\mathrm{giou}}
++\sum_{l\in\mathrm{aux}}\mathcal L^{(l)}
++\mathcal L_{\mathrm{enc}}.
+\]</div>
+<p>变量解释：\(\mathcal L^{(l)}\)是intermediate decoder层的loss；\(\mathcal L_{\mathrm{enc}}\)只在two-stage路径出现；该bridge默认<code>bbox_loss_coefficient=5</code>、<code>giou_loss_coefficient=2</code>，final classification coefficient为2。直觉上，auxiliary深监督让中间层直接收到matching/class/box梯度。实现映射：<code>auxiliary_loss</code>、<code>two_stage</code>与weight dictionary由该版本config/loss bridge控制。证据边界：这些值不是所有checkpoint或其他版本的runtime truth。</p>
+<p><code>cardinality_error</code>可以出现在loss dictionary中用于logging，但冻结Grounding DINO weight dictionary并未给它优化权重。看到loss dict中的key，必须继续检查它是否乘权后进入total loss。</p>
+<h2 id="8-grounding-dino">8. Grounding DINO权重冲突：版本门比背数字重要</h2>
+<p>Grounding DINO v5正文与附录Table 8在classification matching/final权重上相反：</p>
+<table><thead><tr><th>来源位置</th><th>Matching class/L1/GIoU</th><th>Final class/L1/GIoU</th></tr></thead><tbody>
+<tr><td>v5正文3.5与实验段叙述</td><td><code>2 / 5 / 2</code></td><td><code>1 / 5 / 2</code></td></tr>
+<tr><td>v5附录Table 8</td><td><code>1 / 5 / 2</code></td><td><code>2 / 5 / 2</code></td></tr>
+<tr><td>Transformers 4.57.1 bridge</td><td><code>1 / 5 / 2</code></td><td><code>2 / 5 / 2</code></td></tr>
+</tbody></table>
+<p>安全口径是：论文确认token focal classification、L1/GIoU、bipartite matching及auxiliary structure；具体系数必须绑定paper位置、implementation revision、resolved config和runtime weight dictionary。冻结的first-party GroundingDINO commit没有公开完整matcher/criterion主体，不能靠该repo消除冲突。</p>
+<p>面试官若追问“到底哪个对”，可以回答：</p>
+<div class="meta">对我冻结的HF 4.57.1实现，matching是<code>1/5/2</code>、final是<code>2/5/2</code>，与paper Table 8一致；但paper正文给了相反的classification系数。因此我不会把任一组说成跨版本唯一官方值，会查看实际config和loss code。</div>
+<h2 id="9-opd-objective-lineage">9. 本地OPD三条Objective Lineage</h2>
+<h3 id="9-1-assistant-token-sft">9.1 Assistant-token SFT</h3>
+<p><code>point_sft.py</code>分别tokenize full conversation和prompt-only conversation，用<code>prompt_len</code>把<code>labels[:prompt_len]</code>设为<code>-100</code>，collator也用<code>-100</code>补齐labels。直接证据只支持：prompt/padding不进入model loss，assistant response tokens被监督。</p>
+<p>它把实际CE交给loaded model与Transformers <code>Trainer</code>，所以wrapper本身没有冻结具体model class内部shift/reduction。<code>SafeTrainer</code>还会在encode/filter失败、non-finite loss或training exception时产生zero-loss fallback step并写bad-batch log。aggregate loss必须与zero-loss/dummy/retry事件账本一起看。</p>
+<h3 id="9-2-routed-object-region-top-1-ce">9.2 Routed object/region top-1 CE</h3>
+<p><code>train_opd_top1_vl.py</code>只在原assistant supervised positions写object/region teacher top-1 token ID，其余位置为<code>-100</code>。sample-level objective为：</p>
+<div class="formula">\[
+L_b=w_{b,o}\operatorname{mean}_{t\in T_b}\operatorname{CE}(z_{b,t},y^o_{b,t})
++w_{b,r}\operatorname{mean}_{t\in T_b}\operatorname{CE}(z_{b,t},y^r_{b,t}),
+\qquad
+L=\operatorname{mean}_b L_b.
+\]</div>
+<p>变量解释：\(T_b\)是sample \(b\)未被<code>-100</code>屏蔽的response positions；\(w_{b,o},w_{b,r}\)由object/region/both route决定，<code>both</code>为<code>.5/.5</code>；\(z\)是student logits，\(y^o,y^r\)是teacher top-1 token IDs。直觉上，每个样本先对自己的有效tokens求mean，再按route混合，最后样本等权。实现映射：代码以<code>F.cross_entropy(..., reduction="mean")</code>得到sample CE，再做<code>sample_loss.mean()</code>。证据边界：这不是full-distribution distillation，也没有detector query/box matching。</p>
+<p>确定性reduction probe：一个<code>both</code>样本的object/region token-mean CE为<code>2/4</code>，sample loss为<code>3</code>；另一个object样本loss为<code>8</code>，batch mean为<code>5.5</code>。把所有tokens拼接后直接global mean通常不会得到<code>5.5</code>。</p>
+<h3 id="9-3-online-full-vocabulary-teacher-kl">9.3 Online full-vocabulary teacher KL</h3>
+<p><code>train_opd_online_vl.py</code>由student或teacher生成response，再在同一generated sequence上计算teacher/student full-vocabulary logits：</p>
+<div class="formula">\[
+q_{b,t}=\operatorname{softmax}\!\left(z^T_{b,t}+\beta\operatorname{stopgrad}(z^S_{b,t})\right),
+\qquad
+L_b=\frac{1}{|T_b|}\sum_{t\in T_b}\operatorname{KL}(q_{b,t}\Vert p^S_{b,t}),
+\qquad
+L=\operatorname{mean}_b(w_bL_b).
+\]</div>
+<p>变量解释：\(z^T,z^S\)是teacher/student logits；\(\beta\)是veto schedule coefficient，0时target退化为teacher distribution；\(p^S\)是student softmax；\(T_b\)是full response或prefix positions；\(w_b\)是route weight。直觉上，它让student拟合整个vocabulary distribution，而非只拟合teacher argmax token。实现映射：代码先逐token KL，再以<code>token_mask.sum(...).clamp_min(1)</code>做sample mean，最后<code>(sample_loss*weights).mean()</code>。证据边界：KL下降不证明teacher正确、parser改善或robot成功；teacher noise属于PER-011。</p>
+<p>online路径还要求microbatch内route一致；ZeRO-3预载teacher时，各rank也必须走一致route，否则teacher调用和collective sequence可能失配。</p>
+<h2 id="10-loss-hungarian-detector-loss">10. 为什么三条本地Loss都不是Hungarian Detector Loss</h2>
+<table><thead><tr><th>能力/字段</th><th>显式Grounding detector</th><th>本地SFT</th><th>本地top-1 CE</th><th>本地online KL</th></tr></thead><tbody>
+<tr><td>query set <code>[B,Q,*]</code></td><td>有</td><td>无直接证据</td><td>无</td><td>无</td></tr>
+<tr><td>Hungarian assignment</td><td>有</td><td>无</td><td>无</td><td>无</td></tr>
+<tr><td>unmatched-query negative</td><td>有</td><td>无</td><td>无</td><td>无</td></tr>
+<tr><td>box L1/GIoU head</td><td>有</td><td>无</td><td>无</td><td>无</td></tr>
+<tr><td>response token mask</td><td>非主要接口</td><td><code>-100</code></td><td><code>-100</code></td><td>prefix/full mask</td></tr>
+<tr><td>teacher target</td><td>非必要</td><td>gold assistant token</td><td>teacher top-1 token</td><td>full-vocab distribution</td></tr>
+<tr><td>reduction unit</td><td>query-token/GT boxes</td><td>model内部未完全冻结</td><td>token→sample→route→batch</td><td>token→sample→route→batch</td></tr>
+</tbody></table>
+<p>“grounding数据 + 生成式token loss”可以训练模型输出point/box/text，但不能因此把其architecture/objective重命名为set-prediction detector。面试中先说objective family，再说target、mask与reduction，能够避免术语漂移。</p>
+<h2 id="11-2500-metrics">11. 2500行Metrics应该怎样解释</h2>
+<p>冻结CSV共2500行，从raw rows重算后与summary JSON一致：</p>
+<table><thead><tr><th>Window</th><th>loss</th><th>opd_loss</th><th>top-k overlap</th><th>grad_norm</th><th>opd_loss_tokens</th></tr></thead><tbody>
+<tr><td>first 100 mean</td><td>0.107026</td><td>0.091948</td><td>0.610231</td><td>8.164954</td><td>35.02</td></tr>
+<tr><td>last 100 mean</td><td>0.029667</td><td>0.029326</td><td>0.828569</td><td>1.841578</td><td>33.29</td></tr>
+<tr><td>last row / step 2500</td><td>0.0288</td><td>0.020672</td><td>0.806510</td><td>0.671648</td><td>24.0</td></tr>
+</tbody></table>
+<p>这支持“归档optimization/logging trace内部存在下降趋势，summary算术可复算”。它不支持：</p>
+<ul><li>某一设计是唯一原因；</li><li>checkpoint已经不可变绑定到这些rows；</li><li>same-protocol holdout parser或grounding metric提升；</li><li>teacher target更正确；</li><li>robot rollout或closed-loop success提升。</li></ul>
+<p>更可信的证据链应为<code>step -&gt; resolved config/command -&gt; immutable checkpoint -&gt; raw holdout prediction -&gt; parser/metric protocol -&gt; robot episode</code>。缺任一层时，只在已闭合层陈述结论。</p>
+<h2 id="12-typed-loss-manifest">12. Typed Loss Manifest</h2>
+<p>只记录一个scalar <code>loss</code>无法复现objective。建议最小记录：</p>
+<pre><code class="language-json">{
+  &quot;sample_ids&quot;: [],
+  &quot;model_checkpoint_revision&quot;: &quot;...&quot;,
+  &quot;code_config_processor_revision&quot;: &quot;...&quot;,
+  &quot;objective_family&quot;: &quot;hungarian_detector | assistant_ce | routed_top1_ce | online_teacher_kl&quot;,
+  &quot;prediction_schema&quot;: {},
+  &quot;target_schema&quot;: {},
+  &quot;positive_map_revision&quot;: &quot;...&quot;,
+  &quot;matching_costs&quot;: {},
+  &quot;loss_coefficients&quot;: {},
+  &quot;negative_semantics&quot;: {},
+  &quot;masks&quot;: {&quot;text&quot;: null, &quot;prompt&quot;: null, &quot;padding&quot;: null, &quot;token&quot;: null},
+  &quot;reduction_order&quot;: [&quot;element&quot;, &quot;token_or_object&quot;, &quot;sample&quot;, &quot;batch&quot;, &quot;worker&quot;],
+  &quot;num_targets_per_rank&quot;: [],
+  &quot;auxiliary_encoder_branches&quot;: {},
+  &quot;zero_loss_dummy_retry_counts&quot;: {},
+  &quot;raw_loss_dict&quot;: {},
+  &quot;valid&quot;: true,
+  &quot;invalid_reason&quot;: null
+}</code></pre>
+<p>这个manifest把“什么被监督、哪些位置被mask、怎么归一化、哪些分支计权、是否有fallback”从口头假设变成运行证据。对于本地OPD，还应保存route、response/prefix长度和teacher/student checkpoint；对于detector，还要保存positive map与per-rank GT counts。</p>
+<h2 id="13-step">13. 可审计训练Step伪代码</h2>
+<pre><code class="language-python">def detector_training_step(batch, model, matcher, criterion):
+    # 1. Freeze prediction/target schema and valid text positions.
+    outputs = model(batch[&quot;images&quot;], batch[&quot;text_tokens&quot;])
+    targets = build_box_and_token_targets(batch)
+    text_mask = batch[&quot;text_mask&quot;]
+
+    # 2. Build pairwise class/L1/GIoU costs only for assignment.
+    cost = matcher.pairwise_cost(outputs, targets, text_mask)
+    indices = matcher.hungarian(cost)
+
+    # 3. Compute final differentiable losses after assignment.
+    loss_dict = criterion(outputs, targets, indices, text_mask)
+
+    # 4. Apply runtime weight_dict; logging-only keys get no gradient weight.
+    total = sum(loss_dict[k] * criterion.weight_dict[k]
+                for k in loss_dict if k in criterion.weight_dict)
+
+    # 5. Persist denominators, masks, assignments and fallback events.
+    save_loss_manifest(batch, outputs, targets, indices, loss_dict, total)
+    return total</code></pre>
+<p>这段是工程伪代码，不是某个repository的可直接调用API。关键检查点是matching与criterion分层、<code>weight_dict</code>决定哪些key进入total、manifest保存真实denominator与mask。</p>
+<h2 id="14-failure-taxonomy">14. Failure Taxonomy与诊断顺序</h2>
+<table><thead><tr><th>失败层</th><th>症状</th><th>常见根因</th><th>首个检查</th></tr></thead><tbody>
+<tr><td>target/map</td><td>phrase对错token，特殊字符下异常</td><td>char span/tokenizer/map revision错</td><td>raw tokens + positive map golden case</td></tr>
+<tr><td>matching</td><td>assignment频繁跳、duplicate责任</td><td>cost尺度/格式/系数错</td><td>component cost matrix + box format</td></tr>
+<tr><td>negative</td><td>loss被大量easy negatives主导</td><td>Q/L变化、mask漏、target全零异常</td><td>positive/negative/masked counts</td></tr>
+<tr><td>box</td><td>GIoU/L1异常或NaN</td><td><code>cxcywh/xyxy</code>、归一化、degenerate box</td><td>pre/post conversion tensors</td></tr>
+<tr><td>reduction</td><td>world size或batch变化时scale漂移</td><td>denominator/reduction顺序错</td><td>numerator + per-rank num_boxes</td></tr>
+<tr><td>auxiliary</td><td>total loss多出或少掉层</td><td>weight dict/two-stage flag不一致</td><td>raw loss dict + resolved config</td></tr>
+<tr><td>local SFT</td><td>loss虚低、有效token骤降</td><td><code>-100</code> mask或zero-loss fallback</td><td>valid-token与fallback ledger</td></tr>
+<tr><td>local route</td><td>object/region loss不可比</td><td>route混批、sample/global mean混淆</td><td>per-sample route + token counts</td></tr>
+<tr><td>evidence</td><td>loss下降却metric不升</td><td>checkpoint/parser/protocol未绑定</td><td>immutable eval bundle</td></tr>
+</tbody></table>
+<p>推荐顺序：schema与token map → raw target/mask counts → cost components → assignment probe → box format → numerator/denominator → auxiliary weight dict → zero-loss/route events → immutable checkpoint → PER-010 holdout protocol。先查合同，通常比先调learning rate更有解释力。</p>
+<h2 id="15">15. 面试回答模板、追问与危险答案</h2>
+<h3 id="15-1">15.1 两分钟结构化回答</h3>
+<ol><li>用一句话分开matching cost与final loss；</li><li>报出<code>[B,Q,L]</code> token-axis logits、<code>[B,Q,4]</code> boxes和positive map；</li><li>解释matched/unmatched/non-target/padding/dataset negative；</li><li>说明focal、L1/GIoU及GT-box distributed normalization；</li><li>主动指出paper正文/Table 8权重冲突与runtime config门；</li><li>落到本地OPD三条CE/KL lineage，不夸成Hungarian detector；</li><li>最后说loss曲线只证明optimization trace，metric/robot证据仍需绑定。</li></ol>
+<h3 id="15-2">15.2 高频追问</h3>
+<table><thead><tr><th>追问</th><th>回答抓手</th></tr></thead><tbody>
+<tr><td>Hungarian matching可反向传播吗？</td><td>assignment是离散责任分配；梯度来自assignment后的可微loss</td></tr>
+<tr><td>unmatched query完全没loss吗？</td><td>无box target，但通常仍有全零token classification target</td></tr>
+<tr><td>padding算negative吗？</td><td>不算；由<code>text_mask</code>或<code>labels=-100</code>排除</td></tr>
+<tr><td>focal loss等于hard-negative mining吗？</td><td>不等于；一个是loss reweighting，一个是数据/样本选择</td></tr>
+<tr><td>为什么除GT boxes而不是tokens？</td><td>这是冻结criterion的scale合同；必须和valid-token numerator一起理解</td></tr>
+<tr><td>aux层复用final matching吗？</td><td>冻结HF bridge会对每个aux output重新matching</td></tr>
+<tr><td><code>cardinality_error</code>是否优化？</td><td>该bridge只logging，未进weight dict</td></tr>
+<tr><td>Grounding DINO权重是多少？</td><td>先问matching还是final、paper位置与版本；HF 4.57.1与Table 8一致</td></tr>
+<tr><td>OPD top-1和online KL差别？</td><td>argmax token CE vs full-vocabulary distribution KL，mask/reduction也需分别冻结</td></tr>
+<tr><td>loss下降能证明grounding提升吗？</td><td>不能；要绑定checkpoint、raw prediction和同protocol metric</td></tr>
+</tbody></table>
+<h3 id="15-3">15.3 危险答案</h3>
+<ul><li>“Hungarian cost就是训练总loss”；</li><li>“未匹配query和padding都是negative”；</li><li>“用了focal loss就做了hard-negative mining”；</li><li>“所有loss都按batch mean”；</li><li>“loss dict里出现的项都会反向传播”；</li><li>“Grounding DINO官方权重固定就是某一组数字”；</li><li>“OPD用了point/box数据，所以loss就是Grounding DINO loss”；</li><li>“2500步loss下降证明holdout和机器人效果提升”。</li></ul>
+<h2 id="16-project-truth-boundary">16. Project Truth Boundary与补证顺序</h2>
+<table><thead><tr><th>项目口径</th><th>当前可安全表述</th><th>当前不能声称</th></tr></thead><tbody>
+<tr><td>Public detector</td><td>能解释Grounding DINO paper与HF 4.57.1 matching/focal/L1/GIoU/reduction</td><td>本地部署或复现了Grounding DINO training</td></tr>
+<tr><td>OPD SFT</td><td>prompt/padding以<code>-100</code> mask，assistant tokens被监督</td><td>wrapper证明了exact model-internal CE reduction</td></tr>
+<tr><td>OPD top-1</td><td>object/region teacher top-1 CE、route weights、sample→batch reduction</td><td>Hungarian、box head或full-distribution KL</td></tr>
+<tr><td>OPD online</td><td>generated-response full-vocab KL、prefix mask、route/rank invariants</td><td>teacher可靠、holdout/robot uplift</td></tr>
+<tr><td>Metrics</td><td>2500 rows与summary算术一致，optimization trace可复算</td><td>checkpoint/eval绑定、因果改进或candidate ownership</td></tr>
+</tbody></table>
+<p>补证优先级：</p>
+<ol><li>exact command、resolved config、model class与immutable checkpoint；</li><li>batch target/mask/route manifest与raw per-component loss；</li><li>numerator、denominator、world size及zero-loss/dummy/retry ledger；</li><li>per-step或interval checkpoint到metrics的绑定；</li><li>same-protocol holdout raw predictions、strict parser与PER-010 metrics；</li><li>matched ablation和error taxonomy；</li><li>最后才连接controller/robot result与candidate ownership。</li></ol>
+<h2 id="17">17. 结论与下一步</h2>
+<p>PER-009的核心是把“责任分配”和“梯度目标”分开：Hungarian matcher在query×GT pairwise cost上选一对一assignment；final criterion再对matched token/box和unmatched token negatives计算focal、L1、GIoU及auxiliary/encoder loss。padding通过mask排除，dataset/hard negative需要单独recipe，reduction顺序与distributed denominator必须视为objective的一部分。</p>
+<p>本地OPD的直接证据支持assistant-token SFT、routed teacher top-1 CE和generated-response full-vocabulary KL三条lineage，但没有显式query set、Hungarian matcher、unmatched-query negatives或L1/GIoU head。2500行metrics只闭合optimization trace算术，未闭合checkpoint→holdout→robot因果链。因此本节点保持<code>WARN</code>。</p>
+<p>当前PER-009 source、knowledge与atomic card已同步；全局260张题卡仍全部<code>unseen</code>。下一bounded slice只做<code>VLA-PER-010</code> metric/parser source freeze；不生成knowledge/card，不创建<code>coaching_state.md</code>，不改变任何mastery。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_06_per009_grounding_matching_negative_loss_source_freeze.html">PER-009 Grounding Matching / Negative / Loss Source Freeze</a>。</li><li><a href="https://arxiv.org/abs/2303.05499v5">Grounding DINO v5</a>。</li><li><a href="https://arxiv.org/abs/2005.12872v3">DETR v3</a>。</li><li><a href="https://arxiv.org/abs/1708.02002v2">Focal Loss v2</a>。</li><li><a href="https://arxiv.org/abs/1902.09630v2">Generalized IoU v2</a>。</li><li><a href="https://github.com/IDEA-Research/GroundingDINO/tree/856dde20aee659246248e20734ef9ba5214f5e44">IDEA-Research/GroundingDINO@856dde20</a>。</li><li><a href="https://github.com/huggingface/transformers/blob/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/loss/loss_grounding_dino.py">Transformers 4.57.1 Grounding DINO loss</a> 与 <a href="https://github.com/huggingface/transformers/blob/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/loss/loss_for_object_detection.py">object-detection loss</a>。</li><li><a href="vol_06_per007_open_vocabulary_grounding_pipeline.html">PER-007 Open-vocabulary Grounding</a> 与 <a href="vol_06_per008_representation_choice.html">PER-008 Representation Choice</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>。</li></ol>
+</article></body></html>

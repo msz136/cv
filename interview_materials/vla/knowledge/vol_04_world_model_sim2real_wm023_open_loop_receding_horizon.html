@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 World Model / Sim2Real：Open-loop Plan 与 Receding-horizon Replanning（WM-023）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm023_open_loop_receding_horizon.md">
+<meta name="aris:source-sha256" content="404113fcca243033d486a13b532d87bd7fd5630542d630c17fcbefa616ce58da">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>404113fcca243033d486a13b532d87bd7fd5630542d630c17fcbefa616ce58da</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm023_open_loop_receding_horizon.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 先给面试结论</a></li><li><a href="#2">2. 五条时间轴</a></li><li><a href="#3-h-k">3. \(H\) 与 \(K\) 的取舍</a></li><li><a href="#3-1-h">3.1 增大 \(H\)：更有远见，但预测更脆弱</a></li><li><a href="#3-2-k">3.2 减小 \(K\)：更快纠偏，但更难跑稳</a></li><li><a href="#3-3-k">3.3 增大 \(K\)：吞吐和连贯性更好，但开环风险更大</a></li><li><a href="#4">4. 执行架构：同步、异步与事件触发</a></li><li><a href="#5-sweep">5. 用一个工程目标组织 sweep</a></li><li><a href="#6">6. 可审计伪代码</a></li><li><a href="#7">7. 失败诊断与项目边界</a></li><li><a href="#8">8. 参考与结论</a></li></ol></nav>
+<h1>VOL 04 World Model / Sim2Real：Open-loop Plan 与 Receding-horizon Replanning（WM-023）</h1>
+<div class="meta">状态：drafted / VLA-WM-023 / knowledge_25_of_44 / card_pending / WARN 报告日期：2026-07-18 证据截止：2026-07-18 当前节点：回答“多久重新看一次环境”，不把公开 horizon/chunk 或硬件 latency 写成个人部署结果。 前置：<a href="vol_04_world_model_sim2real_wm022_mpc_cem_mppi_best_of_n.html">WM-022 MPC/CEM/MPPI</a>、<a href="../sources/vol_04_wm023_open_loop_receding_horizon_source_freeze.html">WM-023 Source Freeze</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>open-loop plan 与 receding-horizon replanning 如何权衡 latency、鲁棒性和 horizon？高分回答必须区分 \(H\)（看多远）与 \(K\)（执行多久），并把 observation age、queue、controller 和 success protocol 说清楚。</p>
+<h2 id="1">1. 先给面试结论</h2>
+<p>直觉上，open-loop chunk 像“先写一小段动作再执行”：推理只做一次，动作连续，能摊薄 inference latency；代价是执行到 chunk 后半段时 observation 已变旧，遇到扰动、接触或目标移动不能及时纠偏。receding-horizon 则是“预测较长、只执行前缀、重新观察再规划”，用反馈换鲁棒性，但需要更高 query rate、稳定队列和可接受的 p95 latency。</p>
+<p>严格说，\(H\) 是 prediction/planning horizon，\(K\) 是 execution horizon，通常 \(1\le K\le H\)。Diffusion Policy 明确把 observation horizon、action prediction horizon 和 action execution horizon 分开，并定义 \(T_a\) 个 action 在不 re-planning 下执行；其消融把 \(T_a\) 解释成 temporal consistency 与 responsiveness 的 trade-off。[1] PlaNet 则在每个决策时刻用 latent CEM 搜索 action sequence，返回当前时刻的 first-action mean，新 observation 到来后重新初始化 belief。[2]</p>
+<p>所以不能回答“\(K=1\) 一定最好”或“chunk 越长吞吐越高”。真正的选择是：在给定控制周期、端到端延迟、扰动时间尺度和安全约束下，哪一个 \(K\) 让 action age、queue underrun、切换抖动和恢复延迟都可接受。</p>
+<h2 id="2">2. 五条时间轴</h2>
+<table><thead><tr><th>轴</th><th>符号</th><th>面试中要说什么</th></tr></thead><tbody>
+<tr><td>observation history</td><td>\(T_o\)</td><td>当前策略看多少帧/状态；过短可能看不到速度和接触趋势</td></tr>
+<tr><td>prediction/planning</td><td>\(H\) 或 \(T_p\)</td><td>模型向未来展开多远；越长不只“信息更多”，也会放大 model error、搜索或 denoising 成本</td></tr>
+<tr><td>execution prefix</td><td>\(K\) 或 \(T_a\)</td><td>生成 chunk 后连续执行多少控制步；决定 feedback frequency</td></tr>
+<tr><td>control period</td><td>\(\Delta t=1/f_{\mathrm{ctrl}}\)</td><td>把步数换成物理时间；不能只比较“16 steps”而不说明 Hz</td></tr>
+<tr><td>end-to-end delay</td><td>\(L_{\mathrm{e2e}}\)</td><td>从 observation timestamp 到 controller apply；包括推理、通信、排队和同步，不只是 GPU forward</td></tr>
+</tbody></table>
+<p>对一个长度为 \(K\) 的 chunk，第 \(j\) 个动作看到的 observation 已经老了：</p>
+<div class="formula">\[
+A_j\approx L_{\mathrm{e2e}}+j\Delta t,\qquad j=0,\ldots,K-1.
+\]</div>
+<p>变量解释：\(A_j\) 是 action age；\(L_{\mathrm{e2e}}\) 是第一步 action 可执行前的总延迟；\(j\Delta t\) 是 chunk 内没有新高层 observation 的等待。实现要从带时间戳的 observation、policy 输出、queue 入队/出队和 controller apply 事件计算 \(A_j\)，不能用平均 FPS 替代。</p>
+<h2 id="3-h-k">3. \(H\) 与 \(K\) 的取舍</h2>
+<h3 id="3-1-h">3.1 增大 \(H\)：更有远见，但预测更脆弱</h3>
+<p>较大的 \(H\) 允许 planner 提前考虑抓取前的对齐、障碍绕行或长任务子目标；但每一步模型误差都会进入后续状态，搜索空间、采样数或扩散 denoising 计算也可能上升。PlaNet 的 planning-parameter 讨论明确指出，过短 horizon 不够，过长 horizon 会因搜索空间增大而伤害表现。[2]</p>
+<p>面试中要补一句：增加 \(H\) 不等于增加真实反馈；若 \(K\) 不变，实际仍只执行前缀，后半段只是候选未来的条件。应固定 \(K\)，做 \(H\) matched sweep，并报告 per-offset error、first-failure stage 和 p95 latency。</p>
+<h3 id="3-2-k">3.2 减小 \(K\)：更快纠偏，但更难跑稳</h3>
+<p>小 \(K\) 减少 stale action age，使策略更快响应视觉偏移和接触事件；代价是高层 query 变频繁，推理/通信负载提高，chunk 拼接处可能出现速度或方向不连续。若 \(L_{\mathrm{e2e}}&gt;K\Delta t\)，同步系统会 queue underflow，只能停顿、重复旧动作或触发 fallback。</p>
+<h3 id="3-3-k">3.3 增大 \(K\)：吞吐和连贯性更好，但开环风险更大</h3>
+<p>大 \(K\) 可以 amortize inference，动作 chunk 内更平滑，也减少高层接口调用。但遇到目标移动、抓取接触或终止条件时，策略要等到 chunk 边界才重规划；后半段 action 的 observation age 也更高。ACT 通过 action chunking 减少有效 horizon，并用 temporal ensembling 融合重叠 chunk；这说明“chunk 长度”和“query frequency”可以是两个不同旋钮，而不是把每个 chunk 全部 open-loop 执行。[3]</p>
+<h2 id="4">4. 执行架构：同步、异步与事件触发</h2>
+<ol><li><strong>严格同步</strong>：观察 → 推理 → 执行 \(K\) 步 → 再观察。可解释、易复现；必须检查 \(L_{\mathrm{e2e}}\) 是否小于 \(K\Delta t\)，并记录断流/等待。</li><li><strong>异步 overlap</strong>：当前 chunk 执行时后台准备下一个 chunk。吞吐更好，但每个输出必须带 observation version、model revision 和 deadline；晚到的旧计划不能覆盖新计划。</li><li><strong>事件触发</strong>：默认执行较长前缀，若 action age、视觉偏移、接触异常、value disagreement 或安全事件超过阈值，立即 replan。要把阈值、false positive、fallback 和最坏延迟纳入评估。</li></ol>
+<p>Cosmos/WAM audit 是很好的协议例子：LIBERO 的公开执行合同是 16×7 chunk、默认全 16 步 open-loop；RoboCasa 是 32×7 chunk、默认先执行 16 步再 requery。[4] 这些是指定代码/协议的事实，不是“16 步对所有 VLA 最优”；本地仍需固定 controller、action queue、reset、denormalization 和 episode denominator。</p>
+<h2 id="5-sweep">5. 用一个工程目标组织 sweep</h2>
+<p>可以把设计直觉写成一个待验证的成本，而不是伪装成理论最优：</p>
+<div class="formula">\[
+K^\*=\arg\min_K
+\left[
+\lambda_{\mathrm{compute}}\frac{L_{\mathrm{e2e}}}{K\Delta t}
+\lambda_{\mathrm{stale}}E_{\mathrm{drift}}(K)
+\lambda_{\mathrm{switch}}E_{\mathrm{switch}}(K)
+\lambda_{\mathrm{safety}}E_{\mathrm{safety}}(K)
+\right],
+\qquad 1\le K\le H.
+\]</div>
+<p>第一项表示每个动作承担的平均推理负担；第二项表示开环漂移与扰动；第三项表示 chunk 切换不连续；第四项表示碰撞、终止响应或 fallback 成本。四个 \(E\) 和 \(\lambda\) 必须由任务定义和实验测量，不能从公式直接推导成功率。</p>
+<p>最小实验矩阵：</p>
+<table><thead><tr><th>实验</th><th>固定</th><th>扫描/注入</th><th>必须记录</th></tr></thead><tbody>
+<tr><td>\(K\) sweep</td><td>checkpoint、\(H\)、denoise、reset、controller</td><td>\(K\in\{1,4,8,16\}\) 或任务适配值</td><td>success、stage recovery、action age、jitter、queue underrun</td></tr>
+<tr><td>\(H\) sweep</td><td>checkpoint、\(K\)、执行器</td><td>short/medium/long \(H\)</td><td>per-offset error、first failure、compute、p95 latency</td></tr>
+<tr><td>latency injection</td><td>所有模型和协议</td><td>0/1/2/4 control-step delay</td><td>action age、stale failure、fallback、success</td></tr>
+<tr><td>perturbation</td><td>相同 episode/init</td><td>接触、目标移动、视觉偏移</td><td>recovery latency、replan reason、后续动作</td></tr>
+<tr><td>overlap check</td><td>相同 observation/seed policy</td><td>重叠 chunk 或 temporal ensemble</td><td>action disagreement、融合权重、边界行为</td></tr>
+</tbody></table>
+<h2 id="6">6. 可审计伪代码</h2>
+<pre><code class="language-python">def execute_receding_horizon(policy, env, protocol):
+    # 1. Freeze H, K, checkpoint, normalizer, controller and timestamps.
+    while not terminal:
+        obs = env.observe()
+        plan = policy.predict(obs, horizon=protocol.H)
+        # 2. Execute only K actions, or stop early on an event trigger.
+        for action in plan[:protocol.K]:
+            if stale_or_unsafe(obs, action, protocol):
+                break
+            env.apply(action)
+        # 3. Persist action age, queue state, replan reason and outcome.
+        log_step(obs, plan, protocol)</code></pre>
+<p>这段伪代码的关键不是循环本身，而是 \(H/K\) 的独立字段、event-trigger 的提前中断、timestamped action age 和可回放日志。它不能产生个人 latency 或 success 结果。</p>
+<h2 id="7">7. 失败诊断与项目边界</h2>
+<table><thead><tr><th>症状</th><th>优先怀疑</th><th>最小检查</th></tr></thead><tbody>
+<tr><td>chunk 前半段正常，后半段漂移</td><td>\(K\) 太长或 observation age 增长</td><td>per-step success、action-age 曲线、\(K\) sweep</td></tr>
+<tr><td>\(K\) 很小反而掉点</td><td>queue underflow、chunk switch jitter 或策略不一致</td><td>p95 latency、queue depth、overlap disagreement</td></tr>
+<tr><td>\(H\) 越长 imagined score 越高、真实成功下降</td><td>model/value optimism 或 OOD future</td><td>matched \(H\) sweep、selected-vs-random、future error</td></tr>
+<tr><td>延迟注入后只在某类任务失败</td><td>接触/终止时间尺度与 \(K\) 不匹配</td><td>failure stage、扰动恢复、controller trace</td></tr>
+<tr><td>async 结果偶发倒退</td><td>stale output 覆盖、版本/取消逻辑错误</td><td>observation version、deadline、replan reason</td></tr>
+</tbody></table>
+<p>项目口述可以把 Cosmos/WAM、UWM/LIBERO、OpenPiVLA 和 Robot Harness 接到这些字段上：action chunk、future/value scorer、fixed init、normalizer、controller、timeout、episode trace。但当前工作区没有统一 WM-023 planning runtime、\(H/K\) paired curve、扰动 bundle 或 ownership artifact，安全表达应是“我能设计并审计 horizon/latency contract”，不能说“我已经证明缩短 chunk 提升鲁棒性”。</p>
+<h2 id="8">8. 参考与结论</h2>
+<p>WM-023 的一句话回答是：<strong>\(H\) 决定计划看多远，\(K\) 决定多久接受旧观测；较长 \(K\) 摊薄 latency 并保持动作连续，较短 \(K\) 提高反馈频率和扰动恢复，但会增加 query、队列和切换风险。最终要在相同 checkpoint、reset、controller、denormalizer、success predicate 和 episode denominator 下做 \(H/K\)、latency injection 与 perturbation paired sweep。</strong></p>
+<p>本节点保持 WARN，题卡保持 unseen；真实口述前不创建 coaching state。</p>
+<p>参考：<a href="../sources/vol_04_wm023_open_loop_receding_horizon_source_freeze.html">WM-023 Source Freeze</a>、<a href="https://arxiv.org/abs/1811.04551">PlaNet</a>、<a href="https://arxiv.org/abs/2303.04137">Diffusion Policy</a>、<a href="https://arxiv.org/abs/2304.13705">ACT</a>、<a href="../sources/vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos/WAM audit</a>、<a href="vol_04_world_model_sim2real_wm019.html">WM-019 Metric Boundary</a>。</p>
+</article></body></html>

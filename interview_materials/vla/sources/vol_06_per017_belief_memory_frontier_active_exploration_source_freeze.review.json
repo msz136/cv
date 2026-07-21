@@ -1,0 +1,47 @@
+{
+  "artifact": "sources/vol_06_per017_belief_memory_frontier_active_exploration_source_freeze.md",
+  "html": "sources/vol_06_per017_belief_memory_frontier_active_exploration_source_freeze.html",
+  "review_date": "2026-07-20",
+  "status": "source_frozen / primary_official_checked / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "60E794BB144C14CB38F57B34267BEBFFD22A34FC56045317842F51F9CB4A24F3",
+  "scope": {
+    "stable_id": "VLA-PER-017",
+    "primary_papers": 8,
+    "official_repositories": 6,
+    "official_files_hashed": 36,
+    "deterministic_probes": 10,
+    "deterministic_probes_passed": 10,
+    "canonical_project_inventories": 5,
+    "local_direct_exception_files": 6,
+    "generated_knowledge_nodes": 1,
+    "generated_question_cards": 1,
+    "mastery_changes": 0
+  },
+  "checks": {
+    "bounded_slice": "PASS (source, knowledge and exactly one PER-017 card are synchronized across separate bounded slices; no PER-018 artifact or mastery change)",
+    "node_boundary": "PASS (adds POMDP belief, recurrent/spatial/episodic memory, frontier/IG, revisit/stuck/unreachable and coverage/visitation/revisit contracts; PER-005/016/018/019 responsibilities remain explicit)",
+    "primary_pdf_integrity": "PASS WITH WARNING (8/8 fixed PDFs have SHA, %PDF, trailing %%EOF and readable page text; one of 51 Exploring Exploration pages has no extracted text; all eight representative pages were rendered at 150 DPI and visually readable)",
+    "official_code_freeze": "PASS WITH WARNING (6 fixed commits with date/license and 36 byte-level file SHAs; paper/data/weights/dependencies are not covered by repo license)",
+    "belief_math": "PASS (POMDP tuple, Bayes predict/correct/normalize, zero-likelihood fail-closed and 0.272727/0.727273 probe checked)",
+    "memory_boundary": "PASS (true state, probabilistic belief, recurrent latent, explicit map and episodic history are separated; reset/revision invalidation is explicit)",
+    "frontier_contract": "PASS (known-free adjacent unknown, inflation/reachability/revision/staleness gates and predicted-free risk boundary are explicit)",
+    "utility_boundary": "PASS (IG/goal/coverage/novelty/cost/risk formula is labeled engineering synthesis rather than a paper-exact or PONI-exact equation)",
+    "metric_contract": "PASS WITH WARNING (coverage/area seen/visitation/revisit/frontier reach and denominators are separated; no local episode bundle exists)",
+    "deterministic_probes": "PASS (10/10 expected decisions matched; probes are contract tests, not paper reproductions or project benchmarks)",
+    "local_project_truth_boundary": "PASS WITH WARNING (5 inventory SHAs and 6 Robot Harness files checked; no navigation belief/frontier/active-exploration runtime or episode trace found)",
+    "local_history_test": "WARN (python -m pytest -q server/tests/test_history_semantic_compaction.py produced 2 failed, 2 passed, 2 warnings; failure is preserved and not repaired in this source-freeze slice)",
+    "practice_state": "PASS (268 cards including PER-017 remain unseen; no coaching_state.md)",
+    "html_static_validation": "PASS (ARIS academic v1, one H1, valid hierarchy, balanced formulas, zero .formula em, literal LaTeX subscripts, internal overflow rules, local links and synchronized source SHA)",
+    "browser_visual_check": "PASS (localhost visual QA at 1440x1000 and 800x1000: desktop 260px sticky TOC, narrow static TOC, 6/6 MathJax formula blocks rendered, zero page-wide overflow, zero formula em, tables/code/formulas constrained to the main column)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized PER-017 atomic card unseen until a real candidate oral answer occurs.",
+    "Collect a typed local episode/map/belief/frontier/visited trace before claiming a project exploration runtime or metric.",
+    "Repair and rerun the two failing Robot Harness semantic-compaction tests only in an authorized project-code slice; they are evidence, not part of this source report fix.",
+    "Repeat representative browser QA after future renderer or content changes.",
+    "Keep all 268 existing cards unseen until real candidate answers occur."
+  ],
+  "next": "Freeze only the VLA-PER-018 navigation BC/DAgger/RL/exposure-bias source; do not generate knowledge/card or change mastery in the same slice."
+}

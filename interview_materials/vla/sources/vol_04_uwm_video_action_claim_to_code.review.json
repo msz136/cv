@@ -1,0 +1,69 @@
+{
+  "artifact": "sources/vol_04_uwm_video_action_claim_to_code.md",
+  "html": "sources/vol_04_uwm_video_action_claim_to_code.html",
+  "review_date": "2026-07-16",
+  "status": "drafted / independent_review_complete",
+  "verdict": "WARN",
+  "source_sha256": "a59b315e97e63568f2d9d1f5587fc7beb9109018a96fa49f6569f8818814074d",
+  "evidence_cutoff": "2026-07-16",
+  "upstream": {
+    "paper": "arXiv 2504.02792v3",
+    "paper_revision_verified": true,
+    "paper_abstract_verified": true,
+    "paper_full_text_verified": false,
+    "official_project_page_verified": true,
+    "repository": "WEIRDLabUW/unified-world-model",
+    "repository_commit": "b7d4067c8859775e5b08f681e76d538015cdd445",
+    "repository_commit_verified": true,
+    "repository_commit_date": "2025-10-08",
+    "repository_license_file_found": false,
+    "repository_checkpoint_revision": "not provided; README links Google Drive folders only",
+    "historical_boundary": "Frozen repository post-dates paper v3; code is audited as a later implementation, not assumed to be the historical paper code."
+  },
+  "coverage": {
+    "question_ids": [
+      "VLA-WM-015",
+      "VLA-WM-016",
+      "VLA-WM-017",
+      "VLA-WM-018",
+      "VLA-WM-019",
+      "VLA-WM-020",
+      "VLA-WM-039",
+      "VLA-WM-040",
+      "VLA-WM-041",
+      "VLA-WM-042",
+      "VLA-WM-043",
+      "VLA-WM-044"
+    ],
+    "upstream_claims_audited": 18,
+    "local_project_claims_verified": 0
+  },
+  "checks": {
+    "paper_and_official_site": "PASS WITH WARNING (abstract and official method page verified; full paper text unavailable in this batch)",
+    "dual_modality_architecture": "PASS (action/video tokens, shared transformer, separate timestep embeddings and decoders mapped)",
+    "action_free_video_semantics": "PASS WITH WARNING (fully-noised action timestep verified; loss exclusion not claimed)",
+    "action_mask_code_boundary": "PASS WITH WARNING (frozen path changes action timestep but action MSE remains unmasked)",
+    "inference_mode_mapping": "PASS AS SAME-SOURCE INFERENCE (marginal/forward/inverse/video/joint methods mapped; scheduler endpoint direction still needs runtime test)",
+    "shape_and_horizon_contract": "PASS (num_frames, obs history, action length, LIBERO/DROID action dimensions mapped)",
+    "normalizer_boundary": "PASS WITH WARNING (DROID normalizer direct; LIBERO Robomimic path not assumed normalized)",
+    "checkpoint_boundary": "PASS WITH WARNING (saved artifact fields mapped; Google Drive revision/hash missing)",
+    "libero_rollout_boundary": "PASS (wrapper and libero_90 pretraining rollout skip mapped; strict benchmark not claimed)",
+    "metric_boundary": "PASS (action/image proxies separated from closed-loop success)",
+    "license_boundary": "PASS WITH WARNING (no LICENSE/COPYING/NOTICE in frozen tree)",
+    "paper_repo_checkpoint_runtime_chain": "PASS AS AUDIT FRAMEWORK (paper, repo, checkpoint and runtime separated)",
+    "html_static_validation": "PASS (one h1, source SHA, 16 unique anchors, valid fragments, 7 consistent tables, MathJax)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "independent_fact_review": "PASS WITH WARNING (vol_04_uwm_independent_fact_review.md/.html/.review.json independently fetched frozen raw files; runtime/checkpoint remain open)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Independently verify scheduler timesteps[0]/[-1] noise semantics with the pinned diffusers version.",
+    "Run the action-free video sample-loss gradient test and an explicit sample-mask ablation.",
+    "Download and hash one upstream checkpoint if access and license permit; record config and normalizer manifest.",
+    "Verify LIBERO strict init/reset, task split, camera transform and success protocol against the benchmark source.",
+    "Collect local UWM/WAM checkpoint, logs, rollouts and contribution diff for VOL 07.",
+    "Keep all VOL 04 cards unseen until real oral practice.",
+    "Independent review confirms method/code boundaries but does not verify user project scores or ownership."
+  ],
+  "next": "WM-015 and WM-016 knowledge/card slices are synchronized; next run an oral drill or keep WM-017..038 source-first and Source Audit C bounded."
+}

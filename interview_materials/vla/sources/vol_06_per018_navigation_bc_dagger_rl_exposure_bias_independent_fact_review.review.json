@@ -1,0 +1,50 @@
+{
+  "artifact": "sources/vol_06_per018_navigation_bc_dagger_rl_exposure_bias_independent_fact_review.md",
+  "html": "sources/vol_06_per018_navigation_bc_dagger_rl_exposure_bias_independent_fact_review.html",
+  "review_date": "2026-07-20",
+  "status": "independent_fact_reviewed / VLA-PER-018 / public_facts_reconciled",
+  "verdict": "PASS WITH WARNING",
+  "source_sha256": "21EA6D806ED42B09279569043E76A33E0CF04733B2ACF3E77241ED18FDD83AB6",
+  "scope": {
+    "primary_papers_refetched": 7,
+    "primary_pdf_pages": 96,
+    "primary_pdf_sha_matches": 7,
+    "official_files_refetched": 10,
+    "official_file_sha_matches": 10,
+    "fixed_official_repositories": 4,
+    "deterministic_probes": 10,
+    "deterministic_probes_passed": 10,
+    "local_direct_files_rehashed": 8,
+    "local_direct_sha_matches": 8,
+    "source_knowledge_card_clusters_reconciled": 8,
+    "display_formulas": 5,
+    "tables": 6,
+    "code_or_pseudocode_blocks": 1,
+    "mastery_changes": 0
+  },
+  "checks": {
+    "bounded_slice": "PASS (one PER-018 independent fact-review triplet; no new card, PER-019 artifact, coaching state or mastery change)",
+    "primary_pdf_refetch": "PASS (7 explicit arXiv versions, 96 pages and byte SHAs exactly match the source freeze)",
+    "official_code_refetch": "PASS (10 representative files across four fixed repositories exactly match source-freeze SHAs)",
+    "bc_forcing_scheduled_sampling": "PASS WITH WARNING (R2R explicitly calls its current-pose student forcing online DAgger; the equivalence is scope-limited and cannot be generalized without current-state oracle labels)",
+    "dagger_identity": "PASS (mixture policy, visited-state expert labels, aggregate dataset, beta schedule and VLN-CE paper/code/config mapping are independently located)",
+    "gae_ppo_identity": "PASS WITH WARNING (GAE and PPO paper equations plus Habitat ratio/value/entropy paths are verified; the knowledge total loss is a teaching synthesis rather than a byte-exact expansion of the 2026 code)",
+    "termination_truncation": "PASS WITH WARNING (the engineering contract is valid, but pinned Habitat ppo_trainer collapses env dones into masks and does not explicitly expose terminated/truncated)",
+    "ddppo_boundary": "PASS (distributed/decentralized/synchronous/preemption paper claims and DDP/config code mapping are verified; local multi-GPU does not imply paper-scale reproduction)",
+    "deterministic_probes": "PASS (10/10 mask, exposure, schedule, beta, aggregate, inflection, GAE, PPO-clip and bootstrap counterexamples independently recomputed)",
+    "source_knowledge_card_reconciliation": "PASS WITH WARNING (eight claim clusters align; the Habitat done-mask version warning must remain explicit)",
+    "local_project_truth_boundary": "PASS WITH WARNING (8/8 local file SHAs match and only adjacent offline/reward/eval/teacher-rollout facts are present; no local navigation DAgger/PPO runtime or ownership is inferred)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, valid hierarchy, 5 balanced formulas, 6 tables, 1 commented code block, zero formula-em nodes, local links and source SHA valid)",
+    "browser_visual_check": "PASS (localhost QA at 1440x1000 and 800x1000; 260px sticky desktop TOC becomes 753px static narrow TOC, 5/5 MathJax blocks render, zero page-wide overflow, zero formula-em, and all 6 tables/1 code block/formulas remain within the viewport)",
+    "practice_state": "PASS (all 269 cards remain unseen; coaching_state.md absent)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the pinned Habitat done-mask behavior distinct from the target terminated/truncated engineering contract.",
+    "Collect local navigation oracle/DAgger rounds or fresh PPO rollout/checkpoint/eval bundles before attaching project runtime/result claims.",
+    "Confirm candidate ownership for the eight local files and associated design/run decisions.",
+    "Conduct a real PER-018 oral drill before changing mastery or creating coaching_state.md.",
+    "Repeat representative browser QA after future renderer or content changes."
+  ],
+  "next": "Conduct one real PER-018 oral drill if the candidate is available; otherwise choose one pending VOL 04 Audit C/D independent review without starting PER-019."
+}

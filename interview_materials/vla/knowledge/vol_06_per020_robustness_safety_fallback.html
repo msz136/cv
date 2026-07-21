@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 PER-020：Robustness、Safety、Fallback 与风险门</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per020_robustness_safety_fallback.md">
+<meta name="aris:source-sha256" content="412f737102741e0b826667021f3bb4b835fc36492e3a2685984aa17ea6a2bd55">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>412f737102741e0b826667021f3bb4b835fc36492e3a2685984aa17ea6a2bd55</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per020_robustness_safety_fallback.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 学习出口</a></li><li><a href="#2">2. 一分钟心智模型</a></li><li><a href="#3-robustness-shifted-input">3. Robustness：先冻结 shifted input，再谈分数</a></li><li><a href="#3-1-corruption-family-severity">3.1 Corruption family 与 severity</a></li><li><a href="#3-2-shifted-metric">3.2 一个可审计的 shifted metric</a></li><li><a href="#3-3-family">3.3 汇总分数不能隐藏 family</a></li><li><a href="#4-dataset-shift-uncertainty-calibration">4. Dataset shift 下的 uncertainty 与 calibration</a></li><li><a href="#4-1-confidence-risk">4.1 Confidence 不是 risk</a></li><li><a href="#4-2-risk-coverage">4.2 Risk–coverage</a></li><li><a href="#4-3-uncertainty">4.3 Uncertainty 的三层输入</a></li><li><a href="#5-safety">5. Safety：把风险连接到执行状态机</a></li><li><a href="#5-1-proposal-e-stop">5.1 从 proposal 到 E-stop</a></li><li><a href="#5-2-hard-constraint">5.2 Hard constraint 与风险门</a></li><li><a href="#5-3-chunked-vla-stale-action">5.3 Chunked VLA 的 stale action</a></li><li><a href="#6-robustness-safety-recovery-manifest">6. Robustness、Safety 与 Recovery 的最小 manifest</a></li><li><a href="#7-fail-closed">7. Fail-Closed 伪代码</a></li><li><a href="#8-failure-taxonomy-symptom-first-divergence">8. Failure Taxonomy：从 symptom 到 first divergence</a></li><li><a href="#9">9. 方法比较：面试一张表讲清楚</a></li><li><a href="#10">10. 五项目真实性边界</a></li><li><a href="#11">11. 两档面试回答</a></li><li><a href="#11-1-30">11.1 约 30 秒回答</a></li><li><a href="#11-2-2">11.2 约 2 分钟机制回答</a></li><li><a href="#12">12. 高频追问与答题抓手</a></li><li><a href="#13">13. 本页证据边界与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 PER-020：Robustness、Safety、Fallback 与风险门</h1>
+<div class="meta">状态：<code>knowledge_drafted / VLA-PER-020 / source_frozen / project_truth_bounded / card_synced / WARN</code> 更新日期：2026-07-21 权威来源：<a href="../sources/vol_06_per020_robustness_safety_fallback_source_freeze.html">PER-020 Robustness / Safety Source Freeze</a> 学习边界：本页把 corruption protocol、dataset shift uncertainty、risk–coverage、hard constraint、风险门、chunk queue flush、fallback、recovery 与 E-stop 转成可面试、可审计的知识；题卡已在独立切片同步并保持 <code>unseen</code>，不修改 276 张题卡的 mastery，不创建 <code>coaching_state.md</code>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>VLA 面对视觉腐蚀、传感器 dropout、OOD 场景或执行风险时，怎样区分 robustness score、uncertainty calibration、hard constraint、risk gate、fallback、recovery 与 E-stop？如何让每个结论都能回到 corruption family、severity、split、seed、denominator、checkpoint 和 raw trace，而不是把高 confidence 或模拟器 cost 误写成安全保证？</p>
+<h2 id="1">1. 学习出口</h2>
+<p>完成本页后，面试中应能做到：</p>
+<ol><li>解释为什么 robustness 不是一个裸分数，而是 corruption family、severity、split、seed、metric、denominator 的协议元组。</li><li>区分预生成 corruption 与在线随机注入，说明 severity 表、RNG、dtype、clip 与 artifact SHA 对复现的影响。</li><li>说明 clean accuracy、OOD confidence、calibration、risk–coverage、false-safe 和 false-alarm 的边界。</li><li>设计从 observation validity 到 policy proposal、risk gate、bounded prefix、queue flush、recovery、fallback、E-stop 的执行状态机。</li><li>写出 chunked VLA 风险事件后的 fail-closed 伪代码，并说明 stale action 为什么必须被丢弃。</li><li>用 visual/sensor、representation/model、geometry/time、dynamics/control、protocol 和 safety orchestration 组织 failure diagnosis。</li><li>对 OpenPiVLA、Robot Harness、OPD、WAM/Cosmos、UWM/LIBERO 给出不越界的项目回答。</li><li>明确哪些只是公开机制、哪些是本地证据、哪些是推断、哪些仍未核实。</li></ol>
+<h2 id="2">2. 一分钟心智模型</h2>
+<pre><code class="language-text">fixed task / split / clean-shift pair
+              ↓
+corruption family + severity + seed + generated artifact
+              ↓
+policy output + uncertainty + validity bits
+              ↓
+risk gate: accept / reject
+              ↓
+bounded action prefix or flush queued chunk
+              ↓
+recover → fallback → E-stop (latched terminal state)
+              ↓
+episode trace + cost/risk/coverage + failure taxonomy</code></pre>
+<p>主线只有一句话：<strong>先冻结输入与评估协议，再判断模型是否知道自己不确定，最后把不确定性连接到有日志、有终止语义的控制动作。</strong> <code>randomize</code>、<code>confidence</code>、<code>cost</code> 或 <code>safety</code> 这些字段名本身，都不能替代这三层证据。</p>
+<h2 id="3-robustness-shifted-input">3. Robustness：先冻结 shifted input，再谈分数</h2>
+<h3 id="3-1-corruption-family-severity">3.1 Corruption family 与 severity</h3>
+<p>Hendrycks &amp; Dietterich 的 ImageNet-C/P 语境把常见扰动按 family 组织，并为每个 family 设定离散 severity。它的启发不是“所有 corruption 都能统一排序”，而是要求比较时写清楚：</p>
+<table><thead><tr><th>字段</th><th>面试中的含义</th><th>缺失时的结论</th></tr></thead><tbody>
+<tr><td>family</td><td>Gaussian noise、shot noise、brightness、JPEG 等具体扰动</td><td>不知道变了哪一种输入因素</td></tr>
+<tr><td>severity</td><td>family-specific 的 1–5 参数档位</td><td>不能把不同 family 的同号 severity 当作同一物理量</td></tr>
+<tr><td>source mode</td><td>预生成样本或在线随机生成</td><td>不能判断 deterministic 与 RNG 语义</td></tr>
+<tr><td>seed/RNG</td><td>NumPy 或其他随机数状态</td><td>不能重现随机 corruption</td></tr>
+<tr><td>clean/shifted pair</td><td>同一任务样本的 clean 与 shifted 对照</td><td>不能把模型差异归因于 shift</td></tr>
+<tr><td>denominator</td><td>有效 episode、图像或样本集合</td><td>平均分可能改变 estimand</td></tr>
+</tbody></table>
+<p>官方 <code>corruptions.py</code> 为 family 提供 severity 参数表；Gaussian、shot、impulse、speckle 等路径使用随机数，并涉及归一化与 clip。因此在线注入必须记录 RNG、dtype、clip 和输出 artifact；预生成 JPEG corruption 更适合做可重复的评估输入，但不等于真实传感器噪声。</p>
+<h3 id="3-2-shifted-metric">3.2 一个可审计的 shifted metric</h3>
+<p>对 corruption family \(c\)、severity \(s\)，令 \(\mathcal E_{c,s}\) 为固定的有效 episode 集合，\(x_{e,c,s}\) 为按协议生成的输入，\(m\) 为任务 metric，则：</p>
+<div class="formula">$$
+M_{c,s}(\theta)
+=
+\frac{1}{|\mathcal E_{c,s}|}
+\sum_{e\in\mathcal E_{c,s}}
+m\!\left(\pi_\theta,x_{e,c,s}\right).
+$$</div>
+<p>变量解释：\(\theta\) 是固定 checkpoint，\(c,s\) 指定 corruption family 与 severity，\(m\) 可以是任务 success、动作误差或 collision-related metric。直觉是“先固定被评估的样本集合，再计算 shift 下的策略分数”；实现上对应 clean/shifted pair、episode ID、checkpoint SHA 和 denominator manifest。若 clean 与 shifted 使用不同 episode 集合，\(M_{c,s}-M_{\mathrm{clean}}\) 就不再是纯粹的 robustness effect。</p>
+<h3 id="3-3-family">3.3 汇总分数不能隐藏 family</h3>
+<p>当需要汇总多个 family 时，可以报告 normalized degradation 或 mean corruption error，但必须保留 family-level rows。平均值适合做导航指标，不适合隐藏某一类传感器故障。面试回答应同时给 clean metric、每个 family/severity 的 shifted metric、worst-case 或分位数、失败样本与 denominator、seed/CI 或 episode-level variability。</p>
+<h2 id="4-dataset-shift-uncertainty-calibration">4. Dataset shift 下的 uncertainty 与 calibration</h2>
+<h3 id="4-1-confidence-risk">4.1 Confidence 不是 risk</h3>
+<p>Ovadia et al. 研究的是 dataset shift 下 predictive uncertainty 的行为。迁移到 VLA 时，关键问题不是“模型有没有一个 confidence 字段”，而是 confidence 是否随 shift 仍有排序能力、接受的动作是否真的比拒答更安全、高 confidence 错误是否形成 false-safe、低 confidence 但实际安全是否造成 false-alarm，以及 calibration 是否在 shifted split 上重新测量。</p>
+<p>因此 clean accuracy 或平均 confidence 都不能单独证明 OOD safety。至少要同时报告 shifted calibration、selective prediction 的 risk–coverage 和拒答样本的处理结果。</p>
+<h3 id="4-2-risk-coverage">4.2 Risk–coverage</h3>
+<p>令 <code>accept=1</code> 表示风险门允许执行，\(C\) 为 coverage，\(\ell\) 为动作或任务损失，则：</p>
+<div class="formula">$$
+\operatorname{Risk}(C)
+=
+\mathbb E\!\left[
+\ell(\hat y,y)
+\mid \operatorname{accept}=1
+\right],
+\qquad
+C=\Pr(\operatorname{accept}=1).
+$$</div>
+<p>变量解释：\(\hat y\) 可以是动作、目标 grounding 或任务结果，\(y\) 是对应真值，\(\ell\) 可以是动作违规、collision、goal failure 或任务损失。直觉是 coverage 越低，系统只执行更有把握的样本；实现上必须保留被拒答的样本、转交 fallback 的原因和最终 outcome，不能只对成功执行的样本求平均。</p>
+<h3 id="4-3-uncertainty">4.3 Uncertainty 的三层输入</h3>
+<table><thead><tr><th>层</th><th>可观测量</th><th>不能直接推出</th></tr></thead><tbody>
+<tr><td>observation validity</td><td>missing frame、depth invalid、timestamp age、camera mask</td><td>模型已经知道语义风险</td></tr>
+<tr><td>policy uncertainty</td><td>ensemble/variance、distribution entropy、calibrated score</td><td>confidence 高就一定安全</td></tr>
+<tr><td>outcome risk</td><td>collision、goal failure、constraint cost、fallback outcome</td><td>一次成功就证明 calibration</td></tr>
+</tbody></table>
+<h2 id="5-safety">5. Safety：把风险连接到执行状态机</h2>
+<h3 id="5-1-proposal-e-stop">5.1 从 proposal 到 E-stop</h3>
+<p>一个 fail-closed 执行器至少应区分以下状态：</p>
+<pre><code class="language-text">observation_valid
+  -&gt; policy_proposal
+  -&gt; uncertainty/risk_gate
+       -&gt; accept: apply bounded action prefix
+       -&gt; reject: stop applying queued chunk
+                 -&gt; recover: reobserve / stop / retreat / retry
+                 -&gt; fallback: safe controller or human handoff
+                 -&gt; E-stop: cut actuation and latch terminal state</code></pre>
+<p>每次状态转移必须记录 <code>event_id</code>、时间戳、observation/action/checkpoint SHA、gate reason、queue length、termination reason 与 operator/ownership。<code>fallback</code> 是控制权转移，不是换一个 prompt；<code>recovery</code> 是有次数上限、重新观测和升级条件的状态，不是隐含 retry。</p>
+<h3 id="5-2-hard-constraint">5.2 Hard constraint 与风险门</h3>
+<p>Safety Gym 的公开语境把 hazard constraint 与 cost 放在环境接口中，并要求显式配置约束开关；<code>info</code> 中的 <code>cost_hazards</code> 与聚合 <code>cost</code> 只能说明该模拟器记录了什么，不能直接说明真实机器人安全。</p>
+<p>面试中可把风险门抽象为：</p>
+<div class="formula">$$
+g(o_t,\hat a_t,u_t)
+=
+\mathbf 1[
+\operatorname{valid}(o_t)
+\land
+\operatorname{risk}(u_t)\le \tau
+\land
+\operatorname{constraint}(\hat a_t)=1
+].
+$$</div>
+<p>变量解释：\(o_t\) 是观测，\(\hat a_t\) 是策略提议，\(u_t\) 是不确定性或风险估计，\(\tau\) 是门限。直觉是“只有输入有效、风险不超过阈值、动作满足硬约束才允许 apply”；实现上要绑定 validity bit、risk estimator、constraint checker、gate reason 和日志。这个公式是教学抽象，不能被写成五个项目已经拥有的安全控制器。</p>
+<h3 id="5-3-chunked-vla-stale-action">5.3 Chunked VLA 的 stale action</h3>
+<p>VLA 往往一次产生动作 chunk，再执行前 \(K\) 个动作。若在第 \(t\) 步出现风险事件 \(r_t=1\)，继续执行原 chunk 会把已经过期的决策施加到新状态。最低安全语义是先停止 apply，再 flush queue：</p>
+<div class="formula">$$
+\operatorname{execute}(a_t)=
+\begin{cases}
+a_t, &amp; r_t=0\land \operatorname{valid}(o_t),\\
+\operatorname{safe\_prefix}(o_t), &amp; r_t=1\land \operatorname{recoverable}(o_t),\\
+\operatorname{EStop}, &amp; r_t=1\land \neg\operatorname{recoverable}(o_t).
+\end{cases}
+$$</div>
+<p>变量解释：\(r_t\) 是风险事件，<code>safe_prefix</code> 是经过控制器和约束检查的短动作前缀，<code>recoverable</code> 是明确的状态判定。直觉是“风险发生后，旧队列不再拥有默认执行权”；实现上必须记录 action age、queue length、flush event、controller state 和 E-stop latch。公式只定义执行合同，不证明任意项目满足硬件安全。</p>
+<h2 id="6-robustness-safety-recovery-manifest">6. Robustness、Safety 与 Recovery 的最小 manifest</h2>
+<table><thead><tr><th>Layer</th><th>必填字段</th><th>失败时的回答</th></tr></thead><tbody>
+<tr><td>input</td><td>camera/sensor name、resolution、dtype、normalization、timestamp</td><td>不知道扰动作用在哪个输入</td></tr>
+<tr><td>corruption</td><td>family、severity、parameter table、online/offline、RNG、artifact SHA</td><td>不能复现 shifted input</td></tr>
+<tr><td>data</td><td>dataset revision、scene/object split、episode ID、clean/shifted pair</td><td>不能比较 clean 与 shift</td></tr>
+<tr><td>policy</td><td>checkpoint SHA、pre/post-process、action head、chunk horizon</td><td>分数无法绑定模型</td></tr>
+<tr><td>risk</td><td>uncertainty estimator、threshold、calibration split、accept/reject rule</td><td>不能解释 gate</td></tr>
+<tr><td>safety</td><td>hard constraint、controller、safe prefix、fallback、E-stop latch</td><td>不能把 cost 当 safety</td></tr>
+<tr><td>metric</td><td>clean/shifted score、risk–coverage、cost、denominator</td><td>平均分不是完整结论</td></tr>
+<tr><td>statistics</td><td>seed、episode rows、CI、missing/invalid policy</td><td>不能判断方差或丢样本</td></tr>
+<tr><td>ownership</td><td>code/config/data/scorer author、operator、reviewer、artifact custodian</td><td>upstream 不是个人贡献</td></tr>
+</tbody></table>
+<p>推荐 immutable lineage：</p>
+<pre><code class="language-text">task/split manifest SHA + corruption/config SHA
+    -&gt; generated clean/shifted artifact + RNG state
+    -&gt; policy checkpoint + risk/calibration revision
+    -&gt; action proposal + gate/queue/flush trace
+    -&gt; per-episode metric + cost + failure label
+    -&gt; aggregate report + ownership ledger</code></pre>
+<p>这条链的目的不是增加字段，而是让一个风险结论能回到输入、模型、门控、执行、结果和责任边界。</p>
+<h2 id="7-fail-closed">7. Fail-Closed 伪代码</h2>
+<pre><code class="language-python">def safe_chunk_step(manifest, obs, action_chunk, risk_estimator, controller):
+    # 1. Reject invalid observations before trusting model uncertainty.
+    if not obs.valid or obs.timestamp_age &gt; manifest.max_observation_age:
+        flush_queue(reason=&quot;invalid_observation&quot;)
+        return fallback_or_estop(&quot;observation_invalid&quot;)
+
+    # 2. Evaluate risk and hard constraints on the current state.
+    risk = risk_estimator.score(obs, action_chunk)
+    if risk &gt; manifest.risk_threshold:
+        flush_queue(reason=&quot;risk_gate&quot;)
+        if controller.recoverable(obs, risk):
+            return controller.safe_prefix(obs)
+        return estop_latched(&quot;unrecoverable_risk&quot;)
+
+    # 3. Apply only a bounded prefix; never assume a stale chunk is valid forever.
+    prefix = action_chunk[:manifest.replan_steps]
+    if not controller.constraint_ok(obs, prefix):
+        flush_queue(reason=&quot;constraint_violation&quot;)
+        return fallback_or_estop(&quot;hard_constraint&quot;)
+
+    # 4. Record lineage and execute; the next observation can trigger a new gate.
+    log_event(manifest, obs, prefix, risk, queue_length=len(action_chunk))
+    return controller.apply(prefix)</code></pre>
+<p>这段伪代码是风险门的教学目标，不是五个本地项目已有的统一安全 runtime。真实实现还要处理并发 action broker、controller acknowledgement、sensor watchdog、hardware E-stop、human handoff、retry budget、atomic logs 和 replay。</p>
+<h2 id="8-failure-taxonomy-symptom-first-divergence">8. Failure Taxonomy：从 symptom 到 first divergence</h2>
+<p>诊断顺序固定为：</p>
+<pre><code class="language-text">input validity
+  -&gt; corruption/shift identity
+  -&gt; representation/model calibration
+  -&gt; geometry/time synchronization
+  -&gt; dynamics/control execution
+  -&gt; risk orchestration
+  -&gt; unknown</code></pre>
+<table><thead><tr><th>类别</th><th>典型症状</th><th>首查 artifact</th><th>不能直接推出</th></tr></thead><tbody>
+<tr><td>visual/sensor</td><td>遮挡、曝光、深度空洞、dropout、timestamp stale</td><td>validity bit、sensor trace、clean/shifted pair</td><td>模型语义理解退化</td></tr>
+<tr><td>representation/model</td><td>OOD embedding、confidence miscalibration、action collapse</td><td>calibration bin、risk–coverage、checkpoint</td><td>一定是传感器问题</td></tr>
+<tr><td>geometry/time</td><td>frame、标定、延迟、单位、轨迹同步错误</td><td>frame IDs、timestamps、transform log</td><td>policy 已经失效</td></tr>
+<tr><td>dynamics/control</td><td>saturation、collision、controller reject、stale chunk</td><td>controller status、action age、queue trace</td><td>risk estimator 错</td></tr>
+<tr><td>task/protocol</td><td>split、severity、layout randomization、denominator mismatch</td><td>manifest、config、episode set</td><td>模型鲁棒性差</td></tr>
+<tr><td>safety orchestration</td><td>gate 未触发、fallback 不可用、E-stop 未 latch</td><td>event log、state transition、hardware audit</td><td>仅靠最终 success 能解释</td></tr>
+<tr><td>unknown</td><td>只有 summary、视频或时间顺序</td><td>请求 raw trace；保留 <code>unknown</code></td><td>用最接近的故事替代证据</td></tr>
+</tbody></table>
+<p>最小故障注入矩阵：</p>
+<table><thead><tr><th>注入</th><th>应观察</th><th>面试结论</th></tr></thead><tbody>
+<tr><td>camera severity 1→5</td><td>clean/shifted pair、family、seed、risk–coverage</td><td>只能谈视觉 shift 协议</td></tr>
+<tr><td>depth dropout / invalid timestamp</td><td>last valid frame、gate reason、queue flush</td><td>不能只看最终成功率</td></tr>
+<tr><td>high-confidence wrong action</td><td>calibration bin、false-safe、fallback outcome</td><td>高 confidence 不等于安全</td></tr>
+<tr><td>hazard proximity</td><td>constraint flag、cost_hazards、safe prefix、E-stop latch</td><td>Safety Gym cost 不等于硬件安全</td></tr>
+<tr><td>stale action chunk</td><td>queue length、action age、flush event、controller state</td><td>需要风险后的执行语义</td></tr>
+</tbody></table>
+<p>完整根因表必须写成 <code>symptom → first verified divergence → root cause → recovery/terminal outcome</code>。没有 first divergence，最多只能报告 symptom 或 unknown。</p>
+<h2 id="9">9. 方法比较：面试一张表讲清楚</h2>
+<table><thead><tr><th>对象</th><th>主要作用</th><th>最小可审计证据</th><th>常见误写</th></tr></thead><tbody>
+<tr><td>corruption benchmark</td><td>测量输入 shift 下的性能变化</td><td>family、severity、pair、seed、denominator</td><td>一个平均分代表所有鲁棒性</td></tr>
+<tr><td>calibration</td><td>检查不确定性与真实风险的关系</td><td>shifted bins、reliability/risk curve、拒答结果</td><td>confidence 就是 calibrated risk</td></tr>
+<tr><td>hard constraint</td><td>禁止不可接受动作或状态</td><td>constraint checker、单位、controller response</td><td>reward/cost 自动等于约束</td></tr>
+<tr><td>risk gate</td><td>决定 accept/reject/transfer</td><td>threshold、gate reason、policy version</td><td>阈值没有 protocol</td></tr>
+<tr><td>fallback</td><td>转移控制权到安全 controller/人</td><td>entry/exit、max retry、owner、trace</td><td>换 prompt 就是 fallback</td></tr>
+<tr><td>recovery</td><td>重新观测、短动作、重试或退避</td><td>budget、backoff、state reset、outcome</td><td>retry 不需要上限</td></tr>
+<tr><td>E-stop</td><td>切断执行并锁存终止状态</td><td>hardware event、latch、operator、reset policy</td><td>simulator stop 就是 physical E-stop</td></tr>
+</tbody></table>
+<h2 id="10">10. 五项目真实性边界</h2>
+<table><thead><tr><th>项目</th><th>可以安全连接的局部 hook</th><th>当前不能说</th><th>若要升级需要</th></tr></thead><tbody>
+<tr><td>OpenPiVLA</td><td>image/action normalizer、parser、controller contract、shifted-input eval design</td><td>已有 OOD robustness、calibration、zero-accident safety</td><td>clean/shifted bundle、risk log、checkpoint、matched eval、ownership</td></tr>
+<tr><td>Robot Harness</td><td>tool schema、地图/点云输入、约束与日志字段设计</td><td>Safety Gym/真实机器人 cost、fallback 成功率或 E-stop ownership</td><td>local risk/fallback runtime、逐 step trace、hardware audit</td></tr>
+<tr><td>OPD</td><td>grounding confidence、negative/ambiguous case、risk–coverage 设计</td><td>grounding robustness uplift 或部署安全保证</td><td>shifted holdout、calibration report、failure trace、owner</td></tr>
+<tr><td>WAM / Cosmos</td><td>simulator diagnostics、visual shift taxonomy、失败 trace</td><td>上游 randomization 或公开 rollout 是个人 sim-to-real/安全结果</td><td>fixed artifact、paired shift eval、controller/safety bundle</td></tr>
+<tr><td>UWM / LIBERO</td><td>fixed-init/reset protocol、strict denominator、failure taxonomy</td><td>真实机器人 OOD 泛化、碰撞率或安全 controller 结果</td><td>matched episode rows、risk/cost trace、hardware or simulator gate</td></tr>
+</tbody></table>
+<p>回答顺序是：<code>public mechanism → fixed source → local evidence → inference → unverified → missing artifact → ownership</code>。当前结论是“有可迁移的协议与接口 hook”，不是“已有个人安全结果”。</p>
+<h2 id="11">11. 两档面试回答</h2>
+<h3 id="11-1-30">11.1 约 30 秒回答</h3>
+<p>我会先冻结 robustness protocol：corruption family、severity、clean/shifted pair、split、seed、checkpoint 和 denominator 都要固定。预生成 corruption 与在线随机注入不能混为一谈，severity 也不是跨 family 的统一物理量。然后在 shifted split 上检查 calibration 和 risk–coverage，不能只看 confidence。执行时把 observation validity、risk gate、hard constraint、chunk queue flush、recovery、fallback 和 E-stop 分层；风险事件出现后先停止旧 chunk，只有明确 recoverable 才执行 safe prefix。我的五个项目目前没有完整 local corruption bundle、逐 step risk log 或硬件 E-stop audit，所以我会讲机制和补证据路径，不把 Safety Gym 或上游 randomization 说成个人安全结果。</p>
+<h3 id="11-2-2">11.2 约 2 分钟机制回答</h3>
+<p>我会把问题拆成 measurement、uncertainty 和 execution 三层。Measurement 层先固定 task、split、episode IDs、输入传感器、corruption family/severity、RNG、checkpoint 和 denominator；clean 与 shifted 必须是可配对、可复现的输入，不能只报一个平均分。ImageNet-C 的 severity 是 family-specific 参数档位，Gaussian 等 corruption 的在线生成还涉及随机数、归一化和 clip。Uncertainty 层不把最大 softmax 当安全证据，而是在 shift 下看 calibration、risk–coverage、false-safe 和 false-alarm，保留被拒答和转 fallback 的样本。Execution 层把风险门接到控制权：观测无效或风险超阈值时 flush 排队 chunk；如果能恢复，就重新观测或执行受约束的短前缀；不能恢复则转 safe controller、人接管或锁存 E-stop。每次转移都记录 gate reason、action age、queue length、controller response 和 outcome。对我的项目，我可以把 normalizer/parser/controller contract、tool schema、grounding confidence 或 fixed-init denominator 作为局部 hook，但当前没有统一 shifted-input bundle、逐步 risk trace 和 hardware audit，因此不会声称已经完成 OOD 泛化或真实安全闭环。</p>
+<h2 id="12">12. 高频追问与答题抓手</h2>
+<table><thead><tr><th>追问</th><th>回答抓手</th></tr></thead><tbody>
+<tr><td>severity=5 一定比另一个 family 的 severity=3 更严重吗？</td><td>不一定；severity 是 family-specific 参数索引，不能当统一物理单位。</td></tr>
+<tr><td>预生成 JPEG 与在线 Gaussian noise 能直接比较吗？</td><td>不能直接比较；source mode、RNG、dtype、clip 和 sensor semantics 不同。</td></tr>
+<tr><td>confidence 高但动作错，说明什么？</td><td>可能是 shifted miscalibration，需查 risk–coverage、false-safe 和 calibration bin。</td></tr>
+<tr><td>risk gate 触发后能继续执行旧 chunk 吗？</td><td>默认不能；先停止 apply、flush queue，再决定 recovery/fallback/E-stop。</td></tr>
+<tr><td>Safety Gym 的 cost=0 是否代表真实安全？</td><td>不代表；它只是在固定 simulator/config 下的 cost 记录。</td></tr>
+<tr><td>randomize_layout=False 与 True 是同一泛化评估吗？</td><td>不是，布局分布不同，必须分别报告。</td></tr>
+<tr><td>fallback 和 retry 有什么区别？</td><td>fallback 是控制权转移，retry 是有预算和状态条件的 recovery。</td></tr>
+<tr><td>没有 raw trace 能确认 collision 根因吗？</td><td>不能；只保留 symptom/unknown，先找 first verified divergence。</td></tr>
+<tr><td>你的项目做过 robustness/safety 吗？</td><td>当前只有接口、协议或诊断 hook，没有可复算 shifted bundle、逐 step risk log 或硬件 E-stop ownership。</td></tr>
+</tbody></table>
+<h2 id="13">13. 本页证据边界与下一步</h2>
+<p>本页已把 PER-020 source freeze 转成可学习知识：corruption identity、severity/RNG、clean-shift metric、dataset-shift calibration、risk–coverage、risk gate、hard constraint、queue flush、fallback/recovery/E-stop、typed manifest、fail-closed 伪代码、故障注入思路、五项目 truth boundary、两档口述回答与追问抓手均已覆盖。</p>
+<p>直接支持来自 <a href="../sources/vol_06_per020_robustness_safety_fallback_source_freeze.html">PER-020 Source Freeze</a>、Hendrycks &amp; Dietterich、Ovadia et al.、Hendrycks robustness README/<code>corruptions.py</code>、OpenAI Safety Gym README/<code>engine.py</code>、VOL 04 WM-031 与 WM-038。风险门和 chunk 执行公式是教学抽象；它们不证明任何本地项目已经有安全 controller 或 E-stop 审计。</p>
+<p>当前仍为 <code>WARN</code>：没有五个项目的 local-direct shifted-input bundle、逐 step risk log、hardware E-stop audit、matched robustness panel 或 ownership confirmation；没有真实口述，所以不创建 coaching state、不改变 mastery。下游 <a href="../questions/vol_06_per020.html">VLA-PER-020 Atomic Card</a> 已同步并保持 <code>unseen/WARN</code>；下一 bounded slice 选择一题真实口述或独立 fact review。</p>
+<h2 id="references">References</h2>
+<ol><li>Hendrycks &amp; Dietterich，<a href="https://arxiv.org/pdf/1903.12261">Benchmarking Neural Network Robustness to Common Corruptions and Perturbations</a>，arXiv <code>1903.12261</code>。</li><li>Ovadia et al.，<a href="https://arxiv.org/pdf/1906.02530v2">Can You Trust Your Model's Uncertainty?</a>，arXiv <code>1906.02530v2</code>。</li><li>Hendrycks robustness <a href="https://github.com/hendrycks/robustness/tree/8190fe329f5f072a06e3a2aea02bb5dda69aed9f"><code>README.md</code></a> 与 <a href="https://github.com/hendrycks/robustness/blob/8190fe329f5f072a06e3a2aea02bb5dda69aed9f/ImageNet-C/imagenet_c/imagenet_c/corruptions.py"><code>corruptions.py</code></a>。</li><li>OpenAI Safety Gym <a href="https://github.com/openai/safety-gym/tree/f31042f2f9ee61b9034dd6a416955972911544f5"><code>README.md</code></a> 与 <a href="https://github.com/openai/safety-gym/blob/f31042f2f9ee61b9034dd6a416955972911544f5/safety_gym/envs/engine.py"><code>engine.py</code></a>。</li><li><a href="../sources/vol_04_wm031_reality_gap_taxonomy_source_freeze.html">VOL 04 WM-031 reality-gap taxonomy</a> 与 <a href="../sources/vol_04_wm038_uncertainty_safety_fallback_recovery_source_freeze.html">VOL 04 WM-038 uncertainty/safety/fallback</a>。</li><li><a href="../sources/vol_06_per003_multiview_temporal_source_freeze.html">VOL 06 PER-003 multiview/temporal source freeze</a> 与 <a href="../sources/vol_06_per015_perception_action_reachability_uncertainty_failure_gate_source_freeze.html">VOL 06 PER-015 perception-action gate source freeze</a>。</li></ol>
+</article></body></html>

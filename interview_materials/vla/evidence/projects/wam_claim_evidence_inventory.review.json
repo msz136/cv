@@ -1,0 +1,71 @@
+{
+  "artifact": "evidence/projects/wam_claim_evidence_inventory.md",
+  "html": "evidence/projects/wam_claim_evidence_inventory.html",
+  "review_date": "2026-07-21",
+  "status": "drafted_slice_wam_01_resume_safely_downgraded_diagnostic_partial_officialhf_eval_remote_artifact_backed_ownership_pending",
+  "verdict": "WARN",
+  "source_sha256": "AE34D4453524037BCD55A892C5BA2BF49DCCD581D859EA6776AC7690F82A07A2",
+  "scope": {
+    "project": "Cosmos Policy / WAM / RoboCasa",
+    "claim_count": 11,
+    "local_direct_artifact_bundles": 5,
+    "projects_completed_in_evidence_manifest": 1,
+    "projects_planned": 5,
+    "resume_release_status": "SAFE_DOWNGRADED",
+    "practice_state": "not_started"
+  },
+  "frozen_inputs": {
+    "optimized_resume_sha256": "5374d4b6f6617394381bb0c17e81c298ccef34bf6c3fc329e6e6bf04d01f1d4c",
+    "optimized_resume_pdf_sha256": "65b1dcd34cd6e357c6264effcf4b2683dea66508c6bc58315762b5e4c03ac74a",
+    "project_page_sha256": "251cbcac43a1acb2052e7866e2d5a9a6f71c01fd07ef0cdb0035d66f5ebc61a5",
+    "resume_plan_sha256": "e31ccb40381dc6abe9fd6b9622ab48b9a6cfc8fe71039f6d97db8722450e43e6",
+    "research_resume_sha256": "9a8828ae0b6317c107ab16ec3d106cad8ba944854469e7919a7ba0c1342b643f",
+    "engineering_resume_sha256": "2aa3f0dae040ad5fb6bff32d68b5f4fff574bf4b2be80abc93d9f29b96f78732",
+    "cosmos_source_audit_sha256": "7f620f4ded9766f71bb75b0a927c168b8e5dec1875257dc94e2c8f35fdfd686f",
+    "benchmark_audit_sha256": "58a5636e953f44c2aa27e3acf65c621460186daf3732b916eac70e6ffab2de6a",
+    "officialhf_baseline_p0_audit_sha256": "39E59144D6CE36135A09314294C5E399BC1F2D686A55486C919DA5F5A63972B8",
+    "turnoffmicrowave_trained_failure_p0_audit_sha256": "80789C958CBDBBEF9FEDEDBA13D6BAFBECAB64FAE1A45E5AFF0C3470FFF57CAB",
+    "checkpoint_save_load_gate_p0_audit_sha256": "D5A4DB639C3C0C152D55F3F9C6F6BEDD8E18408F306036A28DA5154BAB3D9AAC"
+  },
+  "pre_downgrade_snapshots": {
+    "optimized_resume_sha256": "58c004d85b60d64717ed08ecee7aeccee56f2967f249524af4f64742c6284d98",
+    "project_page_sha256": "1de96b9cc2b5c28256e8dabf47533bb955366fa52ceeafb2efffa437dd4ee7d9",
+    "resume_plan_sha256": "96cb4f8c3168636e990e0738fe5186d37987693ad906c6fc1a3b0c760adac4fa"
+  },
+  "remaining_evidence_blockers": [
+    "WAM-CL-003: MSE 0.09718 to 0.05349 has no split, metric script, prediction/label or checkpoint artifact.",
+    "WAM-CL-004: 0.90-0.95 and 0.75 were removed from the current resume but still lack run/protocol provenance.",
+    "WAM-CL-005: official-HF 24x5 logs are remote-artifact-backed, but checkpoint binary/hash, full episode JSONL, scorer version and ownership remain missing.",
+    "WAM-CL-006/007: TurnOffMicrowave 0/1 and first-divergence summaries are local-artifact-backed, but the checkpoint is remote-referenced and matched fix-to-rerun, multi-episode denominator and ownership are missing.",
+    "WAM-CL-001/008: save/load gate audit has base-load and short-smoke evidence, but formal save2k/save1500 fail and produced checkpoint/reload parity are absent.",
+    "WAM-CL-009: full10k and MACA/C500 are separated as run families, but immutable checkpoint lineage remains open."
+  ],
+  "checks": {
+    "source_freeze": "PASS (all listed local resume/project/audit sources frozen by full SHA-256; upstream paper/repo revisions are inherited from audited sources)",
+    "workspace_artifact_search": "PASS WITH WARNING (cv scope remains historical; external Project scan found CoffeePressButton diagnostics, full10k trained 24x5 artifacts, official-HF 24x5 baseline artifacts and a TurnOffMicrowave trained-failure chain; all checkpoint identities remain unverified locally)",
+    "claim_id_unique": "PASS (11 unique WAM-CL IDs)",
+    "claim_to_evidence_mapping": "PASS (every claim has level, evidence status, verdict and treatment)",
+    "upstream_local_boundary": "PASS (Cosmos slot/mask/routing is public upstream; personal design and local metrics are not upgraded)",
+    "truth_boundary": "PASS (C0-C3 promotion gates and ownership boundary are explicit)",
+    "conflict_detection": "PASS (historic task-success vs local 0-success, full10k vs C500 final checkpoint, and three-head simplification are recorded)",
+    "resume_release_readiness": "PASS WITH WARNING (unverified WAM C3 numbers and confirmed-root-cause language were removed; the project remains evidence-limited)",
+    "derived_resume_pdf_sync": "PASS (rebuilt from current HTML; A4 one page; visual inspection passed; old WAM numeric strings absent)",
+    "local_checkpoint_metric_episode_artifacts": "PARTIAL (CoffeePressButton diagnostics, full10k trained 24x5 logs/action-debug, official-HF 24x5 logs, TurnOffMicrowave fixed-batch/0x1/query/state-mining artifacts and DeepSpeed save/load gate logs are present; produced checkpoint binary/hash, fresh-process reload parity, matched fix-to-rerun, complete episode JSONL and scorer version remain missing)",
+    "turnoffmicrowave_first_divergence": "PASS WITH WARNING (fixed batch can sample negative, 32 closed-loop queries are positive, official/local same-state first actions diverge and 5-frame conditioning changes the local output; unique root cause remains open)",
+    "checkpoint_save_load_gate": "PASS WITH WARNING (base-load key check and short smoke pass; 9907-step save2k exits 247, no-cycle save1500 hits state_dict signature TypeError, archive has zero produced checkpoint-like binaries)",
+    "ownership_ledger": "PASS WITH WARNING (13-row WAM ownership ledger added; candidate role, operator/reviewer and substantive diff remain pending)",
+    "ownership_confirmation": "PENDING",
+    "oral_drill": "PENDING",
+    "html_static_validation": "PASS (source SHA, one H1, valid hierarchy, tables/code blocks and unique anchors)",
+    "local_links": "PASS (relative links including the WM-019 diagnostics and official-HF P0 audit resolve)",
+    "browser_visual_check": "PASS (800px: one H1, static TOC, no page/code overflow; source SHA matched)"
+  },
+  "open_items": [
+    "Answer the six provenance and ownership questions in the inventory.",
+    "Complete the WM-019 WAM diagnostic bundle with checkpoint/hash, metric script, denominator and ownership fields; base/trained videos and traces are now registered; optimized WAM bullets remain safely downgraded.",
+    "Do not present MSE 45%, 0.90-0.95 / 0.75, official-HF 71.19% or local 0-success as a verified personal-model result; 71.19% is only an official-HF remote-artifact eval.",
+    "Keep root-cause statements at partially-confirmed level: 5-frame contract difference and exact-observation transfer gap are supported, but a paired fix and multi-episode rerun do not exist.",
+    "Keep future evidence additions on the same Markdown→HTML→review lifecycle; current inventory and save-load/TurnOffMicrowave representative pages have desktop/narrow browser QA."
+  ],
+  "next": "Use the full10k trained, official-HF, TurnOffMicrowave and save-load audits in the WAM model answer, then collect one real candidate response or one immutable checkpoint/fresh-reload artifact; keep cards unseen."
+}

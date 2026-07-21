@@ -1,0 +1,60 @@
+{
+  "artifact": "knowledge/vol_05_engineering_eval_eng017.md",
+  "html": "knowledge/vol_05_engineering_eval_eng017.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / VLA-ENG-017 / knowledge_19_of_44 / card_1_of_1_unseen",
+  "verdict": "WARN",
+  "source_sha256": "BF17AAB61F74D7FC506790A228D734F5BE5DADADA08D4CB4D1253DBBEB4EC1E7",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 18,
+    "new_nodes": 1,
+    "total_drafted_nodes": 19,
+    "covered_ids": ["VLA-ENG-017"],
+    "drafted_cards_for_new_nodes": 1,
+    "practice_state": "unseen",
+    "difficulty": "L2",
+    "priority": "P0"
+  },
+  "source_scope": {
+    "source_freeze": "sources/vol_05_eng017_training_observability_source_freeze.html",
+    "official_docs": [
+      "PyTorch 2.13 AMP",
+      "PyTorch 2.13 Profiler",
+      "PyTorch 2.13 Autograd anomaly",
+      "PyTorch 2.13 DDP",
+      "PyTorch 2.13 clip_grad_norm_",
+      "PyTorch 2.13 DataLoader",
+      "DeepSpeed Config JSON"
+    ],
+    "local_project_hooks": [
+      "knowledge/vol_05_engineering_eval.html",
+      "sources/vol_05_local_artifact_gate_eng004_006.html",
+      "evidence/projects/opd_claim_evidence_inventory.html"
+    ]
+  },
+  "checks": {
+    "bounded_slice": "PASS (one VLA-ENG-017 knowledge node and one atomic card are drafted; ENG-018 remains deferred)",
+    "observability_layers": "PASS WITH WARNING (numerical/data/compute/distributed/lifecycle events and owners separated)",
+    "loss_grad_contract": "PASS WITH WARNING (mask/reduction, total norm, clipping and local/global boundary explicit)",
+    "amp_overflow": "PASS WITH WARNING (unscale, scale, finite, skipped optimizer step and scheduler step semantics explicit)",
+    "timeline_profiler": "PASS WITH WARNING (data/compute/comm/logging timeline, wait/warmup/active and overhead boundary explicit)",
+    "anomaly_debug": "PASS (anomaly detection restricted to short first-failure replay, not production telemetry)",
+    "project_truth_boundary": "PASS (UWM/OPD summary/profile hooks separated from missing per-step/rank trace, A/B and replay)",
+    "formula_and_schema": "PASS (masked loss and step-time formulas plus event schema mapped to implementation)",
+    "pseudocode": "PASS (commented AMP/clip/profiler/event order; backend APIs remain placeholders)",
+    "minimum_module_contract": "PASS (intuition, definitions, formulas, timeline, alert matrix, project hook, bad cases and follow-ups included)",
+    "html_static_validation": "PASS (source SHA, one H1, fifteen H2, four H3, four tables, three commented code/schema blocks and two formula blocks)",
+    "local_links": "PASS (ENG-017 source freeze, Batch 1, artifact gate and OPD inventory relative links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Collect per-step/per-rank telemetry for loss components, grad norm/clip, AMP scale/overflow/skipped steps, data_wait and communication.",
+    "Run short profiler windows with explicit synchronization and quantify profiler/logging overhead.",
+    "Reproduce the first non-finite batch with fixed request trace and anomaly detection before changing dtype/scale.",
+    "Keep VLA-ENG-017 unseen until a real oral answer is recorded.",
+    "Keep ENG-018 scheduler/preemption/retry deferred."
+  ],
+  "next": "Run a one-question oral drill for VLA-ENG-017 or collect observability trace/first-failure artifacts; keep ENG-018 deferred."
+}

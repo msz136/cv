@@ -1,0 +1,57 @@
+{
+  "artifact": "sources/vol_05_eng017_training_observability_source_freeze.md",
+  "html": "sources/vol_05_eng017_training_observability_source_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "source_frozen / VLA-ENG-017_knowledge+card_drafted / WARN",
+  "verdict": "WARN",
+  "source_sha256": "4A047EB5C8DD024EB2F7B57C9E422E10815132E6BB8EACCC5BB7969B004DD3EB",
+  "coverage": {
+    "knowledge_id": "VLA-ENG-017",
+    "topic": "training observability / loss / gradient / data wait / communication / AMP overflow",
+    "official_pages_checked": 7,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "pytorch_docs": "2.13 amp + profiler + autograd + DDP + clip_grad_norm + data",
+    "deepspeed_docs": "Config JSON rolling page accessed 2026-07-17",
+    "related_local_audits": [
+      "knowledge/vol_05_engineering_eval.html",
+      "sources/vol_05_local_artifact_gate_eng004_006.html",
+      "evidence/projects/opd_claim_evidence_inventory.html"
+    ]
+  },
+  "normalized_main_text_sha256": {
+    "pytorch_amp": "e423f9ca8f768cdc0494e1b3652a4757bb9a1a3b0600f8bdfd3780a3eeb94f5e",
+    "pytorch_profiler": "f02305bb5e26cd24d06567680950308cea7baeeadd33d22a6a07d64ea11aa67a",
+    "pytorch_autograd": "b4e2275427dc0a9d8d5cbb20742dbccbc7d2ba0e5b6788129490446c7f471b79",
+    "pytorch_ddp": "5b3910138fdec51f70a297d612318938cb73c601856057d27e6d24acd6b57d53",
+    "pytorch_clip_grad_norm": "c8645bb903b85b055290893f27e0863469fdc9133479f6af0f3e8894dee265af",
+    "pytorch_data": "9032517582f5a20a811008e4f71a81e356d058380cfc985b552ef338b1cecf5f",
+    "deepspeed_config_json": "9ecae0433d4ca3168cee7d3939c9ef5492f05df358566a17cc32ec8fad07eab3"
+  },
+  "checks": {
+    "bounded_slice": "PASS (source freeze plus one downstream ENG-017 knowledge node/card; ENG-018 remains deferred)",
+    "loss_grad_contract": "PASS WITH WARNING (loss components/masks, total grad norm, clipping and finite checks separated)",
+    "amp_overflow": "PASS WITH WARNING (unscale, scale, overflow/skipped optimizer step and rank/error ownership sourced)",
+    "profiler_semantics": "PASS WITH WARNING (CPU/CUDA activities, wait/warmup/active schedule and CUPTI limitation sourced)",
+    "distributed_observability": "PASS WITH WARNING (DDP all-reduce/input-sharding semantics sourced; rank-level timing remains workload evidence)",
+    "data_wait_boundary": "PASS WITH WARNING (DataLoader worker/prefetch semantics sourced; UWM stall root cause not inferred)",
+    "deepspeed_logging": "PASS WITH WARNING (`steps_per_print` and `wall_clock_breakdown` fields sourced; project enablement not inferred)",
+    "project_truth_boundary": "PASS (UWM/OPD summaries/hooks separated from missing per-step/rank telemetry, matched A/B and first-failure replay)",
+    "formula_and_schema": "PASS (step timeline and event schema define units/owners/lineage; no performance claim)",
+    "html_static_validation": "PASS (source SHA, one H1, eleven H2, nine H3, six tables, one commented schema block and one formula block)",
+    "local_links": "PASS (knowledge, artifact-gate and OPD inventory relative links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Generate one ENG-017 knowledge node and one unseen card only after this source gate is accepted for the next bounded slice.",
+    "Collect per-step/per-rank telemetry for loss components, grad norm/clip, AMP scale/overflow/skipped steps, data_wait and communication.",
+    "Run short profiler windows with explicit synchronization and quantify profiler/logging overhead.",
+    "Reproduce the first non-finite batch with fixed request trace and anomaly detection before changing dtype/scale.",
+    "Keep ENG-018 scheduler/preemption/retry deferred."
+  ],
+  "next": "Run a one-question oral drill for VLA-ENG-017 or collect observability trace/first-failure artifacts; keep ENG-018 deferred."
+}

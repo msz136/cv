@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 PER-007 Source Freeze：Open-vocabulary Grounding Pipeline 与 Text–Region Matching</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.md">
+<meta name="aris:source-sha256" content="548ae6b39b00f87d899614d059db97b138cffa75da10eb5a4df4fcf44c252a2f">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>548ae6b39b00f87d899614d059db97b138cffa75da10eb5a4df4fcf44c252a2f</code>；生成自：<code>interview_materials\vla\sources\vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-official-local-source-ledger">2. Primary / official / local source ledger</a></li><li><a href="#3">3. 与相邻节点的去重边界</a></li><li><a href="#4-grounding-dino-pipeline">4. 冻结的 Grounding DINO pipeline</a></li><li><a href="#4-1-prompt-token-contract">4.1 Prompt 与 token contract</a></li><li><a href="#4-2-query-token-matching">4.2 Query–token matching</a></li><li><a href="#4-3-box-gate-phrase-gate">4.3 Box gate 与 phrase gate</a></li><li><a href="#4-4-box-conversion-nms-boundary">4.4 Box conversion 与 NMS boundary</a></li><li><a href="#5-transformers-4-57-1-api-contract">5. Transformers 4.57.1 API contract</a></li><li><a href="#6-deterministic-threshold-probe">6. Deterministic threshold probe</a></li><li><a href="#7-typed-grounded-region-manifest">7. Typed grounded-region manifest</a></li><li><a href="#8-opd-grounding-detector">8. 本地 OPD：生成式 grounding，不是显式 detector</a></li><li><a href="#9-failure-taxonomy">9. Failure taxonomy 与补证顺序</a></li><li><a href="#10-source-gate-bounded-slice">10. Source gate 结论与下一 bounded slice</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 PER-007 Source Freeze：Open-vocabulary Grounding Pipeline 与 Text–Region Matching</h1>
+<div class="meta">状态：<code>source_frozen / VLA-PER-007 / primary_official_checked / local_generative_boundary / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-19 证据截止：2026-07-19 本切片只冻结 text-conditioned detector/grounder 的 prompt、query–token score、box/text threshold、phrase binding、坐标后处理与 NMS policy；不生成 knowledge/card，不把公开 detector 机制归为个人项目实现。</div>
+<h2 id="question">问题（Question）</h2>
+<p>从“输入一句目标描述”到“得到带 phrase、score 和 box 的 grounded regions”，中间到底有哪些可审计阶段？<code>box_threshold</code>、<code>text_threshold</code> 和 NMS 是否是同一个门？Grounding DINO 的 query–token logits 如何绑定 phrase？本地 OPD 是不是这类显式 detector pipeline？</p>
+<p>本页冻结的最小数据流是：</p>
+<pre><code class="language-text">image + candidate labels / referring expression
+  -&gt; image/text preprocessing
+  -&gt; visual and text features
+  -&gt; language-guided query selection + cross-modal decoder
+  -&gt; query-token logits + normalized boxes
+  -&gt; query filtering by box score
+  -&gt; token filtering + phrase reconstruction
+  -&gt; coordinate conversion / optional downstream NMS
+  -&gt; typed grounded-region manifest</code></pre>
+<h2 id="1">1. 结论先行</h2>
+<ol><li>Grounding DINO 论文 v5把 open-set detector 的跨模态融合分成 feature enhancer、language-guided query selection 和 cross-modality decoder；这支持 pipeline taxonomy，不支持本地项目已复现论文指标。</li><li>冻结官方代码的分类输出不是单一 class ID，而是 <code>pred_logits∈R^{B×Q×L_max}</code>：每个 object query 对文本 token 产生分数；<code>pred_boxes∈R^{B×Q×4}</code> 为 normalized <code>cxcywh</code>。</li><li><code>ContrastiveEmbed</code> 直接计算 query embedding 与 encoded text 的点积，并把 padding token mask 为 <code>-inf</code>；官方 inference 再对 logits 做 sigmoid。</li><li><code>box_threshold</code> 先按每个 query 的最大 token probability 决定是否保留 query；<code>text_threshold</code> 再决定哪些 token 拼成 phrase。两者不能合并，也不等于 NMS。</li><li>冻结的 GroundingDINO <code>inference.py</code> 没有 NMS 调用：它做 threshold、phrase extraction 与 <code>cxcywh→xyxy</code>。若部署另加 NMS，必须单独冻结 IoU threshold、class/phrase grouping、排序和 max-detections。</li><li>Transformers 4.57.1 的 <code>GroundingDinoProcessor</code> 会把候选 label 小写并用句点连接；post-process 从 <code>input_ids</code> 重建 <code>text_labels</code>，而传入的 <code>text_labels</code> 参数当前不参与绑定。API key/type 语义存在版本风险，必须 pin revision。</li><li>本地 OPD 冻结文件体现的是 Qwen3-VL 生成 tagged point/box/text 的 SFT + autoregressive generation + parser/scorer 路径；当前 repo 静态搜索没有发现 GroundingDINO/NMS import 或调用。它可作为“生成式 grounding”对照，不能写成显式 open-vocabulary detector 已部署。</li></ol>
+<h2 id="2-primary-official-local-source-ledger">2. Primary / official / local source ledger</h2>
+<p>SHA-256 对 2026-07-19 访问到的 UTF-8 文本按 LF 规范化后计算；本地文件使用原始文件 SHA。来源只支持其所在层，不能把上游实现、静态 absence search 或数据字段归为个人贡献。</p>
+<table><thead><tr><th>来源</th><th>类型 / revision</th><th>SHA-256</th><th>支持的事实</th><th>不能支持</th></tr></thead><tbody>
+<tr><td><a href="https://arxiv.org/abs/2303.05499v5">Grounding DINO paper v5</a></td><td>primary；arXiv API v5，updated 2024-07-19；读取 2026-07-19</td><td><code>B73D956641C71C5F006F618049BEA3F544BE17F555E74F8BD8F92F7A0ED1A8F0</code></td><td>open-set framing；feature enhancer、language-guided query selection、cross-modality decoder</td><td>本地 checkpoint、阈值、latency、robot success 或个人 ownership</td></tr>
+<tr><td><a href="https://github.com/IDEA-Research/GroundingDINO/blob/856dde20aee659246248e20734ef9ba5214f5e44/README.md">GroundingDINO README</a></td><td>official-code；commit <code>856dde20...</code>；Apache-2.0 repo</td><td><code>D69CF3FD022661E6BE19C56A421020F3EE9E027375020EF6A3DEF0149DDF9595</code></td><td>官方入口、prompt 示例、checkpoint/config 使用和 license 线索</td><td>任意本地系统实际调用该 repo</td></tr>
+<tr><td><a href="https://github.com/IDEA-Research/GroundingDINO/blob/856dde20aee659246248e20734ef9ba5214f5e44/groundingdino/models/GroundingDINO/groundingdino.py">groundingdino.py</a></td><td>official-code；同一 commit</td><td><code>CDFB48D5B15D6B98F3D2002F59AE4730740A1ECFBAEBA324F6840C5E4666A5B8</code></td><td>tokenizer/text mask、<code>max_text_len=256</code>、query/text/box heads、<code>pred_logits/pred_boxes</code> contract</td><td>frozen helper之外的部署后处理或性能</td></tr>
+<tr><td><a href="https://github.com/IDEA-Research/GroundingDINO/blob/856dde20aee659246248e20734ef9ba5214f5e44/groundingdino/models/GroundingDINO/utils.py">GroundingDINO utils.py</a></td><td>official-code；同一 commit</td><td><code>2827BA921ACAA263DB7533AFB6A818473A957FB2EF559C4F3407DA72028A0842</code></td><td><code>ContrastiveEmbed</code> 的 query–text dot product、padding mask 和 max-text padding</td><td>calibrated probability、cosine normalization 或 temperature scaling</td></tr>
+<tr><td><a href="https://github.com/IDEA-Research/GroundingDINO/blob/856dde20aee659246248e20734ef9ba5214f5e44/groundingdino/util/inference.py">GroundingDINO inference.py</a></td><td>official-code；同一 commit</td><td><code>0C06C5DD2FA46AE89A9FA376C0EAA383D12E7FC21AA65D662BCF3E758D26B598</code></td><td>caption normalization、box/text thresholds、phrase extraction、score 与 box conversion；无 NMS call</td><td>threshold calibration、duplicate-free guarantee 或项目 scorer</td></tr>
+<tr><td><a href="https://github.com/huggingface/transformers/blob/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/models/grounding_dino/modeling_grounding_dino.py">Transformers GroundingDINO modeling</a></td><td>official-code；<code>v4.57.1 / 8cb5963...</code>；Apache-2.0</td><td><code>BA98EB52ACBD8A7E36BAB581FD0F9B092FED3579E37CD6E69C55EA153504B2E0</code></td><td>release-pinned model output and implementation bridge</td><td>本地实际加载的 class/config/checkpoint</td></tr>
+<tr><td><a href="https://github.com/huggingface/transformers/blob/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/models/grounding_dino/processing_grounding_dino.py">Transformers GroundingDINO processor</a></td><td>official-code；同一 release</td><td><code>07204D1BBFAF9A4F8E9367C7B303883F19850DBEA9C98F45302371C4F000A239</code></td><td>label merge、<code>threshold/text_threshold</code>、phrase decode、<code>target_sizes</code> 与 output keys</td><td>任意其他 Transformers version 的 key/type 兼容性</td></tr>
+<tr><td><a href="https://github.com/IDEA-Research/GroundingDINO/blob/856dde20aee659246248e20734ef9ba5214f5e44/LICENSE">GroundingDINO LICENSE</a></td><td>official-code；Apache-2.0 文本</td><td><code>B403C98EC1FFACCB0124632592A3D99642CDDC3031CA412B402568E6C06C202A</code></td><td>repo source license 线索</td><td>checkpoint、dataset 或第三方 asset 的授权</td></tr>
+<tr><td><a href="vol_06_per001_grounding_coordinate_source_freeze.html">PER-001 Source Freeze</a></td><td>repository-reviewed bridge</td><td>review SHA 见对应记录</td><td>point/box/text 表示、坐标、parser/scorer 边界</td><td>PER-007 pipeline 已被 PER-001 完整覆盖</td></tr>
+<tr><td><a href="vol_06_per006_image_preprocess_token_camera_contract_source_freeze.html">PER-006 Source Freeze</a></td><td>repository-reviewed bridge</td><td>review SHA 见对应记录</td><td>raw→processed→grid→token 与 camera/order contract</td><td>detector matching、threshold 或 phrase binding</td></tr>
+<tr><td><code>build_clean_grounding_pool.py</code></td><td>local-evidence；<code>muxi@756e27e...</code></td><td><code>A7A5906E11EA687C6FD0DEC40F3D30922A91B538EB98C740230227F9FF943087</code></td><td>annotation clip/filter、<code>xyxy→0..1000</code>、tagged box SFT row</td><td>online detector、query-token score、NMS 或 deployed checkpoint</td></tr>
+<tr><td><code>build_expert_mixes_seed0.py</code></td><td>local-evidence；同一 HEAD</td><td><code>60DFDF46FDAC8EB9DBBE38A13298D6D71819EB7AD13F6B0D00A86B87032EABD0</code></td><td>point/box extraction、expert mix 与 route metadata</td><td>learned detector/router 的独立效果</td></tr>
+<tr><td><code>expert_sft.py</code></td><td>local-evidence；同一 HEAD</td><td><code>2A1D37F5912C91B952C529B3B80C8609D7E3105DC57BBDB2D906EA288B58EA98</code></td><td>Qwen3-VL processor、image/text messages、prompt-masked causal labels</td><td>GroundingDINO、region proposals、box/text threshold 或 NMS</td></tr>
+<tr><td><code>eval_qwen_vl_raw_holdout.py</code></td><td>local-evidence；同一 HEAD</td><td><code>29574ADCE53B254BC33ED39C370642707F570000F7F3FB8F037DBD1F5E0D206B</code></td><td>autoregressive <code>generate</code>、point/box/text parser 与 static metrics</td><td>explicit open-vocabulary detector、closed-loop robot result</td></tr>
+</tbody></table>
+<h2 id="3">3. 与相邻节点的去重边界</h2>
+<table><thead><tr><th>节点</th><th>已负责</th><th>PER-007 只新增</th></tr></thead><tbody>
+<tr><td>PER-006</td><td>image resize、pixel range、patch/grid/token、camera/order</td><td>detector 接收的 image/text 输入必须继承该 manifest</td></tr>
+<tr><td>PER-001</td><td>point/box/text schema、normalized/pixel coordinates、parser、IoU/point metric</td><td>query-token matching、two-threshold selection、phrase reconstruction、NMS policy</td></tr>
+<tr><td>PER-008</td><td>point/box/mask/text 表示选择</td><td>本页不评价哪种输出表示最适合 controller</td></tr>
+<tr><td>PER-009</td><td>matching objective、negative、loss/reduction</td><td>本页只冻结 inference score contract，不展开训练损失</td></tr>
+<tr><td>PER-010</td><td>metric/parser comparability</td><td>本页只要求 output manifest；不把 threshold sweep 写成最终 benchmark</td></tr>
+<tr><td>PER-012</td><td>segmentation/depth/keypoint/affordance</td><td>本页不把 SAM、depth 或 affordance head 合并进 detector source gate</td></tr>
+</tbody></table>
+<h2 id="4-grounding-dino-pipeline">4. 冻结的 Grounding DINO pipeline</h2>
+<h3 id="4-1-prompt-token-contract">4.1 Prompt 与 token contract</h3>
+<p>冻结官方 helper 会先 <code>lower().strip()</code>，并确保 caption 以句点结尾。Transformers processor 对 candidate-label list 同样执行小写，再用 “<code>. </code>” 连接并补末尾句点。因此下面三项必须随 run 保存：</p>
+<ol><li>原始用户表达；</li><li>实际送入 tokenizer 的 normalized caption；</li><li>tokenizer/config revision、<code>input_ids</code>、attention mask 与 truncation。</li></ol>
+<p>官方 model 将文本截断到 <code>max_text_len=256</code>。这不是“最多256个类别”；它是 token-axis 上限。多词短语、标点、special tokens 和 padding 都占用/影响 token positions。</p>
+<h3 id="4-2-query-token-matching">4.2 Query–token matching</h3>
+<p>冻结 <code>ContrastiveEmbed</code> 对 object-query feature $z_q$ 与 encoded-text token feature $e_t$ 做点积：</p>
+<div class="formula">\[
+s_{q,t}=z_q^\top e_t.
+\]</div>
+<p>其中 $q∈\{1,\ldots,Q\}$ 是 object query，$t∈\{1,\ldots,L\}$ 是有效文本 token；padding token 在代码中被 mask 为 <code>-inf</code>，然后输出 padding 到 <code>L_max=256</code>。该代码没有 cosine normalization 或 temperature，因此不能把 $s_{q,t}$ 口述成已校准的跨样本概率。</p>
+<p>官方 inference 对 logits 做 sigmoid：</p>
+<div class="formula">\[
+p_{q,t}=\sigma(s_{q,t}).
+\]</div>
+<p>该值用于同一次 prompt 内的筛选；是否能跨 prompt、跨 checkpoint 或跨类别比较，需要单独 calibration evidence。</p>
+<h3 id="4-3-box-gate-phrase-gate">4.3 Box gate 与 phrase gate</h3>
+<p>query 保留规则为：</p>
+<div class="formula">\[
+\operatorname{keep}(q)=\mathbb{1}\left[\max_t p_{q,t}&gt;\tau_{\mathrm{box}}\right].
+\]</div>
+<p>对已保留 query，phrase token mask 为：</p>
+<div class="formula">\[
+M_{q,t}=\mathbb{1}\left[p_{q,t}&gt;\tau_{\mathrm{text}}\right].
+\]</div>
+<p><code>τ_box</code> 控制“保留哪些 region query”，<code>τ_text</code> 控制“每个 region 绑定哪些 token”。若 <code>τ_text</code> 高于一个已保留 query 的全部 token probability，region 仍可能保留但 phrase 为空；因此 output schema必须允许 <code>empty/invalid/ambiguous phrase</code>，不能强行补最近 label。</p>
+<h3 id="4-4-box-conversion-nms-boundary">4.4 Box conversion 与 NMS boundary</h3>
+<p>冻结 output box 是 normalized <code>cxcywh</code>。官方 helper只做：</p>
+<pre><code class="language-text">normalized cxcywh
+  -&gt; multiply [W,H,W,H]
+  -&gt; pixel cxcywh
+  -&gt; pixel xyxy</code></pre>
+<p>Transformers post-process则先 <code>center_to_corners_format</code>，再用 <code>target_sizes=(height,width)</code> 缩放。两条实现的方向一致，但调用方仍必须冻结 target size 是原图还是处理图，并继承 PER-006 的 inverse transform。</p>
+<p>冻结的 <code>inference.py</code> 没有调用 NMS。不能把“官方 helper无 NMS”改写成“Grounding DINO 永不产生重复框”；它只说明当前 helper的后处理合同。若下游增加 NMS，至少记录：</p>
+<ul><li>pre-NMS boxes/scores/phrases；</li><li>IoU threshold；</li><li>class-agnostic 还是按 canonical phrase grouping；</li><li>score排序、max detections 与 tie-break；</li><li>post-NMS indices；</li><li>NMS 在坐标 inverse 前还是后。</li></ul>
+<h2 id="5-transformers-4-57-1-api-contract">5. Transformers 4.57.1 API contract</h2>
+<p>冻结 <code>GroundingDinoProcessor.post_process_grounded_object_detection</code> 的主要行为是：</p>
+<table><thead><tr><th>字段 / 参数</th><th>冻结语义</th><th>风险</th></tr></thead><tbody>
+<tr><td><code>threshold</code></td><td><code>max(sigmoid(logits), token-axis)&gt;threshold</code> 才保留 query</td><td>不是 IoU/NMS threshold</td></tr>
+<tr><td><code>text_threshold</code></td><td>token probability 超阈值后从 <code>input_ids</code> decode phrase</td><td>改变 phrase边界，不一定改变 box数量</td></tr>
+<tr><td><code>target_sizes</code></td><td>按 <code>(height,width)</code> 把 relative boxes缩放到 pixel <code>xyxy</code></td><td>顺序写反或传 processed size 会错位</td></tr>
+<tr><td><code>text_labels</code> argument</td><td>frozen code签名中存在，但当前不用于 phrase binding</td><td>不能假设传入 list 就决定 output label</td></tr>
+<tr><td><code>text_labels</code> output</td><td>decoded string list</td><td>与 <code>labels</code> key/type 的版本迁移需 pin</td></tr>
+<tr><td><code>labels</code> output</td><td>frozen code仍复制 decoded strings，并包 deprecation warning</td><td>下游不能跨版本假设始终是 string 或 integer</td></tr>
+</tbody></table>
+<p>运行 manifest 至少保存 Transformers revision、processor class、output key/type snapshot 和一个 golden sample；只写“用了 Hugging Face pipeline”不够。</p>
+<h2 id="6-deterministic-threshold-probe">6. Deterministic threshold probe</h2>
+<p>以下是人工构造的 probability matrix，只验证冻结筛选逻辑，不代表模型输出或性能：</p>
+<table><thead><tr><th>Query</th><th>token probabilities</th><th><code>τ_box=0.35</code></th><th><code>τ_text=0.25</code> phrase tokens</th></tr></thead><tbody>
+<tr><td><code>q0</code></td><td><code>[0.90,0.20,0.81,0.01]</code></td><td>keep</td><td><code>t0,t2</code></td></tr>
+<tr><td><code>q1</code></td><td><code>[0.34,0.33,0.01,0.01]</code></td><td>drop</td><td>不进入 phrase gate</td></tr>
+<tr><td><code>q2</code></td><td><code>[0.60,0.24,0.26,0.01]</code></td><td>keep</td><td><code>t0,t2</code></td></tr>
+</tbody></table>
+<p>确定性结论：</p>
+<ol><li>把 <code>τ_text</code> 从0.25提高到0.30，<code>q2</code> 仍保留，但 phrase从 <code>t0,t2</code> 变为 <code>t0</code>；</li><li>把 <code>τ_box</code> 从0.35提高到0.65，只保留 <code>q0</code>；</li><li>代码使用严格大于号，score恰等于 threshold 时不保留；</li><li>threshold probe不能证明真实校准、precision/recall 或 robot success。</li></ol>
+<h2 id="7-typed-grounded-region-manifest">7. Typed grounded-region manifest</h2>
+<p>一个能跨 detector、parser 和 controller 审计的最小结果应为：</p>
+<pre><code class="language-json">{
+  &quot;sample_id&quot;: &quot;...&quot;,
+  &quot;image_id&quot;: &quot;...&quot;,
+  &quot;camera_id&quot;: &quot;...&quot;,
+  &quot;prompt_raw&quot;: &quot;...&quot;,
+  &quot;prompt_normalized&quot;: &quot;...&quot;,
+  &quot;prompt_hash&quot;: &quot;...&quot;,
+  &quot;model_revision&quot;: &quot;...&quot;,
+  &quot;processor_revision&quot;: &quot;...&quot;,
+  &quot;query_index&quot;: 0,
+  &quot;score&quot;: 0.0,
+  &quot;score_semantics&quot;: &quot;max_token_sigmoid&quot;,
+  &quot;phrase_text&quot;: &quot;...&quot;,
+  &quot;phrase_token_indices&quot;: [],
+  &quot;box_cxcywh_norm&quot;: [],
+  &quot;box_xyxy_processed&quot;: [],
+  &quot;box_xyxy_original&quot;: [],
+  &quot;box_threshold&quot;: 0.0,
+  &quot;text_threshold&quot;: 0.0,
+  &quot;nms_policy&quot;: &quot;none | explicit revision&quot;,
+  &quot;valid&quot;: true,
+  &quot;invalid_reason&quot;: null
+}</code></pre>
+<p><code>score_semantics</code>、threshold revision 与 prompt hash 是必要字段：同一个数值在 max-token score、class probability、cosine similarity或VLM sequence likelihood下不可直接比较。</p>
+<h2 id="8-opd-grounding-detector">8. 本地 OPD：生成式 grounding，不是显式 detector</h2>
+<p>冻结本地 HEAD为 <code>756e27e16adcfb3ccbfe98c2920dda42095b127f</code>；四个直接读取文件在该 HEAD下无未提交 diff。对 muxi 中 <code>*.py/*.yaml/*.yml/*.json</code> 的静态搜索未发现 <code>GroundingDINO/groundingdino/torchvision.ops.nms/nms(</code> 匹配。该 absence只支持“当前可搜索源码没有显式调用”，不排除远端环境、未归档脚本、外部服务或历史版本。</p>
+<table><thead><tr><th>本地阶段</th><th>直接证据</th><th>与显式 detector 的差异</th></tr></thead><tbody>
+<tr><td>数据清洗</td><td>clip invalid box、过滤tiny/huge、转 <code>0..1000 xyxy</code>、构造 <code>&lt;box&gt;...</code> answer</td><td>使用已有annotation生成SFT target，不产生region proposal/logit</td></tr>
+<tr><td>Expert mix</td><td>point/box tag解析、pool quota与route metadata</td><td>route metadata不是query–token detector score</td></tr>
+<tr><td>SFT</td><td>Qwen3-VL image/text messages；prompt token mask为 <code>-100</code>，对answer token做causal loss</td><td>没有 <code>Q×L</code> region-token matrix或box/text threshold</td></tr>
+<tr><td>Eval</td><td><code>model.generate</code> 后解析point/box/text；算IoU、distance、text match</td><td>parser/scorer不是detector post-process；无pre-NMS region manifest</td></tr>
+</tbody></table>
+<p>安全表述：</p>
+<div class="meta">我把显式Grounding DINO式query–token detection pipeline与本地OPD生成式tagged-coordinate pipeline分开审计。OPD可连接prompt/schema/parser/scorer和数据mix，但当前证据不支持“项目部署了GroundingDINO/NMS”或把静态grounding直接升级为机器人闭环。</div>
+<h2 id="9-failure-taxonomy">9. Failure taxonomy 与补证顺序</h2>
+<table><thead><tr><th>层</th><th>失败</th><th>最小诊断</th></tr></thead><tbody>
+<tr><td>prompt/token</td><td>label顺序、句点、同义词、截断改变</td><td>raw/normalized prompt、token IDs、prompt hash</td></tr>
+<tr><td>matching</td><td>query对错token高分、padding泄漏、score不校准</td><td>query-token heatmap、token mask、revision</td></tr>
+<tr><td>selection</td><td><code>τ_box</code> 导致漏检/冗余</td><td>pre-threshold query score分布、matched sweep</td></tr>
+<tr><td>phrase</td><td><code>τ_text</code> 产生空/碎片/复合phrase</td><td>token indices、decoded phrase、invalid reason</td></tr>
+<tr><td>geometry</td><td><code>cxcywh/xyxy</code>、target size或inverse错误</td><td>processed/original round-trip sentinel</td></tr>
+<tr><td>duplicate</td><td>下游NMS改变region/phrase关联</td><td>pre/post NMS indices和policy</td></tr>
+<tr><td>project</td><td>generative output被误称detector或robot success</td><td>pipeline type、raw outputs、controller/episode evidence</td></tr>
+</tbody></table>
+<p>补证顺序：先 pin prompt/model/processor → 保存 raw logits/boxes/input_ids → 复算 two-threshold output → 做坐标 round-trip → 明确 NMS policy → 再做 matched threshold/calibration evaluation → 最后才连接 action/robot success。</p>
+<h2 id="10-source-gate-bounded-slice">10. Source gate 结论与下一 bounded slice</h2>
+<p>已冻结：</p>
+<ol><li>Grounding DINO的三阶段跨模态架构与 <code>Q×L</code> query-token score contract；</li><li>prompt normalization、max-text truncation、box/text双阈值与phrase extraction；</li><li>normalized <code>cxcywh</code> 到 pixel <code>xyxy</code> 的后处理，以及 frozen helper无NMS的边界；</li><li>Transformers 4.57.1 output key/type与 <code>text_labels</code> argument未参与绑定的版本风险；</li><li>typed grounded-region manifest、deterministic threshold probe和failure taxonomy；</li><li>本地OPD是生成式grounding对照，不是已证实的GroundingDINO detector。</li></ol>
+<p>当前 verdict为 <code>WARN</code>：公开机制已冻结，但本地没有raw query-token logits、detector checkpoint/config、threshold calibration、pre/post NMS artifact或机器人闭环证据。</p>
+<p><code>VLA-PER-007..009</code> source/knowledge/card现已同步，题卡保持<code>unseen</code>。下一 bounded slice只做PER-010 metric/parser source freeze，不生成knowledge/card，不修改任何mastery。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="https://arxiv.org/abs/2303.05499v5">Grounding DINO v5</a>。</li><li><a href="https://github.com/IDEA-Research/GroundingDINO/tree/856dde20aee659246248e20734ef9ba5214f5e44">IDEA-Research/GroundingDINO@856dde20</a>：README、model、utils、inference与LICENSE指纹见source ledger。</li><li><a href="https://github.com/huggingface/transformers/tree/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/models/grounding_dino">Transformers 4.57.1 Grounding DINO</a>：modeling与processor指纹见source ledger。</li><li><a href="vol_06_per001_grounding_coordinate_source_freeze.html">PER-001 Point / Box / Text Grounding Source Freeze</a>。</li><li><a href="vol_06_per006_image_preprocess_token_camera_contract_source_freeze.html">PER-006 Image Preprocess / Token / Camera Source Freeze</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>。</li></ol>
+</article></body></html>

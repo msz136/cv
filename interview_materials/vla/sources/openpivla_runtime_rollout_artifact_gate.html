@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenPiVLA 本地 Runtime Rollout Artifact Gate：ALOHA 与 LIBERO</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\openpivla_runtime_rollout_artifact_gate.md">
+<meta name="aris:source-sha256" content="a383592eb99f0332529c572ab20de12c9d03aefd29cb3aa16fc74cc5a7e5ab57">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>a383592eb99f0332529c572ab20de12c9d03aefd29cb3aa16fc74cc5a7e5ab57</code>；生成自：<code>interview_materials\vla\sources\openpivla_runtime_rollout_artifact_gate.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-evidence-freeze">1. Evidence freeze</a></li><li><a href="#2-aloha-mujoco-policy-inference">2. ALOHA：真实 MuJoCo policy inference</a></li><li><a href="#2-1-rollout">2.1 三回合基础 rollout</a></li><li><a href="#2-2-rollout">2.2 多视角 rollout</a></li><li><a href="#3-libero-rollout">3. LIBERO：任务级物理 rollout 的失败样本</a></li><li><a href="#4-claim">4. 证据边界与 claim 回写</a></li><li><a href="#5">5. 面试回答模板与追问</a></li><li><a href="#30">30 秒回答</a></li><li><a href="#section-9">高频追问</a></li><li><a href="#6">6. 下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>OpenPiVLA 本地 Runtime Rollout Artifact Gate：ALOHA 与 LIBERO</h1>
+<div class="meta">状态：<code>local-direct / immutable-summary-read / true-physics-rollout / WARN</code> 审查日期：2026-07-21 范围：<code>C:\Users\mousongzhe\project\openpivla_deployment</code> 的部署记录与已落档 rollout summary；本页只冻结运行时证据，不把上游 checkpoint 结果改写成个人训练成果。 结论先行：本地 artifact 直接支持 <strong>官方 OpenPI checkpoint 在 ALOHA MuJoCo 与 LIBERO/robosuite 物理环境中完成了可审计的 policy inference 与视频/轨迹落档</strong>。ALOHA transfer-cube 三回合为 <code>2/3</code>，多视角两回合为 <code>1/2</code>；LIBERO spatial task 0 的 <code>pi05_libero</code> model-policy smoke 为 <code>0/1</code>，同时记录了 no-op reference。当前仍不能据此声称 OpenPiVLA 私有微调、个人 ownership、泛化 benchmark 或 archived <code>97.4%</code> lineage 已闭合。</div>
+<h2 id="1-evidence-freeze">1. Evidence freeze</h2>
+<table><thead><tr><th>ID</th><th>本地对象</th><th>直接核对</th><th>SHA-256 / 状态</th></tr></thead><tbody>
+<tr><td>D01</td><td><code>C:\Users\mousongzhe\project\openpivla_deployment\DEPLOYMENT.md</code></td><td>checkpoint、环境、运行目录、结果表、失败边界与 provenance 说明</td><td><code>C0A3DD0C0DA8C1C0D36023046D5337900A71680B413657BC9B1062EEF2EEA14E</code> / local-direct</td></tr>
+<tr><td>R01</td><td><code>artifacts\aloha_sim_real_rollout_20260608_154324\summary.json</code></td><td><code>pi0_aloha_sim</code>、<code>gym_aloha/AlohaTransferCube-v0</code>、3 episodes、success/reward/action/state 指标</td><td><code>27E4A04C01FD3AA6DDB387B59B519C4B3CC17DF94961EEB17686A160AECE1C13</code> / immutable-summary</td></tr>
+<tr><td>R02</td><td><code>artifacts\aloha_sim_visual_rollout_real_v1\summary.json</code></td><td>6 路相机、2 episodes、多视角 true-physics rollout 指标</td><td><code>CB1E331A82AE032C564FD74CE5F6E01CB1875EAC3A3DF4479943E7C8B4891687</code> / immutable-summary</td></tr>
+<tr><td>R03</td><td><code>artifacts\libero_franka_true_rollout_v1\summary.json</code></td><td><code>pi05_libero</code>、<code>libero_spatial/task_id=0</code>、model/no-op 对照、视频文件名</td><td><code>341E77110D75E50B601A078923F51EF8FA39AAA045FA491843A1003B0320E1DB</code> / immutable-summary</td></tr>
+</tbody></table>
+<p>本页引用的 summary 文件位于用户项目目录，未复制进本仓库，也未修改其代码或运行产物。<code>DEPLOYMENT.md</code> 中的 remote path 只用于记录 provenance；本页的运行结果以本地 summary JSON 与同目录视频/轨迹文件为准。</p>
+<h2 id="2-aloha-mujoco-policy-inference">2. ALOHA：真实 MuJoCo policy inference</h2>
+<h3 id="2-1-rollout">2.1 三回合基础 rollout</h3>
+<p><code>R01</code> 的 summary 写明：配置为 <code>pi0_aloha_sim</code>，任务为 <code>gym_aloha/AlohaTransferCube-v0</code>，最大步数 300，3 个 episode，<code>state_diverged_count=0</code>。成功率为 <code>2/3=0.6667</code>，平均最大 reward 为 <code>3.3333</code>，平均 action delta 为 <code>0.0201277</code>，平均 action jerk 为 <code>0.0079451</code>。每回合的成功布尔值、有限状态、轨迹 JSON 与 camera MP4 均存在于 artifact 目录。</p>
+<p>这能支持的面试表述是：</p>
+<div class="meta">“我把官方 OpenPI policy 接到 ALOHA transfer-cube 的 MuJoCo 环境，做了 3 回合闭环推理；2 回合成功，所有状态保持 finite，没有 state divergence，同时把每步 trajectory、相机视频和 action smoothness 指标落档。”</div>
+<p>这不能支持“我训练出了这个 checkpoint”或“该结果是大规模 benchmark”。summary 的 checkpoint 路径是 <code>/data/msz/openpivla/models/openpi-assets/checkpoints/pi0_aloha_sim</code>，而本页没有私有微调 checkpoint、训练 config lineage 或候选人 pre-snapshot diff。</p>
+<h3 id="2-2-rollout">2.2 多视角 rollout</h3>
+<p><code>R02</code> 标记 <code>visualization_type=true_physics_rollout</code>，相机为 <code>top</code>、<code>angle</code>、<code>front_close</code>、<code>left_wrist</code>、<code>right_wrist</code>、<code>left_pillar</code>。2 回合的成功率为 <code>0.5</code>，平均最大 reward 为 <code>2.5</code>，平均 action norm 为 <code>2.0879</code>，平均 action delta 为 <code>0.02402</code>，<code>state_diverged_count=0</code>。每回合有 <code>multiview_overlay.mp4</code>、各相机视频、trajectory JSON 与 metrics JSON。</p>
+<p>多视角视频是部署/诊断证据，不等价于新算法贡献。面试中应把“相机渲染、轨迹记录、状态/动作统计”与“策略本身的训练 ownership”分开。</p>
+<h2 id="3-libero-rollout">3. LIBERO：任务级物理 rollout 的失败样本</h2>
+<p><code>R03</code> 的任务是 <code>libero_spatial</code>、<code>task_id=0</code>：<code>pick up the black bowl between the plate and the ramekin and place it on the plate</code>。<code>pi05_libero</code> model-policy 与 zero-reference 各执行 70 步，二者 total reward 都为 <code>0.0</code>、success 都为 <code>false</code>；model-policy 的平均 action norm 为 <code>1.2689</code>，最终 state norm 为 <code>3.2866</code>。对照视频 <code>zero_reference_vs_model.mp4</code>、两条 rollout 视频与 metrics PNG 均已落档。</p>
+<p>这里的关键面试结论是：</p>
+<ul><li>这是 task-level MuJoCo/robosuite rollout，不是只做 import 或离线 action plot 的 smoke；</li><li>结果是失败，不应包装为 LIBERO 成功率；</li><li>zero-reference 是 no-op baseline，因为当前官方 checkout 没有随附 LIBERO demonstration action file；它不是 GT demonstration；</li><li>失败首先证明“策略在该任务/配置下未完成目标”，不自动证明 simulator 不可用，也不自动定位到 action axis、normalizer 或 controller 的唯一根因。</li></ul>
+<h2 id="4-claim">4. 证据边界与 claim 回写</h2>
+<table><thead><tr><th>Claim</th><th>当前 verdict</th><th>面试安全口径</th><th>升级所需 artifact</th></tr></thead><tbody>
+<tr><td>官方 OpenPI checkpoint 能在 ALOHA MuJoCo 推理</td><td><code>local-direct / PASS WITH WARNING</code></td><td>“官方 <code>pi0_aloha_sim</code> 在 3 回合 transfer-cube rollout 中完成了可复核 inference，2/3 成功。”</td><td>ALOHA 专属 checkpoint manifest/load log；当前新增的 <a href="openpivla_libero_checkpoint_load_lineage_gate.html">LIBERO load-lineage gate</a> 只闭合 <code>pi05_libero</code> server restore</td></tr>
+<tr><td>多视角 ALOHA true-physics rollout</td><td><code>local-direct / PASS WITH WARNING</code></td><td>“6 路相机、视频、trajectory、action/state 指标均有落档；2 回合为 1/2。”</td><td>更大 episode 数、固定 protocol 与独立 evaluator</td></tr>
+<tr><td><code>pi05_libero</code> 任务级 rollout</td><td><code>local-direct / WARN</code></td><td>“LIBERO spatial task 0 的 70-step model-policy smoke 为 0 reward/false success，失败结果可复现读取。”</td><td>完整 task matrix、checkpoint load log、独立 success scorer 与 matched reference</td></tr>
+<tr><td>OpenPiVLA 私有微调已产生上述结果</td><td><code>UNVERIFIED</code></td><td>不把官方 checkpoint deployment 与个人 fine-tune 混写。</td><td>immutable fine-tune checkpoint、config、训练日志、load/reload 与 lineage</td></tr>
+<tr><td>个人 ownership / 创新点</td><td><code>PENDING</code></td><td>“我能确认运行与结果文件，但具体由我负责的代码边界仍需逐文件确认。”</td><td>candidate role confirmation、pre-snapshot diff、协作工具边界</td></tr>
+<tr><td>archived <code>97.4%</code> 属于本地 rollout</td><td><code>ARCHIVE-SUMMARY-ONLY</code></td><td>“归档报告中有该数字，但本页 rollout summary 不证明同一 checkpoint/protocol/lineage。”</td><td>原始 benchmark manifest、checkpoint hash、评估脚本与 raw episodes</td></tr>
+</tbody></table>
+<h2 id="5">5. 面试回答模板与追问</h2>
+<h3 id="30">30 秒回答</h3>
+<p>“我先把官方 OpenPI policy 接入两个 task-native simulator 做部署验证。在 ALOHA transfer-cube 上，<code>pi0_aloha_sim</code> 做了 3 回合闭环 rollout，成功 2 回合，并落了相机视频、trajectory、reward、state norm、action delta/jerk；多视角版本 2 回合成功 1 回合。随后在 LIBERO spatial 的一个 Franka 任务上用 <code>pi05_libero</code> 做 70 步真实物理 rollout，model-policy 和 no-op reference 都是 0 reward、false success，所以我把它归为失败诊断样本，而不是 benchmark 成绩。这里能证明的是官方 checkpoint 的 runtime 与评估链路，不是我训练了 checkpoint，也不能把它和 97.4% 归到同一 lineage。”</p>
+<h3 id="section-9">高频追问</h3>
+<ol><li><strong>为什么 ALOHA 成功而 LIBERO 失败？</strong> 目前只能说任务、checkpoint/config、embodiment 与控制链路不同；summary 没有足够证据把原因唯一归到 axis、normalizer、相机或 controller，下一步要做 matched probe。</li><li><strong>你如何确认不是 fake rollout？</strong> ALOHA 与 LIBERO 都有 simulator step、逐步 trajectory、reward/state/action 指标和视频；但这仍不替代独立 scorer 与 checkpoint manifest。</li><li><strong>你做了什么改动？</strong> 当前证据只支持“部署脚本、环境隔离、评估/可视化产物已落档”；具体个人 ownership 尚未关闭，不能把 routine path/config 说成算法创新。</li><li><strong>为什么不把 2/3 写成 benchmark？</strong> episode 数小、protocol 是 smoke/deployment run，且没有与官方 benchmark evaluator 和完整任务矩阵对齐。</li></ol>
+<h2 id="6">6. 下一步</h2>
+<ol><li>LIBERO server/client load log 已由 <a href="openpivla_libero_checkpoint_load_lineage_gate.html">Checkpoint Load–Serve–Client Lineage Gate</a> 冻结；下一步补 checkpoint 逐文件 SHA、norm stats SHA、精确 argv 与 shared run UUID，才能形成 immutable manifest。</li><li>对 LIBERO 失败做一个最小 matched probe：固定 observation keys、action shape、axis/order/unit、normalizer、controller 与 scorer，并保留 zero-reference/model 对照。</li><li>逐文件确认候选人的 ownership，再把本页事实映射到项目题卡；在真实口述前不新增 mastery 记录。</li></ol>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Local deployment record：<code>C:\Users\mousongzhe\project\openpivla_deployment\DEPLOYMENT.md</code>（D01）。</li><li>Local ALOHA rollout summary（R01）及同目录 <code>episode_*/trajectory.json</code>、<code>episode_*/camera.mp4</code>。</li><li>Local ALOHA visual rollout summary（R02）及同目录多视角视频/trajectory。</li><li>Local LIBERO rollout summary（R03）及 <code>model_policy/</code>、<code>zero_reference/</code> 视频与 metrics。</li><li><a href="openpivla_formal_json_ce_shape_contract_artifact_gate.html">OpenPiVLA formal JSON/CE artifact gate</a>，用于区分 local training representation 与官方 deployment runtime。</li><li><a href="openpivla_libero_checkpoint_load_lineage_gate.html">OpenPiVLA / LIBERO Checkpoint Load–Serve–Client Lineage Gate</a>，用于补充 Orbax restore、normalizer、listen/connect 与 code contract 证据。</li></ol>
+</article></body></html>

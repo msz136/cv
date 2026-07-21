@@ -1,0 +1,69 @@
+{
+  "artifact": "questions/proj_robot_harness.md",
+  "html": "questions/proj_robot_harness.html",
+  "question_list": "questions/proj_robot_harness.question_list.md",
+  "review_date": "2026-07-19",
+  "status": "drafted / direct_evidence_batch_1 / ownership_ledger_synced",
+  "verdict": "WARN",
+  "source_sha256": "ab42f762ae9420ecedd6b87457329c4cc398dc724f907b9e5d3f044a50836f36",
+  "question_count": 8,
+  "covered_question_ids": [
+    "PROJ-HARNESS-001",
+    "PROJ-HARNESS-002",
+    "PROJ-HARNESS-003",
+    "PROJ-HARNESS-004",
+    "PROJ-HARNESS-005",
+    "PROJ-HARNESS-006",
+    "PROJ-HARNESS-007",
+    "PROJ-HARNESS-008"
+  ],
+  "difficulty_distribution": {
+    "L2": 4,
+    "L3": 4
+  },
+  "priority_distribution": {
+    "P0": 7,
+    "P1": 1
+  },
+  "practice_distribution": {
+    "unseen": 8,
+    "weak": 0,
+    "pass": 0,
+    "strong": 0,
+    "stale": 0
+  },
+  "answer_length_chars": {
+    "short_answer_min": 119,
+    "short_answer_max": 180,
+    "short_answer_average": 155.75,
+    "short_answer_threshold": 180,
+    "mechanism_answer_min": 219,
+    "mechanism_answer_max": 326,
+    "mechanism_answer_average": 265.625,
+    "mechanism_answer_threshold": 350
+  },
+  "checks": {
+    "batch_boundary": "PASS (only PROJ-HARNESS-001..008 were drafted; other project cards were not generated)",
+    "details_block_well_formed": "PASS (8/8 Markdown and HTML details/summary blocks are balanced and foldable)",
+    "question_id_unique": "PASS (8 unique expected IDs; the header/range adds one non-card occurrence)",
+    "required_fields": "PASS (intent, short answer, mechanism, diagnosis/evidence, project hook, follow-up, dangerous answer, sources and state on every card)",
+    "answer_conciseness": "PASS (all 30-second answers <=180 chars; all mechanism answers <=350 chars)",
+    "source_references": "PASS WITH WARNING (runtime/data/reward/report/metrics sources are linked or given as frozen local paths; raw checkpoint and runner gaps remain explicit)",
+    "project_truth_boundary": "PASS (proxy metrics are not called robot success; 8B/32B and scorer/n differences are stated; safety/browser/ownership remain bounded)",
+    "practice_state": "PASS (all 8 cards remain unseen; no oral answer was provided and no coaching state was created)",
+    "html_static_validation": "PASS (source SHA embedded, one H1, four H2, eight summaries and eight foldable cards)",
+    "local_links": "PASS (relative inventory/project links resolve; external agent paths remain code text)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "same_protocol_metric_gate": "PENDING (base/SFT/GRPO scorer/n/checkpoint alignment is intentionally not claimed)",
+    "ownership_ledger": "PASS WITH WARNING (13-row ledger linked; candidate owner/reviewer and Codex-primary implementation separated; candidate confirmation pending)",
+    "targeted_runtime_tests": "WARN (11 passed, 1 test-model config-drift failure; runtime not claimed fully green)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep all 8 cards unseen until the candidate answers them orally.",
+    "Keep 32B 95.4/95.6 language bound to run, checkpoint, suite, n and scorer; do not call it a strict causal uplift yet.",
+    "Add a later card batch only after same-scorer rerun, reward ablation, shadow runner or candidate ownership confirmation is frozen.",
+    "Do not infer real robot success from project sandbox 100%, and do not describe browser deferred evaluation as a real runner."
+  ],
+  "next": "Run PROJ-HARNESS-008 as the ownership-confirmation drill or collect common-protocol raw eval; keep all eight cards unseen until a real response."
+}

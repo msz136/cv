@@ -1,0 +1,50 @@
+{
+  "artifact": "sources/vol_05_eval013_end_to_end_latency_deadline_jitter_source_freeze.md",
+  "html": "sources/vol_05_eval013_end_to_end_latency_deadline_jitter_source_freeze.html",
+  "review_date": "2026-07-19",
+  "status": "source_frozen / VLA-EVAL-013 / knowledge_drafted / card_1_of_1_unseen / WARN",
+  "verdict": "WARN",
+  "source_sha256": "9b47d6cd3dbea63e16d80c2fd25c7d68d1aa8f642b11b75913eb58f7449470bb",
+  "coverage": {
+    "knowledge_id": "VLA-EVAL-013",
+    "public_source_groups_checked": 7,
+    "project_inventories_checked": 5,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "tail_at_scale": "Google Research / CACM 2013 / page SHA-256 08b0ee41b61e513ba6b9514028a50e88bdc53116f60828762bbd4a557a096376",
+    "ros2_pendulum": "ros2/demos commit 54d49d22e898d796ea476c42268757ad422bf878 / Apache-2.0",
+    "ros2_qos": "ros2/design commit 93a415bf928751d37fce6f83215c521658e20c93 / Apache-2.0",
+    "hdr_histogram": "commit de84b0a7de2378abfc405da503bf4898e84ea98e / CC0 or BSD-2-Clause",
+    "rfc_3393": "RFC 3393 / 2002-11 / text SHA-256 bd9170bd9d9fe7fa6deda27198d90a067d300e4d755b0c2ab5c880016ec72f2c",
+    "cpython_time": "commit 2931f2067a6ecdc52cb44f694ce14ab8b50b9a32 / PSF-2.0",
+    "openpi_serving": "commit 15a9616a00943ada6c20a0f158e3adb39df2ccac / Apache-2.0"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one EVAL-013 source, knowledge node and unseen card; EVAL-014 deferred)",
+    "source_freeze": "PASS (tail latency, ROS 2 real-time/QoS, coordinated omission, network PDV, clocks and OpenPI revisions/hashes frozen)",
+    "metric_boundary": "PASS (compute, response, first/per-offset action age, loop response and scheduler lateness separated)",
+    "clock_contract": "PASS (monotonic duration, cross-host offset uncertainty and GPU synchronization explicit)",
+    "critical_path": "PASS (stage spans, overlap and conditional tail contribution covered)",
+    "percentile_contract": "PASS (empirical CDF/quantile, n/interpolation/max/uncertainty and small-n warning)",
+    "deadline_jitter": "PASS (absolute deadline, miss k/n, lateness/burst, phase/interval jitter and network-PDV boundary)",
+    "chunk_frequency": "PASS (H/K/control-Hz physical time and per-offset action age covered)",
+    "load_bias": "PASS (cold/warm/load/fault and coordinated omission covered)",
+    "artifact_contract": "PASS (clock/protocol/raw spans/apply/arrival/outcome/summary/checksum/recompute bundle)",
+    "project_truth_boundary": "PASS (all five projects correctly marked as lacking protocol-complete action-age evidence)",
+    "canonical_sha": "PASS (Markdown, HTML metadata and review SHA match)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, nineteen H2, five tables, three code blocks, eight formula blocks, zero formula em; serif/sticky/900px rules present)",
+    "local_links": "PASS (relative references resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Collect capture-to-controller-apply spans under frozen model/request/load/H/K/Hz protocols.",
+    "Bind p99 and deadline-miss claims to sample size, clock uncertainty, raw arrivals and robot-side outcomes.",
+    "Do not promote UWM DataLoader p95 or OpenPI infer_ms to closed-loop VLA latency.",
+    "Do not create coaching_state.md before a real oral response."
+  ],
+  "next": "Proceed only to VLA-EVAL-014 forbidden side effect, scope, cancellation and compensation evaluation; keep VLA-EVAL-013 WARN/unseen."
+}

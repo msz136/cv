@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmos Policy full10k trained checkpoint：RoboCasa 24×5 P0 评测证据审计</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\cosmos_policy_full10k_trained_eval_p0_audit.md">
+<meta name="aris:source-sha256" content="db83888b1279e548ebca64260094489366905c632c5cc4f9e44f834bc12d66cf">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>db83888b1279e548ebca64260094489366905c632c5cc4f9e44f834bc12d66cf</code>；生成自：<code>interview_materials\vla\evidence\projects\cosmos_policy_full10k_trained_eval_p0_audit.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. 问题（Question）</a></li><li><a href="#2">2. 结论先行</a></li><li><a href="#3-p0-promotion">3. P0 promotion 结论</a></li><li><a href="#4-frozen-inputs-sha-256">4. Frozen inputs 与 SHA-256</a></li><li><a href="#5-protocol-tuple">5. Protocol tuple</a></li><li><a href="#6-task-level-result">6. 独立重算与 task-level result</a></li><li><a href="#6-1-recompute-gates">6.1 Recompute gates</a></li><li><a href="#6-2-task-level-summary">6.2 Task-level summary</a></li><li><a href="#6-3-artifact-success-boundary">6.3 Artifact-success boundary</a></li><li><a href="#7-action-debug-integrity">7. Action-debug integrity</a></li><li><a href="#8-run-family">8. 与相邻 run family 的分离</a></li><li><a href="#9">9. 面试可用与禁用表述</a></li><li><a href="#30">30 秒回答</a></li><li><a href="#2-120">高压追问：为什么不是直接报告 2/120？</a></li><li><a href="#full10k-official-hf">高压追问：full10k 比 official-HF 差多少？</a></li><li><a href="#section-16">禁用表述</a></li><li><a href="#10-p0">10. 关闭 P0 的最小动作</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>Cosmos Policy full10k trained checkpoint：RoboCasa 24×5 P0 评测证据审计</h1>
+<div class="meta">状态：<code>p0_audited / trained-run-remote-artifact-backed / checkpoint-unverified / scorer-policy-local / ownership-pending / WARN</code> 审计日期：2026-07-21 范围：只审计 <code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\remote_artifacts</code> 中 run id 为 <code>full10k-20260620-5ep-alltasks</code> 的 24 个 formal task；不把它与 8-GPU <code>max_steps=9907</code> gate、Cosmos official-HF baseline、TurnOffMicrowave local 1k failure 或 CoffeePressButton 1×1 smoke 合并为同一 run。</div>
+<h2 id="1-question">1. 问题（Question）</h2>
+<p>这份审计回答四个问题：full10k 训练 checkpoint path 是否实际进入了完整 24×5 RoboCasa eval；status、task log、summary 与 action-debug 是否互相对齐；raw <code>2/120</code> 与 trusted <code>0/118</code> 如何在面试中准确解释；以及哪些结果仍不能升级为 checkpoint ownership、benchmark 或训练 uplift。</p>
+<h2 id="2">2. 结论先行</h2>
+<p>当前 bundle 足够证明：一条独立的 full10k trained-run eval harness 已完成 24 个 task、每 task 5 个 episode；<code>formal_5ep_status.tsv</code> 的 24 行全部 <code>exit_code=0</code>；24 个 task log 与 conservative summary 的 task set、episode 数和 success 数一致；action-debug 的 24 个 formal JSONL 共 4066 行，全部可解析、<code>32×7</code>、finite，并且都指向同一个远端 <code>iter_000010000</code> checkpoint path。</p>
+<p>独立重算得到：</p>
+<pre><code class="language-text">raw successes       = 2 / 120 = 1.6667%
+artifact successes  = 2       (CoffeeServeMug episode 1/2, each length=1)
+eligible episodes   = 118
+trusted successes   = 0 / 118 = 0%
+conservative rate   = 0 / 120 = 0%</code></pre>
+<p>这支持的面试口径是：“我把独立 full10k trained checkpoint path 接入了固定的 RoboCasa 24×5 eval，完成了日志、status、summary 和 action-debug 的交叉审计；原始日志有 2 条 CoffeeServeMug 的 length=1 immediate success，按当前本地审计规则排除后 trusted 是 <code>0/118</code>。”</p>
+<p>它不支持：本地持有或 hash 了 checkpoint binary；证明 full10k 训练带来 benchmark uplift；把 <code>0/118</code> 写成 RoboCasa 官方统一 scorer 的结果；把 full10k 与 official-HF <code>84/118</code> 做因果比较；或从 launcher、远端路径、Git author 推导个人独立 ownership。</p>
+<h2 id="3-p0-promotion">3. P0 promotion 结论</h2>
+<pre><code class="language-text">P0 status = PARTIAL
+eligible trained-run eval claims = PRESENT / remote-artifact-backed
+eligible raw/trusted recount = PRESENT / local-policy-bounded
+eligible local checkpoint claims = 0
+eligible matched-uplift claims = 0
+eligible ownership claims = 0</code></pre>
+<table><thead><tr><th>P0 字段</th><th>当前证据</th><th>状态</th><th>安全解释</th></tr></thead><tbody>
+<tr><td>task coverage</td><td><code>formal_5ep_status.tsv</code> 24 行、24 unique tasks、每 task 5 trials</td><td><code>PRESENT</code></td><td>可称 full10k trained-run 的 24×5 formal eval</td></tr>
+<tr><td>process completion</td><td>24/24 formal rows <code>exit_code=0</code></td><td><code>PRESENT</code></td><td>进程正常退出，不等于策略成功</td></tr>
+<tr><td>task-log recount</td><td>24 logs、120 episodes、2 successes</td><td><code>PRESENT / independently recomputed</code></td><td>可报告 raw <code>2/120</code></td></tr>
+<tr><td>summary alignment</td><td>conservative JSON 24 rows 与 status task set 完全一致</td><td><code>PRESENT</code></td><td>summary 不是 checkpoint ownership 证据</td></tr>
+<tr><td>artifact policy</td><td>CoffeeServeMug 两条 <code>SUCCESS:length=1</code> 被排除</td><td><code>LOCAL POLICY</code></td><td>只能称当前审计规则，不称官方通用定义</td></tr>
+<tr><td>trusted recount</td><td>118 eligible episodes、0 trusted successes</td><td><code>PRESENT / protocol-bounded</code></td><td>可报告 <code>0/118</code>，须同时说明 denominator 规则</td></tr>
+<tr><td>checkpoint identity</td><td>4066 行 action-debug 都指向 <code>/data/msz/wm/outputs/cosmos_policy_wam_repro_full10k_20260619/.../iter_000010000</code></td><td><code>REMOTE-REFERENCED</code></td><td>path 不是本地 binary、revision 或 hash</td></tr>
+<tr><td>action-debug integrity</td><td>24 files、4066 lines、<code>32×7</code>、<code>float64</code>、无 malformed/non-finite</td><td><code>PRESENT</code></td><td>结构健康，不证明动作语义或 success 原因</td></tr>
+<tr><td>media completeness</td><td>本地同步 14 个 media；archive 169 entries</td><td><code>PARTIAL</code></td><td>不能当作 120 episode 完整 media bundle</td></tr>
+<tr><td>scorer/version</td><td>log 有 SUCCESS/FAILURE/length；<code>length&lt;5</code> exclusion 是本地 policy</td><td><code>PARTIAL</code></td><td>仍缺 immutable scorer/version 与 raw episode JSONL</td></tr>
+<tr><td>ownership</td><td>launcher、wrapper、远端 operator/reviewer 未逐文件确认</td><td><code>PENDING</code></td><td>不从路径或报告作者推导“我负责”</td></tr>
+</tbody></table>
+<h2 id="4-frozen-inputs-sha-256">4. Frozen inputs 与 SHA-256</h2>
+<table><thead><tr><th>文件</th><th>SHA-256</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\remote_artifacts\formal_5ep_status.tsv</code></td><td><code>7FCA2C1C57EEAD560D602A6F3CFAF6D0BE7C21F747AEF8F567662C66B2BEC55C</code></td><td>24 条 formal launcher/status 记录</td></tr>
+<tr><td><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\remote_artifacts\eval_summary_conservative.json</code></td><td><code>C9538A2E418BCBEDD88B8DCFB308F0E1AF428DBA2912A959DEA946872A3247BE</code></td><td>conservative task/episode summary</td></tr>
+<tr><td><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\remote_artifacts\eval_summary_conservative.csv</code></td><td><code>676062F1318ADF3CC7DE4188AE575878BA1A779EFBE7214CA49FE6F2341D06BB</code></td><td>task-level CSV summary</td></tr>
+<tr><td><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\remote_artifacts\dataset_statistics.json</code></td><td><code>BFEC3286EF23AADF19B42C33937118C540073C44F668BA012D9E8B773AA77E41</code></td><td>action/proprio normalization source</td></tr>
+<tr><td><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\remote_artifacts\dataset_stats_contract.json</code></td><td><code>D41BC62760B937939067958D4FAAE78F08CFD0D823C4BD74F9A10F7265B8EA8A</code></td><td>action dim 7、proprio dim 9 contract</td></tr>
+<tr><td><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\remote_artifacts\cosmos_policy_eval_light_20260620.tgz</code></td><td><code>853E2434EF48AA774FAB59C13EED663AA85364956AB3E3F50A76CEF4B2B715C3</code></td><td>169-entry light archive</td></tr>
+</tbody></table>
+<p>目录审计计数：<code>logs=25</code>、<code>stdout=25</code>、<code>action_debug=25</code>、<code>manifests=75</code>；其中各类 25/25 中有 1 份 CoffeePressButton smoke，24 份才进入本页 formal 主表。archive 为 <code>8,403,550</code> bytes、169 entries；本地同步 media 计数为 14，不能替代完整 120 episode 视频或 JSONL。</p>
+<h2 id="5-protocol-tuple">5. Protocol tuple</h2>
+<p>25 个 command manifest 共享同一运行合同；本页只取其中 24 个 <code>5ep-alltasks</code> formal manifest。</p>
+<table><thead><tr><th>字段</th><th>冻结值</th></tr></thead><tbody>
+<tr><td>host / GPU</td><td><code>iv-yej2jeh2bkay8n70cofj</code> / <code>CUDA_VISIBLE_DEVICES=7</code></td></tr>
+<tr><td>seed</td><td><code>195</code></td></tr>
+<tr><td>checkpoint path</td><td><code>/data/msz/wm/outputs/cosmos_policy_wam_repro_full10k_20260619/cosmos_policy/cosmos_v2_finetune/cosmos_policy_wam_repro_full10k_20260619/checkpoints/iter_000010000</code></td></tr>
+<tr><td>stats / embeddings</td><td><code>/data/msz/wm/cosmos_policy_stats_only/dataset_statistics.json</code> / <code>/data/msz/wm/outputs/cosmos_policy_robocasa_eval_20260620/reason1_eval_embeddings.pkl</code></td></tr>
+<tr><td>launcher / wrapper</td><td><code>launch_cosmos_policy_robocasa_official_eval.sh</code> / <code>cosmos_policy_robocasa_official_eval_wrapper.py</code></td></tr>
+<tr><td>eval config</td><td><code>cosmos_predict2p5_2b_480p_robocasa_50_demos_per_task__inference_no_s3</code></td></tr>
+<tr><td>observation</td><td>2 third-person + 1 wrist image；proprio enabled</td></tr>
+<tr><td>normalization / denoise</td><td>image flip + JPEG；normalize proprio；unnormalize action；action denoise 5 steps；shift 5</td></tr>
+<tr><td>action execution</td><td><code>chunk_size=32</code>；<code>num_open_loop_steps=16</code>；action dim 7</td></tr>
+<tr><td>policy selection</td><td>deterministic；best-of-N queries 1；no parallel inference</td></tr>
+<tr><td>robot/controller</td><td><code>PandaMobile</code> / <code>OSC_POSE</code></td></tr>
+<tr><td>task split / layout</td><td>object split <code>B</code>；<code>((1,1),(2,2),(4,4),(6,9),(7,10))</code></td></tr>
+<tr><td>formal trials</td><td>5 per task；<code>deterministic_reset=false</code></td></tr>
+</tbody></table>
+<p>这组字段支持“协议固定/对齐”的叙事，不构成模型权重内容、训练有效性或个人 ownership 证据。</p>
+<h2 id="6-task-level-result">6. 独立重算与 task-level result</h2>
+<h3 id="6-1-recompute-gates">6.1 Recompute gates</h3>
+<table><thead><tr><th>检查</th><th>结果</th></tr></thead><tbody>
+<tr><td>status rows / unique tasks / trial sum</td><td><code>24 / 24 / 120</code></td></tr>
+<tr><td>status exit code</td><td><code>24/24 = 0</code></td></tr>
+<tr><td>summary rows / task-set match</td><td><code>24 / true</code></td></tr>
+<tr><td>formal task logs / task-set match</td><td><code>24 / true</code></td></tr>
+<tr><td>log episodes / successes</td><td><code>120 / 2</code></td></tr>
+<tr><td>action-debug files / lines</td><td><code>24 / 4066</code></td></tr>
+<tr><td>malformed JSON / bad shape / non-finite / task mismatch</td><td><code>0 / 0 / 0 / 0</code></td></tr>
+<tr><td>action shape / dtype / chunk / open-loop</td><td><code>32×7 / float64 / 32 / 16</code></td></tr>
+</tbody></table>
+<h3 id="6-2-task-level-summary">6.2 Task-level summary</h3>
+<table><thead><tr><th>task</th><th>raw success / 5</th><th>artifact excluded</th><th>eligible</th><th>trusted success</th></tr></thead><tbody>
+<tr><td>CloseDoubleDoor</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>CloseDrawer</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>CloseSingleDoor</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>CoffeePressButton</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>CoffeeServeMug</td><td>2</td><td>2</td><td>3</td><td>0</td></tr>
+<tr><td>CoffeeSetupMug</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>OpenDoubleDoor</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>OpenDrawer</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>OpenSingleDoor</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>PnPCabToCounter</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>PnPCounterToCab</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>PnPCounterToMicrowave</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>PnPCounterToSink</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>PnPCounterToStove</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>PnPMicrowaveToCounter</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>PnPSinkToCounter</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>PnPStoveToCounter</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>TurnOffMicrowave</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>TurnOffSinkFaucet</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>TurnOffStove</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>TurnOnMicrowave</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>TurnOnSinkFaucet</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>TurnOnStove</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td>TurnSinkSpout</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+<tr><td><strong>合计</strong></td><td><strong>2 / 120</strong></td><td><strong>2</strong></td><td><strong>118</strong></td><td><strong>0 / 118</strong></td></tr>
+</tbody></table>
+<h3 id="6-3-artifact-success-boundary">6.3 Artifact-success boundary</h3>
+<p>两条 raw success 都来自 <code>CoffeeServeMug</code> episode 1/2，日志标记为 <code>SUCCESS:length=1</code>。本地 conservative summary 将它们标为 <code>immediate_success_artifact</code>，所以 trusted 分母从 120 变为 118，trusted successes 为 0。<code>length&lt;5</code> 是本地审计 policy；在 scorer/version、termination reason 与完整 episode JSONL 未冻结前，不能把它写成 RoboCasa 官方统一 invalid 定义。</p>
+<h2 id="7-action-debug-integrity">7. Action-debug integrity</h2>
+<p>24 个 formal action-debug JSONL 共 4066 行，逐行 JSON 解析无 malformed；<code>action.shape=[32,7]</code>、<code>dtype=float64</code>、<code>chunk_size=32</code>、<code>num_open_loop_steps=16</code> 保持一致；对 action summary 与 <code>first_row</code> 做 finite 检查无 <code>NaN/Inf</code>；task name 与文件名无 mismatch。单文件行数范围为 95–315。</p>
+<p>这只能证明 inference 输出的记录结构可读、形状和数值有限，不能证明 action normalization 的语义正确、控制器执行正确、策略学到了任务，或某个失败由单一模块造成。</p>
+<h2 id="8-run-family">8. 与相邻 run family 的分离</h2>
+<table><thead><tr><th>run family</th><th>checkpoint / 运行线</th><th>本页关系</th></tr></thead><tbody>
+<tr><td>full10k trained eval（本页）</td><td>远端 <code>iter_000010000</code>；单卡 GPU7；24×5；raw <code>2/120</code>、trusted <code>0/118</code></td><td>本页主证据</td></tr>
+<tr><td>official-HF baseline</td><td><code>nvidia/Cosmos-Policy-RoboCasa-Predict2-2B</code>；24×5；raw <code>86/120</code>、trusted <code>84/118</code></td><td>外部 baseline；不能当本地成绩</td></tr>
+<tr><td>8-GPU 1 epoch gate</td><td><code>max_steps=9907</code>；save-2k cgroup OOM；save1500 <code>state_dict(destination=...)</code> first divergence</td><td>未完成训练/save gate；不能用本页 eval 替代</td></tr>
+<tr><td>TurnOffMicrowave local 1k</td><td>local negative-only 1k；single-task <code>0/1</code> failure 与 same-input probe</td><td>诊断 run；不并入本页分母</td></tr>
+<tr><td>CoffeePressButton smoke</td><td>1×1 smoke</td><td>本地目录中的代表性 smoke；不进入 24×5 主表</td></tr>
+</tbody></table>
+<p>没有共同的 checkpoint binary/hash、config/data/stats immutable manifest、scorer version 与 episode-level paired join，因此不能计算 full10k 相对 official-HF 的 uplift，也不能把 <code>2/120</code> 或 <code>0/118</code> 与其它 run 族拼成一条训练曲线。</p>
+<h2 id="9">9. 面试可用与禁用表述</h2>
+<h3 id="30">30 秒回答</h3>
+<div class="meta">我把 full10k trained run、official-HF baseline 和 8 卡 1 epoch gate 分开管理。对 full10k 的远端 <code>iter_000010000</code> path，我跑了 RoboCasa 24 个 task、每 task 5 个 episode，24 条 formal status 全部正常退出；从 task logs 独立重算是 raw <code>2/120</code>。两条 success 都是 CoffeeServeMug 的 length=1 immediate artifact，按当前本地 policy 排除后是 trusted <code>0/118</code>。我还核了 24 个 action-debug JSONL，4066 行全部 <code>32×7</code> 且 finite。这个结果证明评测链和审计闭环，不证明 benchmark uplift、官方 scorer 等价或本地 checkpoint binary ownership。</div>
+<h3 id="2-120">高压追问：为什么不是直接报告 2/120？</h3>
+<div class="meta"><code>2/120</code> 是 raw log 口径，我不会隐藏它。因为两条成功都在 length=1，conservative summary 把它们标成 immediate artifact；如果采用这份本地审计 policy，eligible denominator 是 118，trusted success 是 <code>0/118</code>。这不是 RoboCasa 官方统一定义，所以我同时保留 raw 和 trusted，并把 scorer/version 与完整 episode JSONL 列为 P0 缺口。</div>
+<h3 id="full10k-official-hf">高压追问：full10k 比 official-HF 差多少？</h3>
+<div class="meta">目前不能给因果差值。两者 checkpoint identity、revision、raw episode bundle、scorer/invalid policy 和 ownership 还没有完全 matched；能说的是本页 full10k trained-run audit 为 raw <code>2/120</code>、local trusted <code>0/118</code>，official-HF audit 为 raw <code>86/120</code>、local trusted <code>84/118</code>。这两组数字必须标注 run family，不能把后者写成本地模型成绩。</div>
+<h3 id="section-16">禁用表述</h3>
+<table><thead><tr><th>不安全说法</th><th>原因</th><th>安全替代</th></tr></thead><tbody>
+<tr><td>“full10k 在 RoboCasa 是 0%”</td><td><code>0/118</code> 是本地 invalid policy，不是官方 scorer</td><td>“按当前本地 policy，trusted 为 <code>0/118</code>；raw 为 <code>2/120</code>。”</td></tr>
+<tr><td>“我的模型达到 71.19%”</td><td><code>84/118</code> 属于 official-HF path</td><td>“我运行并审计了 official-HF baseline，不把它归因于训练模型。”</td></tr>
+<tr><td>“训练提升/下降了 X%”</td><td>没有 matched paired eval</td><td>“当前只有跨 run 的分布对账，不能宣称 uplift。”</td></tr>
+<tr><td>“checkpoint 已保存并验证”</td><td>当前只有远端 path，无 binary/hash/reload parity</td><td>“action-debug 与 manifest 引用了远端 path，checkpoint gate 仍未闭合。”</td></tr>
+</tbody></table>
+<h2 id="10-p0">10. 关闭 P0 的最小动作</h2>
+<ol><li>回传 <code>iter_000010000</code> checkpoint binary 或 immutable revision/ETag/SHA，并做 fresh-process load parity。</li><li>冻结训练 config、代码 revision、dataset/statistics/embedding SHA 与 run manifest，确认 full10k 训练日志和 eval 的 lineage。</li><li>保存 120 个 episode 的原始 JSONL（termination、length、success predicate、error）并给 <code>length&lt;5</code> policy 一个版本化 scorer；保留 raw 与 trusted 两套结果。</li><li>完整同步 episode media 或至少提供每条 episode 的可核验 media locator；当前 14 个 local media 不是完整 bundle。</li><li>逐文件确认 launcher、wrapper、协议 patch、operator 与 reviewer 的候选人角色。</li><li>若要写 uplift，用同一 checkpoint lineage、stats、seed/init、controller、task/layout、scorer 和 24×5 denominator 做 paired eval；在此之前保持 <code>WARN</code>。</li></ol>
+<h2 id="references">References</h2>
+<ol><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\remote_artifacts\formal_5ep_status.tsv</code>。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\remote_artifacts\eval_summary_conservative.json</code> 与 <code>eval_summary_conservative.csv</code>。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\remote_artifacts\logs\ENV_EVAL-*.txt</code>（24 formal task logs；另有 1 份 smoke）。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\remote_artifacts\action_debug\*.jsonl</code>（24 formal action-debug files）。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\remote_artifacts\manifests\*_command.txt</code>（24 formal + 1 smoke）。</li><li><a href="cosmos_policy_robocasa_baseline_p0_audit.html">Cosmos Policy RoboCasa Official-HF Baseline P0 Audit</a>。</li><li><a href="../../sources/vol_04_cosmos_policy_wam_full10k_run_reconciliation.html">Cosmos / WAM 1 epoch–full10k Run Reconciliation</a>。</li><li><a href="wam_claim_evidence_inventory.html">WAM Claim–Evidence Inventory</a>。</li><li><a href="../../sources/vol_07_project_evidence_reconciliation.html">VOL 07 五项目证据 Reconciliation</a>。</li></ol>
+</article></body></html>

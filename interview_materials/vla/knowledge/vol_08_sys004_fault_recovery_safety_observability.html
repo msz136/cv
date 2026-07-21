@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 08 SYS-004：Fault Recovery、Safety 与 Observability</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_08_sys004_fault_recovery_safety_observability.md">
+<meta name="aris:source-sha256" content="826841a78556379ef2e2b6730203dcdf776c592ffb1373080e1ac9ac4b22c3be">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>826841a78556379ef2e2b6730203dcdf776c592ffb1373080e1ac9ac4b22c3be</code>；生成自：<code>interview_materials\vla\knowledge\vol_08_sys004_fault_recovery_safety_observability.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 直觉与专业定义</a></li><li><a href="#1-1">1.1 先保护副作用，再解释原因</a></li><li><a href="#1-2-first-verified-divergence-root-cause">1.2 First verified divergence 不等于 root cause</a></li><li><a href="#2-fault-state-machine-owner">2. Fault state machine 与 owner</a></li><li><a href="#2-1">2.1 状态定义</a></li><li><a href="#2-2">2.2 状态转换的负面边界</a></li><li><a href="#3-liveness-readiness-startup">3. Liveness、Readiness、Startup 与通信信号</a></li><li><a href="#3-1-probe">3.1 三类 probe 不可混用</a></li><li><a href="#3-2-deadline-action-age">3.2 Deadline 与 action age</a></li><li><a href="#4-incident-identity">4. Incident identity 与可观测性</a></li><li><a href="#4-1-schema">4.1 最小事件 schema</a></li><li><a href="#4-2-traces-metrics-logs">4.2 Traces、metrics、logs 的分工</a></li><li><a href="#5-safety-boundary-stale-action-fencing">5. Safety boundary 与 stale-action fencing</a></li><li><a href="#5-1-safe-apply">5.1 Safe apply 条件</a></li><li><a href="#5-2-cancel-hold-stop-e-stop">5.2 Cancel、hold、stop、e-stop</a></li><li><a href="#6-degradation-rollback-replay">6. Degradation、rollback 与 replay</a></li><li><a href="#6-1-fail-closed">6.1 Fail-closed 顺序</a></li><li><a href="#6-2-rollback-compatibility-matrix">6.2 Rollback compatibility matrix</a></li><li><a href="#6-3-replay-evidence">6.3 Replay evidence</a></li><li><a href="#7">7. 参考伪代码（带关键边界注释）</a></li><li><a href="#8-first-divergence">8. First-divergence 诊断矩阵</a></li><li><a href="#9">9. 五项目真实性边界</a></li><li><a href="#10">10. 面试回答模板与高压追问</a></li><li><a href="#10-1-60">10.1 60 秒回答</a></li><li><a href="#10-2">10.2 高压追问</a></li><li><a href="#11">11. 结论与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 08 SYS-004：Fault Recovery、Safety 与 Observability</h1>
+<div class="meta">状态：<code>drafted / SYS-VLA-004 / knowledge_12_of_phase / card_pending / WARN</code> 报告日期：2026-07-20 证据截止：2026-07-20 来源入口：<a href="../sources/vol_08_sys004_fault_recovery_safety_observability_source_freeze.html">SYS-004 Source Freeze</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>VLA policy、数据管线、机器人 controller 或 telemetry 出现 timeout、schema mismatch、stale action、节点失活或 rollout regression 时，如何先保护 side effect，再找出 first verified divergence，最后完成可验证的 degradation、rollback 与 replay？本页把 source freeze 转译成面试可讲的状态、事件、恢复和项目边界；它不是个人项目已经上线安全系统的证明。</p>
+<h2 id="1">1. 直觉与专业定义</h2>
+<h3 id="1-1">1.1 先保护副作用，再解释原因</h3>
+<p>直觉上，故障处理不是“看到 error 就 restart”。机器人动作可能已经进入 controller，任何 retry、rollback 或 latest-wins 都可能产生新的 side effect。因此顺序应是：</p>
+<pre><code class="language-text">发现异常 → 关闭新请求/丢弃 stale action → 记录事件
+  → 找 first verified divergence → 选择 hold/fallback/rollback/replay
+  → 用同一 identity 的证据验证恢复 → 才能释放降级状态</code></pre>
+<p>专业上，fault supervisor 需要把 serving、controller、lease、release 和 evidence 状态分离。ROS 2 lifecycle/<code>ros2_control</code> 提供状态与资源管理机制；Kubernetes probes/rollback 提供编排层信号；QoS 与 OpenTelemetry 提供通信和观测信号。把它们组合成 VLA 安全闭环是系统设计推断。</p>
+<h3 id="1-2-first-verified-divergence-root-cause">1.2 First verified divergence 不等于 root cause</h3>
+<ul><li><strong>symptom</strong>：例如 deadline miss、action-age 超限、readiness 失败或 success 降低；它是现象。</li><li><strong>first verified divergence</strong>：最早能由日志、trace、schema diff、replay 或 ack 复现的协议偏离，例如 <code>capture_ts</code> 到 <code>infer_ts</code> 已超预算，或 action 的 <code>schema_revision</code> 与 controller 不一致。</li><li><strong>root cause</strong>：导致偏离的因果解释，例如 queue starvation、normalizer mismatch 或硬件错误；必须有干预/替换/重跑证据。</li><li><strong>recovery outcome</strong>：降级动作是否真的消除了故障，并且没有引入新的 side effect；不能由“进程重启成功”替代。</li></ul>
+<p>回答时把四层分开，避免把一个 warning 讲成 root cause 或 recovery success。</p>
+<h2 id="2-fault-state-machine-owner">2. Fault state machine 与 owner</h2>
+<h3 id="2-1">2.1 状态定义</h3>
+<table><thead><tr><th>状态</th><th>进入条件</th><th>主要 owner</th><th>允许动作</th><th>退出证据</th></tr></thead><tbody>
+<tr><td><code>HEALTHY</code></td><td>schema、deadline、lease、controller ack 和 telemetry 正常</td><td>serving + controller</td><td>正常 infer/apply</td><td>同一 identity 的连续健康窗口</td></tr>
+<tr><td><code>DEGRADED</code></td><td>deadline/QoS/metric 异常但 side effect 仍受控</td><td>fault supervisor</td><td>限流、降低 horizon、切 verified fallback、拒绝新请求</td><td>freshness 与 health gate 恢复</td></tr>
+<tr><td><code>QUIESCING</code></td><td>drain、rollback 或 lease epoch 变更</td><td>release/fleet controller</td><td>拒绝新请求、等待或取消 in-flight</td><td>in-flight 清零或逐项 ack</td></tr>
+<tr><td><code>HOLD</code></td><td>stale action、controller fault 或未知状态</td><td>controller/safety layer</td><td>保持安全姿态、丢弃 action、等待恢复</td><td>controller hold ack 与 release reason</td></tr>
+<tr><td><code>STOPPED</code></td><td>明确 stop/e-stop 或不可恢复故障</td><td>independent safety/controller</td><td>不再 apply action</td><td>独立 reset/inspection 记录</td></tr>
+<tr><td><code>RECOVERY</code></td><td>已执行 restart/fallback/rollback/replay</td><td>fault supervisor</td><td>执行恢复并收集证据</td><td>fault-injection/rerun/audit bundle</td></tr>
+<tr><td><code>QUARANTINED</code></td><td>revision、schema、lease 或证据不兼容</td><td>release/evidence controller</td><td>禁止继续 rollout，保留 artifact</td><td>compatibility review 与人工批准</td></tr>
+</tbody></table>
+<p>这些状态是面试设计合同，不是 ROS 或 Kubernetes 自动提供的完整 robot-safety 状态机。尤其 <code>readiness=1</code> 只说明服务可以接流量，不说明 controller 可以安全 apply。</p>
+<h3 id="2-2">2.2 状态转换的负面边界</h3>
+<ol><li><code>HEALTHY → DEGRADED</code> 可以由一个确定的 health gate 触发，但不能仅凭 GPU utilization。</li><li><code>DEGRADED → RECOVERY</code> 需要记录触发原因和当前 in-flight side effect；不能跳过 hold/fence。</li><li><code>RECOVERY → HEALTHY</code> 必须有同 revision、同 schema、同 protocol 的验证窗口。</li><li>任何 unknown lease/schema/controller 状态都应 fail-closed 到 <code>HOLD</code>、<code>STOPPED</code> 或 <code>QUARANTINED</code>，而不是继续 latest-wins。</li></ol>
+<h2 id="3-liveness-readiness-startup">3. Liveness、Readiness、Startup 与通信信号</h2>
+<h3 id="3-1-probe">3.1 三类 probe 不可混用</h3>
+<table><thead><tr><th>信号</th><th>回答的问题</th><th>失败时可做</th><th>不能推出</th></tr></thead><tbody>
+<tr><td>startup</td><td>进程/模型是否还在启动</td><td>暂缓 liveness/readiness、延长启动窗口</td><td>模型已 warm、controller 可用</td></tr>
+<tr><td>liveness</td><td>进程是否仍应被重启</td><td>restart 或标记实例异常</td><td>restart 等于 recovery success</td></tr>
+<tr><td>readiness</td><td>当前实例是否接收新流量</td><td>从 service/queue 摘除、drain</td><td>已安全 apply action</td></tr>
+<tr><td>QoS deadline</td><td>传输/消费是否在 deadline 内</td><td>记录 miss、降级或丢弃 stale 数据</td><td>miss 的 root cause</td></tr>
+<tr><td>liveliness</td><td>publisher/subscriber 是否仍被认为活跃</td><td>触发 reconnect/hold 策略</td><td>controller 已停止物理动作</td></tr>
+</tbody></table>
+<p>Kubernetes probes 是 orchestration 机制，ROS 2 QoS 是通信语义；两者都要通过 <code>request_id</code>、时间戳和 revision 进入 incident event，才能和 VLA 的 capture→infer→parse→apply 链接起来。</p>
+<h3 id="3-2-deadline-action-age">3.2 Deadline 与 action age</h3>
+<p>对一条 action chunk，至少记录：</p>
+<p>[ A_{mathrm{age}}=t_{mathrm{apply}}-t_{mathrm{capture}},qquad mathrm{fresh}(a)=mathbf{1}!left[A_{mathrm{age}}leq D_{mathrm{valid}} ight]. ]</p>
+<p><code>A_age</code> 是观测捕获到动作 apply 的年龄，<code>D_valid</code> 是动作协议允许的有效窗口。它映射到 capture/apply timestamp、chunk cursor 和 controller apply log；缺任一时间点时只能标记 unknown，不能把 timeout 直接解释为 MDP terminal 或任务失败。</p>
+<h2 id="4-incident-identity">4. Incident identity 与可观测性</h2>
+<h3 id="4-1-schema">4.1 最小事件 schema</h3>
+<pre><code class="language-text">(event_id, incident_id, request_id, session_id,
+ robot_id, lease_epoch, model_revision, schema_revision,
+ capture_ts, infer_ts, parse_ts, apply_deadline, apply_ts,
+ stage, severity, symptom, first_verified_divergence,
+ action_seq, controller_ack, recovery_attempt, evidence_refs)</code></pre>
+<p>字段职责：</p>
+<ul><li><code>request_id/session_id</code> 连接一次服务调用及其重试；</li><li><code>robot_id/lease_epoch</code> 防止旧连接或旧动作越过 fencing；</li><li><code>model/schema_revision</code> 绑定 checkpoint、processor、normalizer、action parser 和 controller contract；</li><li><code>capture_ts/infer_ts/parse_ts/apply_ts</code> 支持阶段级 latency 与 first divergence；</li><li><code>controller_ack</code> 必须区分收到 cancel、进入 hold 和停止执行；</li><li><code>evidence_refs</code> 指向不可变 trace、log、metric snapshot、replay bundle 或人工批准。</li></ul>
+<h3 id="4-2-traces-metrics-logs">4.2 Traces、metrics、logs 的分工</h3>
+<table><thead><tr><th>信号</th><th>适合回答</th><th>常见误区</th></tr></thead><tbody>
+<tr><td>trace</td><td>一次 request 从 capture 到 apply 的跨服务路径</td><td>trace 存在不代表每个 side effect 都被采样</td></tr>
+<tr><td>metric</td><td>p95/p99 latency、deadline miss、queue depth、fallback rate、lease conflict</td><td>平均值掩盖 tail 或分母不一致</td></tr>
+<tr><td>log</td><td>schema diff、异常栈、controller ack、rollback reason、人工批准</td><td>有日志不等于 root cause 已确认</td></tr>
+<tr><td>baggage/identity</td><td>把 tenant/robot/model/session 信息跨边界传递</td><td>identity 未校验会污染 incident correlation</td></tr>
+</tbody></table>
+<p>OpenTelemetry 的 signals 规定载体和关联方式；将其组合为 robot-safety evidence 是设计工作，不是 telemetry SDK 自动完成的功能。</p>
+<h2 id="5-safety-boundary-stale-action-fencing">5. Safety boundary 与 stale-action fencing</h2>
+<h3 id="5-1-safe-apply">5.1 Safe apply 条件</h3>
+<p>[ \mathrm{safe\_apply}(a_t)=1 \Longleftrightarrow \mathrm{fresh}(a_t)land \mathrm{compatible}(r,m,s,n)land \mathrm{lease\_valid}\land \mathrm{controller\_ready}. ]</p>
+<p>其中 <code>r</code> 是 robot identity，<code>m</code> 是 model revision，<code>s</code> 是 action schema，<code>n</code> 是 normalizer revision。<code>fresh</code> 检查 action age/sequence，<code>compatible</code> 检查 shape、unit、parser 和 controller contract，<code>lease_valid</code> 检查 epoch/fencing，<code>controller_ready</code> 只代表 controller 明确允许接收。它是 SYS‑004 的系统设计推断，不是任一上游 API 的默认保证。</p>
+<h3 id="5-2-cancel-hold-stop-e-stop">5.2 Cancel、hold、stop、e-stop</h3>
+<table><thead><tr><th>层</th><th>能安全声称</th><th>还需要什么才能升级</th></tr></thead><tbody>
+<tr><td>software cancel</td><td>请求被取消或不再排队</td><td>in-flight infer、parse、send 是否已被收敛</td></tr>
+<tr><td>controller hold</td><td>controller 返回 hold acknowledgement</td><td>hardware state、动作是否真正停止</td></tr>
+<tr><td>software stop</td><td>policy/client 不再发送 action</td><td>controller/actuator 是否仍有 buffered command</td></tr>
+<tr><td>independent e-stop</td><td>安全链路触发停止</td><td>复位、检查、incident record 与物理验证</td></tr>
+</tbody></table>
+<p>“cancel acknowledged”不能写成“机器人已经停下”；“readiness=false”不能写成“任务安全失败”。若 controller ack 缺失，保持 <code>HOLD/STOPPED/UNKNOWN</code>，不释放 side effect gate。</p>
+<h2 id="6-degradation-rollback-replay">6. Degradation、rollback 与 replay</h2>
+<h3 id="6-1-fail-closed">6.1 Fail-closed 顺序</h3>
+<p>推荐顺序是：</p>
+<ol><li>拒绝新请求并记录 incident identity；</li><li>丢弃过期 action，提升 lease epoch，阻断旧 response；</li><li>进入 <code>HOLD</code> 或 <code>STOPPED</code>，要求 controller acknowledgement；</li><li>对无物理 side effect 的请求执行 fallback、restart 或 drain；</li><li>对 revision regression 执行 quiesce→compatibility check→rollback；</li><li>用固定输入、固定 revision、固定 protocol replay，并记录 recovery outcome；</li><li>通过 health gate 和人工/策略批准后才回到 <code>HEALTHY</code>。</li></ol>
+<h3 id="6-2-rollback-compatibility-matrix">6.2 Rollback compatibility matrix</h3>
+<p>rollback 不能只记录 <code>from_revision → to_revision</code>，至少要比较：</p>
+<table><thead><tr><th>项</th><th>必须一致或显式迁移</th></tr></thead><tbody>
+<tr><td>model/processor</td><td>checkpoint、tokenizer/processor 版本与 load smoke</td></tr>
+<tr><td>normalizer</td><td>mean/std、action unit、valid-dimension slice</td></tr>
+<tr><td>schema</td><td>camera/text/proprio/action shape、parser、chunk horizon</td></tr>
+<tr><td>controller</td><td>endpoint、ack/hold semantics、limit 与 lease epoch</td></tr>
+<tr><td>protocol</td><td>task/seed/init/episode、scorer 与 denominator</td></tr>
+<tr><td>rollout</td><td>cohort、canary window、in-flight drain 与 fallback</td></tr>
+</tbody></table>
+<p>Kubernetes Deployment 的 rollback 只描述 workload revision；上表是 VLA 兼容性设计推断。</p>
+<h3 id="6-3-replay-evidence">6.3 Replay evidence</h3>
+<p>replay bundle 应是不可变的 observation/action/event/metric/trace manifest，并包含 SHA、revision、timestamps、protocol tuple 与原始输出位置。“重跑一次变绿”不能替代同输入、同版本、同协议的对照；没有 bundle 时只能写“恢复路径已设计”，不能写“恢复成功”。</p>
+<h2 id="7">7. 参考伪代码（带关键边界注释）</h2>
+<pre><code class="language-python">def handle_result(req, result, clock, controller, ledger):
+    # 1. Fence stale identity before any physical side effect.
+    if result.model_revision != req.model_revision:
+        return quarantine(req, result, &quot;model_revision_mismatch&quot;)
+    if result.lease_epoch != ledger.current_epoch(req.robot_id):
+        return discard(req, result, &quot;stale_lease_epoch&quot;)
+    if clock.now() &gt; result.valid_until:
+        return hold(req.robot_id, controller, &quot;stale_action&quot;)
+
+    # 2. Require explicit controller acknowledgement; cancel is not e-stop.
+    ack = controller.apply(result.action_chunk, req.action_schema)
+    if ack.kind not in {&quot;APPLIED&quot;, &quot;HOLD&quot;, &quot;STOPPED&quot;}:
+        return hold(req.robot_id, controller, &quot;unknown_controller_ack&quot;)
+
+    # 3. Write one correlated event before selecting recovery.
+    ledger.append_event(req.identity, result, ack)
+    if ack.kind in {&quot;HOLD&quot;, &quot;STOPPED&quot;}:
+        return enter_recovery(req, ack.kind)
+    return mark_healthy_if_gate_passes(req)</code></pre>
+<p>这段伪代码只表达检查顺序；<code>controller.apply</code>、<code>current_epoch</code>、<code>append_event</code> 与 recovery supervisor 必须有真实实现、trace 和 ownership 才能成为 local-direct evidence。</p>
+<h2 id="8-first-divergence">8. First-divergence 诊断矩阵</h2>
+<table><thead><tr><th>观察到的症状</th><th>首个分叉检查</th><th>不应直接下的结论</th></tr></thead><tbody>
+<tr><td>readiness 失败</td><td>probe dependency、model load、revision</td><td>“重启后已经恢复”</td></tr>
+<tr><td>deadline/action-age 超限</td><td>capture→infer→parse→apply 时间线</td><td>“timeout 就是任务失败”</td></tr>
+<tr><td>stale response</td><td>request/lease epoch/action sequence</td><td>“模型能力下降”</td></tr>
+<tr><td>controller update/fallback error</td><td>controller ack、hardware state、buffer</td><td>“fallback 已停止物理动作”</td></tr>
+<tr><td>telemetry gap</td><td>trace sampling、event identity、metric denominator</td><td>“没有日志就没有故障”</td></tr>
+<tr><td>rollout regression</td><td>fixed holdout、canary cohort、protocol tuple</td><td>“rollback 自动修复 root cause”</td></tr>
+<tr><td>replay mismatch</td><td>model/schema/normalizer/scorer hash</td><td>“同一个 checkpoint 就可比”</td></tr>
+</tbody></table>
+<p>诊断顺序固定为：<code>identity → stage timestamps → schema/normalizer → lease/action sequence → controller ack → health gate → recovery intervention → replay outcome</code>。不要跳到最后一层猜 root cause。</p>
+<h2 id="9">9. 五项目真实性边界</h2>
+<table><thead><tr><th>项目</th><th>可安全绑定的 hook</th><th>当前不能说</th></tr></thead><tbody>
+<tr><td>OpenPiVLA</td><td>offline WebSocket timing、parser/normalizer/schema mismatch</td><td>production watchdog、controller e-stop、rollback closure</td></tr>
+<tr><td>Robot Harness</td><td>timeout/cancel、robot lock、compensation、trace hook</td><td>VLA fault supervisor、physical stop、fleet incident response</td></tr>
+<tr><td>OPD</td><td>teacher/route/holdout、scorer diagnostics</td><td>production observability、perception-action recovery</td></tr>
+<tr><td>WAM</td><td>simulator/chunk/controller diagnostic trace</td><td>real-robot safety recovery、rollback canary、root-cause closure</td></tr>
+<tr><td>UWM/LIBERO</td><td>launcher/task mapping、protocol mismatch、loader diagnosis</td><td>physical safety state、lease fencing、cross-robot recovery</td></tr>
+</tbody></table>
+<p>五个项目的 inventory/ownership ledger 只允许作为 bounded hook。Git author、上游 lifecycle、示例 YAML、路径、smoke report 或局部 timeout 字段都不能自动变成候选人 ownership。</p>
+<h2 id="10">10. 面试回答模板与高压追问</h2>
+<h3 id="10-1-60">10.1 60 秒回答</h3>
+<p>“我会先把故障拆成 symptom、first verified divergence、root cause 和 recovery outcome。事件必须带 request、robot、lease epoch、model/schema/normalizer revision，以及 capture→infer→parse→apply 时间线。readiness、liveness、QoS deadline 和 telemetry 只代表不同层信号，不能直接写成安全成功。出现 stale action 或未知 controller 状态时先丢弃旧结果、提升 epoch、进入 HOLD/STOPPED 并要求 controller ack，再做 fallback、rollback 或固定协议 replay。Kubernetes/ROS/OpenTelemetry 是机制来源；我当前项目只有局部 timeout、eval、launcher 或 diagnostic hook，不能声称已经实现 production fault supervisor 或物理 e-stop。”</p>
+<h3 id="10-2">10.2 高压追问</h3>
+<ul><li>readiness=false 与 controller hold 有什么区别？</li><li>cancel acknowledged 为什么不等于 e-stop？</li><li>rollback 如何证明 normalizer、schema、controller 兼容？</li><li>如何定义 first verified divergence，而不是凭经验猜 root cause？</li><li>stale action 如何用 lease epoch 和 sequence fencing？</li><li>telemetry 缺失时为什么应进入 unknown/hold，而不是继续执行？</li><li>replay bundle 最小字段是什么？如何避免“重跑一次变绿”？</li><li>你的五个项目中哪一个有真实 fault-injection 或 recovery artifact？没有时怎样回答？</li></ul>
+<h2 id="11">11. 结论与下一步</h2>
+<p>SYS‑004 的高分答案不是背某个 probe 或 restart 命令，而是把 identity、first-divergence、side-effect safety、controller acknowledgement、degradation、rollback、replay 和证据闭环连接起来。当前 source gate 已冻结，knowledge 已完成教学转译；仍没有 fault supervisor、physical-stop acknowledgement、fault-injection matrix、immutable replay bundle 或个人 ownership 证据。</p>
+<p>下一步：单独生成一张 <code>SYS-VLA-004</code> atomic card；在此之前不创建 <code>coaching_state.md</code>，不升级任何 mastery。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li><a href="../sources/vol_08_sys004_fault_recovery_safety_observability_source_freeze.html">SYS-004 Source Freeze</a>。</li><li>ROS 2 <a href="https://github.com/ros2/design/blob/93a415bf928751d37fce6f83215c521658e20c93/articles/node_lifecycle.md">managed node lifecycle</a> 与 <a href="https://docs.ros.org/en/rolling/ROS-Framework/interfaces/topics/About-Quality-of-Service-Settings.html">QoS</a>。</li><li><code>ros2_control</code> <a href="https://github.com/ros-controls/ros2_control/blob/e4ebcc352d9aeb69969308428b051bdd3105b88f/controller_manager/doc/userdoc.rst">controller manager</a>。</li><li>Kubernetes <a href="https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/">probes</a> 与 <a href="https://github.com/kubernetes/website/blob/d19aacebe8061a6ef5dcc1e68904aaefe35c5445/content/en/docs/concepts/workloads/controllers/deployment.md">Deployment rollback</a>。</li><li>OpenTelemetry <a href="https://opentelemetry.io/docs/concepts/signals/">signals</a>。</li><li>本仓库 <a href="../sources/vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.html">SYS‑002</a> 与 <a href="../sources/vol_05_eval008_perception_action_controller_recovery_failure_taxonomy_source_freeze.html">EVAL‑008</a>。</li></ol>
+</article></body></html>

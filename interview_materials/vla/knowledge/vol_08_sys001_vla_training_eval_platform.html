@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 08 SYS-001：可复现的 VLA 训练—评估平台</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_08_sys001_vla_training_eval_platform.md">
+<meta name="aris:source-sha256" content="f0f57b765b3e313b6f9e1b32321a063dabbdb1d2248dc45eda56c7b01ebf203c">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>f0f57b765b3e313b6f9e1b32321a063dabbdb1d2248dc45eda56c7b01ebf203c</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_08_sys001_vla_training_eval_platform.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1-30">1. 30 秒直觉：让每个结果都能回到输入</a></li><li><a href="#2-dataset-contract">2. Dataset contract：目录不是版本</a></li><li><a href="#3-run-contract">3. Run contract：一次训练到底是什么</a></li><li><a href="#4-bundle-contract-checkpoint-path">4. Bundle contract：checkpoint path 不等于模型</a></li><li><a href="#5-evaluation-rollout-contract">5. Evaluation / rollout contract：同名任务不等于同一指标</a></li><li><a href="#6-pipeline">6. 可审计 pipeline 伪代码</a></li><li><a href="#7-failure-tree">7. Failure tree 与恢复策略</a></li><li><a href="#8">8. 项目映射与真实性边界</a></li><li><a href="#9">9. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 08 SYS-001：可复现的 VLA 训练—评估平台</h1>
+<div class="meta">状态：<code>drafted / SYS-VLA-001 / knowledge_1_of_phase / card_synced / WARN</code> 报告日期：2026-07-18 证据截止：2026-07-18 来源入口：<a href="../sources/vol_08_sys001_vla_training_eval_platform_source_freeze.html">SYS-001 Source Freeze</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>面试中的“设计一个 VLA 训练/评估平台”不是画几个服务框，而是要保证：数据、模型、processor/normalizer、checkpoint、评估协议、rollout artifact 和结果解释能被同一个 lineage graph 串起来。否则训练 loss、offline proxy、simulator success 和真机结果会互相污染。</p>
+<p>本页回答：</p>
+<ol><li>怎样定义 dataset、run、bundle、evaluation 和 rollout contract？</li><li>如何把 determinism、checkpoint lineage、processor/normalizer 与 protocol 固定在同一 run？</li><li>怎样隔离 offline、simulator、real rollout 和不同 success predicate？</li><li>哪些证据只能支持接口，哪些证据才支持结果或个人贡献？</li></ol>
+<h2 id="section-2">知识地图位置与前置依赖</h2>
+<pre><code class="language-text">VOL 05 ENG-013 reproducibility + ENG-017 observability + ENG-021 packaging
+                                  ↓
+dataset/schema → train run → immutable bundle → offline eval
+                                  ↓
+                         simulator / real rollout
+                                  ↓
+                       episode trace + metric manifest</code></pre>
+<p>前置：<a href="vol_05_engineering_eval_eng013.html">ENG-013 Reproducibility</a>、<a href="vol_05_engineering_eval_eng017.html">ENG-017 Observability</a>、<a href="vol_05_engineering_eval_eng021.html">ENG-021 Packaging</a>。</p>
+<h2 id="1-30">1. 30 秒直觉：让每个结果都能回到输入</h2>
+<p>可信平台至少有五层：</p>
+<pre><code class="language-text">数据快照 → 训练 run → 可加载 bundle → 固定协议评估 → episode/安全 artifact</code></pre>
+<p>每层都产出 manifest 和 hash。只保存 checkpoint 路径、平均 loss 或成功率截图，无法回答“使用了哪个数据、normalizer、init、scorer 和代码版本”。</p>
+<h2 id="2-dataset-contract">2. Dataset contract：目录不是版本</h2>
+<p>每个样本至少绑定：</p>
+<pre><code class="language-text">episode_id / step_id / embodiment / task
+camera_set / image_size / calibration_revision
+state_schema / action_schema / frame / unit
+timestamp / action_age / valid_mask
+dataset_revision / source_hash / split</code></pre>
+<p>RLDS/Open X 的 episode/step 组织是 schema 参照，但不证明本地数据已经无泄漏。对 VLA，<code>action_dim</code>、chunk horizon、absolute/velocity frame、gripper convention、camera order 和 padding mask 必须显式记录。</p>
+<p><code>train/val/raw_holdout/rollout</code> 不应只靠文件夹名区分。manifest 要记录 episode、scene、object、operator 或 image hash 的分组规则；相邻 window 不能跨 train/holdout。holdout scorer 也要冻结版本。</p>
+<h2 id="3-run-contract">3. Run contract：一次训练到底是什么</h2>
+<p>可用下式表达 run identity：</p>
+<div class="formula">\[
+run\_id = H(code\_rev, config\_hash, dataset\_manifest, seed, rank/world\_size, hardware, model\_rev, processor\_rev, normalizer\_rev, resume\_source).
+\]</div>
+<p>变量是代码、配置、数据、随机源、分布式拓扑、硬件、模型和恢复来源；<code>H</code> 是身份索引，不是 bitwise identical 的保证。PyTorch reproducibility 文档明确：版本、平台和非确定性算子仍会改变结果。</p>
+<p>训练 step 至少拆成：</p>
+<pre><code class="language-text">data_wait → transfer → forward → backward → communication
+→ optimizer → checkpoint → logging</code></pre>
+<p>VLA 还要记录 <code>valid/action mask count、grad norm、AMP scale/overflow、effective batch、checkpoint save latency</code>。单卡 smoke 不能推出多 rank parity 或完整吞吐。</p>
+<h2 id="4-bundle-contract-checkpoint-path">4. Bundle contract：checkpoint path 不等于模型</h2>
+<table><thead><tr><th>组件</th><th>作用</th><th>缺失风险</th></tr></thead><tbody>
+<tr><td>model weights/config</td><td>参数与结构</td><td>load 错模型</td></tr>
+<tr><td>processor/tokenizer</td><td>图像、文本、特殊 token</td><td>输入分布改变</td></tr>
+<tr><td>normalizer</td><td>action/state scale</td><td>action 幅值/轴错误</td></tr>
+<tr><td>observation/action schema</td><td>camera、frame、unit、H/D、mask</td><td>silent reshape</td></tr>
+<tr><td>code/dependency revision</td><td>decode/denorm 逻辑</td><td>lineage 断裂</td></tr>
+<tr><td>metadata/integrity hash</td><td>step、source、binary identity</td><td>远端路径冒充权重</td></tr>
+</tbody></table>
+<p>最小 load gate：固定 sample 完成 processor→model→decode→denorm→schema validation roundtrip，并保存 shape、dtype、finite、range 和 parser 结果。缺 normalizer 或 action schema 时，只能做静态审计，不能进入 rollout。</p>
+<h2 id="5-evaluation-rollout-contract">5. Evaluation / rollout contract：同名任务不等于同一指标</h2>
+<p>每次评估冻结：</p>
+<pre><code class="language-text">task / scene-or-init / seed / horizon / control-hz / action-repeat
+checkpoint+bundle revision / success predicate / scorer revision
+denominator / terminal reason / metric namespace</code></pre>
+<table><thead><tr><th>namespace</th><th>例子</th><th>能说明什么</th></tr></thead><tbody>
+<tr><td><code>train.*</code></td><td>loss、grad、throughput</td><td>优化与工程观测</td></tr>
+<tr><td><code>offline.*</code></td><td>MSE、NLL、raw holdout</td><td>代理或输入/标签指标</td></tr>
+<tr><td><code>sim.*</code></td><td>episode success、SPL、collision</td><td>固定 simulator protocol 的闭环结果</td></tr>
+<tr><td><code>real.*</code></td><td>safety stop、intervention、success</td><td>有安全日志的真实 rollout</td></tr>
+<tr><td><code>proxy.*</code></td><td>PSNR/SSIM、视觉 embedding</td><td>离线代理，不等于动作成功</td></tr>
+</tbody></table>
+<p>每个 rollout episode 保存 <code>episode_id、task、init、seed、bundle_revision、observation/action trace、action_age、latency、controller status、terminal reason、success predicate inputs、scorer revision</code>。只有远端 summary JSON 时，应标为 <code>user-confirmed</code> 或 <code>report-supported</code>。</p>
+<h2 id="6-pipeline">6. 可审计 pipeline 伪代码</h2>
+<pre><code class="language-python">def run_vla_pipeline(dataset_manifest, config, bundle, protocol):
+    # Freeze identity and split before reading training samples.
+    verify_manifest(dataset_manifest, protocol.split_contract)
+    run_id = make_run_id(config, dataset_manifest, bundle, protocol)
+    for batch in deterministic_loader(dataset_manifest, config.seed):
+        # Validate action/frame/unit/mask before the model sees the batch.
+        batch = validate_schema_and_masks(batch, bundle.action_schema)
+        loss, telemetry = train_step(batch, bundle.model, config)
+        record_train_event(run_id, loss, telemetry)
+    # Save an immutable bundle before any online rollout.
+    save_immutable_bundle(bundle, run_id)
+    offline = eval_holdout(bundle, protocol.offline)
+    sim = rollout_sim(bundle, protocol.sim) if protocol.sim else None
+    real = rollout_real(bundle, protocol.real) if protocol.real else None
+    write_metric_manifest(run_id, offline=offline, sim=sim, real=real)
+    return run_id</code></pre>
+<p>关键点是先冻结身份，再校验 batch/schema，训练后保存 immutable bundle，最后把 offline/sim/real 分开记录。伪代码是系统设计合同，不是任何现有项目的完整实现。</p>
+<h2 id="7-failure-tree">7. Failure tree 与恢复策略</h2>
+<table><thead><tr><th>失败层</th><th>第一证据</th><th>常见误判</th></tr></thead><tbody>
+<tr><td>data/schema</td><td>sample manifest、roundtrip、hash</td><td>归因模型结构</td></tr>
+<tr><td>transform/normalizer</td><td>processor/normalizer revision、finite/range</td><td>归因 checkpoint</td></tr>
+<tr><td>train/runtime</td><td>telemetry、rank log、DCP marker</td><td>只看最终 loss</td></tr>
+<tr><td>bundle/load</td><td>immutable hash、compatibility smoke</td><td>只比较路径</td></tr>
+<tr><td>protocol</td><td>eval tuple、scorer/init/seed</td><td>说成模型 uplift</td></tr>
+<tr><td>controller/safety</td><td>action trace、latency、watchdog</td><td>归因 policy loss</td></tr>
+</tbody></table>
+<p>恢复顺序是：保留失败 run 和 marker，定位第一失败层；不要覆盖 latest checkpoint，不要自动把旧 bundle 送入新 protocol，也不要在没有 paired run 时恢复强因果叙事。</p>
+<h2 id="8">8. 项目映射与真实性边界</h2>
+<ul><li><strong>OpenPiVLA</strong>：可连接 formal trainer、recipe、action packaging、timeout hook；不能把 archive-only 结果或远端路径写成完整平台。</li><li><strong>UWM/LIBERO</strong>：可连接 task mapping、fixed/reset protocol、normalizer/action shape、DataLoader stall；186/250 仍缺本地 raw episode bundle，RoboCasa success 未验证。</li><li><strong>WAM</strong>：可连接 rollout manifest、controller/horizon/camera provenance；checkpoint、target metric、ownership 仍缺。</li><li><strong>Robot Harness</strong>：可连接 schema、timeout/cancel/compensation；不等于 VLA lineage 或 inference batching。</li><li><strong>OPD</strong>：可连接 split、raw holdout、strict scorer、point/box/text schema；不等于 robot rollout。</li></ul>
+<h2 id="9">9. 结论与下一步</h2>
+<p>VLA 平台设计的核心不是堆服务，而是用 manifest、immutable bundle、固定 protocol 和逐 episode artifact 把“输入—训练—模型—评估—执行—结果”连成可追溯图。公开来源和本仓库 ENG-013/021 足以冻结机制，但当前五个项目仍缺统一 registry、checkpoint/normalizer hash、raw rollout 与 ownership ledger，因此保持 <code>WARN</code>。</p>
+<p>下一步：保持 <code>SYS-VLA-001</code> 题卡为 <code>unseen</code>，进行一次系统设计口述，或补充一个平台 artifact；之后再做 VOL 08 hand-coding 或第二个 system-design slice。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_08_sys001_vla_training_eval_platform_source_freeze.html">SYS-001 Source Freeze</a>。</li><li>PyTorch <a href="https://docs.pytorch.org/docs/2.13/distributed.checkpoint.html">Distributed Checkpoint</a> 与 <a href="https://pytorch.org/docs/stable/notes/randomness.html">Reproducibility</a>。</li><li><a href="https://github.com/google-deepmind/open_x_embodiment/tree/9eeb68b989efbcf474e8fb9019e01d02b962a604">Open X-Embodiment</a>、<a href="https://github.com/Lifelong-Robot-Learning/LIBERO/tree/8f1084e3132a39270c3a13ebe37270a43ece2a01">LIBERO</a>、<a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/policies/policy.py">OpenPI policy interface</a>。</li><li>本仓库 <a href="vol_05_engineering_eval_eng013.html">ENG-013</a>、<a href="vol_05_engineering_eval_eng017.html">ENG-017</a>、<a href="vol_05_engineering_eval_eng021.html">ENG-021</a> 与五项目 evidence inventory。</li></ol>
+</article></body></html>

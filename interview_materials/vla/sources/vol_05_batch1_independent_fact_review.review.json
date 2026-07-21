@@ -1,0 +1,97 @@
+{
+  "artifact": "sources/vol_05_batch1_independent_fact_review.md",
+  "html": "sources/vol_05_batch1_independent_fact_review.html",
+  "review_date": "2026-07-17",
+  "status": "reviewed_slice",
+  "verdict": "WARN",
+  "source_sha256": "F0EF25BBB8C1D296B303B0ED47A3221D2EA63DF0D1829BD05879C2CF119353F9",
+  "scope": {
+    "knowledge_ids": [
+      "VLA-ENG-003",
+      "VLA-ENG-004",
+      "VLA-ENG-005",
+      "VLA-ENG-006",
+      "VLA-ENG-013"
+    ],
+    "question_ids": [
+      "VLA-ENG-003",
+      "VLA-ENG-004",
+      "VLA-ENG-005",
+      "VLA-ENG-006"
+    ],
+    "method": "Independent HTTP reads of versioned PyTorch 2.13 documentation and the DeepSpeed official ZeRO tutorial; no local training, resume, or benchmark execution",
+    "evidence_cutoff": "2026-07-17"
+  },
+  "sources_checked": [
+    {
+      "label": "PyTorch DistributedDataParallel 2.13",
+      "type": "official-doc",
+      "revision": "docs/2.13, retrieved 2026-07-17",
+      "url": "https://docs.pytorch.org/docs/2.13/generated/torch.nn.parallel.DistributedDataParallel.html",
+      "response_sha256": "6895c721fe7e483fa473d30afba5e0666723c7a5e144078c329eb91ee383bdd4",
+      "supports": ["gradient synchronization across replicas", "input is not automatically sharded", "parameters are not broadcast each iteration", "gradient all-reduce", "rank-0 buffer broadcast"]
+    },
+    {
+      "label": "PyTorch FullyShardedDataParallel 2.13",
+      "type": "official-doc",
+      "revision": "docs/2.13, retrieved 2026-07-17",
+      "url": "https://docs.pytorch.org/docs/2.13/fsdp.html",
+      "response_sha256": "d188ded37aec986272a6cefadb0d8eb1316030303c2069ab7b5abc71397e00b9",
+      "supports": ["FULL_SHARD and SHARD_GRAD_OP semantics", "all-gather/reduce-scatter process group", "reshard timing", "sharded optimizer state"]
+    },
+    {
+      "label": "DeepSpeed ZeRO tutorial",
+      "type": "official-tutorial",
+      "revision": "retrieved 2026-07-17",
+      "url": "https://www.deepspeed.ai/tutorials/zero/",
+      "response_sha256": "32e2b242be5088e4e64d9cc2d03e553b4fdea7d0116c4e84eeee5eca282d653f",
+      "supports": ["Stage 1 optimizer-state partition", "Stage 2 gradient partition", "Stage 3 parameter partition and forward/backward collection"]
+    },
+    {
+      "label": "PyTorch Automatic Mixed Precision examples 2.13",
+      "type": "official-doc",
+      "revision": "docs/2.13, retrieved 2026-07-17",
+      "url": "https://docs.pytorch.org/docs/2.13/notes/amp_examples.html",
+      "response_sha256": "41b26df690e71e7a83d6ec1a62e47c776051978e319c6da31c355fa5adaa6a59",
+      "supports": ["autocast and GradScaler", "unscale before clipping", "effective-batch accumulation semantics", "scale/overflow/step-update behavior"]
+    },
+    {
+      "label": "PyTorch Distributed Checkpoint 2.13",
+      "type": "official-doc",
+      "revision": "docs/2.13, retrieved 2026-07-17",
+      "url": "https://docs.pytorch.org/docs/2.13/distributed.checkpoint.html",
+      "response_sha256": "c55275fd489a912f657fd528ea066bd1cfaf843a14889db04fb442b088d34b12",
+      "supports": ["parallel multi-rank save/load", "load-time reshard", "different save/load cluster topologies", "multi-file checkpoint layout"]
+    },
+    {
+      "label": "PyTorch Reproducibility 2.13",
+      "type": "official-doc",
+      "revision": "docs/2.13, retrieved 2026-07-17",
+      "url": "https://docs.pytorch.org/docs/2.13/notes/randomness.html",
+      "response_sha256": "cebd51bee8f3286d36db9a3ee2dba3ef7e1a46fd351269d59fc127ea8dac0966",
+      "supports": ["same seed does not guarantee cross-release/platform reproducibility", "deterministic operations may be slower", "multiple RNG sources require control"]
+    }
+  ],
+  "checks": {
+    "ddp_semantics": "PASS WITH WARNING (replica/gradient/input-sharding claims direct; optimizer-state duplication labeled implementation inference)",
+    "fsdp_semantics": "PASS (FULL_SHARD/SHARD_GRAD_OP, collective paths and reshard timing checked)",
+    "zero_stage_semantics": "PASS (official tutorial directly defines Stage 1/2/3 partitioned states)",
+    "amp_ordering": "PASS (unscale before clipping and effective-batch accumulation checked)",
+    "distributed_checkpoint": "PASS WITH WARNING (parallel load/save and load-time reshard direct; lineage bundle remains local framework)",
+    "reproducibility_boundary": "PASS (seed is not sufficient across releases/platforms)",
+    "knowledge_question_alignment": "PASS WITH WARNING (ENG-004 wording minimally tightened; remaining claims keep framework/inference labels)",
+    "project_truth_boundary": "PASS (no project metric, deployment result or ownership claim upgraded)",
+    "local_runtime_artifacts": "MISSING (no local cross-world-size resume/performance smoke was executed)",
+    "html_static_validation": "PASS (one H1, 13 H2, two tables, one commented pseudocode block, source SHA rendered)",
+    "local_links": "PASS (all relative source/knowledge/question links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static HTML checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Do not describe DDP optimizer-state duplication as a DDP communication guarantee.",
+    "Do not turn DCP load-time reshard into proof that sampler cursor, RNG, processor or normalizer were restored.",
+    "Run a local fixed-batch save/load/resume smoke and a matched throughput A/B before upgrading the project-facing answer.",
+    "Keep all VOL 05 cards unseen until oral practice."
+  ],
+  "next": "Use this source audit as the official-doc gate for VOL 05 Batch 1; the next bounded slice is local checkpoint/resume evidence or one-question-at-a-time oral practice."
+}

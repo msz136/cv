@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-035 Source Freeze：Camera Geometry、Photometric、Occlusion 与 Sensor Modeling</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm035_camera_sensor_modeling_source_freeze.md">
+<meta name="aris:source-sha256" content="50918b15cb279159a48e5526393164a866f3061a56ff202273f9a18aa505ad75">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>50918b15cb279159a48e5526393164a866f3061a56ff202273f9a18aa505ad75</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm035_camera_sensor_modeling_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 一页结论</a></li><li><a href="#2">2. 冻结来源与可支持边界</a></li><li><a href="#3-geometry-contract-k-r-t-distortion-image-space">3. Geometry contract：\(K,R,t\)、distortion 与 image space</a></li><li><a href="#4-intrinsics-extrinsics-range">4. Intrinsics/extrinsics range 从哪里来</a></li><li><a href="#5-photometric-image-formation-contract">5. Photometric image-formation contract</a></li><li><a href="#6-blur-temporal-camera-model">6. Blur 与 temporal camera model</a></li><li><a href="#7-sensor-noise-gaussian">7. Sensor noise 不是单一 Gaussian</a></li><li><a href="#8-occlusion-visibility">8. Occlusion 与 visibility</a></li><li><a href="#9-range-provenance">9. Range provenance 与采样合同</a></li><li><a href="#10-label-geometry-task-consistency">10. Label、geometry 与 task consistency</a></li><li><a href="#11-validity-rejection-rollback">11. Validity、rejection 与 rollback</a></li><li><a href="#12-diagnostic-ladder">12. Diagnostic ladder</a></li><li><a href="#13-matched-factor-matrix">13. Matched factor matrix</a></li><li><a href="#14-artifact-bundle">14. 最小 artifact bundle</a></li><li><a href="#15-calibrated-camera-sampler">15. 注释伪代码：calibrated camera sampler</a></li><li><a href="#16">16. 项目真实性边界</a></li><li><a href="#17-claim-ledger">17. Claim ledger</a></li><li><a href="#18">18. 仍待独立复核与补证据</a></li><li><a href="#19">19. 参考来源</a></li><li><a href="#20">20. 下一边界</a></li></ol></nav>
+<h1>VOL 04 WM-035 Source Freeze：Camera Geometry、Photometric、Occlusion 与 Sensor Modeling</h1>
+<div class="meta">冻结日期：2026-07-18 状态：source_frozen / VLA-WM-035 / knowledge_synced / card_synced / WARN 覆盖题目：VLA-WM-035 本轮边界：只冻结 camera intrinsics/extrinsics/distortion、exposure/response/blur、occlusion/visibility、sensor noise/dropout、range provenance、label/time consistency、matched evaluation 与项目真实性边界；不提前展开 WM-036 contact/friction、WM-037 online adaptation 或 WM-038 safety/recovery 总课，也不声称个人项目已完成真实相机标定、camera randomization 或视觉 Sim2Real。</div>
+<h2 id="1">1. 一页结论</h2>
+<ol><li><strong>camera gap 至少分五层。</strong>geometry（\(K,R,t\)、distortion、resolution/crop）、photometric（light/exposure/gain/WB/gamma/response）、temporal（exposure/readout/timestamp/blur/drop）、visibility（occlusion/FOV）、sensor（shot/read/fixed-pattern/quantization/compression/depth holes）。只做 color jitter 覆盖不了其他四层。</li><li><strong>geometry 先标定，再随机残差。</strong>OpenCV 明确世界点经 world→camera extrinsics、intrinsics 与 distortion 投影；range 应来自 camera serial 对应的 calibration、reprojection residual、mount tolerance、vibration/thermal drift，而不是统一 ±x%。[S1]</li><li><strong>sim camera 必须和 calibration contract 同参。</strong>MuJoCo 支持 FOV，以及 focal/principal point 配合 physical sensor size 和 resolution；默认 perfect point camera 不包含真实 lens 全部 aberration。[S5]</li><li><strong>exposure/blur 是时间积分，不只是单帧 filter。</strong>shutter/exposure 决定采光时间，camera/object motion 在此期间形成 motion blur；rolling/readout 与 timestamp 又会让不同行或不同相机看到不同时间。静态 Gaussian blur 只能是 proxy。</li><li><strong>sensor noise 通常 signal-dependent 且有时间/空间结构。</strong>shot/read/fixed-pattern/bias/quantization/compression/dropout 不应统一成 i.i.d. Gaussian；OpenAI Dexterous 至少区分 episode-correlated 与 timestep-uncorrelated observation noise，说明 cadence 是合同的一部分。[S3]</li><li><strong>occlusion 是可见性/任务事件。</strong>要记录 occluder 来源、深度顺序、target visible fraction、持续时间、多相机相关性和任务可解性；full occlusion/camera failure 应与 nominal training 分开，进入 stress/safety gate。</li><li><strong>几何变化必须同步 target。</strong>重新渲染 camera pose/FOV 时，pixel point/box/depth/pose 应由同一 world state 生成；对现成图像做 crop/flip/warp 时同步更新空间 label，必要时更新 camera-frame pose/action。只改像素会制造冲突监督。[S2][S6]</li><li><strong>corruption benchmark 不等于 target sensor model。</strong>ImageNet-C 将 corruption 分为 noise、blur、weather、digital 并设 severity，可用于 stress taxonomy；它是 image-classification benchmark，不证明某机器人相机的概率、range 或闭环相关性。[S4]</li><li><strong>本地项目没有 camera Sim2Real 闭环。</strong>OPD 有静态 grounding/eval，OpenPiVLA/WAM 有 camera/preprocess/rollout 字段，但缺 calibration/capture/corruption/label/matched real bundle；只能讲设计和证据门。[S9]</li></ol>
+<h2 id="2">2. 冻结来源与可支持边界</h2>
+<table><thead><tr><th>ID</th><th>一手来源 / 本地证据</th><th>冻结版本与快照</th><th>本节点可支持</th><th>不能外推</th></tr></thead><tbody>
+<tr><td>S1</td><td>OpenCV camera calibration / calib3d</td><td>official GitHub commit <code>f7dd7df170add1655de75b5e95f20f41d2a88293</code> raw SHA-256 <code>72f48a264d331a7d81dcd9463b98f096871cb140105f96f08abdf954d84203c4</code>；4.x calib3d response SHA-256 <code>564e922f60635d1be9d8da36e60f42eb1dc1d53f884e0fe447d54ba08648b50b</code></td><td>pinhole \(K[R</td><td>t]\)、radial/tangential/prism distortion、reprojection optimization/diagnostics</td><td>API 文档证明用户相机标定正确；低 reprojection error 自动证明外参/部署正确</td></tr>
+<tr><td>S2</td><td>Tobin et al., <em>Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World</em></td><td>arXiv:1703.06907v1；ar5iv response SHA-256 <code>faba518e98357c65a59d41f340bb723d4bb84c50eb359813597daab113dcd33a</code></td><td>camera position、lighting、object pose、texture、distractor/partial occlusion 与 ablation 的 real detection/grasping case</td><td>论文 randomization range 是所有 VLA 默认；object detector transfer 等于用户 policy transfer</td></tr>
+<tr><td>S3</td><td>OpenAI et al., <em>Learning Dexterous In-Hand Manipulation</em></td><td>arXiv:1808.00177v5；ar5iv response SHA-256 <code>826fb63d545518661a10b9cac05110bf7c813e88f99698d3b9e98cb313f81e93</code></td><td>multi-camera、camera positions/intrinsics、lighting/material/texture、correlated/uncorrelated noise 与 calibration-centered randomization</td><td>Shadow Hand visual recipe 普适；大规模 randomization 自动证明安全或用户成果</td></tr>
+<tr><td>S4</td><td>Hendrycks &amp; Dietterich, <em>Benchmarking Neural Network Robustness to Common Corruptions and Perturbations</em></td><td>arXiv:1903.12261v1；ar5iv response SHA-256 <code>d3c445b259eb3af5381f0bba396d902bc28923fb8f743ce95107df734e33381f</code></td><td>noise/blur/weather/digital corruption taxonomy、five severity levels、classification robustness benchmark</td><td>ImageNet-C severity 是真实 camera range；classification robustness 等于 closed-loop VLA robustness</td></tr>
+<tr><td>S5</td><td>MuJoCo official <em>Modeling / Camera intrinsics</em> docs</td><td><code>stable</code> 页面，2026-07-18 response SHA-256 <code>505230785371f9e6e54575b5178950ffbce4b5b2fa9db7a0a393f91adc1315da</code></td><td>perspective/orthographic、FOV、focal、principal、sensor size/resolution 与 body-fixed camera</td><td>mutable stable 页等于固定 simulator version；renderer 自动包含真实 distortion/noise</td></tr>
+<tr><td>S6</td><td><a href="vol_04_wm032_visual_domain_randomization_relevance_source_freeze.html">WM-032 Visual DR / Relevant Support</a></td><td>canonical SHA-256 <code>9086b6072047f3578cb731f48f08c48b509d7d38924b801728039b83d6245710</code></td><td>factor/label/range/validity/rejection/overwide contract</td><td>WM-032 设计等于 camera factor 已本地执行</td></tr>
+<tr><td>S7</td><td><a href="vol_04_wm034_control_latency_actuator_controller_mismatch_source_freeze.html">WM-034 Timing / Controller Source Freeze</a></td><td>canonical SHA-256 <code>106fe97d60e78505ae71e7a8667499a615d71b2e1f0099c1da474713ecf940f8</code></td><td>exposure/readout/timestamp 与 action-age 边界</td><td>camera temporal contract 已有真实 trace</td></tr>
+<tr><td>S8</td><td><a href="vol_06_per002_3d_lift_frame_source_freeze.html">PER-002 3D Lift / Calibration Source Freeze</a></td><td>canonical SHA-256 <code>a91a32eca547738c0cc76895f299dfae49ea134fd54944dc9eb538fba1228b93</code></td><td>K/distortion/image-size、depth、extrinsics/TF、round-trip 与 3D evidence ladder</td><td>projection math 是 camera Sim2Real/closed-loop 结果</td></tr>
+<tr><td>S9</td><td><a href="../evidence/evidence_manifest.html">Evidence Manifest</a>、OPD/OpenPiVLA inventories</td><td>manifest SHA-256 <code>f3826289cdf2451758da11e0dddab3a7bb43d88b9a656fa340c08f71d16a21b6</code>；OPD <code>0a68251de06bc8494b7d2be5e6dc169fc860a629c2f312e623db69ed29db12bb</code>；OpenPiVLA <code>a3c644f949295d72889b2acf6456bfd050e05c147b14381bbb067504a34ce293</code></td><td>本地静态视觉、camera/preprocess 与 rollout 证据边界</td><td>camera 字段/静态指标可升级为 calibration、DR 或 real transfer 成果</td></tr>
+</tbody></table>
+<h2 id="3-geometry-contract-k-r-t-distortion-image-space">3. Geometry contract：\(K,R,t\)、distortion 与 image space</h2>
+<p>对 world point \(P_w=[X_w,Y_w,Z_w,1]^T\)，理想 pinhole projection 为：</p>
+<div class="formula">\[
+s\begin{bmatrix}u\\v\\1\end{bmatrix}
+=K[R\mid t]P_w,
+\qquad
+K=\begin{bmatrix}
+f_x&amp;0&amp;c_x\\
+0&amp;f_y&amp;c_y\\
+0&amp;0&amp;1
+\end{bmatrix}.
+\]</div>
+<p>变量解释：\([R|t]\) 是 world→camera change of basis，\(f_x,f_y,c_x,c_y\) 是 intrinsics，\((u,v)\) 是 pixel。实现映射：manifest 必须保存 camera serial/name、optical frame、image size、K/distortion/extrinsics revision、calibration timestamp 与 reprojection diagnostics。[S1]</p>
+<p>distortion 可抽象为：</p>
+<div class="formula">\[
+(x_d,y_d)=D(x_n,y_n;k_1,k_2,k_3,\ldots,p_1,p_2,\ldots),
+\]</div>
+<p>其中 \((x_n,y_n)=(X_c/Z_c,Y_c/Z_c)\)，\(k_i\) 是 radial coefficients，\(p_i\) 是 tangential coefficients。OpenCV 还支持 higher-order/prism 等项，并提醒非单调 radial result 可视为 calibration failure。[S1]</p>
+<p>必须说明 pixel 属于 raw distorted、rectified、resized 还是 cropped space。若 image 被 resize：</p>
+<div class="formula">\[
+f_x&#x27;=s_xf_x,\;c_x&#x27;=s_xc_x,\qquad
+f_y&#x27;=s_yf_y,\;c_y&#x27;=s_yc_y,
+\]</div>
+<p>crop 还要减去 offset。实现映射：不要拿 raw K 直接投影到 cropped/resized tensor。</p>
+<h2 id="4-intrinsics-extrinsics-range">4. Intrinsics/extrinsics range 从哪里来</h2>
+<table><thead><tr><th>因素</th><th>nominal 来源</th><th>residual/range 来源</th><th>常见错误</th></tr></thead><tbody>
+<tr><td>intrinsics/distortion</td><td>per-serial calibration</td><td>repeated calibration、reprojection residual、focus/temperature</td><td>所有 camera 共用 K</td></tr>
+<tr><td>static extrinsics</td><td>hand-eye/rig calibration、CAD/mount</td><td>repeated mount、calibration residual、assembly tolerance</td><td>把 world→camera 与 camera→world 反了</td></tr>
+<tr><td>wrist-camera extrinsics</td><td>robot pose + hand-eye</td><td>joint/load-dependent flex、vibration、timestamp</td><td>固定彩色噪声代替几何偏移</td></tr>
+<tr><td>image size/crop</td><td>runtime preprocess manifest</td><td>pipeline variants</td><td>resize 后不更新 K/label</td></tr>
+<tr><td>multi-camera rig</td><td>joint calibration/shared frame</td><td>correlated mount/clock residual</td><td>每个 view 独立随机到不可能 rig</td></tr>
+</tbody></table>
+<p>随机化应围绕 calibrated center，并保存 correlation。rig 整体平移/旋转与单相机 mount flex 是两种不同 factor；多相机必须共享 world state、timestamp 和 label generation。</p>
+<h2 id="5-photometric-image-formation-contract">5. Photometric image-formation contract</h2>
+<p>一个简化的 pixel formation 可写为：</p>
+<div class="formula">\[
+y=Q\left(\Gamma\left(g\cdot
+\frac{1}{T_e}\int_{t_0}^{t_0+T_e}E(x(t),t)\,dt+b+n_{read}\right)\right),
+\]</div>
+<p>变量解释：\(E\) 是到达 sensor 的 irradiance/radiance proxy，\(T_e\) 是 exposure time，\(g\) 是 analog/digital gain，\(b\) 是 bias/black level，\(\Gamma\) 是 camera response/gamma/white-balance/color pipeline，\(Q\) 是 quantization/compression。该式是审计抽象，不代表某品牌 ISP 的完整实现。</p>
+<p>因此 appearance 因素至少分：</p>
+<ul><li>illumination direction/intensity/color temperature、shadow、reflection；</li><li>aperture/exposure/gain/auto-exposure state；</li><li>white balance、color correction、gamma/tone map；</li><li>material/texture/background；</li><li>quantization、JPEG/video compression、color format；</li><li>saturation/clipping、black level 与 dynamic range。</li></ul>
+<p>若语言包含 color/material，改变颜色必须同步语义或锁定 task cue，不能把所有 photometric transform 当 label-preserving。[S6]</p>
+<h2 id="6-blur-temporal-camera-model">6. Blur 与 temporal camera model</h2>
+<p>motion blur 是 exposure interval 内 camera/object motion 的积分。静态 convolution proxy：</p>
+<div class="formula">\[
+I_{blur}(x)\approx(k_{motion}*I_{sharp})(x),
+\]</div>
+<p>只能近似 constant-depth/constant-motion 场景；真实 blur 与 depth、rotation、object motion、exposure 和 rolling/readout 相关。</p>
+<p>camera temporal manifest 应记录：</p>
+<ul><li>exposure start/end 与 frame timestamp 定义；</li><li>global/rolling shutter、readout direction/duration；</li><li>sensor/transport/preprocess latency；</li><li>frame rate、jitter、duplicate/drop；</li><li>multi-camera sync/trigger/clock offset；</li><li>与 proprio/action 的 observation age。</li></ul>
+<p>完整 timing/action-age 诊断见 WM-034；本节点只规定 camera 侧字段。[S7]</p>
+<h2 id="7-sensor-noise-gaussian">7. Sensor noise 不是单一 Gaussian</h2>
+<p>一个常用审计近似是 signal-dependent shot noise 加 read noise：</p>
+<div class="formula">\[
+Y\sim\operatorname{Poisson}(g\lambda)+\mathcal N(b,\sigma_{read}^2),
+\]</div>
+<p>其中 \(\lambda\) 是 expected photon/electron count proxy，\(g\) 是 gain，\(b\) 是 bias。实现时还可能有 fixed-pattern/hot pixel、dark current、row/column banding、quantization、compression、auto-exposure feedback 和 temporal denoising；不能从这个式子推出真实 camera 的全部 noise model。</p>
+<p>cadence 分层：</p>
+<table><thead><tr><th>noise</th><th>cadence</th><th>测量方式</th></tr></thead><tbody>
+<tr><td>per-pixel/read/shot</td><td>frame-level、signal-dependent</td><td>dark/flat-field、不同曝光/增益重复 capture</td></tr>
+<tr><td>bias/fixed pattern</td><td>camera/session-level</td><td>static scene + per-pixel statistics</td></tr>
+<tr><td>auto-exposure/WB drift</td><td>segment-level</td><td>lighting transition trace</td></tr>
+<tr><td>compression/packet artifact</td><td>network/event-level</td><td>bitrate/packet/drop logs</td></tr>
+<tr><td>frame dropout/duplicate</td><td>event-level</td><td>timestamp/sequence continuity</td></tr>
+<tr><td>depth holes/scale/bias</td><td>geometry/surface-conditioned</td><td>known geometry、material/distance strata</td></tr>
+</tbody></table>
+<p>OpenAI Dexterous 区分 episode-correlated 与 timestep-uncorrelated observation noise，支持把 cadence 写进合同，而不是只记一个 sigma。[S3]</p>
+<h2 id="8-occlusion-visibility">8. Occlusion 与 visibility</h2>
+<p>对 target mask \(M_t\) 和 visible mask \(M_v\)，定义：</p>
+<div class="formula">\[
+r_{vis}=\frac{|M_t\cap M_v|}{|M_t|+\epsilon}.
+\]</div>
+<p>变量解释：\(r_{vis}\) 是 target visible fraction；实现映射：render/annotation 保存 occluder ID、depth order、target-visible mask、持续时间与每相机可见率。单个 2D rectangle occluder 只是 proxy。</p>
+<p>必须区分：</p>
+<ul><li>task-natural occlusion：hand/object/robot/self-occlusion；</li><li>environmental occlusion：工具、容器、人或背景物体；</li><li>sensor obstruction：污渍、反光、镜头遮挡；</li><li>camera failure/full blackout：stress/safety event；</li><li>multi-view complementarity：一个 view 被挡，另一个 view 仍可见。</li></ul>
+<p>nominal training 需保留任务可解性；full occlusion/camera failure 应单独报告 fallback/recovery，不与普通 visible-fraction 样本混报。</p>
+<h2 id="9-range-provenance">9. Range provenance 与采样合同</h2>
+<table><thead><tr><th>factor</th><th>range source</th><th>distribution/correlation</th><th>cadence</th></tr></thead><tbody>
+<tr><td>K/distortion</td><td>repeated calibration/serial variation</td><td>bounded posterior/correlation</td><td>camera/session</td></tr>
+<tr><td>extrinsics</td><td>hand-eye/rig residual、mount tolerance、vibration</td><td>rig-global + per-camera residual</td><td>build/episode/time</td></tr>
+<tr><td>exposure/gain/WB</td><td>real lighting/capture survey</td><td>controller/state-conditioned</td><td>frame/segment</td></tr>
+<tr><td>blur</td><td>exposure + camera/object velocity distribution</td><td>depth/motion-conditioned</td><td>frame/segment</td></tr>
+<tr><td>occlusion</td><td>task/scene event log、visibility histogram</td><td>object/view/time-correlated</td><td>event/segment</td></tr>
+<tr><td>noise</td><td>dark/flat-field/signal sweep、network logs</td><td>signal/gain/time-conditioned</td><td>frame/session/event</td></tr>
+</tbody></table>
+<p>每项记录 <code>factor/unit/source/lower-upper/distribution/correlation/cadence/label mode/validity/revision</code>。ImageNet-C severity 可做外部 stress reference，不能替换 target capture survey。[S4]</p>
+<h2 id="10-label-geometry-task-consistency">10. Label、geometry 与 task consistency</h2>
+<table><thead><tr><th>变换</th><th>target 处理</th></tr></thead><tbody>
+<tr><td>simulator camera pose/FOV/distortion</td><td>从同一 world state 重新 render，并重新投影 point/box/depth/pose</td></tr>
+<tr><td>crop/resize/pad</td><td>同步更新 pixel label、K 与 valid ROI</td></tr>
+<tr><td>flip/warp</td><td>只有在物理/语义成立时，按 transform 更新 label；camera-frame pose/action 需重算</td></tr>
+<tr><td>exposure/noise/compression</td><td>通常 label invariant，但不得抹去必要 cue</td></tr>
+<tr><td>occlusion</td><td>保存 visible/full target；不可解样本 reject 或进入 stress</td></tr>
+<tr><td>frame drop/time shift</td><td>同步 history/proprio/action timestamp 与 valid mask</td></tr>
+</tbody></table>
+<p>几何 round-trip：world point→distorted/raw pixel→rectify/resize/crop→model pixel，并做逆向/known-geometry smoke。对多相机保存 camera identity，不能直接平均 pixel coordinates。[S1][S8]</p>
+<h2 id="11-validity-rejection-rollback">11. Validity、rejection 与 rollback</h2>
+<p>拒绝或分流：</p>
+<ul><li>camera pose/FOV 看不到 workspace 或穿入几何体；</li><li>distortion mapping 非法/非单调或 ROI 大量无效；</li><li>exposure/blur/noise 使必要 task cue 消失；</li><li>occlusion 让 task 不可解却混入 nominal batch；</li><li>independent multi-camera sampling 破坏 rig geometry/time；</li><li>crop/flip 后 label/K/action 未同步；</li><li>noise/compression 产生 NaN、非法 dtype/range 或 preprocess mismatch；</li><li>combined arm nominal performance 下降且 real gate 无收益。</li></ul>
+<p>每次 sampler revision 保存 accepted/rejected sample、reason、seed、low/high/boundary render 与 target overlay。</p>
+<h2 id="12-diagnostic-ladder">12. Diagnostic ladder</h2>
+<ol><li><strong>camera identity/preprocess</strong>：view order、RGB/BGR、orientation、resize/crop/hash；</li><li><strong>geometry</strong>：K/distortion/image size、extrinsics direction、reprojection/round-trip；</li><li><strong>static photometric</strong>：exposure/gain/WB/gamma/saturation/color cue；</li><li><strong>dynamic camera</strong>：exposure/readout/blur/timestamp/drop/multi-view sync；</li><li><strong>visibility</strong>：target visible fraction、occluder、task solvability；</li><li><strong>sensor</strong>：signal-dependent noise、bias/pattern/compression/depth invalid；</li><li><strong>real replay</strong>：按 camera/light/motion/occlusion/noise strata 比 feature/action drift；</li><li><strong>closed loop</strong>：固定 protocol 看 first failure、success/CI、fallback/safety event。</li></ol>
+<p>固定方向 pixel/pose 偏差优先查 K/R/t/frame；只在动态运动时失败查 exposure/blur/timing；特定亮度失败查 photometric/ISP；随机闪烁查 dropout/auto-exposure/network。</p>
+<h2 id="13-matched-factor-matrix">13. Matched factor matrix</h2>
+<p>固定 dataset states、render count、train steps、checkpoint init、seed、model、task/init、controller、rollout count 和 success predicate：</p>
+<table><thead><tr><th>arm</th><th>变化</th><th>目的</th></tr></thead><tbody>
+<tr><td>A</td><td>nominal camera</td><td>baseline</td></tr>
+<tr><td>B</td><td>geometry only</td><td>K/R/t/distortion sensitivity</td></tr>
+<tr><td>C</td><td>photometric only</td><td>light/exposure/WB/gamma/material</td></tr>
+<tr><td>D</td><td>temporal/blur only</td><td>exposure/readout/motion/drop</td></tr>
+<tr><td>E</td><td>occlusion only</td><td>visibility/solvability/multi-view</td></tr>
+<tr><td>F</td><td>sensor only</td><td>signal/noise/bias/compression/depth invalid</td></tr>
+<tr><td>G</td><td>calibrated combined</td><td>complementarity</td></tr>
+<tr><td>H</td><td>overwide/irrelevant</td><td>contamination/robustness cost</td></tr>
+</tbody></table>
+<p>分 nominal sim、factor holdout、real replay、sim closed-loop、real closed-loop 报告；ImageNet-C-style stress score与目标 camera/closed-loop score分栏。[S4]</p>
+<h2 id="14-artifact-bundle">14. 最小 artifact bundle</h2>
+<table><thead><tr><th>Artifact</th><th>必须字段</th><th>能证明</th><th>不能单独证明</th></tr></thead><tbody>
+<tr><td><code>camera_rig_manifest</code></td><td>serial/name/frame、resolution、K/distortion/extrinsics、revision/time</td><td>camera geometry 可追溯</td><td>calibration 足够好</td></tr>
+<tr><td><code>calibration_bundle</code></td><td>images/targets、method、reprojection/per-view error、hand-eye/rig residual</td><td>标定过程与残差</td><td>policy transfer 成功</td></tr>
+<tr><td><code>capture_survey</code></td><td>lighting/exposure/gain/WB、motion、timestamp、noise/depth stats</td><td>target range 有真实依据</td><td>randomization 有收益</td></tr>
+<tr><td><code>camera_factor_manifest</code></td><td>distribution/correlation/cadence/label/validity/revision</td><td>sampler contract</td><td>sample 物理/任务完全正确</td></tr>
+<tr><td><code>sample_rejection_ledger</code></td><td>seed、factor、accepted/rejected、reason、overlay</td><td>实际采样可审计</td><td>policy 鲁棒</td></tr>
+<tr><td><code>matched_camera_ablation</code></td><td>A–H arms、固定项、sim/replay/closed-loop results</td><td>factor 因果对照</td><td>未做的 real result</td></tr>
+<tr><td><code>ownership_ledger</code></td><td>谁标定、capture、实现、训练、评估</td><td>个人贡献</td><td>效果本身</td></tr>
+</tbody></table>
+<h2 id="15-calibrated-camera-sampler">15. 注释伪代码：calibrated camera sampler</h2>
+<pre><code class="language-python">def sample_camera_observation(world_state, rig, factor_contract, seed):
+    # 1. Sample calibrated residuals while preserving rig correlations and camera identity.
+    geometry = sample_geometry(
+        rig.nominal_calibration,
+        factor_contract.geometry,
+        correlations=rig.correlation_constraints,
+        seed=seed,
+    )
+
+    # 2. Re-render the same world state so geometry labels remain physically consistent.
+    rgb_raw, geometry_targets = render_with_targets(world_state, geometry)
+
+    # 3. Apply measured photometric, exposure/blur and signal-dependent sensor models.
+    rgb_photo = apply_photometric_pipeline(rgb_raw, factor_contract.photometric)
+    rgb_time = apply_exposure_and_motion_blur(rgb_photo, world_state.motion)
+    rgb_sensor = apply_sensor_noise_and_compression(rgb_time, factor_contract.sensor)
+
+    # 4. Add task-valid occlusion and save full/visible masks for solvability checks.
+    rgb_occ, visibility = apply_occlusion(rgb_sensor, world_state, factor_contract.occlusion)
+
+    # 5. Apply crop/resize and synchronize K, pixel labels, masks and timestamps.
+    model_image, targets = preprocess_and_transform_targets(
+        rgb_occ, geometry_targets, visibility, factor_contract.preprocess
+    )
+
+    # 6. Reject impossible/unsolvable/label-inconsistent samples and log the reason.
+    return validate_and_log(model_image, targets, geometry, factor_contract, seed)</code></pre>
+<h2 id="16">16. 项目真实性边界</h2>
+<p>对 Evidence Manifest、OPD/OpenPiVLA inventories、PER-002 与已有 Sim2Real audit 的检索，没有形成 WM-035 本地 bundle：</p>
+<ul><li>缺 camera serial/name→K/distortion/extrinsics/revision 的 rig manifest；</li><li>缺真实 calibration images、reprojection/hand-eye/rig residual；</li><li>缺 exposure/gain/WB/blur/noise/dropout/depth capture survey；</li><li>缺 camera factor sampler、accepted/rejected render 与 label overlay；</li><li>缺 crop/resize/K/point/box/pose/action round-trip tests；</li><li>缺 geometry/photometric/temporal/occlusion/sensor/combined/overwide matched arms；</li><li>缺 protocol-complete real replay/closed-loop 与 ownership。[S8][S9]</li></ul>
+<p>安全表达：</p>
+<ul><li>可以说：“我会先绑定 camera serial、calibration 与 preprocess revision，再从实拍 survey 建五层 camera factor，并做 label/visibility/solvability 与 matched gate。”</li><li>可以说：“OPD 支持静态 grounding/eval，OpenPiVLA/WAM 支持 camera/preprocess/rollout provenance 的部分审计，但没有 camera Sim2Real 闭环。”</li><li>不能说：“做 color jitter/blur 就完成了 camera randomization”“有 K 字段就完成标定”“ImageNet-C 更鲁棒等于 VLA 闭环更鲁棒”“项目已通过 camera DR 提升真机成功率”。</li></ul>
+<p>按照 evidence contract，camera/config 理解最多 C0/C1；本地 factor harness/ablation 才可能支持 C2；真实 closed-loop uplift 需要 C3 raw protocol 与 ownership。</p>
+<h2 id="17-claim-ledger">17. Claim ledger</h2>
+<table><thead><tr><th>Claim</th><th>支持来源</th><th>证据等级</th><th>状态</th></tr></thead><tbody>
+<tr><td>camera geometry 依赖 K/R/t/distortion 与 image space</td><td>S1</td><td>official docs/code</td><td>checked</td></tr>
+<tr><td>camera/light/object/texture/occlusion 是 visual DR 候选</td><td>S2、S3</td><td>primary</td><td>checked with task scope</td></tr>
+<tr><td>correlated/uncorrelated noise cadence 需要区分</td><td>S3</td><td>primary</td><td>checked</td></tr>
+<tr><td>noise/blur/weather/digital severity 可构成通用 corruption taxonomy</td><td>S4</td><td>primary benchmark</td><td>checked / not target model</td></tr>
+<tr><td>MuJoCo camera intrinsics 支持 focal/principal/sensor-size/resolution contract</td><td>S5</td><td>official docs</td><td>checked</td></tr>
+<tr><td>exposure/blur/noise/occlusion 的物理与任务一致性合同</td><td>S1–S7 + engineering synthesis</td><td>synthesis</td><td>WARN / needs local execution</td></tr>
+<tr><td>用户项目已完成 camera calibration/DR/real transfer</td><td>S9</td><td>missing local evidence</td><td>rejected</td></tr>
+</tbody></table>
+<h2 id="18">18. 仍待独立复核与补证据</h2>
+<ol><li>一手论文/官方 docs 已复核；source freeze 保持 <code>independent_fact_review=PENDING</code>。</li><li>需要真实 calibration/capture/factor/label/matched/replay/closed-loop bundle。</li><li>需要真实口述后才更新练习状态；不得创建 <code>coaching_state.md</code>。</li><li>浏览器本地 <code>file://</code> 若被策略阻断，只记录静态验证，不能写 visual PASS。</li></ol>
+<h2 id="19">19. 参考来源</h2>
+<ol><li>OpenCV, <a href="https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html">Camera Calibration and 3D Reconstruction</a> 与 <a href="https://github.com/opencv/opencv/blob/f7dd7df170add1655de75b5e95f20f41d2a88293/doc/py_tutorials/py_calib3d/py_calibration/py_calibration.markdown">pinned calibration tutorial</a>。</li><li>Tobin et al., <a href="https://arxiv.org/abs/1703.06907v1"><em>Domain Randomization</em></a>。</li><li>OpenAI et al., <a href="https://arxiv.org/abs/1808.00177v5"><em>Learning Dexterous In-Hand Manipulation</em></a>。</li><li>Hendrycks &amp; Dietterich, <a href="https://arxiv.org/abs/1903.12261v1"><em>Benchmarking Neural Network Robustness to Common Corruptions and Perturbations</em></a>。</li><li>MuJoCo, <a href="https://mujoco.readthedocs.io/en/stable/modeling.html#cameras"><em>Modeling: Camera intrinsics</em></a>。</li><li><a href="vol_04_wm032_visual_domain_randomization_relevance_source_freeze.html">WM-032 Visual DR / Relevant Support</a>。</li><li><a href="vol_04_wm034_control_latency_actuator_controller_mismatch_source_freeze.html">WM-034 Timing / Controller</a>。</li><li><a href="vol_06_per002_3d_lift_frame_source_freeze.html">PER-002 3D Lift / Calibration</a>。</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest</a>。</li></ol>
+<h2 id="20">20. 下一边界</h2>
+<p>下一 bounded slice 是 <code>VLA-WM-036</code>：friction、contact、compliance 和 gripper semantics 为什么是 manipulation Sim2Real 的高风险点。本页不提前展开 contact solver、friction cone、gripper/controller 或 force/compliance 机制。</p>
+</article></body></html>

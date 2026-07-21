@@ -1,0 +1,60 @@
+{
+  "artifact": "sources/vol_06_per010_grounding_metric_parser_protocol_source_freeze.md",
+  "html": "sources/vol_06_per010_grounding_metric_parser_protocol_source_freeze.html",
+  "review_date": "2026-07-20",
+  "status": "source_frozen / VLA-PER-010 / primary_official_checked / local_parser_scorer_holdout_boundary / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "371C401C1B0A2C2075C03EE4A8CFD7FE9C60910444C4CBD3C7B0178509BD7852",
+  "scope": {
+    "question_id": "VLA-PER-010",
+    "primary_papers": 3,
+    "official_repository_files_or_guides": 7,
+    "implementation_bridge_files": 1,
+    "repository_review_bridges": 3,
+    "local_files_directly_read": 2,
+    "local_holdout_rows_reported_from_inventory": 10000,
+    "deterministic_probes": 5,
+    "knowledge_generated": 1,
+    "question_cards_generated": 1,
+    "practice_state": "261 generated cards unseen; PER-010 source + knowledge + card synchronized"
+  },
+  "frozen_revisions": {
+    "mdetr_paper": "arXiv:2104.12763v3 / 2022-03-25",
+    "mdetr_repo": "ashkamath/mdetr@ea09acc44ca067072c4b143b726447ee7ff66f5f",
+    "cocoapi": "cocodataset/cocoapi@8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9",
+    "robopoint_paper": "arXiv:2406.10721v1 / 2024-06-15",
+    "mpii_paper": "arXiv:1406.2984v1 / 2014-06-11",
+    "mmpose": "open-mmlab/mmpose@759b39c13fea6ba094afc1fa932f51dc1b11cbf9",
+    "local_muxi": "756e27e16adcfb3ccbfe98c2920dda42095b127f"
+  },
+  "checks": {
+    "bounded_slice": "PASS (the separate VLA-PER-010 card-only slice synchronized the source/knowledge/index state; no PER-011 or mastery artifact)",
+    "primary_and_official_sources": "PASS WITH WARNING (version-pinned MDETR, RoboPoint and MPII papers plus pinned MDETR/COCO API/MMPose code and local evaluator/inventory were read and hashed; MPII PDF is benchmark context rather than the direct implementation formula bridge)",
+    "typed_parser_contract": "PASS (raw output, expected representation, parser revision/mode, tag/syntax/coordinate/geometry status, parsed value and invalid reason are separated)",
+    "strict_vs_lenient": "PASS WITH WARNING (a full-match strict grammar and diagnostic-only lenient path are specified; the current local evaluator remains tag-gated but geometry-lenient and has no mixed-grounding branch)",
+    "box_metric_contract": "PASS (IoU, Acc@threshold, inclusive threshold, invalid behavior and continuous-vs-boolean distinction are explicit)",
+    "refexp_metric_contract": "PASS WITH WARNING (one-expression top-k success, score ranking, overlap and denominator are explicit; MDETR paper says IoU/Recall while the pinned code thresholds GIoU and prints Precision)",
+    "coco_contract": "PASS (IoU and recall grids, stable score ranking, matching/ignore, T/R/K/A/M tensors, area/category/maxDets and absent-category handling are frozen without conflating COCO AP/AR with RefExp R@k)",
+    "point_metric_contract": "PASS (PCK normalization/visibility/correspondence, RoboPoint mask-hit and local fixed-coordinate any-pair Hit@50/100 are non-equivalent and separately named)",
+    "multipoint_matching": "PASS WITH WARNING (any-pair minimum, two directed nearest-neighbor means, duplicate/count risks and optional one-to-one matching are explicit; no task-specific one-to-one OPD metric is currently archived)",
+    "invalid_and_denominator": "PASS WITH WARNING (missing tags, prose, parenthesized points, out-of-range, degenerate, empty, mixed and duplicates have policies; local bool rates divide all pool rows while numeric means skip missing values)",
+    "aggregation_and_protocol_identity": "PASS (sample/image/category/keypoint/episode units, strata, canonical protocol manifest and comparability matrix are frozen)",
+    "mdetr_discrepancy_probe": "PASS WITH WARNING (the deterministic boxes yield IoU 0.5254366562 and GIoU 0.4832129730, reversing the 0.5 decision and proving revision/code binding is necessary)",
+    "local_parser_probes": "PASS (tagged point, bare brackets, prose brackets and parenthesized pair produce the documented parse/format outcomes; identical/disjoint/touching IoU and multi-point probes pass)",
+    "local_denominator_probe": "PASS WITH WARNING (one invalid and one perfect box produce format/Acc 0.5 but IoU mean 1.0, demonstrating field-specific denominators)",
+    "raw_holdout_boundary": "PASS WITH WARNING (the inventory records 10,000 rows, pool composition, duplicate/leakage checks and checkpoint-pool metrics; corresponding raw predictions and exact checkpoint hashes were not re-archived in this slice)",
+    "project_truth_boundary": "PASS (public metric mechanisms, pinned code discrepancies, local parser facts, inventory-reported metrics, robot non-equivalence and candidate ownership gaps are separated)",
+    "practice_state": "PASS (261 generated cards remain unseen; the PER-010 card exists and coaching_state.md is absent)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, twenty-three H2 including TOC, five H3, seven tables, six code blocks, seven formula blocks, balanced hierarchy and delimiters, canonical/HTML/review SHA synchronized, local links/anchors valid, zero formula-em/control-character issues)",
+    "browser_visual_check": "BLOCKED (the existing in-app Browser file:// policy restriction remains; static desktop/narrow rules do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized VLA-PER-010 atomic card unseen until a real oral drill.",
+    "Archive the exact OPD raw predictions, checkpoint hashes, generation config and sample/image/gold manifest before rerunning or comparing parser protocols.",
+    "Add golden tests and publish a versioned strict parser that handles or explicitly rejects mixed grounding, legacy parenthesized points and trailing prose without overwriting historical results.",
+    "Report original-strict, protocol-fixed-strict and lenient-geometry results separately with per-field denominators and a paired transition matrix.",
+    "Keep all 260 cards unseen and do not create coaching_state.md before a real oral drill."
+  ],
+  "next": "Generate only the VLA-PER-011 pseudo-label/teacher-noise source freeze; do not generate its knowledge/card or change mastery in the same slice."
+}

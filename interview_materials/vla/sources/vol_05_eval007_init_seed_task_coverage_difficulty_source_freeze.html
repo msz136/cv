@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 EVAL-007 Source Freeze：Init / Seed / Task Coverage 与难度分层</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_eval007_init_seed_task_coverage_difficulty_source_freeze.md">
+<meta name="aris:source-sha256" content="66800fd21d8d2ebb786b0f8d3234c2613b427a986f41432f93cba99c3596e278">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>66800fd21d8d2ebb786b0f8d3234c2613b427a986f41432f93cba99c3596e278</code>；生成自：<code>interview_materials\vla\sources\vol_05_eval007_init_seed_task_coverage_difficulty_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、revision 与许可</a></li><li><a href="#2-count-support-coverage-representativeness">2. Count、support、coverage、representativeness 分开</a></li><li><a href="#3-coverage-cube">3. Coverage Cube</a></li><li><a href="#4-coverage">4. Coverage 指标</a></li><li><a href="#5-seed-coverage-seed">5. Seed Coverage：四类seed再次分层</a></li><li><a href="#6-task-coverage">6. Task Coverage</a></li><li><a href="#7-init-coverage">7. Init Coverage</a></li><li><a href="#8-difficulty-candidate-outcome">8. Difficulty 分层：先定义，再看candidate outcome</a></li><li><a href="#9-allocation">9. Allocation：估计、诊断与风险目标不同</a></li><li><a href="#9-1-proportional-allocation">9.1 Proportional allocation</a></li><li><a href="#9-2-equal-minimum-per-cell">9.2 Equal / minimum-per-cell</a></li><li><a href="#9-3-neyman-allocation">9.3 Neyman allocation</a></li><li><a href="#9-4-hybrid-risk-allocation">9.4 Hybrid risk allocation</a></li><li><a href="#10-train-validation-final-coverage">10. Train / Validation / Final Coverage 分离</a></li><li><a href="#11-uncertainty">11. Uncertainty 与多重切片</a></li><li><a href="#12">12. 五项目真实性边界</a></li><li><a href="#12-1-uwm">12.1 UWM</a></li><li><a href="#12-2-wam">12.2 WAM</a></li><li><a href="#12-3-openpivla">12.3 OpenPiVLA</a></li><li><a href="#12-4-opd">12.4 OPD</a></li><li><a href="#12-5-robot-harness">12.5 Robot Harness</a></li><li><a href="#13-coverage-planner">13. Coverage Planner 伪代码</a></li><li><a href="#14-source-gate">14. Source Gate 结论与下一入口</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 EVAL-007 Source Freeze：Init / Seed / Task Coverage 与难度分层</h1>
+<div class="meta">状态：<code>source_frozen / VLA-EVAL-007 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-18 证据截止：2026-07-18 本切片冻结 coverage cube、training/env/rollout seed 层级、task/init support、难度标签来源、stratified allocation、oversampling reweighting 与五项目 coverage 边界；下游只生成一张 <code>VLA-EVAL-007</code> 原子题卡，VOL 05 同步为 knowledge/cards 29/44。</div>
+<h2 id="question">问题（Question）</h2>
+<p>“每个 task 跑 50 次”并不能证明覆盖充分：50 次可能重复同一 init family、只用一个 training seed、漏掉 rare contact/occlusion/recovery strata，或只覆盖五个方便 task。强回答要把 task、init/difficulty、training seed 和 rollout repeat 组成预注册 coverage cube，报告 planned/attempted/valid/unique counts、target weights 与每格不确定性。</p>
+<p>本 source gate 固定以下链路：</p>
+<pre><code class="language-text">target population + risk constraints
+  -&gt; task / init / difficulty / training-seed strata
+  -&gt; planned minimum + allocation + unique support
+  -&gt; attempted / valid / excluded cell ledger
+  -&gt; per-cell result + target-weighted aggregate
+  -&gt; uncovered regions + exploratory slices</code></pre>
+<h2 id="1-revision">1. 冻结来源、revision 与许可</h2>
+<p>公开 hash 对 2026-07-18 取得的 UTF-8 原文计算。分层采样和 procedural-level generalization 只支持方法边界；它们不证明本地 VLA task/init 分布代表真实部署。</p>
+<table><thead><tr><th>ID</th><th>来源</th><th>类型 / revision</th><th>固定入口</th><th>SHA-256</th><th>支持范围</th></tr></thead><tbody>
+<tr><td>S1</td><td>Neyman (1934), stratified sampling</td><td>primary / DOI</td><td><a href="https://doi.org/10.2307/2342192">DOI</a></td><td>DOI 指纹</td><td>stratified sampling、allocation 与 purposive selection 的统计边界</td></tr>
+<tr><td>S2</td><td>Cobbe et al., <em>Leveraging Procedural Generation to Benchmark Reinforcement Learning</em></td><td>primary / arXiv <code>1912.01588</code></td><td><a href="https://arxiv.org/abs/1912.01588">arXiv</a></td><td>response <code>3c3062b173aaae5dea5cabd8a82908b0fb66390803fe3c620dad990994801541</code></td><td>train/test level 分离、有限环境覆盖与generalization gap；不自动迁移为机器人真实部署保证</td></tr>
+<tr><td>S3</td><td>Agarwal et al. / <code>rliable</code></td><td>primary + official-code / arXiv <code>2108.13264</code>, commit <code>3ccd9f4dea577a04d3d2b557f259aac08badbd81</code>, Apache-2.0</td><td><a href="https://arxiv.org/abs/2108.13264">paper</a> / <a href="https://github.com/google-research/rliable/tree/3ccd9f4dea577a04d3d2b557f259aac08badbd81">repo</a></td><td>paper response <code>74f11076d64de0f6beb9da4a9b185dd2a42465bfde6426fb2004fd6fd9e042ac</code>; library <code>0af084e4040fad3ae02a612b16fbcc59d9a141ac8259ad47dc1932bcc168ac14</code>; metrics <code>caf0c74e6238a12d2f59d6bcd47115e56167ea73c3b851c3f7981de17e5230cc</code></td><td>run×task matrix、fixed-task/task-population bootstrap 与完整分布报告</td></tr>
+<tr><td>S4</td><td>LIBERO task registry / metric</td><td>official-code / commit <code>8f1084e3132a39270c3a13ebe37270a43ece2a01</code>, MIT</td><td><a href="https://github.com/Lifelong-Robot-Learning/LIBERO/blob/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/benchmark/__init__.py">registry</a></td><td>registry <code>4ce6edbb00b3280692f2e2b2e8a14bf6e2d5878965b0484a386c0355a867ecc5</code>; metric <code>4fe37407f23cd9c1ceb4c93670f308d2fed6d34b2c2139d86123702c849cabcb</code>; eval config <code>e9775e56a15317666ee8248f7e9d59072b9469c0f7346dc3ed496484657c6bcd</code>; LICENSE <code>e2885fd30a08381b799c4a33385522b23d637b4051b8f9a7f9f2519944b68ff6</code></td><td>ordered suites/tasks、per-task success与default eval count；不证明项目实际覆盖这些init/task</td></tr>
+<tr><td>S5</td><td>EVAL-004 / EVAL-005 / EVAL-006</td><td>canonical local source freezes</td><td><a href="vol_05_eval004_paired_init_seed_significance_source_freeze.html">paired</a> / <a href="vol_05_eval005_aggregation_estimand_source_freeze.html">aggregation</a> / <a href="vol_05_eval006_benchmark_env_controller_scorer_versioning_source_freeze.html">versioning</a></td><td><code>c89c052a630692a12a20235fa6d53278f43e4509c6e567110f81f7c2eb427313</code>; <code>16b6a4c7c8e284ca8bd8a7cc831c3fc553405668ea87a071c23147f8f804ff46</code>; <code>8a2ccfbc382537d13e95feefe4ec146342d7478432a9a645344a64b302ccd054</code></td><td>seed taxonomy、common support/weights、protocol identity与missingness前置合同</td></tr>
+<tr><td>S6</td><td>Benchmark / Evidence Audit</td><td>canonical local source</td><td><a href="vol_04_benchmark_evidence_claim_to_protocol.html">audit</a></td><td><code>58a5636e953f44c2aa27e3acf65c621460186daf3732b916eac70e6ffab2de6a</code></td><td>LIBERO default、UWM 50 OOD init×3 seeds、Cosmos/RoboCasa task/init protocol</td></tr>
+<tr><td>S7</td><td>五项目 inventories</td><td>local evidence boundary</td><td><a href="../evidence/evidence_manifest.html">manifest</a></td><td>individual hashes in review</td><td>当前 task/init/seed/format/suite coverage 与raw artifact缺口</td></tr>
+</tbody></table>
+<h2 id="2-count-support-coverage-representativeness">2. Count、support、coverage、representativeness 分开</h2>
+<table><thead><tr><th>概念</th><th>问题</th><th>例子</th></tr></thead><tbody>
+<tr><td>count</td><td>跑了多少条？</td><td>250 episodes、10k rows</td></tr>
+<tr><td>unique support</td><td>覆盖多少不同条件？</td><td>unique init snapshot、unique image、task family</td></tr>
+<tr><td>coverage</td><td>预注册 strata 中哪些达到最低样本？</td><td>contact×OOD-pose×training-seed cell</td></tr>
+<tr><td>representativeness</td><td>sample weights 是否对应目标总体？</td><td>deployment task mixture</td></tr>
+</tbody></table>
+<p>大 count 可以由重复同一简单条件得到；coverage高也可能使用人为均匀分布而不代表部署。报告必须同时给 count、unique support、coverage matrix和 target weights。</p>
+<h2 id="3-coverage-cube">3. Coverage Cube</h2>
+<p>定义 cell：</p>
+<div class="formula">\[
+h=(t,d,i,s_{train}),
+\]</div>
+<p>其中 <code>t</code> 是 task/family，<code>d</code> 是预注册difficulty/risk stratum，<code>i</code> 是init/scene/object stratum，<code>s_train</code> 是model training seed。每格内可有多个rollout stochastic repeats，但repeat不能替代新的training seed或unique init。</p>
+<p>最低ledger字段：</p>
+<pre><code class="language-text">cell_id, task_id, task_revision, difficulty_schema,
+difficulty_bin, init_snapshot_hash, init_family,
+training_seed, env_seed, rollout_seed, protocol_sha,
+planned_n, attempted_n, valid_n, unique_init_n,
+success_k, exclusions, target_weight</code></pre>
+<p>若模型A/B比较，coverage cube和weights必须共同；缺格沿用EVAL-004/005的fail-closed或预注册missing rule。</p>
+<h2 id="4-coverage">4. Coverage 指标</h2>
+<p>设cells为 <code>h=1..H</code>，目标权重 <code>W_h≥0</code> 且和为1，最低有效样本 <code>m_h</code>，实际valid count <code>n_h</code>：</p>
+<div class="formula">\[
+C_w=\sum_{h=1}^{H}W_h\,\mathbf 1[n_h\ge m_h].
+\]</div>
+<p>变量解释：<code>C_w</code> 是本节点定义的target-weight coverage；它只说明哪些目标区域达到minimum，不是模型success。实现还应报告unweighted cell coverage、<code>n_h/m_h</code>、unique init ratio、weight coverage和每格success/CI。</p>
+<p>风险关键格可以设更高 <code>m_h</code> 或hard gate；不能用大量easy-cell episodes把未覆盖的safety/contact cell平均掉。</p>
+<h2 id="5-seed-coverage-seed">5. Seed Coverage：四类seed再次分层</h2>
+<table><thead><tr><th>seed</th><th>coverage含义</th><th>常见错误</th></tr></thead><tbody>
+<tr><td>training seed</td><td>训练方法的run-to-run variability</td><td>一个checkpoint的episode数替代多runs</td></tr>
+<tr><td>environment/init seed</td><td>reset distribution候选索引</td><td>same integer直接当same init</td></tr>
+<tr><td>rollout stochastic seed</td><td>固定checkpoint/init内sampling noise</td><td>重复rollout当unique init</td></tr>
+<tr><td>resampling seed</td><td>bootstrap/permutation可复算</td><td>当成实验coverage</td></tr>
+</tbody></table>
+<p>理想blocked design让每个training seed覆盖同一task/init grid；若不同training seeds只跑不同task，training variation与task difficulty完全confounded。same seed还要用init snapshot/hash和protocol SHA验证。</p>
+<h2 id="6-task-coverage">6. Task Coverage</h2>
+<p>task coverage至少分三层：</p>
+<ol><li><strong>registry coverage</strong>：planned task IDs中attempted/valid多少；</li><li><strong>family/skill coverage</strong>：grasp、place、contact、long-horizon、navigation、tool safety等族；</li><li><strong>deployment/risk coverage</strong>：目标流量和高severity场景是否覆盖。</li></ol>
+<p>task taxonomy本身是设计：把一个skill拆成十个近似task会抬高macro票数和cell count。保存ordered registry hash、family labels、inclusion/exclusion和版本；新增task时在common registry上重算旧模型。</p>
+<h2 id="7-init-coverage">7. Init Coverage</h2>
+<p>init不是一个seed整数，而是状态分布。建议保存：</p>
+<ul><li>exact snapshot/hash、reset后state/proprio和首帧checksum；</li><li>object pose/rotation、relative geometry、scene/layout/style；</li><li>distractor、background、lighting、camera/view、occlusion；</li><li>contact/friction/gripper state、initial robot pose；</li><li>in-distribution / interpolation / OOD shift标签及生成规则。</li></ul>
+<p>只报min/max range不能证明内部density或corner coverage；unique seed也不证明unique state。近重复init可按state/image distance或生成metadata聚类，报告cluster-level support。</p>
+<h2 id="8-difficulty-candidate-outcome">8. Difficulty 分层：先定义，再看candidate outcome</h2>
+<p>难度最好来自<strong>候选模型无关</strong>的metadata：</p>
+<table><thead><tr><th>维度</th><th>可冻结特征</th></tr></thead><tbody>
+<tr><td>horizon/composition</td><td>required stages、expert/demo length、subgoal count</td></tr>
+<tr><td>geometry/precision</td><td>target tolerance、pose distance/rotation、clearance</td></tr>
+<tr><td>contact/dynamics</td><td>contact transitions、friction/compliance、grasp mode</td></tr>
+<tr><td>perception</td><td>occlusion、distractor count、camera shift、object size</td></tr>
+<tr><td>language</td><td>instruction length、relations、ambiguity/compositionality</td></tr>
+<tr><td>recovery</td><td>perturbation、off-nominal start、required replan</td></tr>
+<tr><td>safety</td><td>severity、forbidden side effect、intervention requirement</td></tr>
+</tbody></table>
+<p>可以用frozen baseline或独立pilot success定义empirical difficulty，但baseline/checkpoint、sample和bin edges必须在候选模型评估前冻结，最好与final holdout分开。根据候选模型失败后再定义“hard bin”会产生post-hoc选择；可以做exploratory failure slice，但不用于primary robustness claim。</p>
+<p>难度常是多维vector，不必强压成easy/medium/hard单轴。每个bin要有minimum count、merge rule和unknown bucket，避免只展示有利切片。</p>
+<h2 id="9-allocation">9. Allocation：估计、诊断与风险目标不同</h2>
+<h3 id="9-1-proportional-allocation">9.1 Proportional allocation</h3>
+<p>若目标是部署mixture总体估计，常以 <code>n_h≈nW_h</code> 分配；micro自然接近target weights。但rare/hard格可能样本太少。</p>
+<h3 id="9-2-equal-minimum-per-cell">9.2 Equal / minimum-per-cell</h3>
+<p>equal allocation或每格最低 <code>m_h</code> 适合诊断与发现tail failure，但它不是部署分布。总体估计必须按target <code>W_h</code>重加权，不能直接报oversampled micro。</p>
+<h3 id="9-3-neyman-allocation">9.3 Neyman allocation</h3>
+<p>在近似独立strata、已知/可pilot估计方差和cost时，经典allocation可写：</p>
+<div class="formula">\[
+n_h\propto\frac{W_h\sigma_h}{\sqrt{c_h}},
+\qquad \sigma_h\approx\sqrt{p_h(1-p_h)}.
+\]</div>
+<p>变量解释：<code>W_h</code>是目标权重，<code>sigma_h</code>是stratum outcome标准差，<code>c_h</code>是单样本成本。对binary success，pilot估计 <code>p_h</code>；未知时不能从候选final outcomes反向优化并继续当预注册设计。</p>
+<h3 id="9-4-hybrid-risk-allocation">9.4 Hybrid risk allocation</h3>
+<p>工程上可先给每个critical/rare格minimum，再把剩余budget按target weight、variance或cost分配。无论怎样oversample，最终同时报告raw sample mix、target weights和reweighted estimate。</p>
+<h2 id="10-train-validation-final-coverage">10. Train / Validation / Final Coverage 分离</h2>
+<ul><li>training levels/init不可泄漏到final exact snapshots；</li><li>pilot可估difficulty/variance，但不和final p-value混用；</li><li>validation用于checkpoint/hyperparameter和difficulty schema冻结；</li><li>final holdout保持版本、registry、weights和exclusion rule锁定；</li><li>procedural generation需要保存generator version/config/seed list，train/test level集合不重叠。</li></ul>
+<p>Procgen的train/test levels说明有限level训练可能产生generalization gap，但不能把“不同seed”自动当成语义充分的新场景。</p>
+<h2 id="11-uncertainty">11. Uncertainty 与多重切片</h2>
+<p>按目标推断层级resample：training runs顶层、task/init strata保留，重复episode不展开为iid。每格报告 <code>k/n + CI</code>；primary aggregate按EVAL-005固定weights重算。</p>
+<p>大量difficulty slices会产生multiple-comparison问题。预注册primary slices；其余标exploratory并报告完整slice family，不从最差/最好bin单独做总体结论。空格/小格显示<code>insufficient coverage</code>，不静默合并。</p>
+<h2 id="12">12. 五项目真实性边界</h2>
+<h3 id="12-1-uwm">12.1 UWM</h3>
+<p>user-confirmed summary写5 tasks×50，但缺250 row-level episode、exact unique init IDs、training-seed grid和difficulty metadata。task count平衡不等于init/seed coverage。论文Table II的50 OOD initializations×3 finetune seeds属于另一protocol，不能补齐local coverage。moka/mug低分可作为exploratory hard-task signal，不能事后宣称接触/长时序根因。</p>
+<h3 id="12-2-wam">12.2 WAM</h3>
+<p>当前local-direct diagnostic只覆盖CoffeePressButton、episode0、一个seed/env_seed、base/trained两条trace且都failure；它是matched diagnostic，不是task/init coverage。项目页24 tasks×5、86/120/84/118缺raw episode和versioned manifest，不能计算coverage cube。</p>
+<h3 id="12-3-openpivla">12.3 OpenPiVLA</h3>
+<p>archive只有spatial/object/goal/LIBERO-10 suite summaries；缺per-task trial、seed、init和raw episodes。四suite表不证明task或difficulty coverage，formal Qwen runs也没有和archive eval lineage闭合。</p>
+<h3 id="12-4-opd">12.4 OPD</h3>
+<p>10k raw-holdout有box6100/point1400/text2500、8,251 unique images、1,168重复paths/2,917 rows位于重复images，并有by-format/by-pool表。这是当前最强coverage evidence，但quota是评估设计，不自动代表deployment。应按image cluster、pool/domain、format、seen/unseen/hard和metric-specific strata报告。</p>
+<h3 id="12-5-robot-harness">12.5 Robot Harness</h3>
+<p>project/safety/browser/cross suite n差异大，browser是deferred format-only，不能算execution coverage；project sandbox高分也不覆盖vision/controller/physics。SFT task-family counts是training data mix，不是eval/deployment coverage。应建立tool family×scope×side-effect severity×trajectory length×runner availability matrix，并用target weights重算。</p>
+<h2 id="13-coverage-planner">13. Coverage Planner 伪代码</h2>
+<pre><code class="language-python">def plan_and_score_coverage(registry, target_weights, min_counts, rows):
+    # 1. Build cells from frozen task/init/difficulty/training-seed schemas.
+    cells = build_cells(registry)
+    validate_weights(target_weights, cells)
+
+    # 2. Count attempted/valid/unique support without treating repeats as new init.
+    ledger = summarize_cells(rows, unique_key=&quot;init_snapshot_hash&quot;)
+
+    # 3. Fail closed on missing critical cells; compute coverage, not success.
+    weighted_coverage = sum(
+        target_weights[h] * int(ledger[h].valid_n &gt;= min_counts[h])
+        for h in cells
+    )
+
+    # 4. Estimate outcomes separately with target weights and cluster-aware CI.
+    estimate = stratified_estimate(rows, target_weights,
+                                   clusters=[&quot;training_seed&quot;, &quot;init_family&quot;])
+    return {&quot;ledger&quot;: ledger, &quot;coverage&quot;: weighted_coverage,
+            &quot;estimate&quot;: estimate}</code></pre>
+<p>伪代码是artifact contract，不是五项目已存在平台。coverage score不能替代per-cell ledger、representativeness审查或模型success。</p>
+<h2 id="14-source-gate">14. Source Gate 结论与下一入口</h2>
+<p>EVAL-007保持<code>WARN</code>：stratified allocation、coverage cube、seed/task/init层级、difficulty leakage防线与五项目coverage边界已冻结；没有一个项目同时具备完整target registry、raw rows、unique init、multi-training-seed和difficulty schema，因此不产生新的coverage或robustness强claim。</p>
+<p>下一内容节点固定为<code>VLA-EVAL-008</code>：perception / action / controller / recovery failure taxonomy。题卡保持<code>unseen</code>，真实口述前不创建<code>coaching_state.md</code>。</p>
+<h2 id="references">References</h2>
+<ol><li>Neyman, “On the Two Different Aspects of the Representative Method,” <a href="https://doi.org/10.2307/2342192">DOI</a>。</li><li>Cobbe et al., <a href="https://arxiv.org/abs/1912.01588"><em>Leveraging Procedural Generation to Benchmark Reinforcement Learning</em></a>。</li><li>Agarwal et al. / <a href="https://github.com/google-research/rliable/tree/3ccd9f4dea577a04d3d2b557f259aac08badbd81"><code>rliable</code></a>。</li><li>LIBERO frozen <a href="https://github.com/Lifelong-Robot-Learning/LIBERO/blob/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/benchmark/__init__.py">task registry</a>。</li><li><a href="vol_05_eval004_paired_init_seed_significance_source_freeze.html">EVAL-004</a>、<a href="vol_05_eval005_aggregation_estimand_source_freeze.html">EVAL-005</a>、<a href="vol_05_eval006_benchmark_env_controller_scorer_versioning_source_freeze.html">EVAL-006</a>。</li><li><a href="vol_04_benchmark_evidence_claim_to_protocol.html">Benchmark / Evidence Audit</a>。</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest</a> 与五项目inventories。</li></ol>
+</article></body></html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 03 Source Audit F：VLA 架构、Mask、适配与执行独立事实复核</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_03_architecture_execution_independent_fact_review.md">
+<meta name="aris:source-sha256" content="7d4410dcac384e663718b013da5e4c298f87e63b16a024908ea8c433e15fd03e">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>7d4410dcac384e663718b013da5e4c298f87e63b16a024908ea8c433e15fd03e</code>；生成自：<code>interview_materials\vla\sources\vol_03_architecture_execution_independent_fact_review.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 直接复核来源与冻结对象</a></li><li><a href="#2-landscape-action">2. Landscape：action 监督合同不同于模型规模</a></li><li><a href="#3-sequence-attention-mask-loss-mask">3. Sequence、attention mask 与 loss mask</a></li><li><a href="#3-1-octo-readout-block-wise-mask">3.1 Octo 的 readout 与 block-wise mask</a></li><li><a href="#3-2-octo-loss">3.2 Octo 的有效维 loss</a></li><li><a href="#4-full-head-only-lora-action-expert">4. 适配方式：full、head-only、LoRA、action expert</a></li><li><a href="#5-checkpoint-norm-transform-runtime">5. Checkpoint → norm → transform → runtime 合同</a></li><li><a href="#6-timing-infer-ms-latency">6. Timing：`infer_ms` 不是端到端 latency</a></li><li><a href="#7-chunk-broker-droid-example">7. Chunk broker 与 DROID example</a></li><li><a href="#8-synthetic-probes">8. Synthetic probes</a></li><li><a href="#9-vla-arch-007-012-vla-act-031-032">9. 对 `VLA-ARCH-007..012` 与 `VLA-ACT-031..032` 的回写结论</a></li><li><a href="#10">10. 项目真实性边界与安全口径</a></li><li><a href="#30">30 秒安全回答</a></li><li><a href="#11">11. 风险、未决项与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 03 Source Audit F：VLA 架构、Mask、适配与执行独立事实复核</h1>
+<div class="meta">状态：<code>independent_fact_review / landscape_mask_transform_queue_checked / WARN</code> 审查日期：2026-07-19 范围：RT-2、OpenVLA、Octo、π0/openpi 的架构路线、sequence/mask、适配、checkpoint/norm/transform、timing、chunk broker 与 DROID controller example。 结论先行：四条路线确实使用不同的 action 监督合同；Octo 的 <code>timestep_pad_mask &amp; action_pad_mask</code> 是有效维 mask 的正例，openpi 的 <code>Policy.infer</code> 明确执行 checkpoint norm stats 与 input/output transform 链，<code>ActionChunkBroker</code> 只在缓存耗尽时重新 query，DROID example 的 <code>[10,8]</code> 与 <code>open_loop_horizon=8</code> 是特定 example contract。RT-2 的 1–3 Hz/5 Hz 是 cloud-serving 测量，不能迁移为本地 latency；OpenVLA/Octo/π0 上游实现也不能证明 OpenPiVLA 的 checkpoint、axis/unit、controller 或个人贡献。</div>
+<h2 id="1">1. 直接复核来源与冻结对象</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>本次核对</th><th>SHA / Verdict</th></tr></thead><tbody>
+<tr><td>P01</td><td><a href="https://arxiv.org/pdf/2307.15818v1">RT-2 v1 PDF</a></td><td>§3.2 action 256 bins/token、PaLI-X/PaLM-E tokenization、co-fine-tune、cloud serving frequency</td><td><code>0A62DC36BBBFDEA232AD45A0AB75C82E9CF535B55333FF22C02D5DA1897CCAC</code> / <code>primary-verified</code></td></tr>
+<tr><td>P02</td><td><a href="https://arxiv.org/pdf/2405.12213v2">Octo v2 PDF</a></td><td>readout/block-wise mask、diffusion head、27M/93M、Open X-Embodiment mixture、20-step head</td><td><code>73BFF297CFAFE523319162124E6B7F96919C0930E0A380F307255C4C7464AC93</code> / <code>primary-verified</code></td></tr>
+<tr><td>C01</td><td><a href="https://github.com/octo-models/octo/blob/241fb3514b7c40957a86d869fecb7c7fc353f540/octo/model/octo_module.py"><code>octo_module.py</code></a></td><td>timestep padding、observation/task/readout token masks</td><td><code>E458062721FD1E72FAD00F7833B749E82D0DF60AA7927557362BDF6463299FBF</code> / <code>official-code</code></td></tr>
+<tr><td>C02</td><td><a href="https://github.com/octo-models/octo/blob/241fb3514b7c40957a86d869fecb7c7fc353f540/octo/model/components/action_heads.py"><code>action_heads.py</code></a></td><td><code>masked_mean</code>、timestep/action conjunction、embodiment dimension slice、diffusion mask</td><td><code>480F374788571DB11F1E3CA2922BEAEC52F752001AE5AC6D284E0F1DFEC40D11</code> / <code>official-code</code></td></tr>
+<tr><td>C03</td><td><a href="https://github.com/octo-models/octo/blob/241fb3514b7c40957a86d869fecb7c7fc353f540/scripts/configs/octo_pretrain_config.py"><code>octo_pretrain_config.py</code></a></td><td>default <code>action_horizon=4</code>, <code>action_dim=7</code></td><td><code>531A2F056EBCF995FE37DFB99634354D58F167F423C1A97BDF3C5545E425E0DD</code> / <code>official-code</code></td></tr>
+<tr><td>C04</td><td><a href="https://github.com/octo-models/octo/blob/241fb3514b7c40957a86d869fecb7c7fc353f540/octo/model/octo_model.py"><code>octo_model.py</code></a></td><td>sample action output and <code>embodiment_action_dim</code>/unnormalization path</td><td><code>93D96015BC43EE92910127421E17697D372F0BBC1A4D3589A0ADDB22EFB819E0</code> / <code>official-code</code></td></tr>
+<tr><td>C05</td><td><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/policies/policy.py"><code>openpi/policy.py</code></a></td><td>input transform、model timing、output transform、<code>policy_timing.infer_ms</code></td><td><code>A2AC5236E23B11D0F5A840D4A8FEF148D89DBA921D5452EC5DFCD5A6FFA46F20</code> / <code>official-code</code></td></tr>
+<tr><td>C06</td><td><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/policies/policy_config.py"><code>policy_config.py</code></a></td><td>checkpoint type detection、model/config load、checkpoint norm stats、ordered transforms</td><td><code>AAF42AB04A33B6C91D2447926211646C33EBD8EBFA427F026D7B6C4F7C45EC52</code> / <code>official-code</code></td></tr>
+<tr><td>C07</td><td><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/transforms.py"><code>transforms.py</code></a></td><td>Unnormalize、Delta/Absolute action transforms、pad/repack boundary</td><td><code>A1B94E9E72849A18834778F229C6BB389A495EB7FBE0AA800EDEA728B9424FF4</code> / <code>official-code</code></td></tr>
+<tr><td>C08</td><td><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/training/config.py"><code>training/config.py</code></a></td><td>full/LoRA examples、action horizon/dim overrides、delta masks</td><td><code>C34231F888DBA5DC981D808765B3D98775AB845B04313BF53FCECD567C520B0D</code> / <code>official-code</code></td></tr>
+<tr><td>C09</td><td><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/packages/openpi-client/src/openpi_client/action_chunk_broker.py"><code>action_chunk_broker.py</code></a></td><td>cache slice、requery at exhaustion、reset</td><td><code>019B9D69CB26CC681331A2F95DBE60A2CC7B02D6D309C5D15B6457AB39798234</code> / <code>official-code</code></td></tr>
+<tr><td>C10</td><td><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/examples/droid/main.py"><code>examples/droid/main.py</code></a></td><td><code>open_loop_horizon=8</code>、<code>[10,8]</code> chunk、gripper binarize、clip、control frequency</td><td><code>4BDBDBDDE068EBB30BA90D62BF8C51DF156B4BAAE5C5AC5870C08F7B03D4AFC2</code> / <code>official-code</code></td></tr>
+<tr><td>C11</td><td><a href="https://github.com/Physical-Intelligence/openpi/blob/15a9616a00943ada6c20a0f158e3adb39df2ccac/src/openpi/policies/policy_test.py"><code>policy_test.py</code></a></td><td>broker shape/half-chunk smoke semantics</td><td><code>9DBB20963600367A7E7ABFC97D1E326916777C57A87B39B1BC4070BA64676683</code> / <code>official-code</code></td></tr>
+<tr><td>I01</td><td>本仓 Source Audits A/B/E</td><td>OpenVLA endpoint、π0/FAST、Flow time/sign 与 all-D mask 边界</td><td><code>internal-source-reviewed</code></td></tr>
+<tr><td>O01</td><td>本次 synthetic probes</td><td>Octo mask mean、openpi delta/absolute round-trip、broker requery、DROID prefix</td><td><code>local-evidence / PASS</code></td></tr>
+</tbody></table>
+<p>冻结版本：Octo commit <code>241fb3514b7c40957a86d869fecb7c7fc353f540</code>（MIT）、OpenPI commit <code>15a9616a00943ada6c20a0f158e3adb39df2ccac</code>（Apache-2.0）。本页不把 repo example、Git author、上游 checkpoint 或公开 metric 归为个人贡献。</p>
+<h2 id="2-landscape-action">2. Landscape：action 监督合同不同于模型规模</h2>
+<table><thead><tr><th>路线</th><th>action 表示</th><th>监督/生成</th><th>本次可核事实</th><th>不可推出</th></tr></thead><tbody>
+<tr><td>RT-2</td><td>6-DoF/夹爪/终止等维度 uniform 256 bins → token</td><td>VLM next-token + robot/web co-fine-tune；动作 token 受限采样</td><td>§3.2 明确 256 bins、PaLI-X 与 PaLM-E 使用不同 token 复用方式</td><td>本地 tokenizer、controller、单机 latency</td></tr>
+<tr><td>OpenVLA</td><td>每个 scalar 使用尾部 action token</td><td>action label 的 causal CE；decoder unnorm 依 dataset stats</td><td>见 Audit A；旗舰路径与 LoRA 脚本需分开</td><td>本地 Qwen route 或个人改造</td></tr>
+<tr><td>Octo</td><td>learned readout → continuous diffusion action head</td><td>transformer 一次 forward，multi-step denoise 在小 head 内完成；默认 pretrain config <code>H=4,D=7</code></td><td>论文与 frozen config/readout/head 直接支持</td><td>Octo 指标可跨协议比较、任意 embodiment 都是 7D</td></tr>
+<tr><td>π0/openpi</td><td>continuous (H\times D) action expert 或 FAST tokens</td><td>VLM prefix + flow/FAST；输出 transform 与 broker 在模型外</td><td><code>Policy</code>/transforms/broker/DROID example 直接支持</td><td>本地 checkpoint/H/K/axis/unit</td></tr>
+</tbody></table>
+<p>RT-2 论文的 55B 1–3 Hz、5B 约 5 Hz 是其 cloud-serving protocol 的历史测量；它们不是 OpenVLA/π0 或本地 OpenPiVLA 的 hardware benchmark。Octo 的 27M/93M、800k OXE 和 20 diffusion steps 属于公开方法/recipe边界，不代表本地训练配置。</p>
+<h2 id="3-sequence-attention-mask-loss-mask">3. Sequence、attention mask 与 loss mask</h2>
+<h3 id="3-1-octo-readout-block-wise-mask">3.1 Octo 的 readout 与 block-wise mask</h3>
+<p>Octo 的 <code>octo_module.py</code> 将 <code>timestep_pad_mask</code> 标记为 <code>(batch, horizon)</code>，<code>False</code> 表示 padding timestep。观察 token 的 mask 会结合 tokenizer mask 与 timestep mask；task token 有自己的 pad mask；readout token 使用独立的 readout mask。论文同时说明：observation token 只能因果读取同一或更早 timestep 与 task token，readout 能读取前面的 observation/task/readout，但 observation/task 不读取回 readout。</p>
+<p>这意味着：</p>
+<ul><li>attention-visible：某 token 是否能读取另一个 token；</li><li>timestep-valid：该 observation window 是否真实存在；</li><li>action-valid：该 embodiment 的 action dimension 是否存在；</li><li>loss-visible：该元素是否进入 continuous/diffusion loss。</li></ul>
+<p>它们不是同一个 boolean。</p>
+<h3 id="3-2-octo-loss">3.2 Octo 的有效维 loss</h3>
+<p><code>action_heads.py</code> 的 <code>masked_mean</code> 先将 mask broadcast 到 loss shape，再计算：</p>
+<div class="formula">\[
+\operatorname{masked\_mean}(x,m)
+=\frac{\operatorname{mean}(x\odot m)}{\max(\operatorname{mean}(m),10^{-5})}.
+\]</div>
+<p>变量与直觉：当 (m) 是 0/1 mask 时，这等价于只对有效元素平均（只要有效比例不为 0）。连续 head 与 diffusion head 都构造：</p>
+<div class="formula">\[
+M_{b,w,h,d}=T_{b,w}\land A_{b,w,h,d},
+\]</div>
+<p>再将 (M) 传入 loss；推理 <code>sample_actions</code> 可用 <code>embodiment_action_dim</code> 把 padded diffusion dimensions 的 mask 设为 False，并最终 slice 到 stats 长度。</p>
+<p>这与此前 frozen Pi0 的 all-D mean 是有意保留的正例/负例对照；不能泛称“所有 VLA 都正确 mask padding”。</p>
+<h2 id="4-full-head-only-lora-action-expert">4. 适配方式：full、head-only、LoRA、action expert</h2>
+<p>Octo paper/repo 提供轻量 diffusion head 与 readout 结构，公开配置支持更换 observation/task/action head；其 finetune choices 与 OpenVLA/openpi 的 LoRA 例子说明的是“repo 支持的 adaptation route”，不是某个 paper 主结果默认使用 LoRA。</p>
+<p>openpi <code>training/config.py</code> 直接列出：</p>
+<ul><li>full finetune 配置（例如 <code>pi0_fast_full_droid_finetune</code>）；</li><li>PaliGemma 与 action expert 的 LoRA variant；</li><li>action dimension/horizon 随 dataset 调整的配置。</li></ul>
+<p>LoRA 的事实仍需按 base checkpoint、target modules、rank、merge state 和 optimizer state 绑定。看到 <code>lora</code> 字段不能证明本地 checkpoint 真的用该 config。</p>
+<h2 id="5-checkpoint-norm-transform-runtime">5. Checkpoint → norm → transform → runtime 合同</h2>
+<p>openpi <code>create_trained_policy</code> 的顺序是可直接核验的：</p>
+<ol><li>检查 checkpoint 是否有 <code>model.safetensors</code>，据此选择 PyTorch/JAX load path；</li><li>用 training config 构造 model/data config；</li><li>若未显式传入 norm stats，从 checkpoint <code>assets/&lt;asset_id&gt;</code> 读取；</li><li>input transforms：repack → prompt → data transforms → normalize → model transforms；</li><li><code>Policy.infer</code> 调用 <code>sample_actions</code>；</li><li>output transforms：model outputs → unnormalize → data outputs → repack outputs。</li></ol>
+<p>normalization 的 z-score 反变换为：</p>
+<div class="formula">\[
+x_{\mathrm{physical}}=x_{\mathrm{model}}(\sigma+10^{-6})+\mu.
+\]</div>
+<p>quantile path 则用 q01/q99 做 ([-1,1]) 到物理区间的逆映射。<code>DeltaActions</code>/<code>AbsoluteActions</code> 按 boolean mask 对前若干维加减 state；这只完成 declared transform，不自动决定 axis、frame、rotation 或 gripper semantics。</p>
+<h2 id="6-timing-infer-ms-latency">6. Timing：<code>infer_ms</code> 不是端到端 latency</h2>
+<p>openpi <code>Policy.infer</code> 的 <code>policy_timing.infer_ms</code> 只包围 <code>_sample_actions</code>，不包括输入 transform、网络传输、server serialization 或 controller queue。要得到端到端值，仍需另记：capture、preprocess、upload、server/model、download、parse/unnorm、queue wait 和 controller tick。一次上游字段不足以证明视觉编码、action expert NFE 或网络分别耗时多少。</p>
+<h2 id="7-chunk-broker-droid-example">7. Chunk broker 与 DROID example</h2>
+<p><code>ActionChunkBroker</code> 的行为是：缓存为空时调用 inner policy；每次返回当前 <code>_cur_step</code> 行；当 <code>_cur_step &gt;= action_horizon</code> 时清空缓存；<code>reset()</code> 清空 policy 与 cache。它假设所有 array action fields 第一维是 chunk length，但不做 request-id/stale-response/NaN/axis/unit 安全检查。</p>
+<p>DROID example 另有一层 rollout contract：</p>
+<pre><code class="language-python"># Query a fresh chunk when the configured execution prefix is exhausted.
+if actions_from_chunk_completed == 0 or actions_from_chunk_completed &gt;= open_loop_horizon:
+    pred_action_chunk = policy_client.infer(request_data)[&quot;actions&quot;]  # [10, 8]
+
+# Execute only the selected prefix row, then binarize gripper and clip.
+action = pred_action_chunk[actions_from_chunk_completed]
+action[-1] = 1.0 if action[-1] &gt; 0.5 else 0.0
+action = np.clip(action, -1, 1)
+env.step(action)</code></pre>
+<p>这里的 <code>[10,8]</code> 表示 10 行 action、8 个维度（7 joint velocity + 1 gripper position）；<code>open_loop_horizon=8</code> 表示执行 8 行后再 query，剩余 2 行不一定被使用。这是该 example 的 H/K 合同，不是 openpi 的 universal default，也不是本地 OpenPiVLA 证据。</p>
+<h2 id="8-synthetic-probes">8. Synthetic probes</h2>
+<table><thead><tr><th>Probe</th><th>结果</th><th>结论</th></tr></thead><tbody>
+<tr><td>Octo <code>x=[1,3,5,7]</code>，mask <code>[1,1,0,0]</code></td><td>masked mean <code>2.0</code></td><td>action/timestep mask 可排除 padded dims</td></tr>
+<tr><td>Octo <code>T=[1,0]</code> 与 <code>A</code> 全 valid</td><td>合并 mask 第二 window 全 0</td><td>padded timestep 不产生 loss</td></tr>
+<tr><td>openpi z-score round-trip：<code>mu=[10,20]</code>,<code>std=[2,4]</code>,<code>x=[14,12]</code></td><td>normalize <code>[2,-2]</code> 后 inverse <code>[14,12]</code>（浮点误差内）</td><td>norm asset 必须匹配</td></tr>
+<tr><td><code>DeltaActions</code>/<code>AbsoluteActions</code> mask <code>[1,0,1]</code>，state <code>[10,20,30]</code>，delta <code>[1,2,3]</code></td><td>abs <code>[11,2,33]</code>，再 delta <code>[1,2,3]</code></td><td>transform 顺序/掩码可单测</td></tr>
+<tr><td><code>ActionChunkBroker(action_horizon=2)</code>，inner chunk rows <code>[0,1,2,3]</code></td><td>输出 <code>0,1</code> 后第二次 query；reset 清空 cache</td><td>broker execution prefix 与 model chunk 可不同</td></tr>
+<tr><td>DROID example chunk <code>[10,8]</code>, <code>open_loop_horizon=8</code></td><td>只消费 rows <code>0..7</code>，第 8 次边界 query</td><td>example 不等于执行完整 H</td></tr>
+</tbody></table>
+<p>这些 probes 验证 mask、transform、broker 与 example branch semantics，不证明任何 learned policy success、latency 或本地项目实现。</p>
+<h2 id="9-vla-arch-007-012-vla-act-031-032">9. 对 <code>VLA-ARCH-007..012</code> 与 <code>VLA-ACT-031..032</code> 的回写结论</h2>
+<table><thead><tr><th>Question ID</th><th>独立复核结论</th><th>必须保留的边界</th></tr></thead><tbody>
+<tr><td><code>VLA-ARCH-007</code></td><td>RT-2/OpenVLA/Octo/π0 landscape 与 action contract 可核</td><td>不做跨 protocol 指标排名</td></tr>
+<tr><td><code>VLA-ARCH-008</code></td><td>attention/readout/loss/action mask 分层可核</td><td>本地 mask 未证</td></tr>
+<tr><td><code>VLA-ARCH-009</code></td><td>full/head/LoRA/action expert 的 repo support 可核</td><td>不把 support 当本地 choice/个人设计</td></tr>
+<tr><td><code>VLA-ARCH-010</code></td><td>Octo conjunction mask 与 openpi all-D 对照可核</td><td>本地 D/d/valid mask 未证</td></tr>
+<tr><td><code>VLA-ARCH-011</code></td><td>RT-2/FAST/openpi timing scopes 可核</td><td>不迁移 source latency 到本地</td></tr>
+<tr><td><code>VLA-ARCH-012</code></td><td>paper→repo→checkpoint→runtime 五层审计合同可核</td><td>本地 manifest/trace 仍缺</td></tr>
+<tr><td><code>VLA-ACT-031</code></td><td>decode→unnorm→slice→schema→controller 顺序可核</td><td>本地 axis/unit/controller 未证</td></tr>
+<tr><td><code>VLA-ACT-032</code></td><td>parser/FIFO/replan/stale/safety test matrix 可核</td><td>上游 broker test 只覆盖 shape，项目 tests 未执行</td></tr>
+</tbody></table>
+<h2 id="10">10. 项目真实性边界与安全口径</h2>
+<p>上游 facts 可以帮助面试回答“为什么 mask、为什么要把 norm stats 和 transform 绑到 checkpoint、为什么 action chunk 的 H 与执行 prefix K 分开”。它们不能证明 OpenPiVLA 采用 Octo mask、openpi broker、DROID <code>[10,8]</code>、某个 LoRA config、RT-2 latency 或任何 upstream checkpoint。</p>
+<h3 id="30">30 秒安全回答</h3>
+<p>“VLA 的 action head 不能只按 backbone 名字分类：RT-2/OpenVLA 是离散 token，Octo 是 readout 条件化的 diffusion head，π0 是 VLM prefix 条件化的 continuous action expert。Octo 直接把 timestep padding mask 和 embodiment action mask 合并进 loss，而 openpi 的 runtime 还必须把 checkpoint、norm stats、input/output transforms 和 broker 一起审计。DROID example 里模型输出 <code>[10,8]</code>，但只按 <code>open_loop_horizon=8</code> 消费，说明 model chunk 和 execution prefix 不是一回事。对我的项目，我只有在本地 manifest、parser、norm、axis/unit、queue 和 controller trace 齐全时，才把这些上游机制映射成项目事实。”</p>
+<h2 id="11">11. 风险、未决项与下一步</h2>
+<ol><li><strong>核心 public facts 已独立复核</strong>：RT-2 action token、Octo readout/mask/diffusion、openpi transform/broker/timing/DROID example 已核对。</li><li><strong>视觉 QA</strong>：<code>file://</code> 浏览器策略限制仍记录为 <code>BLOCKED</code>；静态 HTML 校验不等价于视觉验收。</li><li><strong>本地项目 gate</strong>：OpenPiVLA checkpoint、tokenizer/norm assets、D/d/H/K、axis/unit、controller trace、latency ledger 与 ownership 仍待本地证据。</li><li><strong>下一 bounded slice</strong>：进行一题 <code>VLA-ARCH-010/031</code> 或 OpenPiVLA ownership 真实口述；不新增题卡、不创建 <code>coaching_state.md</code>。</li></ol>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Brohan et al., <a href="https://arxiv.org/html/2307.15818v1">RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control</a>，arXiv <code>2307.15818v1</code>。</li><li>Kim et al., <a href="https://arxiv.org/html/2406.09246v3">OpenVLA</a> 与本仓 Source Audit A。</li><li>Octo Model Team et al., <a href="https://arxiv.org/html/2405.12213v2">Octo: An Open-Source Generalist Robot Policy</a>，arXiv <code>2405.12213v2</code>。</li><li>Black et al., <a href="https://arxiv.org/html/2410.24164v4">π0</a> 与本仓 Source Audits B/E。</li><li><a href="https://github.com/octo-models/octo/tree/241fb3514b7c40957a86d869fecb7c7fc353f540">octo-models/octo@241fb351</a>，MIT。</li><li><a href="https://github.com/Physical-Intelligence/openpi/tree/15a9616a00943ada6c20a0f158e3adb39df2ccac">Physical-Intelligence/openpi@15a9616a</a>，Apache-2.0。</li><li><a href="vol_03_architecture_execution_claim_to_code.html">VLA 架构、适配、延迟与动作执行 Claim-to-Code</a>，本仓先前 source freeze；本页为独立复核。</li></ol>
+</article></body></html>

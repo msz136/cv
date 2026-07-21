@@ -1,0 +1,35 @@
+{
+  "artifact": "sources/openpivla_libero_matched_failure_probe_readiness_gate.md",
+  "html": "sources/openpivla_libero_matched_failure_probe_readiness_gate.html",
+  "review_date": "2026-07-21",
+  "status": "local_summary_consistent / matched_probe_not_rerun / WARN",
+  "verdict": "WARN",
+  "source_sha256": "ADAFCD8B6DEFA33A943D3E41F2135DDA5301B62B97D0D844B4342FF1D0504C9B",
+  "evidence_cutoff": "2026-07-21",
+  "local_project_root": "C:\\Users\\mousongzhe\\Project\\openpivla_deployment",
+  "checks": {
+    "summary_status": "PASS (status=ok)",
+    "task_tuple": "PASS (libero_spatial/task-0/episode-0)",
+    "run_pair": "PASS (zero_reference and model_policy)",
+    "matched_horizon": "PASS (70 steps each)",
+    "reward_and_termination": "PASS (both reward=0, success=false, done=false)",
+    "finite_scalar_metrics": "PASS (action_norm_mean and state_norm_final finite)",
+    "success_rate_recompute": "PASS (0/2 = 0.0)",
+    "referenced_artifacts": "PASS (per-run video/plot and comparison video exist)",
+    "observation_action_contract": "PASS WITH WARNING (script fields and transforms read; raw request/response trace absent)",
+    "effective_argv": "UNVERIFIED (summary has 70 steps but invocation argv, seed, wait_steps, resize and replan values were not logged)",
+    "independent_scorer": "UNVERIFIED (script aggregates done; last_info is empty)",
+    "matched_failure_rerun": "PENDING (no fresh single-variable A/B run)",
+    "ownership": "PENDING (no candidate oral confirmation or pre-snapshot diff)",
+    "html_static_validation": "PASS (full repository validator: 386 canonical triplets, zero missing/sha/template/math/link/reconciliation failures; 280 unique cards remain unseen)",
+    "browser_visual_check": "PASS WITH WARNING (rechecked 2026-07-21 at localhost desktop 1280x1000 and narrow 800x1000: one H1, sticky 260px TOC on desktop, static TOC on narrow, zero page-wide overflow, four tables and code block contained, zero formula em nodes and broken anchors)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Persist checkpoint manifest ID, OpenPI commit, processor/tokenizer revision and effective argv in the next run.",
+    "Save per-step raw observation hashes, policy response tensor, post-transform 7D action, reward, done, info and timestamps.",
+    "Use an independent task-success predicate and a single-variable matched intervention.",
+    "Keep PROJ-OPENPIVLA-007/008 unseen until a real oral response is recorded."
+  ],
+  "next": "Add trace export and run one fresh matched LIBERO A/B probe in the original environment; do not upgrade root-cause claims from the current static preflight."
+}

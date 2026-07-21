@@ -1,0 +1,71 @@
+{
+  "artifact": "questions/vol_06_per012.md",
+  "html": "questions/vol_06_per012.html",
+  "question_list": "questions/vol_06_per012.question_list.md",
+  "knowledge": "knowledge/vol_06_per012_segmentation_depth_keypoint_affordance.md",
+  "source_freeze": "sources/vol_06_per012_segmentation_depth_keypoint_affordance_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / VLA-PER-012 / card_1_of_1",
+  "verdict": "WARN",
+  "source_sha256": "82305A7C18397E0CCEE925207AC122B4B7EAA182E6C4A02188746278563DB2BC",
+  "question_count": 1,
+  "covered_question_ids": [
+    "VLA-PER-012"
+  ],
+  "difficulty_distribution": {
+    "L1": 0,
+    "L2": 0,
+    "L3": 1,
+    "L4": 0,
+    "L5": 0
+  },
+  "priority_distribution": {
+    "P0": 0,
+    "P1": 1
+  },
+  "practice_distribution": {
+    "unseen": 1,
+    "weak": 0,
+    "pass": 0,
+    "strong": 0,
+    "stale": 0
+  },
+  "answer_length_chars": {
+    "short_answer_min": 180,
+    "short_answer_max": 180,
+    "short_answer_average": 180,
+    "short_answer_threshold": 180,
+    "mechanism_answer_min": 350,
+    "mechanism_answer_max": 350,
+    "mechanism_answer_average": 350,
+    "mechanism_answer_threshold": 350
+  },
+  "checks": {
+    "bounded_slice": "PASS (one PER-012 atomic card was created from the synchronized source and knowledge; no PER-013 artifact, mastery mutation or coaching_state.md)",
+    "details_block_well_formed": "PASS (1/1 Markdown and HTML details/summary block is balanced and foldable)",
+    "question_id_unique": "PASS (VLA-PER-012 occurs once; the global registry synchronizes to 263 unique generated cards)",
+    "required_fields": "PASS (intent, short answer, mechanism, diagnosis/evidence, project hook, follow-up, easy-error, dangerous answer, sources and state are present)",
+    "answer_conciseness": "PASS (30-second answer 180 chars; mechanism answer 350 chars)",
+    "source_references": "PASS WITH WARNING (PER-012 source/knowledge and pinned Mask2Former/SAM/Depth Anything V2/kPAM/Where2Act sources are cited; local dense checkpoint, camera/metric-depth bundle, planner/controller episodes and ownership confirmation remain missing)",
+    "segmentation_contract": "PASS (semantic, instance, panoptic and promptable masks are non-equivalent; Mask2Former task-specific postprocess/metric and SAM prompt/multimask/quality boundaries are retained)",
+    "depth_contract": "PASS WITH WARNING (relative depth is not promoted to meters; the separate metric checkpoint, Sigmoid-times-max-depth path, unit/range/validity and resize boundary are explicit without claiming local metric reproduction)",
+    "geometry_contract": "PASS WITH WARNING (mask, metric depth, original pixels, intrinsics, registration, TF/time and validity precede 3D lift; no local camera/depth/frame bundle exists)",
+    "keypoint_affordance_contract": "PASS WITH WARNING (semantic ID, visibility, covariance and frame are separated from naked points; point/orientation/primitive/state-conditioned affordance is separated from actionable text and local integration)",
+    "action_gate": "PASS (reachability, IK, collision, controller, planner rejection and episode trace prevent perception score from being called robot success)",
+    "diagnostic_order": "PASS (task/schema through prompt, artifact, depth, camera/frame/time, semantic identity, primitive/state, planner rejection and episode trace are ordered around first divergence)",
+    "local_opd_boundary": "PASS WITH WARNING (local affordance-labelled point supervision and selected-path zero matches are stated; remote/unarchived dense paths, local integration, benefit, robot result and candidate ownership are not inferred)",
+    "html_static_validation": "PASS (ARIS academic v1; source SHA synchronized; one H1, three H2 including TOC, one foldable summary, two unique IDs, balanced inline/display MathJax delimiters, required palette/serif/sticky 260px TOC/900px breakpoint/print rules and zero formula-em/control-character issues)",
+    "local_links": "PASS (knowledge, source and evidence links resolve locally)",
+    "browser_visual_check": "BLOCKED (the existing in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "practice_state": "PASS (card remains unseen; no oral answer was provided and coaching_state.md is absent)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep VLA-PER-012 unseen until the candidate answers it orally.",
+    "Archive exact segmentation/depth/keypoint/affordance checkpoints, preprocessing, raw outputs, unit/range/license and camera/frame/time lineage if they exist.",
+    "Archive planner rejection reasons, controller revision and episode traces before making execution or robot-success claims.",
+    "Confirm candidate ownership per local file and decision; Git identity or public method knowledge is insufficient.",
+    "Do not create coaching_state.md until an actual oral drill is completed."
+  ],
+  "next": "Generate only the VLA-PER-013 point-cloud/voxel/BEV/occupancy representation source freeze; do not generate its knowledge/card or change mastery in the same slice."
+}

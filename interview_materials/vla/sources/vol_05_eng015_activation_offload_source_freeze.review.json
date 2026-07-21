@@ -1,0 +1,50 @@
+{
+  "artifact": "sources/vol_05_eng015_activation_offload_source_freeze.md",
+  "html": "sources/vol_05_eng015_activation_offload_source_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "source_frozen / VLA-ENG-015_knowledge+card_drafted / WARN",
+  "verdict": "WARN",
+  "source_sha256": "2452E439814E805F460CB295DCF31CAE49366BE45FBD5846BFA85F31B3B34B53",
+  "coverage": {
+    "knowledge_id": "VLA-ENG-015",
+    "topic": "activation checkpointing / CPU-NVMe offload / throughput trade-off",
+    "official_pages_checked": 4,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "pytorch_docs": "2.13 checkpoint.html + fsdp.html",
+    "deepspeed": "de1846cf6fbdd6f1c2adf046f319791ca78cc547",
+    "papers": "ZeRO-Offload arXiv:2101.06840; ZeRO-Infinity arXiv:2104.07857",
+    "related_local_audit": "sources/vol_05_local_artifact_gate_eng004_006.html"
+  },
+  "normalized_main_text_sha256": {
+    "pytorch_checkpoint": "ac47e4a48f1e17f17cf485083059c6b0b7b30fd4d883dff0aca1f6d429a9e681",
+    "pytorch_fsdp": "9f14bed9d2267151f21bd7c0a61007e25f7443e877ab16a047fd29a28aa87810"
+  },
+  "raw_source_sha256": {
+    "deepspeed_activation_checkpointing_rst": "9ce53eea54425e30376159448d045f5748c898f9a2d5ad45f80ab2f738e1a590",
+    "deepspeed_zero3_rst": "e8eeb0ccfd067c371e522b494d70e0a233e7aeda4d5ccf6dd1a200d01a4b6847"
+  },
+  "checks": {
+    "bounded_slice": "PASS (source freeze plus one downstream ENG-015 knowledge node/card; ENG-016 remains deferred)",
+    "activation_checkpoint_semantics": "PASS WITH WARNING (recompute-for-memory, reentrant/non-reentrant and RNG caveats sourced)",
+    "fsdp_cpu_offload": "PASS WITH WARNING (parameter/gradient CPU offload and CPU optimizer semantics sourced; NVMe not inferred)",
+    "deepspeed_activation_checkpointing": "PASS WITH WARNING (partitioning, CPU checkpointing and contiguous optimization listed in frozen RST)",
+    "zero_offload_infinity": "PASS WITH WARNING (CPU/NVMe state hierarchy and configuration examples sourced; no local throughput claim)",
+    "memory_throughput_protocol": "PASS (ledger, fixed effective batch, warm-up, p50/p95 and wait buckets defined as engineering contract)",
+    "project_truth_boundary": "PASS (UWM/OPD config/report/binary/resume/throughput boundaries preserved)",
+    "html_static_validation": "PASS (source SHA, one H1, eleven H2, eight H3, seven tables and one commented pseudocode block)",
+    "local_links": "PASS (ENG-004..006 artifact gate relative link resolves)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)"
+  },
+  "open_items": [
+    "Generate ENG-015 knowledge and one unseen card only after this source gate is accepted for the next bounded slice.",
+    "Collect matched activation-checkpoint/offload A/B with fixed effective batch, profiler wait buckets and peak memory timeline.",
+    "Collect checkpoint binary plus optimizer/scheduler/scaler/RNG/sampler lineage and fixed-next-batch resume smoke before any recovery claim.",
+    "Keep CPU/NVMe bandwidth, overlap and throughput as workload-level measurements; do not infer them from configuration or paper claims.",
+    "Keep ENG-016 student + multiple teachers deferred."
+  ],
+    "next": "Run a one-question oral drill for VLA-ENG-015 or collect matched A/B, binary/lineage and fixed-next-batch artifacts; keep ENG-016 deferred."
+}

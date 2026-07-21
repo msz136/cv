@@ -1,0 +1,50 @@
+{
+  "artifact": "sources/vol_06_per006_image_preprocess_token_camera_contract_source_freeze.md",
+  "html": "sources/vol_06_per006_image_preprocess_token_camera_contract_source_freeze.html",
+  "review_date": "2026-07-20",
+  "status": "source_frozen / VLA-PER-006 / upstream_checked / local_double_resize_risk / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "2BFCEC5AB3CC3F48C26F3A2EFB41FB7ED0932B2B56671B7B2FF2906C690561E6",
+  "scope": {
+    "question_id": "VLA-PER-006",
+    "primary_papers": 1,
+    "official_repo_and_model_artifacts": 10,
+    "local_files_directly_read": 5,
+    "deterministic_resize_inputs": 3,
+    "knowledge_generated": 1,
+    "question_cards_generated": 1,
+    "practice_state": "PER-001..006 unseen; PER-006 source/knowledge/card synchronized"
+  },
+  "frozen_revisions": {
+    "qwen3_vl_repo": "QwenLM/Qwen3-VL@96588727e44c78b25ba03ea03b8e12f7e64fd0da",
+    "qwen_vl_utils": "0.0.14 at the same commit",
+    "transformers": "v4.57.1 / commit 8cb5963cc22174954e7dca2c0a3320b7dc2f4edc",
+    "qwen3_vl_8b_model": "Qwen/Qwen3-VL-8B-Instruct@0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+    "local_transformers": "4.57.1",
+    "local_qwen_vl_utils": "0.0.14"
+  },
+  "checks": {
+    "bounded_slice": "PASS (PER-006 source/knowledge/card remain synchronized; the later PER-007 triplet is separate and mastery remains unchanged)",
+    "primary_and_official_sources": "PASS WITH WARNING (ViT, Qwen repo/package, Transformers release and model artifact directly read; local checkpoint copies still need immutable config hashes)",
+    "qwen3_patch_grid_token_contract": "PASS (patch=16, merge=2, factor=32 and prod(image_grid_thw)/merge^2 token expansion mapped to frozen code/model artifacts)",
+    "resize_crop_letterbox_boundary": "PASS (frozen Qwen path is aspect-preserving smart resize with integer rounding; no crop/letterbox branch is claimed)",
+    "normalization_boundary": "PASS WITH WARNING (official model artifact mean/std and rescale semantics recorded; local per-run processor artifact/input range are not archived)",
+    "opd_double_resize_finding": "WARN (local code omits Qwen3 image_patch_size=16 and do_resize=False; source-derived factor28-to-factor32 probes are deterministic, but performance impact is not measured)",
+    "openpivla_lineage_boundary": "PASS WITH WARNING (formal MindCube, image-free DROID action and square-resize dry-run paths separated; no image-conditioned DROID training claim)",
+    "camera_identity_and_roundtrip": "WARN (local calls rely on image order/path; original/resized/grid/camera/frame/timestamp/inverse manifest is missing)",
+    "cross_volume_dedup": "PASS (VOL 01/03, PER-001/003 and VOL 05 boundaries explicitly separated)",
+    "project_truth_boundary": "PASS (static contract mismatch is not promoted to a fix, performance gain, personal innovation or closed-loop result)",
+    "practice_state": "PASS (global cards are 260 unseen; PER-006 occurs once; coaching_state.md absent)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, eleven H2, five H3, six tables, six local links, canonical/HTML/review SHA and anchors valid; zero formula-em/control-character issues)",
+    "browser_visual_check": "BLOCKED (file:// navigation restricted in current environment)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Hash the exact local model and processor config copied into each OPD/OpenPiVLA run bundle.",
+    "Align qwen-vl-utils image_patch_size and processor do_resize policy, then record original/resized/grid/token metadata for multiple aspect ratios.",
+    "Add a point/box coordinate sentinel round-trip and a multi-camera order/identity manifest before project claims.",
+    "Run a matched preprocessing A/B only after train/eval parity is established; do not infer performance impact from static code alone.",
+    "PER-009 source+knowledge+card are synchronized and unseen; generate only the PER-010 source freeze next."
+  ],
+  "next": "Generate only the VLA-PER-010 metric/parser source freeze; do not generate its knowledge/card or change mastery."
+}

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：Open-vocabulary Grounding Pipeline（PER-007）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per007_open_vocabulary_grounding_pipeline.md">
+<meta name="aris:source-sha256" content="f058b5e2afb127554fd8f6574c03c70446fc7909d963a3c33270e8ff534d7541">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>f058b5e2afb127554fd8f6574c03c70446fc7909d963a3c33270e8ff534d7541</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per007_open_vocabulary_grounding_pipeline.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与边界</a></li><li><a href="#1-30">1. 30秒直觉：不是“文本分类+框”</a></li><li><a href="#2-pipeline">2. Pipeline总览</a></li><li><a href="#3-prompt-token-contract">3. Prompt与token contract</a></li><li><a href="#3-1-raw-prompt-model-prompt">3.1 Raw prompt不等于model prompt</a></li><li><a href="#3-2-256-token-axis">3.2 256是token-axis上限</a></li><li><a href="#4-query-token-matching">4. Query–token matching</a></li><li><a href="#4-1-tensor-contract">4.1 Tensor contract</a></li><li><a href="#4-2-logit-sigmoid-calibration">4.2 Logit、sigmoid与calibration</a></li><li><a href="#5-region-gate-phrase-gate">5. 双阈值：region gate与phrase gate</a></li><li><a href="#5-1-query-box-gate">5.1 Query / box gate</a></li><li><a href="#5-2-phrase-token-gate">5.2 Phrase-token gate</a></li><li><a href="#5-3">5.3 两个阈值不能合并</a></li><li><a href="#6-deterministic-threshold-lab">6. Deterministic threshold lab</a></li><li><a href="#7-phrase-reconstruction">7. Phrase reconstruction</a></li><li><a href="#7-1-token-mask-phrase">7.1 从token mask到phrase</a></li><li><a href="#7-2-phrase">7.2 标点与复合phrase</a></li><li><a href="#7-3-transformers-api-drift">7.3 Transformers API drift</a></li><li><a href="#8-box-geometry-nms-boundary">8. Box geometry与NMS boundary</a></li><li><a href="#8-1-normalized-cxcywh-pixel-xyxy">8.1 Normalized `cxcywh` 到pixel `xyxy`</a></li><li><a href="#8-2-frozen-helper-nms">8.2 Frozen helper没有NMS</a></li><li><a href="#9-typed-grounded-region-manifest">9. Typed grounded-region manifest</a></li><li><a href="#10">10. 可审计伪代码</a></li><li><a href="#11-detector-grounding">11. 显式detector与生成式grounding</a></li><li><a href="#12-opd">12. 本地OPD项目边界</a></li><li><a href="#13-failure-taxonomy">13. Failure taxonomy</a></li><li><a href="#14-threshold-evaluation">14. Threshold与evaluation设计</a></li><li><a href="#15">15. 实现与面试检查表</a></li><li><a href="#16">16. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：Open-vocabulary Grounding Pipeline（PER-007）</h1>
+<div class="meta">状态：<code>drafted / VLA-PER-007 / source_synced / card_synced / WARN</code> 报告日期：2026-07-19 证据截止：2026-07-19 来源入口：<a href="../sources/vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.html">PER-007 Source Freeze</a>。 前置知识：<a href="vol_06_per006_image_preprocess_token_camera_contract.html">PER-006 Image Preprocess / Token / Camera</a>、<a href="vol_06_per001_grounding_coordinate.html">PER-001 Point / Box / Text Contract</a>。 原子题卡：<a href="../questions/vol_06_per007.html">VLA-PER-007</a>（<code>unseen</code>）。</div>
+<h2 id="question">问题（Question）</h2>
+<p>输入图像和目标文本后，open-vocabulary detector/grounder 如何从跨模态特征得到 region、score 和 phrase？<code>box_threshold</code>、<code>text_threshold</code>、NMS分别控制什么？为什么同样输出box，本地OPD生成式grounding不能被口述成Grounding DINO式显式detector？</p>
+<p>本页回答：</p>
+<ol><li>Grounding DINO的feature enhancer、language-guided query selection与cross-modality decoder如何组成pipeline？</li><li><code>Q×L</code> query–token logits的两个轴分别是什么？</li><li>query gate与phrase-token gate为什么是两个不同阈值？</li><li>phrase如何从token positions重建，prompt标点/顺序/截断为什么会改变结果？</li><li>frozen helper没有NMS意味着什么、不意味着什么？</li><li>如何设计typed manifest、伪代码、failure taxonomy与项目真实性边界？</li></ol>
+<h2 id="section-2">知识地图位置与边界</h2>
+<pre><code class="language-text">PER-006 image/pixel/token/camera contract
+  -&gt; PER-007 open-vocabulary detector/grounder pipeline
+  -&gt; PER-008 output representation choice
+  -&gt; PER-009 training matching/loss
+  -&gt; PER-010 metric/parser comparability
+  -&gt; PER-015 perception-to-action gate
+
+PER-001 point/box/text + coordinate contract
+  &lt;-&gt; PER-007 phrase/region binding + threshold/NMS contract</code></pre>
+<p>PER-007只负责inference pipeline和可观测接口：prompt如何进入、query如何与text token匹配、哪些query/phrase被筛选、box如何后处理。训练loss属于PER-009，最终metric/scorer属于PER-010，point/box/mask/text表示选择属于PER-008。</p>
+<h2 id="1-30">1. 30秒直觉：不是“文本分类+框”</h2>
+<p>显式open-vocabulary grounding的中间对象不是一个class ID，而是一组object queries与文本tokens之间的score matrix。每个query同时有一个normalized box；先用query的最大token score筛掉低置信region，再用另一个阈值决定该region绑定哪些tokens并重建phrase。最后才做坐标转换和可选NMS。</p>
+<p>因此一个完整回答至少说清四件事：</p>
+<ol><li>prompt/token contract；</li><li><code>query×token</code> score semantics；</li><li>box gate与phrase gate；</li><li>geometry/NMS/output manifest。</li></ol>
+<p>只说“模型输入文字，输出框”无法解释空phrase、复合phrase、重复框、阈值变化、token截断或坐标错位。</p>
+<h2 id="2-pipeline">2. Pipeline总览</h2>
+<p>Grounding DINO论文把language–vision fusion概念上分成三个阶段：</p>
+<table><thead><tr><th>阶段</th><th>直觉</th><th>专业表述</th><th>主要可观测量</th></tr></thead><tbody>
+<tr><td>Feature enhancer</td><td>先让图像和文本上下文互相增强</td><td>multi-scale visual features与encoded text进行cross-modal feature enhancement</td><td>visual/text feature shape、mask、revision</td></tr>
+<tr><td>Language-guided query selection</td><td>从图像候选中选与文本更相关的queries</td><td>text-conditioned encoder proposals初始化object queries</td><td>proposal/query index、initial reference</td></tr>
+<tr><td>Cross-modality decoder</td><td>query在解码时继续读取图像和文本</td><td>decoder updates query features并预测query-token logits与boxes</td><td>decoder query、<code>pred_logits</code>、<code>pred_boxes</code></td></tr>
+</tbody></table>
+<p>冻结的数据流可画为：</p>
+<pre><code class="language-text">raw image + raw prompt
+  -&gt; PER-006 image transform + normalized prompt/tokenization
+  -&gt; visual features + encoded text
+  -&gt; feature enhancer
+  -&gt; language-guided query selection
+  -&gt; cross-modality decoder
+  -&gt; pred_logits [B,Q,L_max] + pred_boxes [B,Q,4]
+  -&gt; sigmoid + query threshold
+  -&gt; token threshold + phrase decode
+  -&gt; cxcywh-to-xyxy + PER-006 inverse
+  -&gt; optional explicit NMS
+  -&gt; typed grounded-region manifest</code></pre>
+<p>这里<code>B</code>是batch size，<code>Q</code>是object query数，<code>L_max</code>是文本token轴上限。<code>L_max=256</code>不表示“最多256个类别”。</p>
+<h2 id="3-prompt-token-contract">3. Prompt与token contract</h2>
+<h3 id="3-1-raw-prompt-model-prompt">3.1 Raw prompt不等于model prompt</h3>
+<p>冻结GroundingDINO helper会：</p>
+<ol><li><code>lower()</code>；</li><li><code>strip()</code>；</li><li>若末尾没有句点则补<code>.</code>。</li></ol>
+<p>Transformers 4.57.1 processor对candidate-label list执行小写并用“<code>. </code>”连接，最后补句点。例如：</p>
+<pre><code class="language-text">[&quot;red mug&quot;, &quot;metal spoon&quot;]
+  -&gt; &quot;red mug. metal spoon.&quot;</code></pre>
+<p>这些不是无关紧要的字符串清洗。句点是phrase boundary的一部分；label顺序、同义词、复合表达、标点和tokenizer都会改变token positions，进而改变query–token score与phrase decode。</p>
+<h3 id="3-2-256-token-axis">3.2 256是token-axis上限</h3>
+<p>冻结model对text tensors截断到<code>max_text_len=256</code>。需要保存：</p>
+<table><thead><tr><th>字段</th><th>为什么需要</th></tr></thead><tbody>
+<tr><td><code>prompt_raw</code></td><td>还原用户/任务真实输入</td></tr>
+<tr><td><code>prompt_normalized</code></td><td>复算实际caption</td></tr>
+<tr><td><code>prompt_hash</code></td><td>防止实验之间prompt悄然变化</td></tr>
+<tr><td>tokenizer/config revision</td><td>解释subword与special token变化</td></tr>
+<tr><td><code>input_ids/attention_mask</code></td><td>复算phrase token positions</td></tr>
+<tr><td>truncation flag / original token length</td><td>识别后半labels静默丢失</td></tr>
+</tbody></table>
+<p>长label list的风险不是“类别超过256”，而是tokenization后超过256 positions；一个多词label会占多个subword tokens。</p>
+<h2 id="4-query-token-matching">4. Query–token matching</h2>
+<h3 id="4-1-tensor-contract">4.1 Tensor contract</h3>
+<p>冻结输出：</p>
+<table><thead><tr><th>Tensor</th><th>Shape</th><th>语义</th></tr></thead><tbody>
+<tr><td>query feature <code>Z</code></td><td><code>[B,Q,D]</code></td><td>decoder中每个region query的embedding</td></tr>
+<tr><td>text feature <code>E</code></td><td><code>[B,L,D]</code></td><td>每个有效text token的embedding</td></tr>
+<tr><td>score/logit <code>S</code></td><td><code>[B,Q,L_max]</code></td><td>每个query对每个token的匹配logit</td></tr>
+<tr><td>box <code>C</code></td><td><code>[B,Q,4]</code></td><td>normalized <code>cxcywh</code></td></tr>
+</tbody></table>
+<p><code>ContrastiveEmbed</code> 对query $z_q∈R^D$ 与token $e_t∈R^D$ 做点积：</p>
+<div class="formula">\[
+s_{q,t}=z_q^\top e_t.
+\]</div>
+<p>变量解释：$q$是object query，$t$是文本token，$D$是embedding dimension。直觉是每个region query对每个token分别打分；代码映射是<code>x @ y.transpose(-1,-2)</code>。</p>
+<p>padding token被mask为<code>-inf</code>，随后score tensor padding到<code>L_max=256</code>。这防止padding位置被phrase gate选中。</p>
+<h3 id="4-2-logit-sigmoid-calibration">4.2 Logit、sigmoid与calibration</h3>
+<p>官方inference使用：</p>
+<div class="formula">\[
+p_{q,t}=\sigma(s_{q,t})=\frac{1}{1+\exp(-s_{q,t})}.
+\]</div>
+<p>$p_{q,t}$是同一frozen模型/prompt下的token-wise sigmoid值。它没有因“看起来在0到1之间”就自动成为跨prompt、跨checkpoint或跨类别可比较的calibrated probability。</p>
+<p>实现与表述边界：</p>
+<ul><li>可以说：frozen helper用sigmoid后的最大token score筛query；</li><li>不能直接说：0.7在所有prompts上都代表70%正确率；</li><li>若要比较threshold，必须固定model、processor、prompt normalization、image transform和evaluation set。</li></ul>
+<h2 id="5-region-gate-phrase-gate">5. 双阈值：region gate与phrase gate</h2>
+<h3 id="5-1-query-box-gate">5.1 Query / box gate</h3>
+<p>每个query的region score定义为：</p>
+<div class="formula">\[
+r_q=\max_t p_{q,t}.
+\]</div>
+<p>保留规则：</p>
+<div class="formula">\[
+\operatorname{keep}(q)=\mathbb{1}[r_q&gt;\tau_{\mathrm{box}}].
+\]</div>
+<p>$τ_box$控制哪些queries进入结果集。代码使用严格大于号；score等于threshold时会被丢弃。</p>
+<h3 id="5-2-phrase-token-gate">5.2 Phrase-token gate</h3>
+<p>对已保留query：</p>
+<div class="formula">\[
+M_{q,t}=\mathbb{1}[p_{q,t}&gt;\tau_{\mathrm{text}}].
+\]</div>
+<p>$M_{q,t}$决定哪些token IDs送入phrase decoder。$τ_text$主要改变phrase组成，不一定改变region数量。</p>
+<h3 id="5-3">5.3 两个阈值不能合并</h3>
+<table><thead><tr><th>调整</th><th>直接影响</th><th>不一定直接影响</th></tr></thead><tbody>
+<tr><td>提高<code>τ_box</code></td><td>保留query数减少，可能提高precision/降低recall</td><td>已保留query的phrase token集合</td></tr>
+<tr><td>降低<code>τ_box</code></td><td>更多regions进入，可能带来冗余/false positives</td><td>phrase是否完整</td></tr>
+<tr><td>提高<code>τ_text</code></td><td>phrase更短、可能变空或碎片化</td><td>region是否保留</td></tr>
+<tr><td>降低<code>τ_text</code></td><td>phrase可能包含更多修饰词/相邻tokens</td><td>region数量</td></tr>
+</tbody></table>
+<p>一个重要edge case：若<code>r_q&gt;τ_box</code>，但所有token都不满足<code>p_{q,t}&gt;τ_text</code>，box仍被保留而phrase为空。manifest必须支持<code>invalid_reason="empty_phrase"</code>，不能凭最近label强行补值。</p>
+<h2 id="6-deterministic-threshold-lab">6. Deterministic threshold lab</h2>
+<p>人工probability matrix：</p>
+<table><thead><tr><th>Query</th><th>token probabilities</th><th><code>τ_box=0.35</code></th><th><code>τ_text=0.25</code></th></tr></thead><tbody>
+<tr><td><code>q0</code></td><td><code>[0.90,0.20,0.81,0.01]</code></td><td>keep</td><td><code>t0,t2</code></td></tr>
+<tr><td><code>q1</code></td><td><code>[0.34,0.33,0.01,0.01]</code></td><td>drop</td><td>不进入phrase gate</td></tr>
+<tr><td><code>q2</code></td><td><code>[0.60,0.24,0.26,0.01]</code></td><td>keep</td><td><code>t0,t2</code></td></tr>
+</tbody></table>
+<p>改变一个变量：</p>
+<ol><li><code>τ_text:0.25→0.30</code>：<code>q0/q2</code>仍保留，<code>q2</code> phrase由<code>t0,t2</code>变成<code>t0</code>；</li><li><code>τ_box:0.35→0.65</code>：只保留<code>q0</code>；</li><li>query max恰为0.35：严格<code>&gt;</code>判断为drop。</li></ol>
+<p>这只验证逻辑，不代表真实模型分布。面试中不要把synthetic probe说成calibration experiment。</p>
+<h2 id="7-phrase-reconstruction">7. Phrase reconstruction</h2>
+<h3 id="7-1-token-mask-phrase">7.1 从token mask到phrase</h3>
+<p>冻结路径用<code>input_ids</code>和boolean token mask恢复phrase。需要区分：</p>
+<ul><li>token index；</li><li>tokenizer subword；</li><li>decoded span；</li><li>normalized label；</li><li>canonical downstream category。</li></ul>
+<p>同一个label可能被拆成多个subwords；一个query也可能对多个相邻/不相邻tokens高分。直接对最终字符串做exact match会丢失这些诊断信息。</p>
+<h3 id="7-2-phrase">7.2 标点与复合phrase</h3>
+<p>句点既是prompt规范化结果，也是candidate label boundary。冻结official helper的<code>remove_combined</code>分支会借助<code>[CLS]/[SEP]/.</code> token positions把phrase限制到对应区间；默认分支则从所有positive tokens恢复phrase。</p>
+<p>因此manifest应同时保存<code>phrase_token_indices</code>和<code>phrase_text</code>。只保存decoded string无法判断错误来自matching还是decode。</p>
+<h3 id="7-3-transformers-api-drift">7.3 Transformers API drift</h3>
+<p>Transformers 4.57.1的<code>GroundingDinoProcessor.post_process_grounded_object_detection</code>：</p>
+<ol><li>从<code>outputs.input_ids</code>或显式<code>input_ids</code>恢复phrase；</li><li><code>text_labels</code> argument在frozen code中存在但不参与绑定；</li><li>result同时返回<code>text_labels</code>和<code>labels</code>，当前两者都是decoded strings；</li><li>code包含deprecation/migration warning，未来<code>labels</code>可能变成integer IDs。</li></ol>
+<p>工程上必须为output key和value type做golden test，不能跨版本只靠字段名。</p>
+<h2 id="8-box-geometry-nms-boundary">8. Box geometry与NMS boundary</h2>
+<h3 id="8-1-normalized-cxcywh-pixel-xyxy">8.1 Normalized <code>cxcywh</code> 到pixel <code>xyxy</code></h3>
+<p>对target image width $W$、height $H$：</p>
+<div class="formula">\[
+x_1=W(c_x-w/2),\quad y_1=H(c_y-h/2),
+\]</div>
+<div class="formula">\[
+x_2=W(c_x+w/2),\quad y_2=H(c_y+h/2).
+\]</div>
+<p>变量解释：$(c_x,c_y,w,h)$是normalized center/size；$(x_1,y_1,x_2,y_2)$是pixel corners。代码映射是先乘<code>[W,H,W,H]</code>，再<code>cxcywh→xyxy</code>。<code>target_sizes</code>在Transformers中按<code>(height,width)</code>传入。</p>
+<p>该公式只恢复到指定target image space。若模型看到的是processed image，还要调用PER-006记录的crop/pad/scale inverse回到raw image。</p>
+<h3 id="8-2-frozen-helper-nms">8.2 Frozen helper没有NMS</h3>
+<p>冻结<code>inference.py</code>做threshold、phrase extraction和box conversion，没有NMS call。这意味着：</p>
+<ul><li>不能把<code>box_threshold</code>叫作NMS threshold；</li><li>不能假设输出已经做class-wise或class-agnostic suppression；</li><li>也不能反推模型一定产生重复框。</li></ul>
+<p>如果部署增加NMS，它是一个新的pipeline stage，必须保存：</p>
+<table><thead><tr><th>字段</th><th>原因</th></tr></thead><tbody>
+<tr><td>pre-NMS indices/boxes/scores/phrases</td><td>复算被删候选</td></tr>
+<tr><td>IoU threshold</td><td>控制suppression强度</td></tr>
+<tr><td>phrase grouping policy</td><td>“red mug”和“mug”是否互相suppression</td></tr>
+<tr><td>class-agnostic flag</td><td>决定跨phrase竞争</td></tr>
+<tr><td>sort/tie-break/max detections</td><td>保证确定性</td></tr>
+<tr><td>post-NMS selected indices</td><td>绑定后续region/action</td></tr>
+<tr><td>coordinate space</td><td>保证IoU在同一空间计算</td></tr>
+</tbody></table>
+<p>NMS可以缓解重复region，但可能错误删除相邻同类物体；是否需要、如何分组必须由任务和matched evaluation决定。</p>
+<h2 id="9-typed-grounded-region-manifest">9. Typed grounded-region manifest</h2>
+<p>推荐把每个region记录为：</p>
+<table><thead><tr><th>层</th><th>必需字段</th></tr></thead><tbody>
+<tr><td>sample/image</td><td><code>sample_id,image_id,camera_id,frame_id,timestamp</code></td></tr>
+<tr><td>prompt</td><td><code>prompt_raw,prompt_normalized,prompt_hash,input_ids</code></td></tr>
+<tr><td>revision</td><td><code>model,checkpoint,processor,tokenizer,code</code> hashes</td></tr>
+<tr><td>raw output</td><td><code>query_index,query_token_logits,pred_box_cxcywh_norm</code></td></tr>
+<tr><td>threshold</td><td><code>score,score_semantics,box_threshold,text_threshold</code></td></tr>
+<tr><td>phrase</td><td><code>phrase_token_indices,phrase_text,canonical_label</code></td></tr>
+<tr><td>geometry</td><td>processed/raw <code>xyxy</code>、transform revision</td></tr>
+<tr><td>NMS</td><td>policy revision、pre/post indices</td></tr>
+<tr><td>validity</td><td><code>valid,invalid_reason,ambiguous</code></td></tr>
+</tbody></table>
+<p><code>score_semantics</code>必须显式写<code>max_token_sigmoid</code>；否则它可能被误解成class softmax、cosine similarity、sequence likelihood或calibrated confidence。</p>
+<h2 id="10">10. 可审计伪代码</h2>
+<pre><code class="language-python">def ground_one(sample, candidate_labels, cfg):
+    # 1) 继承PER-006图像/camera contract，不能丢original-&gt;processed变换
+    image, image_meta = preprocess_image(sample.image, cfg.image_processor)
+
+    # 2) 保存raw与normalized prompt；句点、顺序和tokenizer都属于合同
+    prompt_raw = candidate_labels
+    prompt = normalize_candidate_labels(candidate_labels)
+    inputs = processor(image=image, text=prompt, return_tensors=True)
+
+    # 3) 保存raw QxL logits与normalized cxcywh，便于重放threshold
+    outputs = model(**inputs)
+    probs = sigmoid(outputs.pred_logits)
+    boxes = outputs.pred_boxes
+
+    pre_nms = []
+    for q in range(boxes.shape[1]):
+        score = probs[0, q].max()
+
+        # 4) query/box gate使用严格大于号
+        if not (score &gt; cfg.box_threshold):
+            continue
+
+        # 5) phrase gate独立于query gate；允许empty phrase并标无效原因
+        token_idx = where(probs[0, q] &gt; cfg.text_threshold)
+        phrase = decode_phrase(inputs.input_ids[0], token_idx)
+        invalid_reason = &quot;empty_phrase&quot; if len(token_idx) == 0 else None
+
+        # 6) box先到processed xyxy，再按PER-006 manifest逆变换到raw image
+        xyxy_processed = cxcywh_norm_to_xyxy(boxes[0, q], image_meta.processed_size)
+        xyxy_raw = inverse_transform(xyxy_processed, image_meta.transform)
+
+        pre_nms.append(make_region_record(
+            query_index=q,
+            score=score,
+            phrase_token_indices=token_idx,
+            phrase_text=phrase,
+            box_processed=xyxy_processed,
+            box_raw=xyxy_raw,
+            invalid_reason=invalid_reason,
+        ))
+
+    # 7) frozen official helper没有NMS；只有显式配置时才运行并记录selected indices
+    regions = apply_nms_with_trace(pre_nms, cfg.nms) if cfg.nms.enabled else pre_nms
+
+    # 8) 输出raw revision/threshold/geometry/NMS manifest，不只返回boxes
+    return write_grounding_manifest(sample, inputs, outputs, regions, cfg, image_meta)</code></pre>
+<p>伪代码的关键不是复刻某个库API，而是保留可重放的raw outputs、两个threshold、phrase tokens、坐标inverse和NMS trace。</p>
+<h2 id="11-detector-grounding">11. 显式detector与生成式grounding</h2>
+<table><thead><tr><th>维度</th><th>Grounding DINO式显式detector</th><th>Qwen/OPD式生成式grounding</th></tr></thead><tbody>
+<tr><td>核心输出</td><td><code>Q×L</code> logits + <code>Q×4</code> boxes</td><td>autoregressive text/token sequence</td></tr>
+<tr><td>region候选</td><td>object queries显式存在</td><td>坐标作为生成内容出现</td></tr>
+<tr><td>phrase绑定</td><td>token score mask + decode</td><td>prompt/answer grammar中的tag/text</td></tr>
+<tr><td>置信度</td><td>max-token sigmoid等显式score</td><td>通常需token likelihood或另建scorer，不能直接等价</td></tr>
+<tr><td>threshold</td><td>box/text两个后处理阈值</td><td>generation config、parser、format/geometry gate</td></tr>
+<tr><td>NMS</td><td>frozen helper无；可由下游显式添加</td><td>通常无region set NMS，除非另建解析后候选集</td></tr>
+<tr><td>主要debug artifact</td><td>logits、query/token heatmap、pre/post threshold boxes</td><td>generated text、token logprobs、parser trace、tag/coordinate validity</td></tr>
+</tbody></table>
+<p>“open-vocabulary”描述任务能力，不要求所有系统都采用同一种网络。生成式VLM可以完成referring/coordinate输出，但不能借用显式detector的score、threshold和NMS语义。</p>
+<h2 id="12-opd">12. 本地OPD项目边界</h2>
+<p>冻结本地证据链：</p>
+<pre><code class="language-text">annotation/data pool
+  -&gt; clip/filter box + normalize to 0..1000
+  -&gt; construct tagged &lt;box&gt;/&lt;point&gt;/text SFT rows
+  -&gt; expert mix + route metadata
+  -&gt; Qwen3-VL causal SFT
+  -&gt; model.generate
+  -&gt; tag/coordinate parser
+  -&gt; IoU / distance / text scorer</code></pre>
+<p>当前四个直接文件和repo静态搜索支持：</p>
+<ul><li>有生成式point/box/text数据、训练和评估路径；</li><li>有prompt、tag、<code>0..1000</code>坐标、parser/scorer与route metadata；</li><li>没有在可搜索源码中发现显式GroundingDINO/NMS调用。</li></ul>
+<p>当前不能声称：</p>
+<ul><li>OPD部署了GroundingDINO、region proposal或query–token detector；</li><li>route metadata就是learned detector/router效果；</li><li>生成式IoU/point/static text指标等于机器人执行成功；</li><li>absence search证明远端/历史/未归档环境绝对没有detector；</li><li>Git metadata或本次审计自动证明候选人个人贡献。</li></ul>
+<p>面试安全表达：</p>
+<div class="meta">公源上我能解释并审计Grounding DINO式显式query–token pipeline；本地OPD证据对应生成式tagged-coordinate pipeline。我会把两者按output tensor、threshold、parser和debug artifact分开，不把公开detector机制归到项目，也不从静态grounding跳到机器人成功。</div>
+<h2 id="13-failure-taxonomy">13. Failure taxonomy</h2>
+<table><thead><tr><th>层</th><th>症状</th><th>常见根因</th><th>首个检查</th></tr></thead><tbody>
+<tr><td>prompt</td><td>同义词/顺序变化导致输出漂移</td><td>normalization、label boundary、tokenization</td><td>raw/normalized prompt + input IDs</td></tr>
+<tr><td>truncation</td><td>后半labels完全不响应</td><td>超过<code>max_text_len</code></td><td>original/effective token length</td></tr>
+<tr><td>matching</td><td>region绑定错误token</td><td>feature/query/text alignment</td><td>query-token heatmap + token mask</td></tr>
+<tr><td>query gate</td><td>漏检或候选过多</td><td><code>τ_box</code>不匹配分布</td><td>pre-threshold max-score histogram</td></tr>
+<tr><td>phrase gate</td><td>空phrase/碎片/复合词</td><td><code>τ_text</code>或token boundary</td><td>positive token indices + decode</td></tr>
+<tr><td>geometry</td><td>框整体偏移/拉伸</td><td>target size、cxcywh/xyxy、inverse</td><td>processed/raw round-trip</td></tr>
+<tr><td>duplicate</td><td>相邻/重复regions不稳定</td><td>无NMS或NMS grouping错误</td><td>pre/post NMS trace</td></tr>
+<tr><td>API</td><td>label key/type突变</td><td>Transformers版本迁移</td><td>golden output schema test</td></tr>
+<tr><td>project</td><td>把生成式路径说成detector</td><td>pipeline类型与证据混淆</td><td>model output contract + local imports</td></tr>
+</tbody></table>
+<p>诊断顺序遵循“先合同、后模型”：prompt/token → raw logits/boxes → two-threshold → phrase decode → geometry → NMS → metric/action。</p>
+<h2 id="14-threshold-evaluation">14. Threshold与evaluation设计</h2>
+<p>PER-007只规定如何保留raw evidence，最终metric协议由PER-010展开。最小matched sweep应：</p>
+<ol><li>固定model/checkpoint、processor、prompt、image transform、split与seed；</li><li>缓存raw logits/boxes/input IDs，不为每个threshold重跑模型；</li><li>对<code>τ_box</code>与<code>τ_text</code>做二维grid，但分开观察region count和phrase integrity；</li><li>NMS off/on作为独立factor，固定IoU/grouping policy；</li><li>保存per-sample prediction，而不是只报aggregate；</li><li>明确空phrase、no-object、ambiguous和invalid boxes的分母处理；</li><li>不从offline detector结果推断controller/robot success。</li></ol>
+<p>若同时改变prompt wording、threshold与NMS，不能把结果变化归因给其中一个因素。</p>
+<h2 id="15">15. 实现与面试检查表</h2>
+<p>回答PER-007至少覆盖：</p>
+<ol><li>画image/text→features→queries→<code>Q×L</code> logits+boxes→双阈值→phrase/geometry/NMS；</li><li>说明<code>L_max=256</code>是token positions，不是classes；</li><li>写出query–token dot product和sigmoid；</li><li>分开<code>τ_box</code>与<code>τ_text</code>；</li><li>说明frozen helper无NMS，但不保证无重复框；</li><li>保存raw logits、input IDs、query index、phrase tokens、processed/raw boxes与revision；</li><li>解释Transformers<code>labels/text_labels</code>版本风险；</li><li>对比显式detector与OPD生成式grounding；</li><li>明确offline grounding不等于action/robot success。</li></ol>
+<p>常见危险答案：</p>
+<ul><li>“每个query只对应一个class”；</li><li>“256就是最多256类”；</li><li>“box threshold就是NMS threshold”；</li><li>“text threshold只影响置信度，不影响phrase”；</li><li>“HF的text_labels参数直接决定输出label”；</li><li>“Grounding DINO官方默认已经做NMS”；</li><li>“OPD有box输出，所以项目用了Grounding DINO”。</li></ul>
+<h2 id="16">16. 结论与下一步</h2>
+<p>PER-007的核心是把open-vocabulary grounding从一句“文本找框”展开为可复算pipeline：prompt/token、query–token logits、query gate、phrase gate、geometry、optional NMS和typed manifest必须逐层显式。当前source/knowledge/card已闭合且题卡保持<code>unseen</code>；本地detector checkpoint/raw logits/threshold calibration/NMS trace和closed-loop evidence仍缺，因此保持<code>WARN</code>。</p>
+<p><code>VLA-PER-008..009</code> source/knowledge/card已同步且保持<code>unseen</code>。下一bounded slice只做PER-010 metric/parser source freeze，不生成knowledge/card，不创建<code>coaching_state.md</code>。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.html">PER-007 Open-vocabulary Grounding Pipeline Source Freeze</a>。</li><li><a href="https://arxiv.org/abs/2303.05499v5">Grounding DINO v5</a>。</li><li><a href="https://github.com/IDEA-Research/GroundingDINO/tree/856dde20aee659246248e20734ef9ba5214f5e44">IDEA-Research/GroundingDINO@856dde20</a>。</li><li><a href="https://github.com/huggingface/transformers/tree/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/models/grounding_dino">Transformers 4.57.1 Grounding DINO</a>。</li><li><a href="vol_06_per006_image_preprocess_token_camera_contract.html">PER-006 Image Preprocess / Token / Camera</a>。</li><li><a href="vol_06_per001_grounding_coordinate.html">PER-001 Point / Box / Text Grounding</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>。</li></ol>
+</article></body></html>

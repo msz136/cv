@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 Audit D：Sim2Real 独立事实复核</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_04_sim2real_independent_fact_review.md">
+<meta name="aris:source-sha256" content="278f1b69bd8f414ddb597ae848ae4d97517c1c2f07355601959d4e7cc8d45136">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>278f1b69bd8f414ddb597ae848ae4d97517c1c2f07355601959d4e7cc8d45136</code>；生成自：<code>interview_materials\vla\sources\vol_04_sim2real_independent_fact_review.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 独立来源冻结</a></li><li><a href="#2-1-pdf">2.1 十份固定 PDF</a></li><li><a href="#2-2-mujoco-opencv-robosuite">2.2 MuJoCo、OpenCV 与 robosuite</a></li><li><a href="#3-paper-to-claim">3. Paper-to-claim 独立复核</a></li><li><a href="#4-reality-gap">4. 六层 reality-gap 合同</a></li><li><a href="#5-dr-sysid-simopt">5. DR、SysID 与 SimOpt</a></li><li><a href="#5-1">5.1 “越宽越好”被一手来源否定</a></li><li><a href="#5-2-sysid-dr-residual-uncertainty">5.2 SysID 给中心，DR 覆盖 residual uncertainty</a></li><li><a href="#6-camera-timing-contact-controller">6. Camera、timing、contact 与 controller</a></li><li><a href="#6-1-calibration-error-deployment-correctness">6.1 Calibration error 不等于 deployment correctness</a></li><li><a href="#6-2-latency-critical-path">6.2 Latency 必须拆 critical path</a></li><li><a href="#6-3-contact-friction-scalar">6.3 Contact 不是一个 friction scalar</a></li><li><a href="#7-adaptation-residual-safety">7. Adaptation、residual 与 safety 边界</a></li><li><a href="#8-probes">8. 十二个确定性 probes</a></li><li><a href="#9-truth-boundary">9. 五项目本地证据与 truth boundary</a></li><li><a href="#10-source-knowledge-card-reconciliation">10. Source → Knowledge → Card reconciliation</a></li><li><a href="#11">11. 审查状态与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 04 Audit D：Sim2Real 独立事实复核</h1>
+<div class="meta">状态：<code>independent_fact_reviewed / Audit D / public_facts_reconciled / PASS WITH WARNING</code> 复核日期：2026-07-20 证据截止：2026-07-20 范围：重新获取 10 份固定 arXiv PDF，固定 MuJoCo / OpenCV / robosuite 的官方源码与文档快照，复核 visual/sensor、dynamics、control/timing、contact/compliance、task/protocol、safety/recovery 六层 reality gap，以及 DR、SysID、SimOpt、UP-OSI、RMA、residual、chance constraint、recovery 与五项目真实性边界。 Bounded slice：本页只完成 Audit D 独立复核与必要状态同步；不新增知识节点或题卡，不启动 PER-019，不修改 269 张题卡的 <code>unseen</code> 状态，不创建 <code>coaching_state.md</code>。</div>
+<h2 id="1">1. 结论先行</h2>
+<p>原 <a href="vol_04_sim2real_claim_to_mechanism.html">Sim2Real Claim-to-Mechanism Audit D</a> 的主干事实成立：Sim2Real 不能缩成“加 domain randomization”，至少要把视觉/传感器、动力学、控制/时序、接触/柔顺、任务/协议与安全/恢复分成六个可测合同。Domain randomization（DR）不是越宽越好；System identification（SysID）与 DR 不是二选一；SimOpt 更新的是能解释 real/sim behavior discrepancy 的 simulator-parameter distribution；UP-OSI 显式估计 dynamics parameter，RMA 估计 task-relevant latent，二者都不等于 rollout 内更新 policy weights；residual policy、chance constraint 与 learned recovery 也都带有前提，不能包装成通用稳定性或零风险保证。[1]–[13]</p>
+<p>本轮 verdict 为 <strong>PASS WITH WARNING</strong>，不是无条件 PASS，原因有五类：</p>
+<ol><li>六层 taxonomy、range provenance、latency decomposition、matched test、queue flush 与 layered safety state machine 中有工程综合；它们与一手来源一致，但不是某篇论文原封不动的定理或标准。</li><li>MuJoCo <code>stable</code> HTML 只固定了响应内容；页面元数据没有给出可验证的 build commit。本轮另固定 <code>3.10.0@28009f9</code> 的 RST 源码，但不声称 <code>stable</code> HTML 与该 tag 是同一 build。</li><li>OpenCV 的 reprojection error 只衡量标定点拟合；它不自动证明部署时 hand-eye extrinsics、mounting、timestamp、resize/crop 与 action frame 正确。[12]</li><li>residual policy 不自动继承 base controller 的稳定性；未校准 ensemble/disagreement 只能叫 risk heuristic；Recovery RL 是 learned shield，不是 zero-risk theorem。[7]–[9]</li><li>五项目目前只有 simulator、offline data、接口、诊断与高层取消/补偿证据；没有形成“真机 calibration + latency/contact measurement + controller/limits + real rollout + incident/E-stop + ownership”的协议完整 bundle。</li></ol>
+<p>因此，安全口述仍是“我能按六层合同设计 Sim2Real 诊断与实验矩阵，并在本地 simulator/接口材料上做证据审计”，不能说“已完成真机 Sim2Real 部署”“已证明安全”或把公开方法写成个人原创。</p>
+<h2 id="2">2. 独立来源冻结</h2>
+<h3 id="2-1-pdf">2.1 十份固定 PDF</h3>
+<p>本轮从固定 arXiv revision 重新下载 10 份 PDF，使用本地 bytes 计算 SHA-256，并逐页抽取文本检查纯空白页；合计 <strong>124 页、0 个纯空白页</strong>。SimOpt 第 3 页、Minitaur 第 5 页与 RMA 第 2 页另经 PNG 视觉抽查，双栏顺序、公式、图注和正文均可读。</p>
+<table><thead><tr><th>Paper</th><th>固定 revision</th><th>bytes</th><th>pages / blank</th><th>SHA-256</th></tr></thead><tbody>
+<tr><td>UP-OSI</td><td><code>1702.02453v3</code></td><td>1,012,357</td><td>10 / 0</td><td><code>F4ABCAA147175A471B6FA217758AECD80D42DF11F6F19B70A7DFBA66021D24CA</code></td></tr>
+<tr><td>Domain Randomization</td><td><code>1703.06907v1</code></td><td>4,066,798</td><td>8 / 0</td><td><code>3FC98C5F4CEA050686D45858E647E1B704492121FDAE80F8FCD5D560C107F11F</code></td></tr>
+<tr><td>Cautious MPC</td><td><code>1705.10702v4</code></td><td>1,817,694</td><td>12 / 0</td><td><code>2A38976CA6B6ADFB6DD9CF4F85AB9039E46666C2DD263F887E7F54DDCBD0BC36</code></td></tr>
+<tr><td>Dynamics Randomization</td><td><code>1710.06537v3</code></td><td>2,845,918</td><td>8 / 0</td><td><code>A15CB24630A11218865027024AE2353F80F46D40371B42DCCB2B24E9D00D62D8</code></td></tr>
+<tr><td>Minitaur Sim2Real</td><td><code>1804.10332v2</code></td><td>1,062,958</td><td>11 / 0</td><td><code>455EA9154D6C5E905601F91E71EC9F8FD0A348E7BE639E1019FFE1D941B7FF76</code></td></tr>
+<tr><td>Dexterous In-Hand Manipulation</td><td><code>1808.00177v5</code></td><td>4,590,851</td><td>27 / 0</td><td><code>DA6EC44DD0941D674EC58334FF630F83D7BD19E6062AB2837CCFA0B3B94F6F73</code></td></tr>
+<tr><td>SimOpt</td><td><code>1810.05687v4</code></td><td>5,492,359</td><td>10 / 0</td><td><code>5DDE7AD391342C29CDCB80C3728389A59712E6798A21FC5A8F4B5D82E4BAF245</code></td></tr>
+<tr><td>Residual RL</td><td><code>1812.03201v2</code></td><td>2,959,124</td><td>8 / 0</td><td><code>C6279120F9E0A799A9D7A943A5624A5738250E588F99C5FC8A9FAC28E2039641</code></td></tr>
+<tr><td>Recovery RL</td><td><code>2010.15920v2</code></td><td>7,929,814</td><td>15 / 0</td><td><code>3404EF792695647E3900D0E36E608FCF23D261E75F45D16C277206064F2D9AF5</code></td></tr>
+<tr><td>RMA</td><td><code>2107.04034v1</code></td><td>16,534,863</td><td>15 / 0</td><td><code>D8660DA881851756287EFAB24D85F5C629BA97878F70297EB429A8E8A9A57846</code></td></tr>
+</tbody></table>
+<p>这里只引用事实与方法边界，不复用论文图表或代码；PDF identity 不证明任何本地项目执行过对应方法。</p>
+<h3 id="2-2-mujoco-opencv-robosuite">2.2 MuJoCo、OpenCV 与 robosuite</h3>
+<table><thead><tr><th>来源</th><th>固定 identity</th><th>本轮重新获取</th><th>结论与边界</th></tr></thead><tbody>
+<tr><td>MuJoCo source</td><td>tag <code>3.10.0</code> → commit <code>28009f9105cd92784b7b0b30c0605a5e29107a77</code></td><td><code>modeling.rst</code> SHA <code>F13C1C15...41893</code> / blob <code>5492C407...DE4</code>；<code>XMLreference.rst</code> SHA <code>A6EA3CE3...FD6</code> / blob <code>72842F40...B86</code>；<code>computation/index.rst</code> SHA <code>19D8F088...DE4D</code> / blob <code>A0D890F1...3F6</code></td><td>支持 contact、friction、<code>solref/solimp</code>、solver、timestep 与 sensor-delay 语义；不证明本地 simulator build</td></tr>
+<tr><td>MuJoCo stable HTML</td><td>accessed 2026-07-20</td><td>Modeling <code>50523078...15DA</code>；Computation <code>94228BFD...3AC</code>；XML Reference <code>C816A678...229B</code></td><td>响应 SHA 与既有 source freeze 一致；页面只标记 <code>stable</code>，不与 <code>3.10.0</code> build 等同</td></tr>
+<tr><td>OpenCV calibration source</td><td>commit <code>f7dd7df170add1655de75b5e95f20f41d2a88293</code></td><td><code>py_calibration.markdown</code> SHA <code>72F48A26...03C4</code> / blob <code>423F46A2...D6DB</code></td><td>支持 pinhole intrinsic/extrinsic、radial/tangential distortion 与 reprojection error；不证明部署标定正确</td></tr>
+<tr><td>robosuite</td><td>tag <code>v1.5.1</code> → commit <code>51cc01785bab80ffeed20da15e67d7dd4140e76a</code></td><td>controller RST SHA <code>843563FE...2314</code>；gripper base SHA <code>B4582D44...6CB</code>；Panda gripper SHA <code>DF0449A9...AAB8D</code></td><td>支持 action split、policy/simulation frequency 与 Panda <code>-1=open, 1=closed</code>；不能外推到真实 Panda 或任意 LIBERO/RoboCasa fork</td></tr>
+<tr><td>licenses</td><td>fixed repository files</td><td>MuJoCo/OpenCV LICENSE SHA <code>CFC7749B...23D30</code>；robosuite LICENSE SHA <code>177978CB...D9CBA</code></td><td>MuJoCo/OpenCV 为 Apache-2.0，robosuite 为 MIT；论文、代码、模型与数据许可不能互相替代</td></tr>
+</tbody></table>
+<p>GitHub 匿名 REST API 本轮命中共享出口限流，因此 tag 解析使用 <code>git ls-remote</code>，文件通过 immutable commit URL 获取并计算 Git blob；没有把 mutable branch HEAD 当作固定版本。</p>
+<h2 id="3-paper-to-claim">3. Paper-to-claim 独立复核</h2>
+<table><thead><tr><th>Claim</th><th>直接定位</th><th>独立结论</th><th>不能外推</th></tr></thead><tbody>
+<tr><td>visual DR factors 与 ablation</td><td>Tobin pp.1, 3, 5</td><td>camera、lighting、pose、texture、distractor 与 ablation 可定位</td><td>object localization / grasp demo 不证明任意 VLA transfer</td></tr>
+<tr><td>95 个 dynamics parameters、timestep/latency、recurrent implicit SysID</td><td>Peng p.4</td><td>95 是特定 pushing setup；episode/step cadence 与 memory 边界成立</td><td>不能抄作默认参数表或保证 target support</td></tr>
+<tr><td>real/sim trajectory discrepancy 与 KL-bounded distribution update</td><td>SimOpt p.3</td><td>SimOpt 更新 distribution，并明确说过宽 distribution 可能含 infeasible scenarios 或过度保守</td><td>不等于恢复唯一真实物理参数；需要安全 real rollout authority</td></tr>
+<tr><td>actuator、latency、measurement + margin、robustness–optimality</td><td>Tan pp.1, 5, 7</td><td>延迟会缩小真实闭环稳定区；实测中心与 DR coverage 互补</td><td>Minitaur 数值与范围不能直接迁移到 manipulation</td></tr>
+<tr><td>history → dynamics parameter → universal policy</td><td>UP-OSI pp.1–2</td><td>显式 OSI 估计有语义的 parameter context</td><td>论文实验主要在 simulation；不是 policy-weight update</td></tr>
+<tr><td>privileged extrinsics latent、history adaptation、异步部署</td><td>RMA pp.1–3</td><td>训练期 privileged encoder 与部署期 10 Hz adaptation / 100 Hz base policy 可定位</td><td>legged latent 不自动适配 image VLA；stale latent 仍需协议</td></tr>
+<tr><td>conventional/base controller + learned residual</td><td>Residual RL pp.1–3</td><td>真实 contact-rich assembly 支持 residual decomposition</td><td>论文没有给任意 residual 的通用稳定性保证</td></tr>
+<tr><td>task policy / recovery policy 与 future-risk threshold</td><td>Recovery RL pp.1–3</td><td>learned risk critic 与 recovery switch 成立</td><td>empirical safety improvement 不等于 zero-violation theorem</td></tr>
+<tr><td>nominal dynamics + GP residual + chance constraint</td><td>Cautious MPC pp.1–3</td><td>uncertainty propagation 与概率约束成立</td><td>依赖 GP/model/distribution assumptions；不是任意 ensemble variance 即可</td></tr>
+<tr><td>calibration + extensive randomization + memory</td><td>OpenAI pp.3–6</td><td>tendon/contact/sensor mismatch 与 recurrent adaptation 边界成立</td><td>Shadow Hand recipe 不直接推广到 Panda/gripper</td></tr>
+</tbody></table>
+<p>两处原审计措辞需要继续保留限定语：SimOpt 是 <strong>behavior/distribution adaptation</strong>，不是 exact parameter recovery；Residual RL 的真实硬件结果是方法可行性证据，不是 stability inheritance 证明。</p>
+<h2 id="4-reality-gap">4. 六层 reality-gap 合同</h2>
+<p>用一个最小闭环把 sensing、dynamics、controller 与 delay 分开：</p>
+<div class="formula">\[
+o_t^{\mathrm{real}}
+=h_{\psi_r}\!\left(x_{t-\tau_s}^{\mathrm{real}}\right)+\epsilon_t,
+\qquad
+x_{t+1}^{\mathrm{real}}
+=f_{\xi_r}\!\left(
+x_t^{\mathrm{real}},
+\mathcal C_{\kappa_r}\!\left(a_{t-\tau_a}\right)
+\right).
+\]</div>
+<p>变量解释：\(h_{\psi_r}\) 是真实 sensor/image-formation chain，\(f_{\xi_r}\) 是 dynamics/contact，\(\mathcal C_{\kappa_r}\) 是 low-level controller/actuator；\(\tau_s,\tau_a\) 分别是 sensing 与 action-path delay。实现映射：Audit D 的 trace 必须把 camera timestamp、policy、network、queue、controller apply 与下一帧关联。该式是工程抽象，不是某篇论文的原式。</p>
+<table><thead><tr><th>层</th><th>主要 mismatch</th><th>first evidence</th><th>不能拿什么替代</th></tr></thead><tbody>
+<tr><td>Visual / sensor</td><td>intrinsics/extrinsics、distortion、exposure、blur、occlusion、timestamp、preprocess</td><td>calibration bundle、replay、factor ablation</td><td>只看 color jitter 或 sim image quality</td></tr>
+<tr><td>Dynamics</td><td>mass、inertia、damping、motor strength、payload、drift</td><td>free-space tracking、SysID residual、parameter manifest</td><td>接触失败时盲调所有 mass/friction</td></tr>
+<tr><td>Control / timing</td><td>controller type/frame/unit/gain、frequency、latency、ZOH、chunk queue</td><td>capture-to-apply trace、target/actual action、frequency sweep</td><td>只报一次 inference latency</td></tr>
+<tr><td>Contact / compliance</td><td>sliding/torsional/rolling friction、softness、solver、timestep、pad/object deformation</td><td>press/slip/hold/lift micro-bench</td><td>单一 friction scalar</td></tr>
+<tr><td>Task / protocol</td><td>reset/init/layout/object/language/horizon/success predicate</td><td>immutable protocol tuple、matched seeds/trials</td><td>同名 task 或 sim score</td></tr>
+<tr><td>Safety / recovery</td><td>OOD、constraint、uncalibrated risk、stale action、collision</td><td>limit registry、shield/recovery/fallback/E-stop trace</td><td>action clipping 或训练 reward</td></tr>
+</tbody></table>
+<p>六层是独立诊断维度，但不是互不作用：camera timestamp 会进入 timing，controller gain 会改变 contact，task reset 会改变 contact exposure。正确做法是记录 first divergence，再确定下一层 probe。</p>
+<h2 id="5-dr-sysid-simopt">5. DR、SysID 与 SimOpt</h2>
+<h3 id="5-1">5.1 “越宽越好”被一手来源否定</h3>
+<p>固定 simulator distribution \(p_\phi(\xi)\) 时，policy 学到的是分布内期望：</p>
+<div class="formula">\[
+\theta^*(\phi)
+=\arg\max_\theta
+\mathbb E_{\xi\sim p_\phi}
+\left[J\!\left(\pi_\theta;f_\xi\right)\right].
+\]</div>
+<p>变量解释：\(\xi\) 是 simulator parameters，\(J\) 是 closed-loop return。实现映射：必须保存参数单位、support、相关性、采样 cadence、rejection 与 realized samples。SimOpt p.3 和 Tan p.5/p.7 都明确支持 coverage 与 nominal optimality 的取舍，所以“分布越宽越稳”是错误答案。[3][4]</p>
+<h3 id="5-2-sysid-dr-residual-uncertainty">5.2 SysID 给中心，DR 覆盖 residual uncertainty</h3>
+<p>可测且可辨识的 mass、latency、motor response 先用测量或 fit 定中心；population variation、wear、temperature、payload、不可辨识耦合与 model-form error 再用条件分布覆盖。fit trajectory 好只证明 behavior match，不证明每个 physical parameter 都是真值。</p>
+<p>SimOpt 的 outer loop 可写为：</p>
+<div class="formula">\[
+\phi_{k+1}
+=\arg\min_\phi
+\mathbb E_{\xi\sim p_\phi}
+\left[D\!\left(\tau^{\mathrm{real}},\tau^{\mathrm{sim}}(\xi)\right)\right]
+\quad
+\mathrm{s.t.}\quad
+D_{\mathrm{KL}}\!\left(p_\phi\,\|\,p_{\phi_k}\right)\le\varepsilon.
+\]</div>
+<p>变量解释：\(D\) 比较 real/sim observable trajectories，KL constraint 限制 distribution update。实现映射：这对应 SimOpt Algorithm 1 的 real rollout、sim rollout、cost 与 update distribution；它不要求返回唯一真实 \(\xi_r\)。本地若没有安全 real rollout、同步 observation 与 immutable checkpoint，就没有执行 SimOpt 的 authority。[3]</p>
+<h2 id="6-camera-timing-contact-controller">6. Camera、timing、contact 与 controller</h2>
+<h3 id="6-1-calibration-error-deployment-correctness">6.1 Calibration error 不等于 deployment correctness</h3>
+<p>Pinhole projection 为：</p>
+<div class="formula">\[
+s\begin{bmatrix}u\\v\\1\end{bmatrix}
+=K\,[R\mid t]\,
+\begin{bmatrix}X_w\\1\end{bmatrix},
+\qquad
+K=\begin{bmatrix}
+f_x&amp;0&amp;c_x\\
+0&amp;f_y&amp;c_y\\
+0&amp;0&amp;1
+\end{bmatrix}.
+\]</div>
+<p>变量解释：\(K\) 是 intrinsics，\([R\mid t]\) 是 world-to-camera extrinsics，\((u,v)\) 是 image coordinates。实现映射：OpenCV 还给出 radial/tangential distortion 与 reprojection error；部署还需 hand-eye frame、resize/crop 后的 \(K\)、mounting revision 和 timestamp。reprojection error 低不能替代这些 checks。[12]</p>
+<h3 id="6-2-latency-critical-path">6.2 Latency 必须拆 critical path</h3>
+<div class="formula">\[
+\tau_a
+=\tau_{\mathrm{capture/transport}}
++\tau_{\mathrm{preprocess}}
++\tau_{\mathrm{policy}}
++\tau_{\mathrm{network}}
++\tau_{\mathrm{queue}}
++\tau_{\mathrm{controller/actuator}}.
+\]</div>
+<p>变量解释：每项都应记录 distribution 与 tail，而不是只相加平均值。实现映射：chunked VLA 还要保存 observation version、action age、\(H\)、执行前缀 \(K_e\)、deadline、stale/drop/flush/ack。Tan 直接证明未建模 latency 会使真实 feedback oscillate；robosuite source 证明 policy reference 会在多次 simulation/controller step 中保持，但它只是 simulator 语义。[4][13]</p>
+<h3 id="6-3-contact-friction-scalar">6.3 Contact 不是一个 friction scalar</h3>
+<p>MuJoCo fixed source 明确说明：geom 的 tangential/torsional/rolling 三类 friction 会扩成 contact 的五个 coefficients；<code>solref</code>、<code>solimp</code>、priority/mixing、cone、solver、timestep 与 no-slip settings 都能改变结果。Panda gripper source 的 <code>-1=open, 1=closed</code> 只绑定 robosuite <code>v1.5.1</code>；真实 robot driver、另一个 simulator 或本地 adapter 必须重新做 sign/range/aperture/force/current round trip。[11][13]</p>
+<p>因此 first-divergence 顺序应是：先 action/parser/controller free-space，再 actuator/latency，再接触触发、press/slip/hold/lift；不能用调 friction 掩盖 axis、unit 或 controller mismatch。</p>
+<h2 id="7-adaptation-residual-safety">7. Adaptation、residual 与 safety 边界</h2>
+<table><thead><tr><th>方法</th><th>rollout/test-time 更新对象</th><th>policy weights 当场改变？</th><th>最小 authority</th><th>主要警告</th></tr></thead><tbody>
+<tr><td>Fixed DR</td><td>simulator sample</td><td>否</td><td>simulator only</td><td>support/range 可能错误</td></tr>
+<tr><td>SimOpt</td><td>simulator distribution</td><td>否</td><td>少量安全 real trajectories</td><td>behavior metric shortcut、real cost</td></tr>
+<tr><td>UP-OSI</td><td>explicit dynamics parameter context</td><td>否</td><td>history + sim-supervised parameter</td><td>identifiability / model assumption</td></tr>
+<tr><td>RMA</td><td>task-relevant latent context</td><td>否</td><td>history + privileged sim teacher</td><td>stale/OOD latent、legged→VLA gap</td></tr>
+<tr><td>Residual policy</td><td>executed action correction</td><td>residual weights通常离线训练</td><td>reliable base + bounded authority</td><td>不自动继承稳定性</td></tr>
+<tr><td>DAgger / real fine-tune</td><td>dataset / model weights</td><td>训练轮次改变</td><td>expert/reward + safe collection + rollback</td><td>hardware/data cost、catastrophic forgetting</td></tr>
+</tbody></table>
+<p>Residual composition 可写为：</p>
+<div class="formula">\[
+u_t
+=\operatorname{sat}\!\left(
+u_{\mathrm{base}}(s_t)
++\alpha\,u_{\mathrm{res},\theta}(s_t,o_t)
+\right).
+\]</div>
+<p>变量解释：\(\alpha\) 与 saturation 只限制 residual authority，不构成稳定性证明。实现映射：需要 residual norm/rate/energy、base-only/residual-on paired arms、fallback 与 saturation trace；当前五项目没有这组 bundle。[7]</p>
+<p>对概率安全约束：</p>
+<div class="formula">\[
+\Pr\!\left(
+g_j(x_{t+k},a_{t+k})\le 0,
+\ \forall j,k
+\right)\ge 1-\delta.
+\]</div>
+<p>变量解释：\(g_j\) 是 joint/workspace/collision/force 等 constraints，\(\delta\) 是允许风险。实现映射：Cautious MPC 用 GP residual 与 uncertainty propagation 支撑概率声明；VLA 的 ensemble spread 若没有 reliability/risk-coverage/false-safe calibration，只能当 heuristic。[9]</p>
+<p>Recovery RL 的 learned switch 可抽象为：</p>
+<div class="formula">\[
+a_t=
+\begin{cases}
+\pi_{\mathrm{task}}(s_t),
+&amp;\widehat Q_{\mathrm{risk}}(s_t,a_t^{\mathrm{task}})\le\epsilon_{\mathrm{risk}},\\
+\pi_{\mathrm{rec}}(s_t),
+&amp;\text{otherwise}.
+\end{cases}
+\]</div>
+<p>变量解释：risk critic 预测 future constraint violation，recovery 尝试返回 recoverable region。实现映射：risk event 必须同时阻止当前 proposal、flush/ack queued chunk，并按 hysteresis、timeout、fallback/E-stop state machine 处理；论文不提供任意 VLA 的 zero-risk guarantee。[8]</p>
+<h2 id="8-probes">8. 十二个确定性 probes</h2>
+<p>本轮对几何、接口、范围与 safety state 做了 12 个纯确定性 probe；<strong>12/12 PASS</strong>。这些 probe 验证 contract arithmetic，不代替真实 calibration、simulator rollout、real robot、uncertainty calibration 或 ownership。</p>
+<table><thead><tr><th>Probe</th><th>结果</th></tr></thead><tbody>
+<tr><td>六层 label 唯一性</td><td>PASS；6 个 layer / 6 个 unique names</td></tr>
+<tr><td>pinhole identity projection</td><td>PASS；\((0,0,1)\to(0,0)\)</td></tr>
+<tr><td>zero-distortion round trip</td><td>PASS；\((0.1,-0.2)\) 不变</td></tr>
+<tr><td>MuJoCo 3→5 friction expansion</td><td>PASS；tangential/rolling 分别复制</td></tr>
+<tr><td>Panda gripper sign contract</td><td>PASS；fixed source 含 <code>-1 =&gt; open, 1 =&gt; closed</code></td></tr>
+<tr><td>composite action split + multi-clock text</td><td>PASS；fixed controller RST 同时命中</td></tr>
+<tr><td>latency additive decomposition</td><td>PASS；<code>4+3+2+5=14 ms</code></td></tr>
+<tr><td>stale-chunk TTL</td><td>PASS；age <code>1.0 s</code> 超过 <code>0.5 s</code>，拒绝</td></tr>
+<tr><td>overwide-DR toy counterexample</td><td>PASS；期望 reward 在 \(\sigma=0\) 最大，不随宽度单调增加</td></tr>
+<tr><td>SimOpt Gaussian KL ball</td><td>PASS；小更新接受、大更新拒绝</td></tr>
+<tr><td>UP-OSI/RMA/SimOpt update-object classifier</td><td>PASS；parameter / latent / distribution，不是 weights</td></tr>
+<tr><td>Gaussian one-sided chance threshold</td><td>PASS；\(z=1.645\) 对应约 95%</td></tr>
+</tbody></table>
+<p>核心复核逻辑可压缩为：</p>
+<pre><code class="language-python">def audit_sim2real_contract(trace, limits):
+    # 先验证 observation/action 的 frame、unit、version 与时间戳。
+    assert trace.camera_contract_ok and trace.action_roundtrip_ok
+
+    # action age 超过 TTL 时拒绝整段 chunk；风险事件必须 flush queue。
+    if trace.now - trace.action_timestamp &gt; limits.ttl:
+        trace.action_queue.clear()
+        return &quot;STALE_REJECT&quot;
+
+    # free-space 未闭合前，不允许把失败归因到 friction/contact。
+    if not trace.free_space_tracking_ok:
+        return &quot;CHECK_CONTROLLER_ACTUATOR_LATENCY&quot;
+
+    # contact 只在 sign/range/controller 已闭合后分解。
+    if trace.contact_first_divergence:
+        return &quot;RUN_PRESS_SLIP_HOLD_LIFT_MICROBENCH&quot;
+
+    # uncertainty 未校准时只能作为 heuristic，不写 chance guarantee。
+    return &quot;RISK_HEURISTIC&quot; if not trace.risk_calibrated else &quot;GUARDED_EXECUTION&quot;</code></pre>
+<h2 id="9-truth-boundary">9. 五项目本地证据与 truth boundary</h2>
+<p>本轮重新计算 <a href="../evidence/evidence_manifest.html">Evidence Manifest</a> 与五份 claim–evidence inventory 的 SHA，并做有界 filename/content 复核。以下“缺失”只指审计范围内没有协议完整 bundle，不代表用户其他机器、远端或未归档介质一定不存在。</p>
+<table><thead><tr><th>项目</th><th>本轮 identity / 直接发现</th><th>当前支持</th><th>不支持</th></tr></thead><tbody>
+<tr><td>Robot Harness</td><td>inventory SHA <code>71C3B62F...A797F</code>；项目根 3,726 个文件中有 25 个 calibration/hardware filename hit，均位于 <code>third_party/sensebot_robotsystem</code></td><td>高层 scope、mutex、cancel、timeout、best-effort compensation；第三方机器人资产存在</td><td>不能把 third-party 文件名写成候选人 Sim2Real 实现；无本项目 calibration→controller→real rollout→incident bundle</td></tr>
+<tr><td>OPD / VLM Grounding</td><td>inventory SHA <code>C002B227...9AFA</code>；317 个文件 filename scan 0 个 Sim2Real/hardware hit</td><td>token-space teacher/student rollout、grounding 数据与评估</td><td>不是 robot-state DAgger、SysID、real adaptation 或 hardware deployment</td></tr>
+<tr><td>OpenPiVLA</td><td>inventory SHA <code>13023578...132A</code>；<code>aloha_sim_real_rollout</code> summary 明确为 <code>pi0_aloha_sim</code>、<code>gym_aloha/AlohaTransferCube-v0</code>、3 episodes、2/3 simulator success</td><td>official-checkpoint simulator diagnostic 与 controller/action interface</td><td>文件名中的 <code>real_rollout</code> 不是 real hardware；不能绑定 formal Qwen、97.4 或 Sim2Real transfer</td></tr>
+<tr><td>Cosmos / WAM</td><td>inventory SHA <code>2362311B...AFB4</code>；base/trained manifests SHA <code>63A51867...3A86</code> / <code>809AE4F8...55CC</code>，均 <code>kind=cosmos_policy_robocasa_action_rollout</code>、offscreen renderer、<code>success=false</code></td><td>RoboCasa simulator controller/config、300-step failure diagnostic、offline real-demo target videos</td><td>“real RoboCasa renders”/<code>real_primary</code> 不是 physical robot rollout；无 checkpoint binary、calibration、real latency/contact/safety</td></tr>
+<tr><td>UWM / LIBERO</td><td>inventory SHA <code>C35C41D6...8A9</code>；156 个项目文件，contact filename hits 是 RoboCasa diagnostic contact sheets</td><td>simulator finetune/rollout、action adapter、protocol 与 failure instrumentation</td><td>不支持 physical contact、Sim2Real uplift、real recovery 或 safety completion</td></tr>
+</tbody></table>
+<p>Evidence Manifest 本轮 SHA 为 <code>8C870E35736ECCF6201BECF19A1B8E6C3B2367DC225066268724947B70169083</code>。五项目 ownership ledger 都仍需候选人逐项确认：Git author、文件存在、上游机制、Codex/工具实现或第三方资产不能自动升级为个人独立设计与实现。</p>
+<p>当前安全口述：</p>
+<div class="meta">“我把 Sim2Real 拆成 visual/sensor、dynamics、control/timing、contact、task/protocol、safety/recovery 六层，先做 frame/unit/timestamp/action round trip，再做 free-space、latency/actuator 与 contact micro-bench，最后才做 matched real rollout。公开论文支持 DR、SysID、SimOpt、OSI/RMA、residual 和 recovery 的机制边界；我的项目材料目前主要是 simulator、接口和诊断证据，没有协议完整的真机 bundle，所以我讲设计与审计方法，不把它说成已经完成硬件迁移。”</div>
+<h2 id="10-source-knowledge-card-reconciliation">10. Source → Knowledge → Card reconciliation</h2>
+<table><thead><tr><th>Cluster</th><th>Source / Knowledge / Card</th><th>独立结论</th><th>保留 warning</th></tr></thead><tbody>
+<tr><td>WM-031 taxonomy</td><td>六层/first-divergence</td><td>PASS AS SYNTHESIS</td><td>原子 source 早期写“五层”；安全/恢复作为第六响应层后形成六层 Audit D 合同，需说明是工程综合</td></tr>
+<tr><td>WM-032 visual DR</td><td>relevant support、label/geometry consistency、overwide gate</td><td>PASS</td><td>Tobin/ADR/SimOpt 不能证明本地 visual transfer</td></tr>
+<tr><td>WM-033 SysID + DR</td><td>nominal center、residual uncertainty、identifiability、matched arms</td><td>PASS</td><td>fit 好不等于参数真；无本地 real excitation bundle</td></tr>
+<tr><td>WM-034 timing/controller</td><td>multi-clock、action age、actuator/controller mismatch</td><td>PASS</td><td>single inference time 不能替 capture-to-apply latency；无本地真实 tail</td></tr>
+<tr><td>WM-035 camera/sensor</td><td>\(K,R,t\)、distortion、photometric/temporal/noise/occlusion</td><td>PASS</td><td>reprojection error 不等于 deployment extrinsics 正确</td></tr>
+<tr><td>WM-036 contact/gripper</td><td>friction/compliance/solver/gripper round trip</td><td>PASS</td><td>robosuite sign 是 simulator/version-specific；无 real contact trace</td></tr>
+<tr><td>WM-037 adaptation</td><td>residual / UP-OSI / RMA / SimOpt / DAgger 分层</td><td>PASS</td><td>不把 token rollout、offline finetune 或 sim rollout叫 real online adaptation</td></tr>
+<tr><td>WM-038 safety</td><td>constraint、calibration、CBF/training/recovery/fallback/E-stop</td><td>PASS WITH WARNING</td><td>learned risk、CPO、clipping、高层 cancel 都不是 physical zero-risk guarantee</td></tr>
+<tr><td>WM-040..044</td><td>metric ladder、matched ablation、consistency、first failure、evidence audit</td><td>PASS</td><td>offline/sim proxy 不能替 closed-loop real success；ownership仍是独立 gate</td></tr>
+</tbody></table>
+<p>知识页与题卡无需重写；它们已保留上述 boundary。<code>VLA-WM-031..038</code> 原子题卡和 <code>VLA-WM-040..044</code> 聚合题卡继续保持 <code>unseen</code>，独立 fact review 不等于 oral mastery。</p>
+<h2 id="11">11. 审查状态与下一步</h2>
+<p>Audit D 的 public paper/source facts、official semantics、12 probes、local truth boundary 与 source→knowledge→card reconciliation 已完成，可从 <code>independent_review_pending</code> 提升为 <code>independent_fact_reviewed / PASS WITH WARNING</code>。这不改变 VOL 04 整卷 <code>WARN</code>，也不证明任何项目完成真机 Sim2Real。</p>
+<p>仍开放：</p>
+<ul><li>收集每个目标平台的 camera serial/intrinsics/extrinsics/hand-eye、mounting revision、timestamp 与 preprocessing manifest；</li><li>收集 physics/controller/policy/firmware Hz、capture-to-apply latency distribution、actuator fit/held-out residual 与 queue stale/drop/flush/ack trace；</li><li>收集 material/object/gripper/contact/solver manifest，以及 press/slip/hold/lift/transport matched micro-benches；</li><li>在安全 authority 下补 fixed-checkpoint、fixed-init/controller 的 sim/real paired trials，报告 denominator、置信区间与 failure family；</li><li>补 constraint registry、calibrated risk、shield/recovery/fallback/E-stop、near-miss/incident/reset/approval log；</li><li>由候选人确认五项目逐文件设计、实现、运行、审查与工具/协作者角色；真实口述前不改变 mastery，不创建 coaching state。</li></ul>
+<p>下一 bounded slice 优先进行一题真实口述；若继续文档事实复核，则 VOL 04 Audit A–E 已全部完成独立 review，应转向 repository completion / oral gate，而不是生成新的 Sim2Real 节点或启动 PER-019。</p>
+<h2 id="references">References</h2>
+<ol><li>Tobin et al., <a href="https://arxiv.org/abs/1703.06907v1"><em>Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World</em></a>, arXiv v1, 2017。</li><li>Peng et al., <a href="https://arxiv.org/abs/1710.06537v3"><em>Sim-to-Real Transfer of Robotic Control with Dynamics Randomization</em></a>, arXiv v3, 2018。</li><li>Chebotar et al., <a href="https://arxiv.org/abs/1810.05687v4"><em>Closing the Sim-to-Real Loop: Adapting Simulation Randomization with Real World Experience</em></a>, arXiv v4, 2019。</li><li>Tan et al., <a href="https://arxiv.org/abs/1804.10332v2"><em>Sim-to-Real: Learning Agile Locomotion For Quadruped Robots</em></a>, arXiv v2, 2018。</li><li>Yu et al., <a href="https://arxiv.org/abs/1702.02453v3"><em>Preparing for the Unknown: Learning a Universal Policy with Online System Identification</em></a>, arXiv v3, 2017。</li><li>Kumar et al., <a href="https://arxiv.org/abs/2107.04034v1"><em>RMA: Rapid Motor Adaptation for Legged Robots</em></a>, arXiv v1, 2021。</li><li>Johannink et al., <a href="https://arxiv.org/abs/1812.03201v2"><em>Residual Reinforcement Learning for Robot Control</em></a>, arXiv v2, 2018。</li><li>Thananjeyan et al., <a href="https://arxiv.org/abs/2010.15920v2"><em>Recovery RL: Safe Reinforcement Learning with Learned Recovery Zones</em></a>, arXiv v2, 2021。</li><li>Hewing et al., <a href="https://arxiv.org/abs/1705.10702v4"><em>Cautious Model Predictive Control using Gaussian Process Regression</em></a>, arXiv v4, 2019。</li><li>OpenAI et al., <a href="https://arxiv.org/abs/1808.00177v5"><em>Learning Dexterous In-Hand Manipulation</em></a>, arXiv v5, 2019。</li><li>Google DeepMind, <a href="https://github.com/google-deepmind/mujoco/tree/28009f9105cd92784b7b0b30c0605a5e29107a77">MuJoCo <code>3.10.0@28009f9</code></a>，并参照固定响应的 <a href="https://mujoco.readthedocs.io/en/stable/modeling.html">Modeling</a>、<a href="https://mujoco.readthedocs.io/en/stable/computation/index.html">Computation</a> 与 <a href="https://mujoco.readthedocs.io/en/stable/XMLreference.html">XML Reference</a>。</li><li>OpenCV, <a href="https://github.com/opencv/opencv/blob/f7dd7df170add1655de75b5e95f20f41d2a88293/doc/py_tutorials/py_calib3d/py_calibration/py_calibration.markdown"><code>py_calibration.markdown@f7dd7df</code></a>。</li><li>ARISE Initiative, <a href="https://github.com/ARISE-Initiative/robosuite/tree/51cc01785bab80ffeed20da15e67d7dd4140e76a">robosuite <code>v1.5.1@51cc017</code></a>，重点复核 controller 与 Panda gripper source。</li><li><a href="vol_04_sim2real_claim_to_mechanism.html">VOL 04 Sim2Real Claim-to-Mechanism Audit D</a>。</li><li><a href="vol_04_wm031_reality_gap_taxonomy_source_freeze.html">WM-031 Reality-gap</a>、<a href="vol_04_wm032_visual_domain_randomization_relevance_source_freeze.html">WM-032 Visual DR</a>、<a href="vol_04_wm033_dynamics_randomization_system_identification_source_freeze.html">WM-033 Dynamics SysID</a>、<a href="vol_04_wm034_control_latency_actuator_controller_mismatch_source_freeze.html">WM-034 Timing</a>、<a href="vol_04_wm035_camera_sensor_modeling_source_freeze.html">WM-035 Camera</a>、<a href="vol_04_wm036_contact_friction_compliance_gripper_source_freeze.html">WM-036 Contact</a>、<a href="vol_04_wm037_adaptation_method_selection_source_freeze.html">WM-037 Adaptation</a> 与 <a href="vol_04_wm038_uncertainty_safety_fallback_recovery_source_freeze.html">WM-038 Safety</a>。</li><li><a href="../knowledge/vol_04_world_model_sim2real.html">VOL 04 Aggregate Knowledge</a> 与 <a href="../questions/vol_04_world_model_sim2real.html">Question Bank</a>。</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest</a> 与五项目 claim–evidence inventories。</li></ol>
+</article></body></html>

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VLA GitHub Guidance and Source Scout</title>
+
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\00_github_guidance_and_sources.md">
+<meta name="aris:source-sha256" content="8de0b04dede192cf909309d5d4dfd99fd05753e1282227431cb9cdf7394645c4">
+<meta name="aris:generated-at" content="2026-07-16 08:48 UTC">
+
+<!-- MathJax 3 -->
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+<!-- highlight.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+
+
+<style>
+:root {
+  --bg: #fdfcf7;
+  --bg-soft: #f4f1ea;
+  --bg-code: #f8f5ec;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --ink-muted: #6b6b6b;
+  --primary: #1a4a8c;
+  --primary-soft: #2d6cb8;
+  --accent: #b8390e;
+  --warn: #b45309;
+  --warn-bg: #fef3c7;
+  --info-bg: #dbeafe;
+  --good-bg: #d1fae5;
+  --good: #065f46;
+  --bad-bg: #fee2e2;
+  --bad: #991b1b;
+  --border: #d6d0c0;
+  --border-soft: #e8e3d5;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Source Serif Pro", "Source Serif 4", "Crimson Pro", "Georgia", "Songti SC", "STSong", serif;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+}
+
+.layout {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 48px;
+  padding: 40px 32px;
+}
+
+nav.toc {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+  font-size: 13px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  border-right: 1px solid var(--border-soft);
+  padding-right: 16px;
+}
+nav.toc h3 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+nav.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+nav.toc ol li { margin: 5px 0; counter-increment: toc; }
+nav.toc ol li::before { content: counter(toc) ". "; color: var(--ink-muted); margin-right: 4px; }
+nav.toc a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px dotted transparent;
+}
+nav.toc a:hover { color: var(--primary); border-bottom-color: var(--primary); }
+nav.toc ul { list-style: none; padding-left: 14px; margin: 3px 0; font-size: 12px; }
+nav.toc ul li::before { content: "→ "; color: var(--border); }
+nav.toc a.back-home {
+  display: inline-block;
+  margin-bottom: 18px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+nav.toc a.back-home:hover {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+main { min-width: 0; }
+
+header.hero {
+  border-bottom: 3px double var(--primary);
+  padding-bottom: 24px;
+  margin-bottom: 32px;
+}
+header.hero .eyebrow {
+  color: var(--accent);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+header.hero h1 {
+  font-size: 32px;
+  line-height: 1.2;
+  margin: 0 0 12px;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+header.hero .subtitle {
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+  font-style: italic;
+}
+header.hero .byline {
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 0 0 20px;
+}
+header.hero .byline strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+header.hero .meta {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--ink-muted);
+  border-top: 1px solid var(--border-soft);
+  padding-top: 14px;
+}
+header.hero .meta span strong { color: var(--ink-soft); }
+header.hero .meta code {
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+  font-size: 11px;
+  background: var(--bg-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border-soft);
+}
+
+h2 {
+  font-size: 24px;
+  margin: 44px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+  font-weight: 700;
+}
+h2 .num { color: var(--primary); font-weight: 600; margin-right: 8px; }
+h3 { font-size: 19px; margin: 28px 0 10px; color: var(--primary); font-weight: 600; }
+h4 { font-size: 16px; margin: 20px 0 8px; color: var(--ink); font-weight: 600; }
+
+p { margin: 10px 0; }
+ul, ol { padding-left: 22px; margin: 10px 0; }
+ul li, ol li { margin: 4px 0; }
+ul li::marker { color: var(--primary); }
+
+strong { color: var(--accent); font-weight: 600; }
+em { color: var(--ink-soft); }
+
+a { color: var(--primary); }
+a:hover { color: var(--accent); }
+
+code:not(.hljs) {
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+  font-size: 0.86em;
+  background: var(--bg-code);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border-soft);
+  color: var(--accent);
+}
+
+pre {
+  background: #fafaf6;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  padding: 0;
+  overflow-x: auto;
+  border-radius: 4px;
+  margin: 14px 0;
+}
+pre code, pre code.hljs {
+  background: transparent !important;
+  display: block;
+  padding: 14px 18px !important;
+  font-size: 13px;
+  line-height: 1.55;
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", monospace;
+  color: var(--ink);
+}
+pre.diagram {
+  background: #f9f6ed;
+  border-left: 4px solid var(--accent);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.callout {
+  margin: 16px 0;
+  padding: 12px 16px;
+  border-radius: 4px;
+  border-left: 4px solid;
+  font-size: 15px;
+}
+.callout-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.callout-info { background: var(--info-bg); border-left-color: var(--primary); }
+.callout-info .callout-title { color: var(--primary); }
+.callout-warn { background: var(--warn-bg); border-left-color: var(--warn); }
+.callout-warn .callout-title { color: var(--warn); }
+.callout-good { background: var(--good-bg); border-left-color: var(--good); }
+.callout-good .callout-title { color: var(--good); }
+.callout-bad { background: var(--bad-bg); border-left-color: var(--bad); }
+.callout-bad .callout-title { color: var(--bad); }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+thead { background: var(--primary); color: white; }
+th, td {
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: top;
+}
+th { font-weight: 600; font-size: 13px; letter-spacing: 0.02em; }
+tr:last-child td { border-bottom: none; }
+tbody tr:nth-child(even) { background: var(--bg-soft); }
+
+details.qa, details {
+  background: white;
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  margin: 10px 0;
+  padding: 0;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+details.qa { margin: 8px 0; }
+details.qa:hover { border-color: var(--primary-soft); box-shadow: 0 1px 4px rgba(26,74,140,0.06); }
+details summary {
+  cursor: pointer;
+  padding: 11px 14px;
+  font-weight: 600;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--ink);
+  list-style: none;
+  user-select: none;
+}
+details.qa summary { color: var(--ink); }
+details summary::-webkit-details-marker { display: none; }
+details summary::before {
+  content: "▸ ";
+  margin-right: 4px;
+  display: inline-block;
+  transition: transform 0.15s;
+  color: var(--primary);
+}
+details[open] summary::before { transform: rotate(90deg); }
+details[open] summary { border-bottom: 1px solid var(--border-soft); }
+details[open].qa { background: #fdfcf7; }
+details > :not(summary) { padding: 10px 16px; }
+details p:first-of-type { margin-top: 8px; }
+details p:last-of-type { margin-bottom: 10px; }
+
+/* difficulty pills: L1 green / L2 yellow / L3 red */
+.lv {
+  display: inline-block;
+  padding: 1px 7px;
+  margin-right: 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", monospace;
+  vertical-align: 1px;
+  line-height: 1.5;
+}
+.lv-l1 { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+.lv-l2 { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+.lv-l3 { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+/* frequency badge: 🔥×N */
+.freq {
+  display: inline-block;
+  padding: 1px 7px;
+  margin-right: 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--bg-soft);
+  color: var(--ink-soft);
+  border: 1px solid var(--border-soft);
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", monospace;
+  vertical-align: 1px;
+  line-height: 1.5;
+}
+.freq-hot { background: #fff1e6; color: #b8390e; border-color: #fcd9c0; }
+
+mjx-container[display="true"] { margin: 12px 0 !important; }
+
+footer.aris-footer {
+  margin-top: 60px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+footer.aris-footer a { color: var(--ink-muted); border-bottom: 1px dotted var(--border); }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; gap: 20px; padding: 20px 16px; }
+  nav.toc {
+    position: static;
+    max-height: none;
+    border-right: none;
+    border-bottom: 1px solid var(--border-soft);
+    padding-right: 0;
+    padding-bottom: 14px;
+  }
+  header.hero h1 { font-size: 24px; }
+  h2 { font-size: 20px; }
+}
+@media print {
+  nav.toc { display: none; }
+  .layout { grid-template-columns: 1fr; padding: 0; }
+  body { background: white; }
+  header.hero { border-bottom-color: var(--ink); }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc">
+  <a class="back-home" href="../index.html">← 返回主册</a>
+  <h3>Contents</h3>
+  <ol>
+<li><a href="#1-结论摘要">1. 结论摘要</a>
+</li>
+<li><a href="#2-候选仓库审计">2. 候选仓库审计</a>
+<ul>
+<li><a href="#21-搜索结果的限制">2.1 搜索结果的限制</a></li>
+</ul>
+</li>
+<li><a href="#3-采用的骨架规则">3. 采用的骨架规则</a>
+</li>
+<li><a href="#4-到八卷的来源映射">4. 到八卷的来源映射</a>
+</li>
+<li><a href="#5-下一批核验清单">5. 下一批核验清单</a>
+</li>
+<li><a href="#6-证据使用规则">6. 证据使用规则</a>
+</li>
+</ol>
+</nav>
+
+<main>
+<div class="eyebrow">VLA Interview Preparation · Source Scout</div>
+<p class="subtitle">参考骨架、官方来源与证据边界</p>
+
+
+<h1 id="github-source-scout面试题库骨架与-vla-来源入口">GitHub Source Scout：面试题库骨架与 VLA 来源入口</h1>
+<blockquote><p>调研日期：2026-07-16 目标：为本仓库选择可复用的题库骨架和后续技术来源入口。 重要边界：本文件记录“来源选择”，不是技术事实的最终证明；具体方法、指标和项目 claim 仍需回到论文、官方 repo、benchmark 文档或本地 artifact。</p></blockquote>
+<h2 id="1-结论摘要">1. 结论摘要</h2>
+<p><code>WinstonJQ/embodied-interview-qa</code> 适合作为本仓库的主骨架：它已经验证了“主索引 → 分卷 → Markdown canonical source → 折叠 HTML → review.json”的长期维护方式，并且有 L1/L2/L3、易错点、来源和移动端自测设计。</p>
+<p>它不应被当作 VLA 技术事实的唯一来源。后续技术写作需要使用官方仓库、论文、benchmark 文档和本地项目证据；awesome 列表只做检索入口。</p>
+<h2 id="2-候选仓库审计">2. 候选仓库审计</h2>
+<table><thead><tr><th>Source</th><th>用途</th><th>快照/状态</th><th>许可与风险</th><th>决策</th></tr></thead><tbody><tr><td><a href="https://github.com/WinstonJQ/embodied-interview-qa">WinstonJQ/embodied-interview-qa</a></td><td>题库分卷、总索引、折叠题卡、审查记录、发布流程</td><td>commit <code>fef782564647a5e89e7bed1f60d20b0588c6b3ae</code>；2026-07-11；GitHub API 2026-07-16 显示约 103 stars、2026-07-15 更新</td><td>MIT；可借鉴结构，不复制答案、频次或个人信息</td><td><strong>primary skeleton</strong></td></tr><tr><td><a href="https://github.com/BarisYazici/ml_robotics_interview_prep">BarisYazici/ml_robotics_interview_prep</a></td><td>机器人学、ML、SLAM、3D geometry、RL 和系统设计的基础路径</td><td>commit <code>5c586a8603efb8594f0983eadb1b93ddf7c5aab6</code>；2025-03-26；约 62 个文件</td><td>Apache-2.0；VLA/Flow Matching 较少，部分内容偏旧</td><td><strong>supporting foundation</strong></td></tr><tr><td><a href="https://github.com/jonyzhang2023/awesome-embodied-vla-va-vln">jonyzhang2023/awesome-embodied-vla-va-vln</a></td><td>VLA/WAM/VLN/VA 论文、benchmark、simulator 和 survey 发现</td><td>commit <code>f43f364b6ab03ffaedd5fd5f3d961b1acf2a7e71</code>；2026-07-07；README 700+ papers 级别</td><td>当前未发现 LICENSE 文件；不直接复制条目，必须回溯链接</td><td><strong>discovery only</strong></td></tr><tr><td><a href="https://github.com/DravenALG/awesome-vla-wam">DravenALG/awesome-vla-wam</a></td><td>VLA、WAM、数据集、benchmark、simulator 分类索引</td><td>commit <code>f0bb547fb706dccd416085834b1102c93bd051c7</code>；2026-07-15；约 848 stars</td><td>当前未发现 LICENSE 文件；仅作检索地图</td><td><strong>discovery only</strong></td></tr><tr><td><a href="https://github.com/Denghaoyuan123/Awesome-RL-VLA">Denghaoyuan123/Awesome-RL-VLA</a></td><td>Offline / Online / Test-time RL-VLA 分类和论文入口</td><td>commit <code>d5bd9593ac4defcc14f2e04e331d7ee4923508bc</code>；2026-05-18；约 791 stars</td><td>当前未发现 LICENSE 文件；survey PDF 与条目需逐项核验</td><td><strong>discovery only</strong></td></tr></tbody></table>
+<h3 id="21-搜索结果的限制">2.1 搜索结果的限制</h3>
+<ul><li>GitHub 仓库搜索对“VLA 面试题”中文/英文关键词返回很少，不能把星数或搜索排名当作题目频次。</li><li>“awesome”仓库擅长发现论文和项目，不等于答案经过审查；它们的 license 状态也不一致。</li><li>本仓库的目标是个人面试准备，不按公司标签组织题目，也不把公开面经内容改写成个人经历。</li></ul>
+<h2 id="3-采用的骨架规则">3. 采用的骨架规则</h2>
+<p>从 <code>WinstonJQ/embodied-interview-qa</code> 继承：</p>
+<ol><li>主索引先于分卷，分卷有明确状态和范围。</li><li>Markdown 是 canonical source，HTML 是生成视图，review JSON 记录审查。</li><li>题卡默认折叠，先自测再看答案。</li><li>使用 L1 / L2 / L3 进行认知难度分层。</li><li>每题保留“易错”一句，并在进入主库前合并同义题。</li><li>每个知识卷开始前先列题目清单，作为本轮可审阅边界。</li></ol>
+<p>本仓库额外增加：</p>
+<ol><li>深度 Knowledge HTML：公式、张量 shape、伪代码、实现映射和方法比较。</li><li>Project hook：每道高价值题必须能连接到 OpenPiVLA、WAM、UWM、OPD 或 Harness，且不越过证据边界。</li><li>Evidence Manifest：记录 claim、artifact、协议、个人贡献和风险。</li><li>训练状态：题库生成后仍是 <code>unseen</code>，只有实际口述训练后才能升级。</li></ol>
+<h2 id="4-到八卷的来源映射">4. 到八卷的来源映射</h2>
+<table><thead><tr><th>卷</th><th>主要来源类型</th><th>第一批官方/原始资料方向</th><th>个人项目挂钩</th></tr></thead><tbody><tr><td>VOL 01 Foundations</td><td>机器人基础、ML/RL 教材、官方文档</td><td>线性代数、Transformer、MDP、坐标与控制</td><td>OpenPiVLA / UWM</td></tr><tr><td>VOL 02 IL / RL / Post-training</td><td>论文、算法官方实现、RL-VLA survey</td><td>BC、DAgger、PPO、GRPO、SFT/DPO、offline/online RL</td><td>Harness / WAM</td></tr><tr><td>VOL 03 VLA / Action</td><td>VLA 论文与官方 repo</td><td>OpenVLA、π 系列、ACT、Diffusion Policy、Flow Matching、FAST</td><td>OpenPiVLA</td></tr><tr><td>VOL 04 World Model / Sim2Real</td><td>world model 论文、官方 benchmark、simulator docs</td><td>dynamics、value、planning、domain randomization、sim2real</td><td>WAM / UWM</td></tr><tr><td>VOL 05 Engineering / Evaluation</td><td>官方训练框架、benchmark protocol、部署文档</td><td>data pipeline、distributed training、policy server、closed-loop eval</td><td>全部项目</td></tr><tr><td>VOL 06 Perception / Grounding / Nav</td><td>VLM/grounding 论文、导航 benchmark</td><td>point/box/text、3D perception、VLN/ObjectNav、多视角</td><td>OPD / Harness</td></tr><tr><td>VOL 07 Project Deep Dives</td><td>本地代码、config、log、eval、resume</td><td>五项目 claim reconciliation 和追问树</td><td>五个现有项目页</td></tr><tr><td>VOL 08 Coding / System Design</td><td>官方 API/源码、经典题、系统设计参考</td><td>attention、loss、normalization、VLA train/eval service</td><td>训练/评估工程</td></tr></tbody></table>
+<h2 id="5-下一批核验清单">5. 下一批核验清单</h2>
+<p>这些是下一轮要逐个核验的原始技术来源入口，不在本文件中提前断言其最新内容：</p>
+<ul><li>OpenVLA / OpenVLA-OFT 官方仓库与论文。</li><li>Physical Intelligence <code>openpi</code> 与 π 系列公开资料。</li><li>Diffusion Policy、ACT、Flow Matching / FAST 的论文与官方实现。</li><li>Open X-Embodiment、DROID、LIBERO、RoboCasa 的官方数据/benchmark 文档。</li><li>NVIDIA Cosmos Policy / UWM 相关公开仓库或技术报告。</li><li>Qwen3-VL 官方模型卡和训练/推理文档。</li><li>FSDP / DeepSpeed、PyTorch、JAX/Flax 官方文档。</li></ul>
+<p>本轮已完成 GitHub 可达性、默认分支和 HEAD 的第一轮冻结；方法、数据和 benchmark claim 仍需逐页阅读官方 README/论文后才能进入强答案。</p>
+<table><thead><tr><th>Official source</th><th>HEAD at 2026-07-16</th><th>branch</th><th>license observed</th><th>planned use</th></tr></thead><tbody><tr><td><a href="https://github.com/openvla/openvla">openvla/openvla</a></td><td><code>c8f03f48af692657d3060c19588038c7220e9af9</code></td><td><code>main</code></td><td>MIT</td><td>VOL 03：OpenVLA 架构、action token、OFT</td></tr><tr><td><a href="https://github.com/Physical-Intelligence/openpi">Physical-Intelligence/openpi</a></td><td><code>15a9616a00943ada6c20a0f158e3adb39df2ccac</code></td><td><code>main</code></td><td>Apache-2.0（GitHub search metadata）</td><td>VOL 03/05：π 系列、训练与推理 contract</td></tr><tr><td><a href="https://github.com/real-stanford/diffusion_policy">real-stanford/diffusion_policy</a></td><td><code>5ba07ac6661db573af695b419a7947ecb704690f</code></td><td><code>main</code></td><td>MIT</td><td>VOL 03：Diffusion Policy action head</td></tr><tr><td><a href="https://github.com/tonyzhaozh/act">tonyzhaozh/act</a></td><td><code>742c753c0d4a5d87076c8f69e5628c79a8cc5488</code></td><td><code>main</code></td><td>MIT</td><td>VOL 03：ACT / action chunking</td></tr><tr><td><a href="https://github.com/google-deepmind/open_x_embodiment">google-deepmind/open_x_embodiment</a></td><td><code>9eeb68b989efbcf474e8fb9019e01d02b962a604</code></td><td><code>main</code></td><td>Apache-2.0</td><td>VOL 02/05：数据集与跨 embodiment</td></tr><tr><td><a href="https://github.com/Lifelong-Robot-Learning/LIBERO">Lifelong-Robot-Learning/LIBERO</a></td><td><code>8f1084e3132a39270c3a13ebe37270a43ece2a01</code></td><td><code>master</code></td><td>MIT</td><td>VOL 05：任务、评估和 fixed-init 协议</td></tr><tr><td><a href="https://github.com/robocasa/robocasa">robocasa/robocasa</a></td><td><code>b4684e6ee37d377cc392e98302a6b916d588b415</code></td><td><code>main</code></td><td>NOASSERTION（需查看仓库许可文件）</td><td>VOL 04/05：仿真与 RoboCasa eval</td></tr><tr><td><a href="https://github.com/QwenLM/Qwen3-VL">QwenLM/Qwen3-VL</a></td><td><code>96588727e44c78b25ba03ea03b8e12f7e64fd0da</code></td><td><code>main</code></td><td>Apache-2.0</td><td>VOL 03/06：VLM backbone 与 grounding</td></tr><tr><td><a href="https://github.com/NVlabs/cosmos-policy">NVlabs/cosmos-policy</a></td><td><code>18a2accadf4e7a3531e56754102af5a24d2316da</code></td><td><code>main</code></td><td>Apache-2.0（GitHub search metadata）</td><td>VOL 04/07：WAM / Cosmos Policy</td></tr><tr><td><a href="https://github.com/NVIDIA/Isaac-GR00T">NVIDIA/Isaac-GR00T</a></td><td><code>9c7e746b2cd37a810070a98ef41d290a07e806c2</code></td><td><code>main</code></td><td>Apache-2.0（GitHub search metadata）</td><td>VOL 03/05：VLA deployment / policy stack</td></tr></tbody></table>
+<p>说明：<code>git ls-remote --symref</code> 用于确认 branch 与 HEAD；GitHub API 用于补充 stars、更新时间和 license 元数据。API 对部分 NVIDIA/Physical Intelligence repo 返回 403，因此这些条目的 license 标为“search metadata”，后续仍要以仓库许可证文件为准。</p>
+<p>本页的 canonical Markdown、HTML 与 review JSON 已生成；后续按卷逐一核验 README、论文、输入输出 contract、训练/评估命令和版本差异。VOL 02、VOL 03 的专项 ledger 已进入 <code>sources/</code>，但总来源图在 code-level reading 完成前仍保持 <code>researching / WARN</code>。</p>
+<h2 id="6-证据使用规则">6. 证据使用规则</h2>
+<ul><li>论文/官方仓库支持方法和接口事实。</li><li>benchmark 官方文档支持任务、协议和指标定义。</li><li>本地代码/config/log 支持你的实际运行、修改和结果。</li><li>awesome 列表只支持“发现该来源”，不直接支持方法结论。</li><li>未完成核验的条目显式标记 <code>planned / unverified</code>，不进入强答案。</li></ul>
+
+<footer class="aris-footer">
+  Generated by <a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/blob/main/skills/render-html/SKILL.md">ARIS <code>/render-html</code></a> ·
+  source path <code>interview_materials\vla\sources\00_github_guidance_and_sources.md</code> ·
+  SHA256 <code>8de0b04dede1</code> ·
+  generated at 2026-07-16 08:48 UTC.
+  This is a generated view — edit the source Markdown, then re-render.
+</footer>
+</main>
+
+</div>
+</body>
+</html>

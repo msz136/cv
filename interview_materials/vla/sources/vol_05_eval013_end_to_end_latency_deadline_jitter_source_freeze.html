@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 EVAL-013 Source Freeze：端到端 Latency、Deadline Miss 与 Jitter</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_eval013_end_to_end_latency_deadline_jitter_source_freeze.md">
+<meta name="aris:source-sha256" content="9b47d6cd3dbea63e16d80c2fd25c7d68d1aa8f642b11b75913eb58f7449470bb">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>9b47d6cd3dbea63e16d80c2fd25c7d68d1aa8f642b11b75913eb58f7449470bb</code>；生成自：<code>interview_materials\vla\sources\vol_05_eval013_end_to_end_latency_deadline_jitter_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、Revision 与边界</a></li><li><a href="#2-latency">2. 先冻结“Latency 从哪里到哪里”</a></li><li><a href="#3-clock-contract">3. Clock Contract</a></li><li><a href="#4-stage-decomposition-critical-path">4. Stage Decomposition 与 Critical Path</a></li><li><a href="#5-percentile">5. Percentile 不是三个装饰数字</a></li><li><a href="#6-deadline-miss-estimand">6. Deadline Miss 是独立 Estimand</a></li><li><a href="#7-jitter-network-pdv-action-age">7. Jitter、Network PDV 与 Action Age 分开</a></li><li><a href="#8-control-frequency-h-k-deadline-budget">8. Control Frequency、H/K 与 Deadline Budget</a></li><li><a href="#9-cold-steady-load-fault">9. 测量矩阵：Cold、Steady、Load 与 Fault</a></li><li><a href="#10-coordinated-omission">10. Coordinated Omission</a></li><li><a href="#11-release-gate">11. 统计与 Release Gate</a></li><li><a href="#12-matched">12. Matched 实验矩阵</a></li><li><a href="#13-evidence-mapping">13. 五项目 Evidence Mapping</a></li><li><a href="#14-artifact-bundle">14. 最小 Artifact Bundle</a></li><li><a href="#15">15. 评估伪代码</a></li><li><a href="#16-source-gate">16. Source Gate 结论与下一入口</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 EVAL-013 Source Freeze：端到端 Latency、Deadline Miss 与 Jitter</h1>
+<div class="meta">状态：<code>source_frozen / VLA-EVAL-013 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-19 证据截止：2026-07-19 本切片冻结 timestamp boundary、clock contract、critical path、p50/p95/p99、deadline miss、control jitter、action age、warm/cold/load stratification、coordinated omission 与可复算 trace；只生成一张 <code>VLA-EVAL-013</code> 原子题卡，VOL 05 同步为 knowledge/cards 35/44。</div>
+<h2 id="question">问题（Question）</h2>
+<p>怎样证明一个 VLA policy loop 满足实时性要求？“模型推理 20 ms”“平均 latency 很低”“控制频率设成 20 Hz”都不够。可信评估要从 observation capture 到 controller apply 建统一时间轴，拆出 queue/infer/transport/decode 等阶段，报告 tail、deadline miss、jitter、stale/drop 与负载条件，并把 action chunk 的后续动作年龄纳入闭环协议。</p>
+<h2 id="1-revision">1. 冻结来源、Revision 与边界</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>类型 / revision / license</th><th>SHA-256</th><th>支持范围</th><th>不支持</th></tr></thead><tbody>
+<tr><td>S1</td><td>Dean &amp; Barroso, <em>The Tail at Scale</em></td><td>primary paper page；CACM 2013；论文许可未断言</td><td>Google Research page <code>08b0ee41b61e513ba6b9514028a50e88bdc53116f60828762bbd4a557a096376</code></td><td>系统规模/利用率上升时 temporary high latency 会主导整体响应；tail-tolerant 设计动机</td><td>VLA p99 阈值、机器人 deadline 或用户项目性能</td></tr>
+<tr><td>S2</td><td>ROS 2 <code>demos/pendulum_control</code></td><td>official-code；commit <code>54d49d22e898d796ea476c42268757ad422bf878</code>；Apache-2.0</td><td>README <code>55cf38fb84378228c3f031f88985a2bc016b7524b2bf79c6fb0978a43d29c3ff</code>；LICENSE <code>cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30</code></td><td>periodic real-time demo 的 deadline-latency min/max/mean/std、page faults、priority/memory lock 与 latency spike 边界</td><td>observation→action E2E latency；其示例数值是用户硬件 SLO</td></tr>
+<tr><td>S3</td><td>ROS 2 QoS design</td><td>official design；commit <code>93a415bf928751d37fce6f83215c521658e20c93</code>；Apache-2.0</td><td><code>qos.md</code> <code>e4c8f7a73abbc2b367017c3a2e5637a9ccd3a2914f68d9f8bc92ee46dfe11e41</code>；LICENSE <code>0e18850f8b379c340346bf727ac58d4d280cdfa6d0e91569e6640be996cdb76a</code></td><td>queue depth、reliability、sensor data 更重及时最新样本而非必达的设计边界</td><td>DDS 配置自动保证 VLA action freshness 或控制稳定</td></tr>
+<tr><td>S4</td><td>HdrHistogram</td><td>official-code；commit <code>de84b0a7de2378abfc405da503bf4898e84ea98e</code>；CC0 / BSD-2-Clause 双许可</td><td>README <code>d44cf3ffd7b4ca28e2fd4c619e5ac638a0935bbe2b38aba20b039eab7aac9d18</code>；LICENSE <code>ba550515c77c9e6f8b6a400381eacd3c47569297f8f27884801a95dff5309483</code></td><td>高动态范围 histogram、percentile 与 expected-interval correction；长响应导致少采样的 coordinated omission</td><td>自动选择 VLA load model、SLO 或统计置信度</td></tr>
+<tr><td>S5</td><td>RFC 3393, <em>IP Packet Delay Variation Metric for IP Performance Metrics</em></td><td>standard；RFC 3393，2002-11；IETF copyright</td><td>text <code>bd9170bd9d9fe7fa6deda27198d90a067d300e4d755b0c2ab5c880016ec72f2c</code></td><td>IP packet delay variation 的网络测量语义</td><td>controller scheduling jitter、GPU jitter 或完整 action-age jitter</td></tr>
+<tr><td>S6</td><td>CPython <code>time</code> docs</td><td>official-code/doc；commit <code>2931f2067a6ecdc52cb44f694ce14ab8b50b9a32</code>；PSF-2.0</td><td><code>time.rst</code> <code>56404007fc70cdcd8441628bdd0d68eb6a29f721919600f4ad2658726ed95229</code></td><td><code>monotonic</code>、<code>perf_counter</code> / <code>_ns</code> 的 duration clock 入口与 resolution metadata</td><td>跨主机 clock 已同步；GPU 异步工作已完成</td></tr>
+<tr><td>S7</td><td>Physical Intelligence OpenPI serving</td><td>official-code；commit <code>15a9616a00943ada6c20a0f158e3adb39df2ccac</code>；Apache-2.0</td><td>server <code>1370d345e6c3c5b8f15573050e485e60a5b423d1df33e24b237805e6b442b026</code>；serve entry <code>eccc0448b4873fd30a1fff3355c5de7a7c227138e6db04b7dcaa5bb38a6a5809</code>；policy <code>a2ac5236e23b11d0f5a840d4a8fef148d89dba921d5452ec5dfcd5a6ffa46f20</code>；LICENSE <code>43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1</code></td><td><code>infer_ms</code> / policy timing、WebSocket request-response 与 transform boundary</td><td>capture→controller apply、p99 SLO、deadline/jitter 或用户项目实时性</td></tr>
+<tr><td>S8</td><td>ENG-007 / ENG-022 / WM-034 / VOL 03 / EVAL-009/010</td><td>canonical local prerequisites</td><td>ENG-007 volume <code>19965c8d0620255e794b6ffa2b6fb791a80bf36f61e9c7cb699972b8a9ebc547</code>；ENG-022 <code>9945c2a6d415a36105847c1c1cddf99b197dd670ea169b2d21cdfc5cdeeda656</code>；WM-034 <code>106fe97d60e78505ae71e7a8667499a615d71b2e1f0099c1da474713ecf940f8</code>；VOL 03 <code>bef8ebb6540644cdbab76a92adaa71ba97523c17e04ce19632b71d54b11db809</code>；EVAL-009 <code>be6945d2475585f65cd74417070fbd4fee1b148660b35c139370935413b13dea</code>；EVAL-010 <code>512d9e16b392e7258358c0092dff6ff5049890040d8d5efd1fdadfe7048b2911</code></td><td>loop budget、queue/deadline、multi-clock/action-age、GPU timing、raw bundle 与 release gate</td><td>五项目已有 protocol-complete latency benchmark</td></tr>
+<tr><td>S9</td><td>五项目 inventories + WAM manifest</td><td>local-evidence</td><td>Harness <code>66acc52c685d5ace6926a42976b7ba59b6f889d6848f74bfd8216cad92aa291e</code>；OPD <code>0a68251de06bc8494b7d2be5e6dc169fc860a629c2f312e623db69ed29db12bb</code>；OpenPiVLA <code>a3c644f949295d72889b2acf6456bfd050e05c147b14381bbb067504a34ce293</code>；WAM <code>078c86b1484fe38fdd136428123c9529c6b750dfea5e031ec506cf617517772d</code>；UWM <code>728b8326dc345072886d0909fe2b8d81dfde3993771e7febed446d471bd3674d</code>；WAM manifest <code>1ab8709201e2e75f580cb0aa0f8465defb546d63b2aab70a1752239a7da8f697</code></td><td>当前 timing hook、timeout、DataLoader A/B 与缺口</td><td>VLA action-age p99、deadline SLO 或真机实时闭环</td></tr>
+</tbody></table>
+<p>S1解释为什么 tail 不能被平均值掩盖；S2测的是 periodic loop deadline lateness，不是 VLA E2E；S5只定义网络 packet delay variation，不等于 control jitter；S7只提供 serving stage timing。下面的统一 trace、统计和 gate 是 source-consistent engineering synthesis，不冒充任一来源的原始 schema。</p>
+<h2 id="2-latency">2. 先冻结“Latency 从哪里到哪里”</h2>
+<p>同一次 policy query <code>i</code> 至少保存：</p>
+<pre><code class="language-text">episode_id, request_id, obs_version, chunk_id, checkpoint_sha,
+t_sensor_capture, t_pre_start/end, t_enqueue/dequeue,
+t_infer_start/end, t_serialize_end, t_response_receive,
+t_decode_end, t_controller_accept, t_apply[j], t_next_sensor,
+clock_id/host/resolution/offset_uncertainty,
+queue_depth, batch_size, payload_bytes, H, K, f_control,
+camera_count/resolution, token_or_NFE, dtype/backend/device,
+deadline, timeout_stage, drop_reason, fallback, outcome</code></pre>
+<p>端到端 observation-to-actuation latency：</p>
+<div class="formula">\[
+L_i^{\mathrm{e2e}}=t_{i,0}^{\mathrm{apply}}-t_i^{\mathrm{capture}}.
+\]</div>
+<p>变量解释：<code>t_capture</code> 是生成该 request 的传感器采集时刻，<code>t_apply,0</code> 是第一条动作真正被 controller 接受/应用的时刻。直觉：它回答“机器人依据多旧的观测开始行动”。实现映射：不能用 request send、response receive 或 Python 函数 return 代替两端硬事件；保存 request/obs/chunk 关联和 clock uncertainty。</p>
+<p>必须区分：</p>
+<table><thead><tr><th>metric</th><th>起点→终点</th><th>回答</th><th>常见误用</th></tr></thead><tbody>
+<tr><td>model compute</td><td>synchronized infer start→end</td><td>模型/solver计算</td><td>说成控制频率</td></tr>
+<tr><td>server response</td><td>request send→response receive</td><td>queue+infer+transport</td><td>忽略采集、decode、controller</td></tr>
+<tr><td>first-action age</td><td>capture→first apply</td><td>第一条动作新鲜度</td><td>忽略 chunk 后续动作</td></tr>
+<tr><td>per-offset action age</td><td>capture→apply[j]</td><td>chunk 第 j 条动作年龄</td><td>只报一次 infer latency</td></tr>
+<tr><td>loop response</td><td>capture→apply→next effective sensor</td><td>闭环状态何时可观测</td><td>说成网络 RTT</td></tr>
+<tr><td>scheduler lateness</td><td>planned wakeup/deadline→actual wakeup</td><td>real-time loop调度</td><td>说成 VLA E2E</td></tr>
+</tbody></table>
+<h2 id="3-clock-contract">3. Clock Contract</h2>
+<p>同主机 duration 使用 monotonic/performance counter；wall-clock 只用于日志对齐，不用于可能回拨的 duration。[S6] 每个 clock 保存 source、resolution、host/process、是否包含 suspend。跨主机需要 PTP/NTP/硬件 trigger 或离线 offset estimation，并保存 offset/skew uncertainty。</p>
+<p>若起终点 clock offset uncertainty 为 <code>u_clock</code>，一个测得的 latency <code>L_obs</code> 只能解释为：</p>
+<div class="formula">\[
+L_i^{\mathrm{true}}\in
+[L_i^{\mathrm{obs}}-u_{\mathrm{clock}},\;L_i^{\mathrm{obs}}+u_{\mathrm{clock}}].
+\]</div>
+<p>变量解释：<code>u_clock</code> 是同步误差上界或区间，不是运行 jitter。直觉：当要区分 2 ms 优化而 clock uncertainty 已有 5 ms 时，结论不可识别。实现映射：trace manifest 保存 sync method、offset sample、drift fit、同步前后 residual。</p>
+<p>GPU kernel 默认异步；CPU wall-clock 包围 launch 可能只测到 enqueue。使用 device event 或显式 synchronization，并把 synchronization boundary、warm-up、compile/cache 状态写入 protocol。[S8]</p>
+<h2 id="4-stage-decomposition-critical-path">4. Stage Decomposition 与 Critical Path</h2>
+<p>概念账本可写：</p>
+<div class="formula">\[
+L_{\mathrm{parts}}=
+L_{\mathrm{sensor}}+L_{\mathrm{pre}}+L_{\mathrm{queue}}+
+L_{\mathrm{infer}}+L_{\mathrm{serialize}}+L_{\mathrm{transport}}+
+L_{\mathrm{decode}}+L_{\mathrm{controller}}.
+\]</div>
+<p>变量解释：每项必须有同一 request 的 start/end span。直觉：先定位 tail 出在哪一段。实现映射：异步 pipeline 会 overlap，真实 <code>L_e2e</code> 是 span DAG 的 critical path，不是各阶段平均数相加；同时输出 exclusive span、overlap 与 end-to-end trace。</p>
+<p>每个阶段既要报自身 p50/p95/p99，也要报告其对 E2E tail case 的条件贡献：例如 <code>E[L_queue | L_e2e ≥ q99]</code>。否则“infer p99低”仍可能被 queue、camera 或 controller tail 主导。</p>
+<h2 id="5-percentile">5. Percentile 不是三个装饰数字</h2>
+<p>对 <code>n</code> 个同协议 latency，经验 CDF：</p>
+<div class="formula">\[
+\widehat F_n(x)=\frac{1}{n}\sum_{i=1}^{n}\mathbb{1}[L_i\le x],
+\qquad
+\widehat q_p=\inf\{x:\widehat F_n(x)\ge p\}.
+\]</div>
+<p>变量解释：<code>q50/q95/q99</code>分别是经验分位点；实现映射：冻结 quantile definition/interpolation、有效样本 <code>n</code>、bin precision、warm/cold/load slice，并保存 raw span。<code>n=100</code> 的 p99 基本由一个极端 order statistic 决定，不能伪装为稳定 SLO；报告 bootstrap/重复 run/cluster uncertainty 与 max。</p>
+<p>S1说明临时高延迟在大规模/高利用率下会主导整体体验；对机器人，少量 tail 还可能跨过 contact、reset 或 safety deadline。平均值、单次 best-case、吞吐和 p99回答不同问题。</p>
+<h2 id="6-deadline-miss-estimand">6. Deadline Miss 是独立 Estimand</h2>
+<p>每个 request/loop 先冻结 absolute deadline <code>D_i</code>。miss indicator 与 miss rate：</p>
+<div class="formula">\[
+M_i=\mathbb{1}[t_i^{\mathrm{apply}}&gt;D_i],
+\qquad
+\widehat r_{\mathrm{miss}}=\frac{1}{n}\sum_{i=1}^{n}M_i.
+\]</div>
+<p>变量解释：deadline 可以来自 controller period、max action age 或 safety envelope；实现映射：保存 miss stage、lateness <code>t_apply-D</code>、连续 miss burst、drop/fallback/outcome，并给二项区间。timeout response 不等于 work 已取消；还要记录 late completion 与 leaked action。[S2][S8]</p>
+<p>ROS 2 pendulum demo报告“deadline missed 后的 latency”、min/max/mean/std 和 page faults，并警告即使 mean 尚可仍可能出现不可接受的 maximum/spike。[S2] 该例支持 tail/scheduling gate，不提供 VLA action deadline 默认值。</p>
+<h2 id="7-jitter-network-pdv-action-age">7. Jitter、Network PDV 与 Action Age 分开</h2>
+<p>若 controller 目标周期为 <code>T_c=1/f_c</code>，apply-time phase error 与 interval jitter 可定义：</p>
+<div class="formula">\[
+e_i=t_i^{\mathrm{apply}}-(t_0+iT_c),
+\qquad
+J_i=(t_i^{\mathrm{apply}}-t_{i-1}^{\mathrm{apply}})-T_c.
+\]</div>
+<p>变量解释：<code>e_i</code>看相对理想时间轴的漂移，<code>J_i</code>看相邻执行间隔偏差；实现映射：分别报告 signed/absolute p50/p95/p99、early/late、miss burst 和频谱/周期性 spike。只报 standard deviation 会掩盖偏置与非对称 tail。</p>
+<p>RFC 3393 的 IP packet delay variation 是网络层 metric。[S5] VLA 总 jitter 还包含 sensor cadence、OS scheduling、queue/batch、GPU、decode、controller 与 actuator；不能把 ping jitter 叫 control jitter。</p>
+<p>对 chunk 第 <code>j</code> 条动作：</p>
+<div class="formula">\[
+A_{i,j}=t_{i,j}^{\mathrm{apply}}-t_i^{\mathrm{capture}}
+\approx L_i^{\mathrm{e2e}}+jT_c.
+\]</div>
+<p>变量解释：近似式假设固定 controller period且无 queue disturbance；实现映射：实际逐条保存 <code>t_apply[j]</code>。即使 first-action latency 很低，执行较长 prefix 的后半段仍可能 stale。[S8]</p>
+<h2 id="8-control-frequency-h-k-deadline-budget">8. Control Frequency、H/K 与 Deadline Budget</h2>
+<p><code>f_c</code> 是 low-level apply frequency，policy query frequency 不一定相同。若一次预测 <code>H</code> 步、执行 <code>K≤H</code> 步再 replan：</p>
+<div class="formula">\[
+T_c=\frac{1}{f_c},
+\qquad
+T_{\mathrm{chunk}}=\frac{H}{f_c},
+\qquad
+T_{\mathrm{replan}}=\frac{K}{f_c}.
+\]</div>
+<p>变量解释：同样 <code>H/K</code> 在不同 <code>f_c</code> 下对应不同物理时长。实现映射：manifest冻结 action type、per-step/per-second语义、action repeat、interpolation、H/K、policy/controller Hz；改变频率可能改变 delta action 的物理语义，不能只看 shape。[S8]</p>
+<p>可把 query budget 设为 <code>min(T_replan, A_max)</code> 再扣除 controller/safety margin，但 <code>A_max</code> 必须来自任务动力学与风险分析，不是经验拍一个 50 ms。低频 chunk 可提高吞吐，却增加 stale exposure；高频 query 可提高响应，却可能造成 queue、GPU contention 和 deadline miss。</p>
+<h2 id="9-cold-steady-load-fault">9. 测量矩阵：Cold、Steady、Load 与 Fault</h2>
+<table><thead><tr><th>维度</th><th>至少的 strata</th><th>原因</th></tr></thead><tbody>
+<tr><td>lifecycle</td><td>process start、first request、compile/cache warm-up、steady state、checkpoint reload</td><td>cold start不能被 warm percentile抹掉</td></tr>
+<tr><td>load</td><td>idle single-client、target concurrency、burst、overload、multi-robot</td><td>tail常随利用率/排队非线性上升 [S1]</td></tr>
+<tr><td>request</td><td>camera count/resolution、prompt/token、H/D、NFE、batch、payload</td><td>请求异构决定 compute/transport</td></tr>
+<tr><td>runtime</td><td>checkpoint/processor/backend/dtype/device/power/thermal</td><td>性能数字必须绑定 bundle与硬件</td></tr>
+<tr><td>task</td><td>free-space、contact、recovery、reset transition</td><td>相同 latency在不同状态风险不同</td></tr>
+<tr><td>fault</td><td>delayed sensor、queue burst、network loss、worker restart、controller reject</td><td>验证 miss/drop/cancel/fallback，而非只测 happy path</td></tr>
+</tbody></table>
+<p>每个 slice 保存 <code>n</code>、arrival model、offered load、accepted/completed/dropped/timeout 数量。只在低负载循环“发一个、等一个、再发一个”会让长响应期间没有新 request，低估真实 backlog。</p>
+<h2 id="10-coordinated-omission">10. Coordinated Omission</h2>
+<p>HdrHistogram README说明：当大响应时间导致预期采样被“跳过”时，原始 histogram 会漏掉本应发生的慢样本；<code>recordValueWithExpectedInterval</code> 用 expected interval 做 correction。[S4]</p>
+<p>VLA load test建议同时记录：</p>
+<ul><li>intended arrival time 与 actual send time；</li><li>open-loop / scheduled arrivals 与 closed-loop client；</li><li>expected interval、offered/accepted/completed QPS；</li><li>queue depth、backpressure/drop 与 raw uncorrected/corrected view；</li><li>robot端因安全 gate 跳过的 action cycle。</li></ul>
+<p>correction 不是凭空补真实 episode；它是对 load generator sampling bias 的诊断。主证据仍需原始 arrival/queue/span ledger。</p>
+<h2 id="11-release-gate">11. 统计与 Release Gate</h2>
+<ol><li>预注册 primary endpoint：如 <code>capture→first apply p99</code> 与 <code>deadline miss rate</code>，不是看完数据再挑最好数字；</li><li>同 checkpoint/request mix/load/hardware 比 candidate vs baseline，最好 paired 或按 run/robot-day cluster；</li><li>同报 q50/q95/q99/max、miss k/n/CI、jitter、stale/drop/fallback、throughput 与 success/safety；</li><li>latency 改善不能抵消 invalid action 或 success 下降；success 提升也不能越过 hard deadline/safety veto；</li><li>多次 run 报 run-to-run variability，保留 thermal、power、background load 与 compiler/cache 状态；</li><li>用 EVAL-009 raw bundle重算 summary，用 EVAL-010 hard gate和 canary验证 target load；</li><li>simulator/server microbenchmark不替代 robot-side capture/apply trace。</li></ol>
+<h2 id="12-matched">12. Matched 实验矩阵</h2>
+<table><thead><tr><th>sweep</th><th>固定项</th><th>arms</th><th>主要读数</th></tr></thead><tbody>
+<tr><td>model/backend</td><td>request/load/controller</td><td>checkpoint/backend/dtype/NFE</td><td>infer 与 E2E tail、parity、success</td></tr>
+<tr><td>H/K/frequency</td><td>checkpoint/task/init/controller family</td><td>H/K、policy/controller Hz、repeat compensation</td><td>action-age curve、miss、stale、success</td></tr>
+<tr><td>batching/queue</td><td>model/request mix/hardware</td><td>batch delay/size、queue policy、concurrency</td><td>throughput、queue p99、E2E p99、drop</td></tr>
+<tr><td>transport</td><td>same payload/server/controller</td><td>local/in-process/LAN、serialization/compression</td><td>response/E2E tail、packet PDV、CPU</td></tr>
+<tr><td>fault</td><td>same baseline/load</td><td>delay/burst/drop/restart/thermal</td><td>miss burst、cancel、fallback、recovery</td></tr>
+</tbody></table>
+<p>不要同时换 checkpoint、分辨率、NFE、batch、H/K、controller、task mix 后把差异归因于“推理优化”。</p>
+<h2 id="13-evidence-mapping">13. 五项目 Evidence Mapping</h2>
+<table><thead><tr><th>项目</th><th>已有证据</th><th>能安全说</th><th>不能说 / 缺口</th></tr></thead><tbody>
+<tr><td>Robot Harness</td><td>tool polling timeout、cancel context、robot lock cleanup、best-effort compensation</td><td>有 tool-side deadline/cancel/side-effect 控制入口</td><td>不是 VLA capture→apply；缺 infer/action-age p99、controller cycle、load test</td></tr>
+<tr><td>OPD</td><td>static point/box/text eval 与 checkpoint/by-pool summaries</td><td>可讨论 offline metric pipeline</td><td>无 policy server、controller、clock trace、deadline/jitter；不能报 closed-loop latency</td></tr>
+<tr><td>OpenPiVLA</td><td>local connect/infer timeout failure hooks；official OpenPI server有 <code>infer_ms</code></td><td>有局部 serving/timing入口，能设计 stage trace</td><td>缺 formal checkpoint绑定的 capture/apply、warm/load p99、miss/jitter、GPU sync与 robot canary</td></tr>
+<tr><td>WAM</td><td>单 episode三 camera、300-step trace/video与远端 checkpoint path</td><td>能检查 action/video步数与manifest</td><td>没有 per-step timestamp、controller apply、latency、clock或真机闭环；视频长度不是 control frequency证据</td></tr>
+<tr><td>UWM</td><td>DataLoader-only A/B：p95 wait约 <code>13.86s→0.19s</code>，local-direct/smoke-bounded</td><td>可讲训练 input stall定位</td><td>不是 rollout latency；缺 action-age/deadline/jitter raw episode，不能把训练 p95写成实时控制优化</td></tr>
+</tbody></table>
+<p>五项目均没有 protocol-complete VLA real-time benchmark。本页只生成补证据合同，不新增 latency 或 success 结果。</p>
+<h2 id="14-artifact-bundle">14. 最小 Artifact Bundle</h2>
+<pre><code class="language-text">latency_eval/
+  clock_contract.json          # source/resolution/host/offset/skew uncertainty
+  protocol_manifest.json       # model/processor/request/load/H/K/Hz/controller/hardware
+  raw_spans.parquet            # per request/stage start-end + IDs
+  action_apply.parquet         # capture/chunk offset/controller apply/next sensor
+  arrivals_queue.parquet       # intended/actual arrival, depth, batch, drop
+  outcomes.jsonl               # deadline/stale/fallback/success/safety
+  summaries/by_slice.json      # n, q50/q95/q99/max, miss k/n/CI, jitter
+  figures/{timeline,cdf,tail,load_curve}.svg
+  checksums/manifest-sha256.txt
+  reproduce.ps1</code></pre>
+<h2 id="15">15. 评估伪代码</h2>
+<pre><code class="language-python">def latency_eval(policy_client, controller, schedule, protocol, clock):
+    # 1. Freeze bundle, request/load mix, H/K/Hz and every event boundary.
+    spec = validate_clock_protocol_and_deadlines(protocol, clock)
+
+    # 2. Schedule arrivals independently of prior response completion.
+    for req in schedule.intended_arrivals:
+        trace = start_trace(req, intended_ts=req.ts)
+        obs = capture_with_timestamp(req, clock)
+
+        # 3. Record queue/infer/transport/decode spans; synchronize GPU timing.
+        chunk = policy_client.infer_with_spans(obs, trace, sync_device=True)
+
+        # 4. Reject late/stale responses and timestamp every applied chunk offset.
+        for j, action in enumerate(freshness_gate(chunk, req.deadline)):
+            t_apply = controller.apply(action)
+            trace.mark_apply(j, t_apply)
+
+        # 5. Persist raw spans/outcomes before percentile aggregation.
+        write_immutable_trace(trace)
+
+    # 6. Stratify cold/warm/load/fault and compute tail, miss, jitter and age.
+    return recompute_latency_release_report(protocol)</code></pre>
+<p>这是 evaluation contract，不是五项目已有实现。</p>
+<h2 id="16-source-gate">16. Source Gate 结论与下一入口</h2>
+<p>EVAL-013 保持 <code>WARN</code>：Tail at Scale支持 tail 的系统重要性；ROS 2 demo支持 deadline lateness、max/spike 与 page-fault real-time边界；HdrHistogram支持 coordinated-omission警告；RFC 3393和ROS QoS帮助分开网络 PDV、latest sample 与完整控制 jitter；CPython/OpenPI冻结 clock/serving打点入口。本页完成 event boundary、clock、tail、deadline、jitter、H/K/Hz、load与artifact合同；五项目均缺 capture→apply 的 protocol-complete实时证据。</p>
+<p>下一节点固定为 <code>VLA-EVAL-014</code>：forbidden side effect、scope、取消与补偿评估。真实口述前不创建 <code>coaching_state.md</code>。</p>
+<h2 id="references">References</h2>
+<ol><li>Dean &amp; Barroso, <a href="https://research.google/pubs/the-tail-at-scale/"><em>The Tail at Scale</em></a>, CACM 2013。</li><li>ROS 2 <code>demos</code> commit <a href="https://github.com/ros2/demos/tree/54d49d22e898d796ea476c42268757ad422bf878/pendulum_control"><code>54d49d2</code></a>，<a href="https://github.com/ros2/demos/blob/54d49d22e898d796ea476c42268757ad422bf878/pendulum_control/README.md">pendulum control README</a>，Apache-2.0。</li><li>ROS 2 Design commit <a href="https://github.com/ros2/design/blob/93a415bf928751d37fce6f83215c521658e20c93/articles/qos.md"><code>93a415b</code></a>，<em>Quality of Service policies</em>，Apache-2.0。</li><li>HdrHistogram commit <a href="https://github.com/HdrHistogram/HdrHistogram/tree/de84b0a7de2378abfc405da503bf4898e84ea98e"><code>de84b0a</code></a>，CC0 / BSD-2-Clause。</li><li>IETF, <a href="https://www.rfc-editor.org/rfc/rfc3393">RFC 3393</a>, <em>IP Packet Delay Variation Metric for IP Performance Metrics</em>, 2002。</li><li>CPython <a href="https://github.com/python/cpython/blob/2931f2067a6ecdc52cb44f694ce14ab8b50b9a32/Doc/library/time.rst"><code>time.rst@2931f2</code></a>，PSF-2.0。</li><li>Physical Intelligence <a href="https://github.com/Physical-Intelligence/openpi/tree/15a9616a00943ada6c20a0f158e3adb39df2ccac"><code>openpi@15a9616</code></a>：<code>websocket_policy_server.py</code>、<code>serve_policy.py</code>、<code>policy.py</code>，Apache-2.0。</li><li><a href="vol_05_eng022_policy_server_resilience_source_freeze.html">ENG-022 Policy Server</a>、<a href="vol_04_wm034_control_latency_actuator_controller_mismatch_source_freeze.html">WM-034 Control Latency</a>、<a href="vol_03_architecture_execution_claim_to_code.html">VOL 03 Architecture / Execution</a>、<a href="vol_05_eval009_raw_predictions_episode_trace_video_recomputable_summary_source_freeze.html">EVAL-009 Recomputable Bundle</a>、<a href="vol_05_eval010_regression_gate_golden_set_canary_rollout_source_freeze.html">EVAL-010 Release Gate</a>。</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest</a>与五项目 inventories。</li></ol>
+</article></body></html>

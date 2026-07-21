@@ -1,0 +1,53 @@
+{
+  "artifact": "knowledge/vol_06_per014_3d_grounding_spatial_relation_open_vocabulary.md",
+  "html": "knowledge/vol_06_per014_3d_grounding_spatial_relation_open_vocabulary.html",
+  "source_freeze": "sources/vol_06_per014_3d_grounding_spatial_relation_open_vocabulary_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / VLA-PER-014 / source_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "E3622ADE1C28EF874D82535C1373C89A97454F04A89AF6382279F4DAE65AFA04",
+  "question_ids": [
+    "VLA-PER-014"
+  ],
+  "checks": {
+    "bounded_slice": "PASS (the later VLA-PER-014 card-only slice synchronized exactly one atomic card; no PER-015 artifact, mastery mutation or coaching_state.md)",
+    "source_gate": "PASS WITH WARNING (six complete pinned primary PDFs, six official repositories with 36 file hashes, nine deterministic probes and five-project/direct-exception review are inherited from the PER-014 source freeze; no local 3D semantic runtime artifact exists)",
+    "knowledge_map_boundary": "PASS (PER-007 2D open-vocabulary grounding and PER-013 3D representation feed PER-014 entity-language-spatial binding; PER-015 action feasibility and PER-016 SLAM drift remain distinct)",
+    "thirty_second_answer": "PASS (the answer first types the output as box/candidate/point/mask/field/map, then freezes candidate/frame/relation/prompt/score/metric and ends at the downstream action gate)",
+    "six_output_taxonomy": "PASS (3D referring box, candidate top-1, per-point semantics, instance mask, continuous language field and semantic map query have distinct assumptions, outputs, bottlenecks and metrics)",
+    "typed_grounding_manifest": "PASS (scene/candidate/output identity, frame/axis/unit, pose-depth-intrinsics revision, relation arity/frame, encoder/prompt/negatives, normalization/score/temperature/threshold/top-k and metric revision are explicit)",
+    "four_layer_pipeline": "PASS (geometry, entity atomization, language interface and decision protocol are ordered so first-divergence failures cannot be hidden by downstream semantic scores)",
+    "candidate_bottleneck": "PASS (target-present recall, oracle quality, conditional listener accuracy and end-to-end metrics are separated; target absence gives a zero top-1 upper bound)",
+    "scanrefer_contract": "PASS WITH WARNING (VoteNet-style proposal, proposal-language matching, SoftmaxRankingLoss and ref_acc-versus-IoU boundaries are taught from pinned paper/code; no local checkpoint or proposal oracle exists)",
+    "referit3d_contract": "PASS WITH WARNING (segmented-object candidate assumption, object/language encoders, DGCNN graph and CE listener are explicit; the method is not promoted to a detector)",
+    "spatial_relation_contract": "PASS (observer/world/object frame, target/anchor IDs, arity, axis, metric/tolerance and candidate-set identity are explicit; between is ternary and view-dependent relations are separated)",
+    "score_calibration": "PASS (dot, cosine and positive-vs-negative relative softmax are distinct; encoder/checkpoint/prompt/tokenizer/normalization/negative/temperature/threshold/unknown are protocol identity)",
+    "openscene_contract": "PASS WITH WARNING (2D feature fusion, sparse 3D cosine distillation, point semantic metrics and view-coverage unknown policy are explicit; point semantics are not promoted to instance identity)",
+    "semantic_instance_boundary": "PASS (merge, split, no-coverage and same-class relation failures demonstrate why point mIoU cannot replace instance AP or referring top-1)",
+    "openmask3d_contract": "PASS WITH WARNING (class-agnostic mask proposal, top-k visibility, SAM-assisted crops, normalized multi-scale CLIP features and view aggregation are explicit; proposal/pose/view gates remain)",
+    "view_aggregation": "PASS (weighted aggregation is labeled a diagnostic generalization, fixed code mean behavior is preserved, and zero-norm cancellation plus top-view-versus-mean probes are included)",
+    "lerf_contract": "PASS WITH WARNING (per-scene scale-conditioned continuous field, volume-rendered language features, fixed negatives and relevance are explicit; fixed repo CLIP Huber plus DINO MSE is separated from generic objective descriptions)",
+    "conceptfusion_contract": "PASS WITH WARNING (RGB-D/intrinsics/pose map fusion, incremental feature update and normalized text-map query are explicit; query success is not promoted to SLAM, instance or robot success)",
+    "selection_and_metric_boundary": "PASS (downstream minimum-sufficiency selection and proposal/box/listener/point/instance/field-map metrics are separated with denominator and threshold identity)",
+    "deterministic_probes": "PASS (nine fixed probes cover IoU threshold, dot/cosine, candidate absence, relation-frame flip, semantic/instance, view cancellation, view selection, negative calibration and prompt identity)",
+    "failure_diagnosis": "PASS (ten symptom-to-first-layer checks and a geometry-to-action diagnostic order prevent prompt tuning from masking candidate or pose failures)",
+    "pseudocode": "PASS (commented fail-closed inference validates physical identity, query interface, candidate presence, relation arity/frame, raw per-view evidence, output-specific metric and PER-015 handoff)",
+    "opd_boundary": "PASS (Visual Genome 2D image relations and 0-1000 point/box supervision are not promoted to metric 3D entities, frames, language fields or robot results)",
+    "robot_harness_boundary": "PASS WITH WARNING (2D tri-state occupancy, a 54,856-point non-semantic PCD and path/URL bridge are mapped as geometry/interface evidence only; semantic/query/runtime/ownership evidence is absent)",
+    "five_project_truth_boundary": "PASS (OPD, Robot Harness, OpenPiVLA, WAM and UWM claims are evidence-bounded and public method, local direct evidence, extension target, matched result and ownership remain separate)",
+    "interview_readiness": "PASS (one thirty-second answer, one two-minute answer, twenty follow-ups, twelve dangerous-answer corrections and a sixteen-item whiteboard checklist are present)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, thirty-one H2 including renderer TOC, thirteen H3, thirteen tables, five code blocks, ten formula blocks, balanced inline/display MathJax delimiters, required palette/serif/sticky 260px TOC/900px breakpoint/print rules, synchronized canonical/HTML/review SHA, 44 unique IDs, all TOC anchors and ten local HTML links resolve, zero formula-em/control-character issues and literal LaTeX subscripts preserved after the card-state re-render)",
+    "browser_visual_check": "BLOCKED (the existing in-app Browser file:// policy restriction remains; static checks do not substitute for desktop and narrow visual QA)",
+    "question_card": "PASS WITH WARNING (one L3/P1 VLA-PER-014 atomic card with 155/335-character answers is synchronized and remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized VLA-PER-014 L3/P1 atomic card unseen until a real oral drill.",
+    "Archive any local typed 3D candidate/scene manifest, frame/pose/depth lineage, grounding head/config/checkpoint, semantic or instance map, raw query scores and proposal-oracle diagnostics if they exist.",
+    "Keep OPD 2D image spatial-relation supervision separate from 3D metric relation claims unless a typed 3D artifact is supplied.",
+    "For Robot Harness, add semantic/instance fields, a frozen query service, pose lineage, raw episode traces and per-file ownership before making a language-queryable map claim.",
+    "Run matched diagnostics that separate geometry, candidate, instance, relation, language/calibration and downstream action failures.",
+    "Do not create coaching_state.md or change mastery before a real oral drill."
+  ],
+  "next": "Freeze only the VLA-PER-015 perception-to-action/reachability/uncertainty/failure-gate source; do not generate its knowledge/card or change mastery in the same slice."
+}

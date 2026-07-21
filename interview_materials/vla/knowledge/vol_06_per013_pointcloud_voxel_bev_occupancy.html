@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：Point Cloud、Voxel、BEV、Occupancy 与 Sampling（PER-013）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per013_pointcloud_voxel_bev_occupancy.md">
+<meta name="aris:source-sha256" content="e8097eaa42ea9eabb34bd5b0b730c1aa0241a8e8da0ab974bffe92e110168a79">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>e8097eaa42ea9eabb34bd5b0b730c1aa0241a8e8da0ab974bffe92e110168a79</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per013_pointcloud_voxel_bev_occupancy.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与边界</a></li><li><a href="#1-30">1. 30秒直觉：表示不是形状，而是物理合同</a></li><li><a href="#2-typed-3d-representation-manifest">2. Typed 3D Representation Manifest</a></li><li><a href="#2-1-schema">2.1 最小 Schema</a></li><li><a href="#2-2-manifest">2.2 为什么 Manifest 属于模型身份</a></li><li><a href="#3-representation">3. Representation 选择总览</a></li><li><a href="#4-point-set-permutation-invariance-pipeline-invariance">4. Point Set：Permutation Invariance 不等于 Pipeline Invariance</a></li><li><a href="#5-pointnet-set-abstraction">5. PointNet++ Set Abstraction</a></li><li><a href="#6-sampling-coverage-density-bias">6. Sampling：Coverage、Density 与 Bias</a></li><li><a href="#6-1-fps">6.1 FPS</a></li><li><a href="#6-2-ball-query-knn">6.2 Ball Query 与 kNN</a></li><li><a href="#6-3">6.3 必报诊断</a></li><li><a href="#7-voxelization">7. Voxelization：规则邻域来自离散量化</a></li><li><a href="#7-1">7.1 四个常见边界</a></li><li><a href="#8-aggregation-meanvfe-learned-vfe">8. Aggregation：MeanVFE 与 Learned VFE 不等价</a></li><li><a href="#9-sparse-tensor-sparse-convolution">9. Sparse Tensor 与 Sparse Convolution</a></li><li><a href="#9-1">9.1 三类算子不可合并</a></li><li><a href="#9-2-sparse">9.2 “Sparse 一定更快”为什么错</a></li><li><a href="#10-pillar-z-spatial-bin-z-feature">10. Pillar：折叠 z 的 Spatial Bin，不必删除 z Feature</a></li><li><a href="#11-height-compression-bev">11. Height Compression 与 BEV</a></li><li><a href="#12-bevfusion">12. BEVFusion：共享平面不是自动对齐</a></li><li><a href="#13-occupancy">13. Occupancy：至少三种不同合同</a></li><li><a href="#14-octomap-observed-free-unknown">14. OctoMap：Observed Free 与 Unknown 必须分开</a></li><li><a href="#15-occupancy-networks-query-surface-threshold">15. Occupancy Networks：连续 Query 与 Surface Threshold</a></li><li><a href="#16-memory-compute-scaling">16. Memory 与 Compute Scaling</a></li><li><a href="#17-conversion-loss-downstream-sufficiency">17. Conversion Loss 与 Downstream Sufficiency</a></li><li><a href="#17-1-metric">17.1 Metric 边界</a></li><li><a href="#18-deterministic-probes">18. Deterministic Probes：先验证合同，再跑大模型</a></li><li><a href="#19-failure-taxonomy">19. Failure Taxonomy 与诊断顺序</a></li><li><a href="#20-fail-closed-pseudocode">20. Fail-closed Pseudocode</a></li><li><a href="#21-robot-harness">21. Robot Harness：直接证据映射</a></li><li><a href="#22-project-truth-boundary">22. 五项目 Project Truth Boundary</a></li><li><a href="#23">23. 面试回答模板、追问与危险答案</a></li><li><a href="#23-1">23.1 两分钟结构化回答</a></li><li><a href="#23-2">23.2 高频追问</a></li><li><a href="#23-3">23.3 危险答案与修正</a></li><li><a href="#24-checklist">24. 白板 Checklist 与练习标准</a></li><li><a href="#25">25. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：Point Cloud、Voxel、BEV、Occupancy 与 Sampling（PER-013）</h1>
+<div class="meta">状态：<code>drafted / VLA-PER-013 / source_synced / card_synced / WARN</code> 更新日期：2026-07-20 前置：<code>VLA-PER-002</code> 2D→3D lift、<code>VLA-PER-003</code> multi-view/time、<code>VLA-PER-012</code> dense perception；后续：<code>VLA-PER-014</code> 3D semantic grounding、<code>VLA-PER-015</code> perception→action gate。 来源入口：<a href="../sources/vol_06_per013_pointcloud_voxel_bev_occupancy_source_freeze.html">PER-013 Point Cloud / Voxel / BEV / Occupancy Source Freeze</a>；对应自测：<a href="../questions/vol_06_per013.html">PER-013 Atomic Card</a>。本页只把冻结证据转成可教学知识；题卡已生成并保持<code>unseen</code>，不创建训练状态，也不改变任何 mastery。</div>
+<h2 id="question">问题（Question）</h2>
+<p>面试官问“点云、voxel、BEV 和 occupancy 怎样选，sampling 怎样影响结果”时，不能只回答“点云精细、voxel 规则、BEV 高效”。需要从 downstream query 反推表示：连续坐标、局部几何、高度、空闲空间、unknown、语义身份分别要保留什么；frame、origin、range、resolution、axis、time 怎样定义同一个 tensor；FPS、ball query、voxel cap 和 aggregation 怎样改变模型身份；稀疏计算为何不是免费午餐；以及本地项目到底只有地图/PCD 接口，还是已有可复现的 3D encoder 与机器人闭环。</p>
+<p>本节点建立的主链是：</p>
+<pre><code class="language-text">metric 3D samples + frame/time/schema
+  -&gt; point-set sampling and grouping
+  -&gt; voxel quantization and aggregation
+  -&gt; sparse 3D coordinates + features
+  -&gt; pillar or height-compressed BEV
+  -&gt; explicit / octree / implicit occupancy
+  -&gt; PER-014 semantic 3D grounding
+  -&gt; PER-015 reachability / collision / controller gate</code></pre>
+<h2 id="section-2">知识地图位置与边界</h2>
+<table><thead><tr><th>相邻节点</th><th>该节点负责</th><th>PER-013负责</th></tr></thead><tbody>
+<tr><td>PER-002</td><td>pixel→camera/base 3D、intrinsics、TF</td><td>已有 metric 3D sample 如何编码与量化</td></tr>
+<tr><td>PER-003</td><td>multi-view/time identity 与 fusion</td><td>representation artifact 保留 source/time lineage</td></tr>
+<tr><td>PER-008</td><td>point/box/mask/keypoint/affordance 的选择</td><td>point/voxel/BEV/occupancy 内部合同与转换损失</td></tr>
+<tr><td>PER-012</td><td>segmentation、metric depth、surface、keypoint、affordance</td><td>surface 之后的 3D representation</td></tr>
+<tr><td>PER-014</td><td>3D semantic/open-vocabulary grounding</td><td>本页不产生 language-region binding 或 3D box</td></tr>
+<tr><td>PER-015</td><td>reachability、IK、collision、controller</td><td>本页不从 occupancy score 推出可执行动作</td></tr>
+<tr><td>PER-016</td><td>localization、SLAM 与 map drift</td><td>OctoMap 只作 representation exemplar</td></tr>
+</tbody></table>
+<h2 id="1-30">1. 30秒直觉：表示不是形状，而是物理合同</h2>
+<p>一个可靠的 30 秒回答是：</p>
+<div class="meta">我先从 downstream query 选表示。Point cloud 保留连续坐标，但邻域不规则；PointNet++ 用 FPS、ball query/kNN 和对称 pooling 建 local hierarchy。Voxel 把坐标按 origin、range、axis、voxel size 做 floor 量化，换来规则邻域，同时引入边界跳变、碰撞和 cap/drop。Sparse tensor 只计算 active coordinates，但 coordinate map、kernel map 和索引也有成本。Pillar/BEV 把高度变成 point feature 或 channel，并不天然丢掉全部 z；多传感器 BEV 还必须校准到同一物理平面。Occupancy 要区分 dense/sparse grid、概率 octree 和 implicit function，unknown 不能当 free。最终 occupancy 或 BEV 仍不是 semantic grounding、collision safety 或 robot success。</div>
+<p>这段回答先封住六个偷换：</p>
+<ol><li>同一个 <code>[i,j,k]</code> 被默认在不同 frame/origin 下表示同一位置；</li><li>FPS 被默认无随机性、无起点依赖且总优于 random；</li><li>MeanVFE 被默认与 learned VFE 信息等价；</li><li>“sparse”被默认总是更快、更省显存；</li><li>BEV 被默认完全删除高度或自动完成传感器对齐；</li><li>occupancy probability 被默认等于可碰撞、可导航或可执行。</li></ol>
+<h2 id="2-typed-3d-representation-manifest">2. Typed 3D Representation Manifest</h2>
+<h3 id="2-1-schema">2.1 最小 Schema</h3>
+<pre><code class="language-json">{
+  &quot;sample_id&quot;: &quot;...&quot;,
+  &quot;source_ids&quot;: [&quot;camera/depth/lidar/frame ids&quot;],
+  &quot;timestamp_range&quot;: [&quot;t0&quot;, &quot;t1&quot;],
+  &quot;coordinate_frame&quot;: &quot;camera | base | map&quot;,
+  &quot;axis_convention&quot;: &quot;x-forward/y-left/z-up&quot;,
+  &quot;unit&quot;: &quot;meter&quot;,
+  &quot;representation&quot;: &quot;points | voxels | pillars | bev | occupancy_grid | octree | implicit_occupancy&quot;,
+  &quot;spatial_range&quot;: [[-1, 1], [-1, 1], [0, 2]],
+  &quot;origin&quot;: [0, 0, 0],
+  &quot;resolution_or_voxel_size&quot;: [0.02, 0.02, 0.02],
+  &quot;point_feature_schema&quot;: [&quot;x&quot;, &quot;y&quot;, &quot;z&quot;, &quot;intensity&quot;],
+  &quot;sampling&quot;: {&quot;method&quot;: &quot;fps&quot;, &quot;seed&quot;: 0, &quot;budget&quot;: 4096},
+  &quot;aggregation&quot;: &quot;max | mean | vfe | sparse_conv&quot;,
+  &quot;empty_unknown_policy&quot;: &quot;unknown != free&quot;,
+  &quot;model_revision&quot;: &quot;sha256:...&quot;,
+  &quot;validity_and_age&quot;: {&quot;valid_ratio&quot;: 0.0, &quot;age_ms&quot;: 0}
+}</code></pre>
+<h3 id="2-2-manifest">2.2 为什么 Manifest 属于模型身份</h3>
+<p>只有 <code>tensor.shape</code>，没有 frame、origin、resolution、range 与 axis，就不知道同一个 index 对应哪个物理位置；只有 point count，没有 sampling seed、input order 与 feature schema，就无法复现输入。对于 BEV，还必须记录 z aggregation、meters-per-cell 与 rotation augmentation；对于 occupancy，还必须记录 observed/unknown/free/occupied 的编码、阈值与更新时间。</p>
+<p>推荐把 representation hash 计算在“原始来源 ID + frame/time + quantization/sampling config + model revision”之上。这样离线评估、线上日志和失败样本才能追到同一物理合同。</p>
+<h2 id="3-representation">3. Representation 选择总览</h2>
+<table><thead><tr><th>表示</th><th>保留</th><th>主要损失/成本</th><th>适合回答</th><th>不能自动回答</th></tr></thead><tbody>
+<tr><td>unordered points</td><td>连续坐标、per-point feature</td><td>不规则邻域、sampling、带宽</td><td>surface/local geometry query</td><td>free space、语义、可执行性</td></tr>
+<tr><td>dense voxel</td><td>规则 3D 邻域</td><td>\(O(N_xN_yN_z)\) memory、量化</td><td>dense 3D feature/collision grid</td><td>unknown 语义、动作安全</td></tr>
+<tr><td>sparse voxel</td><td>active coordinate + feature</td><td>index/kernel map、active-pattern drift</td><td>稀疏 3D backbone</td><td>一定更快、更省</td></tr>
+<tr><td>pillar</td><td>xy cell + 聚合点特征</td><td>z spatial bin 折叠、collision</td><td>快速 2D backbone/BEV</td><td>所有高度关系</td></tr>
+<tr><td>height-compressed BEV</td><td>z slice→channel</td><td>2D convolution 的归纳偏置</td><td>shared planar query</td><td>自动 calibration</td></tr>
+<tr><td>probabilistic octree</td><td>multi-resolution log odds</td><td>sensor model/staleness</td><td>ray-consistent map</td><td>learned surface/semantics</td></tr>
+<tr><td>implicit occupancy</td><td>continuous query function</td><td>query/threshold/calibration</td><td>reconstruction/surface</td><td>sensor-ray free space、collision guarantee</td></tr>
+</tbody></table>
+<p>选择原则不是“谁最先进”，而是“下游要问什么”。接触点需要局部曲面和法向；导航需要 robot footprint 下的 free/occupied/unknown；语言 grounding 需要实例与语义；控制还需要时间、uncertainty、reachability 与 dynamics。一个 feature map 不会因为名字叫 BEV 就同时满足这些合同。</p>
+<h2 id="4-point-set-permutation-invariance-pipeline-invariance">4. Point Set：Permutation Invariance 不等于 Pipeline Invariance</h2>
+<p>点集可写为：</p>
+<div class="formula">\[
+\mathcal P=\{(\mathbf x_i,\mathbf f_i)\}_{i=1}^{N},
+\qquad
+\mathbf x_i\in\mathbb R^3.
+\]</div>
+<p>变量解释：\(\mathbf x_i\) 是连续坐标，\(\mathbf f_i\) 可含 RGB、intensity、normal、timestamp 或 learned feature。直觉：点的排列本身不应改变几何语义，所以 PointNet 用共享 MLP 与 symmetric reduction；但 pipeline 仍会受 input order、采样起点、邻域截断、浮点排序与 tie-break 影响。实现映射：固定 PointNet++ 代码的 set abstraction 先 sampling，再 grouping，再 local PointNet，而不是对全体点一次 max pool。</p>
+<p>因此应区分：</p>
+<ul><li><strong>函数层 permutation invariant</strong>：同一无序集合经理想对称聚合，结果不依赖排列；</li><li><strong>数据管线不一定 invariant</strong>：random/FPS 初始化、voxel cap、邻域前 K 个、duplicate handling 都可能依赖顺序；</li><li><strong>物理坐标不等于语义</strong>：点仍需 frame、unit、timestamp 与 source lineage。</li></ul>
+<h2 id="5-pointnet-set-abstraction">5. PointNet++ Set Abstraction</h2>
+<p>一层 set abstraction 可抽象为：</p>
+<div class="formula">\[
+\mathbf h_j=
+\operatorname{POOL}_{i\in\mathcal N(\mathbf c_j)}
+\phi\!\left([\mathbf x_i-\mathbf c_j,\mathbf f_i]\right).
+\]</div>
+<p>变量解释：\(\mathbf c_j\) 是 sampled centroid；\(\mathcal N(\mathbf c_j)\) 是 ball query 或 kNN 邻域；\(\phi\) 是 shared PointNet/MLP；POOL 通常是 max 等 symmetric reduction。直觉：先用 centroid 覆盖空间，再在 metric-local neighborhood 中学习相对几何。实现映射：固定 PointNet++ SSG 代码明确使用 512 个 centroid、radius 0.2、K=32，再用 128、radius 0.4、K=64；这些超参共同定义 receptive field。</p>
+<p>不能省略的模型身份包括：</p>
+<ol><li>input order 与 FPS 初始点/seed；</li><li>centroid 数量、radius、K；</li><li>ball query 或 kNN；</li><li>空邻域、重复 neighbor 与不足 K 的 padding；</li><li>relative coordinate normalization；</li><li>point feature schema、pooling 和 multi-scale/density policy。</li></ol>
+<h2 id="6-sampling-coverage-density-bias">6. Sampling：Coverage、Density 与 Bias</h2>
+<h3 id="6-1-fps">6.1 FPS</h3>
+<p>Farthest Point Sampling 的一步是：</p>
+<div class="formula">\[
+i_t=\arg\max_i\min_{s&lt;t}
+\lVert \mathbf x_i-\mathbf x_{i_s}\rVert_2.
+\]</div>
+<p>变量解释：\(i_t\) 是第 \(t\) 个新点，已选集合为 \(\{i_s\}_{s&lt;t}\)。直觉：每次选择离已有集合最远的点，倾向扩大 coverage。实现映射：固定 PointNet++ 实现维护每点到已选集合的最小距离并反复 argmax；第一个 centroid 与 tie-break 会影响最终集合。</p>
+<p>FPS 不是“无偏代表性采样”。它对孤立点、outlier 和坐标尺度敏感，精确实现近似 \(O(NM)\)；在非均匀密度下 coverage 改善也不等于任务 accuracy 改善。</p>
+<h3 id="6-2-ball-query-knn">6.2 Ball Query 与 kNN</h3>
+<table><thead><tr><th>邻域</th><th>固定量</th><th>会漂移的量</th><th>适用直觉</th><th>风险</th></tr></thead><tbody>
+<tr><td>ball query</td><td>metric radius \(r\)</td><td>neighbor count</td><td>保留物理尺度</td><td>稀疏区可能空、稠密区被 K 截断</td></tr>
+<tr><td>kNN</td><td>neighbor count \(K\)</td><td>metric radius</td><td>tensor shape 稳定</td><td>密度变化使 receptive field 尺度漂移</td></tr>
+</tbody></table>
+<p>多尺度 grouping 能缓解 density variation，但增加计算，也不会自动消除传感器距离、遮挡和采样模式带来的 domain shift。</p>
+<h3 id="6-3">6.3 必报诊断</h3>
+<p>至少报告 points kept/dropped、coverage radius、nearest-neighbor density strata、每邻域有效点分布、empty/duplicate ratio、sampling seed 与 run variance。只报告 “4096 points” 不足以复现。</p>
+<h2 id="7-voxelization">7. Voxelization：规则邻域来自离散量化</h2>
+<p>对 origin \(\mathbf o\) 与 voxel size \(\mathbf v\)：</p>
+<div class="formula">\[
+\mathbf q_i=
+\left\lfloor
+\frac{\mathbf x_i-\mathbf o}{\mathbf v}
+\right\rfloor.
+\]</div>
+<p>变量解释：\(\mathbf q_i\) 是 integer voxel coordinate；\(\mathbf o\) 决定 grid 相位；\(\mathbf v\) 决定各轴 resolution。直觉：把连续点映射到规则 cell，便于 3D convolution，却牺牲 cell 内精确位置。实现映射：MinkowskiEngine 量化路径会处理负坐标 floor 并生成 unique/inverse map；OpenPCDet 配置同时固定 <code>POINT_CLOUD_RANGE</code>、<code>VOXEL_SIZE</code>、<code>MAX_POINTS_PER_VOXEL</code> 和 train/test max voxels。</p>
+<h3 id="7-1">7.1 四个常见边界</h3>
+<ol><li><strong>origin/range/axis</strong>：同一世界点在不同原点或轴顺序下 index 不同；</li><li><strong>floor/round</strong>：负坐标与边界点归属会改变；</li><li><strong>boundary flip</strong>：\(x=0.99\) 与 \(1.01\) 在 \(v=1,o=0\) 时落入 0/1；</li><li><strong>cap/drop</strong>：每 voxel 最大点数和全局最大 voxel 数会丢弃数据，且可能受顺序/seed 影响。</li></ol>
+<p>训练与部署若只对齐 voxel size、没有对齐 range/origin/axis/floor，得到的是不同模型输入。</p>
+<h2 id="8-aggregation-meanvfe-learned-vfe">8. Aggregation：MeanVFE 与 Learned VFE 不等价</h2>
+<p>固定 OpenPCDet <code>MeanVFE</code> 可写为：</p>
+<div class="formula">\[
+\mathbf f_v=
+\frac{1}{\max(n_v,1)}
+\sum_{i\in v}\mathbf f_i.
+\]</div>
+<p>变量解释：\(n_v\) 是 voxel 中的 valid point count，\(\mathbf f_i\) 是被聚合的 point feature。直觉：mean 是简单稳定的 permutation-invariant baseline，但会把不同集合压成同一向量。实现映射：集合 \([0,2]\) 与 \([1,1]\) 的 mean 都是 1；若不保留 count、local offset、variance 或 higher moments，二者不可区分。</p>
+<p>VoxelNet 的 stacked VFE 会编码 point-wise feature 与 locally aggregated feature，并且 fixed-T voxel 内可能 random sample；PointPillars 也有 point-wise decorated features。它们不能因为最后都得到一个 cell feature 就统称为 “mean pooling”。</p>
+<p>面试中应主动说出三种 alias：</p>
+<ul><li>quantization collision：不同连续位置落入同 cell；</li><li>aggregation collision：不同 cell 内集合得到同 feature；</li><li>truncation collision：cap 后不同原始集合变成相同保留子集。</li></ul>
+<h2 id="9-sparse-tensor-sparse-convolution">9. Sparse Tensor 与 Sparse Convolution</h2>
+<p>Sparse tensor 由 active coordinates \(\mathcal C\) 与 features \(\mathcal F\) 组成，batch index 也是 coordinate 的一部分。一般化 sparse convolution 可抽象为：</p>
+<div class="formula">\[
+\mathbf y_{\mathbf u}=
+\sum_{\mathbf k\in\mathcal K(\mathbf u,\mathcal C_{\mathrm{in}})}
+\mathbf W_{\mathbf k}\mathbf x_{\mathbf u+\mathbf k}.
+\]</div>
+<p>变量解释：\(\mathbf u\) 是 output coordinate；\(\mathcal K\) 只保留 kernel offset 与 active input coordinate 的交集；\(\mathbf W_{\mathbf k}\) 是对应 kernel weight。直觉：避免在大量 empty cell 上做 dense multiply，但要先维护 coordinate 与 kernel mapping。实现映射：固定 OpenPCDet backbone 同时出现 <code>SubMConv3d</code>、<code>SparseConv3d</code> 与 <code>SparseInverseConv3d</code>，它们的 output coordinate set 与 stride 行为不同。</p>
+<h3 id="9-1">9.1 三类算子不可合并</h3>
+<table><thead><tr><th>算子</th><th>active pattern</th><th>典型作用</th><th>风险</th></tr></thead><tbody>
+<tr><td>SubMConv</td><td>通常只在原 active sites 输出</td><td>保持稀疏形状的局部特征</td><td>信息传播受 active topology 限制</td></tr>
+<tr><td>SparseConv</td><td>stride/kernel 可产生新 output sites</td><td>下采样与扩大 receptive field</td><td>active count 与 coordinate map 改变</td></tr>
+<tr><td>InverseConv</td><td>用对应 mapping 恢复分辨率</td><td>decoder/upsampling</td><td>必须绑定正确 indice/key</td></tr>
+</tbody></table>
+<h3 id="9-2-sparse">9.2 “Sparse 一定更快”为什么错</h3>
+<p>总成本还包括 coordinate dedup、hash/map、kernel map、index gather/scatter、allocator、feature width、batch fragmentation 与硬件支持。active ratio 很低且空间大时通常有利；场景很小、feature 很窄或 active pattern 不友好时，索引开销可能主导。应在同硬件、同 batch、同精度下报告 latency p50/p95、peak memory、active count 与 dense/sparse parity。</p>
+<h2 id="10-pillar-z-spatial-bin-z-feature">10. Pillar：折叠 z 的 Spatial Bin，不必删除 z Feature</h2>
+<p>PointPillars 把整个 vertical column 内的点组织成 pillar，用 PointNet 编码后 scatter 到 2D pseudo-image。若 z range 为 \([-3,1]\)，z voxel size 为 4，则 \(z=-2.5\) 和 \(0.5\) 的 spatial z index 都是 0。</p>
+<p>这意味着：</p>
+<ul><li>z 不再作为多层 spatial grid index；</li><li>per-point z、相对 pillar center 的 z、height statistics 仍可进入 feature；</li><li>聚合以后能否保留细粒度高度取决于 feature decoration、encoder 与 cap；</li><li>不能回答“pillar 完全不含高度”，也不能回答“pillar 无损保存 3D”。</li></ul>
+<p>固定 PointPillars/OpenPCDet 配置中的 range、voxel size、max points、scatter shape 与 backbone 都属于 artifact identity。</p>
+<h2 id="11-height-compression-bev">11. Height Compression 与 BEV</h2>
+<p>OpenPCDet 的一条 HeightCompression 路径将：</p>
+<div class="formula">\[
+[N,C,D,H,W]
+\longrightarrow
+[N,C\!\cdot\!D,H,W].
+\]</div>
+<p>变量解释：\(D\) 个 height slice 被 reshape 到 channel，而不是先做数值平均；\(H,W\) 是 BEV 平面。直觉：2D backbone 获得更高效率，同时高度只以 channel pattern 存在。实现映射：固定 <code>height_compression.py</code> 直接把 dense spatial feature 的 \(C,D\) 合并。</p>
+<p>BEV artifact 至少要绑定：</p>
+<ul><li>frame 与 x/y axis；</li><li>origin、range、meters-per-cell；</li><li>z range 与 aggregation/compression；</li><li>ego/map pose 与 timestamp；</li><li>augmentation matrix；</li><li>invalid/unknown/padding policy。</li></ul>
+<p>二维数组相同，不代表物理平面相同。</p>
+<h2 id="12-bevfusion">12. BEVFusion：共享平面不是自动对齐</h2>
+<p>BEVFusion 的关键思想是 camera 与 LiDAR feature 先进入统一 BEV，再在 shared planar coordinates 上融合。camera 分支需要 view transform 与 BEV pooling，LiDAR 分支需要 voxelization，之后才是 fuser/head。</p>
+<p>最小 calibration contract 包含：</p>
+<pre><code class="language-text">camera intrinsics/extrinsics
+LiDAR-to-ego transform
+ego/map pose
+image and point-cloud augmentation matrices
+depth/view-transform bins
+BEV origin/range/resolution
+sensor timestamp, validity and age</code></pre>
+<p>把两张同 shape feature map 按 array index 相加，不构成 calibrated fusion。固定论文/代码的 nuScenes、Waymo、KITTI 结果也不能直接外推为桌面 manipulation、VLA 或本地 Robot Harness 的收益；必须有目标域 config、checkpoint、calibration、matched ablation 与 same-protocol result。</p>
+<h2 id="13-occupancy">13. Occupancy：至少三种不同合同</h2>
+<table><thead><tr><th>类型</th><th>表示</th><th>unknown/free 关系</th><th>典型用途</th><th>主要风险</th></tr></thead><tbody>
+<tr><td>dense/sparse explicit grid</td><td>cell→state/probability/logit</td><td>必须显式编码</td><td>collision map、scene completion</td><td>cubic memory、unobserved 误当 free</td></tr>
+<tr><td>probabilistic octree</td><td>allocated node + log odds</td><td>未分配通常 unknown</td><td>multi-resolution mapping/raycast</td><td>sensor model、clamp、staleness</td></tr>
+<tr><td>implicit occupancy</td><td>\(o_\theta(\mathbf p,\mathbf z)\)</td><td>classifier 语义，不自带 ray-free</td><td>reconstruction/surface query</td><td>query cost、threshold、calibration</td></tr>
+</tbody></table>
+<p>“Occupancy model”若没有说是哪一种，答案仍不完整。</p>
+<h2 id="14-octomap-observed-free-unknown">14. OctoMap：Observed Free 与 Unknown 必须分开</h2>
+<p>概率 octree 的 log-odds update 可抽象为：</p>
+<div class="formula">\[
+L_t(n)=
+\operatorname{clip}\!\left(
+L_{t-1}(n)+\lambda(z_t,n),
+L_{\min},L_{\max}
+\right).
+\]</div>
+<p>变量解释：\(L_t(n)\) 是 node \(n\) 的 occupancy log odds；\(\lambda(z_t,n)\) 根据 sensor ray 中的 free cell 或 endpoint hit 使用不同增量；上下界防止置信度无限累积。直觉：free 是“被射线穿过的观测证据”，unknown 是“没有足够观测/未分配”，二者不能合并。实现映射：固定 OctoMap code 先计算 <code>free_cells</code> 与 <code>occupied_cells</code>，再分别以 miss/hit 更新 node。</p>
+<p>Octree resolution、hit/miss probability、occupancy threshold、clamping、max range、ray origin、time decay 与 dynamic-object policy 都会改变地图语义。Source freeze 只用固定 official code 支撑这一机制，没有可靠冻结 OctoMap 论文 PDF，也没有本地 OctoMap integration。</p>
+<h2 id="15-occupancy-networks-query-surface-threshold">15. Occupancy Networks：连续 Query 与 Surface Threshold</h2>
+<p>Implicit occupancy 可写为：</p>
+<div class="formula">\[
+o_\theta:
+\mathbb R^3\times\mathcal Z\rightarrow[0,1],
+\qquad
+\mathcal S_\tau=
+\{\mathbf p\mid o_\theta(\mathbf p,\mathbf z)=\tau\}.
+\]</div>
+<p>变量解释：\(\mathbf p\) 是任意 3D query point，\(\mathbf z\) 是 condition/latent，\(\tau\) 是 surface decision threshold。直觉：网络没有存储一张固定分辨率网格，而是按坐标查询 inside/outside probability；surface 是某个等值面。实现映射：固定 occupancy-networks generation 默认 probability threshold 0.5，对应 logit 0；阈值改为 0.7 时 logit 约 0.8473，抽取出的 surface 会改变。</p>
+<p>MISE 能自适应细化 query 以减少 dense evaluation，却不会自动提供：</p>
+<ul><li>sensor-ray observed free space；</li><li>unknown 与 unobserved policy；</li><li>dynamic occupancy；</li><li>calibrated collision probability；</li><li>robot footprint、swept volume 或控制安全。</li></ul>
+<p>因此 implicit occupancy score 不能直接作为 collision gate。</p>
+<h2 id="16-memory-compute-scaling">16. Memory 与 Compute Scaling</h2>
+<p>Dense grid feature memory 的下界是：</p>
+<div class="formula">\[
+M_{\mathrm{dense}}=
+N_xN_yN_z\,C\,b.
+\]</div>
+<p>变量解释：\(N_x,N_y,N_z\) 是 cell 数，\(C\) 是 feature channels，\(b\) 是每个 feature 的 bytes。直觉：range 每轴扩大 2 倍，dense 3D cell 数最多扩大 8 倍；resolution 每轴减半同样会带来 8 倍 cell。实现映射：\(200^3\times64\times4=2{,}048{,}000{,}000\) bytes，约 1.907 GiB；若 active ratio 为 1%，仅 active feature 约 19.53 MiB。</p>
+<p>后一个数字不包括 coordinates、kernel maps、allocator、activations、gradients 与 optimizer state，所以不能据此宣称“节省 99% 总显存”。报告表示效率时至少需要：</p>
+<table><thead><tr><th>类别</th><th>必报字段</th></tr></thead><tbody>
+<tr><td>geometry</td><td>range、resolution、active count/ratio、point count</td></tr>
+<tr><td>loss</td><td>quantization residual、collision/cap/drop、unknown coverage</td></tr>
+<tr><td>runtime</td><td>hardware、batch、precision、warmup、p50/p95 latency</td></tr>
+<tr><td>memory</td><td>feature-only estimate、measured peak、training/inference</td></tr>
+<tr><td>task</td><td>same split/protocol 下的 downstream metric</td></tr>
+</tbody></table>
+<h2 id="17-conversion-loss-downstream-sufficiency">17. Conversion Loss 与 Downstream Sufficiency</h2>
+<pre><code class="language-text">metric points
+  -&gt; sample/group                 # sparse region may be dropped
+  -&gt; quantize + aggregate         # boundary, collision, cap, alias
+  -&gt; sparse 3D features           # coordinate/kernel contract
+  -&gt; pillar / height compression  # z loss differs by path
+  -&gt; BEV fusion                   # calibrated common frame required
+  -&gt; occupancy map/function       # unknown/free/threshold semantics
+  -&gt; PER-014 semantic grounding   # object/language identity
+  -&gt; PER-015 action gate          # reachability/collision/controller</code></pre>
+<p>每次转换都应保存 input artifact ID、config/hash、output schema 和 loss diagnostics。建议用 round-trip probe：从 point→voxel index→voxel center，检查 quantization residual；从 sensor ray→occupancy，检查 observed free 与 endpoint occupied；从 3D point→BEV cell→physical center，检查 frame/origin/resolution。</p>
+<h3 id="17-1-metric">17.1 Metric 边界</h3>
+<table><thead><tr><th>输出</th><th>可报告</th><th>不等价于</th></tr></thead><tbody>
+<tr><td>sampled points</td><td>coverage radius、retention、density strata</td><td>unbiased sampling、task accuracy</td></tr>
+<tr><td>voxel/pillar</td><td>active count、collision/cap/drop、residual</td><td>3D detection 或 action success</td></tr>
+<tr><td>sparse feature</td><td>active pattern、latency、memory、dense parity</td><td>总是更快、semantic correctness</td></tr>
+<tr><td>BEV</td><td>round-trip、cell coverage、sensor validity</td><td>calibrated fusion、navigation success</td></tr>
+<tr><td>explicit occupancy</td><td>observed-cell IoU、free error、unknown coverage</td><td>implicit surface 或 collision safety</td></tr>
+<tr><td>implicit occupancy</td><td>occupancy IoU、Chamfer/F-score、query cost</td><td>ray-consistent free space、dynamic map</td></tr>
+</tbody></table>
+<p>所有数字都要绑定 dataset/split、frame/range/resolution、sampling seed、aggregation、threshold、observed denominator、hardware 与 code/checkpoint revision。</p>
+<h2 id="18-deterministic-probes">18. Deterministic Probes：先验证合同，再跑大模型</h2>
+<table><thead><tr><th>Probe</th><th>固定输入</th><th>结果</th><th>只支持</th></tr></thead><tbody>
+<tr><td>FPS coverage</td><td><code>[0,1,2,10]</code>，start=0，budget=2</td><td>FPS <code>[0,3]</code> radius=2；fixed random <code>[0,1]</code> radius=9</td><td>该例 coverage，不证明普遍 accuracy</td></tr>
+<tr><td>voxel boundary</td><td>x=0.99/1.01，v=1，origin=0</td><td>index 0/1</td><td>0.02 平移可改离散 tensor</td></tr>
+<tr><td>mean alias</td><td><code>[0,2]</code> vs <code>[1,1]</code></td><td>mean 均为 1</td><td>mean 需要 count/offset 等补充</td></tr>
+<tr><td>dense/sparse estimate</td><td>\(200^3,C=64,\) float32</td><td>dense 1.907 GiB；1% feature 19.53 MiB</td><td>不含 sparse overhead</td></tr>
+<tr><td>pillar z collapse</td><td>range [-3,1]，dz=4</td><td>z=-2.5/0.5 均 index 0</td><td>spatial bin 相同，非 feature 全丢</td></tr>
+<tr><td>implicit threshold</td><td>probability 0.5/0.7</td><td>logit 0/0.8473</td><td>threshold 属于 surface identity</td></tr>
+<tr><td>local pixel/world</td><td>pixel (100,200)，固定 origin/res</td><td>world (-48.92593,35.5881134)</td><td>map transform 可复算</td></tr>
+<tr><td>local PCD header</td><td>固定 <code>world.pcd</code></td><td>54,856 点，六个 fields</td><td>asset/schema，不是 encoder</td></tr>
+<tr><td>local path census</td><td>86 个 high-signal tracked 文本</td><td>78 third_party、8 data/docs/bridge/tests</td><td>vendored code 不等于个人实现</td></tr>
+</tbody></table>
+<p>这些 probe 应进入 CI 或 artifact audit；它们验证 contract，不替代真实 dataset 与 robot evaluation。</p>
+<h2 id="19-failure-taxonomy">19. Failure Taxonomy 与诊断顺序</h2>
+<table><thead><tr><th>Failure</th><th>表面症状</th><th>首查字段</th><th>最小 Probe</th></tr></thead><tbody>
+<tr><td>frame/origin drift</td><td>整图平移/旋转</td><td>frame、axis、origin、TF</td><td>physical round-trip</td></tr>
+<tr><td>voxel boundary</td><td>小位姿变化导致 feature 跳变</td><td>floor、resolution、augmentation</td><td>0.99/1.01</td></tr>
+<tr><td>sampling miss</td><td>稀疏小物体消失</td><td>seed、budget、density strata</td><td>coverage sweep</td></tr>
+<tr><td>voxel cap/drop</td><td>稠密表面被截断</td><td>max points/voxels、order</td><td>shuffled-input parity</td></tr>
+<tr><td>aggregation alias</td><td>不同局部几何同 feature</td><td>mean/max/VFE、count</td><td><code>[0,2]</code> vs <code>[1,1]</code></td></tr>
+<tr><td>sparse pattern explosion</td><td>memory/latency 突增</td><td>operator、active sites、stride</td><td>layerwise active trace</td></tr>
+<tr><td>pillar height alias</td><td>上下结构混淆</td><td>z feature/bin/compression</td><td>two-height probe</td></tr>
+<tr><td>BEV misalignment</td><td>camera/LiDAR ghosting</td><td>calibration/augmentation/time</td><td>landmark overlay</td></tr>
+<tr><td>unknown→free</td><td>未观测区可规划</td><td>occupancy encoding/ray update</td><td>occluded-cell test</td></tr>
+<tr><td>stale occupancy</td><td>动态障碍残留或消失</td><td>timestamp/decay/update</td><td>moving-object trace</td></tr>
+<tr><td>implicit threshold drift</td><td>surface thickness 改变</td><td>probability/logit threshold</td><td>threshold sweep</td></tr>
+<tr><td>controller rejection</td><td>occupancy 好但动作失败</td><td>footprint/IK/collision/controller</td><td>rejection reasons</td></tr>
+</tbody></table>
+<p>推荐顺序：</p>
+<pre><code class="language-text">schema/frame/unit/time
+  -&gt; sampling and range
+  -&gt; quantization/cap/aggregation
+  -&gt; sparse active pattern
+  -&gt; BEV calibration
+  -&gt; occupancy unknown/threshold/staleness
+  -&gt; semantic grounding
+  -&gt; planner/controller
+  -&gt; episode metric</code></pre>
+<p>不要在 frame 或 unknown policy 未知时先调网络深度。</p>
+<h2 id="20-fail-closed-pseudocode">20. Fail-closed Pseudocode</h2>
+<pre><code class="language-python">def encode_3d(points, manifest, cfg):
+    # 1. Geometry without an explicit physical identity is rejected.
+    require(manifest.coordinate_frame)
+    require(manifest.unit == &quot;meter&quot;)
+    require(manifest.timestamp_range and manifest.source_ids)
+    require(cfg.origin and cfg.spatial_range and cfg.voxel_size)
+
+    # 2. Sampling is part of the artifact identity.
+    sampled, sample_idx = sample_points(
+        points,
+        method=cfg.sampling_method,
+        budget=cfg.point_budget,
+        seed=cfg.seed,
+    )
+
+    # 3. Quantization reports every loss mechanism.
+    coords = floor((sampled.xyz - cfg.origin) / cfg.voxel_size)
+    valid = inside_range(coords, cfg.grid_shape)
+    unique, inverse, counts = unique_coordinates(coords[valid])
+    audit = report_collision_cap_drop(
+        input_count=len(points),
+        sampled_count=len(sampled),
+        valid_mask=valid,
+        unique=unique,
+        counts=counts,
+    )
+
+    # 4. Representation semantics remain explicit.
+    if cfg.representation == &quot;sparse_voxel&quot;:
+        features = aggregate(sampled.features[valid], inverse, cfg.aggregation)
+        return SparseTensor(unique, features), audit
+
+    if cfg.representation == &quot;pillar_bev&quot;:
+        require(cfg.bev_frame and cfg.meters_per_cell)
+        pillars = aggregate_by_xy(sampled[valid], cfg)
+        return scatter_to_bev(pillars, cfg.bev_frame), audit
+
+    if cfg.representation == &quot;occupancy&quot;:
+        # An empty tensor cell is never silently interpreted as observed free.
+        require(manifest.sensor_origin and cfg.unknown_policy)
+        return update_occupancy(
+            sampled,
+            sensor_origin=manifest.sensor_origin,
+            timestamp=manifest.timestamp_range[1],
+        ), audit
+
+    raise ValueError(&quot;unfrozen representation&quot;)</code></pre>
+<p>这是面试与目标实现合同，不是本地项目已有代码。真实系统还需 sensor model、calibration、TF/time、dynamic-object policy、uncertainty、footprint/swept volume、memory/latency 与 downstream episode logger。</p>
+<h2 id="21-robot-harness">21. Robot Harness：直接证据映射</h2>
+<p>本地 <code>agent@3f4c8b3</code> 有一个必须单独陈述的 direct exception：</p>
+<table><thead><tr><th>Artifact</th><th>直接支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td><code>occupancy2d_map.json/png</code></td><td>2D tri-state map；0 occupied、127 unknown、255 free；约 0.02m resolution、origin/range</td><td>3D occupancy、OctoMap、地图 accuracy</td></tr>
+<tr><td><code>world.pcd</code></td><td>54,856 点；<code>x y z intensity timestamp ring</code> schema</td><td>个人生成、online stream、PointNet/voxel inference</td></tr>
+<tr><td><code>ros2_bridge.py</code></td><td>occupancy/pointcloud path、existence ready flag、URL 暴露</td><td>PCD 解析、voxelization、sparse convolution</td></tr>
+<tr><td>scenario 文档</td><td>2D occupancy、PCD 引用、heightmap/A* 与 WebUI 设计说明</td><td>运行时等价、个人 ownership、机器人收益</td></tr>
+</tbody></table>
+<p>其中 PCD SHA-256 为 <code>494A53320AF2EC10C4D1AADD17CE0F7D943820BA34536C23871BB5CA711F0B42</code>；bridge SHA-256 为 <code>8291D64DE01AAC2EFDF52409008EFD7AE18C5FEC0BA7B9D4677F6636F8287A48</code>。86 个 high-signal tracked 文本中 78 个位于 <code>third_party/</code>；依赖或 vendored code 的存在不等于候选人实现。</p>
+<p>最安全的项目表述是：</p>
+<div class="meta">我核对到 Harness 中有三态 2D occupancy 资产、带时间戳与 ring 字段的 PCD 文件，以及把路径/URL 暴露给前端的 bridge；这说明数据接口和仿真资产存在。当前没有证据表明第一方路径解析 PCD、做 voxel/BEV/OctoMap 或运行 learned occupancy，所以我不会把它讲成自研 3D perception stack。</div>
+<h2 id="22-project-truth-boundary">22. 五项目 Project Truth Boundary</h2>
+<table><thead><tr><th>项目</th><th>当前可以讲</th><th>当前不能说</th><th>若要升级需补</th></tr></thead><tbody>
+<tr><td>Robot Harness</td><td>2D tri-state occupancy、PCD asset/schema、path/URL bridge</td><td>自研 PointNet/voxel/BEV/OctoMap、online 3D、个人 ownership</td><td>generator、ingest/voxel code、ROS bag、TF/time、planner trace</td></tr>
+<tr><td>OPD</td><td>2D 标注点集合可转 box</td><td>3D point cloud、voxel/occupancy</td><td>z/frame/time/schema、3D checkpoint/eval</td></tr>
+<tr><td>OpenPiVLA</td><td>image/language/action 可与显式 3D intermediate 比较</td><td>已集成 3D encoder 或其带来 97.4</td><td>module/config/checkpoint/ablation/episodes</td></tr>
+<tr><td>WAM</td><td>future image 可作为 geometry diagnostic 候选</td><td>learned occupancy/BEV head</td><td>local head/loss/config/raw prediction</td></tr>
+<tr><td>UWM</td><td>image/action/video world model 与 LIBERO protocol</td><td>point/voxel/occupancy 模型或 3D 泛化</td><td>model diff、3D data、checkpoint、rollout</td></tr>
+</tbody></table>
+<p>OPD 代码中的 “point cloud(s)” 只指 2D 标注点集合经 min/max x/y 加 margin 转 box 或 prompt 文本，没有 z、frame、PCD、voxel、BEV 或 occupancy tensor。公共论文说明机制，项目文件说明资产；二者都不能替代 local integration、matched result 与候选人 ownership。</p>
+<h2 id="23">23. 面试回答模板、追问与危险答案</h2>
+<h3 id="23-1">23.1 两分钟结构化回答</h3>
+<div class="meta">我会先从 downstream query 反推表示，并冻结 frame、axis、origin、range、resolution、time 和 feature schema。Point cloud 保留连续坐标，PointNet++ 用 FPS 选覆盖中心，再用 ball query 或 kNN 建邻域，local PointNet 和 symmetric pooling 得到 hierarchy；采样起点、radius、K 和 density policy 都属于模型身份。Voxel 用 floor((x-origin)/voxel_size) 量化，规则化邻域，但会有边界跳变、同 cell 碰撞、max-points/max-voxels drop；MeanVFE 与 learned VFE 不能混称。Sparse convolution 只计算 active coordinates，但 coordinate/kernel map 有成本，SubM、stride sparse 和 inverse conv 的 active pattern不同。Pillar 折叠 z 的 spatial bin，z 仍可能作为 point feature；另一种 BEV 会把 D reshape 到 channel。多传感器 BEV 必须绑定 calibration 和 timestamp。Occupancy 还要区分 explicit grid、OctoMap log-odds 与 implicit function，unknown 不等于 free，surface threshold 不等于 collision safety。本地 Harness 只有 2D map、PCD asset 和 bridge 的直接证据，不能声称我实现了这些 3D 模型。</div>
+<h3 id="23-2">23.2 高频追问</h3>
+<ol><li>PointNet 为什么 permutation invariant，为什么完整 pipeline 仍可能依赖输入顺序？</li><li>FPS 的目标是什么？起点、outlier 和复杂度有什么影响？</li><li>ball query 与 kNN 在 density shift 下分别怎么变？</li><li>voxel coordinate 为什么要用 origin、range、axis 和 floor 一起定义？</li><li>hard voxelization 与 dynamic voxelization 的主要边界是什么？</li><li><code>[0,2]</code> 与 <code>[1,1]</code> 为什么暴露 MeanVFE alias？</li><li>SubMConv、SparseConv 和 InverseConv 的 output sites 有何差异？</li><li>什么场景下 sparse convolution 未必比 dense 快？</li><li>PointPillars 是否完全丢失 z？</li><li>HeightCompression 把 D 放进 channel 有什么利弊？</li><li>BEVFusion 为什么仍需要完整 calibration？</li><li>empty voxel、unknown 和 observed free 有何不同？</li><li>OctoMap 如何利用 ray 的 miss/hit evidence？</li><li>implicit occupancy 的 0.5 threshold 改变会怎样？</li><li>occupancy IoU 为什么不等于 collision safety？</li><li>你会怎样用 deterministic probes 检查 representation regression？</li><li>本地 Robot Harness 到底支持哪些 3D 相关 claim？</li></ol>
+<h3 id="23-3">23.3 危险答案与修正</h3>
+<table><thead><tr><th>危险答案</th><th>问题</th><th>安全修正</th></tr></thead><tbody>
+<tr><td>“PointNet 对点顺序完全不敏感”</td><td>sampling/cap/tie-break 可依赖顺序</td><td>区分 symmetric function 与 pipeline</td></tr>
+<tr><td>“FPS 总比 random 好”</td><td>只保证某种 coverage 倾向</td><td>报 task、seed、coverage 与 matched result</td></tr>
+<tr><td>“voxel size 一样输入就一样”</td><td>origin/range/axis/floor 仍可不同</td><td>冻结完整 quantization contract</td></tr>
+<tr><td>“MeanVFE 就是 VoxelNet”</td><td>learned VFE 与 mean 机制不同</td><td>指明具体 encoder/revision</td></tr>
+<tr><td>“Sparse 一定节省 99% 显存”</td><td>忽略坐标/kernel/allocator</td><td>测 measured peak 和 latency</td></tr>
+<tr><td>“Pillar 把高度全丢了”</td><td>z 可能仍在 point feature</td><td>区分 spatial z bin 与 feature</td></tr>
+<tr><td>“BEV 天然对齐多传感器”</td><td>shared shape 不等于 shared frame</td><td>绑定 calibration/augmentation/time</td></tr>
+<tr><td>“没有点就是 free”</td><td>无点可能是 occluded/unobserved</td><td>unknown 与 observed free 分离</td></tr>
+<tr><td>“occupancy 0.9 就可以执行”</td><td>缺 footprint、uncertainty、controller</td><td>继续过 PER-015 gate</td></tr>
+<tr><td>“Harness 已有 3D perception”</td><td>只有 asset/path direct evidence</td><td>只说 2D map、PCD schema、bridge</td></tr>
+</tbody></table>
+<h2 id="24-checklist">24. 白板 Checklist 与练习标准</h2>
+<p>能够不看材料完成：</p>
+<ul><li>画出 point→sample/group→voxel→sparse→pillar/BEV→occupancy 主链；</li><li>写出 typed 3D manifest 的 frame/origin/range/resolution/time；</li><li>推导 PointNet++ set abstraction 并解释 FPS、ball query、kNN；</li><li>写出 voxel floor 公式并演示 boundary flip；</li><li>用 <code>[0,2]</code> 与 <code>[1,1]</code> 解释 aggregation alias；</li><li>比较 SubM/Sparse/Inverse convolution 与 active pattern；</li><li>解释 pillar z bin 与 height-compression channel 的区别；</li><li>列出 BEVFusion 的 calibration contract；</li><li>比较 explicit grid、OctoMap 和 implicit occupancy；</li><li>算出 \(200^3\times64\times4\) 的 memory；</li><li>走完十二类 failure 的诊断顺序；</li><li>说清 Robot Harness 与其余四项目的真实性边界；</li><li>完成两分钟回答并接住至少八个追问。</li></ul>
+<p><code>drafted</code> 不等于掌握。只有真实口述、追问、评分与纠错后才能改变题卡状态；对应题卡已生成并保持<code>unseen</code>，<code>coaching_state.md</code> 也不应创建。</p>
+<h2 id="25">25. 结论与下一步</h2>
+<p>Point、voxel、sparse tensor、pillar/BEV 与 occupancy 不是几种可随意替换的 tensor shape，而是不同的信息保留、物理坐标、unknown 语义与计算合同。可靠答案必须同时讲清 representation identity、conversion loss、runtime cost、metric boundary 与 downstream sufficiency。</p>
+<p>本地项目目前最强的直接映射是 Robot Harness 的 2D 三态 occupancy 资产、54,856 点 PCD schema 和 path/URL bridge；没有证据支持自研 PointNet++、voxel encoder、BEVFusion、OctoMap、learned occupancy、online 3D perception 或其 robot benefit。</p>
+<p><code>VLA-PER-013</code> source、knowledge 与 card 已在独立 bounded slices 同步，题卡保持<code>unseen/WARN</code>。后续<code>VLA-PER-014</code> source与knowledge也已同步；下一 bounded slice只生成一张PER-014 atomic card并保持unseen，不启动PER-015，不创建<code>coaching_state.md</code>，不改变任何 mastery。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_06_per013_pointcloud_voxel_bev_occupancy_source_freeze.html">PER-013 Point Cloud / Voxel / BEV / Occupancy Source Freeze</a>：固定六篇 primary papers、六个 official repositories、九个 deterministic probes 与五项目 audit。</li><li>Qi et al., <a href="https://arxiv.org/abs/1706.02413v1">PointNet++ v1</a>；<a href="https://github.com/charlesq34/pointnet2/tree/42926632a3c33461aebfbee2d829098b30a23aaa">official code@4292663</a>。</li><li>Zhou &amp; Tuzel, <a href="https://arxiv.org/abs/1711.06396v1">VoxelNet v1</a>。</li><li>Lang et al., <a href="https://arxiv.org/abs/1812.05784v2">PointPillars v2</a>。</li><li>Choy et al., <a href="https://arxiv.org/abs/1904.08755v4">Minkowski ConvNet v4</a>；<a href="https://github.com/NVIDIA/MinkowskiEngine/tree/02fc608bea4c0549b0a7b00ca1bf15dee4a0b228">MinkowskiEngine@02fc608</a>。</li><li>Liu et al., <a href="https://arxiv.org/abs/2205.13542v3">BEVFusion v3</a>；<a href="https://github.com/mit-han-lab/bevfusion/tree/326653dc06e0938edf1aae7d01efcd158ba83de5">official code@326653d</a>。</li><li>Mescheder et al., <a href="https://arxiv.org/abs/1812.03828v2">Occupancy Networks v2</a>；<a href="https://github.com/autonomousvision/occupancy_networks/tree/406f79468fb8b57b3e76816aaa73b1915c53ad22">official code@406f794</a>。</li><li><a href="https://github.com/open-mmlab/OpenPCDet/tree/233f849829b6ac19afb8af8837a0246890908755">OpenPCDet@233f849</a> 与 <a href="https://github.com/OctoMap/octomap/tree/f012f5f0a4f58cad19501833f9c0ea9d864427b6">OctoMap@f012f5f</a>。</li><li><a href="vol_06_per002_3d_lift_frame.html">PER-002 3D Lift / Frame</a>、<a href="vol_06_per003_multiview_temporal.html">PER-003 Multi-view / Temporal</a>、<a href="vol_06_per012_segmentation_depth_keypoint_affordance.html">PER-012 Segmentation / Depth / Keypoint / Affordance</a>。</li><li><a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness Claim–Evidence Inventory</a> 与 source freeze 中固定的 <code>agent@3f4c8b3</code> direct artifacts。</li></ol>
+</article></body></html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation Phase 0 题目清单</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\vol_05_engineering_eval.question_list.md">
+<meta name="aris:source-sha256" content="37f0cfec94d2aa7686771dcb4fd06991fd36c84b50820c5118eb36bd8ace5ebd">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>37f0cfec94d2aa7686771dcb4fd06991fd36c84b50820c5118eb36bd8ace5ebd</code>；生成自：<code>interview_materials\vla\questions\vol_05_engineering_eval.question_list.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-engineering-deployment-22">1. Engineering / Deployment（22）</a></li><li><a href="#2-evaluation-debugging-22">2. Evaluation / Debugging（22）</a></li><li><a href="#3">3. 批次计划</a></li><li><a href="#batch-2a">Batch 2A 已完成的知识切片</a></li><li><a href="#eng-012-source-gate">ENG-012 Source Gate</a></li><li><a href="#eval-003-source-gate-knowledge-card-warn">EVAL-003 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-004-source-gate-knowledge-card-warn">EVAL-004 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-005-source-gate-knowledge-card-warn">EVAL-005 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-006-source-gate-knowledge-card-warn">EVAL-006 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-007-source-gate-knowledge-card-warn">EVAL-007 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-008-source-gate-knowledge-card-warn">EVAL-008 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-009-source-gate-knowledge-card-warn">EVAL-009 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-010-source-gate-knowledge-card-warn">EVAL-010 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-011-source-gate-knowledge-card-warn">EVAL-011 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-012-source-gate-knowledge-card-warn">EVAL-012 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-013-source-gate-knowledge-card-warn">EVAL-013 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-014-source-gate-knowledge-card-warn">EVAL-014 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-015-source-gate-knowledge-card-warn">EVAL-015 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-016-source-gate-knowledge-card-warn">EVAL-016 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-017-source-gate-knowledge-card-warn">EVAL-017 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-018-source-gate-knowledge-card-warn">EVAL-018 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eval-019-source-gate-knowledge-card-warn">EVAL-019 Source Gate + Knowledge + Card（已完成，WARN）</a></li><li><a href="#eng-013-source-gate">ENG-013 Source Gate</a></li><li><a href="#eng-014-source-gate">ENG-014 Source Gate</a></li><li><a href="#eng-015-source-gate">ENG-015 Source Gate</a></li><li><a href="#eng-016-source-gate">ENG-016 Source Gate</a></li><li><a href="#eng-017-source-gate">ENG-017 Source Gate</a></li><li><a href="#eng-018-source-gate">ENG-018 Source Gate</a></li><li><a href="#eng-019-source-gate">ENG-019 Source Gate</a></li><li><a href="#eng-020-source-gate">ENG-020 Source Gate</a></li><li><a href="#eng-021-source-gate">ENG-021 Source Gate</a></li><li><a href="#4-batch-1">4. Batch 1 退出条件</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation Phase 0 题目清单</h1>
+<div class="meta">规划日期：2026-07-17 状态：<code>44 planned / knowledge 44 drafted / cards 44 drafted/unseen / ENG-001..022 + EVAL-001..022 drafted/unseen / EVAL-003..022 source-frozen / WARN</code> 知识正文：<a href="../knowledge/vol_05_engineering_eval.html">VOL 05 Batch 1</a> Batch 1 题卡：<a href="vol_05_engineering_eval.html">10 张折叠题卡</a> Batch 2A 知识页：<a href="../knowledge/vol_05_engineering_eval_batch2a.html">ENG-009..011</a>；题卡：<a href="vol_05_engineering_eval_batch2a.html">3 张折叠题卡</a> Batch 2A 官方文档复核：<a href="../sources/vol_05_batch2a_independent_fact_review.html">DVC / PyTorch / Hugging Face</a> ENG-012 Source Gate：<a href="../sources/vol_05_eng012_storage_formats_source_freeze.html">HDF5 / Zarr / WebDataset / Parquet</a> ENG-012 知识页：<a href="../knowledge/vol_05_engineering_eval_eng012.html">单节点知识正文</a>；题卡：<a href="vol_05_engineering_eval_eng012.html">单张折叠题卡</a> ENG-013 Source Freeze：<a href="../sources/vol_05_eng013_reproducibility_source_freeze.html">seed / determinism / sampler cursor</a>；知识页：<a href="../knowledge/vol_05_engineering_eval_eng013.html">单节点正文</a>；题卡：<a href="vol_05_engineering_eval_eng013.html">单张折叠题卡</a> ENG-014 Source Freeze：<a href="../sources/vol_05_eng014_hardware_operator_compatibility_source_freeze.html">CUDA / MACA / ROCm / operator compatibility</a>；知识页：<a href="../knowledge/vol_05_engineering_eval_eng014.html">单节点知识正文</a>；题卡：<a href="vol_05_engineering_eval_eng014.html">单张折叠题卡</a>。 ENG-015 Source Freeze：<a href="../sources/vol_05_eng015_activation_offload_source_freeze.html">activation checkpointing / CPU-NVMe offload / throughput</a>；知识页：<a href="../knowledge/vol_05_engineering_eval_eng015.html">单节点正文</a>；题卡：<a href="vol_05_engineering_eval_eng015.html">单张折叠题卡</a>。 ENG-016 Source Freeze：<a href="../sources/vol_05_eng016_multiteacher_memory_scheduling_source_freeze.html">student + multiple teachers / distillation / memory scheduling</a>；知识页：<a href="../knowledge/vol_05_engineering_eval_eng016.html">单节点正文</a>；题卡：<a href="vol_05_engineering_eval_eng016.html">单张折叠题卡</a>。 ENG-017 Source Freeze：<a href="../sources/vol_05_eng017_training_observability_source_freeze.html">loss / grad / data_wait / comm / AMP overflow observability</a>；知识页：<a href="../knowledge/vol_05_engineering_eval_eng017.html">单节点正文</a>；题卡：<a href="vol_05_engineering_eval_eng017.html">单张折叠题卡</a>。 ENG-018 Source Freeze：<a href="../sources/vol_05_eng018_scheduler_preemption_retry_source_freeze.html">scheduler / preemption / retry / idempotent jobs</a>；知识页与一张题卡已生成，题卡保持 unseen。 ENG-019 Source Freeze：<a href="../sources/vol_05_eng019_config_resolution_run_identity_source_freeze.html">config / CLI / env resolution / run identity</a>；知识页：<a href="../knowledge/vol_05_engineering_eval_eng019.html">单节点正文</a>；题卡：<a href="vol_05_engineering_eval_eng019.html">单张折叠题卡</a>。 ENG-020 Source Freeze：<a href="../sources/vol_05_eng020_secret_permission_logging_source_freeze.html">secret / token / data permission / logging redaction</a>；知识页与一张 <code>unseen</code> 题卡已生成，未产生口述成绩。 规则：先按来源批次完成知识页，再生成对应折叠题卡；题卡生成后默认 <code>unseen</code>，没有真实口述不得升级。</div>
+<h2 id="1-engineering-deployment-22">1. Engineering / Deployment（22）</h2>
+<table><thead><tr><th>ID</th><th>难度</th><th>优先级</th><th>主题</th><th>当前状态</th></tr></thead><tbody>
+<tr><td><code>VLA-ENG-001</code></td><td>L2</td><td>P0</td><td>VLA 数据 schema：observation/action/time/normalizer/provenance</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-002</code></td><td>L2</td><td>P0</td><td>grouped split、dedupe 与 leakage audit</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-003</code></td><td>L2</td><td>P0</td><td>DataLoader/preprocess/GPU/sync 吞吐分解</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-004</code></td><td>L2</td><td>P0</td><td>DDP、FSDP、ZeRO 的分片与选择</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-005</code></td><td>L2</td><td>P0</td><td>AMP、gradient accumulation、clipping、effective batch</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-006</code></td><td>L3</td><td>P0</td><td>checkpoint lineage、resume 与 load smoke</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-007</code></td><td>L2</td><td>P0</td><td>policy server latency、chunk 与 replan</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-008</code></td><td>L3</td><td>P0</td><td>action parser/denorm/frame/controller deployment contract</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-009</code></td><td>L2</td><td>P0</td><td>dataset/version/transform manifest 与可追溯性</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-010</code></td><td>L2</td><td>P1</td><td>multimodal decode、augmentation、cache 与确定性</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-011</code></td><td>L3</td><td>P1</td><td>variable-length sample、dynamic batching 与 padding waste</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-012</code></td><td>L2</td><td>P1</td><td>HDF5/Zarr/WebDataset/Parquet 的访问模式与取舍</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-013</code></td><td>L2</td><td>P0</td><td>seed、determinism、sampler cursor 与复现实验</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-014</code></td><td>L3</td><td>P1</td><td>CUDA/MACA/ROCm 等硬件迁移与算子兼容</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-015</code></td><td>L2</td><td>P1</td><td>activation checkpointing、CPU/NVMe offload 与吞吐</td><td>knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-016</code></td><td>L3</td><td>P1</td><td>student + multiple teachers 的显存/调度设计</td><td>knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-017</code></td><td>L2</td><td>P0</td><td>train observability：loss/grad/data_wait/comm/overflow</td><td>knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-018</code></td><td>L2</td><td>P1</td><td>scheduler、preemption、retry 与幂等 checkpoint</td><td>knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-019</code></td><td>L2</td><td>P1</td><td>config/CLI/env 合并与 run identity</td><td>knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-020</code></td><td>L2</td><td>P1</td><td>secret、token、数据权限与日志脱敏</td><td>knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-021</code></td><td>L2</td><td>P0</td><td>model/processor/normalizer 打包与版本兼容</td><td>knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-ENG-022</code></td><td>L3</td><td>P0</td><td>policy server batching、backpressure、timeout、fallback</td><td>knowledge+card drafted / unseen</td></tr>
+</tbody></table>
+<h2 id="2-evaluation-debugging-22">2. Evaluation / Debugging（22）</h2>
+<table><thead><tr><th>ID</th><th>难度</th><th>优先级</th><th>主题</th><th>当前状态</th></tr></thead><tbody>
+<tr><td><code>VLA-EVAL-001</code></td><td>L2</td><td>P0</td><td>closed-loop protocol tuple 与 run/episode manifest</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-002</code></td><td>L2</td><td>P0</td><td>metric ladder 与 first-failure debugging</td><td>card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-003</code></td><td>L2</td><td>P0</td><td>success rate、置信区间与最小 rollout 数</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-004</code></td><td>L3</td><td>P0</td><td>paired init/seed evaluation 与显著性</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-005</code></td><td>L2</td><td>P0</td><td>macro/micro/per-task/weighted aggregation</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-006</code></td><td>L2</td><td>P0</td><td>benchmark/env/controller/scorer versioning</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-007</code></td><td>L3</td><td>P1</td><td>init/seed/task coverage 与难度分层</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-008</code></td><td>L2</td><td>P0</td><td>perception/action/controller/recovery failure taxonomy</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-009</code></td><td>L2</td><td>P0</td><td>raw predictions、episode trace、video 与可复算 summary</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-010</code></td><td>L2</td><td>P0</td><td>regression gate、golden set 与 canary rollout</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-011</code></td><td>L3</td><td>P1</td><td>offline metric 与 online success 的相关性分析</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-012</code></td><td>L2</td><td>P1</td><td>OOD、扰动、遮挡、视角与鲁棒性矩阵</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-013</code></td><td>L2</td><td>P1</td><td>p50/p95/p99 latency、deadline miss 与 jitter</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-014</code></td><td>L3</td><td>P0</td><td>forbidden side effect、scope 与取消补偿评估</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-015</code></td><td>L3</td><td>P0</td><td>reward/scorer hacking 与 adversarial evaluation</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-016</code></td><td>L2</td><td>P1</td><td>VLM/human proxy 评分的一致性与偏差</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-017</code></td><td>L3</td><td>P1</td><td>simulator success、shadow mode 与真机 gate</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-018</code></td><td>L3</td><td>P0</td><td>factorial ablation、matched baseline 与因果边界</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-019</code></td><td>L2</td><td>P0</td><td>checkpoint selection、Pareto frontier 与 holdout overfit</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-020</code></td><td>L2</td><td>P1</td><td>incident timeline、root cause 与 bug-fix verification</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-021</code></td><td>L3</td><td>P1</td><td>deployment drift、data shift 与持续监控</td><td>source+knowledge+card drafted / unseen</td></tr>
+<tr><td><code>VLA-EVAL-022</code></td><td>L3</td><td>P0</td><td>paper→repo→checkpoint→runtime→ownership evidence audit</td><td>source+knowledge+card drafted / unseen</td></tr>
+</tbody></table>
+<h2 id="3">3. 批次计划</h2>
+<table><thead><tr><th>批次</th><th>节点</th><th>目标</th></tr></thead><tbody>
+<tr><td>Batch 1</td><td>ENG-001..008 + EVAL-001..002</td><td>数据→训练→checkpoint→serving→protocol→first failure 基础闭环</td></tr>
+<tr><td>Batch 2</td><td>ENG-009..016</td><td>data/version/storage/determinism/hardware/memory 深化</td></tr>
+<tr><td>Batch 3</td><td>ENG-017..022</td><td>observability、调度、配置、安全、打包与 serving resilience</td></tr>
+<tr><td>Batch 4</td><td>EVAL-003..011</td><td>统计、paired eval、aggregation、versioning、trace 与 offline-online correlation</td></tr>
+<tr><td>Batch 5</td><td>EVAL-012..022</td><td>robustness、safety、proxy、sim-to-real、ablation、selection、incident/drift/evidence audit</td></tr>
+</tbody></table>
+<h3 id="batch-2a">Batch 2A 已完成的知识切片</h3>
+<ul><li><code>VLA-ENG-009..011</code> 已完成 canonical knowledge Markdown/HTML/review（3 个节点）。</li><li>Batch 2A 的 3 张题卡已在独立 bounded slice 生成，默认状态为 <code>unseen</code>；没有真实口述不得升级。</li><li>证据状态保持 <code>WARN</code>：DVC/DataLoader/padding/HF cache-collator 官方语义已独立复核，但 manifest/cache/dynamic-batching 的项目 A/B 证据仍未闭合。</li></ul>
+<h3 id="eng-012-source-gate">ENG-012 Source Gate</h3>
+<ul><li>HDF5/h5py 3.15.0、Zarr v3.2.1、WebDataset frozen commit、Apache Parquet format commit 与 PyArrow 22.0 来源已冻结。</li><li>source freeze、单节点知识正文与一张原子题卡均已完成；题卡保持 <code>unseen</code>。</li><li>ENG-012..020 的 source freeze、知识与题卡现已逐节点完成；所有题卡仍可逐题口述，但没有真实回答前保持 <code>unseen</code>。</li><li>ENG-021 的 source freeze、知识与一张题卡已完成；严格 bundle/hash/load/round-trip/backend gate 仍保持 WARN。</li><li>ENG-022 Source Freeze、knowledge slice 与一张题卡已完成；官方 queue/timeout/dynamic batching 与 OpenPI server 边界已冻结，题卡保持 unseen。</li><li>ENG-022 的 knowledge slice 与一张题卡已完成；bounded queue、batch/freshness、deadline/cancel、fallback 和项目边界保持 WARN。</li></ul>
+<h3 id="eval-003-source-gate-knowledge-card-warn">EVAL-003 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>已冻结 SciPy <code>v1.16.3</code> <code>binomtest().proportion_ci()</code>、statsmodels <code>v0.14.6</code> <code>proportion_confint()</code> / normal sample-size approximation，以及 Wilson、Clopper–Pearson、cluster design effect、sequential inference 的论文边界。</li><li>已明确 episode-level Bernoulli contract、Wilson/exact 区间、zero/all-success、<code>n &gt;= z²p(1-p)/epsilon²</code> 的规划语义；UWM 186/250 只作 naive diagnostic，OpenPiVLA 97.4 缺分母，OPD 10k 是 metric-specific holdout，不能混成 rollout success。</li><li>已生成 <code>knowledge/vol_05_engineering_eval_eval003.md/.html/.review.json</code> 与 <code>questions/vol_05_engineering_eval_eval003.md/.html/.question_list.md/.review.json</code>，覆盖 Bernoulli episode contract、Wilson/exact、zero/all-success、margin planning、cluster dependence 与 optional stopping；VOL 05 knowledge 25/44、cards 25/44，题卡保持 unseen。</li></ul>
+<h3 id="eval-004-source-gate-knowledge-card-warn">EVAL-004 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>已冻结 paired unit、<code>n11/n10/n01/n00</code>、<code>Delta=(n10-n01)/n</code>、exact McNemar、SciPy <code>permutation_type="samples"</code> / <code>bootstrap(..., paired=True)</code>、四类 seed、training-run 层级、invalid-pair、selection/holdout、Holm 与 practical threshold 边界。</li><li>已明确 UWM 186/250 与 232/250 协议不同且缺 matched raw pairs，OpenPiVLA 97.4% 缺 denominator/lineage，OPD 10k 是静态 cluster；三者均不产生本地 paired significance claim。</li><li>已生成 <code>sources/vol_05_eval004_paired_init_seed_significance_source_freeze.*</code>、<code>knowledge/vol_05_engineering_eval_eval004_paired_init_seed_significance.*</code> 与 <code>questions/vol_05_engineering_eval_eval004.*</code>；VOL 05 knowledge 26/44、cards 26/44，题卡保持 unseen，下一内容节点为 EVAL-005。</li></ul>
+<h3 id="eval-005-source-gate-knowledge-card-warn">EVAL-005 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>已冻结 aggregation estimand、per-task <code>k/n</code>、macro/micro/weighted 公式、equal-suite/task/episode hierarchy、common-support weights、missingness/coverage 与 rliable fixed-task/task-population uncertainty。</li><li>UWM final 五 task 等分母使 macro=micro=0.744 只作 arithmetic audit；OpenPiVLA 97.4 只到 equal-suite archive table；OPD box/point/text 异构 metric 不合成总分。</li><li>已生成 <code>sources/vol_05_eval005_aggregation_estimand_source_freeze.*</code>、<code>knowledge/vol_05_engineering_eval_eval005_macro_micro_weighted_aggregation.*</code> 与 <code>questions/vol_05_engineering_eval_eval005.*</code>；VOL 05 knowledge 27/44、cards 27/44，题卡保持 unseen，下一内容节点为 EVAL-006。</li></ul>
+<h3 id="eval-006-source-gate-knowledge-card-warn">EVAL-006 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>已冻结 label/SemVer/tag、immutable revision、file/OCI digest、Gymnasium resolved EnvSpec、RFC 8785 canonical manifest、protocol SHA与semantic diff gate。</li><li>已明确benchmark/env/controller/scorer/policy/runtime六部分identity，并映射UWM、WAM、OpenPiVLA、OPD与Robot Harness的具体version/scorer/lineage断点；不产生新的可比成绩。</li><li>已生成 <code>sources/vol_05_eval006_benchmark_env_controller_scorer_versioning_source_freeze.*</code>、<code>knowledge/vol_05_engineering_eval_eval006_versioned_evaluation_manifest.*</code> 与 <code>questions/vol_05_engineering_eval_eval006.*</code>；VOL 05 knowledge 28/44、cards 28/44，题卡保持unseen，下一内容节点为EVAL-007。</li></ul>
+<h3 id="eval-007-source-gate-knowledge-card-warn">EVAL-007 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>冻结Neyman、Procgen、rliable、LIBERO task registry与EVAL-004..006；count、unique support、coverage、representativeness和success严格分开。</li><li>coverage cube固定为task×difficulty×init×training-seed；training/env/rollout/bootstrap seed分层，difficulty不得由candidate final failure事后定义。</li><li>五项目均缺完整raw task/init/training-seed cell ledger与target weights，不升级coverage或robustness claim。</li><li>已生成 <code>sources/vol_05_eval007_init_seed_task_coverage_difficulty_source_freeze.*</code>、<code>knowledge/vol_05_engineering_eval_eval007_coverage_difficulty_stratification.*</code> 与 <code>questions/vol_05_engineering_eval_eval007.*</code>；VOL 05 knowledge 29/44、cards 29/44，题卡保持unseen，下一内容节点为EVAL-008。</li></ul>
+<h3 id="eval-008-source-gate-knowledge-card-warn">EVAL-008 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>冻结FMECA、Sentinel、AHA、REFLECT、Recovery RL与ros2_control；effect/mode/cause/detection/recovery outcome严格分开。</li><li>primary layer取first verified divergence；root cause需matched intervention、fix与同协议rerun，缺证据标unknown。</li><li>五项目均缺完整layer-aligned trace + intervention + rerun，不升级root-cause或recovery claim。</li><li>已生成 <code>sources/vol_05_eval008_perception_action_controller_recovery_failure_taxonomy_source_freeze.*</code>、<code>knowledge/vol_05_engineering_eval_eval008_failure_taxonomy_recovery.*</code> 与 <code>questions/vol_05_engineering_eval_eval008.*</code>；VOL 05 knowledge 30/44、cards 30/44，题卡保持unseen，下一内容节点为EVAL-009。</li></ul>
+<h3 id="eval-009-source-gate-knowledge-card-warn">EVAL-009 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>冻结BagIt、PROV-DM与MCAP；summary、raw rows、trace/video、immutable bundle和independent recompute分层。</li><li>planned/valid/excluded/missing守恒，video只作timestamp-aligned sidecar，summary必须由冻结reducer从raw重算。</li><li>五项目均缺完整immutable raw-to-summary bundle，不升级metric claim。</li><li>已生成EVAL-009 source/knowledge/question artifacts；VOL 05 knowledge/cards 31/44，下一节点为EVAL-010。</li></ul>
+<h3 id="eval-010-source-gate-knowledge-card-warn">EVAL-010 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>冻结Breck et al. ML Test Score与Argo Rollouts；SRE官方章节在当前环境抓取受阻，未承担唯一强主张。</li><li>golden case/expected/slice/margin在candidate前冻结；同protocol/scorer/common support做paired non-inferiority，critical/safety/latency不被overall抵消。</li><li>shadow保持无actuator authority；canary固定exposure/window/guardrail，失败abort并回滚known-good完整bundle。</li><li>五项目均没有闭合common-support raw bundle、预注册decision与live canary，不升级release-system claim。</li><li>已生成EVAL-010 source/knowledge/question artifacts；VOL 05 knowledge/cards 32/44，下一节点为EVAL-011。</li></ul>
+<h3 id="eval-011-source-gate-knowledge-card-warn">EVAL-011 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>冻结SIMPLER v1/official metrics、ML Test Score与SciPy Pearson/Spearman/Kendall/bootstrap实现入口。</li><li>policy/checkpoint是相关性变异单位；episode只估计每个online success点，不能pseudo-replicate。</li><li>Pearson、rank/MMRV、held-out prediction与causal effect分开；task hierarchy、cluster uncertainty与selection bias显式处理。</li><li>五项目均缺matched policy-task offline×online panel，不生成或升级任何项目相关系数。</li><li>已生成EVAL-011 source/knowledge/question artifacts；VOL 05 knowledge/cards 33/44，下一节点为EVAL-012。</li></ul>
+<h3 id="eval-012-source-gate-knowledge-card-warn">EVAL-012 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>冻结 ImageNet-C <code>1903.12261v1</code> / official commit <code>8190fe3</code> 与 SIMPLER <code>2405.05941v1</code> / official commit <code>06accaca</code>；分类 corruption benchmark 与机器人 closed-loop robustness 边界分开。</li><li>target envelope、diagnostic OOD、stress-only 分层；clean–perturbed pair 固定 checkpoint/task/init/controller/predicate，severity 绑定 unit/range source/cadence/correlation。</li><li>visibility、label、reachability、physics、predicate 与 solvability gate 显式；每格报告 k/n/CI、drop、retention、curve 与 preregistered worst target cell。</li><li>五项目均缺 checkpoint-bound paired closed-loop robustness matrix，不新增任何项目性能结论。</li><li>已生成 EVAL-012 source/knowledge/question artifacts；VOL 05 knowledge/cards 34/44，下一节点为 EVAL-013。</li></ul>
+<h3 id="eval-013-source-gate-knowledge-card-warn">EVAL-013 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>冻结 Tail at Scale、ROS 2 pendulum/QoS、HdrHistogram、RFC 3393、CPython clock 与 OpenPI serving 的revision/hash；tail、scheduler lateness、network PDV和action age严格分开。</li><li>capture→apply事件边界、clock uncertainty、GPU synchronization、critical path、p50/p95/p99/max、deadline miss、phase/interval jitter与per-offset chunk age已闭合。</li><li>cold/warm/load/fault、intended arrival与coordinated omission、matched H/K/Hz/backend/queue实验和raw trace artifact进入评估合同。</li><li>五项目均缺protocol-complete capture→controller-apply trace；UWM DataLoader p95只保留为训练input-stall证据。</li><li>已生成EVAL-013 source/knowledge/question artifacts；VOL 05 knowledge/cards 35/44，下一节点为EVAL-014。</li></ul>
+<h3 id="eval-014-source-gate-knowledge-card-warn">EVAL-014 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>冻结ROS 2 Actions cancel状态机、RFC 6749 scope、OWASP逐请求授权、Microsoft compensating transaction与CPython cancellation的revision/hash；公开机制不冒充本地结果。</li><li>intent→authorization→dispatch→authoritative sink分层；scope绑定subject/resource/action/parameters/time/purpose/approval/state并在dispatch前对resolved action重验。</li><li>cancel request/accepted/no-new-dispatch/quiescence/compensation/manual reconcile分开；补偿作为可失败、可恢复、幂等、可审计的领域化forward action。</li><li>resource/parameter/expiry/indirection/retry/duplicate/cancel timing/irreversibility/toxic composition进入测试矩阵；critical forbidden commit hard veto与allowed-case utility floor分离。</li><li>Robot Harness仅有scope/cancel/cleanup入口与proxy safety evidence，<code>RH-CL-009</code>仍FAIL；五项目均无protocol-complete真实effect-sink结论。</li><li>已生成EVAL-014 source/knowledge/question artifacts；VOL 05 knowledge/cards 36/44，下一节点为EVAL-015。</li></ul>
+<h3 id="eval-015-source-gate-knowledge-card-warn">EVAL-015 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>冻结Concrete Problems、AI Safety Gridworlds、Reward Tampering与Reward Model Overoptimization的版本/hash；observed reward、hidden performance、tampering和proxy过度优化严格分层。</li><li>training/selection proxy、locked audit与deployment utility分离；audit独立性按data、signal、implementation、reviewer和access逐项声明。</li><li>high-proxy/low-audit gap、optimizer-budget曲线、positive/negative/invariance/directional controls与parser/judge/tamper/trajectory/selection adversarial matrix进入评估合同。</li><li>critical hard veto与allowed utility floor并行；发现failure进入regression后仍保留fresh hidden family。</li><li>Robot Harness有reward/scorer源码和128-row窄边界测试，但真实effect、cancel语义、semantic backend与locked audit仍缺；其他四项目也无budget curve。</li><li>已生成EVAL-015 source/knowledge/question artifacts；VOL 05 knowledge/cards 37/44，下一节点为EVAL-016。</li></ul>
+<h3 id="eval-016-source-gate-knowledge-card-warn">EVAL-016 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>冻结WorldGym、MT-Bench judge、Prometheus-Vision、MJ-Bench与scikit-learn/SciPy agreement/rank实现的版本/hash；机器人proxy、judge bias与统计入口分层。</li><li>binary/ordinal/pairwise/ranking/probability/failure taxonomy分别选择confusion、kappa、rank、calibration与per-class指标，correlation不冒充absolute agreement。</li><li>human blind double-label、raw disagreement、adjudication与evidence visibility进入protocol；同模型五票不当独立专家。</li><li>position/style/identity/rubric/visual/temporal/viewpoint/task/injection/language paired probes与abstention进入bias contract。</li><li>WorldGym代码literal <code>gpt-4o</code>、n=5、0/0.5/1与乐观平票边界已核对；五项目均无VLM×human×objective predicate成对bundle。</li><li>已生成EVAL-016 source/knowledge/question artifacts；VOL 05 knowledge/cards 38/44，下一节点为EVAL-017。</li></ul>
+<h3 id="eval-017-source-gate-knowledge-card-warn">EVAL-017 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>冻结 SIMPLER、ML Test Score、Argo Rollouts mirror route、Sim2Real Audit 与 WM-031 的版本/hash；simulator、HIL/dry-run、live shadow、guarded real canary 与 progressive deployment 分层。</li><li>simulator success 仅属于冻结 sim protocol；sim–real 相关或排序必须有多个 policy/checkpoint 与 matched support，不能由单一候选模型外推。</li><li>shadow 接入 live observation，但 candidate 在 server/controller/hardware 三层均无 actuator dispatch 权限；shadow trajectory 由 known-good/human 产生，不能报告 candidate closed-loop success。</li><li>canary 在执行前冻结 robot/task/workspace/speed/force/time 风险预算、minimum exposure、decision window 与 hard abort；<code>0/n</code> 只给单侧风险上界，不等于零风险。</li><li>promotion 是 hard gate 合取；回滚 known-good 只影响未来动作，已发生物理 effect 仍需 stop、quiescence、compensation 或 manual reconcile。</li><li>五项目均无 same-bundle sim→shadow→real canary 连续证据；已生成 EVAL-017 source/knowledge/question artifacts，VOL 05 knowledge/cards 39/44，题卡保持 unseen，下一节点为 EVAL-018。</li></ul>
+<h3 id="eval-018-source-gate-knowledge-card-warn">EVAL-018 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>冻结NIST full-factorial/randomized-block页面、Bouthillier等ML benchmark variance论文、Hernán–Robins因果识别框架与statsmodels实现入口的版本/hash；通用DOE与VLA映射边界分开。</li><li>factor、arm、experimental unit、outcome与estimand分层；两因素至少跑A00/A10/A01/A11，分别估计main/simple effect与<code>μ11-μ10-μ01+μ00</code> interaction。</li><li>matched baseline冻结initial bundle、data、optimization/budget、tuning、selection、eval/scorer和failure policy；fixed-recipe机制effect与equal-search-budget系统effect分开。</li><li>training/data随机性与eval pair做block/randomization；episode不替代training seeds；planned→started→valid/failed/excluded守恒，OOM/NaN/timeout不得静默删除。</li><li>因果表述要求factor consistency、exchangeability、positivity、no interference与outcome accounting闭合，且只到冻结model/data/budget/task/scorer support。</li><li>五项目均无完整matched factorial；已生成EVAL-018 source/knowledge/question artifacts，VOL 05 knowledge/cards 40/44，题卡保持unseen，下一节点为EVAL-019。</li></ul>
+<h3 id="eval-019-source-gate-knowledge-card-warn">EVAL-019 Source Gate + Knowledge + Card（已完成，WARN）</h3>
+<ul><li>冻结Cawley–Talbot model-selection bias、Dwork等adaptive holdout、Deb/NSGA-II+pymoo Pareto/NDS与scikit-learn nested evaluation的版本/hash；公共机制与VLA决策规则分层。</li><li>candidate、feasible、Pareto与selected bundle四个集合分开；metric角色冻结为train/development/hard-gate/audit-only/monitoring。</li><li>validation best是在含噪估计上取max；checkpoint cadence、early stopping、best seed、失败视频和leaderboard访问均进入selection/exposure history。</li><li>artifact/safety/deadline等hard gates先形成feasible set；Pareto只保留不支配trade-off，最终仍按预注册constraint/lexicographic/weight/tie-break选一个真实bundle。</li><li>paired/cluster uncertainty与practical margin进入robust dominance；dev选完锁定bundle，fresh audit若驱动回改则开启新cycle并更换audit family。</li><li>OPD/Harness只有局部trade-off输入，其他项目candidate/lineage更不完整；已生成EVAL-019 source/knowledge/question artifacts，VOL 05 knowledge/cards 41/44，题卡保持unseen，下一节点为EVAL-020。</li></ul>
+<h3 id="eng-013-source-gate">ENG-013 Source Gate</h3>
+<ul><li>PyTorch 2.13 Reproducibility、DataLoader/DistributedSampler、CPU/CUDA RNG state API 与 NumPy 1.26 seed 已冻结。</li><li>ENG-013 知识正文和单张题卡均已完成；本地 fixed-batch/mid-epoch replay 仍未生成/验证。</li><li>ENG-014 的 source freeze、单节点知识与题卡已完成；真实跨后端 benchmark 仍后置。</li></ul>
+<h3 id="eng-014-source-gate">ENG-014 Source Gate</h3>
+<ul><li>PyTorch 2.13 CUDA/HIP/C++ extension、ROCm 7.14.0 compatibility matrix、NVIDIA CUDA Compatibility、<code>mcPytorch@b3db5e</code> 与 <code>mcTriton@7dd407</code> 已冻结。</li><li>当前只支持 L0 device/runtime → L5 workload/eval 的分层合同、operator matrix 和项目真实性边界；不支持“CUDA API 能调用 = 算子/性能等价”。</li><li>独立措辞复核已完成；ENG-014..020 题卡均保持 unseen，真实兼容 benchmark 仍未补齐。</li></ul>
+<h3 id="eng-015-source-gate">ENG-015 Source Gate</h3>
+<ul><li>已冻结 PyTorch 2.13 activation checkpoint/FSDP CPU offload，以及 DeepSpeed frozen commit <code>de1846cf6fbdd6f1c2adf046f319791ca78cc547</code> 的 activation-checkpointing/ZeRO-3 文档。</li><li>Source freeze 明确区分 activation recompute、FSDP CPU offload、ZeRO-Offload 与 ZeRO-Infinity；显存账本、step-time 分解、matched effective batch、A/B profiler 和 fixed-next-batch resume 均保留为工程验收合同。</li><li>当前没有本地 checkpoint binary、optimizer/RNG/sampler lineage、matched throughput A/B 或 fixed-batch resume artifact；ENG-015 题卡保持 <code>unseen</code>。</li></ul>
+<h3 id="eng-016-source-gate">ENG-016 Source Gate</h3>
+<ul><li>已冻结 Hinton distillation、PyTorch 2.13 <code>kl_div</code>/<code>no_grad</code>/FSDP 与 DeepSpeed ZeRO-3；明确 <code>input=log-probability</code>、<code>target</code> shape、<code>batchmean</code>、temperature/mask 和 teacher no-grad 边界。</li><li>多教师调度只作为 resident/sequential/staged engineering design；OPD 的五教师 <code>preloaded_zero3</code>、route metadata、coldstart full-vocab KL 和 student-rollout KL 是 local hook，不是多教师收益或 learned-router 证明。</li><li>当前缺 single-teacher/SFT-only/no-synthetic/synthetic-ratio ablation、teacher/student binary bundle 和 matched memory/latency A/B；ENG-016 题卡保持 <code>unseen</code>。</li></ul>
+<h3 id="eng-017-source-gate">ENG-017 Source Gate</h3>
+<ul><li>已冻结 PyTorch 2.13 AMP、Profiler、Autograd anomaly、DDP、<code>clip_grad_norm_</code>、DataLoader，以及 DeepSpeed <code>steps_per_print</code>/<code>wall_clock_breakdown</code> 配置语义。</li><li>Source freeze 定义 numerical、data、compute、distributed、lifecycle 五层事件合同；UWM/OPD 现有 summary/hook 不能升级为完整 per-step/per-rank telemetry 或吞吐因果。</li><li>当前缺 overflow/scale/grad-norm 时间序列、rank-level data_wait/comm trace、matched A/B 和 first-failure replay；ENG-017 题卡保持 <code>unseen</code>。</li></ul>
+<h3 id="eng-018-source-gate">ENG-018 Source Gate</h3>
+<ul><li>已冻结 PyTorch 2.13 TorchElastic/torchrun/DCP、Kubernetes Job/Pod Lifecycle 与 DeepSpeed model checkpointing；明确 rank/world-size 可变、duplicate execution、SIGTERM/grace 和 multi-file checkpoint 边界。</li><li>Source freeze 定义 logical run/attempt/worker group/rank 四层 identity、attempt-scoped temp generation、manifest-last COMMITTED、stable operation key 去重和 immutable final promotion。</li><li>UWM/OPD/OpenPiVLA 当前只有 save/load metadata、final-only/no-optimizer-state manifest 或远端 path；没有 binary、attempt ledger、signal/retry/duplicate/world-size drill；ENG-018 知识与一张题卡已生成并保持 unseen。</li></ul>
+<h3 id="eng-019-source-gate">ENG-019 Source Gate</h3>
+<ul><li>已冻结 Hydra 1.3.2 Defaults/override、pydantic-settings 2.14.1 priority、CPython 3.14 argparse、PyTorch 2.13 torchrun runtime env 与 RFC 8785 canonical JSON。</li><li>Source freeze 定义 resolve→typed validate→field provenance→secret redaction→canonical semantic hash，并区分 semantic run key、logical run、attempt 与 rank/restart identity。</li><li>UWM 有 env defaults/Hydra CLI/effective DeepSpeed subset，OpenPiVLA 有 argparse/formal plan/args snapshot，OPD 有 argparse/DeepSpeed <code>auto</code> runtime mutation/partial summary；三者都缺统一 source map、secret-safe canonical hash 和 checkpoint/eval lineage；ENG-019 知识与一张题卡已生成并保持 unseen。</li></ul>
+<h3 id="eng-020-source-gate">ENG-020 Source Gate</h3>
+<ul><li>已冻结 OWASP Secrets/Logging/Authorization、Kubernetes Secret/Good Practices、NIST SP 800-53 Rev.5 AC-3/AC-6/AU-9/IA-5 与 pydantic-settings debug secret warning。</li><li>Source freeze 定义 secret lease/rotate/revoke、deny-by-default/least privilege/every-request authorization、data purpose/retention/export manifest、allowlist-first redaction 与 canary/negative/incident drill。</li><li>Robot Harness 有特定 <code>__access_token</code> mask/dedup exclusion 和 robot/tool scope filtering；UWM/OpenPiVLA/OPD 只有 args/path/summary 暴露面，统一 secret manager/IAM/data purpose/generic redaction/audit protection 仍缺；ENG-020 知识与一张题卡已生成并保持 unseen。</li></ul>
+<h3 id="eng-021-source-gate">ENG-021 Source Gate</h3>
+<ul><li>已冻结 Transformers <code>save_pretrained/from_pretrained</code>、<code>ProcessorMixin</code>、Hub commit-revision snapshot、safetensors header/安全边界，以及 OpenPI params/assets/train_state/norm-stats/transforms/shape 语义。</li><li>Source gate 要求 model config/weight shards、processor、action schema、normalizer、ordered transforms、lineage、runtime manifest、strict load、fixed-batch 与 action/controller round-trip 绑定为 immutable bundle。</li><li>OpenPiVLA 当前有 processor/collator、recipe、远端 checkpoint/path；UWM 有 normalizer/load metadata；OPD 有 final-only/no-optimizer-state manifest；formal checkpoint binary、processor/norm hash binding、round-trip 与 backend A/B 仍缺。知识页与题卡后置，ENG-022 不展开。</li></ul>
+<h2 id="4-batch-1">4. Batch 1 退出条件</h2>
+<ol><li>10 个知识节点有公式/实现/shape 或协议字段、trade-off、bad case 和项目 hook。</li><li>对应 10 张题卡已在独立切片生成，ID 全局唯一，全部保持 <code>unseen</code>。</li><li>不把项目 inventory 的数字升级为通用事实；每个 project hook 保留证据等级。</li><li>DDP/FSDP/ZeRO/AMP/checkpoint 需要后续独立官方文档复核，当前 review 保持 <code>WARN</code>。</li></ol>
+</article></body></html>

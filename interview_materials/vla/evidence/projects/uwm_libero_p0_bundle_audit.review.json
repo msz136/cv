@@ -1,0 +1,38 @@
+{
+  "artifact": "evidence/projects/uwm_libero_p0_bundle_audit.md",
+  "html": "evidence/projects/uwm_libero_p0_bundle_audit.html",
+  "review_date": "2026-07-21",
+  "status": "p0_audited / libero-user-confirmed / robocasa-raw-rollout-backed / checkpoint-unverified / ownership-pending",
+  "verdict": "WARN",
+  "source_sha256": "AE430E44AF3A3B59CF444850D782D06FFD0A147ACA5F8FCB46616C0C9A81E034",
+  "scope": {
+    "project": "UWM / LIBERO",
+    "p0_fields": 10,
+    "episode_bundle_present": false,
+    "checkpoint_verified": false,
+    "user_confirmed_remote_summary": true,
+    "gpu_matched_dataloader_ab": false,
+    "robocasa_raw_rollout_records": 432,
+    "robocasa_success_promoted": 0,
+    "question_cards_changed": 0,
+    "coaching_state_created": false
+  },
+  "checks": {
+    "protocol": "PASS WITH WARNING (task map, fixed-pruned-init/reset-style and warmup fields separated)",
+    "remote_result": "PASS WITH WARNING (186/250 retained as user-confirmed remote final only)",
+    "paper_comparability": "FAIL TO PROMOTE (Table II OOD/shift/background/3-seed protocol differs)",
+    "episode_gate": "FAIL TO PROMOTE (no 250 episode JSONL/video/scorer bundle)",
+    "dataloader_smoke": "PASS WITH WARNING (DataLoader-only p95 wait A/B; full GPU throughput missing)",
+    "robocasa_gate": "PASS WITH WARNING (8x54 raw rollouts are present and independently recounted; produced checkpoint, env/scorer revision, videos and benchmark comparability remain open)",
+    "ownership_gate": "PENDING (13-row ledger; operator/reviewer/candidate roles open)",
+    "renderer": "PASS (ARIS academic v1 HTML rendered from Markdown)",
+    "browser_visual_check": "PASS WITH WARNING (desktop 1440px and narrow 800px browser checks passed; page-wide overflow absent and academic TOC/table rules held)"
+  },
+  "open_items": [
+    "Obtain checkpoint/normalizer/config/init/250-episode/scorer bundle for the strict run.",
+    "Run same-checkpoint reset-style versus fixed-pruned-init paired evaluation.",
+    "Run 30-100 step GPU matched DataLoader A/B with timing/memory/throughput.",
+    "Answer OWN-UWM-001 with concrete launcher/patch/operator/reviewer/tool boundaries."
+  ],
+  "next": "Keep UWM/LIBERO PARTIAL/WARN; collect the actionheadfix checkpoint/env-scorer-video bundle or ask one ownership question; do not promote 0.744 or RoboCasa benchmark claims."
+}

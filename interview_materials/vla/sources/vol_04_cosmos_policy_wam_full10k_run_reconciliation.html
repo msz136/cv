@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 Cosmos Policy / WAM：1 epoch gate 与 full10k 运行族对账</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_04_cosmos_policy_wam_full10k_run_reconciliation.md">
+<meta name="aris:source-sha256" content="2e3b1e1c4cd87cdbd2ac19e6869a91fcbb762c86eba7b1d66c15fdcad4fbf378">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>2e3b1e1c4cd87cdbd2ac19e6869a91fcbb762c86eba7b1d66c15fdcad4fbf378</code>；生成自：<code>interview_materials\vla\sources\vol_04_cosmos_policy_wam_full10k_run_reconciliation.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2-run-family">2. Run-family 对账表</a></li><li><a href="#3-full10k">3. Full10k 证据冻结</a></li><li><a href="#3-1-sha-256">3.1 原始文件与 SHA-256</a></li><li><a href="#3-2">3.2 可复核的训练指标</a></li><li><a href="#4-full10k-eval-1-1-smoke-24-5-formal-audit">4. Full10k eval：从 1×1 smoke 到 24×5 formal audit</a></li><li><a href="#5-1-epoch-gate">5. 与 1 epoch gate 的关系</a></li><li><a href="#6-p0">6. 仍未闭合的 P0 字段</a></li><li><a href="#7">7. 结论与禁止升级</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 04 Cosmos Policy / WAM：1 epoch gate 与 full10k 运行族对账</h1>
+<div class="meta">状态：<code>local_evidence_reconciliation / run_families_separated / WARN</code> 复核日期：2026-07-21 范围：只对账本地 <code>Project/report/cosmos_wam_repro</code> 中的独立 full10k WAM 复现与 <code>cosmos_policy_eval</code> 下的 1 epoch gate；不把两个 run family 合并成单一因果结果，也不改变题卡 <code>unseen</code> 或 ownership。</div>
+<h2 id="1">1. 结论先行</h2>
+<p>仓库此前把两条不同的 Cosmos/WAM 运行族压缩成“1 epoch 未完成”一条叙事，容易漏掉一条重要事实：</p>
+<ol><li><code>cosmos_policy_eval/muxi_deepspeed_1epoch_20260623</code> 的 8-GPU、<code>max_steps=9907</code> gate，确实在 save-2k 主线遇到 cgroup OOM；no-cycle 修复后的正式 run 又在 step 1500 的 <code>state_dict(destination=...)</code> 保存接口处失败。该 run family 没有可用于本轮 eval 的可加载 checkpoint。</li><li>独立的 <code>report/cosmos_wam_repro/cosmos_policy_wam_repro_full10k_20260619.log</code> 记录了另一个 batch-1、单卡 GPU7 的 full10k run：step 10000 loss=<code>0.0543</code>，checkpoint 写入远端路径，trainer <code>Done with training</code> 且 <code>EXIT:0</code>。</li><li>同一 full10k report 登记了 CoffeePressButton、1 episode、<code>max_steps_override=120</code> 的 RoboCasa smoke，结果 <code>0/1</code>；后续独立 remote-artifact bundle 又冻结了同一 <code>iter_000010000</code> path 下的 24×5 formal eval：24/24 process <code>exit_code=0</code>，raw <code>2/120</code>，两条 CoffeeServeMug length=1 immediate success 按当前本地 policy 排除后 trusted <code>0/118</code>。这支持“full10k 训练与正式评测链路均跑通并可审计”，但不能升级为官方 benchmark、成功率 uplift、官方 scorer 等价或本地 checkpoint binary/hash 已核验。</li></ol>
+<p>因此面试中应明确说“两个 run family”：<strong>1 epoch gate 的保存失败</strong>与<strong>独立 full10k repro 的远端 checkpoint path + 1×1 smoke + 24×5 formal eval</strong>不能互相替代。</p>
+<h2 id="2-run-family">2. Run-family 对账表</h2>
+<table><thead><tr><th>run family</th><th>本地证据入口</th><th>训练事实</th><th>eval 事实</th><th>当前能否称为完整结果</th></tr></thead><tbody>
+<tr><td>1 epoch gate</td><td><code>Project/report/cosmos_policy_eval/muxi_deepspeed_1epoch_20260623</code></td><td>8 GPU、global batch 128、<code>max_steps=9907</code>；save-2k 在 step 1903 后 cgroup OOM；no-cycle 正式 run 在 step 1500 保存接口失败</td><td>本轮没有对应可加载 checkpoint/eval bundle</td><td><code>NO / WARN</code></td></tr>
+<tr><td>full10k repro</td><td><code>Project/report/cosmos_wam_repro</code> + <code>Project/report/cosmos_policy_eval/remote_artifacts</code></td><td>单卡 GPU7，<code>MAX_ITER=10000</code>；step 10000 loss=<code>0.0543</code>；日志记录 checkpoint saved 与 <code>EXIT:0</code></td><td>CoffeePressButton 1×1 smoke <code>0/1</code>；同一远端 <code>iter_000010000</code> path 下24×5 raw <code>2/120</code>、local-policy trusted <code>0/118</code></td><td><code>PARTIAL / WARN</code></td></tr>
+<tr><td>官方/其他 baseline</td><td>同目录 report 与独立 eval 产物</td><td>不是上述两条训练 run 的 continuation</td><td>只能作外部 protocol 参照</td><td><code>NO causal join</code></td></tr>
+</tbody></table>
+<h2 id="3-full10k">3. Full10k 证据冻结</h2>
+<h3 id="3-1-sha-256">3.1 原始文件与 SHA-256</h3>
+<table><thead><tr><th>文件</th><th>SHA-256</th><th>支持的事实</th></tr></thead><tbody>
+<tr><td><code>C:\Users\mousongzhe\Project\report\cosmos_wam_repro\cosmos_policy_wam_repro_full10k_20260619.log</code></td><td><code>403604E8A1C2F77041E5E1ED43B80AE0BDD2630911D8DB1645B6FB6D0F0443EC</code></td><td><code>MAX_ITER=10000</code>、step 10000 loss、checkpoint path、<code>Done with training</code>、<code>EXIT:0</code></td></tr>
+<tr><td><code>C:\Users\mousongzhe\Project\report\cosmos_wam_repro\remote_probe_summary.txt</code></td><td><code>0005153BD899CC16BC7769B47C01B3AA201AAC22BE762424E48222A181C17BC2</code></td><td>checkpoint 完成摘要、loss JSONL 已回传、CoffeePressButton <code>0/1</code> 与 eval 输出路径</td></tr>
+<tr><td><code>C:\Users\mousongzhe\Project\report\cosmos_wam_repro\cosmos_wam_repro_report.html</code></td><td><code>12BE6C510EC5AF583B571B80B92FC98EB7F63217B543F7CD62CA05B9DF3075D6</code></td><td>report 对 full10k、loss breakdown、eval smoke 的结构化汇总</td></tr>
+<tr><td><code>C:\Users\mousongzhe\Project\report\cosmos_wam_repro\loss_breakdown_full10k.jsonl</code></td><td><code>B6CEB4459C8CB5A00AADF3AE7F00F440DC359111B143FE44D5AF21CCB639BDDE</code></td><td>full10k loss JSONL；report 说明每 iteration 有两个 callback 副本并按 iteration 去重</td></tr>
+</tbody></table>
+<h3 id="3-2">3.2 可复核的训练指标</h3>
+<ul><li>run name：<code>cosmos_policy_wam_repro_full10k_20260619</code>。</li><li><code>MAX_ITER=10000</code>、<code>BATCH_SIZE=1</code>、<code>NUM_WORKERS=1</code>，日志指向远端 <code>/data/msz/wm/outputs/...</code>。</li><li>step <code>10000</code>：训练日志显示 <code>Loss: 0.0543</code>；report 同时给出 full10k 首末与平均分支诊断：demo action MSE <code>0.677 → 0.026</code>、world image MSE <code>0.787 → 0.159</code>、value MSE <code>0.707 → 0.003</code>，全程平均约 <code>0.087/0.128/0.069</code>。</li><li><code>Saving last checkpoint file iter_000010000</code> 后记录 <code>Saved checkpoint to .../checkpoints/iter_000010000</code>、<code>Done with training</code>、<code>EXIT:0</code>。</li></ul>
+<p>这些数字是 full10k 这条 run 的训练/诊断证据，不是 8-GPU 1 epoch gate 的最终 loss，也不是闭环成功率。</p>
+<h2 id="4-full10k-eval-1-1-smoke-24-5-formal-audit">4. Full10k eval：从 1×1 smoke 到 24×5 formal audit</h2>
+<p><code>remote_probe_summary.txt</code> 与 report 一致登记：CoffeePressButton、1 episode、<code>max_steps_override=120</code>、success <code>0/1</code>，并回传 <code>ENV_EVAL-CoffeePressButton-full10k-official-eval-smoke.txt</code>、<code>full10k_rollout.mp4</code> 与 <code>full10k_with_future_img.mp4</code>。后续 <a href="../evidence/projects/cosmos_policy_full10k_trained_eval_p0_audit.html">Full10k Trained Eval P0 Audit</a> 对 <code>Project/report/cosmos_policy_eval/remote_artifacts</code> 做了独立只读审计：24 unique tasks、120 episodes、24/24 formal <code>exit_code=0</code>；24 个 task log 重算为 raw <code>2/120</code>；两条 raw success 都是 CoffeeServeMug episode 1/2 的 <code>SUCCESS:length=1</code>，按当前本地 policy 排除后为 trusted <code>0/118</code>。</p>
+<p>合并这两层证据后，可以支持四件事：</p>
+<ol><li>full10k checkpoint reference 能进入一次最小 RoboCasa eval smoke；</li><li>同一远端 <code>iter_000010000</code> path 能进入 24×5 formal eval，status/log/summary task set 与 denominator 对齐；</li><li>24 个 action-debug JSONL 共 4066 行，全部 <code>32×7</code>、finite，并指向同一远端 checkpoint path；</li><li>raw <code>2/120</code> 与 local-policy trusted <code>0/118</code> 两种口径可独立重算，且 denominator 变化有明确的两条 length=1 artifact 记录。</li></ol>
+<p>它仍不支持：把 <code>0/118</code> 称为 RoboCasa 官方统一 scorer 的 benchmark、与 official-HF <code>84/118</code> 做严格因果差值、full10k 相对 base 的 uplift、checkpoint binary/hash 与 fresh-process reload 的本地重算，或个人独立 ownership。目录中的 14 个本地 media 也不是完整 120 episode bundle。</p>
+<h2 id="5-1-epoch-gate">5. 与 1 epoch gate 的关系</h2>
+<p><code>vol_04_cosmos_policy_1epoch_evidence_freeze</code> 仍然正确描述 8-GPU <code>9907</code>-step gate 的 OOM 与保存接口失败；本页只是补充另一条独立的 full10k repro。两者不能用字符串“full10k”或“iter_000010000”直接 join，因为：</p>
+<ul><li>run name、日期、目录和 batch/硬件不同；</li><li>1 epoch gate 的远端输出位于 <code>cosmos_policy_eval/muxi_deepspeed_1epoch_20260623</code>，full10k 位于 <code>cosmos_wam_repro</code>；</li><li>没有共同的 checkpoint hash、config SHA、dataset revision、normalizer/statistics manifest 和同一 eval denominator。</li></ul>
+<p>推荐的 interview phrasing 是：</p>
+<div class="meta">“我有两条需要分开讲的证据：一条是 8 卡、global batch 128 的 9907-step 单 epoch gate，定位了 dataloader cgroup OOM 和 state_dict 保存兼容性；另一条是独立的 full10k WAM repro，日志显示 step 10000 loss 0.0543、远端 checkpoint 保存成功，先在 CoffeePressButton 1×1 smoke 中得到 0/1，后续同一路径的 24×5 formal eval 重算为 raw 2/120、按当前本地 policy trusted 0/118。后者证明训练和评测链路可运行并可审计，不等于官方 benchmark 或 uplift，也不能替代前一条 gate 的 save/load 闭环。”</div>
+<h2 id="6-p0">6. 仍未闭合的 P0 字段</h2>
+<table><thead><tr><th>字段</th><th>full10k 当前状态</th><th>下一动作</th></tr></thead><tbody>
+<tr><td>checkpoint binary/hash</td><td>只有远端 path 与 saved log；本地未保存 binary/hash</td><td>回传不可变 manifest 与 SHA-256</td></tr>
+<tr><td>reload smoke</td><td>当前 report 未给出新进程 load parity</td><td>1-step save→销毁进程→load→fixed-input parity</td></tr>
+<tr><td>eval denominator</td><td>24×5 status/log/summary 已对齐，raw <code>2/120</code>、local-policy trusted <code>0/118</code>；完整 episode JSONL 与 scorer version 仍缺</td><td>固定 scorer/invalid policy、termination/error 与120条 raw episode records</td></tr>
+<tr><td>config/data/normalizer SHA</td><td>report 有脚本和摘要，但未形成 run-specific immutable manifest</td><td>记录 code/config/data/stats revision</td></tr>
+<tr><td>ownership</td><td>report/日志存在不等于候选人逐文件 ownership</td><td>按 WAM ownership ledger 逐项确认</td></tr>
+</tbody></table>
+<h2 id="7">7. 结论与禁止升级</h2>
+<p>当前可以升级的项目叙事是“完成了一条独立 full10k 训练—1×1 smoke—24×5 formal eval 的审计链，并保留了 8-GPU 1 epoch gate 的系统排障链”。仍禁止写成：</p>
+<ol><li>“我完成并严格复现了 8-GPU 9907-step 1 epoch，并得到 full10k 的 loss/成功率”；</li><li>“Cosmos Policy full10k 在 RoboCasa 官方 benchmark 成功率为 0%”——当前只能说 raw <code>2/120</code>、按本地 policy trusted <code>0/118</code>；</li><li>“训练 loss 下降导致 benchmark uplift”；</li><li>“远端 checkpoint path 就是本地已验证权重”；</li><li>“报告中的脚本、日志或 Git author 自动等于个人独立实现”。</li></ol>
+<h2 id="references">References</h2>
+<ol><li><code>C:\Users\mousongzhe\Project\report\cosmos_wam_repro\cosmos_wam_repro_report.html</code>（本地 report，full10k 与 eval smoke 汇总）。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_wam_repro\remote_probe_summary.txt</code>（full10k checkpoint/eval 摘要）。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_wam_repro\cosmos_policy_wam_repro_full10k_20260619.log</code>（原始训练日志）。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\muxi_deepspeed_1epoch_20260623</code>（8-GPU 1 epoch gate source freeze）。</li><li><a href="vol_04_cosmos_policy_1epoch_evidence_freeze.html">Cosmos Policy 1 Epoch Evidence Freeze</a>。</li><li><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM Claim–Evidence Inventory</a>。</li><li><a href="../evidence/projects/cosmos_policy_full10k_trained_eval_p0_audit.html">Cosmos Policy full10k Trained Eval P0 Audit</a>。</li></ol>
+</article></body></html>

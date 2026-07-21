@@ -1,0 +1,34 @@
+{
+  "artifact": "evidence/projects/robot_harness_claim_evidence_inventory.md",
+  "html_artifact": "evidence/projects/robot_harness_claim_evidence_inventory.html",
+  "review_date": "2026-07-19",
+  "status": "drafted / local_direct_audit / ownership_ledger_linked / WARN",
+  "source_sha256": "71c3b62f52204574c1b854b554258dabc1856f5d9044eb9628280a32500a797f",
+  "source_revision": "agent@3f4c8b3a11ff9512bc18ec4a331ae5ea01555f49 (read-only audit)",
+  "verdict": "WARN",
+  "checks": {
+    "source_freeze": "PASS (runtime/data/reward/manifests/reports and git authorship were read from the agent worktree; no source mutation)",
+    "claim_id_unique": "PASS (11 unique RH-CL IDs in the reconciliation table; later P0 text repeats RH-CL-011 as a reference)",
+    "runtime_boundary": "PASS WITH WARNING (PydanticAI, tool filtering, scope, mutex, cancellation and compensation are direct; model-learned memory/subagent capability is not proven)",
+    "data_manifest_counts": "PASS (SFT 62223; GRPO 8916; restraint generated 1200 and mixed 9252)",
+    "reward_schema_mapping": "PASS (components and hard penalties mapped to prepare_grpo_data.py/reward artifacts)",
+    "8b_metrics_lineage": "PASS WITH WARNING (native_v3 report and metrics are locally present; report is a separate 8B line)",
+    "32b_metrics_lineage": "WARN (base, SFT and GRPO ladder artifacts are present, but checkpoint/scorer/n alignment is incomplete)",
+    "protocol_comparability": "FAIL (early 32B base uses Qwen hidden embedding; ladder run manifests use token_overlap_fallback; holdout n differs)",
+    "safety_boundary": "PASS WITH WARNING (safety remains weak and failure samples are recorded; no claim of solved safety)",
+    "browser_boundary": "PASS WITH WARNING (deferred/format evaluation only; no real browser runner)",
+    "ownership": "PASS WITH WARNING (13-row ledger separates candidate owner/reviewer and Codex-primary implementation; candidate confirmation remains pending)",
+    "targeted_runtime_tests": "WARN (2026-07-19: 11 passed, 1 failed because test-model is absent from current config; mutex finally release still logged)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, 14 H2, 7 H3, 7 tables, 2 code blocks and one formula; HTML meta SHA matches Markdown SHA)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static structure was checked instead)"
+  },
+  "open_items": [
+    "Freeze each 32B run's repo/config/data/scorer/checkpoint SHA and parent model in a single lineage manifest.",
+    "Rerun base/SFT/GRPO on the same suite, sample count and scorer; retain raw predictions and per-sample JSON.",
+    "Collect project/safety/browser runner or episode artifacts before making closed-loop claims.",
+    "Answer the eight ownership-ledger questions and attach at least three decision/review examples.",
+    "Repair or version the stale test-model fixture in a separate implementation slice before claiming runtime tests are green.",
+    "Do not equate 95.6% tool accuracy or project sandbox 100% with real robot success."
+  ],
+  "next": "Run PROJ-HARNESS-008 as an ownership-confirmation drill or collect common-protocol raw eval; keep all cards unseen until a real response."
+}

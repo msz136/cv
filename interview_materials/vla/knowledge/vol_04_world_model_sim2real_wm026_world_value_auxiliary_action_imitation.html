@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 World Model / Sim2Real：World/Value Auxiliary 为什么可能帮助 Action Imitation（WM-026）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm026_world_value_auxiliary_action_imitation.md">
+<meta name="aris:source-sha256" content="503ba6935fe4bda21a5f9fee887d8c316ab0158696e1de42eac3604da3cf25c0">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>503ba6935fe4bda21a5f9fee887d8c316ab0158696e1de42eac3604da3cf25c0</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm026_world_value_auxiliary_action_imitation.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 面试结论</a></li><li><a href="#2">2. 三种帮助机制</a></li><li><a href="#2-1-action-consequence-representation">2.1 Action consequence representation</a></li><li><a href="#2-2-task-progress-value-signal">2.2 Task-progress/value signal</a></li><li><a href="#2-3-data-coverage-regularization">2.3 Data coverage 与 regularization</a></li><li><a href="#3">3. 梯度相容性</a></li><li><a href="#4-cosmos-wam">4. Cosmos/WAM 的实现边界</a></li><li><a href="#5-matched-ablation">5. Matched ablation</a></li><li><a href="#6">6. 指标阶梯</a></li><li><a href="#7">7. 可审计伪代码</a></li><li><a href="#8">8. 负迁移与诊断</a></li><li><a href="#9-wam">9. WAM 项目真实性</a></li><li><a href="#10">10. 结论</a></li></ol></nav>
+<h1>VOL 04 World Model / Sim2Real：World/Value Auxiliary 为什么可能帮助 Action Imitation（WM-026）</h1>
+<div class="meta">状态：drafted / VLA-WM-026 / knowledge_28_of_44 / card_synced / WARN 报告日期：2026-07-18 证据截止：2026-07-18 当前节点：解释条件性机制与因果验证，不宣称 auxiliary 必然有效或已在本地 WAM 产生收益。 前置：<a href="vol_04_world_model_sim2real_wm025_cosmos_wam_slot_mask_loss.html">WM-025 Cosmos/WAM Slot / Mask / Loss</a>、<a href="../sources/vol_04_wm026_world_value_auxiliary_action_imitation_source_freeze.html">WM-026 Source Freeze</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>world/value auxiliary objective 为什么可能帮助 action imitation？回答必须同时说明表示机制、value 语义、数据覆盖、梯度相容性、负迁移和 matched ablation。</p>
+<h2 id="1">1. 面试结论</h2>
+<p>world auxiliary 可能迫使共享表示理解“动作之后什么会变”，从而保留可控物体、接触状态和任务阶段，而不是只拟合动作均值或 repeat baseline。value auxiliary 可能提供“当前状态/动作是否把任务推向成功”的 task-progress 信号。二者还可能通过更多 rollout 状态和额外监督起 regularization 作用。</p>
+<p>但关键词是“可能”：如果 future 只学背景/像素细节、value label 噪声或 OOD、routing/mask 错、gradient 与 action 冲突、auxiliary 比例过大或 capacity 不足，就会无迁移甚至负迁移。只有 matched ablation 和闭环 evidence 才能升级结论。</p>
+<h2 id="2">2. 三种帮助机制</h2>
+<h3 id="2-1-action-consequence-representation">2.1 Action consequence representation</h3>
+<p>纯 imitation：</p>
+<div class="formula">\[
+\mathcal L_a=\ell_a(f_a(h_\theta(s_t)),a_t^\*).
+\]</div>
+<p>加入 world target：</p>
+<div class="formula">\[
+\mathcal L_w=\ell_w(
+f_w(h_\theta(s_t),a_{t:t+K-1}),s&#x27;_{t+K}).
+\]</div>
+<p>变量解释：\(h_\theta\) 是共享表示，\(a_t^\*\) 是专家动作，\(s'_{t+K}\) 是 future observation proxy。若 \(\mathcal L_w\) 真正依赖 action consequence，shared feature 可能保留对象、接触与阶段；若 action swap 后 future 不变，world loss 再低也不能证明帮助 action。</p>
+<h3 id="2-2-task-progress-value-signal">2.2 Task-progress/value signal</h3>
+<div class="formula">\[
+\mathcal L_v=\ell_v(
+f_v(h_\theta(s_t),a_t,s&#x27;_{t+K}),G_{t+K}).
+\]</div>
+<p>变量解释：\(G_{t+K}\) 是指定 reward/termination contract 的 return。它可能区分视觉相近但成功可达性不同的状态；若 return scale、failure label、timeout 或 calibration 错，也会形成 shortcut。</p>
+<h3 id="2-3-data-coverage-regularization">2.3 Data coverage 与 regularization</h3>
+<p>demo 主要覆盖 expert-like states；success/failure rollout 能增加偏离、恢复和失败状态。共享 backbone 若从这些辅助角色学习有效因果/进展特征，可能提升 action robustness；若 rollout domain 与 demo policy 不匹配，则会污染 representation。</p>
+<h2 id="3">3. 梯度相容性</h2>
+<p>对 shared parameters：</p>
+<div class="formula">\[
+g_a=\nabla_\theta\mathcal L_a,\qquad
+g_{\mathrm{aux}}=\lambda_w\nabla_\theta\mathcal L_w+
+\lambda_v\nabla_\theta\mathcal L_v,
+\]</div>
+<div class="formula">\[
+\cos(g_a,g_{\mathrm{aux}})=
+\frac{g_a^\top g_{\mathrm{aux}}}
+\lVert g_a\rVert_2\lVert g_{\mathrm{aux}}\rVert_2+\epsilon}.
+\]</div>
+<p>变量解释：cosine 为正说明当前 batch 的局部方向更相容，为负提示冲突；还要记录 layer-wise norm、role frequency、loss scale、mask denominator 和 distributed reduction。它是 debug signal，不是闭环收益证明。</p>
+<h2 id="4-cosmos-wam">4. Cosmos/WAM 的实现边界</h2>
+<p>Cosmos/WAM 使用统一 latent sequence、sample routing、condition mask 和可选 target mask，而不是简单三个 scalar loss head。[1][2] 因此上面的 \(\mathcal L_a+\lambda_w\mathcal L_w+\lambda_v\mathcal L_v\) 是机制审计抽象；exact frozen main loss 仍是 noise-weighted latent EDM MSE，component action/future/value L1/MSE 只是诊断 metric。</p>
+<p>要证明 auxiliary 真正更新 action-relevant shared feature，必须保存：</p>
+<ul><li>demo/world/value role 的 effective sample/update 数；</li><li>action/future/value target slot 与 non-zero gradient；</li><li>shared trunk 和 slot-specific layer 的 gradient norm/cosine；</li><li>normalizer、padding、mask、denominator 和 checkpoint revision。</li></ul>
+<h2 id="5-matched-ablation">5. Matched ablation</h2>
+<table><thead><tr><th>Arm</th><th>目标</th><th>核心问题</th></tr></thead><tbody>
+<tr><td>A</td><td>action-only</td><td>action baseline</td></tr>
+<tr><td>B</td><td>action + world</td><td>world target 是否带来 transfer</td></tr>
+<tr><td>C</td><td>action + value</td><td>value signal 是否带来 transfer</td></tr>
+<tr><td>D</td><td>action + world + value</td><td>组合是否超过单目标</td></tr>
+<tr><td>E</td><td>shuffled auxiliary label</td><td>排除额外 compute/regularization</td></tr>
+<tr><td>F</td><td>auxiliary stop-gradient / frozen trunk</td><td>区分 head fitting 与 shared representation 更新</td></tr>
+</tbody></table>
+<p>需要固定：</p>
+<ol><li>base checkpoint、dataset split、demo/rollout identity；</li><li>total updates、token/sample 数、optimizer、LR schedule、batch 和 compute；</li><li>slot、mask、normalizer、action schema、seed；</li><li>eval task/init/controller/chunk/horizon/success predicate 和 denominator；</li><li>checkpoint selection rule。</li></ol>
+<p>如果 B/C/D 使用更多数据或 compute，应增加同资源 action-only control。</p>
+<h2 id="6">6. 指标阶梯</h2>
+<table><thead><tr><th>层</th><th>指标</th><th>结论边界</th></tr></thead><tbody>
+<tr><td>optimization</td><td>main loss、gradient norm/cosine</td><td>只证明目标进入反向/冲突</td></tr>
+<tr><td>action proxy</td><td>action MAE/MSE、repeat baseline、per-dim/per-step</td><td>只证明 frozen split imitation</td></tr>
+<tr><td>actionability</td><td>action swap/sensitivity、counterfactual future</td><td>检查 world 是否用 action</td></tr>
+<tr><td>auxiliary</td><td>per-offset future error、value calibration/rank</td><td>检查 auxiliary 自身质量</td></tr>
+<tr><td>closed loop</td><td>task success、first failure、recovery、episode trace</td><td>固定 protocol 下系统结果</td></tr>
+</tbody></table>
+<p>典型判读：</p>
+<ul><li>auxiliary proxy 好、action/closed-loop 不变：只学会 auxiliary task。</li><li>action MSE 好、closed-loop 不变：检查 contact、normalizer、recovery 和 metric mismatch。</li><li>D 优于 B/C：还不能直接说 synergy，需 interaction/gradient evidence。</li><li>future 不好但 B 优于 A：可能是 regularization/资源差异，不足以说 dynamics 表示成功。</li></ul>
+<h2 id="7">7. 可审计伪代码</h2>
+<pre><code class="language-python">def matched_auxiliary_ablation(base_state, data, protocol):
+    # 1. Keep initialization, samples, updates, compute and evaluation fixed.
+    arms = {
+        &quot;action&quot;: {&quot;world&quot;: 0.0, &quot;value&quot;: 0.0},
+        &quot;action_world&quot;: {&quot;world&quot;: 1.0, &quot;value&quot;: 0.0},
+        &quot;action_value&quot;: {&quot;world&quot;: 0.0, &quot;value&quot;: 1.0},
+        &quot;all&quot;: {&quot;world&quot;: 1.0, &quot;value&quot;: 1.0},
+    }
+    results = {}
+    for name, weights in arms.items():
+        model = restore_exact(base_state)
+        # 2. Log role counts, masks, shared gradients and all metric layers.
+        train(model, data, weights, protocol)
+        results[name] = evaluate_same_protocol(model, protocol)
+    # 3. Attribute gain only after paired proxy and closed-loop comparison.
+    return paired_compare(results)</code></pre>
+<p>实际运行还要加入 shuffled-label 和 stop-gradient controls，并保存每个 arm 的 manifest、checkpoint、metric、episode 和 ownership。</p>
+<h2 id="8">8. 负迁移与诊断</h2>
+<table><thead><tr><th>风险</th><th>症状</th><th>检查</th></tr></thead><tbody>
+<tr><td>visual shortcut</td><td>future 清晰但 action sensitivity 低</td><td>action swap、foreground/contact probe</td></tr>
+<tr><td>value noise/OOD</td><td>value loss 低但 rank/calibration 差</td><td>reliability、failure rollout audit</td></tr>
+<tr><td>gradient conflict</td><td>auxiliary 降、action 梯度/指标差</td><td>layer-wise cosine/norm、weight sweep</td></tr>
+<tr><td>role imbalance</td><td>action update 被稀释</td><td>effective role/token/update count</td></tr>
+<tr><td>capacity competition</td><td>world pixel detail占满 trunk</td><td>width/freeze/head-only control</td></tr>
+<tr><td>terminal padding</td><td>尾部 loss 异常</td><td>valid-step mask A/B</td></tr>
+<tr><td>domain mismatch</td><td>rollout auxiliary 伤害 demo</td><td>per-source holdout</td></tr>
+</tbody></table>
+<h2 id="9-wam">9. WAM 项目真实性</h2>
+<p>WAM inventory 只证明上游机制已核和项目提出过 ablation 计划；exact local config、可加载 checkpoint、raw metric、gradient trace、paired episode 和 ownership 仍缺。历史 45% MSE、任务成功率、0-success 与 root cause 不能作为 WM-026 的已验证结论。</p>
+<p>安全说法是：“我能解释辅助目标的表示假设，并设计 matched objective、gradient alignment、action sensitivity、value calibration 与 closed-loop 验证。”不能说“world/value 已经提升了我的策略”。</p>
+<h2 id="10">10. 结论</h2>
+<p>world/value auxiliary 可能通过 action consequence、task progress 和更广状态覆盖帮助 imitation；是否真的帮助取决于 label、routing/mask、gradient、capacity 和 protocol。最终证据必须来自 matched ablation，而不是 component loss 或上游论文结论。</p>
+<p>本节点保持 WARN，题卡保持 unseen；真实口述前不创建 coaching state。</p>
+<p>参考：<a href="../sources/vol_04_wm026_world_value_auxiliary_action_imitation_source_freeze.html">WM-026 Source Freeze</a>、<a href="../sources/vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos/WAM audit</a>、<a href="vol_04_world_model_sim2real_wm025_cosmos_wam_slot_mask_loss.html">WM-025</a>、<a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM Inventory</a>、<a href="vol_04_world_model_sim2real_wm019.html">WM-019</a>。</p>
+</article></body></html>

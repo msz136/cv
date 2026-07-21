@@ -1,0 +1,30 @@
+{
+  "artifact": "knowledge/vol_08_code007_pid_anti_windup.md",
+  "html": "knowledge/vol_08_code007_pid_anti_windup.html",
+  "source_freeze": "sources/vol_08_code007_pid_anti_windup_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / CODE-VLA-007 / knowledge_10_of_phase / card_pending / WARN",
+  "verdict": "WARN",
+  "source_sha256": "478ee605d2624bd75e42fa7ff2979f32b1f0d35cdffe996bad3e4ae4bba7b407",
+  "question_ids": [],
+  "checks": {
+    "source_gate": "PASS WITH WARNING (ROS 2 control, WPILib, Feedback Systems and VOL 01 boundaries are linked through the CODE-007 source freeze)",
+    "pid_semantics": "PASS (error sign, dt, P/I/D state, u_unsat/u_sat and tensor broadcasting boundaries are explicit)",
+    "anti_windup": "PASS WITH WARNING (conditional integration and back-calculation equations are labeled implementation contract; official docs support strategy/API semantics)",
+    "reset_and_safety": "PASS (reset, lease/episode epoch, action schema, normalizer/unit and controller/e-stop boundaries are explicit)",
+    "pseudocode": "PASS (reference implementation exposes saturation direction, anti-windup branch, limits and trace)",
+    "diagnostic_probes": "PASS (8 deterministic probes and first-divergence order are specified; execution remains pending)",
+    "project_truth_boundary": "PASS (five projects are hooks only; no local PID implementation, tuning log, robot feedback trace or ownership is inferred)",
+    "html_static_validation": "PASS (one H1, valid hierarchy, 4 formula blocks, academic palette/TOC/responsive rules and matching SHA)",
+    "local_links": "PASS (CODE-007 source freeze, VOL 01 review and official links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "question_card": "PENDING (CODE-VLA-007 card intentionally deferred to a separate slice)",
+    "oral_or_whiteboard_drill": "PENDING"
+  },
+  "open_items": [
+    "Generate one CODE-VLA-007 atomic card in a separate bounded slice; keep it unseen until a whiteboard/runtime drill.",
+    "Execute the 8-probe matrix against a local implementation or record a whiteboard/runtime artifact.",
+    "Do not infer VLA action-controller or real-robot success from PID equations, public APIs or project hooks."
+  ],
+  "next": "Generate only the CODE-VLA-007 atomic card; keep it unseen and do not start CODE-VLA-008/SYS-VLA-004 in the same slice."
+}

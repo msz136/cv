@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 EVAL-017 Source Freeze：Simulator Success、Shadow Mode 与真机 Gate</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_eval017_simulator_shadow_real_robot_gate_source_freeze.md">
+<meta name="aris:source-sha256" content="15f22c200c5b143a789a0152ba8be189533f70cf4ad89612d50717c7ae54c739">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>15f22c200c5b143a789a0152ba8be189533f70cf4ad89612d50717c7ae54c739</code>；生成自：<code>interview_materials\vla\sources\vol_05_eval017_simulator_shadow_real_robot_gate_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、Revision 与边界</a></li><li><a href="#2-evidence-authority-ladder">2. 六级 Evidence / Authority Ladder</a></li><li><a href="#3-simulator-gate">3. Simulator Gate</a></li><li><a href="#4-sim-real-gap-ranking">4. Sim–Real Gap 与 Ranking</a></li><li><a href="#5-shadow-mode-candidate-actuator-authority">5. Shadow Mode：必须无 Candidate Actuator Authority</a></li><li><a href="#6-shadow-metrics-counterfactual-boundary">6. Shadow Metrics 与 Counterfactual Boundary</a></li><li><a href="#7-shadow-guarded-real-canary">7. 从 Shadow 到 Guarded Real Canary</a></li><li><a href="#8-authority-risk-budget">8. Authority 与 Risk Budget</a></li><li><a href="#9-canary-metrics-denominator">9. Canary Metrics 与 Denominator</a></li><li><a href="#10">10. 零事故不等于零风险</a></li><li><a href="#11-promotion-conjunction">11. Promotion 是 Conjunction，不是总分</a></li><li><a href="#12-abort-rollback-physical-recovery">12. Abort、Rollback 与 Physical Recovery</a></li><li><a href="#13-matched-staged-experiment">13. Matched Staged Experiment</a></li><li><a href="#14-artifact-bundle">14. 最小 Artifact Bundle</a></li><li><a href="#15">15. 评估伪代码</a></li><li><a href="#16-evidence-mapping">16. 五项目 Evidence Mapping</a></li><li><a href="#17-claim-ladder">17. Claim Ladder 与下一入口</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 05 EVAL-017 Source Freeze：Simulator Success、Shadow Mode 与真机 Gate</h1>
+<div class="meta">状态：<code>source_frozen / VLA-EVAL-017 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-19 证据截止：2026-07-19 本切片冻结offline→simulator→live shadow/no-authority→guarded real canary→progressive promotion的证据阶梯、sim-real common support、counterfactual shadow边界、真机authority/risk envelope、abort/rollback/recovery与零事件上界；只生成一张<code>VLA-EVAL-017</code>原子题卡，EVAL-018后置。</div>
+<h2 id="question">问题（Question）</h2>
+<p>一个VLA在LIBERO/RoboCasa或自研simulator成功率很高，怎样安全推进到真机？答案不是“sim过线后直接上机器人”，也不是把shadow输出看起来合理当作闭环成功。可信release需要逐级扩大真实观测、执行权和风险暴露，每一级预注册promotion/abort条件，保存同一bundle与raw trace，并承认known-good rollback不会自动恢复已经改变的物理场景。</p>
+<h2 id="1-revision">1. 冻结来源、Revision 与边界</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>类型 / revision / license</th><th>SHA-256</th><th>支持范围</th><th>不支持</th></tr></thead><tbody>
+<tr><td>S1</td><td>Li et al., <em>Evaluating Real-World Robot Manipulation Policies in Simulation</em>（SIMPLER）</td><td>primary paper；arXiv <code>2405.05941v1</code>，2024；论文许可未断言</td><td>PDF <code>6a9481f3c0fc43fa6736e5f5fc8ddb72ebf05aad7dbd0ff31721e4d6bffec9e5</code></td><td>多policy上的sim-real matched evaluation、relative ranking与distribution-shift边界；simulation不完全替代real</td><td>任意sim success可直接迁移；单一policy可建立相关性；默认gate阈值</td></tr>
+<tr><td>S2</td><td><code>simpler-env/SimplerEnv</code></td><td>official-code；commit <code>06accaca93535902d408da4855f21cece12bceb7</code>；MIT</td><td>README <code>81aaa39d59e41c6b60d6ccdf09c17b1f0ca284ce7cb780b62b908afac6c0dc28</code>；metrics <code>ee8596be6997d41295bf5b25f90c9b5b3ba47ef2bd92296b8c45e7ffc5606dc6</code>；calc <code>c95963ec1452cb4f5f34db012eda79542c8afdd0465299ae30cf710c4b4a0521</code>；LICENSE <code>c28645822e5cdadf816144773ee153332449ae04aa6f0b6a6393e5611092f878</code></td><td>REAL_PERF/SIMPLER_PERF policy-task mapping与Pearson/MMRV实现入口</td><td>用户项目已运行、真实硬件安全或canary机制</td></tr>
+<tr><td>S3</td><td>Breck et al., <em>The ML Test Score</em></td><td>primary paper；IEEE Big Data 2017；论文许可未断言</td><td>Google Research page <code>e1588aa27c4a0aa74435327e92400443faf0b1ddf623068845571346484e1f6b</code>；PDF <code>8db5862dc7c7aaa2c55bb43bd42fc55531a0503782b7026b5811c00c98befd31</code></td><td>offline testing不能保证live；重要slice release tests；old/new并行、小流量canary、rollback与监控</td><td>机器人shadow/authority定义、安全认证或本页阈值</td></tr>
+<tr><td>S4</td><td>Argo Rollouts</td><td>official-code/docs；commit <code>9273b0ee05dbb629cc72fb9d343c08356c8379c8</code>；Apache-2.0</td><td>LICENSE <code>c996fc213c94f4a4a838407d355b081226caa7b103a4f239bb87fb8f1d8e3a60</code>；canary <code>d50dadb21ed9ec2010be77ec0c7cde8af90a1b32e5af005102fad6a841b8c4ee</code>；analysis <code>2e4a68131130e307c396bd0cf431667152e599e056464e6eb22d2e18f348f8ae</code>；spec <code>0bcdbf333ffe7978f1530c3b79272a4098948154dde14bbf1807b212b6b8a665</code></td><td>mirror/shadow route、traffic percentage、pause/analysis、abort与rollback window等progressive-delivery控制面</td><td>pod traffic机制自动等于机器人动作安全；物理状态可软件rollback</td></tr>
+<tr><td>S5</td><td>Reality-gap / Sim2Real source audits</td><td>canonical local + frozen primary/doc snapshots</td><td>Sim2Real Audit <code>18318d37f2060a771d3074b3a2d70b7e07487091de23d9cf6a9599f4080ec200</code>；WM-031 <code>d25897218b4a276a0d9a981c826e8680ba21db7e64b298963eace10184877a97</code></td><td>visual/sensor、dynamics/contact、control/timing、task/protocol与stochasticity gap；paired test与安全rollout边界</td><td>五项目已完成real-hardware transfer；randomization自动关闭gap</td></tr>
+<tr><td>S6</td><td>本地前置节点</td><td>canonical local prerequisites</td><td>EVAL-010 <code>512d9e16b392e7258358c0092dff6ff5049890040d8d5efd1fdadfe7048b2911</code>；EVAL-011 <code>c4a085e96e8ae6ed4d22660b49d26d8faad0b338e8990b132ae3288ee28eb0dd</code>；EVAL-014 <code>2027ea608960749f407099c56bac92528157e2125fd83525618507aa9f9f614a</code>；EVAL-016 <code>74a05d86958cfa3b620c363e34452597b453e3a3b8b0bc75b635bf5b987b6490</code></td><td>golden/canary、sim-real panel、cancel/compensation、human/VLM proxy前置合同</td><td>staged real-robot release已实施</td></tr>
+<tr><td>S7</td><td>五项目inventories + WAM manifest</td><td>local evidence</td><td>Harness <code>66acc52c685d5ace6926a42976b7ba59b6f889d6848f74bfd8216cad92aa291e</code>；OPD <code>0a68251de06bc8494b7d2be5e6dc169fc860a629c2f312e623db69ed29db12bb</code>；OpenPiVLA <code>a3c644f949295d72889b2acf6456bfd050e05c147b14381bbb067504a34ce293</code>；WAM <code>078c86b1484fe38fdd136428123c9529c6b750dfea5e031ec506cf617517772d</code>；UWM <code>728b8326dc345072886d0909fe2b8d81dfde3993771e7febed446d471bd3674d</code>；WAM manifest <code>1ab8709201e2e75f580cb0aa0f8465defb546d63b2aab70a1752239a7da8f697</code></td><td>当前simulator/diagnostic/runtime artifacts与缺口</td><td>live shadow、guarded real canary或个人真机认证</td></tr>
+</tbody></table>
+<p>S1/S2支持sim-real相对评估，S3/S4提供通用parallel/mirror/canary控制机制，S5—S7约束机器人转换。下面的authority ladder、risk budget、shadow metrics、zero-event bound与artifact schema是source-consistent engineering synthesis，不冒充上游原协议。</p>
+<h2 id="2-evidence-authority-ladder">2. 六级 Evidence / Authority Ladder</h2>
+<pre><code class="language-text">L0 static/offline: dataset, parser, action validity, replay
+L1 simulator: candidate controls simulated environment
+L2 hardware-in-loop/dry-run: real stack, actuator disabled or isolated
+L3 live shadow: real observations, candidate output logged, no actuator authority
+L4 guarded real canary: bounded actuator authority under safety envelope
+L5 progressive deployment: expand tasks/robots/time only after decision window</code></pre>
+<p>每一级同时增加三件事：realism、candidate authority和risk exposure。结论只能支持本级及其已观测support：simulator success不是real success；shadow不是closed-loop candidate success；一个小canary通过也不是全任务/长期安全认证。</p>
+<p>L2和L3可合并实现，但语义要分开：hardware-in-loop验证真实serialization/controller/latency而不一定有live scene；shadow使用live真实观测，却让known-good policy/human继续控制或保持actuator disabled。</p>
+<h2 id="3-simulator-gate">3. Simulator Gate</h2>
+<p>simulator success：</p>
+<div class="formula">\[
+\widehat p_{j,t}^{\mathrm{sim}}=
+\frac{k_{j,t}^{\mathrm{sim}}}{n_{j,t}^{\mathrm{sim}}}.
+\]</div>
+<p>变量解释：<code>j</code>是policy/checkpoint，<code>t</code>是task/slice，<code>k/n</code>绑定init、seed、controller、predicate和valid/exclusion。直觉：一个95%数字只描述冻结sim protocol。实现映射：保存env/assets/physics/controller/camera/normalizer/horizon/action repeat/success code的revision和逐episode trace。</p>
+<p>sim gate至少检查：</p>
+<ul><li>common support上的baseline/candidate paired result与CI；</li><li>clean、target perturbation、fault和critical safety slices；</li><li>action/controller/time/normalizer roundtrip；</li><li>collision/contact/forbidden effect和reset/termination；</li><li>solver/physics/camera/domain randomization范围及其来源；</li><li>reward/scorer hacking、unsolvable/invalid守恒；</li><li>real calibration/incident数据是否落在target envelope。</li></ul>
+<p>高sim success可淘汰明显失败candidate、扩大failure coverage，不能单独授权真机。</p>
+<h2 id="4-sim-real-gap-ranking">4. Sim–Real Gap 与 Ranking</h2>
+<p>对同一policy-task common support：</p>
+<div class="formula">\[
+\Delta_{j,t}^{\mathrm{S2R}}=
+\widehat p_{j,t}^{\mathrm{real}}-
+\widehat p_{j,t}^{\mathrm{sim}}.
+\]</div>
+<p>变量解释：两侧必须对齐task语义、init family、controller/action、predicate和denominator；real trial较少时给二项/cluster uncertainty。直觉：absolute gap回答sim是否校准，rank回答是否能筛选policy。实现映射：多个真实policy/checkpoint<code>j</code>形成matched panel，报告Pearson/Spearman/MMRV、per-task gap、failure overlap和held-out prediction。[S1][S2]</p>
+<p>单个policy只有一个sim/real pair，不能计算可靠相关性。即使rank保持，absolute success可能系统高估；可以说“所测support上适合前置筛选”，不能说“sim替代real”。</p>
+<h2 id="5-shadow-mode-candidate-actuator-authority">5. Shadow Mode：必须无 Candidate Actuator Authority</h2>
+<p>机器人shadow合同：</p>
+<pre><code class="language-text">live observation/state -&gt; candidate inference -&gt; safety projection/log
+                                 X no dispatch to actuator
+known-good policy / human / disabled actuator -&gt; actual execution</code></pre>
+<p>Argo的<code>setMirrorRoute</code>把匹配流量镜像给canary而不替换primary response，提供软件shadow类比。[S4] 机器人实现必须额外在server/controller/hardware三层证明candidate output无dispatch path；仅在prompt写“shadow=true”不够。</p>
+<p>shadow能验证：real sensor schema、latency/queue、missingness、action range、policy disagreement、projected constraint、OOD/abstain与logging。不能验证：candidate action执行后的下一观察、contact、closed-loop recovery、真实success或candidate-induced incident。</p>
+<h2 id="6-shadow-metrics-counterfactual-boundary">6. Shadow Metrics 与 Counterfactual Boundary</h2>
+<p>相对known-good/human action的disagreement：</p>
+<div class="formula">\[
+D_i=\mathbb{1}
+\left[d(a_i^{\mathrm{candidate}},a_i^{\mathrm{reference}})&gt;\tau_d\right].
+\]</div>
+<p>变量解释：<code>d/τ_d</code>绑定action semantics、frame、time和state；reference action不等于唯一正确答案。实现映射：记录observation/state version、candidate/reference action、safety projection、latency、OOD、reference source与实际执行action。</p>
+<p>还要报：valid/finite/range、controller reject、projected collision/constraint、forbidden action、action-age、fallback/abstain、per-state/task disagreement与counterfactual evaluator uncertainty。对多解任务，action disagreement高不等于candidate错误；需要sim replay、human/state review或safe cloned-state experiment。</p>
+<p>shadow日志是off-policy/counterfactual证据：candidate未改变未来state，因此把整条observed trajectory喂给candidate，只测“在known-good状态分布下会输出什么”，不测它自身诱导的state distribution。</p>
+<h2 id="7-shadow-guarded-real-canary">7. 从 Shadow 到 Guarded Real Canary</h2>
+<p>promotion前冻结：</p>
+<ul><li>candidate完整bundle/checkpoint/processor/normalizer/controller与rollback bundle；</li><li>allowlisted robot、workspace、object、task/init、速度/力/位移/时长上限；</li><li>independent safety controller、workspace/velocity/force limits与hardware E-stop；</li><li>human supervisor、操作权限、通信与stop rehearsal；</li><li>minimum exposure、decision window、success/safety/latency gates；</li><li>abort trigger、safe-stop、scene recovery/manual reconcile与incident owner；</li><li>baseline对照和同时间窗/环境support；</li><li>raw observation/action/controller/effect/event/video bundle。</li></ul>
+<p>canary-0可先做free-space或软物体、低速、短horizon；随后逐步增加contact、task、robot和时窗。不能同时扩大model、controller、workspace、speed和task后把结果归因policy。</p>
+<h2 id="8-authority-risk-budget">8. Authority 与 Risk Budget</h2>
+<p>每个canary stage登记最大暴露：</p>
+<div class="formula">\[
+B_s=\sum_{i\in s}w_i\,\Delta t_i,
+\]</div>
+<p>其中<code>w_i</code>是事前定义的risk/severity weight，<code>Δt</code>是candidate拥有真实执行权的时间或操作次数。变量解释：它是operational exposure账本，不是正式安全概率。实现映射：stage manifest保存robot-hours、episodes、contact count、max speed/force、human distance、object damage tier和不可逆操作数。</p>
+<p>budget达到上限、观察窗结束或任一hard trigger出现即pause decision；不能因“还没收够成功样本”擅自继续危险暴露。</p>
+<h2 id="9-canary-metrics-denominator">9. Canary Metrics 与 Denominator</h2>
+<p>至少同时报告：</p>
+<table><thead><tr><th>维度</th><th>指标</th></tr></thead><tbody>
+<tr><td>task</td><td>success <code>k/n/CI</code>、partial、time/steps、retry</td></tr>
+<tr><td>safety</td><td>collision/near-miss/forbidden effect、limit trigger、E-stop</td></tr>
+<tr><td>human</td><td>intervention/opportunity、takeover、false alarm、operator burden</td></tr>
+<tr><td>systems</td><td>p50/p95/p99 latency、deadline miss、timeout、restart</td></tr>
+<tr><td>control</td><td>tracking error、action clipping/reject、oscillation、stale action</td></tr>
+<tr><td>recovery</td><td>safe-stop、quiescence、compensation/manual reconcile、scene reset</td></tr>
+<tr><td>coverage</td><td>task/init/state/OOD、robot/site/time/thermal/payload exposure</td></tr>
+</tbody></table>
+<p>intervention rate的分母可以是eligible decision、episode或robot-hour，必须命名；只报“2次干预”不可比较。被human提前接管的episode不能从success/safety分母静默删除，应标记terminal reason和counterfactual不可识别。</p>
+<h2 id="10">10. 零事故不等于零风险</h2>
+<p>若<code>n</code>个独立Bernoulli exposure中观察到0次事件，在置信水平<code>1-α</code>下的exact单侧上界：</p>
+<div class="formula">\[
+p_{\mathrm{event}}^{\mathrm{upper}}=1-\alpha^{1/n}.
+\]</div>
+<p>变量解释：独立同分布假设在robot episode中往往过强；实际应按robot/day/task cluster并报告coverage。直觉：<code>0/10</code>仍允许很高未知风险，不能写“100%安全”。实现映射：给<code>0/n</code>、上界、exposure support、cluster、observation window和检测灵敏度；near-miss与intervention另报。</p>
+<p>critical forbidden effect通常仍是hard veto，而不是等待统计显著。统计上界用于表达剩余不确定性，不是替代风险分析/工程limit。</p>
+<h2 id="11-promotion-conjunction">11. Promotion 是 Conjunction，不是总分</h2>
+<div class="formula">\[
+G_{mathrm{promote}}=
+G_{mathrm{artifact}}\land G_{mathrm{offline}}\land
+G_{mathrm{sim}}\land G_{mathrm{shadow}}\land
+G_{mathrm{canary}}\land G_{mathrm{safety}}.
+\]</div>
+<p>变量解释：每个gate有预注册PASS/FAIL/INCONCLUSIVE与missing policy。直觉：overall success不能抵消forbidden effect、deadline或E-stop。实现映射：promotion decision记录每个gate输入SHA、decision maker、时间、override及理由；inconclusive默认不自动promote。</p>
+<p>soft metrics可用于排序/调优，hard safety、artifact identity、scope和minimum exposure不能用weighted average洗掉。candidate只在当前stage范围被bless，扩大support需新stage。</p>
+<h2 id="12-abort-rollback-physical-recovery">12. Abort、Rollback 与 Physical Recovery</h2>
+<p>abort触发后链路：</p>
+<pre><code class="language-text">revoke candidate authority
+ -&gt; no new dispatch
+ -&gt; safe stop / quiescence
+ -&gt; switch future decisions to known-good bundle
+ -&gt; assess committed physical/business effects
+ -&gt; compensate or manual reconcile
+ -&gt; preserve incident bundle and block promotion</code></pre>
+<p>software rollback只恢复未来serving/controller bundle，不会把已移动物体、碰撞、订单或场景状态自动还原。[S6] 必须单独验证cancel accepted、last effect、quiescence、scene recovery和operator handoff。known-good也要做load/health smoke，避免rollback target失效。</p>
+<h2 id="13-matched-staged-experiment">13. Matched Staged Experiment</h2>
+<ol><li>冻结candidate/baseline完整bundle和stage contract；</li><li>simulator在target common support做paired clean/fault/safety matrix；</li><li>shadow接live observations但candidate output在多层被阻断，保存全部counterfactual动作；</li><li>用shadow failure/coverage决定canary allowlist，不用同一数据反复调threshold后称holdout；</li><li>real canary按robot/task/time block与known-good交错，控制day/site/operator/thermal；</li><li>stage内达到minimum exposure且所有hard gate PASS才扩大一个authority维度；</li><li>abort/rollback/E-stop至少演练一次，真实trigger自动执行；</li><li>每次decision由immutable raw bundle重算，incident进入regression但另留fresh holdout。</li></ol>
+<h2 id="14-artifact-bundle">14. 最小 Artifact Bundle</h2>
+<pre><code class="language-text">staged_robot_release/
+  candidate_known_good_bundle_manifest.json
+  gate_contract.json
+  simulator/{protocol,episodes,summaries}/
+  sim_real_panel.parquet
+  shadow/{authority_proof,observations,candidate_actions,reference_actions}.parquet
+  canary/{stage_manifest,episodes,exposure_ledger}.jsonl
+  safety_events.jsonl
+  interventions_abort_rollback.jsonl
+  scene_recovery_manual_review.jsonl
+  promotion_decisions.jsonl
+  checksums/manifest-sha256.txt
+  reproduce.ps1</code></pre>
+<p>authority proof需包含candidate credentials/tool/controller routes、server dispatch denial、actuator command source和hardware interlock测试；不能只靠配置字段。每个事件用episode/operation/robot/state/action IDs贯穿sim、shadow、canary与incident。</p>
+<h2 id="15">15. 评估伪代码</h2>
+<pre><code class="language-python">def staged_robot_release(candidate, known_good, stages, safety):
+    spec = freeze_bundle_gates_authority_risk_and_abort(stages)
+    require(run_offline_and_simulator_gates(candidate, known_good, spec))
+
+    # Candidate consumes live observations but cannot reach an actuator route.
+    shadow = run_live_shadow(candidate, authority=&quot;none&quot;, proof=safety.dispatch_proof)
+    require(evaluate_shadow_latency_disagreement_constraints(shadow, spec))
+
+    for stage in spec.real_canary_stages:
+        safety.assert_limits_and_estop(stage)
+        result = run_guarded_real_canary(candidate, known_good, stage)
+        persist_raw_events_before_summary(result)
+        if result.hard_abort or not stage_gate_passes(result, stage):
+            revoke_stop_rollback_and_reconcile(result, known_good, safety)
+            return &quot;ABORT&quot;
+        promote_one_authority_dimension(stage)
+    return &quot;PROMOTE_WITHIN_MEASURED_SUPPORT&quot;</code></pre>
+<p>伪代码是release合同，不是五项目已有系统。</p>
+<h2 id="16-evidence-mapping">16. 五项目 Evidence Mapping</h2>
+<table><thead><tr><th>项目</th><th>当前最接近层级</th><th>能安全说</th><th>不能说 / 缺口</th></tr></thead><tbody>
+<tr><td>UWM / LIBERO</td><td>L1 simulator summary/protocol；final <code>186/250</code>为user-confirmed且raw bundle缺</td><td>讲sim protocol控制、分母与下一步shadow设计</td><td>real robot、live shadow、canary或Sim2Real完成</td></tr>
+<tr><td>WAM / Cosmos</td><td>公开RoboCasa/LIBERO机制；本地单episodediagnostic</td><td>可把episode作为一个regression/diagnostic case</td><td>完整sim gate、human/VLM/real validation或canary</td></tr>
+<tr><td>OpenPiVLA</td><td>official-checkpoint ALOHA/LIBERO rollout diagnostics + archive summary</td><td>讲eval/deployment工程入口与lineage缺口</td><td>formal Qwen checkpoint真实shadow/real canary；97.4对应真机</td></tr>
+<tr><td>Robot Harness</td><td>project sandbox/tool proxy与runtime scope/cancel入口</td><td>可复用authority proof、cancel和audit思想</td><td>VLA simulator success、candidate shadow、real robot canary</td></tr>
+<tr><td>OPD</td><td>L0 static point/box/text holdout</td><td>可作为perception gate之一</td><td>policy/controller/simulator/shadow/real execution</td></tr>
+</tbody></table>
+<p>五项目均没有<code>same candidate bundle → matched sim → live no-authority shadow → bounded real canary → promotion/abort</code>连续证据链。本节点不新增sim/real或canary结果。</p>
+<h2 id="17-claim-ladder">17. Claim Ladder 与下一入口</h2>
+<table><thead><tr><th>级别</th><th>可接受表述</th><th>所需证据</th></tr></thead><tbody>
+<tr><td>C0</td><td>设计staged release合同</td><td>本页、gate schema</td></tr>
+<tr><td>C1</td><td>simulator协议内成功/回归</td><td>checkpoint-bound raw sim episodes与CI</td></tr>
+<tr><td>C2</td><td>live shadow通过</td><td>no-authority proof、live input/action/latency/constraint traces</td></tr>
+<tr><td>C3</td><td>bounded real canary通过</td><td>authority/risk envelope、raw episodes、intervention/safety、abort drill</td></tr>
+<tr><td>C4</td><td>measured support内progressive deployment</td><td>多stage decision、longitudinal monitoring与incident response</td></tr>
+</tbody></table>
+<p>当前项目分别停在L0/L1/diagnostic，不能升级C2—C4。</p>
+<p>本节点保持<code>WARN/unseen</code>。下一内容节点固定为<code>VLA-EVAL-018</code>：factorial ablation、matched baseline与因果边界；本切片不生成该节点，也不创建<code>coaching_state.md</code>。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Li et al., <a href="https://arxiv.org/abs/2405.05941v1"><em>Evaluating Real-World Robot Manipulation Policies in Simulation</em>, arXiv:2405.05941v1</a>；<a href="https://github.com/simpler-env/SimplerEnv/tree/06accaca93535902d408da4855f21cece12bceb7">SimplerEnv@06accac</a>。</li><li>Breck et al., <a href="https://research.google/pubs/the-ml-test-score-a-rubric-for-ml-production-readiness-and-technical-debt-reduction/"><em>The ML Test Score</em></a>, 2017。</li><li>Argo Rollouts, <a href="https://github.com/argoproj/argo-rollouts/blob/9273b0ee05dbb629cc72fb9d343c08356c8379c8/docs/features/canary/index.md">Canary</a>、<a href="https://github.com/argoproj/argo-rollouts/blob/9273b0ee05dbb629cc72fb9d343c08356c8379c8/docs/features/analysis.md">Analysis</a>与<a href="https://github.com/argoproj/argo-rollouts/blob/9273b0ee05dbb629cc72fb9d343c08356c8379c8/docs/features/specification.md">mirror/specification</a>。</li><li><a href="vol_04_sim2real_claim_to_mechanism.html">VOL 04 Sim2Real Audit</a>与<a href="vol_04_wm031_reality_gap_taxonomy_source_freeze.html">WM-031 Reality-gap Taxonomy</a>。</li><li><a href="vol_05_eval010_regression_gate_golden_set_canary_rollout_source_freeze.html">EVAL-010 Regression/Canary</a>、<a href="vol_05_eval011_offline_metric_online_success_correlation_source_freeze.html">EVAL-011 Sim/Real Correlation</a>、<a href="vol_05_eval014_forbidden_side_effect_scope_cancel_compensation_source_freeze.html">EVAL-014 Cancel/Compensation</a>与<a href="vol_05_eval016_vlm_human_proxy_agreement_bias_source_freeze.html">EVAL-016 VLM/Human Proxy</a>。</li><li><a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO</a>、<a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a>、<a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA</a>、<a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness</a>与<a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD</a> inventories。</li></ol>
+</article></body></html>

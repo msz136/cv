@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 PER-020：Robustness、Safety、Fallback 与风险门独立事实复核</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per020_robustness_safety_fallback_independent_fact_review.md">
+<meta name="aris:source-sha256" content="b656495e28aeb09144207beb1d67c4dc27f631bd27ebacab8ebe07ff07281d38">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>b656495e28aeb09144207beb1d67c4dc27f631bd27ebacab8ebe07ff07281d38</code>；生成自：<code>interview_materials\vla\sources\vol_06_per020_robustness_safety_fallback_independent_fact_review.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-sha">2. 外部文件再获取与 SHA</a></li><li><a href="#3-source-probes">3. 独立 source probes</a></li><li><a href="#4-claim-boundary">4. Claim boundary：论文、官方代码与工程合同</a></li><li><a href="#4-1-corruption-severity">4.1 Corruption 与 severity</a></li><li><a href="#4-2-uncertainty-selective-risk">4.2 Uncertainty 与 selective risk</a></li><li><a href="#4-3-safety-gym">4.3 Safety Gym 与真实安全的边界</a></li><li><a href="#4-4-queue-flush-fallback-recovery-e-stop">4.4 Queue flush、fallback、recovery 与 E-stop</a></li><li><a href="#5-source-knowledge-card-reconciliation">5. Source → Knowledge → Card reconciliation</a></li><li><a href="#6">6. 五项目真实性复核</a></li><li><a href="#7">7. 静态结构与状态检查</a></li><li><a href="#8">8. 审查状态与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 PER-020：Robustness、Safety、Fallback 与风险门独立事实复核</h1>
+<div class="meta">状态：<code>independent_fact_review / VLA-PER-020 / paper_code_refetched / source_knowledge_card_reconciled / PASS_WITH_WARNING</code> 审查日期：2026-07-21 证据截止：2026-07-21 范围：重新获取 2 份 primary PDF、4 个 fixed official files，重跑 bounded source probes，并复核 PER-020 source→knowledge→card；不生成新题卡、不改变 276 张题卡的 <code>unseen</code> 状态、不创建 <code>coaching_state.md</code>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>PER-020 对 corruption family/severity、dataset shift uncertainty、risk–coverage、Safety Gym cost、queue flush、fallback/recovery/E-stop 的表述，是否能被重新获取的 primary paper、fixed official code 与当前仓库证据逐项支持？哪些内容仍只能作为工程合同或面试回答，不能升级为个人项目安全/鲁棒性结果？</p>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>6/6 外部文件重新获取成功并命中 source freeze SHA</strong>：Hendrycks &amp; Dietterich PDF 1,080,004 bytes / 16 pages；Ovadia et al. PDF 5,887,184 bytes / 25 pages；robustness README、<code>corruptions.py</code>、Safety Gym README、<code>engine.py</code> 均与冻结记录 byte-identical。</li><li><strong>公开机制边界成立</strong>：README 同时区分 ImageNet-C 与 ImageNet-P；<code>corruptions.py</code> 保留 severity 1–5 的 family-specific 参数与随机/clip 行为；Safety Gym <code>engine.py</code> 暴露 <code>constrain_hazards</code>、<code>cost_hazards</code>、<code>cost</code> 与 <code>randomize_layout</code> 语义。这些只支持 benchmark/environment 机制，不支持本地 VLA 已跑过对应协议。</li><li><strong>Ovadia 的可安全转译结论是“confidence ≠ shifted risk”</strong>：应报告 calibration、selective risk–coverage 与 false-safe/false-alarm；不能把 clean confidence 或单一平均分当作安全保证。</li><li><strong>queue flush / fallback / recovery / E-stop 仍是 cross-volume WM-038 的工程合同</strong>：本轮没有发现任何五项目 raw step trace、硬件审计或 ownership ledger，不能把该合同说成项目已经实现。</li><li><strong>source→knowledge→card 八个 claim cluster 对齐</strong>：corruption/severity、shifted calibration、risk–coverage、hard constraint、chunk flush、fallback/recovery/E-stop 与五项目 truth boundary 在三层页面中语义一致；题卡仍 <code>unseen</code>。</li><li>本页 verdict 为 <strong><code>PASS WITH WARNING</code></strong>：外部事实与下游映射通过；本地 robustness/safety runtime、真实机器人 cost、零事故、fallback 成功率和候选人 ownership 仍为 <code>unverified</code>。</li></ol>
+<h2 id="2-sha">2. 外部文件再获取与 SHA</h2>
+<table><thead><tr><th>Source</th><th>Fixed revision / URL</th><th>Bytes / pages</th><th>Re-fetched SHA-256</th><th>结果</th></tr></thead><tbody>
+<tr><td>Hendrycks &amp; Dietterich</td><td><a href="https://arxiv.org/pdf/1903.12261">arXiv 1903.12261</a></td><td>1,080,004 / 16</td><td><code>c9df5483aa331dd99808350608a795c4bd9b84a7ee50396748c7d258903ea582</code></td><td>PASS</td></tr>
+<tr><td>Ovadia et al.</td><td><a href="https://arxiv.org/pdf/1906.02530v2">arXiv 1906.02530v2</a></td><td>5,887,184 / 25</td><td><code>1610d04d7f69d10751f0e9ff1db9fbd8b3fdf5306798879016192eb2dbf17a6f</code></td><td>PASS</td></tr>
+<tr><td>robustness README</td><td>commit <code>8190fe329f5f072a06e3a2aea02bb5dda69aed9f</code></td><td>7,354</td><td><code>718d37a53a84615961dcdf519602cfaf1467b192bb691f8e880fbadf9e92de0d</code></td><td>PASS</td></tr>
+<tr><td><code>corruptions.py</code></td><td>same commit</td><td>14,857</td><td><code>fb962115845e0a7ceaf5a6e3cda17f4aab07c66e3c367c219cafc7032c4a43fb</code></td><td>PASS</td></tr>
+<tr><td>Safety Gym README</td><td>commit <code>f31042f2f9ee61b9034dd6a416955972911544f5</code></td><td>11,348</td><td><code>2728e304d7b8483ce910d60c4880782aeb111c5fa127614b0a1d3f8bfd4653b5</code></td><td>PASS</td></tr>
+<tr><td>Safety Gym <code>engine.py</code></td><td>same commit</td><td>72,367</td><td><code>9d52a3206648938408c05473eb48f12a78230938ea5c4b9ca878afaab087693c</code></td><td>PASS</td></tr>
+</tbody></table>
+<p>PDF 页数由独立 <code>pypdf</code> 读取；文件 bytes 与冻结记录完全一致。重新获取证明 source identity，不证明任何训练、仿真或硬件运行。</p>
+<h2 id="3-source-probes">3. 独立 source probes</h2>
+<table><thead><tr><th>Probe</th><th>重新观察</th><th>支持的窄结论</th></tr></thead><tbody>
+<tr><td>P20-R1</td><td>robustness README 含 <code>ImageNet-C</code></td><td>README 明确静态 common-corruption 评估入口</td></tr>
+<tr><td>P20-R2</td><td>robustness README 含 <code>ImageNet-P</code></td><td>README 同时覆盖 temporal perturbation 语境</td></tr>
+<tr><td>P20-R3</td><td><code>corruptions.py</code> 含 40 处 <code>severity</code> 参数引用</td><td>severity 是实现参数，不是跨 family 的统一物理量</td></tr>
+<tr><td>P20-R4</td><td><code>corruptions.py</code> 的 Gaussian/shot/impulse/speckle 路径使用随机与 clip/归一化</td><td>在线注入必须记录 RNG、dtype、clip 与输出策略</td></tr>
+<tr><td>P20-R5</td><td>Safety Gym <code>engine.py</code> 含 <code>constrain_hazards</code></td><td>未启用 constraint 配置不能声称测过 hazard constraint</td></tr>
+<tr><td>P20-R6</td><td><code>engine.py</code> 含 <code>cost_hazards</code> 与聚合 <code>cost</code></td><td>safety 记录应保留逐 step/episode cost 与 denominator</td></tr>
+<tr><td>P20-R7</td><td><code>engine.py</code> 含 <code>randomize_layout</code></td><td>固定布局与随机布局是不同 protocol，不能混报泛化</td></tr>
+<tr><td>P20-R8</td><td>Ovadia PDF 可重新读取 uncertainty/calibration/dataset-shift 章节</td><td>confidence 不能直接替代 shifted risk</td></tr>
+<tr><td>P20-R9</td><td>WM-038 source freeze SHA <code>017dbe706784...eabbb3c</code> 命中本地文件</td><td>queue flush、short-prefix、fallback/E-stop 是本仓库工程合同</td></tr>
+<tr><td>P20-R10</td><td>PER-020 source/knowledge/card 的 stable ID 均为 <code>VLA-PER-020</code></td><td>downstream identity 与题卡映射一致，不新增题卡</td></tr>
+</tbody></table>
+<p>结果：<strong>10/10 probes 通过</strong>。P20-R1–R7 是 source-text probes，P20-R8 是 paper retrieval/section probe，P20-R9–R10 是 local identity probes；它们都不是 benchmark runtime 或硬件安全证据。</p>
+<h2 id="4-claim-boundary">4. Claim boundary：论文、官方代码与工程合同</h2>
+<h3 id="4-1-corruption-severity">4.1 Corruption 与 severity</h3>
+<p>Hendrycks &amp; Dietterich 支持 common corruptions/perturbations 与 ImageNet-C/P 的 benchmark 语境；官方 <code>corruptions.py</code> 的 severity 参数是每个 family 自己定义的离散等级。安全的面试说法是：“我会固定 family、severity、clean/shifted pair、split、seed、checkpoint 和 denominator，再比较同一 protocol 下的指标。”不能说 severity 5 的 Gaussian 一定比 severity 3 的 JPEG 更严重，也不能把预生成 JPEG 与在线随机 Gaussian 当作同一个实验。</p>
+<h3 id="4-2-uncertainty-selective-risk">4.2 Uncertainty 与 selective risk</h3>
+<p>Ovadia 支持 dataset shift 下对 predictive uncertainty、calibration 和 risk 行为进行评估。风险–coverage 的教学表达为：</p>
+<div class="formula">$$
+\operatorname{Risk}(C)=\mathbb{E}[\ell(\hat y,y)\mid\operatorname{accept}=1],
+\qquad C=\Pr(\operatorname{accept}=1).
+$$</div>
+<p><code>accept</code> 由 risk gate 决定，<code>ell</code> 可是任务错误、约束违规或失败损失。公式只定义 selective evaluation，不证明模型已校准；拒答/fallback 样本必须保留，否则会制造 false-safe。</p>
+<h3 id="4-3-safety-gym">4.3 Safety Gym 与真实安全的边界</h3>
+<p>Safety Gym README/<code>engine.py</code> 支持 constrained task、hazard cost 与布局随机化配置。它不支持以下升级：</p>
+<ul><li>使用 Safety Gym 就等于真实机器人 safety；</li><li><code>cost=0</code> 就等于 zero collision 或 zero accident；</li><li><code>randomize_layout=True</code> 就等于 sim-to-real 泛化；</li><li>没有逐 episode/step cost、seed、布局与 checkpoint，就能复算个人结果。</li></ul>
+<h3 id="4-4-queue-flush-fallback-recovery-e-stop">4.4 Queue flush、fallback、recovery 与 E-stop</h3>
+<p>WM-038 的工程合同把执行语义写成：风险门触发后停止继续 apply，清空过期 chunk，再选择 re-observe、safe controller、人工接管或 E-stop。该合同解决的是“系统应该如何 fail-closed”，不是“项目已经安全”。若没有 action-age、queue length、flush event、gate reason、controller response 与 E-stop latch 的 raw trace，结论必须保持 <code>unknown/not_recomputable</code>。</p>
+<h2 id="5-source-knowledge-card-reconciliation">5. Source → Knowledge → Card reconciliation</h2>
+<table><thead><tr><th>Claim cluster</th><th>Source evidence</th><th>Knowledge page</th><th>Atomic card</th><th>Verdict</th></tr></thead><tbody>
+<tr><td>family/severity/RNG</td><td>Hendrycks paper + <code>corruptions.py</code></td><td>§3 protocol/manifest</td><td>30秒答先锁 family/severity/denominator</td><td>PASS</td></tr>
+<tr><td>clean vs shifted</td><td>ImageNet-C/P and fixed pair semantics</td><td>shifted metric + denominator</td><td>clean score 不替代 shifted score</td><td>PASS</td></tr>
+<tr><td>confidence/calibration</td><td>Ovadia paper</td><td>calibration、risk–coverage、false-safe</td><td>confidence 不等于 safety</td><td>PASS</td></tr>
+<tr><td>hard constraint/risk gate</td><td>Safety Gym contract + WM-038</td><td>validity→risk→constraint state machine</td><td>gate reason 与 evidence gate</td><td>PASS</td></tr>
+<tr><td>stale chunk</td><td>WM-038</td><td>queue flush / action age</td><td>风险后必须 flush</td><td>PASS</td></tr>
+<tr><td>fallback/recovery/E-stop</td><td>WM-038 engineering boundary</td><td>recoverable vs terminal state</td><td>fallback≠retry；不可恢复才 E-stop</td><td>PASS WITH WARNING</td></tr>
+<tr><td>five projects</td><td>local inventories and absence checks</td><td>interface hooks only</td><td>不声称 personal OOD/safety result</td><td>PASS WITH WARNING</td></tr>
+<tr><td>practice state</td><td>local card/review metadata</td><td>card remains unseen</td><td>no mastery/coaching update</td><td>PASS</td></tr>
+</tbody></table>
+<p>本轮没有发现需要改写 PER-020 30 秒答案或机制展开的事实错误；新增的最稳妥限定仍是：“Safety Gym、randomization 和公开 queue/fallback 机制是协议参照，不是我的个人安全结果。”</p>
+<h2 id="6">6. 五项目真实性复核</h2>
+<table><thead><tr><th>项目</th><th>当前可说</th><th>本轮仍不能说</th></tr></thead><tbody>
+<tr><td>OpenPiVLA</td><td>image/action normalizer、parser、controller contract、shifted-eval 设计</td><td>已完成 OOD robustness、calibration uplift、zero-accident 或 E-stop ownership</td></tr>
+<tr><td>Robot Harness</td><td>tool schema、地图/点云输入、约束与日志字段设计</td><td>Safety Gym cost、fallback success rate、真实硬件 safety</td></tr>
+<tr><td>OPD</td><td>grounding confidence、negative case、risk–coverage 设计</td><td>grounding robustness uplift 或 deployed safety guarantee</td></tr>
+<tr><td>WAM / Cosmos</td><td>simulator diagnostics、visual-shift taxonomy、失败 trace</td><td>上游 randomization/rollout 是个人 sim-to-real 或安全结果</td></tr>
+<tr><td>UWM / LIBERO</td><td>fixed-init/reset、strict denominator、failure taxonomy</td><td>真实机器人 OOD 泛化、碰撞率或安全控制器结果</td></tr>
+</tbody></table>
+<p>当前检查的 local-direct 入口仍只支持 <code>public upstream mechanism → local evidence/interface → inference → unverified</code> 四层边界。没有新发现可把任何项目升级为已完成安全闭环。</p>
+<h2 id="7">7. 静态结构与状态检查</h2>
+<ul><li>PER-020 source、knowledge、card canonical Markdown SHA 与各自 review JSON 已存在且一致；本页 source SHA 为 <code>独立复核文件写入后生成</code>。</li><li>题卡 stable ID 仍只有 <code>VLA-PER-020</code>；global card count 不变，<code>unseen=276</code>。</li><li>本轮不创建、不修改 <code>interview_materials/vla/practice/coaching_state.md</code>。</li><li>新 HTML 必须由 academic renderer 生成，并执行 one-H1、heading hierarchy、MathJax balance、<code>.formula em = 0</code>、contained overflow、local-link 与 SHA 检查。</li><li>浏览器 connector 当前不可用，因此只能报告静态 ARIS/responsive 检查；不把缺失截图写成 browser PASS。</li></ul>
+<h2 id="8">8. 审查状态与下一步</h2>
+<p>本轮的一个 bounded primary deliverable 是 PER-020 independent fact-review 三联件。其退出条件已满足：6/6 外部文件 SHA 命中、10/10 probes 通过、source→knowledge→card 对齐、五项目边界未升级、mastery 未变化。</p>
+<p>仍开放：</p>
+<ol><li>本地 shifted-input bundle、逐步 risk log、matched robustness panel、硬件 E-stop audit 与 candidate ownership ledger；</li><li>一题真实 PER-020 口述，之后才允许更新 mastery 或创建 coaching state；</li><li>若用户暂不练习，下一切片选择 VOL 04 Audit C/D 独立复核，不启动新卷或批量生成。</li></ol>
+<h2 id="references">References</h2>
+<ol><li><a href="vol_06_per020_robustness_safety_fallback_source_freeze.html">PER-020 Source Freeze</a>。</li><li><a href="../knowledge/vol_06_per020_robustness_safety_fallback.html">PER-020 Knowledge</a>。</li><li><a href="../questions/vol_06_per020.html">PER-020 Atomic Card</a>。</li><li>Hendrycks &amp; Dietterich，<a href="https://arxiv.org/pdf/1903.12261">Benchmarking Neural Network Robustness to Common Corruptions and Perturbations</a>。</li><li>Ovadia et al.，<a href="https://arxiv.org/pdf/1906.02530v2">Can You Trust Your Model's Uncertainty?</a>。</li><li>Hendrycks robustness <a href="https://github.com/hendrycks/robustness/tree/8190fe329f5f072a06e3a2aea02bb5dda69aed9f"><code>README.md</code></a> 与 <a href="https://github.com/hendrycks/robustness/blob/8190fe329f5f072a06e3a2aea02bb5dda69aed9f/ImageNet-C/imagenet_c/imagenet_c/corruptions.py"><code>corruptions.py</code></a>。</li><li>OpenAI Safety Gym <a href="https://github.com/openai/safety-gym/tree/f31042f2f9ee61b9034dd6a416955972911544f5"><code>README.md</code></a> 与 <a href="https://github.com/openai/safety-gym/blob/f31042f2f9ee61b9034dd6a416955972911544f5/safety_gym/envs/engine.py"><code>engine.py</code></a>。</li><li><a href="vol_04_wm031_reality_gap_taxonomy_source_freeze.html">VOL 04 WM-031 reality-gap taxonomy</a> 与 <a href="vol_04_wm038_uncertainty_safety_fallback_recovery_source_freeze.html">VOL 04 WM-038 uncertainty/safety/fallback</a>。</li></ol>
+</article></body></html>

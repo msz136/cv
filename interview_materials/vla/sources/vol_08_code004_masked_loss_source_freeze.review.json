@@ -1,0 +1,30 @@
+{
+  "artifact": "sources/vol_08_code004_masked_loss_source_freeze.md",
+  "html": "sources/vol_08_code004_masked_loss_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / CODE-VLA-004 / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "cc1f30ef9989ae3c4f4bf5374781818c1456f9e76c532882a20a181dfb688cf7",
+  "covered_question_ids": [
+    "CODE-VLA-004"
+  ],
+  "checks": {
+    "primary_sources": "PASS WITH WARNING (PyTorch MSE/Huber/SmoothL1 docs and local action/schema audits are linked)",
+    "formula_reduction_contract": "PASS (elementwise MSE/Huber, valid denominator and empty-mask behavior are explicit)",
+    "mask_weight_contract": "PASS (padding, action-dim, loss mask and task/sample weights are separated)",
+    "test_contract": "PASS (partial/all-zero masks, delta, outlier, low precision, distributed count and gradient parity are specified)",
+    "vla_boundary": "PASS (continuous regression, diffusion/flow MSE and action-token CE are separated)",
+    "project_evidence_boundary": "PASS (no project improvement or ownership claim is inferred)",
+    "html_static_validation": "PASS (one H1, eight H2, table and formulas rendered)",
+    "local_links": "PASS (VOL 03/VOL 05 supporting links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "downstream_artifacts": "PASS WITH WARNING (knowledge page and one CODE-VLA-004 card synchronized; local parity/ablation artifact remains missing)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep source gate WARN until a local parity, empty-mask or matched MSE/Huber artifact exists.",
+    "Keep one synchronized CODE-VLA-004 card unseen until a whiteboard drill.",
+    "Do not compare losses with different denominators or normalized spaces."
+  ],
+  "next": "Run a CODE-VLA-004 whiteboard drill or collect one parity artifact; keep the card unseen."
+}

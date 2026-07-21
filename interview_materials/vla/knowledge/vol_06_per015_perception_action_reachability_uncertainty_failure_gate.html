@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：Perception→Action、Reachability、Uncertainty 与 Failure Gate（PER-015）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per015_perception_action_reachability_uncertainty_failure_gate.md">
+<meta name="aris:source-sha256" content="2682ab3eb045ee47e2900babea7985b8f8498257c8bbb0185a39f43ed99222e0">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>2682ab3eb045ee47e2900babea7985b8f8498257c8bbb0185a39f43ed99222e0</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per015_perception_action_reachability_uncertainty_failure_gate.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与边界</a></li><li><a href="#1-30">1. 30秒直觉：目标不是动作，通过不是成功</a></li><li><a href="#2-typed-perception-action-manifest">2. Typed Perception→Action Manifest</a></li><li><a href="#2-1-schema">2.1 最小 Schema</a></li><li><a href="#2-2-manifest">2.2 为什么Manifest属于结果身份</a></li><li><a href="#3-fail-closed-gate">3. 九层Fail-closed Gate</a></li><li><a href="#4-semantic-target-action-target">4. Semantic Target → Action Target</a></li><li><a href="#5-workspace-cheap-reject">5. Workspace：Cheap Reject，不是最终证明</a></li><li><a href="#5-1">5.1 二连杆可达环</a></li><li><a href="#5-2-reachability">5.2 四级Reachability</a></li><li><a href="#6-ik-residual">6. IK：返回值之后还要验证Residual</a></li><li><a href="#6-1-se-3-pose-error">6.1 SE(3) Pose Error</a></li><li><a href="#6-2-newton-raphson-pseudoinverse">6.2 Newton–Raphson 与Pseudoinverse</a></li><li><a href="#7-joint-limit-trac-ik">7. Joint Limit 与TRAC-IK</a></li><li><a href="#8-singularity-conditioning-manipulability">8. Singularity、Conditioning 与Manipulability</a></li><li><a href="#9-collision-state-validity-motion-validity">9. Collision：State Validity 与Motion Validity</a></li><li><a href="#9-1-goal-state">9.1 Goal State无碰撞仍不够</a></li><li><a href="#9-2-moveit-planningscene">9.2 MoveIt PlanningScene</a></li><li><a href="#9-3-discrete-motion-validation">9.3 Discrete Motion Validation</a></li><li><a href="#10-clearance-uncertainty-inflation">10. Clearance 与Uncertainty Inflation</a></li><li><a href="#11-planning-rrt-connect">11. Planning 与RRT-Connect</a></li><li><a href="#12-trajectory-geometry-continuity-time">12. Trajectory：Geometry、Continuity 与Time</a></li><li><a href="#13-controller-contract-shape">13. Controller Contract：Shape相同仍可能语义错</a></li><li><a href="#14-action-chunk-staleness">14. Action Chunk 与Staleness</a></li><li><a href="#15-uncertainty-confidence">15. 三类Uncertainty不能混成一个Confidence</a></li><li><a href="#16-knowno-conformal-prediction">16. KnowNo 与Conformal Prediction</a></li><li><a href="#16-1-calibration">16.1 Calibration</a></li><li><a href="#16-2">16.2 保证边界</a></li><li><a href="#17-abstention-fallback-recovery">17. Abstention、Fallback 与Recovery状态机</a></li><li><a href="#18-deterministic-probes">18. 十个Deterministic Probes</a></li><li><a href="#19-first-divergence-failure-diagnosis">19. First-divergence Failure Diagnosis</a></li><li><a href="#20-fail-closed-pseudocode">20. Fail-closed Pseudocode</a></li><li><a href="#21-public-method-code-mapping">21. Public Method → Code Mapping</a></li><li><a href="#22-opd-robot-harness-hook">22. OPD 与Robot Harness：最容易被过度包装的两类Hook</a></li><li><a href="#22-1-opd">22.1 OPD</a></li><li><a href="#22-2-robot-harness">22.2 Robot Harness</a></li><li><a href="#23-openpivla-wam-uwm-action-interface">23. OpenPiVLA、WAM、UWM 的Action Interface边界</a></li><li><a href="#23-1-openpivla">23.1 OpenPiVLA</a></li><li><a href="#23-2-wam">23.2 WAM</a></li><li><a href="#23-3-uwm">23.3 UWM</a></li><li><a href="#24-project-truth-boundary">24. 五项目 Project Truth Boundary</a></li><li><a href="#25">25. 两分钟结构化回答</a></li><li><a href="#26">26. 高频追问</a></li><li><a href="#27">27. 危险答案与修正</a></li><li><a href="#28-checklist">28. 白板 Checklist 与练习标准</a></li><li><a href="#29">29. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：Perception→Action、Reachability、Uncertainty 与 Failure Gate（PER-015）</h1>
+<div class="meta">状态：<code>drafted / VLA-PER-015 / source_synced / card_synced / WARN</code> 更新日期：2026-07-20 前置：<code>VLA-PER-014</code> 3D semantic target、<code>VLA-PER-002</code> frame/lift、VOL 03 action/controller contract；后续：<code>VLA-PER-016</code> localization/SLAM drift、<code>VLA-PER-019</code> navigation evaluation/failure。 来源入口：<a href="../sources/vol_06_per015_perception_action_reachability_uncertainty_failure_gate_source_freeze.html">PER-015 Perception→Action / Reachability / Uncertainty / Failure Gate Source Freeze</a>。本页只把已冻结证据转成可教学、可诊断、可面试回答的知识；对应一张原子题卡已在独立bounded slice同步并保持<code>unseen</code>，不创建训练状态，也不改变任何mastery。</div>
+<h2 id="question">问题（Question）</h2>
+<p>面试官问“VLA已经找到了目标，怎样把它变成机器人能安全执行的动作”时，最危险的回答是“把3D坐标送给IK，再做碰撞检测”。可靠回答必须先把semantic target转成带frame、unit、timestamp、tool和controller合同的action target，再按workspace、IK residual、joint limit、singularity、self/environment collision、clearance、trajectory dynamics、uncertainty和controller precheck逐层fail closed；任何一层未知都不能默认为pass，最终通过也只得到controller-ready candidate，而不是robot success。</p>
+<p>本节点主链：</p>
+<pre><code class="language-text">PER-014 semantic target / pose / mask
+  -&gt; identity: frame / unit / timestamp / revision
+  -&gt; action target: tool / approach / gripper / controller
+  -&gt; workspace / IK / joint bounds / singularity
+  -&gt; state + edge collision / robust clearance
+  -&gt; trajectory timing / controller precheck
+  -&gt; calibrated uncertainty / abstention / fallback
+  -&gt; controller-ready candidate
+  -&gt; execution feedback (not task success yet)</code></pre>
+<h2 id="section-2">知识地图位置与边界</h2>
+<table><thead><tr><th>相邻节点</th><th>该节点负责</th><th>PER-015负责</th></tr></thead><tbody>
+<tr><td>PER-014</td><td>3D entity、relation、semantic target、score、metric</td><td>判断semantic target能否成为controller-ready candidate</td></tr>
+<tr><td>PER-002/003</td><td>depth、calibration、frame、multi-view/time lineage</td><td>消费并校验身份；不修复错误TF、pose或时间同步</td></tr>
+<tr><td>VOL 03</td><td>action token/chunk、normalization、policy head与controller接口</td><td>不训练head；验证输出shape/semantics/order/unit/time</td></tr>
+<tr><td>PER-016</td><td>localization、odometry、SLAM、map-frame drift</td><td>不做SLAM；只拒绝stale或revision不一致的输入</td></tr>
+<tr><td>PER-019</td><td>episode、collision/stop、success与统计评估</td><td>不从单个静态candidate推出benchmark/robot success</td></tr>
+</tbody></table>
+<p>PER-015是接口与可行性节点，不是完整机器人安全认证。接触力、硬件急停、functional safety、真实人机环境法规仍在本页范围之外。</p>
+<h2 id="1-30">1. 30秒直觉：目标不是动作，通过不是成功</h2>
+<p>一个可靠的30秒回答是：</p>
+<div class="meta">感知输出只是semantic target，我先补齐frame、unit、timestamp、tool和controller schema，把它变成typed action target。然后用workspace做cheap reject，IK返回后重算FK residual，检查joint limit和Jacobian最小奇异值；再对goal state和整条edge做self/environment collision与uncertainty-inflated clearance；几何路径还要通过velocity、acceleration、current-state和controller joint/order/unit/time检查。语义、几何或执行不确定性超过校准风险预算时就ask、re-perceive、replan或stop，不能拿top-1硬执行。所有gate通过只得到controller-ready candidate，执行反馈和任务成功要另算。</div>
+<p>这段回答先封住十个偷换：</p>
+<ol><li>semantic target被当成controller action；</li><li>点在粗workspace里被当成指定姿态可达；</li><li>IK solver返回数组被当成有效解；</li><li>数学IK存在被当成joint-limit-aware IK存在；</li><li>goal无碰撞被当成整条path无碰撞；</li><li>nominal clearance被当成有感知误差时仍安全；</li><li>geometric path被当成满足velocity/acceleration的trajectory；</li><li>action shape相同被当成axis/unit/semantics相同；</li><li>未校准confidence被当成逐样本安全概率；</li><li>candidate accepted被当成robot/task success。</li></ol>
+<h2 id="2-typed-perception-action-manifest">2. Typed Perception→Action Manifest</h2>
+<h3 id="2-1-schema">2.1 最小 Schema</h3>
+<pre><code class="language-json">{
+  &quot;candidate_id&quot;: &quot;scene/query/proposal revision&quot;,
+  &quot;semantic_source&quot;: {
+    &quot;artifact_sha256&quot;: &quot;...&quot;,
+    &quot;query&quot;: &quot;pick the red mug&quot;,
+    &quot;target_id&quot;: &quot;mug-17&quot;,
+    &quot;score_type&quot;: &quot;cosine | logit | calibrated_set&quot;,
+    &quot;raw_score_and_threshold&quot;: [0.73, 0.60]
+  },
+  &quot;target&quot;: {
+    &quot;type&quot;: &quot;point | pose | grasp | pick_place | trajectory&quot;,
+    &quot;frame&quot;: &quot;camera | base | world | map&quot;,
+    &quot;axis_unit&quot;: &quot;x-forward/y-left/z-up, meter/radian&quot;,
+    &quot;pose_or_waypoints&quot;: [],
+    &quot;tool_frame&quot;: &quot;tcp&quot;,
+    &quot;timestamp_ns&quot;: 0,
+    &quot;age_deadline_ms&quot;: [0, 100],
+    &quot;covariance&quot;: []
+  },
+  &quot;robot_contract&quot;: {
+    &quot;robot_model_sha256&quot;: &quot;...&quot;,
+    &quot;planning_group&quot;: &quot;arm&quot;,
+    &quot;end_effector&quot;: &quot;gripper&quot;,
+    &quot;joint_order&quot;: [],
+    &quot;joint_position_velocity_acceleration_limits&quot;: [],
+    &quot;controller_name&quot;: &quot;joint_trajectory_controller&quot;,
+    &quot;controller_axis_unit_rate&quot;: &quot;..., rad, 100Hz&quot;
+  },
+  &quot;scene_contract&quot;: {
+    &quot;planning_scene_sha256&quot;: &quot;...&quot;,
+    &quot;collision_geometry_revision&quot;: &quot;...&quot;,
+    &quot;allowed_collision_matrix_sha256&quot;: &quot;...&quot;,
+    &quot;padding_and_scale&quot;: [],
+    &quot;motion_validation_resolution&quot;: 0.0
+  },
+  &quot;risk_contract&quot;: {
+    &quot;calibration_split_revision&quot;: &quot;...&quot;,
+    &quot;risk_budget_alpha&quot;: 0.05,
+    &quot;uncertainty_inflation&quot;: [],
+    &quot;allowed_outcomes&quot;: [&quot;accept&quot;, &quot;replan&quot;, &quot;ask_for_help&quot;, &quot;stop&quot;, &quot;reject&quot;]
+  }
+}</code></pre>
+<h3 id="2-2-manifest">2.2 为什么Manifest属于结果身份</h3>
+<p>同一个3D pose在<code>camera</code>与<code>base</code> frame中数值和语义不同；同一个7D向量可能是Cartesian delta，也可能是joint position；同一条path在不同collision mesh、allowed-collision matrix、padding或motion resolution下可从pass变reject。缺少这些revision时，结果不可复算，也无法解释失败来自perception、planning还是controller。</p>
+<h2 id="3-fail-closed-gate">3. 九层Fail-closed Gate</h2>
+<p>总gate可写为：</p>
+<div class="formula">\[
+G =
+G_{\mathrm{identity}}
+\land G_{\mathrm{workspace}}
+\land G_{\mathrm{IK}}
+\land G_{\mathrm{bounds}}
+\land G_{\mathrm{singularity}}
+\land G_{\mathrm{collision}}
+\land G_{\mathrm{trajectory}}
+\land G_{\mathrm{uncertainty}}
+\land G_{\mathrm{controller}}.
+\]</div>
+<p>变量解释：\(G_k\)是第\(k\)层布尔gate，但实现中必须保留<code>pass/fail/not_checked</code>三态与evidence；<code>not_checked</code>在fail-closed模式下不能执行。直觉是整条链是串联系统，任一层未知都不能靠后层“平均掉”。实现映射：source freeze中的typed manifest和reason taxonomy分别给每个gate绑定input revision、threshold与recovery action。</p>
+<table><thead><tr><th>Gate</th><th>核心问题</th><th>主要输入</th><th>失败去向</th></tr></thead><tbody>
+<tr><td>identity</td><td>frame/unit/time/revision齐全吗</td><td>target manifest</td><td>reject / ask</td></tr>
+<tr><td>workspace</td><td>粗几何必要条件满足吗</td><td>robot/tool geometry</td><td>reject / base reposition</td></tr>
+<tr><td>IK</td><td>位姿残差在阈值内吗</td><td>target pose、solver</td><td>alternate branch / reject</td></tr>
+<tr><td>bounds</td><td>q在joint limits内吗</td><td>robot model</td><td>branch / reject</td></tr>
+<tr><td>singularity</td><td>conditioning可接受吗</td><td>Jacobian</td><td>change pose / replan</td></tr>
+<tr><td>collision</td><td>state与edge无碰撞吗</td><td>scene、ACM、resolution</td><td>replan / reject</td></tr>
+<tr><td>trajectory</td><td>continuity与动态约束满足吗</td><td>waypoints、dt、limits</td><td>re-time / replan</td></tr>
+<tr><td>uncertainty</td><td>校准风险预算满足吗</td><td>score/covariance/calibration</td><td>ask / re-perceive</td></tr>
+<tr><td>controller</td><td>shape/semantics/order/unit/state/status对吗</td><td>controller contract</td><td>stop / reject</td></tr>
+</tbody></table>
+<h2 id="4-semantic-target-action-target">4. Semantic Target → Action Target</h2>
+<p>PER-014可给出entity ID、box/mask、3D point或pose与semantic score。PER-015需要把它转成任务原子：</p>
+<pre><code class="language-text">semantic_target = {
+  entity_id, pose_or_region, frame, semantic_score, timestamp
+}
+
+action_target = {
+  tool_pose, pregrasp_pose, approach_direction, gripper_command,
+  robot_model, planning_group, joint/controller contract
+}</code></pre>
+<p>Transporter Networks与CLIPort提供清晰范例：从heightmap上预测pick，再以pick-conditioned correlation预测place；CLIPort加入language-conditioned semantic/spatial streams。它们说明perception如何输出pick/place proposal，但不自动提供：</p>
+<ul><li>tool-center-point transform；</li><li>grasp width、surface normal、force closure；</li><li>joint-limit-aware IK branch；</li><li>self/environment collision；</li><li>velocity/acceleration timestamps；</li><li>real controller status。</li></ul>
+<p>所以模型输出<code>pick/place pose</code>时，面试回答应主动说“proposal进入feasibility gate”，而不是“模型直接控制机械臂”。</p>
+<h2 id="5-workspace-cheap-reject">5. Workspace：Cheap Reject，不是最终证明</h2>
+<h3 id="5-1">5.1 二连杆可达环</h3>
+<p>对link length \(l_1,l_2\)和目标位置\(\mathbf p\)，二维二连杆的位置可达条件为：</p>
+<div class="formula">\[
+|l_1-l_2|
+\le \|\mathbf p\|_2
+\le l_1+l_2.
+\]</div>
+<p>变量解释：\(\|\mathbf p\|_2\)是目标到base的半径；内半径来自两杆相折，外半径来自两杆伸直。直觉是先用极便宜的几何条件拒绝明显不可能目标。实现映射：deterministic probe固定\(l_1=1,l_2=0.7,r=1.8\)，因上界为1.7而直接<code>OUTSIDE_WORKSPACE</code>。</p>
+<h3 id="5-2-reachability">5.2 四级Reachability</h3>
+<table><thead><tr><th>层</th><th>新增约束</th><th>为什么上一层不够</th></tr></thead><tbody>
+<tr><td>geometry workspace</td><td>link length、粗joint range</td><td>不含orientation/tool</td></tr>
+<tr><td>task workspace</td><td>tool、approach、support surface</td><td>不含current state/path</td></tr>
+<tr><td>current-state reachability</td><td>当前q、branch、obstacle、path</td><td>不含model/sensor uncertainty</td></tr>
+<tr><td>robust reachability</td><td>covariance、tracking error、inflation</td><td>nominal pass可能变reject</td></tr>
+</tbody></table>
+<p>一个点在workspace内，指定orientation仍可能无解；换gripper、base pose或URDF后，旧reachability map也失效。</p>
+<h2 id="6-ik-residual">6. IK：返回值之后还要验证Residual</h2>
+<h3 id="6-1-se-3-pose-error">6.1 SE(3) Pose Error</h3>
+<p>对目标位姿\(T^*\)与候选关节\(\mathbf q\)的forward kinematics \(T(\mathbf q)\)，body-frame误差可写为：</p>
+<div class="formula">\[
+\mathbf e(\mathbf q)
+=
+\operatorname{se3ToVec}
+\left(
+\log\!\left(T(\mathbf q)^{-1}T^*\right)
+\right).
+\]</div>
+<p>变量解释：\(\mathbf e\in\mathbb R^6\)含rotation与translation误差；\(T(\mathbf q)\)来自FK。直觉是solver说“成功”后，用独立FK重新计算“实际到了哪里”。实现映射：Modern Robotics固定<code>IKinBody/IKinSpace</code>分别以<code>eomg</code>和<code>ev</code>终止；工程gate也应分开记录角度与位置tolerance，不能只看一个return code。</p>
+<h3 id="6-2-newton-raphson-pseudoinverse">6.2 Newton–Raphson 与Pseudoinverse</h3>
+<p>数值IK的一步可写成：</p>
+<div class="formula">\[
+\Delta\mathbf q
+=
+J(\mathbf q)^\dagger \mathbf e,
+\qquad
+\mathbf q_{k+1}=\mathbf q_k+\Delta\mathbf q.
+\]</div>
+<p>变量解释：\(J^\dagger\)是Jacobian pseudoinverse，\(\mathbf e\)是task-space error。直觉是用局部线性近似把末端误差映射到关节修正。实现映射：Modern Robotics教学代码直接迭代该结构；README明确代码优先可读性而非robustness，所以production系统还需bounds、timeout、branch、collision与conditioning。</p>
+<p>常见失败：</p>
+<ol><li>初值落入错误branch或局部极小；</li><li>translation通过但rotation超阈值；</li><li>solver timeout却留下“看起来合理”的最后iterate；</li><li>q被clamp到limit后未重算residual；</li><li>单位或frame错误导致“稳定收敛到错误目标”。</li></ol>
+<h2 id="7-joint-limit-trac-ik">7. Joint Limit 与TRAC-IK</h2>
+<p>数学IK解存在，不代表受限IK解存在。最小合同是：</p>
+<div class="formula">\[
+\mathbf q_{\min}
+\le \mathbf q
+\le \mathbf q_{\max}.
+\]</div>
+<p>变量解释：上下界来自冻结robot model；continuous joint与bounded revolute joint要分开处理。直觉是“末端能到”还要问“关节是否允许这样到”。实现映射：TRAC-IK固定代码显式接收<code>q_min/q_max</code>；KDL-TL会处理越界与随机重启，NLOpt路径设置lower/upper bounds。</p>
+<p>TRAC-IK并发运行KDL-style路径与SQP/NLOpt路径，可改善joint-limit附近的求解率，但官方README明确：</p>
+<ul><li>solver不使用mesh判断self-collision；</li><li>IK solution不保证environment collision-free；</li><li>多解排序不等于轨迹branch连续；</li><li>timeout/success统计不等于具体部署task success。</li></ul>
+<p>deterministic probe中\(\mathbf q=[\pi/2,0]\)满足纯几何目标，但q1 limit为<code>[-1,1]</code>，因此必须<code>JOINT_LIMIT</code>拒绝，不能clamp后直接执行。</p>
+<h2 id="8-singularity-conditioning-manipulability">8. Singularity、Conditioning 与Manipulability</h2>
+<p>对Jacobian做SVD：</p>
+<div class="formula">\[
+J(\mathbf q)=U\Sigma V^\top,
+\qquad
+\sigma_{\min}(J)&lt;\tau_\sigma
+\Rightarrow \text{near singular}.
+\]</div>
+<p>变量解释：\(\sigma_{\min}\)是最小奇异值，\(\tau_\sigma\)是协议阈值。直觉是某个末端运动方向几乎无法由关节产生，微小末端速度会要求巨大关节速度。实现映射：MoveIt <code>RobotState::getJacobian</code>或Modern Robotics Jacobian可生成矩阵；gate必须记录joint scaling、task dimensions和阈值。</p>
+<p>可选的Yoshikawa manipulability为：</p>
+<div class="formula">\[
+w(\mathbf q)=\sqrt{\det\!\left(JJ^\top\right)}
+=\prod_i \sigma_i.
+\]</div>
+<p>变量解释：\(w\)越小通常越接近rank loss。直觉是末端局部速度椭球体积缩小。实现映射：它适合排序多个IK candidates，不应取代hard bounds、collision或velocity check；rotation与translation单位混合时，数值需要scale，否则不同实现不可直接比较。</p>
+<p>二维2R在完全伸直\(\mathbf q=[0,0]\)时，deterministic probe得到\(\sigma_{\min}=0\)，因此即使目标位置可达也要change pose或replan。</p>
+<h2 id="9-collision-state-validity-motion-validity">9. Collision：State Validity 与Motion Validity</h2>
+<h3 id="9-1-goal-state">9.1 Goal State无碰撞仍不够</h3>
+<p>要区分：</p>
+<pre><code class="language-text">state validity  : q 本身是否满足bounds/collision/constraints
+motion validity : q_a -&gt; q_b 的整条edge是否有效
+path validity   : 所有states与edges是否有效</code></pre>
+<p>RRT-Connect论文把free configuration space作为搜索域；OMPL固定<code>RRTConnect.cpp</code>在扩展时调用<code>isValid/checkMotion</code>。因此“RRT-Connect生成collision-free path”的前提是集成方提供了正确的state validity、motion validator、geometry与resolution。</p>
+<h3 id="9-2-moveit-planningscene">9.2 MoveIt PlanningScene</h3>
+<p>MoveIt固定代码中：</p>
+<ul><li><code>RobotState::satisfiesBounds</code>检查joint bounds；</li><li><code>RobotState::setFromIK</code>调用kinematics solver；</li><li><code>PlanningScene::checkCollision/isStateColliding</code>处理collision；</li><li><code>PlanningScene::isStateValid</code>组合collision与constraints；</li><li>trajectory相关路径遍历waypoints。</li></ul>
+<p>这些API存在不等于部署正确。还要冻结URDF/SRDF、attached object、tool geometry、allowed-collision matrix、padding、octomap/scene revision和current state。</p>
+<h3 id="9-3-discrete-motion-validation">9.3 Discrete Motion Validation</h3>
+<p>OMPL <code>DiscreteMotionValidator</code>依据<code>validSegmentCount</code>插值检查edge。步长过粗会穿过薄障碍；步长极细会增加开销。deterministic segment/AABB probe中端点都在box外，但segment穿过box，因此只查端点会产生false pass。</p>
+<h2 id="10-clearance-uncertainty-inflation">10. Clearance 与Uncertainty Inflation</h2>
+<p>robust clearance gate可写为：</p>
+<div class="formula">\[
+d_{\min}\!\left(\mathcal R(\mathbf q),\mathcal O\right)
+&gt;
+r_{\mathrm{robot}}
++m_{\mathrm{model}}
++m_{\mathrm{uncertainty}}.
+\]</div>
+<p>变量解释：\(\mathcal R(\mathbf q)\)是机器人几何，\(\mathcal O\)是障碍，\(m_{\mathrm{model}}\)覆盖mesh/标定误差，\(m_{\mathrm{uncertainty}}\)覆盖target/obstacle covariance。直觉是不能用“零误差的薄模型”贴障碍执行。实现映射：可通过collision padding、scale或显式inflated geometry实现，但必须把膨胀量与scene revision写入manifest。</p>
+<p>deterministic probe中path位于y=0.25：nominal margin 0.10时不碰撞，uncertainty inflation增至0.20后碰撞，结论从pass翻为reject。这证明covariance不是只写日志的附加字段，而会改变动作决策。</p>
+<p>常见错误：</p>
+<ul><li>对target加covariance，却不对obstacle/robot model加；</li><li>只在goal pose算clearance，不检查swept path；</li><li>把visual bbox边界当physical collision mesh；</li><li>感知分数低时只降速度，却不增加margin或abstain。</li></ul>
+<h2 id="11-planning-rrt-connect">11. Planning 与RRT-Connect</h2>
+<p>RRT-Connect维护从start与goal生长的两棵树，<code>EXTEND</code>向sample推进，<code>CONNECT</code>贪心尝试连接另一棵树。它适合高维single-query planning，但面试中必须补四点：</p>
+<ol><li>sampling planner是probabilistically complete类思想，不承诺有限时间一定找到解；</li><li>找不到路径不一定证明路径不存在，可能是timeout/resolution/sampler问题；</li><li>找到几何path不代表满足dynamics或controller limits；</li><li>shortcut/smoothing后必须重新做motion validation。</li></ol>
+<p>OMPL把具体robot collision checker留给集成层，这是清晰的责任边界：planner负责搜索，MoveIt PlanningScene等负责physical validity。</p>
+<h2 id="12-trajectory-geometry-continuity-time">12. Trajectory：Geometry、Continuity 与Time</h2>
+<p>几何waypoints进入controller前至少满足：</p>
+<div class="formula">\[
+\mathbf q_{\min}\le\mathbf q_t\le\mathbf q_{\max},\qquad
+|\dot{\mathbf q}_t|\le\dot{\mathbf q}_{\max},\qquad
+|\ddot{\mathbf q}_t|\le\ddot{\mathbf q}_{\max}.
+\]</div>
+<p>变量解释：\(\mathbf q_t,\dot{\mathbf q}_t,\ddot{\mathbf q}_t\)是位置、速度与加速度；上限来自joint/controller contract。直觉是空间中平滑的线，若时间给得太短仍不可执行。实现映射：MoveIt固定Time-Optimal Trajectory Generation接收velocity/acceleration limits并生成timestamps；deterministic probe固定q <code>[0,.5,1.5]</code>、dt <code>.1</code>，得到vmax 10、amax 50，必须<code>DYNAMIC_LIMIT</code>。</p>
+<p>还要检查：</p>
+<ul><li>branch continuity：相邻IK解不能跳到另一branch；</li><li>unwrap：continuous joint不能错误跨\(2\pi\)；</li><li>jerk与controller interpolation；</li><li>start-state tolerance；</li><li>partial execution后的replan起点；</li><li>attached object和scene在trajectory期间是否变化。</li></ul>
+<h2 id="13-controller-contract-shape">13. Controller Contract：Shape相同仍可能语义错</h2>
+<table><thead><tr><th>维度</th><th>必须冻结</th><th>典型静默错误</th></tr></thead><tbody>
+<tr><td>shape</td><td><code>H×D</code>、valid dims、mask、joint count</td><td>72D被截成16D</td></tr>
+<tr><td>semantics</td><td>absolute/delta/velocity、joint/cartesian</td><td>delta当absolute</td></tr>
+<tr><td>order</td><td>xyz/rpy/gripper或joint names</td><td>roll与gripper错位</td></tr>
+<tr><td>unit</td><td>m/mm、rad/deg、normalized/raw</td><td>数量级错</td></tr>
+<tr><td>time</td><td>Hz、dt、timestamp、chunk H、replan K</td><td>stale action继续执行</td></tr>
+<tr><td>state</td><td>current q与start tolerance</td><td>轨迹从错误状态起步</td></tr>
+<tr><td>status</td><td>ready/abort/timeout/cancel/result</td><td>failure被包装为success</td></tr>
+</tbody></table>
+<p>deterministic schema probe期望7D <code>xyz_rpy_grip/m_rad</code>，却收到12D <code>dual_arm_plus_base/normalized</code>，必须<code>CONTROLLER_SCHEMA</code>拒绝。安全实现不能为了“能跑”而silently slice/pad。</p>
+<p>MoveIt <code>TrajectoryExecutionManager</code>在执行前验证current joint state、trajectory joint集合和起点容差，并保留controller timeout/status。VLA policy server的成功返回只说明网络调用成功，不说明controller接受或完成了动作。</p>
+<h2 id="14-action-chunk-staleness">14. Action Chunk 与Staleness</h2>
+<p>若policy一次预测horizon \(H\)，系统每次只执行前\(K\)步再replan，则第\(j\)步action的age近似为：</p>
+<div class="formula">\[
+\operatorname{age}(a_j)
+=
+t_{\mathrm{execute},j}
+-t_{\mathrm{observe}}.
+\]</div>
+<p>变量解释：\(t_{\mathrm{observe}}\)是生成chunk所依据观测时间，\(t_{\mathrm{execute},j}\)是第\(j\)步实际执行时刻。直觉是chunk越靠后，依赖的世界状态越旧。实现映射：manifest应记录observation timestamp、queue、H/K/Hz和deadline；PER-015 probe中target age 240ms超过100ms deadline，直接<code>TARGET_STALE</code>。</p>
+<p>每次replan前要重新核验：</p>
+<ul><li>scene revision和attached object；</li><li>current robot state；</li><li>剩余target/action age；</li><li>controller queue是否已cancel/flush；</li><li>新轨迹与已执行prefix的continuity。</li></ul>
+<h2 id="15-uncertainty-confidence">15. 三类Uncertainty不能混成一个Confidence</h2>
+<table><thead><tr><th>类型</th><th>来源</th><th>可见信号</th><th>合适动作</th></tr></thead><tbody>
+<tr><td>semantic</td><td>多个对象/指令解释</td><td>candidate set、class/LLM score</td><td>ask / clarify</td></tr>
+<tr><td>geometric</td><td>depth/pose/calibration/shape</td><td>covariance、view disagreement</td><td>re-perceive / inflate / replan</td></tr>
+<tr><td>execution</td><td>latency/tracking/contact/controller</td><td>state error、timeout、status</td><td>slow/stop/recover</td></tr>
+</tbody></table>
+<p>semantic cosine高不能证明geometry准确；geometry covariance小不能证明controller ready；controller online也不能修复选错对象。first-divergence diagnosis必须从最早失败层开始。</p>
+<p>一个实用risk contract至少包含：</p>
+<ul><li>calibration split与revision；</li><li>target error definition；</li><li>desired coverage/risk budget；</li><li>uncertainty到margin或abstention的映射；</li><li>distribution-shift detector；</li><li><code>accept/replan/ask/stop/reject</code>状态机。</li></ul>
+<h2 id="16-knowno-conformal-prediction">16. KnowNo 与Conformal Prediction</h2>
+<h3 id="16-1-calibration">16.1 Calibration</h3>
+<p>对calibration样本\((x_i,y_i)\)，以正确option的score \(f(x_i)_{y_i}\)构造nonconformity：</p>
+<div class="formula">\[
+s_i=1-f(x_i)_{y_i},
+\qquad
+\hat q=
+\operatorname{Quantile}_{\lceil(N+1)(1-\epsilon)\rceil/N}
+\{s_i\}_{i=1}^{N}.
+\]</div>
+<p>变量解释：\(N\)是calibration size，\(\epsilon\)是目标error level，\(\hat q\)是higher quantile。直觉是用历史正确答案的“低置信程度”确定test threshold。实现映射：KnowNo官方MobileManipulation/Tabletop notebooks用<code>np.quantile(..., method='higher')</code>计算该阈值。</p>
+<p>test prediction set为：</p>
+<div class="formula">\[
+C(x)=\{y:f(x)_y\ge 1-\hat q\}.
+\]</div>
+<p>变量解释：\(C(x)\)保留所有超过校准threshold的options。直觉是当多个解释都合理时，不强迫模型假装只知道一个。实现映射：KnowNo notebook在set非singleton时触发human help；mobile版本还把“none of the above” option进入set视为help。</p>
+<h3 id="16-2">16.2 保证边界</h3>
+<p>在exchangeability等条件下，conformal prediction提供marginal coverage目标，而不是：</p>
+<ul><li>每一个单样本都有相同条件成功率；</li><li>collision-free或硬件安全保证；</li><li>distribution shift下阈值永久有效；</li><li>错误label、漏候选或parser bug免疫；</li><li>help之后human一定选择正确。</li></ul>
+<p>因此PER-015可以借鉴“集合预测→abstain”的结构，但low-level collision/trajectory仍要独立hard gate。</p>
+<h2 id="17-abstention-fallback-recovery">17. Abstention、Fallback 与Recovery状态机</h2>
+<p>推荐状态：</p>
+<pre><code class="language-text">ACCEPT       all checked gates pass; return candidate only
+REPLAN       target valid, current path/clearance/dynamics fail
+ASK          semantic ambiguity or calibrated set non-singleton
+REPERCEIVE   target stale or geometry uncertainty too large
+STOP         controller/status/state unknown or execution unsafe
+REJECT       schema/workspace/IK/bounds hard failure</code></pre>
+<p>fallback不是默认动作，而是受限状态转移：</p>
+<pre><code class="language-text">semantic ambiguous -&gt; ask / re-perceive
+workspace or IK fail -&gt; alternate proposal / branch / base reposition
+collision fail -&gt; update scene and replan
+trajectory fail -&gt; re-time or shorten horizon
+controller mismatch -&gt; reject; never silently slice/pad
+execution timeout -&gt; cancel -&gt; verify stop -&gt; read state -&gt; recover</code></pre>
+<p>每条transition必须有retry上限、timeout、cancel acknowledgement和fresh-state check。否则“自动恢复”可能变成无限replan或执行旧轨迹。</p>
+<h2 id="18-deterministic-probes">18. 十个Deterministic Probes</h2>
+<table><thead><tr><th>Probe</th><th>固定输入</th><th>结果</th><th>教学结论</th></tr></thead><tbody>
+<tr><td>workspace annulus</td><td>\(l_1=1,l_2=.7,r=1.8\)</td><td>range <code>[.3,1.7]</code>，reject</td><td>cheap必要条件</td></tr>
+<tr><td>IK residual</td><td>target <code>[1.3,.2]</code>，q <code>[.1,-.1]</code></td><td>residual <code>.407507m&gt;.01</code></td><td>return后重算FK</td></tr>
+<tr><td>joint limit</td><td>q <code>[π/2,0]</code>，q1 <code>[-1,1]</code></td><td>reject</td><td>几何解不等于受限解</td></tr>
+<tr><td>singularity</td><td>2R q <code>[0,0]</code></td><td>\(\sigma_{\min}=0\)</td><td>可达不等于well-conditioned</td></tr>
+<tr><td>segment/AABB</td><td>edge穿过box</td><td>collision true</td><td>端点pass不够</td></tr>
+<tr><td>clearance inflation</td><td>nominal <code>.10</code>，inflated <code>.20</code></td><td>pass翻reject</td><td>covariance改变决策</td></tr>
+<tr><td>dynamics</td><td>q <code>[0,.5,1.5]</code>，dt <code>.1</code></td><td>vmax 10、amax 50</td><td>path不等于trajectory</td></tr>
+<tr><td>abstention</td><td>risk upper <code>.12</code>，alpha <code>.05</code></td><td>ask</td><td>风险超预算不取top-1</td></tr>
+<tr><td>stale target</td><td>age 240ms，deadline 100ms</td><td>reject</td><td>时间属于身份</td></tr>
+<tr><td>controller schema</td><td>expected 7D，got 12D</td><td>reject</td><td>dim/order/unit fail closed</td></tr>
+</tbody></table>
+<p>10个probe的deterministic oracle结果为<code>10/10 expected decisions matched</code>。它们只验证合同逻辑，不是MoveIt、TRAC-IK、CLIPort或KnowNo benchmark复现。</p>
+<h2 id="19-first-divergence-failure-diagnosis">19. First-divergence Failure Diagnosis</h2>
+<table><thead><tr><th>表面症状</th><th>第一检查层</th><th>关键证据</th><th>常见误诊</th></tr></thead><tbody>
+<tr><td>抓错对象</td><td>semantic identity</td><td>candidate/raw scores/query</td><td>调IK参数</td></tr>
+<tr><td>pose方向错</td><td>frame/tool transform</td><td>TF、axis、tcp</td><td>加planning time</td></tr>
+<tr><td>IK timeout</td><td>workspace/IK</td><td>target pose、seed、residual</td><td>直接称模型差</td></tr>
+<tr><td>q贴limit</td><td>bounds/branch</td><td>q min/max、alternate solutions</td><td>clamp后执行</td></tr>
+<tr><td>末端抖动</td><td>singularity/controller</td><td>sigma、qdot、rate</td><td>只平滑视觉</td></tr>
+<tr><td>起终点都安全却碰撞</td><td>motion validity</td><td>edge samples/resolution</td><td>只查goal</td></tr>
+<tr><td>靠障碍偶发失败</td><td>clearance/uncertainty</td><td>covariance、padding</td><td>只降速度</td></tr>
+<tr><td>simulator能跑真机不能</td><td>controller schema</td><td>order/unit/rate/driver</td><td>归因Sim2Real大词</td></tr>
+<tr><td>chunk后段发散</td><td>staleness/replan</td><td>H/K/Hz/age/state</td><td>只改action loss</td></tr>
+<tr><td>policy server返回但不动</td><td>execution precheck</td><td>controller status/joints/start</td><td>报推理成功</td></tr>
+<tr><td>help率异常高</td><td>calibration/option bias</td><td>split、qhat、set size</td><td>降threshold硬执行</td></tr>
+<tr><td>单次success但总体差</td><td>evaluation downstream</td><td>episode denominator/failure codes</td><td>把gate pass当success</td></tr>
+</tbody></table>
+<p>诊断顺序：</p>
+<pre><code class="language-text">identity/time
+ -&gt; semantic target
+ -&gt; workspace
+ -&gt; IK residual/bounds/singularity
+ -&gt; state/edge collision + clearance
+ -&gt; timing/controller schema/status
+ -&gt; calibrated uncertainty
+ -&gt; execution/contact/task outcome</code></pre>
+<h2 id="20-fail-closed-pseudocode">20. Fail-closed Pseudocode</h2>
+<pre><code class="language-python">def perception_to_action_gate(semantic_target, manifest, robot, scene, controller):
+    # 1. Identity first: never guess frame, unit, timestamp, or revision.
+    require_fields(semantic_target, [&quot;frame&quot;, &quot;axis_unit&quot;, &quot;timestamp_ns&quot;, &quot;artifact_sha256&quot;])
+    require_fields(manifest, [&quot;robot_contract&quot;, &quot;scene_contract&quot;, &quot;risk_contract&quot;])
+    if age_ms(semantic_target) &gt; manifest.target.age_deadline_ms:
+        return {&quot;status&quot;: &quot;reperceive&quot;, &quot;reason&quot;: &quot;TARGET_STALE&quot;}
+
+    # 2. Convert entity/pose into a typed tool/action target.
+    candidate = build_action_target(semantic_target, manifest)
+    if not controller.schema_matches(candidate):
+        return {&quot;status&quot;: &quot;reject&quot;, &quot;reason&quot;: &quot;CONTROLLER_SCHEMA&quot;}
+
+    # 3. Cheap workspace reject before expensive IK.
+    if not robot.workspace_contains(candidate.tool_pose):
+        return {&quot;status&quot;: &quot;reject&quot;, &quot;reason&quot;: &quot;OUTSIDE_WORKSPACE&quot;}
+
+    # 4. Verify every IK result independently with FK, bounds, and SVD.
+    valid_q = []
+    for q in robot.solve_ik(candidate.tool_pose, timeout=manifest.ik_timeout):
+        if pose_residual(robot.fk(q), candidate.tool_pose) &gt; manifest.ik_tolerance:
+            continue
+        if not robot.satisfies_bounds(q):
+            continue
+        if min_singular_value(robot.jacobian(q)) &lt; manifest.sigma_min:
+            continue
+        valid_q.append(q)
+    if not valid_q:
+        return {&quot;status&quot;: &quot;reject&quot;, &quot;reason&quot;: &quot;IK_NO_VALID_SOLUTION&quot;}
+
+    # 5. Check state and every edge with one frozen planning scene.
+    paths = plan_from_current_state(valid_q, scene, manifest.motion_resolution)
+    paths = [p for p in paths if collision_free_path(p, scene)]
+    paths = [p for p in paths if robust_clearance(p, scene, candidate.covariance)]
+    if not paths:
+        return {&quot;status&quot;: &quot;replan&quot;, &quot;reason&quot;: &quot;COLLISION_OR_CLEARANCE&quot;}
+
+    # 6. Convert geometry to a timed trajectory and validate current controller state.
+    timed = time_parameterize(paths, robot.velocity_limits, robot.acceleration_limits)
+    if not timed:
+        return {&quot;status&quot;: &quot;replan&quot;, &quot;reason&quot;: &quot;DYNAMIC_LIMIT&quot;}
+    if not controller.precheck(timed, current_state=robot.current_state()):
+        return {&quot;status&quot;: &quot;stop&quot;, &quot;reason&quot;: &quot;EXECUTION_PRECHECK&quot;}
+
+    # 7. Unknown or over-budget risk is not a pass.
+    decision = calibrated_risk_decision(candidate, timed, manifest.risk_contract)
+    if decision == &quot;ask&quot;:
+        return {&quot;status&quot;: &quot;ask_for_help&quot;, &quot;reason&quot;: &quot;UNCERTAIN&quot;}
+    if decision != &quot;accept&quot;:
+        return {&quot;status&quot;: &quot;reject&quot;, &quot;reason&quot;: &quot;RISK_BUDGET&quot;}
+
+    # 8. Return a candidate only; execution feedback owns robot/task success.
+    return {
+        &quot;status&quot;: &quot;controller_ready_candidate&quot;,
+        &quot;trajectory&quot;: timed[0],
+        &quot;checked_revisions&quot;: manifest.revisions(),
+        &quot;robot_success&quot;: None
+    }</code></pre>
+<p>伪代码是面试与目标系统合同，不是五个本地项目已有实现。真实系统还需并发scene update、force/contact gate、cancel acknowledgement、hardware stop与episode logger。</p>
+<h2 id="21-public-method-code-mapping">21. Public Method → Code Mapping</h2>
+<table><thead><tr><th>机制</th><th>固定实现</th><th>面试可讲</th><th>不能反推</th></tr></thead><tbody>
+<tr><td>numerical IK</td><td>Modern Robotics <code>IKinBody/IKinSpace</code></td><td>residual/Jacobian/pseudoinverse</td><td>production robustness</td></tr>
+<tr><td>bounded IK</td><td>TRAC-IK KDL-TL + NLOpt</td><td>q bounds、dual solver、timeout</td><td>collision-free path</td></tr>
+<tr><td>planning scene</td><td>MoveIt RobotState/PlanningScene</td><td>bounds、IK、collision、constraints</td><td>URDF/scene一定正确</td></tr>
+<tr><td>sampling planner</td><td>OMPL RRTConnect/MotionValidator</td><td>state vs edge validity</td><td>finite-time必有解</td></tr>
+<tr><td>trajectory/execution</td><td>MoveIt TOTG/ExecutionManager</td><td>limits、timestamps、precheck/status</td><td>task success</td></tr>
+<tr><td>pick/place proposal</td><td>Transporter/CLIPort</td><td>perception→action atom</td><td>reachable/control-ready</td></tr>
+<tr><td>calibrated abstention</td><td>KnowNo notebooks</td><td>higher quantile、prediction set、help</td><td>low-level safety证书</td></tr>
+</tbody></table>
+<p>这张表建立公开机制的source-to-code桥，不证明本地项目用了固定commit，也不证明候选人ownership。</p>
+<h2 id="22-opd-robot-harness-hook">22. OPD 与Robot Harness：最容易被过度包装的两类Hook</h2>
+<h3 id="22-1-opd">22.1 OPD</h3>
+<p>OPD direct evidence支持2D point/box/relation supervision与semantic-nav box数据构造。项目中的<code>fallback</code>命中是system prompt、model path或text cleaning fallback，不是physical recovery。</p>
+<p>安全表述：</p>
+<div class="meta">OPD可以为gate提供2D semantic target或grounding score，但当前没有robot/tool model、metric 3D action target、IK/collision trace或controller gate。我会把它讲成perception upstream，不讲成已闭环执行。</div>
+<h3 id="22-2-robot-harness">22.2 Robot Harness</h3>
+<p>Robot Harness固定文件支持tool scope、锁、cancel、poll/timeout、best-effort compensation，以及2D occupancy/PCD/state bridge。map/state fallback不是fresh sensing；第三方SenseBot底盘controller目录也不自动证明当前runtime integration、manipulator scope或候选人ownership。</p>
+<p>安全表述：</p>
+<div class="meta">Harness的强项是上层tool/runtime约束和取消补偿，不是机械臂IK与mesh collision。tool sandbox通过只能说明调用合同更干净，不能替代低层controller、接触和真实机器人成功。</div>
+<h2 id="23-openpivla-wam-uwm-action-interface">23. OpenPiVLA、WAM、UWM 的Action Interface边界</h2>
+<h3 id="23-1-openpivla">23.1 OpenPiVLA</h3>
+<p>本地formal trainer把action window序列化为assistant JSON并做full-chat causal CE；formal package仍缺generation/parser/controller。official-checkpoint ALOHA/LIBERO diagnostics是平行lineage。deprecated MuJoCo adapter文件自身明确缺official embodiment、controller、IK、workspace和contact semantics。</p>
+<p>因此可讲action schema与diagnostic，不能说formal Qwen已经通过PER-015 gate。</p>
+<h3 id="23-2-wam">23.2 WAM</h3>
+<p>WAM diagnostic可见7D→12D环境action拼接、dim mismatch hard error、OSC_POSE字段与有限action trace。它们适合检查shape/order/normalizer/controller边界；episode仍失败，缺robot model、planning scene、IK/collision/TOTG报告，不能归因reachability或collision收益。</p>
+<h3 id="23-3-uwm">23.3 UWM</h3>
+<p>UWM/LIBERO固定脚本有<code>action_len=16/action_dim=7</code>、warmup与env.step；RoboCasa GT replay明确定位为action-order/controller probe，不是demo success oracle。74.4%等协议结果不能反向证明通用feasibility gate。</p>
+<h2 id="24-project-truth-boundary">24. 五项目 Project Truth Boundary</h2>
+<table><thead><tr><th>项目</th><th>当前可以讲</th><th>当前不能说</th><th>升级所需artifact</th></tr></thead><tbody>
+<tr><td>OPD</td><td>2D semantic target/box/point可作为上游输入</td><td>已转成reachable manipulation</td><td>typed target、robot/tool、IK/collision trace</td></tr>
+<tr><td>Robot Harness</td><td>tool scope、timeout/cancel/compensation、map bridge</td><td>sandbox等于物理执行安全</td><td>controller/trajectory/collision logs、ownership</td></tr>
+<tr><td>OpenPiVLA</td><td>action serialization与official baseline diagnostics</td><td>formal Qwen已闭环parser/controller/IK</td><td>strict parser、axis/unit/norm、roundtrip、episodes</td></tr>
+<tr><td>WAM</td><td>OSC_POSE/action trace与shape诊断</td><td>已定位reachability/collision根因</td><td>scene/model/gate reports、paired rerun</td></tr>
+<tr><td>UWM</td><td>7D/16-step LIBERO与RoboCasa action-order probe</td><td>结果证明通用gate</td><td>checkpoint/norm/controller、raw gate logs</td></tr>
+</tbody></table>
+<p>表述顺序必须是：</p>
+<pre><code class="language-text">public upstream mechanism
+ -&gt; local inventory
+ -&gt; local-direct file
+ -&gt; diagnostic inference
+ -&gt; missing evidence
+ -&gt; candidate ownership</code></pre>
+<p>Git author、目录名、official example或一个可运行脚本都不能替代逐文件ownership与matched result。</p>
+<h2 id="25">25. 两分钟结构化回答</h2>
+<div class="meta">我会把perception→action拆成typed interface和九层fail-closed gate。首先semantic target必须带entity、frame、unit、timestamp、score与artifact revision，再结合tool frame、approach、gripper和controller schema形成action target。先用workspace做cheap reject，但它只是必要条件；IK返回后我会独立FK重算SE(3) residual，检查joint limits和Jacobian最小奇异值。TRAC-IK能通过KDL与NLOpt双路径改善joint-limit场景，但官方边界是不做mesh self-collision。接下来区分state和motion validity：MoveIt PlanningScene负责robot/scene collision与constraints，OMPL RRT-Connect依赖外部isValid/checkMotion，resolution、ACM、padding和scene revision都是结果身份。nominal path还要用pose/collision uncertainty膨胀clearance。几何path通过后，TOTG或等价模块生成timestamps并检查velocity、acceleration；controller侧再核验H×D、absolute/delta/velocity、axis、unit、Hz、current state、timeout和status，绝不silent slice/pad。uncertainty要拆成semantic、geometric和execution三类；像KnowNo可用calibration quantile形成prediction set，非singleton就ask，但这只是marginal coverage，不替代碰撞安全。最后输出是controller-ready candidate，execution feedback和task success另算。本地五项目目前只有perception/action/interface或diagnostic hook，没有完整通用gate，所以我会明确哪些是上游方法、哪些是local direct evidence、哪些仍缺。</div>
+<h2 id="26">26. 高频追问</h2>
+<ol><li>semantic target与action target字段有什么本质差别？</li><li>为什么frame/unit/timestamp属于结果身份而不是日志字段？</li><li>workspace内为什么仍可能IK无解？</li><li>IK solver返回success后为何还要独立算FK residual？</li><li>rotation与translation tolerance该怎样分开？</li><li>pseudoinverse IK在joint limit附近为什么容易失败？</li><li>TRAC-IK两条solver路径分别解决什么，仍缺什么？</li><li>\(\sigma_{\min}\)与manipulability各有什么优缺点？</li><li>rotation/translation单位为什么影响condition number？</li><li>goal state collision-free为什么不代表path collision-free？</li><li>OMPL为什么不自动知道机器人collision geometry？</li><li>motion validation resolution太粗和太细分别有什么问题？</li><li>attached object与allowed collision matrix为什么会改变结果？</li><li>clearance inflation怎样由pose/depth uncertainty决定？</li><li>RRT-Connect timeout能否证明无路径？</li><li>geometric path为什么还要time parameterization？</li><li>7D action shape一致时仍有哪些semantic mismatch？</li><li>action chunk的H、K、Hz和staleness怎样关联？</li><li>semantic/geometric/execution uncertainty为何不能用一个confidence？</li><li>KnowNo的marginal coverage为什么不是collision safety？</li><li>prediction set为空、单例、多例时分别怎样处理？</li><li>ask-for-help与replan的触发层有什么区别？</li><li>cancel发出后为什么还要ack与fresh-state check？</li><li>怎样用first-divergence定位“policy server返回但机器人不动”？</li><li>本地五项目哪一层有direct evidence，哪一层仍缺？</li></ol>
+<h2 id="27">27. 危险答案与修正</h2>
+<table><thead><tr><th>危险答案</th><th>问题</th><th>安全修正</th></tr></thead><tbody>
+<tr><td>“检测到3D点就能执行”</td><td>缺tool/action/controller合同</td><td>先构造typed action target</td></tr>
+<tr><td>“点在workspace里就是reachable”</td><td>orientation/joints/path未检查</td><td>workspace只做cheap reject</td></tr>
+<tr><td>“IK返回了数组就是解”</td><td>residual/bounds/singularity未知</td><td>独立FK与SVD验证</td></tr>
+<tr><td>“TRAC-IK会处理碰撞”</td><td>官方明确不做mesh self-collision</td><td>IK后单独PlanningScene</td></tr>
+<tr><td>“goal不碰撞就行”</td><td>edge可能穿障碍</td><td>state+motion validity</td></tr>
+<tr><td>“RRT-Connect找不到就是无解”</td><td>sampling/timeout/resolution影响</td><td>只能报本次protocol失败</td></tr>
+<tr><td>“clearance大于0就安全”</td><td>model/sensor/tracking有误差</td><td>加model+uncertainty margin</td></tr>
+<tr><td>“path平滑就能执行”</td><td>没有timestamps与limits</td><td>time parameterization</td></tr>
+<tr><td>“都是7D所以接口一致”</td><td>semantics/order/unit可不同</td><td>schema roundtrip</td></tr>
+<tr><td>“policy server成功就是机器人成功”</td><td>只是RPC返回</td><td>查controller status与episode</td></tr>
+<tr><td>“confidence 0.9就是90%安全”</td><td>score未校准且安全层不同</td><td>报calibration/risk–coverage</td></tr>
+<tr><td>“conformal保证每个样本”</td><td>通常是marginal coverage</td><td>明确exchangeability与边界</td></tr>
+<tr><td>“不确定就执行慢一点”</td><td>ambiguity可能选错对象/路径</td><td>ask/re-perceive/replan/stop</td></tr>
+<tr><td>“fallback就是默认动作”</td><td>unknown被强行执行</td><td>有界状态机、fail closed</td></tr>
+<tr><td>“Harness已有physical safety gate”</td><td>tool sandbox不含物理闭环</td><td>只说上层runtime约束</td></tr>
+<tr><td>“WAM action trace证明IK没问题”</td><td>trace无robot/scene/gate</td><td>只作shape/controller诊断</td></tr>
+</tbody></table>
+<h2 id="28-checklist">28. 白板 Checklist 与练习标准</h2>
+<p>能够不看材料完成：</p>
+<ul><li>画出semantic target→action target→九层gate→execution主链；</li><li>写出typed manifest的semantic/target/robot/scene/risk五组字段；</li><li>解释<code>pass/fail/not_checked</code>为何需要三态；</li><li>推导2R annulus并完成workspace probe；</li><li>写出SE(3) residual与pseudoinverse IK update；</li><li>区分solver return、residual、bounds与branch；</li><li>写出Jacobian SVD并解释\(\sigma_{\min}\)；</li><li>解释TRAC-IK能力与self-collision边界；</li><li>区分state、motion和path validity；</li><li>画出MoveIt PlanningScene与OMPL planner责任边界；</li><li>解释resolution、ACM、attached object与scene revision；</li><li>推导robust clearance inequality；</li><li>写出q/qdot/qddot约束与time parameterization；</li><li>列出controller shape/semantics/order/unit/time/state/status；</li><li>解释action chunk staleness与replan；</li><li>区分三类uncertainty；</li><li>推导conformal qhat与prediction set；</li><li>画出accept/replan/ask/reperceive/stop/reject状态机；</li><li>走完first-divergence failure diagnosis；</li><li>复述10个deterministic probes；</li><li>说清五项目truth boundary；</li><li>完成两分钟回答并接住至少十二个追问。</li></ul>
+<p><code>drafted</code>不等于掌握。PER-015一张L3/P0题卡已生成但仍为<code>unseen</code>；只有真实口述、追问、评分、纠错后才能改变状态。当前266张题卡全部<code>unseen</code>，<code>coaching_state.md</code>不应创建。</p>
+<h2 id="29">29. 结论与下一步</h2>
+<p>可靠的perception→action答案不是背“IK、RRT、MoveIt”三个名词，而是建立可审计类型系统：semantic target是否有物理身份，action target是否匹配robot/tool/controller，workspace是否只做cheap reject，IK是否通过residual/bounds/singularity，state与edge是否在冻结scene中无碰撞，uncertainty inflation后是否有clearance，path是否能被time-parameterize，controller current state与schema/status是否一致，风险超过预算时是否abstain。</p>
+<p>Modern Robotics、TRAC-IK、MoveIt、OMPL、Transporter/CLIPort和KnowNo分别支撑这条链中的不同原子，不能互相替代；尤其IK不负责mesh collision，planner不自带robot validity，pick/place proposal不是trajectory，conformal coverage不是硬件安全。</p>
+<p>本地五项目当前最强的是perception/action/interface或diagnostic evidence：OPD为2D grounding upstream；Robot Harness为tool/runtime与map bridge；OpenPiVLA为action serialization及official diagnostics；WAM/UWM为action/controller protocol probes。没有统一typed gate、robot/tool/scene immutable bundle、IK/collision/TOTG raw report、calibrated risk–coverage、controller execution trace、matched robot episodes或ownership闭环。</p>
+<p><code>VLA-PER-015</code> source、knowledge与一张atomic card已在三个独立bounded slices同步；题卡保持<code>unseen</code>。下一bounded slice只冻结<code>VLA-PER-016</code> localization/odometry/SLAM/map-frame/drift source；不生成其knowledge/card，不创建<code>coaching_state.md</code>，不改变任何mastery。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_06_per015_perception_action_reachability_uncertainty_failure_gate_source_freeze.html">PER-015 Perception→Action / Reachability / Uncertainty / Failure Gate Source Freeze</a>：六份完整PDF、六个official repo/35文件、10个probe与五项目direct audit。</li><li>Lynch &amp; Park, <a href="https://hades.mech.northwestern.edu/images/7/7f/MR.pdf">Modern Robotics</a>；<a href="https://github.com/NxRLab/ModernRobotics/tree/cbd41fdf0bf75dbd5e986d832ae14226964ff0ac">official code@cbd41fd</a>。</li><li>Kuffner &amp; LaValle, <a href="http://www.kuffner.org/james/papers/kuffner_icra2000.pdf">RRT-Connect</a>；<a href="https://github.com/ompl/ompl/tree/eb3baca772ab2c76f5943934b505751e031ff34c">OMPL official code@eb3baca</a>。</li><li>Beeson &amp; Ames, <a href="http://irl.cs.brown.edu/pubs/trac-ik.pdf">TRAC-IK</a>；<a href="https://bitbucket.org/traclabs/trac_ik/src/57057ce79ec1dd07aa5c1b46e134c701943dee6d/">official source@57057ce</a>。</li><li>Zeng et al., <a href="https://arxiv.org/abs/2010.14406v2">Transporter Networks v2</a>。</li><li>Shridhar et al., <a href="https://arxiv.org/abs/2109.12098v1">CLIPort v1</a>；<a href="https://github.com/cliport/cliport/tree/2be5c47b5bb9bb7040ad90693288b87b1e18e7ad">official code@2be5c47</a>。</li><li>Ren et al., <a href="https://arxiv.org/abs/2307.01928v2">KnowNo v2</a>；<a href="https://github.com/google-research/google-research/tree/95e3a1da2d27cb9c8289f6fd3076cfed608c3c94/language_model_uncertainty">official code@95e3a1d</a>。</li><li><a href="https://github.com/moveit/moveit2/tree/2fb8492b64ceb426d96e7f97e71846fb91394aa2">MoveIt 2 official code@2fb8492</a>。</li><li><a href="vol_06_per014_3d_grounding_spatial_relation_open_vocabulary.html">PER-014 3D Grounding Knowledge</a> 与 <a href="vol_03_vla_action.html">VOL 03 Action Knowledge</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD</a>、<a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA</a>、<a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness</a>、<a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a> 与 <a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM</a> Claim–Evidence Inventories。</li></ol>
+</article></body></html>

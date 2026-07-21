@@ -1,0 +1,49 @@
+{
+  "artifact": "evidence/projects/cosmos_policy_robocasa_baseline_p0_audit.md",
+  "html": "evidence/projects/cosmos_policy_robocasa_baseline_p0_audit.html",
+  "review_date": "2026-07-21",
+  "status": "p0_audited / remote-artifact-backed / checkpoint-unverified / ownership-pending / WARN",
+  "verdict": "WARN",
+  "source_sha256": "39E59144D6CE36135A09314294C5E399BC1F2D686A55486C919DA5F5A63972B8",
+  "scope": {
+    "project": "Cosmos Policy RoboCasa official-HF baseline evaluation",
+    "formal_tasks": 24,
+    "episodes": 120,
+    "raw_successes": 86,
+    "artifact_successes_excluded": 2,
+    "trusted_successes": 84,
+    "trusted_denominator": 118,
+    "action_debug_files": 24,
+    "action_debug_lines": 2692,
+    "candidate_transcripts": 0,
+    "mastery_changes": 0,
+    "coaching_state_created": false
+  },
+  "frozen_inputs": {
+    "eval_summary_json_sha256": "7B211B9D6F20BC95986A77C3CC901814AB6A705065016D7F68B67548BA6CACE9",
+    "eval_summary_csv_sha256": "4751FDDBFE73CA237220C171A6C8D560069D31948643DF05820426FCA7A12B63",
+    "formal_status_tsv_sha256": "8B3BAEE9029340387AE803E48152C301C0F6C679461FCF132AF5E6B5E612124E",
+    "selected_rollouts_manifest_sha256": "126F006B952E988512BF88631BC01A8ACF46F38AA54119E6479C3BED9419C566"
+  },
+  "checks": {
+    "raw_log_recount": "PASS (24 task logs independently sum to 86/120)",
+    "trusted_recount": "PASS (two CoffeeServeMug length=1 successes excluded; 84/118)",
+    "status_completion": "PASS (24/24 formal TSV rows exit_code=0)",
+    "action_debug_integrity": "PASS (24 JSONL files, 2692 lines, all 32x7, no NaN/Inf found)",
+    "protocol_consistency": "PASS WITH WARNING (fixed config fields across logs; remote revision identity not immutable local hash)",
+    "checkpoint_boundary": "PASS WITH WARNING (remote model path only; no local checkpoint binary in bundle)",
+    "media_boundary": "PASS WITH WARNING (8 selected videos are not a complete 120-episode media bundle)",
+    "ownership_boundary": "PASS WITH WARNING (candidate/operator/reviewer not confirmed)",
+    "causal_uplift_boundary": "PASS (no comparison to trained checkpoint is claimed)",
+    "html_static_validation": "PASS (ARIS academic v1, one H1, balanced delimiters, local links)",
+    "browser_visual_check": "PASS (desktop: one H1, 260px sticky TOC, no page overflow; 800px: static TOC, no code/table overflow)"
+  },
+  "open_items": [
+    "Freeze checkpoint/stats/T5 revision identity with immutable SHA or ETag.",
+    "Version the length<5 artifact/invalid policy and retain raw episode JSONL.",
+    "Align all 120 raw episode records with scorer, termination and error fields.",
+    "Confirm candidate/operator/reviewer ownership for launcher, wrapper and protocol patches.",
+    "Run matched 24x5 eval for any trained checkpoint before claiming uplift."
+  ],
+  "next": "Sync the audit into WAM evidence/index and use it for one PROJ-WAM high-pressure question; keep all cards unseen until a real candidate answer."
+}

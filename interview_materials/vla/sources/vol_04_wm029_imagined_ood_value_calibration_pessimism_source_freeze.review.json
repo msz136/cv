@@ -1,0 +1,35 @@
+{
+  "artifact": "sources/vol_04_wm029_imagined_ood_value_calibration_pessimism_source_freeze.md",
+  "html": "sources/vol_04_wm029_imagined_ood_value_calibration_pessimism_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-WM-029 / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "1f8bf8da600e984867482a55dfce4650e3caa276c35b1a06f9a5bfb744ce7823",
+  "covered_question_ids": ["VLA-WM-029"],
+  "checks": {
+    "primary_source_revision": "PASS (Calibration v2, PETS v2, MOPO v6 and CQL v3 papers/PDF hashes frozen)",
+    "distribution_shift": "PASS (data occupancy, imagined occupancy, world shift and value extrapolation separated)",
+    "selection_bias": "PASS (best-of-N optimizer's curse and top-tail regret distinguished from global error)",
+    "calibration_semantics": "PASS (success probability vs return regression; calibration, ranking, uncertainty and accuracy separated)",
+    "pessimism_layers": "PASS (score-level LCB, MOPO model penalty, CQL Q regularization and support/fallback separated)",
+    "theory_boundary": "PASS (MOPO/CQL assumptions and heuristic uncertainty limitations preserved; no transfer to Cosmos claimed)",
+    "cosmos_exact_boundary": "PASS (same-model seed/denoising samples, pre-aggregation clip, beta=1, defaults and vote threshold frozen)",
+    "clip_inference_boundary": "PASS WITH WARNING (post-clip dispersion saturation is marked as code-derived hypothesis requiring paired validation)",
+    "matched_evaluation": "PASS (fixed candidates/checkpoints with random/mean/LCB/beta/N/depth/oracle and closed-loop comparisons specified)",
+    "project_evidence_boundary": "PASS (WAM value/candidate/selector/planning/ownership artifacts remain missing)",
+    "html_static_validation": "PASS (canonical SHA, one H1, thirteen H2 headings, three tables, formulas, pseudocode and MathJax rendered)",
+    "local_links": "PASS (WM-024/028, Cosmos audit and WAM inventory links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "downstream_artifacts": "PASS WITH WARNING (knowledge page and one unseen atomic card synchronized)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep VLA-WM-029 unseen until a real oral drill.",
+    "Collect WAM value labels/predictions, pre/post-clip samples, candidate ledger, selector sweep, planning episodes and ownership.",
+    "Do not call same-model sample dispersion calibrated epistemic uncertainty or a guaranteed lower bound.",
+    "Do not claim CQL/MOPO/LCB was locally implemented or improved planning.",
+    "Do not create coaching_state.md before an actual drill."
+  ],
+  "next": "Proceed only to VLA-WM-030 planning compute/communication/latency budget, or run one WM-029 oral drill; keep WM-031..038 deferred."
+}
+

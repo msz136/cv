@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：Config Resolution、Field Provenance 与 Run Identity（ENG-019）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eng019.md">
+<meta name="aris:source-sha256" content="e51c02ab49cee67395e200a6a3fd551275b22b5553df6b1f8e724ea57e6a1892">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>e51c02ab49cee67395e200a6a3fd551275b22b5553df6b1f8e724ea57e6a1892</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eng019.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1-identity">1. 短答：先解析来源，再生成 identity</a></li><li><a href="#2">2. 直觉：配置合并是一段需要审计的编译过程</a></li><li><a href="#3">3. 覆盖顺序必须按框架和项目声明</a></li><li><a href="#4-effective-config-provenance">4. Effective Config 公式与字段级 provenance</a></li><li><a href="#5-typed-validation-hash">5. Typed validation：hash 前先消除表示差异</a></li><li><a href="#6-semantic-execution-conditional-secret">6. Semantic、Execution、Conditional 与 Secret</a></li><li><a href="#7-run-key-identity">7. Run Key 与四层 identity</a></li><li><a href="#8-secret-safe-provenance">8. Secret-safe provenance</a></li><li><a href="#9">9. 本地项目映射与真实性边界</a></li><li><a href="#9-1-uwm">9.1 UWM</a></li><li><a href="#9-2-openpivla">9.2 OpenPiVLA</a></li><li><a href="#9-3-opd">9.3 OPD</a></li><li><a href="#10-resolver-manifest">10. Resolver 与 Manifest 伪代码</a></li><li><a href="#11">11. 验证矩阵</a></li><li><a href="#12-trade-off-bad-case">12. Trade-off、bad case 与追问</a></li><li><a href="#12-1-trade-off">12.1 Trade-off</a></li><li><a href="#12-2-bad-case">12.2 高概率 bad case</a></li><li><a href="#12-3">12.3 面试追问</a></li><li><a href="#13">13. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：Config Resolution、Field Provenance 与 Run Identity（ENG-019）</h1>
+<div class="meta">状态：<code>drafted / knowledge_21_of_44 / card_1_of_1_unseen / review_warn</code> 报告日期：2026-07-17 证据截止：2026-07-17 当前节点：<code>VLA-ENG-019</code>；来源已冻结，单张题卡同步生成并保持 <code>unseen</code>。 来源入口：<a href="../sources/vol_05_eng019_config_resolution_run_identity_source_freeze.html">ENG-019 Config Resolution / Run Identity Source Freeze</a>。 核心边界：Hydra、Pydantic、argparse、torchrun 分别提供局部机制；统一 precedence、逐字段 provenance、secret-safe canonical hash 和 run→checkpoint→eval lineage 仍是项目工程合同。</div>
+<h2 id="question">问题（Question）</h2>
+<p><code>VLA-ENG-019</code>：默认值、YAML/JSON、Hydra Defaults、CLI、环境变量、scheduler 注入和 runtime-derived 值同时存在时，怎样得到唯一、类型安全、可脱敏、可复算的 effective config，并把它绑定到 logical run、attempt、checkpoint 和评估结果？</p>
+<p>面试回答应依次说明：</p>
+<ol><li><strong>声明 precedence</strong>：不假设跨框架通用顺序；</li><li><strong>保留 provenance</strong>：每个叶子字段记录 winning source 和被覆盖候选；</li><li><strong>validate 后再 hash</strong>：对 typed、normalized、redacted semantic config 做 canonical serialization；</li><li><strong>拆 identity</strong>：semantic run key、logical run、attempt、rank/service ID 各司其职；</li><li><strong>用 artifact 证明</strong>：effective config、source map、secret scan、checkpoint/eval manifest 必须同链。</li></ol>
+<h2 id="section-2">知识地图位置与前置依赖</h2>
+<pre><code class="language-text">ENG-009 data/transform manifest + ENG-013 reproducibility
+                         ↓
+defaults/files/env/CLI/runtime → resolve + typed validation
+                         ↓
+field provenance → semantic/execution/secret classification
+                         ↓
+canonical run key → logical run → attempt → checkpoint/eval lineage
+                         ↓
+ENG-018 retry/preemption + ENG-020 secret/permission gate</code></pre>
+<p>前置：</p>
+<ul><li><code>VLA-ENG-009</code>：dataset/version/transform manifest 与 provenance。</li><li><code>VLA-ENG-013</code>：code/data/environment/RNG/sampler 的复现边界。</li><li><code>VLA-ENG-018</code>：logical run、attempt、rank 与 retry identity。</li><li><code>VLA-ENG-020</code>：secret、token、数据权限和日志脱敏将在独立节点展开。</li></ul>
+<h2 id="1-identity">1. 短答：先解析来源，再生成 identity</h2>
+<p><strong>30 秒回答</strong>：我先声明 defaults/file/env/CLI/runtime 的覆盖顺序，每个字段保留最终 typed value、winning source 和旧候选；再把配置分成 semantic、execution、secret。对脱敏后的 semantic config 做 canonical JSON，与 code/data/model revision 一起 hash，形成稳定 run key。attempt、rank、服务 run ID 单独记录。当前项目只有部分 args/effective config，没有完整 source map 和 immutable lineage，不能说配置已可复算。</p>
+<h2 id="2">2. 直觉：配置合并是一段需要审计的编译过程</h2>
+<p>不要把 config 当成“一份 YAML”。它更像编译器：defaults、文件、环境变量、CLI 和 runtime facts 是多份输入；resolver 决定覆盖；schema 做类型检查；normalizer 统一路径、revision 和枚举；redactor 移除 secret；canonicalizer 才产生稳定 bytes。</p>
+<p>如果只留最终 YAML，就不知道某个 <code>batch_size=16</code> 是默认值、环境变量还是 CLI 覆盖；如果只留 shell command，又不知道 <code>${VAR:-default}</code> 展开、Hydra composition、<code>auto</code> 推导和 typed conversion 后的真实值。因此可复现的对象是“effective typed config + provenance + revisions”，不是某个孤立文件。</p>
+<h2 id="3">3. 覆盖顺序必须按框架和项目声明</h2>
+<table><thead><tr><th>层/框架</th><th>官方语义</th><th>工程注意</th></tr></thead><tbody>
+<tr><td>Hydra Defaults</td><td>depth-first composition；同 key 后者覆盖；<code>_self_</code> 控制当前文件位置</td><td>config group override 与 object override 不同；shell quoting 仍需验证</td></tr>
+<tr><td>Hydra CLI</td><td><code>foo.bar=value</code>、<code>+</code>、<code>++</code>、<code>~</code> 修改 object/Defaults List</td><td>必须保存原始 token 和解析后的 typed value</td></tr>
+<tr><td>pydantic-settings</td><td>默认 CLI→init→env→dotenv→secrets→defaults，高优先级覆盖低优先级</td><td>顺序可自定义；nested deep update 可能混合不同来源子键</td></tr>
+<tr><td>argparse</td><td>参数缺失用 default；<code>type</code> 做转换/检查</td><td>不定义 file/env merge，也不记录 provenance</td></tr>
+<tr><td>torchrun</td><td>注入 rank/world-size/restart/run ID 等 runtime env</td><td>rank 可变；不要把一次 rank 当稳定实验 identity</td></tr>
+</tbody></table>
+<p>因此“CLI 永远最高”不是通用事实。一个项目可以选择 <code>defaults &lt; file &lt; env &lt; CLI &lt; runtime-derived</code>，也可以禁止 env 覆盖训练超参；关键是把顺序、allowlist 和冲突策略写成 schema 并测试。</p>
+<h2 id="4-effective-config-provenance">4. Effective Config 公式与字段级 provenance</h2>
+<p>假设项目声明右侧覆盖左侧：</p>
+<div class="formula">\[
+C_{eff}=V\!\left(M(D,F,E,A,R;\,P)\right)
+\]</div>
+<p>变量和实现映射：<code>D</code> 是代码/schema defaults，<code>F</code> 是 composed file config，<code>E</code> 是 allowlisted env，<code>A</code> 是 CLI/API overrides，<code>R</code> 是 runtime-derived 值，<code>P</code> 是显式 precedence；<code>M</code> 返回 merged tree 与 source trace，<code>V</code> 做类型、范围、互斥和跨字段验证。公式是项目 resolver 合同，不表示各框架默认顺序相同。</p>
+<p>每个叶子字段建议记录：</p>
+<pre><code class="language-json">{
+  &quot;field_path&quot;: &quot;training.global_batch_size&quot;,
+  &quot;typed_value&quot;: 128,
+  &quot;value_type&quot;: &quot;int&quot;,
+  &quot;winning_source&quot;: &quot;runtime_derived&quot;,
+  &quot;source_locator&quot;: &quot;world_size * micro_batch * accumulation&quot;,
+  &quot;overridden_candidates&quot;: [
+    {&quot;source&quot;: &quot;yaml&quot;, &quot;value&quot;: &quot;auto&quot;},
+    {&quot;source&quot;: &quot;cli&quot;, &quot;value&quot;: null}
+  ],
+  &quot;semantic_role&quot;: &quot;semantic&quot;,
+  &quot;redacted&quot;: false,
+  &quot;included_in_run_key&quot;: true
+}</code></pre>
+<p>这个 schema 能回答“为什么是 128”“谁覆盖了 <code>auto</code>”“hash 中是否包含它”，并把 config drift 定位到具体 source，而不是靠人工 diff 两份大 YAML。</p>
+<h2 id="5-typed-validation-hash">5. Typed validation：hash 前先消除表示差异</h2>
+<p>以下文本可能语义相同或不同，不能直接按字符串判断：</p>
+<pre><code class="language-text">&quot;1e-4&quot; vs 0.0001
+&quot;./data&quot; vs &quot;C:/workspace/project/data&quot;
+&quot;true&quot; vs true
+&quot;model:latest&quot; vs immutable model revision
+batch_size=&quot;auto&quot; vs runtime-derived 128</code></pre>
+<p>在生成 run key 前，应至少完成：</p>
+<ul><li>string→int/float/bool/enum/Path 的 schema conversion；</li><li>相对路径解析，并优先替换为 dataset/model revision 或 content hash；</li><li><code>auto</code>、插值、默认值和 derived field 展开；</li><li>required/range/choice/互斥校验；</li><li>semantic field 与 execution-only field 分类；</li><li>secret 值删除，只保留 provider/key-version reference。</li></ul>
+<p>否则两个语义相同的配置可能得到不同 ID，两个语义不同的运行也可能因为只 hash 原始 YAML 而被误判为同一实验。</p>
+<h2 id="6-semantic-execution-conditional-secret">6. Semantic、Execution、Conditional 与 Secret</h2>
+<table><thead><tr><th>分类</th><th>例子</th><th>stable run key</th><th>attempt manifest</th></tr></thead><tbody>
+<tr><td>semantic</td><td>dataset/filter/revision、model/processor/normalizer、loss、optimizer、LR、seed、sampler、eval protocol</td><td>是</td><td>是</td></tr>
+<tr><td>conditional semantic</td><td>world-size、backend、dtype、worker count</td><td>若改变 batch/sampler/numerics/protocol 则是</td><td>是</td></tr>
+<tr><td>execution</td><td>output/log/tmp path、hostname、timestamp</td><td>否</td><td>是</td></tr>
+<tr><td>attempt/runtime</td><td>scheduler job/attempt、rank/local-rank、restart count</td><td>否</td><td>是</td></tr>
+<tr><td>secret</td><td>access token、password、private key</td><td>不保存 raw value</td><td>只保存 provider/reference/redaction status</td></tr>
+</tbody></table>
+<p><code>WORLD_SIZE</code> 是典型条件字段：如果只是通信布局变化且训练语义被严格保持，可作为 execution/recovery 维度；如果它改变 global batch、sampler partition 或 optimizer schedule，就必须进入 semantic comparison。分类规则应写进 schema，不能靠面试现场临时解释。</p>
+<h2 id="7-run-key-identity">7. Run Key 与四层 identity</h2>
+<p>对 normalized、redacted semantic config 使用 RFC 8785 等 canonical JSON，再绑定不可变 revision：</p>
+<div class="formula">\[
+K_{run}=\operatorname{SHA256}\!\left(
+JCS(C_{semantic})\,\|\,H_{code}\,\|\,H_{data}\,\|\,R_{model}
+\right)
+\]</div>
+<p>变量和实现映射：<code>JCS</code> 输出 canonical JSON bytes；<code>H_code</code> 是代码 revision/diff hash，<code>H_data</code> 是 dataset/transform manifest hash，<code>R_model</code> 是 base model/processor revision。<code>K_run</code> 标识实验语义；它不等于 scheduler、TorchElastic、W&amp;B 或 MLflow 的 run ID。</p>
+<table><thead><tr><th>Identity</th><th>生命周期</th><th>用途</th><th>稳定性</th></tr></thead><tbody>
+<tr><td>semantic <code>run_key</code></td><td>同一实验语义</td><td>dedupe、对比、checkpoint/eval lineage</td><td>内容不变则稳定</td></tr>
+<tr><td><code>logical_run_id</code></td><td>一个业务训练目标</td><td>聚合多个 retry attempt</td><td>retry 间稳定，可引用 run key</td></tr>
+<tr><td><code>attempt_id</code></td><td>scheduler 的一次执行</td><td>failure/retry/preemption ledger</td><td>每次重试变化</td></tr>
+<tr><td>rank/service run ID</td><td>当前 worker 或外部跟踪系统</td><td>通信、日志、UI 查询</td><td>不当作 semantic identity</td></tr>
+</tbody></table>
+<h2 id="8-secret-safe-provenance">8. Secret-safe provenance</h2>
+<p>“为可追溯而 dump 全部 env”是高危做法。env 中可能有 token、cloud credential、代理、内部路径和数据权限信息；pydantic-settings 官方也警告 debug source output 可能包含 secrets。</p>
+<p>安全设计：</p>
+<ol><li>只读取 schema allowlist 中的 env key；</li><li>secret 字段不进入 effective config 明文、命令日志或 canonical bytes；</li><li>manifest 记录 provider、secret key 名、version/reference 和是否成功注入；</li><li>不默认保存 raw secret 的普通 SHA，因为低熵 token/密码可能被离线猜测；</li><li>对 stdout、exception、resolved config 和上传 artifact 做 secret-pattern/canary scan；</li><li>权限与数据访问策略在 <code>VLA-ENG-020</code> 单独形成 gate。</li></ol>
+<h2 id="9">9. 本地项目映射与真实性边界</h2>
+<h3 id="9-1-uwm">9.1 UWM</h3>
+<p><code>remote_muxi_libero_finetune_5tasks_ddp.sh</code>（SHA <code>E5B6...D92</code>）使用 <code>${VAR:-default}</code> 接收 env/default，导出 CUDA/MACA/NCCL/W&amp;B/HF runtime env，再以 Hydra CLI override 设置 dataset、run dir、checkpoint、batch、steps 和 model 参数。Artifact Gate 还有 <code>ds_config_effective.json</code>。</p>
+<p>可说：存在 env→shell default→Hydra CLI override 和 DeepSpeed effective subset。不能说：已保存完整 resolved Hydra tree、field source map、env allowlist、canonical run key，或已把 launcher/config/checkpoint/eval 绑定到同一 immutable manifest。</p>
+<h3 id="9-2-openpivla">9.2 OpenPiVLA</h3>
+<p><code>formal_train.py</code>（SHA <code>51B6...C6F94</code>）用 argparse 定义 recipe/model/data/batch/LR/LoRA/seed，并读取 <code>WORLD_SIZE/RANK/LOCAL_RANK</code>；<code>formal_plan.json</code> 保存训练规模/路径，checkpoint <code>trainer_state.json</code> 保存 <code>vars(args)</code>。三份 YAML 只有 <code>mode/notes/run_id</code>，且 formal trainer 未加载它们。</p>
+<p>可说：有较完整 effective args snapshot。不能把三份 YAML 说成 formal input config，也不能说 archive/formal lineage、field provenance 或 canonical semantic hash 已闭合。</p>
+<h3 id="9-3-opd">9.3 OPD</h3>
+<p><code>train_opd_online_vl.py</code>（SHA <code>BF91...D8D9</code>）用 argparse 接收训练/教师/DeepSpeed/OPD 参数，并按 <code>WORLD_SIZE</code> 把 DeepSpeed JSON 中的 <code>auto</code> 改成数值；训练 summary 只保存部分字段。</p>
+<p>可说：存在 source JSON→runtime effective mutation，证明原始 config hash 与 effective hash 不能混用。不能说：完整 args、mutated DeepSpeed config、env provenance、old/new OPD run lineage 已归档。</p>
+<table><thead><tr><th>项目</th><th>已有 direct evidence</th><th>仍缺</th></tr></thead><tbody>
+<tr><td>UWM</td><td>env defaults、Hydra CLI、DeepSpeed effective subset</td><td>full resolved config、source trace、run/checkpoint/eval manifest</td></tr>
+<tr><td>OpenPiVLA</td><td>argparse、formal plan、checkpoint args snapshot</td><td>YAML/CLI/env source map、semantic hash、formal/archive lineage</td></tr>
+<tr><td>OPD</td><td>argparse、DeepSpeed JSON、<code>WORLD_SIZE</code> mutation、partial summary</td><td>full args/effective DS config/env trace、old/new run identity</td></tr>
+</tbody></table>
+<h2 id="10-resolver-manifest">10. Resolver 与 Manifest 伪代码</h2>
+<pre><code class="language-python">def prepare_run(defaults, files, process_env, cli, runtime, schema, revisions):
+    # 1. Read only declared env keys; never copy the whole process environment.
+    env = read_allowlisted_env(process_env, schema.env_allowlist)
+
+    # 2. Merge with one explicit precedence and retain every losing candidate.
+    merged, provenance = merge_with_trace(
+        defaults, files, env, cli, runtime, precedence=schema.precedence
+    )
+
+    # 3. Resolve interpolation/auto values, then validate the typed object.
+    effective = schema.validate(resolve_derived_values(merged, runtime))
+
+    # 4. Classify fields and remove raw secrets before serialization or logging.
+    semantic, execution, secret_refs = classify_and_redact(effective, schema)
+    run_key = sha256(jcs(semantic), revisions.code,
+                     revisions.data, revisions.base_model)
+
+    # 5. Persist the source map and identity before checkpoint/log side effects.
+    return persist_immutable_run_manifest(
+        run_key, semantic, execution, secret_refs, provenance, revisions
+    )</code></pre>
+<p>伪代码表达 resolve→trace→validate→redact→canonicalize→persist 的顺序；<code>merge_with_trace</code>、JCS、secret provider、immutable store 和 schema classification 均需项目实际实现与测试，不能作为已有项目能力证明。</p>
+<h2 id="11">11. 验证矩阵</h2>
+<table><thead><tr><th>Case</th><th>输入变化</th><th>期望</th></tr></thead><tbody>
+<tr><td>same semantics</td><td>YAML key 顺序、注释、等价数值表示变化</td><td>canonical semantic hash 不变</td></tr>
+<tr><td>true semantic change</td><td>dataset revision、LR、seed、normalizer 变化</td><td>run key 改变</td></tr>
+<tr><td>execution-only change</td><td>output dir、hostname、timestamp 变化</td><td>run key 不变，attempt manifest 变化</td></tr>
+<tr><td>precedence conflict</td><td>YAML/env/CLI 同时给同一字段</td><td>winner 与 losing candidates 可查询</td></tr>
+<tr><td>invalid type/range</td><td><code>batch=-1</code>、unknown enum、字符串 bool 歧义</td><td>在训练前失败，不生成 committed run</td></tr>
+<tr><td>runtime derived</td><td><code>auto</code> 随 world-size 展开</td><td>effective typed value 与推导公式落盘</td></tr>
+<tr><td>secret injection</td><td>env/CLI 带 canary token</td><td>resolved config/log/artifact 不出现 raw canary</td></tr>
+<tr><td>retry</td><td>同 logical run 新 attempt/rank</td><td>semantic key 稳定；attempt/rank ledger 更新</td></tr>
+</tbody></table>
+<p>至少要保存 resolver version、precedence/schema revision、canonicalization version、effective config hash、source map hash 和 secret-scan result；否则配置可读不等于配置可重放。</p>
+<h2 id="12-trade-off-bad-case">12. Trade-off、bad case 与追问</h2>
+<h3 id="12-1-trade-off">12.1 Trade-off</h3>
+<ul><li>字段 provenance 增加 manifest 体积和实现复杂度，但能显著降低“参数为什么变了”的调试成本。</li><li>把更多 runtime 字段纳入 semantic hash 更保守，却可能把等价运行拆成多个 ID；纳入太少则会错误合并不同实验。</li><li>严格禁止未知 key 能早失败，但会降低临时实验灵活性；可用显式 <code>experimental.*</code> namespace 管理。</li><li>secret reference 提升安全性，却要求 secret provider/version 有稳定审计接口。</li></ul>
+<h3 id="12-2-bad-case">12.2 高概率 bad case</h3>
+<ol><li>只 hash 原始 YAML，忽略 CLI/env/<code>auto</code> mutation。</li><li>用 timestamp/W&amp;B ID 当实验 identity，无法判断两个 run 是否同语义。</li><li>把 <code>RANK=0</code> 编进 stable run key，retry/rank remap 后 identity 改变。</li><li>保存最终 config 却不保存 winning source 和 losing candidate。</li><li>为 debug dump 全部 env，泄露 token/credential。</li><li><code>"false"</code> 被当 truthy string，或 <code>1e-4</code>/path/enum 未经过 typed validation。</li><li>world-size 改变 global batch，却仍声称同一个 semantic run。</li></ol>
+<h3 id="12-3">12.3 面试追问</h3>
+<ol><li>Hydra <code>_self_</code> 为什么会改变最终值？</li><li>pydantic-settings 的默认 priority 能否修改？</li><li>为什么原始 YAML SHA 不等于 effective config SHA？</li><li><code>WORLD_SIZE</code> 什么时候算 semantic，什么时候算 execution？</li><li>W&amp;B run ID、TorchElastic run ID 和 semantic run key 有什么区别？</li><li>怎样证明 secret 没进入 resolved config 和日志？</li><li>retry 后哪些 identity 保持不变，哪些必须变化？</li></ol>
+<h2 id="13">13. 结论与下一步</h2>
+<p>可靠的 config 系统不是“把 YAML 打印出来”，而是把多来源输入解析成 typed effective config，同时保存字段 provenance；随后区分 semantic、execution、attempt 和 secret，对 normalized/redacted semantic object 做 canonical hash，并与 code/data/model revisions 共同形成 run key。logical run 聚合 retry，attempt/rank/service ID 保持独立。</p>
+<p>当前 UWM、OpenPiVLA、OPD 已提供有价值的 env/CLI/args/effective mutation 证据，但没有统一 source map、secret-safe canonical hash 或 run→checkpoint→eval immutable lineage，故知识页和题卡均保持 <code>WARN/unseen</code>。下一步可口述 <code>VLA-ENG-019</code>，或补一个真实 resolver manifest/secret-canary smoke；<code>VLA-ENG-020</code> 继续后置。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_05_eng019_config_resolution_run_identity_source_freeze.html">ENG-019 Source Freeze</a>：官方 revision/SHA、项目路径与真实性边界。</li><li>Meta, <a href="https://github.com/facebookresearch/hydra/blob/7ef3acab78b46bf82370e7931f748aef5fd80e5f/website/versioned_docs/version-1.3/advanced/defaults_list.md">Hydra 1.3 Defaults List</a> 与 <a href="https://github.com/facebookresearch/hydra/blob/7ef3acab78b46bf82370e7931f748aef5fd80e5f/website/versioned_docs/version-1.3/advanced/override_grammar/basic.md">Override Grammar</a>。</li><li>Pydantic, <a href="https://github.com/pydantic/pydantic-settings/blob/1d0ea26f9e04ec9e20767d70e4508bb33c8708e7/docs/index.md">pydantic-settings 2.14.1</a>。</li><li>Python Software Foundation, <a href="https://github.com/python/cpython/blob/ebf955df7a89ed0c7968f79faec1de49f61ed7cb/Doc/library/argparse.rst">Python 3.14 argparse</a>。</li><li>PyTorch 2.13, <a href="https://docs.pytorch.org/docs/2.13/elastic/run.html">Elastic Run / torchrun</a>。</li><li>RFC Editor, <a href="https://www.rfc-editor.org/rfc/rfc8785.html">RFC 8785 JSON Canonicalization Scheme</a>。</li><li>本仓库，<a href="../sources/vol_05_local_artifact_gate_eng004_006.html">ENG-004..006 Artifact Gate</a>、<a href="vol_05_engineering_eval_eng013.html">ENG-013 Reproducibility</a> 与 <a href="vol_05_engineering_eval_eng018.html">ENG-018 Retry</a>。</li></ol>
+</article></body></html>

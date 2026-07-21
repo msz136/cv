@@ -1,0 +1,63 @@
+{
+  "artifact": "sources/openpivla_action_json_parser_roundtrip_artifact_gate.md",
+  "html": "sources/openpivla_action_json_parser_roundtrip_artifact_gate.html",
+  "review_date": "2026-07-19",
+  "status": "local_direct_negative_evidence / retained_prefix_roundtrip_pass / controller_roundtrip_missing / WARN",
+  "verdict": "WARN",
+  "source_sha256": "AA5FCBD39FA14D8C6E1246F4FAF36AB3977829287F2CD4882110EB832E6CED26",
+  "evidence_cutoff": "2026-07-19",
+  "local_sources": {
+    "project_root": "C:\\Users\\mousongzhe\\Project\\openpivla_deployment",
+    "formal_train_sha256": "51B67D3E04496E68076BF6461506141EBCDDF9A82E6C30AF1FDC0F1F2CCC6F94",
+    "recipes_sha256": "397D1B384A2BD93D9DC81B7003E6AB7BFAC3FC458EA04008197C3F503F9D780E",
+    "runner_sha256": "F0908B9F824A0AAFD99F170F0FEB7F72E931F88EBC60594D9F5636E2539C13C5",
+    "eval_lerobot_action_server_sha256": "B1B7FB9B7A86355B9C1843CDE971B38FD26A2DAB1F18550128671F79F1AB4F39",
+    "export_bridge_fractal_sha256": "B8222F99F0ED08939E3B8D52DE30B9386729D3C43B3B3E6D1223AE4357EC3BC8",
+    "official_eval_summary_sha256": "7238B0238315852730A559AF0E01678448E4507E76F7BBCCCE608C8D426CD4E1"
+  },
+  "probe_results": {
+    "intended_shape": [15, 72],
+    "serialized_shape": [15, 16],
+    "intended_scalars": 1080,
+    "serialized_scalars": 240,
+    "dropped_scalars": 840,
+    "drop_fraction": 0.777778,
+    "tail_repeat_rows": 13,
+    "empty_window_row_width": 1,
+    "empty_input_row_width": 0,
+    "nan_emitted_by_default_json": true,
+    "formal_generate_decode_calls": 0,
+    "formal_json_loads_calls": 1,
+    "formal_json_loads_role": "MindCube input JSONL, not action output parser",
+    "collator_masks_only_padding": true
+  },
+  "checks": {
+    "bounded_slice": "PASS (one parser/round-trip evidence gate plus synchronized corrections; no new question IDs or mastery changes)",
+    "source_freeze": "PASS (formal package, official eval scripts and one frozen summary hashed)",
+    "retained_prefix_json_roundtrip": "PASS WITH WARNING (Python dumps/loads recovers 15x16 retained prefix only)",
+    "full_72d_roundtrip": "FAIL (840/1080 schema positions are not serialized)",
+    "formal_qwen_output_parser": "MISSING (no generate/decode/action-output loads in frozen formal package)",
+    "edge_case_schema": "FAIL (empty/ragged/NaN cases are not rejected or normalized to a fixed contract)",
+    "loss_mask": "WARN (only padding is masked; user/wrapper/assistant non-padding tokens all enter CE)",
+    "official_eval_lineage": "PASS WITH WARNING (numeric 7D/4-step artifact exists for official pi0_aloha_sim, not formal Qwen)",
+    "project_truth_boundary": "PASS (negative evidence, upstream official path, local Qwen path, benchmark and ownership separated)",
+    "p9_protocol": "PASS (role fit, truth boundary, evidence contract, production gap, question tree, scorecard, upgrade plan and output pack present)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, fifteen H2, five H3, eight tables, four code blocks, four formulas, SHA/anchors/local links valid and zero formula em)",
+    "browser_visual_check": "BLOCKED (file:// navigation restricted in current environment)",
+    "oral_drill": "PENDING"
+  },
+  "claim_updates": {
+    "OPV-CL-002": "local-direct / full-sequence-CE / parser-missing",
+    "OPV-CL-003": "REPRESENTATION-CONFLICT",
+    "OPV-CL-004": "LOSSY-SERIALIZATION / PARSER-MISSING / semantics-open",
+    "OPV-CL-010": "PARALLEL-OFFICIAL-LINEAGE / FORMAL-QWEN-MISSING",
+    "ownership": "technical finding verified / decision and fixer pending"
+  },
+  "open_items": [
+    "Implement a strict finite dense action JSON parser with exact H/D assertions and assistant-span handling.",
+    "Collect an immutable formal Qwen checkpoint and generation bundle before testing tokenizer-to-parser behavior.",
+    "Add normalizer, axis/unit, controller limits and logged-command sentinel round-trip.",
+    "Confirm who designed limit=16, who identified the issue and whether a fix exists outside the frozen package."
+  ],
+  "next": "Run one OpenPiVLA ownership-confirmation drill or freeze one immutable formal checkpoint/generation bundle; keep all 12 cards unseen."
+}

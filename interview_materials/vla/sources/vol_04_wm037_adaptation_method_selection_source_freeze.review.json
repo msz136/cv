@@ -1,0 +1,40 @@
+{
+  "artifact": "sources/vol_04_wm037_adaptation_method_selection_source_freeze.md",
+  "html": "sources/vol_04_wm037_adaptation_method_selection_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-WM-037 / knowledge_synced / card_synced",
+  "verdict": "WARN",
+  "source_sha256": "70e0db80a7c98b3fde2a625d2bbd5678bf7f850f3853b3035c794e47b1d71b37",
+  "frozen_sources": {
+    "simopt": "arXiv:1810.05687v4 / ar5iv response SHA-256 d655425962c13511caf54a1c669144793e0747366db9f9b48d0f0d5d58ca2391",
+    "up_osi": "arXiv:1702.02453v3 / ar5iv response SHA-256 929c344cfa0c5c39f6010b79867c5d827bcd17634a004b87a543ee6c5f66aa5d",
+    "rma": "arXiv:2107.04034v1 / ar5iv response SHA-256 4f09d9e44cb1726f4c2cae8cd90b35eed6d659199e53875c2420bccef42533b4",
+    "residual_rl": "arXiv:1812.03201v2 / ar5iv response SHA-256 5b0bc192221a41824801d96b76644ee61cd41b9a46482f933de5938ba9fe42df",
+    "dagger": "PMLR 15 official page SHA-256 e515cc08883fb65a967c7cc1cd4905107d7dc31aeed4a71c254ea250a670ad75 / official PDF SHA-256 17bdd6e049e64f09010b322f9e2d4fb5c744c33ff7ac99b4c4561e39bd9082a7",
+    "local_boundary": "Sim2Real Audit D + Evidence Manifest + OPD/UWM/OpenPiVLA evidence inventories"
+  },
+  "checks": {
+    "batch_boundary": "PASS (only VLA-WM-037 frozen; WM-038 remains deferred)",
+    "primary_source_scope": "PASS (five primary sources tied to residual, explicit/latent context, simulator-distribution and dataset-update claims)",
+    "update_object_taxonomy": "PASS (action, parameter/latent, simulator distribution, dataset and weights separated)",
+    "residual_contract": "PASS (reliable base, dimension/scale mask, action limits, trace and fallback explicit; no generic stability guarantee)",
+    "osi_rma_boundary": "PASS (physical parameter estimate separated from task-relevant latent and from gradient-based weight update)",
+    "simopt_boundary": "PASS (trajectory discrepancy and KL-bounded outer-loop distribution update separated from exact parameter identification)",
+    "dagger_boundary": "PASS (learner-state collection, expert labels, aggregation and next-policy training follow Algorithm 3.1; safety/cost claims marked as engineering gates)",
+    "weight_update_boundary": "PASS AS ENGINEERING SYNTHESIS (replay, shadow/canary, drift, rollback and incident requirements are not presented as a paper guarantee)",
+    "timescale_and_authority": "PASS (control/context/episode/collection/training/deployment loops plus data/actuation authority explicit)",
+    "matched_evaluation": "PASS (method-specific on/off/oracle/stale/over-update arms and real/expert/compute budgets explicit)",
+    "project_evidence_boundary": "PASS (UWM offline finetune, OPD token rollout and OpenPiVLA partial rollout are not promoted to robot real adaptation)",
+    "html_static_validation": "PASS (canonical SHA embedded; one H1, twenty-three H2 headings, five tables, formulas, commented pseudocode and MathJax rendered)",
+    "local_links": "PASS (Audit D, Evidence Manifest and OPD/UWM/OpenPiVLA inventories resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "independent_fact_review": "PASS WITH WARNING (reconciled by vol_04_sim2real_independent_fact_review.md; real adaptation authority remains missing)"
+  },
+  "open_items": [
+    "Collect local residual/OSI/RMA/SimOpt/DAgger implementations or explicitly retain method-read-only status.",
+    "Collect timestamped history/context/residual traces and method-specific matched simulation arms.",
+    "Before real claims, collect safe real trajectory/expert/reward provenance, intervention/incident and rollback records.",
+    "Keep VLA-WM-037 unseen until oral practice; do not create coaching_state.md without a real drill."
+  ],
+  "next": "Build only VLA-WM-038 uncertainty/safety/fallback/recovery next; preserve WM-037 as the adaptation-selection node."
+}

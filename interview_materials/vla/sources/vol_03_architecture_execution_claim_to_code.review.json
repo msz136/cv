@@ -1,0 +1,63 @@
+{
+  "artifact": "sources/vol_03_architecture_execution_claim_to_code.md",
+  "html": "sources/vol_03_architecture_execution_claim_to_code.html",
+  "review_date": "2026-07-19",
+  "status": "independent_fact_reviewed",
+  "verdict": "WARN",
+  "source_sha256": "B3436C6A0CB2DAEFC9050C2955F05A078439671287907E20A9D38B26B97BCED2",
+  "evidence_cutoff": "2026-07-19",
+  "upstream": {
+    "rt2_paper_revision": "arXiv 2307.15818v1",
+    "openvla_paper_revision": "arXiv 2406.09246v3",
+    "openvla_commit": "c8f03f48af692657d3060c19588038c7220e9af9",
+    "octo_paper_revision": "arXiv 2405.12213v2",
+    "octo_commit": "241fb3514b7c40957a86d869fecb7c7fc353f540",
+    "octo_commit_date": "2024-07-30T17:26:13-07:00",
+    "octo_license": "MIT",
+    "pi0_paper_revision": "arXiv 2410.24164v4",
+    "openpi_commit": "15a9616a00943ada6c20a0f158e3adb39df2ccac",
+    "openpi_license": "Apache-2.0"
+  },
+  "coverage": {
+    "question_ids": [
+      "VLA-ARCH-007",
+      "VLA-ARCH-008",
+      "VLA-ARCH-009",
+      "VLA-ARCH-010",
+      "VLA-ARCH-011",
+      "VLA-ARCH-012",
+      "VLA-ACT-031",
+      "VLA-ACT-032"
+    ],
+    "claim_matrix_rows": 14,
+    "local_project_claims_verified": 0
+  },
+  "checks": {
+    "paper_versions": "PASS (RT-2 v1, OpenVLA v3, Octo v2 and pi0 v4 boundaries recorded)",
+    "octo_repository_freeze": "PASS (rev-parse, commit date, origin and MIT license verified)",
+    "landscape_comparison": "PASS WITH WARNING (backbone, action representation, training and inference routes compared without cross-protocol metric ranking)",
+    "sequence_attention_loss_semantics": "PASS (OpenVLA LM labels, Octo readout/block mask and pi0 suffix boundaries separated)",
+    "adaptation_routes": "PASS WITH WARNING (flagship/full, head-only and LoRA repo support are not conflated with local training evidence)",
+    "cross_embodiment_mask": "PASS WITH WARNING (Octo positive timestep/action mask contrasted with frozen Pi0 all-D mean; local mask remains unknown)",
+    "latency_decomposition": "PASS AS FRAMEWORK (RT-2/FAST source-specific measurements and openpi timing scopes preserved; no local latency claimed)",
+    "release_contract_audit": "PASS AS FRAMEWORK (paper, repo, checkpoint and runtime evidence layers separated)",
+    "action_to_controller": "PASS WITH WARNING (decode, unnormalize, slicing, schema and safety order mapped; local axis/unit/controller remain unverified)",
+    "closed_loop_tests": "PASS AS DESIGN (parser, norm, padding, axis, FIFO, replan, stale RPC, safety and mock-controller invariants defined; not executed locally)",
+    "formula_explanations": "PASS (8 display formulas have adjacent variables, intuition and implementation mapping)",
+    "pseudocode_comments": "PASS (4 code blocks contain explanatory comments)",
+    "public_local_boundary": "PASS (no upstream architecture or example is attributed to the candidate)",
+    "html_static_validation": "PASS (one h1, source SHA, 24 valid fragments, 9 valid local links, MathJax and 4 commented code blocks)",
+    "browser_visual_check": "BLOCKED (file:// navigation restricted in current environment)",
+    "independent_fact_review": "PASS WITH WARNING (see vol_03_architecture_execution_independent_fact_review)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "RT-2 action/serving wording and Octo paper-to-config mapping independently verified.",
+    "Octo continuous_loss denominator and timestep/action-mask synthetic probes completed.",
+    "Instrument one local policy query with synchronized preprocess, model, transport, postprocess and queue timings.",
+    "Collect the local OpenPiVLA checkpoint manifest, tokenizer revision, norm assets, H/D/K, axis/unit transform and controller trace.",
+    "Implement parser, norm round-trip, padding, FIFO/replan, stale-response and safety tests against the actual local rollout client.",
+    "Keep all generated cards unseen until real oral practice."
+  ],
+  "next": "Run one VLA-ARCH-010/031 or OpenPiVLA ownership oral drill; keep all eight cards unseen."
+}

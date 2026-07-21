@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VLA 面试仓库 Completion Audit：覆盖、审查与训练状态分离</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\repository_completion_audit.md">
+<meta name="aris:source-sha256" content="3b8adbb345786c1937f362f68f500eb1297b0fcbfb1fd4b159c390f328b7bdc8">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>3b8adbb345786c1937f362f68f500eb1297b0fcbfb1fd4b159c390f328b7bdc8</code>；生成自：<code>interview_materials\vla\sources\repository_completion_audit.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 审计口径</a></li><li><a href="#2-1">2.1 题卡与卷归属</a></li><li><a href="#2-2">2.2 知识覆盖</a></li><li><a href="#2-3">2.3 生成与审查</a></li><li><a href="#3">3. 八卷权威矩阵</a></li><li><a href="#4">4. 项目证据与真实性边界</a></li><li><a href="#5">5. 文件生命周期审计</a></li><li><a href="#6-review">6. Review 与训练状态</a></li><li><a href="#7">7. 当前优先级与停止条件</a></li><li><a href="#references">参考入口（References）</a></li></ol></nav>
+<h1>VLA 面试仓库 Completion Audit：覆盖、审查与训练状态分离</h1>
+<div class="meta">审计日期：2026-07-21 状态：<code>repository_reconciled / coverage_not_mastery / WARN</code> 审计对象：<code>knowledge/</code>、<code>questions/</code>、<code>sources/</code>、<code>evidence/</code> 中的 canonical Markdown、生成 HTML、review JSON，以及总路线图和索引。 核心边界：本报告只证明仓库中“有什么、是否同步、处于什么审查状态”；不把页面覆盖、事实复核候选或静态校验升级为候选人的口述掌握。</div>
+<h2 id="question">问题（Question）</h2>
+<p>当前仓库到底完成了多少？八卷的“内容覆盖”“事实审查”“项目证据”“生成完整性”和“真实训练”是否被混成了一个完成度数字？</p>
+<h2 id="1">1. 结论先行</h2>
+<ol><li>全局题库有 <strong>280 个唯一 stable ID</strong>，没有重复 ID；状态分布为 <code>unseen=280</code>、其余为 0。</li><li>VOL 01–05 已达到各自当前计划内的知识/题卡覆盖；VOL 06 已冻结20节点合同，source/knowledge/card为20/20/20，PER-001..020三联件同步且unseen；VOL 07完成五项目inventory/ownership、37张项目卡与Robot Harness aggregate + partial-raw gate；VOL 08已冻结12节点合同，sources/knowledge/card为12/12/12，<code>SYS-VLA-004</code> 三联件已同步但尚未口述。因此“八卷都有产物”不等于“八卷达到退出条件”。</li><li>五项目 Claim–Evidence Inventory 为 5/5，Ownership Ledger 为 5/5；候选人角色确认、checkpoint/benchmark lineage 和若干 raw bundle 仍是 <code>PENDING/WARN</code>。</li><li>创建本报告前的审计快照共有286份非README、非question-list的Markdown，其中283份有三联件；后续registry/source/knowledge/card/review切片持续闭合生命周期，VOL 07 五项目 evidence reconciliation、口述队列、五项目 model answers、readiness audit、P0 artifact intake contract、ownership confirmation queue、五项目 P0 bundle audit、Cosmos 1 epoch evidence freeze、WAM full10k run reconciliation、official-HF RoboCasa baseline P0 audit、Cosmos full10k trained 24×5 P0 audit、TurnOffMicrowave trained-failure P0 audit、Checkpoint save-load gate P0 audit、UWM/LIBERO/RoboCasa transfer evidence freeze、UWM RoboCasa ActionHeadFix 30-epoch P0 audit、OpenPiVLA Runtime Rollout Artifact Gate、LIBERO Checkpoint Load–Serve–Client Lineage Gate、ALOHA Action-Level Eval Load Gate、Official Checkpoint Immutable Manifest Gate、LIBERO Matched Failure Probe Readiness Gate 与 UWM <code>libero_90.pt</code> 本地 Immutable Checkpoint Manifest Gate 加入后，当前为 <strong>387份canonical、387份三联件</strong>。所有当前canonical均有HTML与review。</li><li>当前387份review JSON均可解析；verdict分布为<code>WARN=377</code>、<code>PASS WITH WARNING=10</code>、<code>PASS=0</code>。十份<code>PASS WITH WARNING</code>只表示相应独立事实复核切片通过且仍有warning，不代表整卷完成。</li><li><code>coaching_state.md</code> 不存在。没有候选人真实回答前，本仓库不得改变 mastery，也不得从 <code>unseen</code> 推导出 <code>pass/strong</code>。</li></ol>
+<h2 id="2">2. 审计口径</h2>
+<h3 id="2-1">2.1 题卡与卷归属</h3>
+<ul><li>只统计 <code>&lt;details class="qa"&gt;</code> 的 <code>&lt;summary&gt;</code> 中 <code>&lt;b&gt;stable-id&lt;/b&gt;</code>；正文引用、路线图历史数字和 question list 不计题卡。</li><li>卷映射使用前缀：<code>VLA-FND</code>、<code>VLA-RL</code>、<code>VLA-ARCH/VLA-ACT</code>、<code>VLA-WM</code>、<code>VLA-ENG/VLA-EVAL</code>、<code>VLA-PER</code>、<code>PROJ-*</code>、<code>SYS-VLA/CODE-VLA</code>。</li><li>每张卡的练习状态从卡内最后一个 <code>练习状态</code> 字段读取。</li></ul>
+<h3 id="2-2">2.2 知识覆盖</h3>
+<ul><li>VOL 03–06、VOL 08 可用 stable ID 对 knowledge canonical 与题卡集合做一一对账。</li><li>VOL 01/02 的早期 consolidated knowledge 页面没有逐节点 stable ID 标记，因此依据对应 completion/fact review、题卡 review 与 consolidated knowledge review 交叉确认，不伪造 ID-level knowledge mapping。</li><li>VOL 07 的知识载体是五项目 inventory、ownership ledger、项目页与原子题卡，不把它硬算成通用 knowledge node。</li></ul>
+<h3 id="2-3">2.3 生成与审查</h3>
+<pre><code class="language-text">canonical Markdown
+  -&gt; HTML source SHA
+  -&gt; review JSON source SHA
+  -&gt; structure / ID / link checks
+  -&gt; oral drill（只有候选人真实回答后才发生）</code></pre>
+<p>三联件完整只说明文件生命周期闭合；<code>WARN</code>、缺本地 artifact 或没有口述时，模块不能进入 <code>drilled/done</code>。</p>
+<h2 id="3">3. 八卷权威矩阵</h2>
+<table><thead><tr><th>卷</th><th>当前内容覆盖</th><th>题卡</th><th>事实/证据门</th><th>训练状态</th><th>对退出条件的判断</th></tr></thead><tbody>
+<tr><td>VOL 01 Foundations</td><td>consolidated knowledge + 39-card completion reconciliation</td><td>39</td><td>fact-reviewed candidate；local runtime 仍 WARN</td><td>39 unseen</td><td>覆盖完成；未 drilled</td></tr>
+<tr><td>VOL 02 IL / RL / Post-training</td><td>consolidated knowledge + 40-card fact review</td><td>40</td><td>public facts 与 local GRPO boundary 已核对；project/run gate 仍 WARN</td><td>40 unseen</td><td>覆盖完成；未 drilled</td></tr>
+<tr><td>VOL 03 VLA / Action</td><td>knowledge/cards 44/44；Audit A–F public facts 已独立复核</td><td>44</td><td>local checkpoint、normalizer、controller、latency、ownership 仍 WARN</td><td>44 unseen</td><td>覆盖与 public-fact review 完成；未 drilled</td></tr>
+<tr><td>VOL 04 World Model / Sim2Real</td><td>aggregate knowledge/cards 44/44；Audit A–E independently reviewed</td><td>44</td><td>Audit D重新获取10份fixed PDF（124页/0空白页）、官方源码/文档并完成12/12 probes；五项目真实硬件、checkpoint/result/ownership gate 仍 WARN</td><td>44 unseen</td><td>覆盖与public-fact review完成；未 drilled</td></tr>
+<tr><td>VOL 05 Engineering / Evaluation</td><td>knowledge/cards 44/44；completion audit 已有</td><td>44</td><td>source/doc review 完成到当前范围；五项目强指标 artifact gate 仍 WARN</td><td>44 unseen</td><td>覆盖完成；未 drilled</td></tr>
+<tr><td>VOL 06 Perception / Grounding / Nav</td><td>planned <code>VLA-PER-001..020</code>；source/knowledge/card 20/20/20</td><td>20</td><td>PER-001..020三联件已同步；PER-019冻结Habitat/VLN-CE指标、split、denominator、failure taxonomy与10 probes；PER-020冻结robustness/safety、risk gate、fallback/recovery/E-stop与10 probes，并完成独立事实复核；本地无navigation episode bundle/ownership或shifted-input safety bundle</td><td>20 unseen</td><td>source 100%，knowledge 100%，card 100%；仍缺至少8次真实drill</td></tr>
+<tr><td>VOL 07 Project Deep Dives</td><td>inventories 5/5 + ownership ledgers 5/5 + cross-project evidence reconciliation + Robot Harness aggregate/raw/recovery gates + project cards</td><td>37</td><td>28/40 primary、6/10 exact support；12-slot metrics/run/remote locator已冻结；17个本地/tar候选0 eligible，统一scorer/checkpoint/candidate role仍PENDING</td><td>37 unseen</td><td>evidence skeleton与P0 recovery contract完成；2分钟叙事/口述未闭环</td></tr>
+<tr><td>VOL 08 Coding / System Design</td><td>planned <code>SYS-VLA-001..004</code> + <code>CODE-VLA-001..008</code>；source/knowledge/card 12/12/12</td><td>12</td><td>SYS-004 三联件已同步；真实口述仍未做</td><td>12 unseen</td><td>source/knowledge/card 100%，4次SYS口述与8次CODE练习均未做</td></tr>
+</tbody></table>
+<p>全局题卡算式：<code>39 + 40 + 44 + 44 + 44 + 20 + 37 + 12 = 280</code>。</p>
+<h2 id="4">4. 项目证据与真实性边界</h2>
+<table><thead><tr><th>项目</th><th>Inventory</th><th>Ownership Ledger</th><th>项目题卡</th><th>当前能安全证明</th><th>仍不能升级的主张</th></tr></thead><tbody>
+<tr><td>OpenPiVLA</td><td>有</td><td>有</td><td>12</td><td>local JSON/causal-CE route、<code>H=15,D=72</code> 与 formatter <code>limit=16</code> contract 风险；官方 <code>pi05_libero</code> load/connect 与 <code>pi0_aloha_sim</code> load + 4×50×14 offline action L1 已冻结</td><td>private formal checkpoint、immutable binary manifest、97.4 lineage、FAST 实际调用、matched controller/scorer 与个人 ownership</td></tr>
+<tr><td>Robot Harness</td><td>有</td><td>有</td><td>8</td><td>local trainer/eval/config；13/13 mean、60/60 metrics；28/40 primary、6/10 exact support；12-slot remote locator与17-candidate rejection audit</td><td>剩余12 raw、统一scorer/backend、122B/35B输入、checkpoint binary、真实物理成功或未经确认的全面主导</td></tr>
+<tr><td>OPD</td><td>有</td><td>有</td><td>9</td><td>point/box/text、coldstart、已有 report/run 边界</td><td>缺 weights/raw predictions/严格 ablation 时的强效果 claim</td></tr>
+<tr><td>WAM</td><td>有</td><td>有</td><td>4</td><td>已登记 artifact 与 paired diagnostics；full10k trained 24×5 raw/trusted eval、official-HF 24×5 raw/trusted eval、TurnOffMicrowave local 1k first-divergence 和 DeepSpeed save/load gate 均已独立冻结</td><td>本地 checkpoint binary/hash、fresh-process reload、matched 5-frame fix→rerun、multi-episode scorer/version、完整 episode JSONL、因果 uplift、候选人角色确认</td></tr>
+<tr><td>UWM / LIBERO</td><td>有</td><td>有</td><td>4</td><td>LIBERO protocol/fixed-pruned-init与user-confirmed final限定叙述；UWM base <code>libero_90.pt</code> 已有独立本地 hash gate；RoboCasa actionheadfix一条3930-step run及8×54 raw rollout已冻结</td><td>base hash 与旧 load report 的 shared run identity、LIBERO target/fine-tune checkpoint/250 episodes；RoboCasa produced checkpoint、env/scorer/videos、matched repeat与未经确认ownership</td></tr>
+</tbody></table>
+<p>Git author、上游论文/仓库、官方 example、路径或 smoke report 都不自动等于候选人个人贡献；当前所有 ownership ledger 仍需候选人确认。</p>
+<h2 id="5">5. 文件生命周期审计</h2>
+<table><thead><tr><th>目录</th><th>Canonical Markdown</th><th>HTML</th><th>Review JSON</th><th>完整三联件</th></tr></thead><tbody>
+<tr><td><code>knowledge/</code></td><td>98</td><td>98</td><td>98</td><td>98</td></tr>
+<tr><td><code>questions/</code></td><td>104</td><td>104</td><td>104</td><td>104</td></tr>
+<tr><td><code>sources/</code></td><td>141</td><td>141</td><td>141</td><td>141</td></tr>
+<tr><td><code>evidence/</code></td><td>30</td><td>30</td><td>30</td><td>30</td></tr>
+<tr><td><code>practice/</code></td><td>9</td><td>9</td><td>9</td><td>9</td></tr>
+<tr><td>合计</td><td>387</td><td>387</td><td>387</td><td>387</td></tr>
+</tbody></table>
+<p>VOL 02/03/04 的早期 source-plan registry 均已 reconciliation 并生成 HTML/review；当前不存在 registry-only 或缺三联件例外。生命周期闭合只说明 canonical、render 和 review 同步，不代表事实门、local evidence、visual QA 或口述门完成。</p>
+<p>本轮确认 renderer 的 source SHA 按 UTF-8 文本规范化换行计算，不能用原始 CRLF 文件字节 hash 制造“stale SHA”假阳性；历史同步修复包括三份旧式 12 位 review SHA、一份 63 位 review SHA、两处遗留 U+0008、WAM一处U+000C <code>\frac</code>与七个inline MathJax span，以及VOL 01/02重复手写目录。本次340页全量校验继续要求零控制字符、公式delimiter平衡与<code>.formula em=0</code>；修复不改变技术结论、verdict或mastery。</p>
+<h2 id="6-review">6. Review 与训练状态</h2>
+<table><thead><tr><th>状态</th><th>数量</th><th>含义</th></tr></thead><tbody>
+<tr><td><code>WARN</code></td><td>377</td><td>页面可用，但仍有事实、runtime、ownership、visual QA 或口述门未闭合</td></tr>
+<tr><td><code>PASS WITH WARNING</code></td><td>10</td><td>十份独立事实复核切片通过；warning 仍保留</td></tr>
+<tr><td><code>PASS</code></td><td>0</td><td>没有任何 artifact 可被解释为全门完成</td></tr>
+<tr><td><code>unseen</code> 题卡</td><td>280</td><td>候选人尚未提供真实口述回答</td></tr>
+<tr><td><code>weak/pass/strong/stale</code></td><td>0</td><td>没有训练证据，不做推断</td></tr>
+</tbody></table>
+<p>当前环境已可通过 localhost 对代表页面做桌面/窄屏视觉 QA；未逐页打开的 artifact 仍只能主张静态校验，不能用代表抽样冒充全仓逐页视觉验收。</p>
+<h2 id="7">7. 当前优先级与停止条件</h2>
+<p>完成度最高但价值最低的动作是无边界堆页面；当前 VOL 06 的 PER-001..020 source/knowledge/card gate 已冻结，五项目 P0 artifact intake contract 和 ownership confirmation queue 也已建立，UWM base binary 亦已单独冻结，但二十张卡均未口述、五项目 P0 仍未闭合，下一步只做一题真实口述或一份 target P0 bundle，避免把页面覆盖当成掌握或个人安全结果。</p>
+<p>本轮之后只选择一个 bounded next slice：</p>
+<ol><li><strong>推荐：只做一题真实口述或独立 fact review</strong>。PER-001..020 三联件已完成；本轮不修改 mastery、不创建 coaching state，先把页面覆盖与真实训练分开。</li><li>Robot Harness已恢复28/40 primary、闭合6/10 exact support，并证明本地17个同名候选均不能填12个缺口；若远端文件可达，只按12条locator恢复，不用同名候选凑数。</li><li>真实口述仍是独立优先队列；得到候选人回答后，才创建/更新 coaching state。</li><li>OpenPiVLA 的 LIBERO load/connect、ALOHA action-level load/L1、本地文件 manifest 与 LIBERO matched-probe preflight 已由 <a href="openpivla_libero_checkpoint_load_lineage_gate.md">LIBERO Lineage Gate</a>、<a href="openpivla_aloha_action_eval_load_gate.md">ALOHA Action Eval Gate</a>、<a href="openpivla_official_checkpoint_immutable_manifest_gate.md">Official Checkpoint Immutable Manifest Gate</a> 和 <a href="openpivla_libero_matched_failure_probe_readiness_gate.md">Matched Failure Probe Readiness Gate</a> 冻结，并已映射到 <code>PROJ-OPENPIVLA-007</code>；远端 checkpoint/norm-stats 逐文件 SHA、effective argv、raw trace、独立 scorer 与 shared run identity 仍缺，下一步可做远端只读 manifest 或 fresh matched probe。</li><li>UWM <code>libero_90.pt</code> base binary 已由 <a href="uwm_libero90_checkpoint_immutable_manifest_gate.md">本地 Immutable Checkpoint Gate</a> 冻结；这不关闭 target fine-tune binary、normalizer、fresh reload、scorer 或 ownership。</li><li>五项目 P0 intake contract：<a href="../evidence/p0_artifact_intake_contract.md"><code>../evidence/p0_artifact_intake_contract.md</code></a>，用于 checkpoint、protocol、raw output、scorer 与 ownership 的统一收口。</li></ol>
+<p>停止条件：本轮不新增其他知识节点或题卡，不修改任何 mastery，不提交或推送；真实口述、项目证据与 SYS-VLA-004 仍保留为独立队列。</p>
+<h2 id="references">参考入口（References）</h2>
+<ol><li><a href="../../vla_interview_roadmap.md">VLA 总路线图</a></li><li><a href="../README.md">VLA 子仓库 README</a></li><li><a href="../knowledge/00_vla_knowledge_map.md">八卷知识地图</a></li><li><a href="../questions/README.md">全局题库目录</a></li><li><a href="../evidence/evidence_manifest.md">项目 Evidence Manifest</a></li><li><a href="00_github_guidance_and_sources.md">GitHub 骨架与来源入口</a></li><li><a href="vol_06_perception_grounding_navigation_coverage_gap_audit.md">VOL 06 Coverage-Gap Audit</a></li><li><a href="../evidence/projects/robot_harness_common_support_raw_bundle_manifest.md">Robot Harness Common-Support Raw Bundle Manifest</a></li><li><a href="vol_06_per006_image_preprocess_token_camera_contract_source_freeze.md">PER-006 Image Preprocess / Token / Camera Source Freeze</a></li><li><a href="../knowledge/vol_06_per006_image_preprocess_token_camera_contract.md">PER-006 Image Preprocess / Token / Camera Knowledge</a></li><li><a href="../questions/vol_06_per006.md">PER-006 Atomic Card</a></li><li><a href="vol_06_per007_open_vocabulary_grounding_pipeline_source_freeze.md">PER-007 Open-vocabulary Grounding Pipeline Source Freeze</a></li><li><a href="../knowledge/vol_06_per007_open_vocabulary_grounding_pipeline.md">PER-007 Open-vocabulary Grounding Pipeline Knowledge</a></li><li><a href="vol_04_sim2real_independent_fact_review.md">VOL 04 Audit D Sim2Real Independent Fact Review</a></li><li><a href="../questions/vol_06_per007.md">PER-007 Open-vocabulary Grounding Atomic Card</a></li><li><a href="vol_06_per008_representation_choice_source_freeze.md">PER-008 Representation Choice Source Freeze</a></li><li><a href="../knowledge/vol_06_per008_representation_choice.md">PER-008 Representation Choice Knowledge</a></li><li><a href="../questions/vol_06_per008.md">PER-008 Representation Choice Atomic Card</a></li><li><a href="vol_06_per009_grounding_matching_negative_loss_source_freeze.md">PER-009 Grounding Matching / Negative / Loss Source Freeze</a></li><li><a href="../knowledge/vol_06_per009_grounding_matching_negative_loss.md">PER-009 Grounding Matching / Negative / Loss Knowledge</a></li><li><a href="../questions/vol_06_per009.md">PER-009 Grounding Matching / Negative / Loss Atomic Card</a></li><li><a href="vol_06_per010_grounding_metric_parser_protocol_source_freeze.md">PER-010 Grounding Metric / Parser / Protocol Source Freeze</a></li><li><a href="../knowledge/vol_06_per010_grounding_metric_parser_protocol.md">PER-010 Grounding Metric / Parser / Protocol Knowledge</a></li><li><a href="../questions/vol_06_per010.md">PER-010 Grounding Metric / Parser / Protocol Atomic Card</a></li><li><a href="vol_06_per016_localization_odometry_slam_map_frame_drift_source_freeze.md">PER-016 Localization / Odometry / SLAM / Map-frame / Drift Source Freeze</a></li><li><a href="../knowledge/vol_06_per016_localization_odometry_slam_map_frame_drift.md">PER-016 Localization / Odometry / SLAM / Map-frame / Drift Knowledge</a></li><li><a href="../questions/vol_06_per016.md">PER-016 Localization / Odometry / SLAM / Map-frame / Drift Atomic Card</a></li><li><a href="vol_06_per017_belief_memory_frontier_active_exploration_source_freeze.md">PER-017 Belief / Memory / Frontier / Active Exploration Source Freeze</a></li><li><a href="../knowledge/vol_06_per017_belief_memory_frontier_active_exploration.md">PER-017 Belief / Memory / Frontier / Active Exploration Knowledge</a></li><li><a href="../questions/vol_06_per017.md">PER-017 Belief / Memory / Frontier / Active Exploration Atomic Card</a></li><li><a href="vol_06_per018_navigation_bc_dagger_rl_exposure_bias_source_freeze.md">PER-018 Navigation BC / DAgger / RL / Exposure Bias Source Freeze</a></li><li><a href="vol_04_cosmos_policy_wam_independent_fact_review.md">VOL 04 Audit C Cosmos Policy / WAM Independent Fact Review</a></li><li><a href="../evidence/projects/robot_harness_10suite_aggregate_bundle_gate.md">Robot Harness Five/Eight-Model Ten-Suite Aggregate Bundle Gate</a></li><li><a href="vol_08_coding_system_design_coverage_gap_audit.md">VOL 08 Coding / System Design Coverage-Gap Audit</a></li><li><a href="vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.md">SYS-VLA-002 Policy Serving / Real-time Control Loop Source Freeze</a></li></ol>
+</article></body></html>

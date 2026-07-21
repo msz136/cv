@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-013 Source Freeze：Latent Overshooting 与 Multi-step Consistency</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm013_latent_overshooting_multistep_consistency_source_freeze.md">
+<meta name="aris:source-sha256" content="9f2d68af1cec4c012f60f2c4e1e288e67b07953d9177c6c3171b0bf0d304a4e7">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>9f2d68af1cec4c012f60f2c4e1e288e67b07953d9177c6c3171b0bf0d304a4e7</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm013_latent_overshooting_multistep_consistency_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 冻结结论</a></li><li><a href="#2">2. 一手来源与冻结快照</a></li><li><a href="#3">3. 与相邻节点的边界</a></li><li><a href="#4-kl">4. 标准一步 KL 的限制</a></li><li><a href="#5">5. 有限容量为什么使一步与多步最优不同</a></li><li><a href="#6-d-step-prior">6. d-step prior</a></li><li><a href="#7-latent-overshooting-estimator">7. Latent overshooting 的简化 estimator</a></li><li><a href="#8-target-posterior">8. 为什么 target 用未来 posterior</a></li><li><a href="#9-d-1-stop-posterior-gradient">9. 为什么 d&gt;1 通常 stop posterior gradient</a></li><li><a href="#10-observation-overshooting-latent-overshooting">10. Observation overshooting 与 latent overshooting</a></li><li><a href="#11-planet-official-code-rollout-contract">11. PlaNet official code 的 rollout contract</a></li><li><a href="#12-official-objective-mapping">12. Official objective mapping</a></li><li><a href="#13-planet-overshooting">13. “PlaNet 默认使用 overshooting”是错误说法</a></li><li><a href="#14-dreamerv3">14. 与 DreamerV3 的实现边界</a></li><li><a href="#15-posterior-target">15. 偏差一：posterior target 不等于真值</a></li><li><a href="#16">16. 偏差二：受限分布与多模态未来</a></li><li><a href="#17-consistency-representation-collapse">17. 偏差三：过强 consistency 与 representation collapse</a></li><li><a href="#18-distance-weighting-denominator">18. 偏差四：distance weighting 与 denominator</a></li><li><a href="#19">19. 偏差五：计算和优化预算</a></li><li><a href="#20-action-reset-episode">20. 偏差六：action、reset 与跨 episode 泄漏</a></li><li><a href="#21-multi-step-consistency">21. 泛称 multi-step consistency 的边界</a></li><li><a href="#22">22. 最小可审计伪代码</a></li><li><a href="#23-matched-ablation">23. Matched ablation</a></li><li><a href="#24-failure-first">24. Failure-first 诊断</a></li><li><a href="#25">25. 项目真实性边界</a></li><li><a href="#26-claim-ledger">26. Claim ledger</a></li><li><a href="#27">27. 仍待独立复核与补证据</a></li><li><a href="#28">28. 参考来源</a></li><li><a href="#29">29. 下一节点</a></li></ol></nav>
+<h1>VOL 04 WM-013 Source Freeze：Latent Overshooting 与 Multi-step Consistency</h1>
+<div class="meta">冻结日期：2026-07-18 状态：source_frozen / VLA-WM-013 / knowledge_synced / card_synced / WARN 覆盖题目：VLA-WM-013 本轮边界：只冻结 PlaNet latent overshooting 的问题定义、multi-step variational objective、posterior-target/prior-rollout 实现、distance/weight/mask/gradient 合同与潜在偏差；不把 PlaNet overshooting 写成 DreamerV3 frozen repo 机制，不把泛称 multi-step consistency 等同 PlaNet exact objective，也不把公开机制写成本地 WAM/UWM 结果。</div>
+<h2 id="1">1. 冻结结论</h2>
+<ol><li>标准 sequential ELBO 的 transition KL 主要在 posterior state 附近训练一步 prior；梯度不必穿过连续多次 transition，因此有限容量模型的一步最优不一定是多步最优。</li><li>latent overshooting 从较早的 posterior state 出发，关闭中间 observation，沿真实 action sequence 滚动 \(d\) 步 prior，再用未来 posterior 作为 latent target，从而直接训练不同距离的 open-loop consistency。</li><li>它不同于 observation overshooting：后者对每个 multi-step prediction 解码 observation/reconstruction，图像域成本高；latent overshooting 只计算 latent divergence。</li><li>PlaNet 论文把它作为 generalized variational objective，但同时明确最终 RSSM agent 并不需要该项；官方 frozen repo 默认 <code>overshooting_scale=0.0</code>、<code>overshooting_distance=0</code>。</li><li>更强 multi-step consistency 不自动更好：错误 posterior、future leakage、action/reset错位、受限分布、过强 regularization、距离权重/denominator 与额外计算都可能制造偏差。</li><li>latent KL 改善不能替代 action intervention、reward/termination horizon curve、planning/closed-loop success 与项目 evidence。</li></ol>
+<h2 id="2">2. 一手来源与冻结快照</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>冻结版本与响应 SHA-256</th><th>本节点支持</th><th>不能外推</th></tr></thead><tbody>
+<tr><td>S1</td><td>Hafner et al., <em>Learning Latent Dynamics for Planning from Pixels</em>（PlaNet）</td><td>arXiv <code>1811.04551</code>；ar5iv response <code>6a9bed11e5963626016235227ab85594ae5d42773e675860788c51a071929a97</code></td><td>standard bound 的一步限制、observation/latent overshooting、Eq. 7、\(1\le d\le D\)、posterior stop-gradient、final-agent caveat</td><td>DreamerV3 exact implementation、本地 VLA uplift</td></tr>
+<tr><td>S2</td><td><code>google-research/planet</code> official project code</td><td>commit <code>c04226b6db136f5269625378cd6a0aa875a92842</code>；README <code>61d0d9215eae2cc8ee4d035913f745fa426db3a6342c5008ee5bae158aa3bd48</code>；Apache-2.0 LICENSE <code>cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30</code></td><td>README 将 repo 标为 PlaNet open-source implementation；paper experiment默认入口</td><td>当前依赖可运行、论文所有 checkpoint/result 已复现</td></tr>
+<tr><td>S3</td><td>PlaNet overshooting implementation</td><td><code>planet/tools/overshooting.py</code> <code>c87beb84bc4304a26af833f4e39b692c1b37e632bce63f1ec6405dfa2a5b1358</code>；<code>training/utility.py</code> <code>885d3d29ccc3b15cc71a7a32da5ff952313b37d76e6804cd96e7bc969f467f15</code>；<code>test_overshooting.py</code> <code>6f524056e087c80c398b26408a092bf0e701d12d1e1fe3953804e6cede6e4d11</code></td><td>posterior starts、shifted actions、use_obs=false、padding mask、optional stop-gradient、divergence/free-nats/reduction</td><td>默认已启用或个人项目使用</td></tr>
+<tr><td>S4</td><td>PlaNet config/model</td><td><code>configs.py</code> <code>a98af57c64c9f6f1d8d3b3a29caec922938e6daf552cbf944f6007465e985807</code>；<code>models/rssm.py</code> <code>7462f36a40a504ec912435bd6c5a78fd6878308826888341a20c602291b12712</code></td><td>default overshooting scale/distance=0、stop posterior grad=true、free_nats=3、state divergence</td><td>所有实验变体或 Dreamer defaults</td></tr>
+<tr><td>S5</td><td><a href="vol_04_world_model_foundations_claim_to_code.html">Source Audit A</a> 与 <a href="vol_04_world_model_foundations_independent_fact_review.html">独立事实复核</a></td><td>canonical SHA <code>bb48af7605688132ddd589109c8417dd0ebfe65f504a98cf5ab660f01e34ba7b</code> / <code>da16c172179cae926d329259e76955a55555fe53a15233f265d1f74a3d421ae4</code></td><td>WM-013 可逐节点生成；PlaNet→DreamerV3 强归因被禁止</td><td>local overshooting run</td></tr>
+<tr><td>S6</td><td><a href="vol_04_wm012_rssm_dreamer_posterior_prior_kl_imagination_source_freeze.html">WM-012 RSSM/Dreamer</a>、<a href="vol_04_wm018_prediction_horizon_source_freeze.html">WM-018 Horizon</a>、<a href="vol_04_wm020_failure_diagnostics_source_freeze.html">WM-020 Diagnostics</a></td><td>canonical SHA <code>c5f8a2dd056736a8b7338cd76116631a8bf42a3d10c05e86d6bb4cfbf64ae6e0</code> / <code>6927970508d01f328aef6ca629a72589d986a48b9ac811eb8eb6327907b00254</code> / <code>4053bb051296bcc785a3e1b7f7ddf0a0c75339dcb4f8c84aed755b49888c06dd</code></td><td>posterior/prior、horizon 与 failure-probe 去重边界</td><td>本节点完成项目实验</td></tr>
+<tr><td>S7</td><td><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a>、<a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO</a> inventories</td><td>canonical SHA <code>078c86b1484fe38fdd136428123c9529c6b750dfea5e031ec506cf617517772d</code> / <code>728b8326dc345072886d0909fe2b8d81dfde3993771e7febed446d471bd3674d</code></td><td>项目 architecture/protocol 与缺失 artifact</td><td>local latent-overshooting/multi-step-consistency causal result</td></tr>
+</tbody></table>
+<h2 id="3">3. 与相邻节点的边界</h2>
+<table><thead><tr><th>节点</th><th>已回答</th><th>WM-013 只补什么</th></tr></thead><tbody>
+<tr><td>WM-005/006</td><td>one-step、teacher-forcing、open-loop gap</td><td>为什么 objective 的梯度距离也重要</td></tr>
+<tr><td>WM-012</td><td>RSSM posterior/prior、KL balancing、prior-only imagination</td><td>从多个 posterior start 直接监督多步 prior</td></tr>
+<tr><td>WM-018</td><td>horizon 长短的控制/训练取舍</td><td>multi-step loss 的 distance/weight/mask 实现</td></tr>
+<tr><td>WM-020</td><td>collapse/leakage/action ignoring 诊断</td><td>overshooting 特有的 target、梯度与偏差</td></tr>
+</tbody></table>
+<h2 id="4-kl">4. 标准一步 KL 的限制</h2>
+<p>令当前 posterior 为 \(q_\phi(s_t\mid o_{\le t},a_{&lt;t})\)，一步 prior 为 \(p_\theta(s_{t+1}\mid s_t,a_t)\)。标准项：</p>
+<div class="formula">\[
+\mathcal L_{1}
+=\sum_t D_{\mathrm{KL}}\!\left[
+q_\phi(s_{t+1}\mid o_{\le t+1},a_{\le t})
+\,\|\,
+p_\theta(s_{t+1}\mid s_t,a_t)
+\right].
+\]</div>
+<p>变量解释：\(s_t\) 通常来自 observation-informed posterior；transition 只被直接要求预测下一步。直觉是老师每步纠正后考一步，未必能学会连续闭卷滚动。实现映射：一步 KL 好仍需 prior-only horizon curve；不能从单步 scalar 推出 \(H\)-step planning 可用。</p>
+<h2 id="5">5. 有限容量为什么使一步与多步最优不同</h2>
+<p>若模型能完美拟合真实 transition，一步正确会推出多步正确。但实际 latent dimension、distribution family、网络容量、优化和数据有限；一步 loss 可能偏好局部平均或 posterior shortcut，而 planning 需要 reward-relevant long-horizon consequence。[S1]</p>
+<p>这不是说 multi-step loss 能消除 compounding error，而是把训练权重从“只在一步邻域正确”重新分配到“多个 rollout distance 也尽量一致”。</p>
+<h2 id="6-d-step-prior">6. d-step prior</h2>
+<p>从 time \(t-d\) 的 posterior state 出发，沿动作序列递推：</p>
+<div class="formula">\[
+\hat s_{t-d\mid t-d}\sim q_\phi(s_{t-d}\mid o_{\le t-d},a_{&lt;t-d}),
+\]</div>
+<div class="formula">\[
+\hat s_{j+1\mid t-d}\sim
+p_\theta(s_{j+1}\mid \hat s_{j\mid t-d},a_j),
+\quad j=t-d,\ldots,t-1.
+\]</div>
+<p>变量解释：\(\hat s_{t\mid t-d}\) 是只看见 observation 到 \(t-d\) 的 \(d\)-step prediction。直觉是把中间 observation 拿走，模拟真实 open-loop consequence。实现映射：每个 start、action slice、distance 与 random sample/seed 必须可追溯。</p>
+<h2 id="7-latent-overshooting-estimator">7. Latent overshooting 的简化 estimator</h2>
+<div class="formula">\[
+\mathcal L_{\mathrm{OS}}
+=\frac{1}{Z}
+\sum_{t}\sum_{d=1}^{D}
+m_{t,d}\,\beta_d\,
+D_{\mathrm{KL}}\!\left[
+\operatorname{sg}\!\left(q_\phi(s_t\mid o_{\le t},a_{&lt;t})\right)
+\,\|\,
+p_\theta^{(d)}(s_t\mid s_{t-d},a_{t-d:t-1})
+\right],
+\]</div>
+<div class="formula">\[
+Z=\sum_{t,d}m_{t,d}.
+\]</div>
+<p>变量解释：\(D\) 是最大 overshooting distance，\(\beta_d\) 是距离权重，\(m_{t,d}\) 过滤 padding/episode boundary，\(p^{(d)}\) 表示多次 transition 后的分布。直觉是未来 posterior 当教师，训练较早 start 的 open-loop prior。实现映射：这是 PlaNet Eq. 7/代码的审计化简写；正式下界还对中间 stochastic states 取期望，不能把单样本 KL 说成完整解析式。[S1][S3]</p>
+<h2 id="8-target-posterior">8. 为什么 target 用未来 posterior</h2>
+<p>未来 posterior 能读取 \(o_t\)，通常比 \(d\)-step prior 更 informed，因此可作为 latent target；但它是 learned target，不是真实 state。若 encoder 有 future leakage、背景 shortcut、错误 contact representation 或 task-irrelevant detail，overshooting 会更努力拟合这些错误。</p>
+<p>高分回答必须说“对齐未来 posterior”，不能说“对齐 ground-truth latent state”。</p>
+<h2 id="9-d-1-stop-posterior-gradient">9. 为什么 d&gt;1 通常 stop posterior gradient</h2>
+<p>PlaNet 论文说明实践中对 \(d&gt;1\) 的 posterior target stop-gradient，使 multi-step prediction 追 informed posterior，而不是让 posterior 被较差的 long-horizon prior 拉走。[S1]</p>
+<p>若允许双向梯度，loss 可通过“移动 target”降低，representation 可能变得容易预测但丢信息。若永远 stop target，又会把 posterior 错误固定为教师。因此需要与 prediction heads、entropy/usage 和 downstream probe 联合观察。</p>
+<h2 id="10-observation-overshooting-latent-overshooting">10. Observation overshooting 与 latent overshooting</h2>
+<table><thead><tr><th>类型</th><th>多步预测后监督</th><th>优点</th><th>代价/风险</th></tr></thead><tbody>
+<tr><td>observation overshooting</td><td>解码每个 \(d\)-step state，计算 observation likelihood</td><td>target 直观，可看预测</td><td>image decoder/likelihood 成本高，像素主导</td></tr>
+<tr><td>latent overshooting</td><td>对齐 \(d\)-step prior 与 future posterior</td><td>快、无需生成额外图像</td><td>target 是 learned latent，语义/尺度依赖 encoder</td></tr>
+</tbody></table>
+<p>二者都不能自动证明 action consequence 正确；latent loss 甚至可能改善而 pixel/reward/contact 越差。</p>
+<h2 id="11-planet-official-code-rollout-contract">11. PlaNet official code 的 rollout contract</h2>
+<p>S3 <code>overshooting.py</code>：</p>
+<ol><li>先 closed-loop unroll 得每个 time 的 posterior；</li><li>将每个 posterior time 组织成 open-loop start；</li><li>action 使用“leading to current time step”的 previous-action 对齐，例如 observation <code>[A B C]</code> 对应 action <code>[0 A B]</code>；</li><li><code>use_obs=false</code>、observation embedding置零，禁止中间 observation；</li><li>从每个 start 并行 rollout <code>amount</code> 个 distance；</li><li>shift/merge/restore batch-time，并返回 prior/posterior/target/mask。</li></ol>
+<p>这个实现直接暴露三个高危点：previous-action off-by-one、padding/episode boundary、distance 维度的 reshape/reduction。</p>
+<h2 id="12-official-objective-mapping">12. Official objective mapping</h2>
+<p>S3 <code>training/utility.py</code> 的 overshooting branch：</p>
+<ul><li>调 <code>tools.overshooting(..., overshooting_distance, posterior)</code>；</li><li>截取 <code>[:, :, 1:-1]</code>；</li><li>若 <code>os_stop_posterior_grad</code>，对 posterior stop-gradient；</li><li>计算 <code>divergence_from_states(posteriors, priors)</code>；</li><li>free nats 为 <code>max(0, KL-free_nats)</code>；</li><li>最后 reduce mean，再由 <code>loss_scales</code> 加权。</li></ul>
+<p>这里 PlaNet 的 free-nats 写法与 DreamerV3 <code>max(KL, threshold)</code> 相差常数但梯度阈值类似；不能把日志 scalar 直接跨 repo 比较。</p>
+<h2 id="13-planet-overshooting">13. “PlaNet 默认使用 overshooting”是错误说法</h2>
+<p>S1 明确写：若干 dynamics model 受益，但最终使用 RSSM 的 agent 不需要 latent overshooting；appendix 又说明 previous version 使用过，后来发现不必要。[S1]</p>
+<p>S2 README 说 paper PlaNet experiment 不加额外 params；S4 默认：</p>
+<pre><code class="language-text">overshooting_scale = 0.0
+overshooting_distance = 0
+os_stop_posterior_grad = True</code></pre>
+<p>因此安全说法是“PlaNet 论文提出并评估 latent overshooting，official repo保留可选实现，final/default RSSM path未启用”，不是“PlaNet成功依赖overshooting”。</p>
+<h2 id="14-dreamerv3">14. 与 DreamerV3 的实现边界</h2>
+<p>当前 frozen DreamerV3 reimplementation 证据只有 one-step <code>dyn/rep</code> KL、free nats 与 imagination；未见 PlaNet式从每个 posterior start 对多 distance prior施加 overshooting loss。Source Audit A 独立复核已把“PlaNet overshooting → DreamerV3 implementation”列为 <code>BLOCKED FOR STRONG CLAIM</code>。[S5]</p>
+<p>不能因为两者都用 RSSM、prior/posterior 或 multi-step imagination，就说 DreamerV3 训练采用 latent overshooting。</p>
+<h2 id="15-posterior-target">15. 偏差一：posterior target 不等于真值</h2>
+<p>overshooting 让 multi-step prior 更接近 future posterior。如果 posterior 使用背景、相机、future leakage 或 reward shortcut，对齐更紧会放大 shortcut，而不是纠正物理 dynamics。</p>
+<p>最小检查：latent intervention、decoder/reward/contact probe、camera/background counterfactual、causal encoder test 与 future-frame removal。</p>
+<h2 id="16">16. 偏差二：受限分布与多模态未来</h2>
+<p>当真实未来多模态、但 prior/posterior family 受限时，多距离 KL 可能：</p>
+<ul><li>使 prior 过宽以覆盖互相冲突的 posterior；</li><li>使 representation 丢弃难预测但任务重要的细节；</li><li>在不同随机 sample/path 上给不稳定梯度；</li><li>改善平均 latent KL，却恶化 rare contact mode。</li></ul>
+<p>必须报告 calibration、entropy/mode coverage 与分 failure family 指标，不能只报 aggregate KL。</p>
+<h2 id="17-consistency-representation-collapse">17. 偏差三：过强 consistency 与 representation collapse</h2>
+<p>大 \(D\)、大 \(\beta_d\) 或多距离重复计数会让“可预测”压过“信息充分”。症状是 overshooting loss下降、posterior/prior更接近，但 observation/reward/contact/action probe 变差，latent entropy/usage降低。</p>
+<p>这与 WM-012 的 KL balancing 相连：multi-step prior 学习和 posterior regularization 的 gradient recipient、scale 与 free-nats 必须分别记录。</p>
+<h2 id="18-distance-weighting-denominator">18. 偏差四：distance weighting 与 denominator</h2>
+<p>长距离在 episode 尾部可用样本更少。若直接对所有 valid element mean：</p>
+<ul><li>短 distance 可能因条目更多而主导；</li><li>或每 distance 等权后长 distance 的高方差被放大；</li><li>variable-length episode/task 会改变 effective \(\beta_d\)；</li><li>padding mask 错误会让零状态成为 target。</li></ul>
+<p>日志至少包含 per-distance numerator、valid count、mean、scale、gradient norm 与 task/episode分层。</p>
+<h2 id="19">19. 偏差五：计算和优化预算</h2>
+<p>从每个 time start 展开最多 \(D\) 步，朴素计算/内存近似随 \(T\times D\) 增长；实现可并行化，但仍增加 state rollout、KL 与 activation。若 matched arm 固定 wall-clock而不是 optimizer steps/tokens，overshooting arm可能看到更少数据；反之固定 steps又使用更多算力。</p>
+<p>报告 wall-clock、samples/tokens、optimizer steps、peak memory 与 throughput，才能区分 objective effect 和 compute effect。</p>
+<h2 id="20-action-reset-episode">20. 偏差六：action、reset 与跨 episode 泄漏</h2>
+<p>multi-step loss会把一个 off-by-one 重复传播 \(d\) 次。必须验证：</p>
+<ul><li>observation \(o_t\) 对应 previous action \(a_{t-1}\)；</li><li>start 不在 padding/terminal 后；</li><li>rollout 不跨 true terminal/reset；</li><li>timeout/continuation 的语义与 mask 一致；</li><li>heterogeneous task/action normalizer 没有跨 route 混用。</li></ul>
+<h2 id="21-multi-step-consistency">21. 泛称 multi-step consistency 的边界</h2>
+<p>“multi-step consistency”可能指：</p>
+<ul><li>PlaNet latent overshooting 的 distribution KL；</li><li>\(k\)-step latent regression/cosine loss；</li><li>multi-step reward/observation likelihood；</li><li>cycle consistency 或 teacher-student target；</li><li>rollout distillation。</li></ul>
+<p>它们的 target、divergence direction、stop-gradient、stochastic expectation、mask 和 evidence不同。面试中先报 exact prediction/target/gradient，不能用一个术语代替实现。</p>
+<h2 id="22">22. 最小可审计伪代码</h2>
+<pre><code class="language-python">def latent_overshooting(sequence, model, max_distance, beta):
+    # 1. Filter the real sequence once; these learned posteriors are targets/starts.
+    posterior = model.observe(sequence.obs, sequence.previous_action,
+                              sequence.is_first)
+
+    losses, counts = [], []
+    for distance in range(1, max_distance + 1):
+        # 2. Start earlier and roll only the prior along aligned recorded actions.
+        prior_d = model.roll_prior(
+            posterior.start(distance),
+            sequence.action_slice(distance),
+            use_observation=False)
+
+        # 3. Never cross padding/reset/terminal; stop target gradients for d &gt; 1.
+        target = stop_gradient(posterior.target(distance))
+        mask = sequence.valid_pair_mask(distance, stop_at_terminal=True)
+        losses.append(beta[distance] * masked_kl(target, prior_d, mask))
+        counts.append(mask.sum())
+
+    # 4. Return per-distance traces; one reduced scalar hides effective weighting.
+    return reduce_with_declared_denominator(losses, counts), audit(losses, counts)</code></pre>
+<p>这是 S1–S7 的审计骨架；PlaNet code还对 stochastic intermediate state取样/期望并有具体 reshape/crop/free-nats语义。</p>
+<h2 id="23-matched-ablation">23. Matched ablation</h2>
+<p>固定 data/split、architecture/capacity、optimizer、steps/tokens、seed、one-step objective、action/reset contract 与 eval：</p>
+<table><thead><tr><th>arm</th><th>目的</th></tr></thead><tbody>
+<tr><td>one-step only</td><td>基准 sequential ELBO</td></tr>
+<tr><td>+OS D=3/5/10</td><td>distance sensitivity</td></tr>
+<tr><td>β distance decay/equal</td><td>effective weighting</td></tr>
+<tr><td>stop-target on/off diagnostic</td><td>target movement风险</td></tr>
+<tr><td>observation overshooting</td><td>latent vs decoded multi-step supervision</td></tr>
+<tr><td>multi-step reward</td><td>task signal而非纯latent consistency</td></tr>
+<tr><td>shuffled/zero action</td><td>action dependence反例</td></tr>
+<tr><td>capacity-matched wider model</td><td>objective收益 vs capacity</td></tr>
+</tbody></table>
+<p>同时报告 per-distance raw/clipped KL、entropy/usage、one-step与open-loop state/reward/continue error、action sensitivity、planning/closed-loop success、compute 与 seed CI。</p>
+<h2 id="24-failure-first">24. Failure-first 诊断</h2>
+<table><thead><tr><th>症状</th><th>首查</th></tr></thead><tbody>
+<tr><td>OS loss降、open-loop不变</td><td>target/metric尺度、short-distance主导、posterior shortcut</td></tr>
+<tr><td>latent KL好、reward/contact差</td><td>task信息被压掉、restricted family、head mismatch</td></tr>
+<tr><td>long distance震荡</td><td>sample variance、gradient horizon、D/β过大、action/reset错位</td></tr>
+<tr><td>d越大valid count骤减</td><td>episode长度、terminal/padding mask、denominator</td></tr>
+<tr><td>posterior也一起退化</td><td>stop-gradient配置、effective scale、free-nats</td></tr>
+<tr><td>action swap结果相同</td><td>action未进入transition、数据action覆盖、shortcut</td></tr>
+<tr><td>train更慢但score不变</td><td>compute/data exposure未matched</td></tr>
+<tr><td>closed-loop差</td><td>转WM-018/020/021检查horizon、model bias、controller/value</td></tr>
+</tbody></table>
+<h2 id="25">25. 项目真实性边界</h2>
+<p>WAM/Cosmos 与 UWM 当前都是 diffusion-based action/future/video contracts，不是 PlaNet latent overshooting implementation。项目材料没有 per-distance latent KL、overshooting config、posterior/prior trace、D/β sweep 或 matched closed-loop result。</p>
+<p>安全口径：</p>
+<div class="meta">我能解释 latent overshooting 如何从每个 posterior start 做 prior-only多步对齐，也会先核对PlaNet final/default并未启用；当前WAM/UWM不是该实现，我只会把它作为可选诊断/消融设计，不声称项目使用或受益。</div>
+<h2 id="26-claim-ledger">26. Claim ledger</h2>
+<table><thead><tr><th>Claim</th><th>来源</th><th>等级</th><th>状态</th></tr></thead><tbody>
+<tr><td>标准 objective 只直接训练一步 stochastic transition</td><td>S1</td><td>primary</td><td>checked</td></tr>
+<tr><td>latent overshooting 对齐多距离 prior 与未来 posterior</td><td>S1/S3</td><td>primary + official code</td><td>checked</td></tr>
+<tr><td>d&gt;1 实践中 stop posterior gradient</td><td>S1/S3/S4</td><td>primary + config</td><td>checked</td></tr>
+<tr><td>official default PlaNet RSSM未启用overshooting</td><td>S1/S2/S4</td><td>paper + official code</td><td>checked</td></tr>
+<tr><td>DreamerV3 frozen repo使用PlaNet overshooting</td><td>S5/S6</td><td>missing / blocked strong claim</td><td>rejected</td></tr>
+<tr><td>WAM/UWM使用或受益于latent overshooting</td><td>S7</td><td>missing local evidence</td><td>rejected</td></tr>
+</tbody></table>
+<h2 id="27">27. 仍待独立复核与补证据</h2>
+<ol><li>primary/official-code事实已复核，本节点独立事实复核仍标 <code>PENDING</code>。</li><li>需要 local per-distance target/prior/mask trace、raw/clipped KL、valid counts、gradient和compute账本。</li><li>需要 D/β/stop-gradient/observation-vs-latent matched arms与多seed结果。</li><li>需要 action intervention、reward/contact/continue horizon curve和same-protocol closed-loop验证。</li><li>浏览器 <code>file://</code> visual QA受策略阻断，只能做renderer/static/link validation。</li><li>没有真实口述，不创建 <code>coaching_state.md</code>，题卡保持 <code>unseen</code>。</li></ol>
+<h2 id="28">28. 参考来源</h2>
+<ol><li>Hafner et al., <a href="https://arxiv.org/abs/1811.04551"><em>Learning Latent Dynamics for Planning from Pixels</em></a>, ICML 2019。</li><li><code>google-research/planet@c04226b6db136f5269625378cd6a0aa875a92842</code>: <a href="https://github.com/google-research/planet/blob/c04226b6db136f5269625378cd6a0aa875a92842/README.md">README</a>, <a href="https://github.com/google-research/planet/blob/c04226b6db136f5269625378cd6a0aa875a92842/planet/tools/overshooting.py"><code>overshooting.py</code></a>, <a href="https://github.com/google-research/planet/blob/c04226b6db136f5269625378cd6a0aa875a92842/planet/training/utility.py"><code>utility.py</code></a>, <a href="https://github.com/google-research/planet/blob/c04226b6db136f5269625378cd6a0aa875a92842/planet/scripts/configs.py"><code>configs.py</code></a>, Apache-2.0。</li><li><a href="vol_04_world_model_foundations_claim_to_code.html">VOL 04 Source Audit A</a> 与 <a href="vol_04_world_model_foundations_independent_fact_review.html">独立事实复核</a>。</li><li><a href="vol_04_wm012_rssm_dreamer_posterior_prior_kl_imagination_source_freeze.html">WM-012 RSSM/Dreamer</a>、<a href="vol_04_wm018_prediction_horizon_source_freeze.html">WM-018 Prediction Horizon</a>、<a href="vol_04_wm020_failure_diagnostics_source_freeze.html">WM-020 Failure Diagnostics</a>。</li><li><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a> 与 <a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO</a> evidence inventories。</li></ol>
+<h2 id="29">29. 下一节点</h2>
+<p>完成本节点后，VOL 04 进入 43/44；下一 bounded slice 只做 <code>VLA-WM-014</code>（action-conditioned prediction 怎样区分相关性预测与可干预 dynamics）。</p>
+</article></body></html>

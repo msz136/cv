@@ -1,0 +1,42 @@
+{
+  "artifact": "sources/vol_04_cosmos_policy_1epoch_evidence_freeze.md",
+  "html": "sources/vol_04_cosmos_policy_1epoch_evidence_freeze.html",
+  "review_date": "2026-07-21",
+  "status": "local_evidence_freeze / 1epoch_gate_not_closed",
+  "verdict": "WARN",
+  "source_sha256": "7C9C4EA2B317A00DF72B1CB29457B1ACD112066C01AA25BC6E750F8D0DE91AA6",
+  "evidence_cutoff": "2026-07-21",
+  "scope": {
+    "run_contracts_checked": 3,
+    "dataset_runtime_summary_checked": true,
+    "base_load_summary_checked": true,
+    "save2k_terminal_step": 1903,
+    "nocycle_save_failure_step": 1500,
+    "complete_epoch_steps": 9907,
+    "complete_epoch_checkpoint_verified": false,
+    "new_eval_denominator": null,
+    "new_rollout_bundle": false,
+    "mastery_changes": 0
+  },
+  "checks": {
+    "bounded_slice": "PASS (one evidence-freeze triplet plus no question-card, mastery, coaching-state or ownership changes)",
+    "run_contract": "PASS (Predict2/T5/RoboCasa contract, batch, DDP, optimizer, p_world_model, conditional frames and 9907-step gate copied from local JSON)",
+    "dataset_identity": "PASS WITH WARNING (runtime counts are local-direct; dataset revision and license manifest remain pending)",
+    "base_load": "PASS WITH WARNING (715 keys, zero missing/unexpected; weight binary remains remote-referenced)",
+    "save2k_run": "PASS WITH WARNING (step-1900 metric and step-1903 SIGKILL/EXIT=247 verified; cgroup OOM diagnosis recorded; no usable checkpoint)",
+    "nocycle_run": "PASS WITH WARNING (5-step smoke EXIT=0; formal run reaches step 1500 then fails in DeepSpeed state_dict signature; checkpoint directory is unusable)",
+    "metric_boundary": "PASS (intermediate loss, teacher-forced diagnostics, official baseline and prior ablations are explicitly separated)",
+    "checkpoint_identity": "WARN (no binary hash, load-back test or immutable manifest)",
+    "eval_boundary": "PASS (no new 1epoch eval denominator or rollout result claimed)",
+    "html_static_validation": "PASS (ARIS academic v1, one H1, heading hierarchy, MathJax configuration, responsive 900px rule and internal overflow rules present)",
+    "browser_visual_check": "PENDING (static checks only in this iteration)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Fix and smoke-test DiffusionModel.state_dict compatibility with DeepSpeed checkpoint save/load.",
+    "Rerun max_steps=9907 and hash every saved checkpoint plus processor/normalizer/config.",
+    "Freeze dataset revision, seed, denoising steps, horizon, success predicate and raw episode manifest before evaluation.",
+    "Confirm candidate ownership and operator/reviewer roles before promoting WAM claims."
+  ],
+  "next": "Audit UWM/LIBERO finetune/eval and RoboCasa transfer evidence as the next bounded slice; keep all cards unseen."
+}

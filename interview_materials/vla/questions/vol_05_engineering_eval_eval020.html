@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：EVAL-020 原子题卡</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\vol_05_engineering_eval_eval020.md">
+<meta name="aris:source-sha256" content="2ea4c0ec3dda25a536b8e347271005e17e81bfe55dbe9f8a143e5222050641b2">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>2ea4c0ec3dda25a536b8e347271005e17e81bfe55dbe9f8a143e5222050641b2</code>；生成自：<code>interview_materials\vla\questions\vol_05_engineering_eval_eval020.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#incident-timeline-root-cause-bug-fix-verification">Incident Timeline、Root Cause 与 Bug-fix Verification</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：EVAL-020 原子题卡</h1>
+<div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-19 覆盖范围：<code>VLA-EVAL-020</code> 难度：L2 1题 优先级：P1 1题 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_05_engineering_eval_eval020_incident_timeline_root_cause_bugfix_verification.html">EVAL-020 Incident Timeline / Root Cause / Bug-fix Verification</a>；来源边界见<a href="../sources/vol_05_eval020_incident_timeline_root_cause_bugfix_verification_source_freeze.html">Source Freeze</a>。本题不把时间先后、rollback、first bad commit或单次rerun升级为confirmed root cause。</div>
+<h2 id="incident-timeline-root-cause-bug-fix-verification">Incident Timeline、Root Cause 与 Bug-fix Verification</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P1</span> <b>VLA-EVAL-020</b> · VLA事故怎样定位root cause并证明bug fix有效？</summary>
+<p><strong>面试意图</strong>：判断你能否从impact和不可变现场推进到clock-aware timeline、first divergence、可证伪RCA与same-protocol verification，并区分mitigation、recovery、fix和prevention。</p>
+<p><strong>30 秒回答</strong>：先冻结incident bundle、影响范围和时钟来源，对齐known-good/bad找到first verified divergence；用可证伪hypothesis和最小干预定位机制。修复后在同输入同协议上做red→green，同时跑未受影响controls、fresh邻近case和多次/多seed复验；rollback或一次通过只算弱证据。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：timeline绑定事件/观测时间、clock误差、bundle SHA与raw evidence，日志顺序不是因果。first divergence只是最早可见分叉；root cause还需复现、targeted intervention和替代解释控制。<code>git bisect</code>仅在稳定oracle、可构建且近似单调时定位first bad。verification锁data/seed与runtime/scorer bundle，只改target patch；incident replay红转绿、unaffected仍绿、fresh neighbors也绿，并报告paired effect和flakiness。RECOVERED≠FIXED≠PREVENTED。</p>
+<p><strong>诊断 / 证据</strong>：incident/impact manifest、raw log/trace/video、clock sync与timeline、good/bad bundle diff、first-divergence record、failure predicate、minimal reproducer、hypothesis/bisect ledger、fix patch manifest、exact before/after pairs、unaffected controls、fresh/stress cases、multi-seed/cluster CI、rollback/recovery log、action-item owner/deadline/test与checksums。</p>
+<p><strong>项目挂钩</strong>：OPD裸point格式与strict parser不一致，protocol-fixed后format/Hit@100恢复，是狭窄协议层red→green，不能外推模型整体能力。UWM的DataLoader p95 wait约<code>13.86s→0.19s</code>是子系统A/B，不是完整训练吞吐RCA。WAM/OpenPiVLA/Harness均缺matched fix闭环。</p>
+<p><strong>追问树</strong>：impact怎样界定？最早告警与first divergence区别？rollback为何不等于root cause？human error为何不是终点？bisect何时失效？一次通过为何不够？same protocol锁什么？controls/fresh cases各防什么？flaky怎么验？无法复现怎么办？OPD能说修复模型能力吗？</p>
+<p><strong>易错点</strong>：last-change bias；日志行号当时间；症状当原因；rollback当fix；first bad commit当机制；一次green；before/after换scorer或support；只测事故样本；删invalid；重跑到通过；human error终止；action item无owner/test；recovered=fixed；把子系统smoke外推端到端。</p>
+<p><strong>危险答案</strong>：说“最后commit就是根因”“rollback恢复说明bug已修好”“bisect能自动证明因果”“跑一次过了就可以关事故”“OPD证明point能力整体提升”“UWM已解决完整GPU吞吐”，或编造五项目完整incident timeline、multi-seed fix与预防gate。</p>
+<p><strong>来源</strong>：[1][2][3][4][5][6][7][8]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../knowledge/vol_05_engineering_eval_eval020_incident_timeline_root_cause_bugfix_verification.html">EVAL-020 知识页</a>。</li><li><a href="../sources/vol_05_eval020_incident_timeline_root_cause_bugfix_verification_source_freeze.html">EVAL-020 Source Freeze</a>。</li><li><a href="https://sre.google/sre-book/postmortem-culture/">Google SRE Postmortem Culture</a>。</li><li><a href="https://doi.org/10.6028/NIST.SP.800-61r3">NIST SP 800-61r3</a>。</li><li><a href="https://github.com/git/git/blob/41365c2a9ba347870b80881c0d67454edd22fd49/Documentation/git-bisect.adoc"><code>git bisect</code> official docs</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Inventory</a>。</li><li><a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO Inventory</a>。</li><li><a href="../evidence/evidence_manifest.html">Robot Harness / OpenPiVLA / WAM inventories</a>。</li></ol>
+</article></body></html>

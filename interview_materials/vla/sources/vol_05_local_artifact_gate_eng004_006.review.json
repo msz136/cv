@@ -1,0 +1,97 @@
+{
+  "artifact": "sources/vol_05_local_artifact_gate_eng004_006.md",
+  "html": "sources/vol_05_local_artifact_gate_eng004_006.html",
+  "review_date": "2026-07-21",
+  "status": "artifact_audit_slice",
+  "verdict": "WARN",
+  "source_sha256": "E200118B2C607400586401263D27FFF26F030423292D6C86F7A5B48BFCB53972",
+  "scope": {
+    "knowledge_ids": [
+      "VLA-ENG-004",
+      "VLA-ENG-005",
+      "VLA-ENG-006"
+    ],
+    "projects": [
+      "UWM / RoboCasa transfer",
+      "OPD / point"
+    ],
+    "scan_roots": [
+      "C:\\Users\\mousongzhe\\Project\\remote_sync\\muxi_20260629",
+      "C:\\Users\\mousongzhe\\agent\\remote_training_pipeline_v2"
+    ],
+    "evidence_cutoff": "2026-07-21",
+    "scope_addendum": "The original 2026-07-17 scan roots remain unchanged; a later read-only scan of C:\\Users\\mousongzhe\\project found and separately hashed the UWM base binary. It is referenced but not retroactively attributed to the old snapshot."
+  },
+  "artifact_inventory": [
+    {
+      "path": "C:\\Users\\mousongzhe\\Project\\remote_sync\\muxi_20260629\\uwm_robocasa_transfer_muxi\\runs\\true_save_smoke_20260625_155910\\train_summary.json",
+      "type": "local-direct metadata",
+      "sha256": "91532799162658501e2f082c02b749d6f307961937b22a42ccf813a67b6f64a1",
+      "supports": ["save_checkpoint=true", "requested 2 steps", "world_size 8", "DeepSpeed enabled", "checkpoint report counts"],
+      "does_not_support": ["local checkpoint binary", "complete resume"]
+    },
+    {
+      "path": "C:\\Users\\mousongzhe\\Project\\remote_sync\\muxi_20260629\\uwm_robocasa_transfer_muxi\\runs\\human300_native_pretrain_20260629_104957_human300_native\\artifacts\\checkpoint_load_report.json",
+      "type": "report-supported load metadata",
+      "sha256": "03feab5c36a4883eb2a203450dc628cfe3d28740e8a7cffbe6247b4612d3397a",
+      "supports": ["remote checkpoint path", "checkpoint step 100000", "matched/skipped key counts"],
+      "does_not_support": ["local weight hash", "independent fixed-batch diff", "optimizer/scheduler/RNG restoration"]
+    },
+    {
+      "path": "C:\\Users\\mousongzhe\\Project\\remote_sync\\muxi_20260629\\uwm_robocasa_transfer_muxi\\runs\\human300_native_pretrain_20260629_104957_human300_native\\artifacts\\human300_action_normalizer.json",
+      "type": "local-direct normalizer",
+      "sha256": "385cde0e5375aebadb4ccbad8860bfbf343aa30d4fb2b8cd3538248748fde6f6",
+      "supports": ["action_dim 12", "schema_version 2", "action order/camera keys", "stats and normalizer"],
+      "does_not_support": ["checkpoint/processor/controller roundtrip"]
+    },
+    {
+      "path": "C:\\Users\\mousongzhe\\Project\\remote_sync\\muxi_20260629\\point\\configs\\zero2.json",
+      "type": "config-only",
+      "sha256": "c2f2e295b3f2e8e67cbcdf1052710d7ed7a1ad9d95f4c44c9ec40af178a50ba9",
+      "supports": ["ZeRO stage 2 config", "BF16 enabled", "FP16 disabled", "gradient clipping 1.0"],
+      "does_not_support": ["completed run", "performance uplift", "resume artifact"]
+    },
+    {
+      "path": "C:\\Users\\mousongzhe\\Project\\remote_sync\\muxi_20260629\\point\\configs\\zero3_opd_maca_gradclip5.json",
+      "type": "config-only",
+      "sha256": "ca5c4030ccec5dae16b3614ed072035e6bb05cfd3bf411c92cc51d411d6c655f",
+      "supports": ["ZeRO stage 3 config", "BF16 enabled", "FP16 disabled", "gradient clipping 5.0", "Stage-3 bucket settings"],
+      "does_not_support": ["completed run", "performance uplift", "resume artifact"]
+    },
+    {
+      "path": "C:\\Users\\mousongzhe\\Project\\remote_sync\\muxi_20260629\\point\\outputs\\seed0_continue100k_from100k_mb1_filtered_stdtrainer_maxnorm5_v1_manifest.json",
+      "type": "local-direct run manifest",
+      "sha256": "7bb3cf6463507e5c0d8c4deccda7ae7b2288b0da1d4a019e4cab862c18ab6185",
+      "supports": ["effective batch 32", "max grad norm 5.0", "continuation from final weights"],
+      "does_not_support": ["optimizer state continuity"],
+      "explicit_gap": "base_policy says continue_from_each_seed0_100k_final_weights_no_optimizer_state"
+    }
+  ],
+  "checks": {
+    "binary_gate": "PARTIAL (original scan roots had 0 binary files; separate 2026-07-21 gate verifies UWM base libero_90.pt, while target fine-tune binary remains missing)",
+    "base_binary_manifest": "PASS WITH WARNING (see sources/uwm_libero90_checkpoint_immutable_manifest_gate.md; C01 hash is local-direct but not bound to the old remote load report)",
+    "uwm_training_metadata": "PASS WITH WARNING (world_size 8, DeepSpeed, save policy and checkpoint report present; paths point to remote /data/msz)",
+    "normalizer_artifacts": "PASS WITH WARNING (12D normalizers and schema/order metadata present; no controller roundtrip)",
+    "opd_zero_configs": "PASS WITH WARNING (ZeRO-2/3 configs direct; execution/performance not proven)",
+    "final_only_lineage": "PASS WITH WARNING (manifest explicitly says final weights only and no optimizer state)",
+    "eng004_gate": "PASS WITH WARNING",
+    "eng005_gate": "PASS WITH WARNING",
+    "eng006_gate": "PASS WITH WARNING",
+    "fixed_batch_resume": "MISSING",
+    "optimizer_scheduler_rng_sampler": "MISSING",
+    "matched_throughput_ab": "MISSING",
+    "local_links": "PASS (all relative report links resolve)",
+    "html_static_validation": "PASS (source SHA rendered; one H1; two tables; one commented pseudocode block)",
+    "browser_visual_check": "PASS WITH WARNING (Microsoft Edge 150 desktop 1280x1000 and narrow 800x1000 after scope-addendum re-render; one H1, academic palette/serif, sticky-to-static TOC, zero overflow and zero broken anchors)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Bind the newly verified C01 base binary hash to a trusted loader stdout/summary, or explicitly keep the old report as path-only metadata.",
+    "Obtain the target fine-tune checkpoint binary or a verifiable artifact bundle with model/processor/normalizer/config hashes.",
+    "Add optimizer/scheduler/scaler/RNG/sampler cursor and a fixed-batch pre/post-load output diff.",
+    "Run one independent resume step and record finite loss/grad plus step increment.",
+    "Keep OPD final-only/no-optimizer-state wording explicit; do not call it seamless resume.",
+    "Keep all VOL 05 cards unseen until oral practice."
+  ],
+  "next": "Do not upgrade ENG-004..006 beyond WARN; next bounded slice is a user-provided/local checkpoint bundle audit or one-question-at-a-time oral practice."
+}

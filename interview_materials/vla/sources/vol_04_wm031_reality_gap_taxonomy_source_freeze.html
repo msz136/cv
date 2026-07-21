@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-031 Source Freeze：Sim2Real Reality-gap Taxonomy</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm031_reality_gap_taxonomy_source_freeze.md">
+<meta name="aris:source-sha256" content="d25897218b4a276a0d9a981c826e8680ba21db7e64b298963eace10184877a97">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>d25897218b4a276a0d9a981c826e8680ba21db7e64b298963eace10184877a97</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm031_reality_gap_taxonomy_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 来源冻结</a></li><li><a href="#2-1-official-doc-snapshots">2.1 Official-doc snapshots</a></li><li><a href="#3">3. 五层系统合同</a></li><li><a href="#4-visual-sensor-gap">4. Visual/sensor gap 的三个子类</a></li><li><a href="#5-dynamics-contact-control-timing">5. Dynamics/contact 与 control/timing 必须分开</a></li><li><a href="#5-1-free-space-first">5.1 Free-space first</a></li><li><a href="#5-2-contact-second">5.2 Contact second</a></li><li><a href="#6-task-protocol-gap-physics-gap">6. Task/protocol gap 不等于 physics gap</a></li><li><a href="#7-stochasticity-gaussian-noise">7. Stochasticity 不是只加 Gaussian noise</a></li><li><a href="#8-first-failure">8. First-failure 诊断梯子</a></li><li><a href="#9-paired-matrix">9. 最小 paired matrix</a></li><li><a href="#10">10. 项目真实性边界</a></li><li><a href="#11">11. 下一入口</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 WM-031 Source Freeze：Sim2Real Reality-gap Taxonomy</h1>
+<div class="meta">审计日期：2026-07-18 状态：source_frozen / VLA-WM-031 / knowledge_synced / card_synced / WARN 覆盖题目：VLA-WM-031 本轮边界：只冻结 visual/sensor、dynamics/contact、control/timing、task/protocol、stochasticity 五层 reality gap，以及 first-failure 诊断顺序；不提前展开 WM-032..038 的 randomization、SysID、camera、contact、adaptation 或 safety 方法课，也不声称任何个人项目已完成 real-hardware transfer。</div>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>Reality gap 不是“仿真图片不够真”。</strong>它是从 observation、物理转移、动作执行、任务分布到随机扰动的复合 mismatch；任何一层都可能让 simulator success 无法迁移。[S1][S2][S3]</li><li><strong>面试可先答五层，工程上把 contact 单列。</strong>五层是 visual/sensor、dynamics/contact、control/timing、task/protocol、stochasticity；manipulation 中 contact/gripper 同时受物理参数和 controller 影响，后续 WM-036 再独立深挖。[S3][S4][S5]</li><li><strong>Safety/recovery 是响应层，不是第六种物理根因。</strong>碰撞、OOD 或约束事件可由前五层触发；limits、fallback、recovery、E-stop 用来控制后果，不能替代 gap 诊断。</li><li><strong>先找 first divergence，再选 intervention。</strong>顺序是 real observation replay → action decode/round-trip → free-space tracking → contact bench → task/reset/success → repeated-trial drift；不要看到 real failure 就直接扩大 domain randomization。[S3][S5]</li><li><strong>视觉层同时包含 appearance、geometry 与 time。</strong>texture/light/background 只是 appearance；intrinsics/extrinsics、distortion、crop/flip、exposure/blur、frame timestamp 与 dropout 都能改变几何和闭环反馈。[S1][S4][S5]</li><li><strong>动力学层不止质量与摩擦。</strong>mass/inertia/COM、joint damping/backlash、actuator response、gravity/payload、solver/timestep、contact/compliance 共同决定下一状态；相同动作向量也可能因 actuator/controller 不同产生完全不同轨迹。[S2][S3][S5]</li><li><strong>任务层不是“模型不懂指令”这么简单。</strong>对象/layout/initial state、语言语义、episode horizon、reset/warmup、success predicate 和 invalid-episode 处理都属于 target task/protocol；相同 task name 但 protocol tuple 不同，success 不能直接比较。[S7]</li><li><strong>随机性包括时间相关变化。</strong>sensor bias/drift、battery/temperature/wear、payload、网络 jitter、外力和动态物体并非都可用 i.i.d. Gaussian noise 代表；要区分 episode-constant、step-wise、correlated 与 rare-event variation。[S2][S4]</li><li><strong>当前项目证据只支持方法论。</strong>Evidence Manifest 没有一套 protocol-complete real-hardware Sim2Real bundle；LIBERO/RoboCasa simulator 结果、接口设计或单个 action trace 不能升级为真实迁移 claim。[S7]</li></ol>
+<h2 id="2">2. 来源冻结</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>冻结版本</th><th>可支持</th><th>不能支持</th><th>状态</th></tr></thead><tbody>
+<tr><td>S1</td><td>Tobin et al., <em>Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World</em></td><td>arXiv:1703.06907v1；ar5iv snapshot 访问 2026-07-18，UTF-8 SHA-256 <code>faba518e98357c65a59d41f340bb723d4bb84c50eb359813597daab113dcd33a</code></td><td>reality gap 包含 unmodeled physics 与 sensor/render mismatch；camera、lighting、object pose、texture、distractor 的 visual randomization</td><td>object-localization recipe 是通用 VLA transfer taxonomy 或个人结果</td><td>primary / checked</td></tr>
+<tr><td>S2</td><td>Peng et al., <em>Sim-to-Real Transfer of Robotic Control with Dynamics Randomization</em></td><td>arXiv:1710.06537v3；ar5iv snapshot SHA-256 <code>29d5e90f2a01e918bacb9d2a3e31622fc68018063be2bece6d86d2e0fca8a1b3</code></td><td>mass/friction/damping/controller gain/action timestep/observation noise 等 dynamics variation；history-based adaptation</td><td>95 个参数或其范围是任意 manipulation 默认配置</td><td>primary / checked</td></tr>
+<tr><td>S3</td><td>Tan et al., <em>Sim-to-Real: Learning Agile Locomotion for Quadruped Robots</em></td><td>arXiv:1804.10332v2；ar5iv snapshot SHA-256 <code>c34db6210074989010a635a11705e17da4a38d4b105e471159a9cc832a120a49</code></td><td>unmodeled dynamics、wrong parameters、numerical error、contact amplification；SysID、actuator model、latency 与 robustness/optimality</td><td>locomotion 数值、actuator model 或随机范围可直接迁移到 VLA manipulation</td><td>primary / checked</td></tr>
+<tr><td>S4</td><td>OpenAI et al., <em>Learning Dexterous In-Hand Manipulation</em></td><td>arXiv:1808.00177v5；ar5iv snapshot SHA-256 <code>826fb63d545518661a10b9cac05110bf7c813e88f99698d3b9e98cb313f81e93</code></td><td>camera position/intrinsics/lighting/texture、correlated/uncorrelated observation noise、physics/contact/actuation randomization 与 memory</td><td>Shadow Hand recipe 普适；大量 randomization 自动证明安全/成功</td><td>primary / checked</td></tr>
+<tr><td>S5</td><td>MuJoCo / OpenCV / robosuite official docs</td><td>MuJoCo stable、OpenCV 4.13.0 page、robosuite 1.5；访问 2026-07-18</td><td>camera frame/intrinsics、pinhole/extrinsics/distortion、contact/constraint/actuator/controller parameter semantics</td><td>某项目配置正确，或 docs 默认等于项目 runtime</td><td>official-doc / checked</td></tr>
+<tr><td>S6</td><td>VOL 04 Source Audit D：Sim2Real</td><td>canonical SHA-256 <code>18318d37f2060a771d3074b3a2d70b7e07487091de23d9cf6a9599f4080ec200</code></td><td>六层工程综合、source-to-mechanism 边界、paired test 与项目 truth boundary</td><td>已完成独立复核或本地真实机器人迁移</td><td>local-audit / WARN</td></tr>
+<tr><td>S7</td><td>Benchmark Audit E + Evidence Manifest</td><td>Audit E SHA-256 <code>58a5636e953f44c2aa27e3acf65c621460186daf3732b916eac70e6ffab2de6a</code>；manifest SHA-256 <code>f3826289cdf2451758da11e0dddab3a7bb43d88b9a656fa340c08f71d16a21b6</code></td><td>task/protocol tuple、LIBERO/RoboCasa simulation 边界、五项目 artifact gate</td><td>protocol 名称相同即结果可比；存在 real-hardware Sim2Real bundle</td><td>local-audit / WARN</td></tr>
+</tbody></table>
+<h3 id="2-1-official-doc-snapshots">2.1 Official-doc snapshots</h3>
+<table><thead><tr><th>文档</th><th>访问日 UTF-8 SHA-256</th><th>本节点用途</th></tr></thead><tbody>
+<tr><td>MuJoCo <code>modeling.html</code></td><td><code>505230785371f9e6e54575b5178950ffbce4b5b2fa9db7a0a393f91adc1315da</code></td><td>camera attachment/intrinsics、constraint/contact、sensor metadata、actuator semantics</td></tr>
+<tr><td>OpenCV <code>calib3d</code></td><td><code>e0a638f53a7f09287b8c502a364cfed8afa2fea3531a7dbe81bd30f4583825ce</code></td><td>pinhole model、world→camera extrinsics、distortion</td></tr>
+<tr><td>robosuite controller docs</td><td><code>fdee90590d9ab45a2865531928c7ec4e0f46065a441777c53ed6921a83f65c99</code></td><td>controller family/action semantics；不等于 local config</td></tr>
+</tbody></table>
+<p>网页 snapshot hash 只固定本轮读取内容；rolling docs URL 仍不是永久 build pin。</p>
+<h2 id="3">3. 五层系统合同</h2>
+<p>把真实闭环写成：</p>
+<div class="formula">\[
+o_t^r=h_{\psi_r}(x_{t-\tau_s}^r)+\epsilon_t^r,
+\qquad
+u_t^r=\mathcal C_{\kappa_r}(a_{t-\tau_a}),
+\qquad
+x_{t+1}^r=f_{\xi_r}(x_t^r,u_t^r,w_t^r).
+\]</div>
+<p>变量解释：\(h_{\psi_r}\) 是真实相机/传感器与 preprocessing，\(\psi_r\) 包含 geometry/appearance；\(\mathcal C_{\kappa_r}\) 是 controller/actuator，\(\tau_s,\tau_a\) 是 sensor/action delay；\(f_{\xi_r}\) 是真实 dynamics/contact，\(w_t^r\) 是未建模扰动。Simulator 使用对应的 \(\psi_s,\kappa_s,\xi_s,\tau_s^s,\tau_a^s,w_t^s\)。[S2][S3][S5]</p>
+<p>任务结果还依赖 protocol：</p>
+<div class="formula">\[
+Y^r=Y(\tau^r;\mathcal P_r),
+\qquad
+\mathcal P=(T,I,L,H,R,S),
+\]</div>
+<p>其中 \(T\) 是 task/object/layout，\(I\) 是 initial/reset distribution，\(L\) 是 language/goal contract，\(H\) 是 horizon/termination，\(R\) 是 randomness/seed，\(S\) 是 success predicate。变量解释：即使低层物理完全匹配，\(\mathcal P_s\neq\mathcal P_r\) 仍会产生 task/protocol gap；Audit E 的完整 tuple 更细，本页只保留 taxonomy 所需字段。[S7]</p>
+<table><thead><tr><th>主层</th><th>典型 mismatch</th><th>主要症状</th><th>先冻结的证据</th></tr></thead><tbody>
+<tr><td>visual / sensor</td><td>light/texture/background、K/R/t、distortion、exposure/blur、crop/flip、noise/dropout/timestamp</td><td>real replay feature/pose drift、camera-specific failure、目标位置系统偏差</td><td>raw frame、camera ID/serial、intrinsics/extrinsics、preprocess hash、timestamp</td></tr>
+<tr><td>dynamics / contact</td><td>mass/inertia/COM、damping/backlash、friction、compliance、solver/timestep、payload/deformation</td><td>free-space trajectory drift、slip/bounce/penetration、grasp failure</td><td>model parameters/units、measured trajectory、contact/gripper/controller config</td></tr>
+<tr><td>control / timing</td><td>action dim/order/unit/frame、controller type/gain、frequency/ZOH、latency/queue、saturation/deadband</td><td>oscillation、overshoot、stale action、sim/real command response不同</td><td>action round-trip、controller revision、Hz、timestamp trace、limits</td></tr>
+<tr><td>task / protocol</td><td>instruction/goal、object/layout/init、reset/warmup、horizon、success/invalid rule</td><td>同名 task 只在某 init 成功、sim score 不可复算、终止语义冲突</td><td>task/init manifest、language、horizon、success code、trial denominator</td></tr>
+<tr><td>stochasticity / operating condition</td><td>correlated noise、drift、battery/temp/wear、payload变化、外力、network jitter、dynamic object/human</td><td>重复 trial 方差、随时间退化、rare-event failure</td><td>time/episode bucket、environment telemetry、seed/disturbance/event log</td></tr>
+</tbody></table>
+<p>这张表是来源综合，不是某篇论文原表。Contact 在五层回答里归入 dynamics，但 manipulation 诊断时应独立成一层，因为 gripper/controller/compliance 会跨越 dynamics 与 control。[S3][S4][S5]</p>
+<h2 id="4-visual-sensor-gap">4. Visual/sensor gap 的三个子类</h2>
+<ol><li><strong>Appearance</strong>：光照、颜色、材质、背景、阴影、反光、遮挡、motion blur、compression。Tobin 与 OpenAI dexterous work 支持 camera/lighting/texture/occlusion 等为可随机化变量。[S1][S4]</li><li><strong>Geometry</strong>：intrinsics、extrinsics、distortion、mounting tolerance、depth scale、camera frame。OpenCV 的 pinhole/extrinsics 合同说明 world point 到 pixel 的映射依赖 \(K[R|t]\)；color jitter 无法修复 wrist-camera extrinsics 偏差。[S5]</li><li><strong>Time/data contract</strong>：exposure/readout timestamp、transport、frame drop、RGB/BGR、resize/crop/flip、history alignment。真实图像“看起来像”仍可能因时间或预处理错位导致 action geometry 失败。</li></ol>
+<p>视觉层的 first check 不是闭环 success，而是把 frozen real observation 送入同一 processor/policy，比较 shape/range/feature/pose/action 输出；若 replay 已失败，先修 observation contract。</p>
+<h2 id="5-dynamics-contact-control-timing">5. Dynamics/contact 与 control/timing 必须分开</h2>
+<p>真实转移误差可粗分为：</p>
+<div class="formula">\[
+e_{next}=
+\underbrace{f_{\xi_r}(x,\mathcal C_{\kappa_r}(a))-f_{\xi_r}(x,\mathcal C_{\kappa_s}(a))}_{\text{controller / actuator mismatch}}
++
+\underbrace{f_{\xi_r}(x,\mathcal C_{\kappa_s}(a))-f_{\xi_s}(x,\mathcal C_{\kappa_s}(a))}_{\text{dynamics / contact mismatch}}.
+\]</div>
+<p>变量解释：第一项保持真实 dynamics，只替换 controller/actuator；第二项保持 command execution，比较真实与 simulated transition。这是诊断分解，不是可直接观测的严格因果等式；实现需要 action round-trip、free-space tracking 和 contact bench 逐层近似隔离。</p>
+<h3 id="5-1-free-space-first">5.1 Free-space first</h3>
+<p>在无接触条件下发送安全、限幅的相同 command，比较 joint/end-effector trajectory、delay、overshoot 和 steady-state error。若此时已失配，优先查 action units/frame、controller、gain、actuator、mass/inertia、latency，不要先归因于 friction/contact或 VLA backbone。[S3][S5]</p>
+<h3 id="5-2-contact-second">5.2 Contact second</h3>
+<p>Free-space 对齐后再做 push/slip/grasp micro-bench，记录 gripper aperture/force、object mass/COM、friction、compliance、solver/timestep 与接触事件。Contact 失败可能来自 dynamics，也可能是 gripper action semantics 或 impedance controller，因此 WM-036 需单独处理。[S4][S5]</p>
+<h2 id="6-task-protocol-gap-physics-gap">6. Task/protocol gap 不等于 physics gap</h2>
+<p>Audit E 已表明 LIBERO default fixed <code>pruned_init</code>、UWM OOD shifted initialization、Cosmos runner 的 warmup/horizon/chunk 是不同协议。[S7] 因而以下变化即使都发生在 simulator 内，也足以改变 success：</p>
+<ul><li>task/object/layout subset 与 language prompt；</li><li>reset/initial-state distribution、warmup/stabilization；</li><li>camera/preprocess/action/controller；</li><li>episode horizon、timeout、early stop；</li><li>success predicate、invalid episode、denominator；</li><li>seed/determinism 与 trials per task。</li></ul>
+<p>“sim success 高、real success 低”只有在 simulator 与 real 的 task/protocol 对齐后才能进一步归因到 physics；否则首先是 evaluation distribution mismatch。</p>
+<h2 id="7-stochasticity-gaussian-noise">7. Stochasticity 不是只加 Gaussian noise</h2>
+<p>按时间尺度区分：</p>
+<table><thead><tr><th>类型</th><th>示例</th><th>采样/记录方式</th></tr></thead><tbody>
+<tr><td>episode-constant</td><td>payload、object mass/friction、camera mount、battery start state</td><td>episode manifest + fixed parameter draw</td></tr>
+<tr><td>step-wise</td><td>sensor noise、packet jitter、external perturbation</td><td>timestamped per-step trace</td></tr>
+<tr><td>temporally correlated</td><td>bias drift、temperature、wear、lighting change</td><td>stateful process/sequence bucket，不用独立噪声代替</td></tr>
+<tr><td>rare event</td><td>occlusion、packet loss、unexpected contact、human intrusion</td><td>event injection + incident/fallback log</td></tr>
+</tbody></table>
+<p>Peng et al. 区分 episode-level dynamics 与 step-level action timestep/noise；OpenAI dexterous work 同时加入 episode-correlated与 timestep observation noise。[S2][S4] 这支持按时间尺度建模，不支持把其分布或数值照搬到用户任务。</p>
+<h2 id="8-first-failure">8. First-failure 诊断梯子</h2>
+<pre><code class="language-text">G0 protocol identity
+  → G1 real observation replay / preprocess
+  → G2 action decode + controller round-trip
+  → G3 free-space trajectory tracking
+  → G4 contact / gripper micro-bench
+  → G5 task init / language / horizon / success
+  → G6 repeated trials / drift / perturbation / safety response</code></pre>
+<table><thead><tr><th>Gate</th><th>通过标准</th><th>失败主要指向</th><th>不能证明</th></tr></thead><tbody>
+<tr><td>G0</td><td>sim/real task与metric合同可比</td><td>task/protocol</td><td>physics 已匹配</td></tr>
+<tr><td>G1</td><td>real replay shape/range/feature/action sane</td><td>visual/sensor/preprocess/time</td><td>real actuation 正确</td></tr>
+<tr><td>G2</td><td>normalized action→controller command 单位/顺序/frame 一致</td><td>control schema/normalizer/controller</td><td>dynamics/contact匹配</td></tr>
+<tr><td>G3</td><td>safe free-space trajectory within tolerance</td><td>latency/actuator/control/dynamics</td><td>contact可靠</td></tr>
+<tr><td>G4</td><td>push/slip/grasp micro-bench可复现</td><td>friction/compliance/gripper/contact</td><td>long-horizon task成功</td></tr>
+<tr><td>G5</td><td>init/language/horizon/success一致</td><td>task/protocol</td><td>stochastic robustness</td></tr>
+<tr><td>G6</td><td>matched repeated trials与扰动下可接受</td><td>stochasticity、risk/recovery</td><td>formal safety guarantee</td></tr>
+</tbody></table>
+<p>这个顺序减少“用更多 randomization 掩盖接口 bug”的风险。每个 gate 都要保存 paired timestamped artifact；最终 success=0 本身不足以定位层级。</p>
+<h2 id="9-paired-matrix">9. 最小 paired matrix</h2>
+<table><thead><tr><th>假设</th><th>固定</th><th>只改变</th><th>输出</th></tr></thead><tbody>
+<tr><td>observation gap</td><td>checkpoint/action/controller/task</td><td>sim render vs captured real replay</td><td>processor/feature/action discrepancy</td></tr>
+<tr><td>control gap</td><td>same command/robot state</td><td>sim vs real controller path 或 delay injection</td><td>trajectory/latency/overshoot</td></tr>
+<tr><td>dynamics gap</td><td>controller/action/init</td><td>nominal vs measured model parameter</td><td>free-space next-state error</td></tr>
+<tr><td>contact gap</td><td>free-space-aligned stack</td><td>surface/object/gripper/contact setting</td><td>slip/grasp/contact trace</td></tr>
+<tr><td>task gap</td><td>model/controller/physics</td><td>init/layout/language/horizon/success</td><td>per-stratum success + first failure</td></tr>
+<tr><td>stochastic gap</td><td>nominal stack</td><td>seed/drift/jitter/perturbation/event</td><td>variance/tail/risk/fallback</td></tr>
+</tbody></table>
+<p>“只改变”是实验目标；真实系统很难完全隔离，因而必须记录剩余 confounder 并把因果结论降级为 <code>partially confirmed</code> 或 <code>open</code>。</p>
+<h2 id="10">10. 项目真实性边界</h2>
+<p>当前 Evidence Manifest 可支持：五个项目的 simulation protocol、部分代码/config/log/report 与接口诊断。它不提供一套完整的 real-hardware Sim2Real bundle：real camera calibration、robot/controller revision、paired sim/real initial conditions、per-step sensor→action→apply trace、contact/safety event、episode denominator 和 ownership 没有同时闭合。[S7]</p>
+<p>安全表达：<strong>“我能按五层 taxonomy 设计 first-failure 与 paired test，当前项目证据主要是 simulation/接口诊断，尚不能声称完成 real-hardware Sim2Real。”</strong></p>
+<p>不能说：<strong>“LIBERO/RoboCasa 成功率或 ALOHA/LIBERO 接口说明我已经完成 Sim2Real。”</strong>Simulator benchmark、部署入口和真实硬件 rollout 是不同 evidence level。</p>
+<p>按 ProjectProof evidence contract，公开论文与本地审计最多支持 C0“理解/能设计诊断”；只有存在个人 diff/measurement/run ledger 才能升级 C1/C2，real transfer 数字需要 C3 protocol/episode evidence。</p>
+<h2 id="11">11. 下一入口</h2>
+<p>下一 bounded slice 是 <code>VLA-WM-032</code>：visual/domain randomization 该随机化什么，怎样避免随机化到无关分布。本页只提供 taxonomy，不提前给 randomization range 或 ablation 结论。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Tobin et al., <a href="https://arxiv.org/abs/1703.06907v1">Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World</a>, 2017。</li><li>Peng et al., <a href="https://arxiv.org/abs/1710.06537v3">Sim-to-Real Transfer of Robotic Control with Dynamics Randomization</a>, 2018。</li><li>Tan et al., <a href="https://arxiv.org/abs/1804.10332v2">Sim-to-Real: Learning Agile Locomotion for Quadruped Robots</a>, 2018。</li><li>OpenAI et al., <a href="https://arxiv.org/abs/1808.00177v5">Learning Dexterous In-Hand Manipulation</a>, 2019。</li><li><a href="https://mujoco.readthedocs.io/en/stable/modeling.html">MuJoCo Modeling</a>、<a href="https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html">OpenCV calib3d</a>、<a href="https://robosuite.ai/docs/modules/controllers.html">robosuite Controllers</a>。</li><li><a href="vol_04_sim2real_claim_to_mechanism.html">VOL 04 Source Audit D：Sim2Real</a>。</li><li><a href="vol_04_benchmark_evidence_claim_to_protocol.html">VOL 04 Benchmark / Evidence Audit E</a>。</li><li><a href="../evidence/evidence_manifest.html">VLA Project Evidence Manifest</a>。</li></ol>
+</article></body></html>

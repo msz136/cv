@@ -1,0 +1,98 @@
+{
+  "artifact": "sources/vol_05_eval003_local_statistical_artifact_gate.md",
+  "html": "sources/vol_05_eval003_local_statistical_artifact_gate.html",
+  "review_date": "2026-07-17",
+  "status": "audited / 3 projects / EVAL-003 / WARN",
+  "verdict": "WARN",
+  "source_sha256": "4F28EBE5C2E2ACDB47963BB71189123BCBCD6DE7F7BB3CCB87E7A6843D3D63F4",
+  "scope": {
+    "projects": ["UWM/LIBERO", "OpenPiVLA", "OPD"],
+    "deferred": ["EVAL-004 paired significance", "EVAL-005 aggregation", "oral mastery/coaching state"]
+  },
+  "evidence_snapshot": [
+    {
+      "project": "UWM/LIBERO",
+      "path": "C:/Users/mousongzhe/Project/report/uwm_libero_strict_eval_recovery_20260702/final_strict_eval_user_confirmed_20260705.json",
+      "exists": true,
+      "sha256": "7616111AE7C7CA35CB10E8788ADCB1E8837D9B6F656B49553B6C7AFCCD586D11",
+      "tier": "user-confirmed-remote-final / protocol-limited"
+    },
+    {
+      "project": "UWM/LIBERO",
+      "path": "C:/Users/mousongzhe/Project/report/uwm_libero_strict_eval_recovery_20260702/sync_manifest.json",
+      "exists": true,
+      "sha256": "9077C45992BF6852F5A8F4FA28ED3735FA590817D227A62D4179CCF239358D5F",
+      "tier": "local-direct manifest / remote raw missing"
+    },
+    {
+      "project": "OpenPiVLA",
+      "path": "C:/Users/mousongzhe/Project/openpivla_deployment/artifacts/vla_formal_reproduction_report_20260617.html",
+      "exists": true,
+      "sha256": "D74126A3896F68AD44B75C7A88F1B7B9A90CB55DF0C6C6BEB90A5748E9E8E074",
+      "tier": "report-supported / archive-summary-only"
+    },
+    {
+      "project": "OpenPiVLA",
+      "path": "C:/Users/mousongzhe/Project/openpivla_deployment/artifacts/libero_franka_true_rollout_v1/summary.json",
+      "exists": true,
+      "sha256": "341E77110D75E50B601A078923F51EF8FA39AAA045FA491843A1003B0320E1DB",
+      "tier": "local-direct official-baseline diagnostic"
+    },
+    {
+      "project": "OpenPiVLA",
+      "path": "C:/Users/mousongzhe/Project/openpivla_deployment/artifacts/aloha_sim_real_rollout_20260608_154324/summary.json",
+      "exists": true,
+      "sha256": "27E4A04C01FD3AA6DDB387B59B519C4B3CC17DF94961EEB17686A160AECE1C13",
+      "tier": "local-direct official-baseline diagnostic"
+    },
+    {
+      "project": "OPD",
+      "path": "C:/Users/mousongzhe/muxi/point/eval_raw_holdout_v1/opd5000_newexperts_ckpts_1000_2000_3000_4000_5000_retry_20260601_104908/opd5000_ckpt5000/metrics.json",
+      "exists": true,
+      "sha256": "9E96E5876AD92C4CE8C092E733E318FBD5B20CBE60D49F751FBA9766351E7D15",
+      "tier": "local-direct metric-specific"
+    },
+    {
+      "project": "OPD",
+      "path": "C:/Users/mousongzhe/muxi/report/raw_holdout_eval_8models_20260525/evalset_summary.json",
+      "exists": true,
+      "sha256": "200F7A8B00CDD989D4E8D19B6CD3EB5B47B75B87799394438169702F8BBF6485",
+      "tier": "local-direct eval-set manifest"
+    },
+    {
+      "project": "OPD",
+      "path": "C:/Users/mousongzhe/muxi/report/raw_holdout_eval_8models_20260525/dedupe_audit.json",
+      "exists": true,
+      "sha256": "2E102BB52B925ABA5AFE9E9111C98B3FA67F7032B266B1D08EBB1164A8FFB96D",
+      "tier": "local-direct leakage/dedupe audit"
+    },
+    {
+      "project": "OPD",
+      "path": "C:/Users/mousongzhe/muxi/report/opd5000_newexperts_20260601/remote_model_summaries/opd5000_opd_online_run_summary.json",
+      "exists": true,
+      "sha256": "2D670DE0707CD2C6A9D1D4C7EC109C86F0A3F8F87EDE5D6959367017231547CE",
+      "tier": "report-supported run summary / remote weights missing"
+    }
+  ],
+  "checks": {
+    "bounded_slice": "PASS (one EVAL-003 local artifact gate; EVAL-004/EVAL-005 not generated)",
+    "uwm_gate": "PASS WITH WARNING (186/250 summary and protocol fields are readable; raw 250 episodes, cluster manifest and immutable checkpoint bundle are absent)",
+    "openpivla_gate": "PASS FAIL-CLOSED (97.4% is archive-summary-only; no denominator/episode/lineage for CI)",
+    "opd_gate": "PASS WITH WARNING (10k metrics and format-specific n are local; input/prediction paths and row dependence remain remote/clustered)",
+    "statistical_smoke": "PASS WITH WARNING (naive Wilson values are labeled diagnostic and never treated as benchmark CI)",
+    "metric_conflation": "PASS (UWM episode summary, OpenPiVLA suite archive and OPD static metric rows remain separate)",
+    "truth_boundary": "PASS (no C3 or personal ownership claim is upgraded)",
+    "html_static_validation": "PASS (one H1, ten H2, eight H3, seven tables, two formula blocks, one code block)",
+    "local_links": "PASS (eight repository-local links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Export UWM 250 episode records, exact init/seed/task manifest, checkpoint/normalizer/scorer hashes and failure index.",
+    "Build OpenPiVLA archive-to-formal checkpoint/eval lineage and recover 97.4 denominator, trial/seed/init and raw episodes.",
+    "Keep OPD raw prediction/input snapshots and freeze original/protocol-fixed/lenient point scorers; account for repeated-image clusters.",
+    "Add per-file ownership ledgers for all three projects.",
+    "Keep VLA-EVAL-003 unseen until a real oral answer is recorded; do not create coaching_state.md yet."
+  ],
+  "next": "Either run the one-question VLA-EVAL-003 oral drill after candidate response, or close one P0 artifact gap; do not generate EVAL-004/EVAL-005 in the same slice."
+}

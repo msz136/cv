@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：EVAL-022 原子题卡</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\vol_05_engineering_eval_eval022.md">
+<meta name="aris:source-sha256" content="12cefd810d4374b88c89320ed508616dbf14010a72957a36551b0ca372315a22">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>12cefd810d4374b88c89320ed508616dbf14010a72957a36551b0ca372315a22</code>；生成自：<code>interview_materials\vla\questions\vol_05_engineering_eval_eval022.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#paper-repo-checkpoint-runtime-ownership-evidence-audit">Paper→Repo→Checkpoint→Runtime→Ownership Evidence Audit</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：EVAL-022 原子题卡</h1>
+<div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-19 覆盖范围：<code>VLA-EVAL-022</code> 难度：L3 1题 优先级：P0 1题 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_05_engineering_eval_eval022_paper_repo_checkpoint_runtime_ownership_evidence_audit.html">EVAL-022 Paper→Repo→Checkpoint→Runtime→Ownership Evidence Audit</a>；来源边界见<a href="../sources/vol_05_eval022_paper_repo_checkpoint_runtime_ownership_evidence_audit_source_freeze.html">Source Freeze</a>。本题不把paper、repo、path、summary、hash、Git author或signature替代完整复现与个人贡献证据。</div>
+<h2 id="paper-repo-checkpoint-runtime-ownership-evidence-audit">Paper→Repo→Checkpoint→Runtime→Ownership Evidence Audit</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>VLA-EVAL-022</b> · 怎样证明论文方法真的跑到你的checkpoint、指标和个人贡献？</summary>
+<p><strong>面试意图</strong>：判断你能否拆解强claim，审计paper/repo/data/config/run/checkpoint/runtime/raw-eval/protocol链，并把identity、integrity、semantic validity与ownership分开。</p>
+<p><strong>30 秒回答</strong>：把“我复现并提升”拆成方法、执行、结果和贡献；逐边绑定paper版本、repo commit、code/config/data、run、checkpoint bytes/load、runtime、raw output与scorer。贡献另用角色ledger绑定文件、决策、实验和diff/review。任一必需断边就降级，Git author或路径不能补洞。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：paper/model card只证明公开设计，repo只证明某revision有实现，config只证明意图。checkpoint需bytes/SHA、parent run、配套processor/stats与strict load；runtime需环境锁、resolved branch、start/end/exit和raw artifacts；指标由raw unit经固定scorer复算。SLSA字段可组织provenance，但不证明ML语义/ownership。Git author可覆盖，签名只绑定key；贡献需按Methodology/Software/Validation等角色给scope与证据。强claim是AND gate，受最弱必需环节限制。</p>
+<p><strong>诊断 / 证据</strong>：claim registry、paper/model/data version、official repo/tree/file SHA、code-symbol mapping、dataset/split、resolved config、job/start/end/exit、checkpoint bytes/load/roundtrip、runtime/deps/hardware、raw prediction/episode、scorer/protocol/recompute、contradiction、license与contribution-role ledger。</p>
+<p><strong>项目挂钩</strong>：OPD有代码/manifests/tables但缺weights/raw predictions；OpenPiVLA有formal code/smoke但缺formal checkpoint与97.4 raw lineage；Harness缺共同scorer/raw episodes；UWM的186/250是user-confirmed summary；WAM当前无完整raw run bundle。五项目ownership均未闭合。</p>
+<p><strong>追问树</strong>：official repo怎样确认？README和code冲突听谁？path为何不算checkpoint？load report够吗？smoke和formal run区别？summary能否写？hash/签名证明什么？SLSA能否证明复现？Git author为何不等于ownership？协作/工具辅助怎么讲？license为何分层？哪个项目链最完整？</p>
+<p><strong>易错点</strong>：paper结果写成本地；fork冒充official；config存在=执行；远端path=weights；summary=raw；smoke=formal benchmark；hash=语义正确；signature=独立实现；Git author=全部ownership；repo license覆盖weights/data；删冲突；未找到=远端不存在；用证据总分平均断边。</p>
+<p><strong>危险答案</strong>：说“论文有开源仓库所以我算复现了”“checkpoint路径和训练报告足够证明结果”“commit作者是我所以项目都是我独立完成”“签名能证明代码和指标都属于我”，或把五项目缺失的checkpoint/raw/ownership伪装成已闭合。</p>
+<p><strong>来源</strong>：[1][2][3][4][5][6][7][8]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../knowledge/vol_05_engineering_eval_eval022_paper_repo_checkpoint_runtime_ownership_evidence_audit.html">EVAL-022 知识页</a>。</li><li><a href="../sources/vol_05_eval022_paper_repo_checkpoint_runtime_ownership_evidence_audit_source_freeze.html">EVAL-022 Source Freeze</a>。</li><li><a href="https://arxiv.org/abs/1810.03993v2">Model Cards</a>。</li><li><a href="https://arxiv.org/abs/1803.09010v8">Datasheets for Datasets</a>。</li><li><a href="https://slsa.dev/spec/v1.2/provenance">SLSA Provenance v1.2</a>。</li><li><a href="https://github.com/git/git/blob/41365c2a9ba347870b80881c0d67454edd22fd49/Documentation/git-commit.adoc">Git commit documentation</a>。</li><li><a href="https://credit.niso.org/contributor-roles-defined/">CRediT Role Descriptors</a>。</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest / five project inventories</a>。</li></ol>
+</article></body></html>

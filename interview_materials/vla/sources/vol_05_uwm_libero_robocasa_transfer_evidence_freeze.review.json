@@ -1,0 +1,48 @@
+{
+  "artifact": "sources/vol_05_uwm_libero_robocasa_transfer_evidence_freeze.md",
+  "html": "sources/vol_05_uwm_libero_robocasa_transfer_evidence_freeze.html",
+  "review_date": "2026-07-21",
+  "status": "local_protocol_audited / user_confirmed_remote_final / robocasa_debugging",
+  "verdict": "WARN",
+  "source_sha256": "F18E07202FF4FEF205C85C5315355946EEE6EBB19289C616B70E8A2B364DD45B",
+  "evidence_cutoff": "2026-07-21",
+  "scope": {
+    "project": "UWM / LIBERO / RoboCasa transfer",
+    "libero_tasks": 5,
+    "strict_rollouts_assumed": 250,
+    "strict_result_user_confirmed": true,
+    "local_episode_bundle_present": false,
+    "robocasa_h4_scenarios": 54,
+    "robocasa_h4_successes": 0,
+    "robocasa_h4_contact_episodes": 45,
+    "robocasa_raw_rollout_settings": 8,
+    "robocasa_raw_rollout_records": 432,
+    "robocasa_convert_action_ab_scenarios": 6,
+    "robocasa_convert_action_env_errors": 6,
+    "question_cards_changed": 0,
+    "coaching_state_created": false
+  },
+  "checks": {
+    "bounded_slice": "PASS (one UWM/LIBERO/RoboCasa evidence-freeze triplet; no mastery, coaching-state or ownership promotion)",
+    "libero_protocol": "PASS WITH WARNING (fixed-pruned-init, 5-step warmup, 50/task, 600-step rollout and 8-shard launcher documented)",
+    "strict_result": "PASS WITH WARNING (186/250 and per-task values copied from user-confirmed remote final; raw episodes/checkpoint absent)",
+    "reset_comparison": "PASS (232/250 retained as protocol diagnostic, not uplift)",
+    "table_ii_comparability": "FAIL TO PROMOTE (OOD init, object shift, background removal and seed protocol differ)",
+    "robocasa_actionheadfix": "PASS WITH WARNING (one 30-epoch run has direct train/config/normalizer plus eight raw rollout files; produced checkpoint and ownership remain unverified)",
+    "robocasa_closed_loop": "PASS WITH WARNING (paired 54-scenario recount gives 0-2 successes per setting; full-h4 0/54 and 45/54 contact; no benchmark or ablation uplift claim)",
+    "convert_action_bridge": "PASS WITH WARNING (direct 0/6 no env error; strict convert 0/6 with 6 dimension errors; GT bridge max diff 0)",
+    "dataloader_smoke": "PASS WITH WARNING (DataLoader-only p95 wait 13.862s to 0.194s; no matched GPU throughput)",
+    "ownership_boundary": "PENDING (commits and working-tree files separated; candidate/operator/reviewer roles open)",
+    "html_static_validation": "PASS (ARIS academic v1, one H1, MathJax, responsive rule, contained overflow and local links checked)",
+    "browser_visual_check": "PASS (localhost QA at 1440x1000 and 800x1000: 260px sticky desktop TOC becomes 753px static narrow TOC; 2/2 MathJax formulas render; 10 tables and 2 code blocks retain overflow:auto; zero page-wide horizontal overflow)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Obtain strict-run checkpoint/normalizer/config/init/episode/scorer bundle.",
+    "Run same-checkpoint reset-style versus fixed-pruned-init paired evaluation.",
+    "Run matched GPU DataLoader A/B and collect timing/memory/throughput.",
+    "Re-run RoboCasa wrapper-convert evaluation with run-specific manifest and no protocol mixing.",
+    "Answer OWN-UWM-001 with per-file personal/collaborator/tool/operator/reviewer boundaries."
+  ],
+  "next": "Audit the next highest-risk project evidence slice or begin a real oral drill; keep all cards unseen."
+}

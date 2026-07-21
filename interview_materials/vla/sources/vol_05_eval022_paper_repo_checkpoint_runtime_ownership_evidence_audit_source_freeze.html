@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 EVAL-022 Source Freeze：Paper→Repo→Checkpoint→Runtime→Ownership Evidence Audit</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_eval022_paper_repo_checkpoint_runtime_ownership_evidence_audit_source_freeze.md">
+<meta name="aris:source-sha256" content="eb0547563c5e16d1a8380fffa1558b392443ca0e8d391caeadf00e0e9ed02f91">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>eb0547563c5e16d1a8380fffa1558b392443ca0e8d391caeadf00e0e9ed02f91</code>；生成自：<code>interview_materials\vla\sources\vol_05_eval022_paper_repo_checkpoint_runtime_ownership_evidence_audit_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、Revision 与边界</a></li><li><a href="#2-claim">2. 先把一句强 Claim 拆成原子命题</a></li><li><a href="#3-evidence-chain">3. 九级 Evidence Chain</a></li><li><a href="#4">4. 四个问题必须正交</a></li><li><a href="#5-paper-model-card-datasheet-gate">5. Paper / Model Card / Datasheet Gate</a></li><li><a href="#paper-gate">Paper gate</a></li><li><a href="#model-card-gate">Model card gate</a></li><li><a href="#datasheet-gate">Datasheet gate</a></li><li><a href="#6-official-repo-source-revision-gate">6. Official Repo 与 Source Revision Gate</a></li><li><a href="#7-data-config-run-gate">7. Data / Config / Run Gate</a></li><li><a href="#8-checkpoint-gate">8. Checkpoint Gate：路径不是权重</a></li><li><a href="#9-runtime-gate">9. Runtime Gate：代码存在不等于走到该分支</a></li><li><a href="#10-raw-eval-metric-gate">10. Raw Eval / Metric Gate</a></li><li><a href="#11-evidence-graph-claim-and-gate">11. Evidence Graph：强 Claim 是 AND Gate</a></li><li><a href="#12-hash-attestation">12. Hash / Attestation 能证明什么</a></li><li><a href="#13-slsa-ml-run-provenance">13. SLSA 到 ML Run Provenance 的映射</a></li><li><a href="#14-git-author-committer-signature">14. Git Author、Committer 与 Signature 边界</a></li><li><a href="#15-contribution-ownership-ledger">15. Contribution / Ownership Ledger</a></li><li><a href="#16-license">16. License 也是逐层证据</a></li><li><a href="#17-contradiction-negative-evidence">17. Contradiction 与 Negative Evidence</a></li><li><a href="#18-artifact-bundle">18. 最小 Artifact Bundle</a></li><li><a href="#19">19. 审计伪代码</a></li><li><a href="#20-evidence-mapping">20. 五项目 Evidence Mapping</a></li><li><a href="#21">21. 面试三档表达</a></li><li><a href="#22-claim-ladder">22. Claim Ladder 与下一入口</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 05 EVAL-022 Source Freeze：Paper→Repo→Checkpoint→Runtime→Ownership Evidence Audit</h1>
+<div class="meta">状态：<code>source_frozen / VLA-EVAL-022 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-19 证据截止：2026-07-19 本切片冻结claim atomization、paper/model/data documentation、source/build provenance、repo/config/data/run/checkpoint/runtime/raw-eval证据边、identity/integrity/semantic-validity/ownership正交边界、contribution-role ledger、license分层与五项目真实性；只服务<code>VLA-EVAL-022</code>，不在本切片扩张新知识节点或口述状态。</div>
+<h2 id="question">问题（Question）</h2>
+<p>面试官问“论文方法是否真的落到你跑出的checkpoint、指标是不是这条runtime产生、哪些部分是你做的”时，怎样给出可审计答案？可靠做法不是甩出paper、GitHub链接、远端路径或commit author，而是把复合claim拆成原子命题，逐边证明paper→official repo revision→code/config/data→run→checkpoint bytes/load→runtime→raw outputs→scorer/result，并用独立贡献角色与文件/决策证据回答ownership。任何断边都必须降级表述。</p>
+<h2 id="1-revision">1. 冻结来源、Revision 与边界</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>类型 / revision / license</th><th>SHA-256</th><th>支持范围</th><th>不支持</th></tr></thead><tbody>
+<tr><td>S1</td><td>Mitchell et al., <em>Model Cards for Model Reporting</em></td><td>primary paper；FAT* 2019；arXiv <code>1810.03993v2</code>；ACM论文使用条件见PDF</td><td>PDF <code>a4049cdc78c3d635bdfb5165e495b0672d85690d66ccd6f149079d6e11e64aa1</code></td><td>model details/version、intended/out-of-scope use、factors、metrics、training/evaluation data、limitations与分解评估</td><td>model card等于checkpoint bytes、runtime执行、项目复现或个人ownership</td></tr>
+<tr><td>S2</td><td>Gebru et al., <em>Datasheets for Datasets</em></td><td>primary paper；CACM/2021；arXiv <code>1803.09010v8</code>；论文许可未在本冻结中断言</td><td>PDF <code>c7f595988ee2c109631d5173fdae37ff1774c68ec17add51bd012f2a6e8792d0</code></td><td>motivation、composition、collection、preprocessing/labeling、uses、distribution与maintenance文档框架</td><td>datasheet等于dataset bytes、当前snapshot、无泄漏、许可完备或本地训练使用证明</td></tr>
+<tr><td>S3</td><td>SLSA v1.2 Provenance / Build Provenance</td><td>official specification；tag <code>v1.2</code> object <code>19e4e2f005f871270c4f555fc47afecfb37f3efe</code>；Community Specification License 1.0</td><td>rendered page <code>9a176a8193aff28144dbab80584f0e9dd707a7c24f98c436349674a4a0e51e44</code>；tag zip <code>c6acc0f08e20e2cc329225da77dad864479d697bc214c87d0a8593d0c185808b</code>；<code>provenance.md</code> <code>89cae36d81bdd593b728ca09ff6804e87b07a762a36704c591ab784da5c9395e</code>；<code>build-provenance.md</code> <code>182ab5cf823c374874136371466ba43f99f0a9ba87a8046757d26a2ed74854a0</code>；schema <code>ea548207a78bd81b809a449edd5ed36a011a665ca7d15831d1133fe674fc41de</code>；LICENSE <code>f40b1d00369c21b963293189b4617b5de439a11858541c07c620984634fb63b7</code></td><td>artifact subject、buildDefinition、external/internal parameters、resolvedDependencies、builder/runDetails/byproducts与可验证来源</td><td>SLSA直接证明ML训练语义、benchmark有效性、checkpoint质量、论文一致性或个人贡献</td></tr>
+<tr><td>S4</td><td><code>git/git</code> commit / signature documentation</td><td>official-code/docs；commit <code>41365c2a9ba347870b80881c0d67454edd22fd49</code>；GPL-2.0</td><td><code>git-commit.adoc</code> <code>ec670cfacaf3df8745e9cfe2fa68b74247cb111e4208e1a0095036732cb5e717</code>；<code>git-commit-tree.adoc</code> <code>608e33a487db93f76d82401ac00110738f4569e31ce08c731cd7587a5ffb022d</code>；<code>gitformat-signature.adoc</code> <code>e99e9de49bb4d7566199956a44e886643faaf68333974ed055099a310595daf4</code>；COPYING <code>5b2198d1645f767585e8a88ac0499b04472164c0d2da22e75ecf97ef443ab32e</code></td><td>commit对象中的author/committer、可覆盖author、环境变量身份、commit/tag签名格式</td><td>Git name提供认证；签名证明独立设计/全部代码/运行结果；commit author等于exclusive ownership</td></tr>
+<tr><td>S5</td><td>CRediT Contributor Role Taxonomy</td><td>official NISO resource；ANSI/NISO standard approved 2022；CC BY 4.0；2026-07-19抓取</td><td>home <code>cfdeb42ee05bad7321dca0892e475d1e8ed436ed89358909fd214a6cdf90d27f</code>；role descriptors <code>a06f925327fb1c2d4ebbbb35fdcfe97ee5f537d9dfcb2f2b0dc2dfdc64fa9ab9</code></td><td>14种contribution roles，如Conceptualization、Data curation、Methodology、Software、Validation、Writing</td><td>CRediT角色表本身决定authorship或证明某人实际完成某角色；项目贡献可用百分比随意分配</td></tr>
+<tr><td>S6</td><td>本地跨卷前置审计</td><td>canonical local prerequisites</td><td>VOL03 Audit F <code>bef8ebb6540644cdbab76a92adaa71ba97523c17e04ce19632b71d54b11db809</code>；VOL04 benchmark audit <code>58a5636e953f44c2aa27e3acf65c621460186daf3732b916eac70e6ffab2de6a</code>；VOL04 independent review <code>115eed1c2c3d0d98adc46acde2e8effe12f0305b2f7ea2a81c7fa3ffac2503c1</code>；local ENG-004..006 gate <code>2ca6e710d21157a262391501e3c00838a718e84bce0bcc26e6b5eb8c816ef15d</code>；ENG-013 <code>af21822b7617fb3117768034c985737833de6a2a34f58ca42766f8a03c9b56ee</code>；ENG-021 <code>3159fd3b7e3331394ace1415b071e487cfebfb8a2ba06b94a7508803ae672bea</code>；EVAL-006 <code>8a2ccfbc382537d13e95feefe4ec146342d7478432a9a645344a64b302ccd054</code>；EVAL-009 <code>be6945d2475585f65cd74417070fbd4fee1b148660b35c139370935413b13dea</code>；EVAL-019 <code>01446407420dae1382eaccf503b66e1a06b2017e46a10b81bd13af81dc9568a0</code>；EVAL-020 <code>c85f5ca7ac79d3e942b0ba29916212435d7fe58ab6a28c254e1e25868a51397d</code></td><td>paper/code/runtime chain、benchmark protocol、checkpoint artifact、reproducibility、bundle packaging、selection和incident证据合同</td><td>下游项目缺口已自动闭合或ownership已证明</td></tr>
+<tr><td>S7</td><td>Evidence Manifest 与五项目inventories</td><td>local evidence</td><td>manifest <code>f3826289cdf2451758da11e0dddab3a7bb43d88b9a656fa340c08f71d16a21b6</code>；Harness <code>66acc52c685d5ace6926a42976b7ba59b6f889d6848f74bfd8216cad92aa291e</code>；OPD <code>0a68251de06bc8494b7d2be5e6dc169fc860a629c2f312e623db69ed29db12bb</code>；OpenPiVLA <code>a3c644f949295d72889b2acf6456bfd050e05c147b14381bbb067504a34ce293</code>；WAM <code>078c86b1484fe38fdd136428123c9529c6b750dfea5e031ec506cf617517772d</code>；UWM <code>728b8326dc345072886d0909fe2b8d81dfde3993771e7febed446d471bd3674d</code></td><td>当前workspace里每个项目的code/config/report/metric/checkpoint/runtime/ownership证据与缺口</td><td>其他机器/远端一定没有artifact；inventory作者等于项目全部ownership</td></tr>
+</tbody></table>
+<p>S1—S5冻结documentation、artifact provenance、Git identity与contribution roles；S6—S7把它们映射到VLA。下面的证据等级、claim graph、断边规则和ownership ledger是source-consistent engineering synthesis，不冒充这些来源的原始评分体系。</p>
+<h2 id="2-claim">2. 先把一句强 Claim 拆成原子命题</h2>
+<p>“我复现了论文方法并提升到97.4%”至少包含：</p>
+<ol><li>指定paper/version确实定义该方法与protocol；</li><li>指定repo/revision是相关实现，而非同名fork；</li><li>本地diff/config/data确实选择该实现路径；</li><li>run实际启动并完成目标训练/eval；</li><li>checkpoint bytes存在、可加载且来自该run；</li><li>runtime加载该checkpoint与配套processor/normalizer/controller；</li><li>raw outputs由该runtime产生；</li><li>scorer按冻结protocol复算出该数字；</li><li>数字的scope/denominator/uncertainty正确；</li><li>“我”的Methodology/Software/Investigation/Validation贡献有独立证据。</li></ol>
+<p>只要其中一项缺失，必须把claim降级到已证明的前一层，不能用其他层的材料补洞。</p>
+<h2 id="3-evidence-chain">3. 九级 Evidence Chain</h2>
+<table><thead><tr><th>级别</th><th>必要对象</th><th>最低证据</th><th>仍不能证明</th></tr></thead><tbody>
+<tr><td>E0 claim</td><td>简历/项目页/口述</td><td>原文、日期、版本</td><td>事实正确</td></tr>
+<tr><td>E1 paper/model/data docs</td><td>paper、model card、datasheet</td><td>version、DOI/URL、license、支持/不支持</td><td>本地采用</td></tr>
+<tr><td>E2 repo/source</td><td>official repo/revision/code path</td><td>commit/tag、tree/file SHA、license</td><td>code被执行</td></tr>
+<tr><td>E3 config/data/run intent</td><td>config、dataset manifest、command</td><td>resolved config、data SHA、run ID</td><td>run完成</td></tr>
+<tr><td>E4 checkpoint artifact</td><td>weights + config + processor/stats</td><td>bytes/size/SHA、parent run、strict load</td><td>该runtime/metric正确</td></tr>
+<tr><td>E5 runtime execution</td><td>env/container/hardware/command/log</td><td>dependency lock、start/end、exit、load/forward smoke</td><td>benchmark结果有效</td></tr>
+<tr><td>E6 raw evaluation</td><td>predictions/episode/trace/video</td><td>sample IDs、raw rows、scorer bundle</td><td>summary解释正确</td></tr>
+<tr><td>E7 result/protocol</td><td>summary + recompute</td><td>denominator、support、CI、same protocol</td><td>因果/部署价值</td></tr>
+<tr><td>E8 ownership</td><td>contribution ledger</td><td>role、file/diff/decision/review/witness</td><td>独立完成全部项目</td></tr>
+</tbody></table>
+<p>等级不是平均分。<code>E7 result</code>若checkpoint只到remote path，仍不能写成local-direct完整复现。</p>
+<h2 id="4">4. 四个问题必须正交</h2>
+<table><thead><tr><th>维度</th><th>问题</th><th>常见误替代</th></tr></thead><tbody>
+<tr><td>identity</td><td>这是哪个paper/repo/data/checkpoint/run？</td><td>同名路径或latest标签</td></tr>
+<tr><td>integrity</td><td>bytes/manifest/attestation是否被篡改或漂移？</td><td>只有文件名/截图</td></tr>
+<tr><td>semantic validity</td><td>实际执行的算法、protocol、metric是否匹配claim？</td><td>SHA相同就认为结果正确</td></tr>
+<tr><td>ownership</td><td>谁提出、实现、执行、验证、写作？</td><td>Git author、目录owner或报告作者</td></tr>
+</tbody></table>
+<p>签名和hash提高identity/integrity，不自动回答semantic validity或ownership。</p>
+<h2 id="5-paper-model-card-datasheet-gate">5. Paper / Model Card / Datasheet Gate</h2>
+<h3 id="paper-gate">Paper gate</h3>
+<ul><li>固定title、authors、venue/arXiv version、发布日期与license；</li><li>把claim定位到section/table/equation/appendix；</li><li>区分论文main method、ablation、future work与作者推测；</li><li>记录benchmark、dataset split、seed/trials、hardware和scorer；</li><li>不把论文数字写成本地数字。</li></ul>
+<h3 id="model-card-gate">Model card gate</h3>
+<p>Model Cards建议记录model details/version、intended/out-of-scope use、factors、metrics、training/evaluation data与限制。[S1] 它能解释模型发布者的声明，但不是checkpoint byte attestation，也不证明本地load或eval。</p>
+<h3 id="datasheet-gate">Datasheet gate</h3>
+<p>Datasheets覆盖motivation、composition、collection、preprocessing/labeling、uses、distribution和maintenance。[S2] 对VLA还要补observation/action schema、robot/site/task、camera、timestamp、normalizer、license和split/dedupe；文档存在不等于当前data snapshot与文档一致。</p>
+<h2 id="6-official-repo-source-revision-gate">6. Official Repo 与 Source Revision Gate</h2>
+<p>“官方repo”需由paper/project/model card/组织主页交叉指定；fork可作为local implementation，但不能冒充upstream。冻结：</p>
+<ul><li>repo URL、commit/tag、submodule/LFS、dirty diff；</li><li>exact code symbol、call path、config default与CLI/env override；</li><li>dependency/patch/license；</li><li>paper claim到code path的语义映射与未实现项。</li></ul>
+<p>README写了feature不等于当前revision执行了feature；config字段存在不等于forward/loss/rollout消费它。</p>
+<h2 id="7-data-config-run-gate">7. Data / Config / Run Gate</h2>
+<p>run intent至少绑定：</p>
+<pre><code class="language-text">run_id + parent_run
+code/patch commit
+dataset snapshot + split/dedupe
+resolved config + CLI/env
+base checkpoint + processor/tokenizer/normalizer
+seed/sampler cursor/hardware/runtime
+output root + retention</code></pre>
+<p>config模板、launcher和远端路径只证明“可计划/曾配置”，不证明job启动、完成或生成了正确artifact。需要scheduler/job ID、start/end/exit、完整resolved config、logs和artifact manifest。</p>
+<h2 id="8-checkpoint-gate">8. Checkpoint Gate：路径不是权重</h2>
+<p>完整checkpoint bundle至少包含：</p>
+<ul><li>weight bytes、size、SHA与format；</li><li>config/model class、processor/tokenizer、normalizer/stats；</li><li>action dimension/order/unit/frame、chunk/horizon与controller contract；</li><li>parent run、step/tokens、optimizer/scheduler（若claim涉及resume）；</li><li>strict load、fixed-input forward、output shape/finite与round-trip；</li><li>checkpoint/model-card/repo各自license。</li></ul>
+<p><code>/remote/path/ckpt-5000</code>、manifest里写<code>final_model</code>、训练日志写“saved”都不是本地checkpoint bytes。load report若不伴随被测binary SHA，也只能证明报告内容，不证明当前文件可加载。</p>
+<h2 id="9-runtime-gate">9. Runtime Gate：代码存在不等于走到该分支</h2>
+<p>runtime证据至少回答：</p>
+<ul><li>exact command、cwd、env/container、dependency lock、driver/backend/hardware；</li><li>code/config/data/checkpoint/scorer full SHA；</li><li>selected branch/feature flag与resolved values；</li><li>load/forward/rollout start-end、exit code、exceptions/retries；</li><li>input/output tensor/action schema、denormalize/controller path；</li><li>raw predictions/episode trace/video/log位置与SHA。</li></ul>
+<p>一个smoke可以证明某条短路径可执行，但不能替代formal training、完整benchmark或真实机器人部署。</p>
+<h2 id="10-raw-eval-metric-gate">10. Raw Eval / Metric Gate</h2>
+<p>result必须从raw units可重算：</p>
+<pre><code class="language-text">raw prediction / episode
+ -&gt; versioned parser + scorer
+ -&gt; per-unit result
+ -&gt; slice/aggregate + denominator
+ -&gt; uncertainty + invalid/missing ledger</code></pre>
+<p>summary JSON、截图或README数字若缺raw rows，证据等级是report-supported/summary-only。不同checkpoint、task set、n、scorer或protocol不能拼成单一曲线或“提升”。</p>
+<h2 id="11-evidence-graph-claim-and-gate">11. Evidence Graph：强 Claim 是 AND Gate</h2>
+<p>令claim <code>c</code>需要的证据节点集合为<code>R(c)</code>，要求的证据边为<code>E(c)</code>：</p>
+<div class="formula">\[
+V(c)=
+\left(\bigwedge_{v\in R(c)} I_v\right)
+\land
+\left(\bigwedge_{(u,v)\in E(c)} M_{uv}\right).
+\]</div>
+<p>变量解释：<code>I_v</code>表示artifact身份/完整性通过，<code>M_uv</code>表示两层的语义映射已证明。直觉：有paper和checkpoint但无法证明中间run lineage，强claim仍断链。实现映射：claim registry逐项引用artifact SHA与edge evidence；缺边标<code>OPEN/CONFLICT</code>，不能靠总分平均掉。</p>
+<p>保守的claim上限可写成：</p>
+<div class="formula">\[
+L(c)=\min_{e\in R(c)}L(e).
+\]</div>
+<p>变量解释：<code>L(e)</code>是每个必需证据的等级。直觉：强结论受最弱必需环节限制。实现映射：这是仓库审核gate，不是统计估计；若某项对该claim并非必要，应在claim spec中事前删除，而不是看到缺口后临时豁免。</p>
+<h2 id="12-hash-attestation">12. Hash / Attestation 能证明什么</h2>
+<p>可用hash链绑定相邻manifest：</p>
+<div class="formula">\[
+h_{k+1}=SHA256\!\left(h_k\parallel m_k\parallel bytes_{k+1}\right).
+\]</div>
+<p>变量解释：<code>h_k</code>是上游artifact digest，<code>m_k</code>是映射manifest，<code>bytes_{k+1}</code>是下游artifact。直觉：任何内容变化都会改变后续digest。实现映射：SLSA的subject、resolvedDependencies、buildDefinition和runDetails提供通用provenance思想；ML训练还要自定义data/config/checkpoint/scorer字段。[S3]</p>
+<p>hash只绑定bytes，不证明这些bytes实现论文、数据无泄漏、指标正确或谁写了代码。</p>
+<h2 id="13-slsa-ml-run-provenance">13. SLSA 到 ML Run Provenance 的映射</h2>
+<table><thead><tr><th>SLSA字段</th><th>ML/VLA映射</th><th>额外必需字段</th></tr></thead><tbody>
+<tr><td>subject</td><td>checkpoint/eval bundle</td><td>processor/normalizer/controller/scorer bundle</td></tr>
+<tr><td>buildDefinition</td><td>trainer/evaluator recipe</td><td>objective、mask、task/protocol语义</td></tr>
+<tr><td>externalParameters</td><td>CLI、dataset/checkpoint refs</td><td>resolved values与allowlist</td></tr>
+<tr><td>resolvedDependencies</td><td>code/data/base weights/deps digests</td><td>dataset split、license、model card</td></tr>
+<tr><td>runDetails.builder</td><td>scheduler/container/hardware platform</td><td>GPU/backend/driver/robot/simulator</td></tr>
+<tr><td>metadata/byproducts</td><td>start/end/invocation/logs</td><td>loss/eval/trace/invalid ledger</td></tr>
+</tbody></table>
+<p>SLSA是软件供应链provenance标准，本页只借其结构；不能宣称五项目达到某SLSA level。</p>
+<h2 id="14-git-author-committer-signature">14. Git Author、Committer 与 Signature 边界</h2>
+<p>Git官方文档显示author可用<code>--author</code>覆盖，author/committer字段可由环境变量提供；name本身不产生authentication作用。[S4] commit/tag签名可验证对象与签名key关系，但仍不能自动证明：</p>
+<ul><li>该人独立设计全部方法；</li><li>diff全由该人手写；</li><li>该commit在目标run中执行；</li><li>指标由该commit产生；</li><li>协作者、上游与工具辅助不存在。</li></ul>
+<p>因此Git author/committer是<code>authorship clue</code>，不是exclusive ownership verdict。</p>
+<h2 id="15-contribution-ownership-ledger">15. Contribution / Ownership Ledger</h2>
+<p>CRediT提供Conceptualization、Data curation、Formal analysis、Investigation、Methodology、Project administration、Resources、Software、Supervision、Validation、Visualization与Writing等14种角色，并明确它不用于决定authorship。[S5]</p>
+<p>项目ledger对每个artifact/decision记录：</p>
+<table><thead><tr><th>字段</th><th>例子</th></tr></thead><tbody>
+<tr><td>person / actor</td><td>候选人、同事、upstream、tool-assisted</td></tr>
+<tr><td>role</td><td>Methodology / Software / Validation / Data curation</td></tr>
+<tr><td>scope</td><td>file/function/config/experiment/report section</td></tr>
+<tr><td>activity</td><td>proposed / implemented / reviewed / executed / verified</td></tr>
+<tr><td>evidence</td><td>diff、commit、review、meeting/decision、run/log、witness</td></tr>
+<tr><td>collaboration</td><td>solo / pair / team / upstream adaptation</td></tr>
+<tr><td>confidence</td><td>direct / corroborated / partial / unverified</td></tr>
+<tr><td>forbidden inference</td><td>“参与review”不得写“独立实现”</td></tr>
+</tbody></table>
+<p>不要伪造百分比。面试中用具体模块、决策、实现和验收边界说明贡献。</p>
+<h2 id="16-license">16. License 也是逐层证据</h2>
+<p>paper、repo、dataset、base checkpoint、fine-tuned checkpoint和runtime依赖可能有不同license。repo Apache/MIT不能自动覆盖model weights或dataset；本地有bytes也不自动获得发布/商用权。license manifest需逐artifact记录source、version、text/hash、用途、再分发与商业限制；未知就标<code>UNKNOWN</code>。</p>
+<h2 id="17-contradiction-negative-evidence">17. Contradiction 与 Negative Evidence</h2>
+<p>以下不能静默覆盖：</p>
+<ul><li>paper/default与repo/current不同；</li><li>README、config、code和runtime resolved value冲突；</li><li>report metric与raw recompute不同；</li><li>checkpoint path存在但binary缺失；</li><li>model card、repo和weight license不同；</li><li>commit author与贡献口述冲突；</li><li>current workspace未找到artifact。</li></ul>
+<p>“当前workspace未找到”只证明本次审计范围内缺失，不证明其他机器或远端一定不存在。记录search scope、date、pattern与excluded roots。</p>
+<h2 id="18-artifact-bundle">18. 最小 Artifact Bundle</h2>
+<pre><code class="language-text">evidence_audit/
+  claim_registry.jsonl
+  paper_model_data_source_freeze.json
+  repo_revision_tree_manifest.json
+  code_symbol_to_claim_edges.jsonl
+  dataset_and_split_manifest.json
+  resolved_run_config.json
+  run_invocation_and_exit.json
+  checkpoint_bundle_manifest.json
+  load_forward_roundtrip.json
+  runtime_environment_lock.json
+  raw_eval_and_recompute/
+  protocol_metric_registry.json
+  evidence_graph.json
+  contradiction_ledger.jsonl
+  contribution_role_ledger.jsonl
+  license_manifest.jsonl
+  checksums/manifest-sha256.txt
+  verify_claims.ps1</code></pre>
+<p>claim registry中的每个强表述必须列required nodes/edges、当前status、safe wording和补证据动作。</p>
+<h2 id="19">19. 审计伪代码</h2>
+<pre><code class="language-python">def audit_claim(claim, evidence_graph, ownership_ledger):
+    # 1. Split a compound resume statement into independently falsifiable atoms.
+    atoms = atomize_claim(claim)
+    verdicts = []
+
+    for atom in atoms:
+        # 2. Require identities and semantic edges through the full execution chain.
+        required = load_required_nodes_and_edges(atom)
+        chain = evidence_graph.match(required)
+
+        # 3. Keep integrity, runtime validity, result validity and ownership separate.
+        technical = verify_identity_integrity_semantics(chain)
+        contribution = verify_role_scope_evidence(atom, ownership_ledger)
+
+        # 4. Any missing or conflicting mandatory edge lowers the safe wording.
+        verdicts.append(bound_claim_to_weakest_required_evidence(
+            atom, technical, contribution
+        ))
+
+    return persist_claim_verdicts_and_open_gaps(verdicts)</code></pre>
+<p>伪代码是本仓库审计合同，不代表五项目已有自动claim verifier。</p>
+<h2 id="20-evidence-mapping">20. 五项目 Evidence Mapping</h2>
+<table><thead><tr><th>项目</th><th>已闭合链段</th><th>关键断边</th><th>当前安全上限</th><th>Ownership边界</th></tr></thead><tbody>
+<tr><td>OPD</td><td>local code/config/manifests、数据route、10k holdout leakage audit、by-format/by-pool tables与point协议修正</td><td>checkpoint weights/optimizer、raw predictions、统一ablation、old-final→OPD5000 lineage</td><td>可讲设计/实现路径和protocol-bounded表格；不能说完整可复现或OPD单因果</td><td>Git author只作参与线索；缺逐文件/决策/协作/tool ledger</td></tr>
+<tr><td>Robot Harness</td><td>runtime/tool registry、SFT/GRPO数据脚本、schema-aware reward与多组eval summaries</td><td>checkpoint/raw predictions、共同n/scorer、真实browser/robot episode、完整run lineage</td><td>可讲结构化工具与评测设计；强结果保持summary/protocol-bound</td><td>runtime/data/reward分别记录角色；不能写独立完成全部harness</td></tr>
+<tr><td>OpenPiVLA</td><td>formal trainer、JSON/causal-CE路径、三类recipe、smoke/report/diagnostic、official launcher</td><td>formal checkpoint bytes/load、97.4 raw bundle、archive→formal lineage、<code>H=15,D=72</code>与<code>limit=16</code>冲突</td><td>可讲local-direct code/config/smoke；97.4仅archive-summary-only</td><td>commit与项目页支持参与，仍缺file/decision/review ledger</td></tr>
+<tr><td>WAM</td><td>public Cosmos paper→repo→model card→eval path；本地简历已安全降级；少量diagnostic manifests</td><td>当前workspace无raw run/checkpoint/config/log/metric/episode完整bundle；historical数字仅claim</td><td>只能讲上游审计、诊断设计和待补证据；不能讲本地复现/uplift/root cause</td><td>public architecture非个人原创；local ownership未验证</td></tr>
+<tr><td>UWM / LIBERO</td><td>local scripts/report、protocol tuple、normalizer/action metadata、DataLoader smoke、user-confirmed summary</td><td>checkpoint binary、250 raw episodes/video、formal OOD/3-seed、fixed/reset pairs、ownership</td><td>可讲迁移/协议/诊断；<code>186/250</code>保持user-confirmed/protocol-limited</td><td>upstream UWM结构与个人迁移/诊断分开；缺逐文件ledger</td></tr>
+</tbody></table>
+<p>五项目inventories都达到“能清楚说已有什么和缺什么”，但没有一个完成E1→E8全链。EVAL-022不提升任何项目metric、复现、部署、因果或ownership等级。</p>
+<h2 id="21">21. 面试三档表达</h2>
+<table><thead><tr><th>档位</th><th>表述</th></tr></thead><tbody>
+<tr><td>危险</td><td>“论文代码我都跑了，Git记录也能证明全是我做的。”</td></tr>
+<tr><td>可过</td><td>“我核对了paper与固定repo revision，本地有脚本/config/report；checkpoint或raw缺失的数字只按summary讲。”</td></tr>
+<tr><td>强</td><td>“我把claim拆成paper→code→run→checkpoint→runtime→raw→metric与独立ownership两条链；逐项给SHA、protocol和缺口，只在已闭合层级陈述贡献与结果。”</td></tr>
+</tbody></table>
+<p>强回答不是更大胆，而是更精确、更可复核。</p>
+<h2 id="22-claim-ladder">22. Claim Ladder 与下一入口</h2>
+<table><thead><tr><th>级别</th><th>可接受表述</th><th>所需证据</th></tr></thead><tbody>
+<tr><td>C0</td><td>理解/审计上游方法</td><td>paper/model/data docs与固定revision</td></tr>
+<tr><td>C1</td><td>参与本地实现/迁移</td><td>code/config/diff + contribution scope</td></tr>
+<tr><td>C2</td><td>执行并验证run</td><td>resolved run、checkpoint bytes/load、runtime/raw outputs</td></tr>
+<tr><td>C3</td><td>报告可靠结果</td><td>recomputable protocol、denominator、uncertainty、selection边界</td></tr>
+<tr><td>C4</td><td>主导/生产影响</td><td>decision/ownership ledger、release/monitor/incident与外部影响证据</td></tr>
+</tbody></table>
+<p>当前五项目各claim分布在C0–C2输入，强结果与ownership多不到完整C2/C3。本节点保持<code>WARN</code>，VOL 05达到知识/题卡<code>44/44</code>但全部仍为<code>unseen</code>。下一bounded slice应执行VOL 05 completion audit / independent fact review，或从现有题卡中选择一题进行真实口述；本切片不创建<code>coaching_state.md</code>。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Mitchell et al., <a href="https://arxiv.org/abs/1810.03993v2"><em>Model Cards for Model Reporting</em></a>, FAT* 2019。</li><li>Gebru et al., <a href="https://arxiv.org/abs/1803.09010v8"><em>Datasheets for Datasets</em></a>, 2021。</li><li>SLSA, <a href="https://slsa.dev/spec/v1.2/provenance">Provenance v1.2</a>与<a href="https://slsa.dev/spec/v1.2/build-provenance">Build Provenance v1.2</a>。</li><li><code>git/git</code>, <a href="https://github.com/git/git/blob/41365c2a9ba347870b80881c0d67454edd22fd49/Documentation/git-commit.adoc"><code>git-commit</code>@<code>41365c2</code></a>、<a href="https://github.com/git/git/blob/41365c2a9ba347870b80881c0d67454edd22fd49/Documentation/git-commit-tree.adoc"><code>git-commit-tree</code></a>与<a href="https://github.com/git/git/blob/41365c2a9ba347870b80881c0d67454edd22fd49/Documentation/gitformat-signature.adoc"><code>gitformat-signature</code></a>。</li><li>NISO, <a href="https://credit.niso.org/">CRediT Contributor Role Taxonomy</a>与<a href="https://credit.niso.org/contributor-roles-defined/">role descriptors</a>。</li><li><a href="vol_03_architecture_execution_claim_to_code.html">VOL 03 Architecture / Execution Audit</a>、<a href="vol_04_benchmark_evidence_claim_to_protocol.html">VOL 04 Benchmark Evidence Audit</a>、<a href="vol_05_local_artifact_gate_eng004_006.html">VOL 05 Local Artifact Gate</a>、<a href="vol_05_eng021_model_processor_normalizer_packaging_source_freeze.html">ENG-021 Bundle Packaging</a>、<a href="vol_05_eval009_raw_predictions_episode_trace_video_recomputable_summary_source_freeze.html">EVAL-009 Recomputable Bundle</a>与<a href="vol_05_eval020_incident_timeline_root_cause_bugfix_verification_source_freeze.html">EVAL-020 Incident Evidence</a>。</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest</a>与五项目claim–evidence inventories。</li></ol>
+</article></body></html>

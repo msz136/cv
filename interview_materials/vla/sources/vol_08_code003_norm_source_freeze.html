@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 08 CODE-003 Source Freeze：LayerNorm / RMSNorm 实现</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_08_code003_norm_source_freeze.md">
+<meta name="aris:source-sha256" content="7fb677abd34b08834b974252ab3f124adf858d32b5e41797f425d32baa3fd7a5">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>7fb677abd34b08834b974252ab3f124adf858d32b5e41797f425d32baa3fd7a5</code>；生成自：<code>interview_materials\vla\sources\vol_08_code003_norm_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 来源与实现参照</a></li><li><a href="#2-shape">2. 冻结数学与 shape 合同</a></li><li><a href="#3">3. 测试门</a></li><li><a href="#4-vla">4. VLA 边界</a></li><li><a href="#5-source-gate">5. Source gate 结论</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 08 CODE-003 Source Freeze：LayerNorm / RMSNorm 实现</h1>
+<div class="meta">状态：<code>source_frozen / CODE-VLA-003 / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-18 证据截止：2026-07-18 本切片冻结归一化轴、公式、epsilon、affine 参数、dtype 与测试边界；不把通用 norm 实现写成项目性能优化。</div>
+<h2 id="question">问题（Question）</h2>
+<p>手写 LayerNorm 与 RMSNorm 时，如何确定归一化维度、解释两者是否减均值、处理 epsilon/低精度/affine，并验证训练与推理一致性？</p>
+<h2 id="1">1. 来源与实现参照</h2>
+<table><thead><tr><th>来源</th><th>类型 / revision</th><th>可支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td><a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html">PyTorch LayerNorm</a></td><td>official API docs；2026-07-18</td><td>normalized shape、均值/方差、elementwise affine、epsilon</td><td>用户项目具体 norm 路径或 uplift</td></tr>
+<tr><td><a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.RMSNorm.html">PyTorch RMSNorm</a></td><td>official API docs；2026-07-18</td><td>RMS 归一化、normalized shape、affine 与 eps</td><td>所有模型都用同一 epsilon/dtype</td></tr>
+<tr><td><a href="https://arxiv.org/abs/1910.07467">Root Mean Square Layer Normalization</a></td><td>primary paper；2019</td><td>RMSNorm 不做 re-centering、只按 RMS 缩放的动机</td><td>用户项目已复现效率或质量收益</td></tr>
+<tr><td>本仓库 <a href="../knowledge/vol_01_foundations.html">VOL 01 Foundations</a></td><td>local canonical knowledge</td><td>pre-norm/post-norm、Transformer 基础</td><td>CODE-VLA-003 的本地实现/parity</td></tr>
+</tbody></table>
+<h2 id="2-shape">2. 冻结数学与 shape 合同</h2>
+<p>LayerNorm：</p>
+<div class="formula">\[
+y=\gamma\odot\frac{x-\mu}{\sqrt{\sigma^2+\epsilon}}+\beta.
+\]</div>
+<p>RMSNorm：</p>
+<div class="formula">\[
+y=\gamma\odot\frac{x}{\sqrt{\operatorname{mean}(x^2)+\epsilon}}.
+\]</div>
+<p>对 Transformer 常见输入 <code>[B,L,D]</code>，默认沿最后 <code>D</code> 归一化，每个 token 独立；若 <code>normalized_shape</code> 包含多维，则沿末尾多维归一化。LayerNorm 通常有 \((\gamma,\beta)\)，RMSNorm 通常只有缩放 \(\gamma\)。</p>
+<h2 id="3">3. 测试门</h2>
+<p>最小矩阵：已知小张量、任意 batch/sequence、不同 normalized shape、constant input、零输入、极大/极小值、fp16/bf16 与 fp32 累加、affine on/off、forward/backward parity、train/eval 相同输入。LayerNorm/RMSNorm 不依赖 running statistics，不能照搬 BatchNorm 的训练/推理逻辑。</p>
+<h2 id="4-vla">4. VLA 边界</h2>
+<p>VLA/VLM backbone 中 norm 可出现在 attention/MLP 前后或 action expert 内；pre-norm/post-norm、epsilon、dtype 和 residual path 共同影响稳定性。看到 <code>RMSNorm</code> 不能自动得出“更快/更好”，更不能把上游模型的 norm 选择写成个人创新。</p>
+<h2 id="5-source-gate">5. Source gate 结论</h2>
+<p>官方 API 与 RMSNorm 论文足以冻结公式、axis、affine、epsilon 和测试合同；当前没有本地 CODE-VLA-003 forward/backward parity 或项目 ablation，因此保持 <code>WARN</code>。</p>
+<p>下一步：保持已同步的 CODE-VLA-003 题卡为 <code>unseen</code>，进行白板练习或补充 norm parity artifact。</p>
+<h2 id="references">References</h2>
+<ol><li>PyTorch <a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html"><code>LayerNorm</code></a> 与 <a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.RMSNorm.html"><code>RMSNorm</code></a>。</li><li>Zhang &amp; Sennrich, <a href="https://arxiv.org/abs/1910.07467">Root Mean Square Layer Normalization</a>。</li><li>本仓库 <a href="../knowledge/vol_01_foundations.html">VOL 01 Foundations</a>。</li></ol>
+</article></body></html>

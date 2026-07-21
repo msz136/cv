@@ -1,0 +1,31 @@
+{
+  "artifact": "knowledge/vol_08_sys004_fault_recovery_safety_observability.md",
+  "html": "knowledge/vol_08_sys004_fault_recovery_safety_observability.html",
+  "source_freeze": "sources/vol_08_sys004_fault_recovery_safety_observability_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / SYS-VLA-004 / knowledge_12_of_phase / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "dbecf2768df64006db66d669262fb251351e20fcdc027075b91c5f9ca3249807",
+  "question_ids": ["SYS-VLA-004"],
+  "checks": {
+    "source_gate": "PASS WITH WARNING (SYS-004 source freeze provides 8 source rows, fixed SHA ledger and 12/12 probes)",
+    "fault_state_contract": "PASS (HEALTHY/DEGRADED/QUIESCING/HOLD/STOPPED/RECOVERY/QUARANTINED, owners and exit evidence are explicit)",
+    "first_divergence": "PASS (symptom, first verified divergence, root cause and recovery outcome are separated)",
+    "observability_mapping": "PASS (trace/metric/log/baggage roles, identity correlation and missing-telemetry boundary are explicit)",
+    "safety_and_fencing": "PASS WITH WARNING (safe-apply predicate, lease epoch, controller ack, hold/stop/e-stop distinction are explicit design contracts)",
+    "rollback_and_replay": "PASS (schema/normalizer/controller compatibility, quiesce, immutable replay and recovery verification are explicit)",
+    "pseudocode": "PASS (commented handler fences identity before side effect and records correlated event before recovery)",
+    "project_truth_boundary": "PASS (five projects remain bounded hooks; no fault supervisor, physical-stop success or personal ownership is inferred)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, valid hierarchy, two formula blocks, commented pseudocode, balanced MathJax and matching SHA)",
+    "local_links": "PASS (SYS-004 source freeze, SYS-002, EVAL-008 and official links resolve)",
+    "browser_visual_check": "PASS (localhost desktop QA at 1280x720; ARIS palette/serif/TOC/contained formulas and code verified; 900px responsive rule and narrow overflow checked statically)",
+    "question_card": "PASS (questions/vol_08_sys004.md/.html/.question_list.md/.review.json synchronized; card remains unseen)",
+    "oral_or_system_design_drill": "PENDING"
+  },
+  "open_items": [
+    "No local fault supervisor, controller/e-stop acknowledgement, fault-injection matrix, immutable replay bundle, rollback compatibility gate or candidate ownership confirmation is present.",
+    "Keep SYS-VLA-004 unseen until a real system-design oral drill.",
+    "Do not create coaching_state.md before a candidate answer."
+  ],
+  "next": "Run one SYS-VLA-004 system-design oral drill; keep it unseen and do not start another VOL 08 node."
+}

@@ -1,0 +1,35 @@
+{
+  "artifact": "sources/vol_04_wm028_routing_slot_mask_loss_weight_source_freeze.md",
+  "html": "sources/vol_04_wm028_routing_slot_mask_loss_weight_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-WM-028 / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "b610b9998a7aa6eddd101247ca171dc226b111f6d09f6997d8bd81f38661c9db",
+  "covered_question_ids": ["VLA-WM-028"],
+  "checks": {
+    "official_code_revision": "PASS (NVlabs/cosmos-policy commit 18a2acc independently fetched and five relevant file hashes frozen)",
+    "routing_contract": "PASS (demo/success/failure admission, rollout role flags and expected 50/25/25 base mixture bounded to frozen recipe)",
+    "mask_separation": "PASS (condition, target, valid/padding and metric masks have distinct semantics)",
+    "frozen_defaults": "PASS (isolated target-mask flags false and action multiplier 1; base LIBERO/RoboCasa experiment config does not override)",
+    "exact_reduction": "PASS (mask/multiplier precedes full BCTHW mean; active slot count identified as implicit weight)",
+    "value_mask_warning": "PASS WITH WARNING (mask_value_prediction branch builds mask but its flag is absent from the apply condition; base config remains off)",
+    "effective_weight": "PASS (sampling probability, active targets, noise weight, multiplier, denominator and gradient share separated)",
+    "recommended_design_boundary": "PASS (valid mask and per-role normalization explicitly marked as proposed ablation, not frozen upstream behavior)",
+    "test_contract": "PASS (role one-hot, truth table, leakage, empty target, padding, mixture, multiplier and distributed parity included)",
+    "project_evidence_boundary": "PASS (WAM resolved config/masks/denominator/gradient/episodes/ownership remain missing)",
+    "html_static_validation": "PASS (canonical SHA, one H1, thirteen H2 headings, four tables, pseudocode and MathJax rendered)",
+    "local_links": "PASS (WM-025/027, Cosmos audit and WAM inventory links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "downstream_artifacts": "PASS WITH WARNING (knowledge page and one unseen atomic card synchronized)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep VLA-WM-028 unseen until a real oral drill.",
+    "Collect WAM resolved config, role/mask dump, active-target denominator, gradient share, matched episodes and ownership.",
+    "Do not claim the recommended valid mask/per-role normalization is upstream or locally implemented.",
+    "Do not infer closed-loop benefit from config ratios, mask names or component metrics.",
+    "Do not create coaching_state.md before an actual drill."
+  ],
+  "next": "Proceed only to VLA-WM-029 imagined/OOD value calibration and pessimism, or run one WM-028 oral drill; keep WM-030..038 deferred."
+}
+

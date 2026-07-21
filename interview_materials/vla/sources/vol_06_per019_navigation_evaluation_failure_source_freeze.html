@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 PER-019 Source Freeze：Navigation Evaluation / Failure Protocol</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per019_navigation_evaluation_failure_source_freeze.md">
+<meta name="aris:source-sha256" content="d5f54bc60015fe2075d4ca26da146a5e139cb71916e0ca792909c681b11206cb">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>d5f54bc60015fe2075d4ca26da146a5e139cb71916e0ca792909c681b11206cb</code>；生成自：<code>interview_materials\vla\sources\vol_06_per019_navigation_evaluation_failure_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-official-source-matrix">2. Primary / official source matrix</a></li><li><a href="#3-official-implementation-probes">3. Official implementation probes</a></li><li><a href="#4-typed-navigation-evaluation-contract">4. Typed navigation evaluation contract</a></li><li><a href="#5-failure-taxonomy">5. Failure taxonomy 与诊断顺序</a></li><li><a href="#6">6. 五项目真实性边界</a></li><li><a href="#7">7. 退出条件与下一步</a></li><li><a href="#section-9">参考来源</a></li></ol></nav>
+<h1>VOL 06 PER-019 Source Freeze：Navigation Evaluation / Failure Protocol</h1>
+<div class="meta">状态：<code>source_frozen / VLA-PER-019 / primary_official_checked / navigation_eval_contract / knowledge_card_pending / WARN</code> 冻结日期：2026-07-21 证据截止：2026-07-21 本 source slice 只冻结导航评估指标、episode denominator、stop/success、SPL、SoftSPL、split/protocol identity、统计报告与 failure taxonomy 的公开机制；不生成 knowledge/card，不修改 mastery，不创建 <code>coaching_state.md</code>，不把五个项目写成个人导航结果。</div>
+<h2 id="question">问题（Question）</h2>
+<p>在 VLN/ObjectNav/PointGoal 评估中，怎样保证 <code>success</code>、<code>SPL</code>、<code>SoftSPL</code>、<code>NE</code>、<code>OS</code>、<code>TL</code> 与 failure taxonomy 共享同一 episode、split、stop 和 denominator？当本地没有完整 navigation bundle 时，如何 fail closed，而不是从一张 summary 或训练 loss 推断导航能力？</p>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>Success 是带 stop 条件的协议谓词</strong>：固定 Habitat-Lab revision 的 <code>Success</code> measure 依赖 <code>DistanceToGoal</code>，并要求 agent 调用 stop 且距离低于 <code>success_distance</code>；“到过附近”不等于成功。</li><li><strong>SPL 是 success-weighted path length</strong>：令 (L^star) 为 episode 的参考最短距离，(L) 为实际轨迹长度，(Sin{0,1}) 为同一协议下的 success，则 (SPL=Scdot L^star/max(L^star,L))。它依赖同一 episode 的 distance、success 与轨迹累计，不能脱离 stop/split 单独比较。</li><li><strong>距离定义必须显式绑定</strong>：Habitat-Lab 的 <code>DistanceToGoal</code> 根据 <code>distance_to</code> 选择 <code>POINT</code> 或 <code>VIEW_POINTS</code>，使用 simulator geodesic distance；把欧氏距离、geodesic distance、goal viewpoint 和 success threshold 混为一谈会改变指标含义。</li><li><strong>SoftSPL 不是另一个 success label</strong>：官方实现用连续的软成功项替代二值 success，再乘以 path-length penalty；它适合诊断进度，但不能直接当作 binary success 或 leaderboard SPL。</li><li><strong>评估 denominator 是协议的一部分</strong>：VLN-CE README 明确区分 train/val_seen/val_unseen/test-challenge，并说明 <code>EVAL.EPISODE_COUNT == -1</code> 才评估全部 episode；子集、过滤 invalid episode、提前截断或只报成功样本都会改变 estimand。</li><li><strong>官方结果也受 build/protocol 影响</strong>：VLN-CE README 记录同一模型在论文与 leaderboard 上的 val-unseen SPL 不一致，并指出 hardware 与 Habitat build 会影响结果；因此复述公开数字时必须带来源、split、revision 和 protocol tuple。</li><li><strong>failure taxonomy 必须绑定 raw episode trace</strong>：至少区分 invalid action/parse、early stop、timeout/horizon、collision/constraint、localization/map-frame、goal-distance、controller execution、dataset/split/protocol mismatch 与 unknown；summary-only 不能确认 root cause。</li><li>五个本地项目目前没有完整的 navigation episode bundle、统一 scorer、split manifest、逐 episode trace 和候选人 ownership 证据；因此本节点只提供面试评估合同，不升级个人导航 success/SPL/OS/NE claim。</li></ol>
+<h2 id="2-primary-official-source-matrix">2. Primary / official source matrix</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>固定版本 / 读取证据</th><th>支持的 claim</th><th>不支持的 claim</th></tr></thead><tbody>
+<tr><td>P1</td><td>Anderson et al., <a href="https://arxiv.org/pdf/1807.06757v3">On Evaluation of Embodied Navigation Agents</a></td><td>arXiv <code>1807.06757v3</code>；SPL 定义与 shortest-path / trajectory 评估语境</td><td>success-weighted path length、参考路径长度与导航评估协议</td><td>本地项目复现、任意 split 的可比性、真实机器人安全</td></tr>
+<tr><td>P2</td><td>Krantz et al., <a href="https://arxiv.org/pdf/2004.02857v2">Beyond the NavGraph: VLN in Continuous Environments</a></td><td>arXiv <code>2004.02857v2</code>；VLN-CE continuous-environment、R2R split 与指标语境</td><td>continuous VLN 的 episode、stop、trajectory 与 SR/SPL/NE/OS/TL 讨论</td><td>本地 checkpoint、硬件复现、个人 ownership</td></tr>
+<tr><td>O1</td><td><a href="https://raw.githubusercontent.com/facebookresearch/habitat-lab/0fb6f43ffe806a8088a171b036336c093bcf604e/habitat-lab/habitat/tasks/nav/nav.py">Habitat-Lab <code>nav.py</code></a></td><td>commit <code>0fb6f43ffe806a8088a171b036336c093bcf604e</code>；1342 lines；46925 bytes；SHA <code>3ce31b1bb75cc733c09d777e1ff0f18fb99c1882206a9496da648c1bd6ee549d</code></td><td><code>Success</code>、<code>DistanceToGoal</code>、<code>SPL</code>、<code>SoftSPL</code> 的实现依赖与计算顺序</td><td>任何本地 evaluator 与该实现自动等价</td></tr>
+<tr><td>O2</td><td><a href="https://raw.githubusercontent.com/jacobkrantz/VLN-CE/729d141b2ee10628061ada74dd3a5b9f70faeba5/README.md">VLN-CE README</a></td><td>commit <code>729d141b2ee10628061ada74dd3a5b9f70faeba5</code>；293 lines；16460 bytes；SHA <code>33c547d6d6fa8a7deca433c5e441894aad72d676dfca152fea0cd4ef80b9a41c</code></td><td>split、leaderboard、full-episode evaluation、build variance 与 trajectory submission 入口</td><td>公开 README 不能证明候选人运行过该 benchmark</td></tr>
+<tr><td>O3</td><td><a href="vol_05_eval003_success_rate_confidence_interval_source_freeze.md">VOL 05 EVAL-003 statistical contract</a></td><td>repository canonical source + review；已冻结 success denominator、Wilson/Clopper–Pearson、zero/all-success 与 clustering 边界</td><td>统计报告、置信区间与样本单位的复用边界</td><td>PER-019 的导航 metric 语义、个人结果</td></tr>
+<tr><td>O4</td><td><a href="vol_06_per004_vln_objectnav_source_freeze.md">PER-004 VLN/ObjectNav source freeze</a></td><td>repository canonical source + review；task/episode/stop/success 入口</td><td>task contract、episode identity、SR/SPL 关联边界</td><td>评估节点的完整 failure taxonomy 或本地 raw bundle</td></tr>
+</tbody></table>
+<h2 id="3-official-implementation-probes">3. Official implementation probes</h2>
+<p>以下 probe 只验证公开代码/README 的语义，不等于运行了 Habitat 或 VLN-CE，也不产生个人 benchmark 结果。</p>
+<table><thead><tr><th>Probe</th><th>固定观察</th><th>结论</th></tr></thead><tbody>
+<tr><td>P19-01</td><td>Habitat <code>Success.update_metric</code> 检查 <code>is_stop_called</code> 与 <code>distance_to_target &lt; success_distance</code></td><td>success 需要 stop + threshold，不能只看位置</td></tr>
+<tr><td>P19-02</td><td><code>Success</code> 依赖 <code>DistanceToGoal</code> measure</td><td>success 与距离 measure 的 protocol identity 绑定</td></tr>
+<tr><td>P19-03</td><td><code>DistanceToGoal</code> 的 <code>POINT</code> 分支调用 simulator geodesic distance 到 goal position</td><td>POINT 不等于欧氏距离</td></tr>
+<tr><td>P19-04</td><td><code>DistanceToGoal</code> 的 <code>VIEW_POINTS</code> 分支调用 simulator geodesic distance 到 goal viewpoints</td><td>goal viewpoint 选择会改变距离与 success 前置量</td></tr>
+<tr><td>P19-05</td><td><code>SPL.reset_metric</code> 保存 start/end distance，并依赖 <code>DistanceToGoal</code>、<code>Success</code></td><td>SPL 的参考距离和 success 必须来自同一 episode</td></tr>
+<tr><td>P19-06</td><td><code>SPL.update_metric</code> 累加相邻 simulator positions 的 Euclidean step distance</td><td>实际 path length 不能用 action count 代替</td></tr>
+<tr><td>P19-07</td><td>Habitat SPL 使用 <code>success * shortest / max(shortest, actual)</code></td><td>失败 episode 的 SPL 为 0；绕路会降低 SPL</td></tr>
+<tr><td>P19-08</td><td><code>SoftSPL</code> 用连续 soft-success 替换二值 success，再乘 path penalty</td><td>SoftSPL 与 SPL 不能混报</td></tr>
+<tr><td>P19-09</td><td>VLN-CE README 列出 <code>train/val_seen/val_unseen/test_challenge</code> 与 TL/NE/OS/SR/SPL</td><td>split 与 metric namespace 必须进入 protocol tuple</td></tr>
+<tr><td>P19-10</td><td>VLN-CE README 说明 <code>EVAL.EPISODE_COUNT == -1</code> 才评估全部 episode，并记录 leaderboard/build 差异</td><td>子集评估、硬件或 Habitat revision 差异必须显式披露</td></tr>
+</tbody></table>
+<p>Probe 状态：<code>10/10 deterministic source probes checked</code>。这些 probe 只检查 source text，不替代 simulator runtime、完整 dataset 或候选人项目 artifact。</p>
+<h2 id="4-typed-navigation-evaluation-contract">4. Typed navigation evaluation contract</h2>
+<table><thead><tr><th>Layer</th><th>最低字段</th><th>缺失时的 fail-closed 结论</th></tr></thead><tbody>
+<tr><td>task</td><td>task family、dataset revision/license、scene、episode ID、goal type、action/STOP schema、frame/unit</td><td>不知道评估的任务与几何语义</td></tr>
+<tr><td>split</td><td>train/val_seen/val_unseen/test、scene split、episode inclusion/exclusion、episode count</td><td>不能比较或复述公开数字</td></tr>
+<tr><td>simulator</td><td>Habitat/VLN-CE commit、scene/navmesh、distance mode、success threshold、controller/action step</td><td>不能确认 scorer 与环境一致</td></tr>
+<tr><td>trajectory</td><td>ordered poses、action、timestamp/step、STOP、termination/truncation、invalid action</td><td>不能重算 path length、stop 或 failure</td></tr>
+<tr><td>metrics</td><td>SR、SPL/SoftSPL、NE、OS、TL、collision/timeout、denominator 与 missing policy</td><td>summary-only 结果不能作为完整评估</td></tr>
+<tr><td>statistics</td><td>episode-level rows、task/scene/seed clustering、CI method、zero/all-success handling</td><td>不报告聚合不确定性或样本单位</td></tr>
+<tr><td>failure</td><td>first divergence、taxonomy label、evidence pointer、recovery/terminal outcome</td><td>只能说 symptom，不能说 confirmed root cause</td></tr>
+<tr><td>ownership</td><td>code/config/data/scorer author、operator、reviewer、artifact custodian</td><td>upstream code、Git author 或 README 不能成为个人 ownership</td></tr>
+</tbody></table>
+<p>推荐 immutable lineage：</p>
+<pre><code class="language-text">task_manifest_sha + split_manifest_sha + simulator/scorer_revision
+-&gt; episode_ids + trajectory_schema + controller_revision
+-&gt; raw_episode_trace + termination_reason
+-&gt; per_episode_metrics + denominator_manifest
+-&gt; aggregate/CI_report + failure_taxonomy
+-&gt; checkpoint_sha + ownership_ledger</code></pre>
+<h2 id="5-failure-taxonomy">5. Failure taxonomy 与诊断顺序</h2>
+<p>诊断必须按 <code>symptom → first verified divergence → root cause → recovery/terminal outcome</code> 分层：</p>
+<ol><li><strong>protocol/data</strong>：split 泄漏、episode 缺失、goal/viewpoint 不一致、scene/navmesh revision mismatch；</li><li><strong>policy/decision</strong>：invalid action、early STOP、loop、instruction grounding 或 memory reset；</li><li><strong>geometry/localization</strong>：map/odom/frame、drift、goal distance、relocalization；</li><li><strong>control/execution</strong>：collision、controller rejection、action clipping、timeout/horizon；</li><li><strong>scorer/statistics</strong>：denominator、duplicate episode、missing row、metric mode 或 CI 单位错误；</li><li><strong>unknown</strong>：没有 raw trace 时保留 unknown，不能用时间顺序代替根因。</li></ol>
+<p>最小 fault-injection / audit matrix：</p>
+<table><thead><tr><th>注入或审计</th><th>预期可观察字段</th><th>不能直接推出</th></tr></thead><tbody>
+<tr><td>early STOP near/far goal</td><td>stop flag、distance mode、distance、success</td><td>不能推出 policy 已学会 recovery</td></tr>
+<tr><td>timeout / horizon</td><td>step count、termination reason、last pose、NE/TL</td><td>不能把 timeout 当 collision</td></tr>
+<tr><td>invalid action / parse</td><td>raw action、parser error、fallback、episode row</td><td>不能把 scorer 丢行当成功</td></tr>
+<tr><td>map/frame mismatch</td><td>frame IDs、scene/navmesh revision、pose transform</td><td>不能只看平均 NE 判定模型退化</td></tr>
+<tr><td>duplicate/missing episode</td><td>episode ID set、expected denominator、duplicate key</td><td>不能从汇总均值恢复缺失样本</td></tr>
+<tr><td>build/scorer revision change</td><td>simulator/scorer SHA、metric config</td><td>不能直接纵向比较 SPL</td></tr>
+</tbody></table>
+<h2 id="6">6. 五项目真实性边界</h2>
+<table><thead><tr><th>项目</th><th>允许的局部 hook</th><th>当前不能说</th></tr></thead><tbody>
+<tr><td>OpenPiVLA</td><td>image/language/action schema、normalizer/parser/controller contract 风险</td><td>已完成 VLN/ObjectNav evaluator、SPL/NE、navigation rollout</td></tr>
+<tr><td>Robot Harness</td><td>semantic-navigation tool schema、2D tri-state occupancy、PCD/map interface</td><td>个人导航 policy、真实机器人 episode、SPL/OS 或 collision safety</td></tr>
+<tr><td>OPD</td><td>point/box/text route、strict/lenient scorer 与 grounding evidence</td><td>closed-loop navigation、3D route、导航 success uplift</td></tr>
+<tr><td>WAM</td><td>camera/controller/provenance 与 simulator diagnostic</td><td>navigation benchmark、真实移动平台或 navigation metric</td></tr>
+<tr><td>UWM/LIBERO</td><td>simulated manipulation protocol、loader/launcher diagnosis</td><td>VLN/ObjectNav、mobile navigation、导航泛化</td></tr>
+</tbody></table>
+<p>所有项目均应写成 <code>public upstream mechanism → local evidence → inference → unverified</code>；当前没有 local-direct navigation bundle 时，最终结论必须保留“无个人导航结果”的表述。</p>
+<h2 id="7">7. 退出条件与下一步</h2>
+<p>本 source slice 的退出条件：</p>
+<ol><li>2 个 primary papers、2 个 official code/docs、2 个本地跨卷入口已固定并可追溯；</li><li>10/10 source probes 通过；</li><li>metric、split、denominator、failure taxonomy 与项目边界明确；</li><li>source artifact 具备 Markdown/HTML/review 三联件；</li><li>knowledge/card 继续后置，不能把 source freeze 当作掌握或 benchmark 完成。</li></ol>
+<p>下一 bounded slice：只生成 <code>VLA-PER-019</code> knowledge，复用本 source contract；仍不生成题卡、不修改 mastery。<code>VLA-PER-018</code> 真实口述与 <code>SYS-VLA-004</code> 系统设计口述保留在独立训练队列。</p>
+<h2 id="section-9">参考来源</h2>
+<ol><li>Anderson et al.，<a href="https://arxiv.org/pdf/1807.06757v3">On Evaluation of Embodied Navigation Agents</a>。</li><li>Krantz et al.，<a href="https://arxiv.org/pdf/2004.02857v2">Beyond the NavGraph: VLN in Continuous Environments</a>。</li><li>Habitat-Lab <a href="https://github.com/facebookresearch/habitat-lab/blob/0fb6f43ffe806a8088a171b036336c093bcf604e/habitat-lab/habitat/tasks/nav/nav.py"><code>nav.py</code></a>。</li><li>VLN-CE <a href="https://github.com/jacobkrantz/VLN-CE/blob/729d141b2ee10628061ada74dd3a5b9f70faeba5/README.md"><code>README.md</code></a>。</li><li><a href="vol_05_eval003_success_rate_confidence_interval_source_freeze.md">VOL 05 EVAL-003 source freeze</a>。</li><li><a href="vol_06_per004_vln_objectnav_source_freeze.md">VOL 06 PER-004 source freeze</a> 与 <a href="vol_06_per018_navigation_bc_dagger_rl_exposure_bias_source_freeze.md">PER-018 source freeze</a>。</li></ol>
+</article></body></html>

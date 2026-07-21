@@ -1,0 +1,72 @@
+{
+  "artifact": "sources/vol_03_flow_matching_pi0_claim_to_code.md",
+  "html": "sources/vol_03_flow_matching_pi0_claim_to_code.html",
+  "review_date": "2026-07-21",
+  "status": "independent_fact_reviewed / theorem_endpoint_time_sign_checked / local_runtime_pending / WARN",
+  "verdict": "WARN",
+  "source_sha256": "8E7D1607F544BF7850A9D57C3033E2A401496B5DEDC834B9851C4C5F3D9FD04A",
+  "evidence_cutoff": "2026-07-19",
+  "upstream": {
+    "foundation_paper": "Flow Matching for Generative Modeling",
+    "foundation_paper_revision": "arXiv 2210.02747v2",
+    "foundation_paper_revision_verified": true,
+    "foundation_source_html_verified": true,
+    "foundation_source_tar_verified": false,
+    "supporting_repository": "facebookresearch/flow_matching",
+    "supporting_repository_commit": "11568d37f8d5a080e12aa7b5305d9c35ae07d136",
+    "supporting_repository_commit_verified": true,
+    "supporting_repository_license": "CC BY-NC 4.0",
+    "supporting_repository_license_verified": true,
+    "supporting_repository_historical_boundary": "Maintained 2026 package associated with the later Flow Matching Guide and Codebase; not treated as the 2022 paper's historical implementation.",
+    "pi0_paper_revision": "arXiv 2410.24164v4",
+    "pi0_paper_revision_verified": true,
+    "openpi_commit": "15a9616a00943ada6c20a0f158e3adb39df2ccac",
+    "openpi_commit_verified": true,
+    "openpi_license": "Apache-2.0",
+    "openpi_license_verified": true
+  },
+  "coverage": {
+    "question_ids": [
+      "VLA-ACT-023",
+      "VLA-ACT-024",
+      "VLA-ACT-025",
+      "VLA-ACT-026",
+      "VLA-ACT-027",
+      "VLA-ACT-028",
+      "VLA-ACT-029",
+      "VLA-ACT-030"
+    ],
+    "upstream_claims_audited": 17,
+    "local_project_claims_verified": 0
+  },
+  "checks": {
+    "paper_version_and_source": "PASS WITH WARNING (v2 HTML and equation anchors read; downloaded source tar reached Content-Length but tar extraction reported truncated, so TeX source is not claimed as verified)",
+    "cnf_and_continuity": "PASS (ODE flow, pushforward path and continuity equation separated)",
+    "fm_cfm_gradient_equivalence": "PASS (Theorem 2 recorded as identical parameter gradients, not pointwise loss equality)",
+    "gaussian_and_ot_paths": "PASS WITH WARNING (paper sigma_min endpoint separated from exact-linear package convention)",
+    "supporting_repository_head": "PASS (git rev-parse matches frozen commit)",
+    "supporting_repository_license": "PASS WITH WARNING (CC BY-NC 4.0; non-commercial boundary recorded)",
+    "historical_implementation_boundary": "PASS (maintained package not presented as 2022 historical code)",
+    "continuous_training_target": "PASS (AffineProbPath x_t/dx_t and example velocity MSE mapped)",
+    "continuous_loss_api_boundary": "PASS (continuous example hand-writes tensor MSE; discrete generalized KL module not mislabeled)",
+    "ode_solver": "PASS (Euler and torchdiffeq methods, time-grid direction, step-size/tolerance boundary mapped)",
+    "pi0_specialization": "PASS (action chunk, VLM context, velocity output and shifted Beta recipe mapped)",
+    "paper_code_time_direction": "PASS (time, velocity and shifted-Beta coordinate transforms jointly checked)",
+    "diffusion_flow_comparison": "PASS (prediction target, time parameterization, sampler and horizon axes separated)",
+    "action_mask_and_padding": "PASS WITH WARNING (frozen Pi0 all-D mean established; no positive local valid-dimension mask evidence)",
+    "classifier_free_guidance": "PASS WITH WARNING (generic package example mapped; no frozen openpi action-policy implementation claimed)",
+    "rollout_debugging": "PASS AS FRAMEWORK (target, solver, normalization/schema and controller layers defined; no local run artifacts claimed)",
+    "public_local_boundary": "PASS (checkpoint, local model class, H/K, axes, solver, 97.4% and contribution remain pending)",
+    "html_static_validation": "PASS (one h1, source SHA, 48 fragments, 3 local links, MathJax, 62 display delimiters and 5 commented code blocks)",
+    "browser_visual_check": "PASS WITH WARNING (localhost desktop 1440x1000 and narrow 800x1000; one H1, academic palette/serif, sticky-to-static TOC, contained tables/code/formulas, zero formula-em and no page-wide overflow)",
+    "independent_fact_review": "PASS WITH WARNING (Theorem 2, sigma_min endpoint, pi0/OpenPI time-sign-dt, shifted Beta and deterministic oracle checked; local runtime remains open)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Run a synthetic valid-dimension mask test to quantify loss dilution from padded action axes.",
+    "If guidance is considered, implement explicit action-condition dropout and measure true model forwards, latency, safety and task compliance.",
+    "Collect local OpenPiVLA model class, checkpoint, target builder, time sampler, action schema, norm stats, H/K, solver and controller artifacts.",
+    "Keep all future cards unseen until real oral practice."
+  ],
+  "next": "Run one real Flow/Diffusion oral question or collect one immutable local OpenPiVLA runtime artifact; keep all cards unseen."
+}

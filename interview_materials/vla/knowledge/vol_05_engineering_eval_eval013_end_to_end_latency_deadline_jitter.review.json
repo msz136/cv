@@ -1,0 +1,46 @@
+{
+  "artifact": "knowledge/vol_05_engineering_eval_eval013_end_to_end_latency_deadline_jitter.md",
+  "html": "knowledge/vol_05_engineering_eval_eval013_end_to_end_latency_deadline_jitter.html",
+  "review_date": "2026-07-19",
+  "status": "drafted / VLA-EVAL-013 / knowledge_35_of_44 / card_1_of_1_unseen / review_warn",
+  "verdict": "WARN",
+  "source_sha256": "34ecdaef4043c1fb70918868d955aaccfc86c6ffd706606fa8196471b68a2cf7",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 34,
+    "new_nodes": 1,
+    "total_drafted_nodes": 35,
+    "covered_ids": ["VLA-EVAL-013"],
+    "drafted_cards_for_new_nodes": 1,
+    "practice_state": "unseen / not_orally_drilled",
+    "difficulty": "L2",
+    "priority": "P1"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one EVAL-013 knowledge node and atomic card; EVAL-014 deferred)",
+    "event_schema": "PASS (request/obs/chunk IDs, stage spans, clocks, load, H/K/Hz, deadline and outcome)",
+    "metric_separation": "PASS (compute/response/action-age/loop/scheduler metrics separated)",
+    "formula_explanations": "PASS (eight formula blocks have variable, intuition and artifact mapping)",
+    "clock_gpu_boundary": "PASS (monotonic/cross-host uncertainty and synchronized device timing)",
+    "tail_sample_size": "PASS (quantile definition, sample count, max, uncertainty and small-n limitation)",
+    "deadline_jitter_age": "PASS (miss rate, phase/interval jitter and per-offset chunk age)",
+    "control_frequency": "PASS (controller period, chunk physical horizon and replan interval)",
+    "coordinated_omission": "PASS (intended arrivals and raw/corrected views separated)",
+    "release_boundary": "PASS (latency does not compensate success/safety and microbenchmark does not replace robot canary)",
+    "project_truth_boundary": "PASS (five project boundaries and UWM training-vs-rollout distinction explicit)",
+    "pseudocode": "PASS (measurement design marked as contract, not local implementation)",
+    "card_alignment": "PASS",
+    "source_sha": "PASS (Markdown, HTML metadata and review SHA match)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, seventeen H2, five H3, two tables, four code blocks, eight formula blocks, zero formula em; serif/sticky/900px rules present)",
+    "local_links": "PASS (relative references resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Treat the page as a measurement/evidence contract rather than a completed project benchmark.",
+    "Do not report p99 without n, quantile convention, load/request slice and raw spans.",
+    "Do not conflate network PDV, scheduler lateness, inference time and action age.",
+    "Do not create coaching_state.md before oral practice."
+  ],
+  "next": "Proceed only to VLA-EVAL-014 side-effect and cancellation evaluation; keep this node WARN/unseen."
+}

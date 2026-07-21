@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：PER-010 原子题卡</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\vol_06_per010.md">
+<meta name="aris:source-sha256" content="a6a780cbc7545b957cea6b06bfd6ffb67073e850e111c1b395db71f587e997c4">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>a6a780cbc7545b957cea6b06bfd6ffb67073e850e111c1b395db71f587e997c4</code>；生成自：<code>interview_materials\vla\questions\vol_06_per010.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#grounding-metric-strict-parser-protocol-comparability">Grounding Metric、Strict Parser 与 Protocol Comparability</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：PER-010 原子题卡</h1>
+<div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-20 覆盖范围：<code>VLA-PER-010</code> 难度：L2 1 题 优先级：P0 1 题 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_06_per010_grounding_metric_parser_protocol.html">PER-010 Grounding Metric / Parser / Protocol Knowledge</a>；来源边界见 <a href="../sources/vol_06_per010_grounding_metric_parser_protocol_source_freeze.html">PER-010 Source Freeze</a>。</div>
+<h2 id="grounding-metric-strict-parser-protocol-comparability">Grounding Metric、Strict Parser 与 Protocol Comparability</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-PER-010</b> · Grounding评估时，strict parser、IoU/PCK/Recall和protocol comparability该怎么讲？为什么本地OPD的Hit@50/100不能直接叫PCK？</summary>
+<p><strong>面试意图</strong>：判断你能否把parser、validity、matching、metric、denominator和aggregation连成可复现合同，识别同名指标的口径漂移，并守住本地OPD静态评估的项目证据边界。</p>
+<p><strong>30 秒回答</strong>：我把parser纳入metric：拆格式/语法/坐标/几何，strict主评、lenient仅诊断；再按表示选IoU、R@k、PCK或mask-hit，固定invalid与分母。跨实验还要对齐数据、checkpoint、prompt、scorer和聚合。OPD Hit@50/100只是在规范坐标中找最近点对，没有PCK的尺度归一化、可见性和点对应，不能混称。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：输出先按预期表示完整匹配，分开记录格式、语法、坐标、几何；宽松恢复另栏。IoU是单框连续重叠，Acc@τ是阈值样本率；RefExp R@k还绑定top-k排序、重叠函数和GT单元，COCO AP/AR另含阈值网格、匹配、面积和maxDets。PCK需点对应、尺度、阈值、可见性；mask-hit以预测点为分母。本地Hit只取任意预测—GT最小距离，一个近邻即可通过。若invalid的布尔项记false而数值项跳过，会出现Acc=.5但IoU均值=1，因此每字段须报分子/分母。最后把数据、checkpoint、prompt/decode、transform、parser/scorer、matching、threshold和aggregation写入protocol ID。</p>
+<p><strong>诊断 / 证据</strong>：依次查expected-format与raw gold→strict/lenient golden cases→transform与坐标范围→pairwise box/point matrix→overlap/matching函数和threshold→invalid/empty/duplicate policy→每字段numerator/denominator→micro/macro与slice→两份protocol manifest diff→checkpoint/raw prediction绑定。确定性probe应覆盖identical/disjoint/touching IoU、tagged/bare/prose/圆括号point、任意点对Hit与双向mean、invalid+perfect box分母，以及MDETR IoU=.525/GIoU=.483的0.5判定翻转。</p>
+<p><strong>项目挂钩</strong>：本地<code>eval_qwen_vl_raw_holdout.py</code>会全局抓<code>[x,y]</code>，box还可从tag内数字或前两个point pairs恢复；format gate与geometry score分离，<code>mixed_grounding</code>却落入text，bool rate除全pool而numeric mean跳<code>None</code>。inventory记录10k静态holdout与限定pool metrics，但raw predictions、exact checkpoint hashes和parser-v2 paired rerun未归档。因此只能讲original-strict / protocol-fixed-strict / lenient-diagnostic三口径方案，不能把Hit叫标准PCK、把静态分数升级为robot success、单因素因果或个人ownership。</p>
+<p><strong>追问树</strong>：格式错但坐标对算不算正确？Mean IoU和Acc@0.5有什么区别？Recall@1一定用IoU吗？MDETR论文与代码为什么会翻转判定？COCO AR与RefExp R@k能否比较？PCK最少要冻结哪些字段？mask-hit偏precision还是recall？多点min distance为何乐观？invalid该drop还是记false？同raw output换parser怎样公平比较？static grounding高能否说明robot success？</p>
+<p><strong>易错点</strong>：把regex抽取当strict parse；用一个<code>valid</code>吞掉四层状态；混用IoU、Acc、R@k、AP/AR；把fixed Hit叫PCK；忽略point correspondence与normalizer；只报numeric mean不报valid count；把invalid静默drop；只凭指标名横比；整体平均掩盖box/point/text slice；把parser修复、checkpoint和prompt同时变化说成单因素提升。</p>
+<p><strong>危险答案</strong>：说“能抓到坐标就算格式正确”“IoU、Recall@1和AP都是定位准确率，直接比较即可”“Hit@50就是PCK@50”“invalid删掉不影响结果”“MDETR官方固定用某个overlap，不必绑定revision”“OPD point分数高证明机器人操作成功”，或“我实现了严格scorer”，却不提mixed→text、lenient fallback和字段分母差异。</p>
+<p><strong>来源</strong>：[1][2][3][4][5][6][7]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../knowledge/vol_06_per010_grounding_metric_parser_protocol.html">PER-010 Grounding Metric / Parser / Protocol Knowledge</a>：四层validity、metric family、protocol identity、伪代码、failure taxonomy与项目边界。</li><li><a href="../sources/vol_06_per010_grounding_metric_parser_protocol_source_freeze.html">PER-010 Source Freeze</a>：MDETR、COCO API、RoboPoint、MMPose、本地evaluator/inventory与deterministic probes。</li><li><a href="https://arxiv.org/abs/2104.12763v3">MDETR v3</a> 与 <a href="https://github.com/ashkamath/mdetr/blob/ea09acc44ca067072c4b143b726447ee7ff66f5f/datasets/refexp.py">fixed RefExp evaluator</a>。</li><li><a href="https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py">COCO API cocoeval.py</a>。</li><li><a href="https://arxiv.org/abs/2406.10721v1">RoboPoint v1</a>。</li><li><a href="https://github.com/open-mmlab/mmpose/blob/759b39c13fea6ba094afc1fa932f51dc1b11cbf9/mmpose/evaluation/functional/keypoint_eval.py">MMPose keypoint_eval.py</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>。</li></ol>
+</article></body></html>

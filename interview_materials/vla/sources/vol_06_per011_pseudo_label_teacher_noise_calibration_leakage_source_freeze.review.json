@@ -1,0 +1,62 @@
+{
+  "artifact": "sources/vol_06_per011_pseudo_label_teacher_noise_calibration_leakage_source_freeze.md",
+  "html": "sources/vol_06_per011_pseudo_label_teacher_noise_calibration_leakage_source_freeze.html",
+  "review_date": "2026-07-20",
+  "status": "source_frozen / VLA-PER-011 / primary_official_checked / local_opd_mix_cache_online_holdout_boundary / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "7A883F2EED8A7779295AAB0588ACD443451D52B64C52B256D3E3120AD1F50942",
+  "scope": {
+    "question_id": "VLA-PER-011",
+    "primary_or_taxonomy_papers": 5,
+    "official_repository_files_or_guides": 10,
+    "repository_review_bridges": 3,
+    "local_files_directly_read": 6,
+    "local_holdout_rows_reported": 10000,
+    "deterministic_probes": 6,
+    "knowledge_generated": 1,
+    "question_cards_generated": 1,
+    "practice_state": "262 generated cards remain unseen; PER-011 source, knowledge and card are synchronized"
+  },
+  "frozen_revisions": {
+    "fixmatch_paper": "arXiv:2001.07685v2 / 2020-11-25",
+    "fixmatch_repo": "google-research/fixmatch@d4985a158065947dba803e626ee9a6721709c570",
+    "noisy_student_paper": "arXiv:1911.04252v4 / 2020-06-19",
+    "noisy_student_repo": "google-research/noisystudent@aac52bf02448f6e45aee6c418f3e588803e4fa43",
+    "calibration_paper": "arXiv:1706.04599v2 / 2017-08-03",
+    "torchmetrics": "Lightning-AI/torchmetrics@37a808094850aa1e05bc6e9fcf63fae86dfd01ce",
+    "curriculum_learning": "ICML 2009 paper 119",
+    "leakage_taxonomy": "arXiv:2207.07048v1 / 2022-07-14",
+    "local_muxi": "756e27e16adcfb3ccbfe98c2920dda42095b127f"
+  },
+  "checks": {
+    "bounded_slice": "PASS (the later VLA-PER-011 card-only slice synchronized the source state; no PER-012 artifact, mastery mutation or coaching_state.md)",
+    "primary_and_official_sources": "PASS WITH WARNING (version-pinned FixMatch, Noisy Student, calibration, curriculum and leakage papers plus pinned official implementation files were read and hashed; the leakage paper is a taxonomy bridge rather than proof that local gates passed)",
+    "torchmetrics_hash": "PASS (the previously truncated calibration_error.py SHA was recomputed from the pinned raw GitHub bytes as 64980971BB4230F804DA3830AD5E8A97EBE5C86EFC2497D331AE3DAE13BDB4B1)",
+    "typed_pseudo_record": "PASS (sample/source/image/fingerprint/split, teacher/training/prompt/decode identity, target type, confidence semantics, calibration revision, acceptance policy, route and round are separated)",
+    "teacher_target_taxonomy": "PASS (teacher-forced versus free generation, hard versus soft, token/sequence/parsed-object targets and semantic/format/exposure/domain/class/correlated/temporal noise are explicit)",
+    "fixmatch_contract": "PASS WITH WARNING (weak/strong view, argmax, max-probability mask, threshold, total-batch reduction, pseudo-loss and coverage are frozen; threshold alone does not establish precision or calibration)",
+    "noisy_student_contract": "PASS (teacher inference, probability filtering, class balancing, noisy student training, promotion and round-level manifest identity are explicit)",
+    "calibration_contract": "PASS WITH WARNING (temperature fitting on independent labeled validation, top-label ECE definition, binning/sample-unit identity and risk-coverage are explicit; no local fitted temperature or labeled calibration audit is archived)",
+    "selection_and_curriculum": "PASS WITH WARNING (conditional accepted distribution, route/class/domain bias, ordering/schedule/intervention/baseline and iteration manifest are explicit; the local veto-beta schedule is not relabeled as validated calibration or curriculum)",
+    "leakage_taxonomy": "PASS WITH WARNING (row/source/path/image/fingerprint/near-duplicate/semantic/teacher-training/preprocessing/model-selection/pseudo-feedback layers are separated; path hashing and visible holdout checks leave material unknowns)",
+    "local_mix_mapping": "PASS WITH WARNING (35/35/30 mix, source/bucket teacher assignment and resampling are frozen; directory names are not treated as quality or holdout proof and no confidence/fingerprint gate exists at this layer)",
+    "local_top1_mapping": "PASS WITH WARNING (eval/inference teacher-forced argmax at supervised token positions and cached IDs/count are distinguished from free-generation pseudo-labeling; confidence/entropy/threshold/calibration fields are absent)",
+    "local_online_mapping": "PASS WITH WARNING (frozen eval teacher, rollout option, full-vocabulary KL, entropy/top-k logging and veto-beta target mixing are frozen; logging/sampling/schedule are not treated as gating/calibration/effectiveness proof)",
+    "raw_holdout_boundary": "PASS WITH WARNING (the summary reports 10,000 rows, 8,251 unique images, 10,000 unique fingerprints, zero reported fingerprint duplicates and train-image blocklist checks; teacher lineage, semantic near-duplicates, sealed model selection, exact raw outputs and checkpoint hashes remain missing)",
+    "deterministic_probes": "PASS (threshold/reduction, overconfidence, ECE binning, cache-schema, alias-path and veto-schedule probes have fixed inputs, expected outputs and guarded conclusions)",
+    "project_truth_boundary": "PASS (public mechanism, local code facts, target semantics, confidence evidence, visible leakage gates, static evaluation, robot non-equivalence and candidate ownership are separately stated)",
+    "practice_state": "PASS (262 generated cards remain unseen; PER-011 knowledge/card exist and coaching_state.md is absent)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, twenty-two H2 including renderer TOC, nine H3, seven tables, seven code blocks and seven formula blocks; academic palette/serif/260px sticky TOC/900px breakpoint/print rules, MathJax 3, internal overflow, zero formula-em, unique IDs and synchronized canonical/HTML/review SHA are present)",
+    "browser_visual_check": "BLOCKED (the existing in-app Browser file:// policy restriction remains; static desktop/narrow rules do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized VLA-PER-011 atomic card unseen until a real oral drill.",
+    "Create an immutable typed pseudo-label manifest with teacher checkpoint/training lineage, inference protocol, target mode, confidence/calibration revision, acceptance decision, route and round.",
+    "Add an independent labeled calibration split, fit and archive temperature scaling, then report stratified risk-coverage, accepted error and strict validity across thresholds.",
+    "Extend split auditing from source/path/image/fingerprint to normalized-content and perceptual near-duplicate checks, and document unresolved semantic and teacher-pretraining overlap.",
+    "Archive exact raw predictions, checkpoint hashes, prompts/decode, parser/scorer revision and a sealed model-selection log before claiming holdout uplift.",
+    "Keep all 261 generated cards unseen and do not create coaching_state.md before a real oral drill."
+  ],
+  "next": "Generate only the VLA-PER-012 segmentation/depth/keypoint/affordance source freeze; do not generate its knowledge/card or change mastery in the same slice."
+}

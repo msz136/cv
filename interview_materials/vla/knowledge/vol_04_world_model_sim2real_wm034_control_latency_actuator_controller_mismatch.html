@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 World Model / Sim2Real：Control Frequency、Latency、Actuator 与 Controller Mismatch（WM-034）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm034_control_latency_actuator_controller_mismatch.md">
+<meta name="aris:source-sha256" content="d76176a40e9ef96fc1837fb192b8b1355b2b77353065d32a02c6f445323cd7dc">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>d76176a40e9ef96fc1837fb192b8b1355b2b77353065d32a02c6f445323cd7dc</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm034_control_latency_actuator_controller_mismatch.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 面试结论</a></li><li><a href="#2">2. 直觉：模型看到的是过去，机器人执行的是更晚的未来</a></li><li><a href="#3">3. 六条时钟</a></li><li><a href="#4-action-age">4. Action age 才是核心量</a></li><li><a href="#5-latency">5. Latency 不能只报平均值</a></li><li><a href="#6-delay">6. Delay 的闭环形式</a></li><li><a href="#7-frequency">7. Frequency 如何改变动作</a></li><li><a href="#8-actuator-dynamics">8. Actuator dynamics</a></li><li><a href="#9-controller-mismatch">9. Controller mismatch</a></li><li><a href="#10-freshness-queue">10. Freshness 与 queue</a></li><li><a href="#11-first-divergence-ladder">11. First-divergence ladder</a></li><li><a href="#12-matched-sweep">12. Matched sweep</a></li><li><a href="#13">13. 实现伪代码</a></li><li><a href="#14">14. 项目挂钩与真实性边界</a></li><li><a href="#15">15. 实战审计清单</a></li><li><a href="#16">16. 参考来源</a></li><li><a href="#17">17. 下一节点</a></li></ol></nav>
+<h1>VOL 04 World Model / Sim2Real：Control Frequency、Latency、Actuator 与 Controller Mismatch（WM-034）</h1>
+<div class="meta">状态：drafted / VLA-WM-034 / knowledge_36_of_44 / card_synced / WARN 更新日期：2026-07-18 核心问题：control frequency、action latency、actuator dynamics 与 controller mismatch 如何破坏 Sim2Real？ 前置：<a href="vol_04_world_model_sim2real_wm023_open_loop_receding_horizon.html">WM-023 Open-loop / Receding-horizon</a>、<a href="vol_04_world_model_sim2real_wm033_dynamics_randomization_system_identification.html">WM-033 Dynamics DR / SysID</a>、<a href="../sources/vol_04_wm034_control_latency_actuator_controller_mismatch_source_freeze.html">WM-034 Source Freeze</a>。</div>
+<h2 id="1">1. 面试结论</h2>
+<p>强回答不是“把 sim 的 control_freq 调成 real 一样”，而是：</p>
+<ol><li>冻结 physics/sensor/policy/network/controller/actuator 多时钟；</li><li>测 observation capture→controller apply 的 action age 与 p50/p95/p99；</li><li>把 action type/frame/unit/normalizer/controller/gain/limit 作为执行合同；</li><li>用 fitted actuator model 代替 zero-latency/infinite-bandwidth 假设；</li><li>给 chunk/queue 加 episode/version/deadline/freshness guard；</li><li>先做 round-trip/free-space tracking，再做 contact/task；</li><li>固定 checkpoint 做 frequency/latency/actuator/controller/K matched sweep；</li><li>没有真机 trace 就不声称实时性或 transfer uplift。</li></ol>
+<h2 id="2">2. 直觉：模型看到的是过去，机器人执行的是更晚的未来</h2>
+<p>policy 输入的图像在到达模型时已经变旧；模型推理、传输和排队后，动作又更晚才被 controller/actuator 执行。若一次还预测 H 步并执行前 K 步，后面的动作基于更旧的 observation。与此同时，simulator 可能让 command 瞬时生效、sensor 瞬时返回，并使用与真实 firmware 不同的 controller。</p>
+<p>结果是：离线 action loss 很低，sim 中也稳定，真实执行却表现为 overshoot、oscillation、stale chunk、gripper 反向或完全不可达。[1][2]</p>
+<h2 id="3">3. 六条时钟</h2>
+<table><thead><tr><th>clock</th><th>关键字段</th><th>不记录会怎样</th></tr></thead><tbody>
+<tr><td>physics</td><td><code>sim_dt/substeps</code></td><td>把 env step 当积分步</td></tr>
+<tr><td>sensor</td><td>capture/readout/sample timestamp</td><td>frame index 代替观测年龄</td></tr>
+<tr><td>policy</td><td>preprocess/infer start/end、query period</td><td>只知道 GPU 时间</td></tr>
+<tr><td>transport/queue</td><td>send/receive/enqueue/dequeue、depth</td><td>看不到 burst、乱序、stale</td></tr>
+<tr><td>controller</td><td>mode/config、apply timestamp、Hz</td><td>policy Hz 冒充低层 Hz</td></tr>
+<tr><td>actuator/firmware</td><td>command/response timestamp、bandwidth</td><td>command 冒充真实 torque/pose</td></tr>
+</tbody></table>
+<p>robosuite 的 <code>control_freq</code> 表示环境 applied action 的频率示例，不自动等于 physics、camera 或 real firmware frequency。[3]</p>
+<h2 id="4-action-age">4. Action age 才是核心量</h2>
+<p>对第 \(k\) 次 observation 与 chunk 第 \(j\) 个动作：</p>
+<div class="formula">\[
+A_{k,j}=t_{k,j}^{apply}-t_k^{capture}.
+\]</div>
+<p>变量解释：\(t_k^{capture}\) 是 sensor capture time，\(t_{k,j}^{apply}\) 是 controller 真正接受第 \(j\) 个 target 的时间。实现映射：camera、server、client 和 controller 必须使用同一时钟或保存 clock-offset calibration；只测 <code>model.forward()</code> 不能得到 action age。</p>
+<p>同步近似下：</p>
+<div class="formula">\[
+A_{k,j}\approx\tau_{pipe}+j\Delta t_c.
+\]</div>
+<p>其中 \(\tau_{pipe}\) 是 capture→first apply latency，\(\Delta t_c\) 是 controller period。实现映射：画 per-offset age/error 曲线；若 K 增大后后半段失败，不能只说“模型 long horizon 不行”。</p>
+<h2 id="5-latency">5. Latency 不能只报平均值</h2>
+<p>阶段包括 sensor、input transport、preprocess、batch wait、inference、serialization/network、controller queue、controller 和 actuator。异步系统有 overlap，因此端到端是 critical path，不是阶段平均值之和。</p>
+<p>至少报告：</p>
+<ul><li>inference latency；</li><li>request→response latency；</li><li>capture→first apply action age；</li><li>capture→apply→next sensor loop；</li><li>p50/p95/p99 与 jitter；</li><li>deadline miss、drop、duplicate、out-of-order、stale rate；</li><li>queue depth 与 fallback count。</li></ul>
+<p>Tan et al. 指出 instantaneous feedback 会扩大 simulated stability region；真实 delay 可能导致 oscillation/divergence。[1]</p>
+<h2 id="6-delay">6. Delay 的闭环形式</h2>
+<p>离散线性化：</p>
+<div class="formula">\[
+x_{k+1}=A_dx_k+B_du_{k-d}.
+\]</div>
+<p>变量解释：\(d\) 是以 controller period 计的 effective delay。delay 引入 phase lag；高 gain 或快速 correction 在 zero-delay sim 中稳定，到了 real 可能 overshoot/oscillate。实现映射：latency injection 不能只有 constant delay，还应覆盖 jitter、burst、drop、stale 和 out-of-order。</p>
+<p>Peng et al. 随机 action timestep 是简化的 latency proxy，但不等于完整 VLA pipeline trace。[4]</p>
+<h2 id="7-frequency">7. Frequency 如何改变动作</h2>
+<table><thead><tr><th>action type</th><th>Hz 改变后的影响</th></tr></thead><tbody>
+<tr><td>delta pose/joint</td><td>相同 per-step delta 在更高 Hz 下变成更高单位时间速度</td></tr>
+<tr><td>velocity</td><td>数值按秒解释，但 ZOH/filter/integration/limit 改变</td></tr>
+<tr><td>absolute target</td><td>dwell、interpolation、gain 和 settle time 改变</td></tr>
+<tr><td>torque/current</td><td>hold duration、bandwidth、saturation 与 inner loop 改变</td></tr>
+<tr><td>chunk</td><td>H/K steps 对应的秒数随 controller Hz 改变</td></tr>
+</tbody></table>
+<p>必须写清 dataset Hz、runtime policy Hz、controller/firmware Hz、action repeat、per-step/per-second、interpolation 与 timestamp。shape 相同不代表物理时间相同。</p>
+<h2 id="8-actuator-dynamics">8. Actuator dynamics</h2>
+<p>MuJoCo 官方模型把 control、transmission、activation dynamics 和 force generation 分开，并允许 activation state。[5] 一个最小近似：</p>
+<div class="formula">\[
+\tau_m\dot z=-z+g(c),\qquad
+u=\operatorname{clip}(h(z),u_{min},u_{max}).
+\]</div>
+<p>变量解释：\(c\) 是 command，\(z\) 是 actuator internal state，\(\tau_m\) 是响应时间，\(g/h\) 含 gain、deadband、backlash、rate/current/force limit。实现映射：收集 command、encoder、velocity、current/torque、timestamp，用 step/sine/chirp 在 held-out frequency/amplitude/load 上验证。</p>
+<p>Hwangbo et al. 用 actuator network 表达复杂 SEA response；其 ideal actuator 消融说明 infinite bandwidth/zero latency 是危险假设。[2]</p>
+<h2 id="9-controller-mismatch">9. Controller mismatch</h2>
+<p>policy action 到真实控制：</p>
+<div class="formula">\[
+u_k=\mathcal C_{\kappa}
+\left(T_{a\rightarrow c}(a_k),x_k\right).
+\]</div>
+<p>变量解释：\(T\) 包括 denormalization、axis reorder、unit/frame、absolute/delta integration、clip；\(\mathcal C_\kappa\) 包括 OSC/joint mode、gain/damping、limit、interpolation、nullspace 和 gripper semantics。实现映射：保存 controller config SHA，并对 dataset→model→controller target 做 round-trip。</p>
+<p>robosuite 区分 OSC_POSE、OSC_POSITION、JOINT_POSITION、JOINT_VELOCITY 和 JOINT_TORQUE，composite controller 还会拆分 body-part action。[3] 所以“都是 7D”不能证明可执行语义一致。</p>
+<h2 id="10-freshness-queue">10. Freshness 与 queue</h2>
+<p>每个 response 至少带：</p>
+<p><code>episode_id / request_id / obs_version / chunk_id / offset / t_capture / t_response / t_apply</code>。</p>
+<p>执行前检查：</p>
+<ul><li>reset/episode/version 是否仍一致；</li><li>response 是否超过 deadline；</li><li>是否 duplicate/out-of-order；</li><li>新 plan 是否已经覆盖旧 prefix；</li><li>timeout 后 safe hold/requery/fallback/terminate 的规则；</li><li>replan 时 FIFO、latest-only 或 flush-on-replan。</li></ul>
+<p>平均 latency 很低也可能被一次 reset 后继续执行旧 chunk 的事件击穿。</p>
+<h2 id="11-first-divergence-ladder">11. First-divergence ladder</h2>
+<ol><li>protocol/checkpoint/normalizer/controller 同源；</li><li>clock sync 与 capture→apply trace；</li><li>action round-trip；</li><li>free-space step/sine/chirp tracking；</li><li>ideal vs fitted actuator；</li><li>constant/jitter/burst/drop/stale injection；</li><li>frequency、action repeat、H/K、queue policy sweep；</li><li>free-space 闭合后才进入 contact/task。</li></ol>
+<p>判断：target 前错，查 parser/normalizer/queue；target 对、actual 错，查 controller/actuator/limit；free-space 对、contact 错，转 WM-036。</p>
+<h2 id="12-matched-sweep">12. Matched sweep</h2>
+<p>固定 checkpoint、normalizer、task/init、camera/preprocess、controller family、success predicate、trial count 和 seed：</p>
+<table><thead><tr><th>维度</th><th>对照</th><th>读数</th></tr></thead><tbody>
+<tr><td>frequency</td><td>matched、half/double、repeat compensated</td><td>physical horizon、tracking、success</td></tr>
+<tr><td>latency</td><td>zero、measured、tail jitter、burst/drop</td><td>action age、overshoot、recovery</td></tr>
+<tr><td>actuator</td><td>ideal、fitted、misfit stress</td><td>target–actual、saturation、success</td></tr>
+<tr><td>controller</td><td>expected、wrong mode/scale/frame、restored</td><td>round-trip、free-space、closed loop</td></tr>
+<tr><td>chunk/queue</td><td>K sweep、FIFO/latest/flush、sync/async</td><td>stale/drop、queue、success/CI</td></tr>
+</tbody></table>
+<p>同时换 checkpoint、controller 和 task set，不能归因于 latency。</p>
+<h2 id="13">13. 实现伪代码</h2>
+<pre><code class="language-python">def timestamped_policy_step(env, client, queue, contract):
+    # 1. Capture observation, sensor time and episode/version together.
+    obs = env.read_observation()
+    req = make_request(obs, env.episode_id, env.obs_version)
+    trace = begin_trace(req, obs.capture_time)
+
+    # 2. Keep preprocess/send/response timestamps instead of only model.forward time.
+    response = client.infer(req)
+    trace.record_response(response)
+
+    # 3. Drop wrong-episode, expired, duplicate or out-of-order responses.
+    if not freshness_gate(response, env.state_version, contract.deadline):
+        trace.record_drop(&quot;stale_or_version_mismatch&quot;)
+        return env.apply_safe_hold()
+
+    # 4. Map model output through the frozen action/controller contract.
+    targets = action_to_controller_targets(response.actions, contract)
+    queue.update(targets, policy=contract.queue_policy)
+
+    # 5. Execute only the approved prefix and log apply time, actual state and limits.
+    for target in queue.take(contract.execute_prefix):
+        t_apply = env.controller.apply(target)
+        trace.record_apply(t_apply, target, env.actuator_state())
+        if env.done_or_success():
+            break
+    return trace</code></pre>
+<h2 id="14">14. 项目挂钩与真实性边界</h2>
+<p>当前 <a href="../evidence/evidence_manifest.html">Evidence Manifest</a> 和 OpenPiVLA inventory 支持 action packaging、H/K、controller 与 eval engineering 的讨论，但缺：formal checkpoint 完整 rollout lineage、多阶段统一 timestamp、action-age tails、真实 actuator fit、controller parity、matched frequency/latency/K sweep 和真机 ownership。</p>
+<p>面试安全回答：</p>
+<div class="meta">我会先冻结 physics、sensor、policy、queue、controller 和 actuator 六条时钟，测 capture 到 controller apply 的 action age 与尾延迟；再核对 action type/frame/unit/normalizer/controller/gain/limit，做 dataset→controller round-trip 和 free-space tracking。随后比较 ideal/fitted actuator、latency injection、frequency 与 K/queue policy。当前项目没有完整真机 trace，所以我只说具备这套审计设计，不声称已经降低真机 latency 或提升成功率。</div>
+<p>不能说：</p>
+<ul><li>“forward 20 ms，所以闭环 50 Hz”；</li><li>“sim/real 都写 20 Hz 就对齐了”；</li><li>“7D action 一样，所以 controller 一样”；</li><li>“有 websocket/policy server 就是实时系统”；</li><li>“改 control_freq 后 success 上升就是 latency 因果”；</li><li>“当前项目已经完成 actuator/latency Sim2Real”。</li></ul>
+<h2 id="15">15. 实战审计清单</h2>
+<ul><li>[ ] physics/sensor/policy/network/controller/firmware clocks 完整；</li><li>[ ] clock offset 与 capture/response/apply timestamp 可追溯；</li><li>[ ] action age p50/p95/p99、jitter、deadline/stale/drop 可查；</li><li>[ ] action type/frame/unit/normalizer/controller config SHA 完整；</li><li>[ ] reset、queue flush、version/freshness/fallback 有测试；</li><li>[ ] actuator command/actual/current/torque held-out fit 有报告；</li><li>[ ] dataset→model→controller→actual round-trip 可复现；</li><li>[ ] frequency/latency/actuator/controller/K matched sweep；</li><li>[ ] free-space 先于 contact/task；</li><li>[ ] C0–C3 claim 与 ownership 对齐。</li></ul>
+<h2 id="16">16. 参考来源</h2>
+<ol><li>Tan et al., <a href="https://arxiv.org/abs/1804.10332v2"><em>Sim-to-Real Agile Locomotion</em></a>。</li><li>Hwangbo et al., <a href="https://arxiv.org/abs/1901.08652v1"><em>Learning Agile and Dynamic Motor Skills for Legged Robots</em></a>。</li><li>robosuite, <a href="https://robosuite.ai/docs/modules/controllers.html"><em>Controllers</em></a> 与 <a href="https://robosuite.ai/docs/modules/environments.html"><em>Environments</em></a>。</li><li>Peng et al., <a href="https://arxiv.org/abs/1710.06537v3"><em>Dynamics Randomization</em></a>。</li><li>MuJoCo, <a href="https://mujoco.readthedocs.io/en/stable/computation/index.html#actuation-model"><em>Actuation model</em></a>。</li><li><a href="../sources/vol_04_wm034_control_latency_actuator_controller_mismatch_source_freeze.html">WM-034 Source Freeze</a>。</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest</a>。</li></ol>
+<h2 id="17">17. 下一节点</h2>
+<p>下一节点是 <code>VLA-WM-035</code>：camera intrinsics/extrinsics、exposure、blur、occlusion 与 sensor noise 如何建模。本节点保持 WARN，题卡在真实口述前保持 unseen。</p>
+</article></body></html>

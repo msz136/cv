@@ -1,0 +1,70 @@
+{
+  "artifact": "evidence/projects/robot_harness_10suite_aggregate_bundle_gate.md",
+  "html": "evidence/projects/robot_harness_10suite_aggregate_bundle_gate.html",
+  "review_date": "2026-07-20",
+  "status": "local_aggregate_frozen / arithmetic_reproduced / common_support_partial_6_of_10 / checkpoint_unverified / WARN",
+  "verdict": "WARN",
+  "source_sha256": "3DFE3C413D9DA4465FB42C6A6F7FBB93428F63B6A34D616703B7A8B9AE61C4E6",
+  "covered_claim_ids": [
+    "RH-CL-007",
+    "RH-CL-008",
+    "RH-CL-009",
+    "RH-CL-010",
+    "RH-CL-011"
+  ],
+  "frozen_sources": {
+    "five_model_json": "5D79454550C50969A1441C14DA488AE6689E773EE12252EE6B7DE2AA672BF457",
+    "five_model_html": "7950E04962D8817E073093793324D8735BF0344E7C1CCE7407CD88AA21FE2C66",
+    "checkpoint_json": "23AB0A9F8CEDEDDA52C65DDD98C8AB779502EA3B6B0705DE45BB427702C18D48",
+    "checkpoint_html": "C7B851E72203F914352D2A468D48EEF1A35F60F4DE25BD529EB73922262C34DA",
+    "builder": "69126F6A52B094BDC3219CA3CFFC97F58F6E488990B9348969CEC1B599067D47",
+    "old_32b_8b_comparison": "5B5C47AF71A01D1FE10F14FCCF09BE8B1AA90B2D0251D70EDA683D9EB9DFC70B",
+    "new_122b_35b_comparison": "LOCAL_MISSING"
+  },
+  "coverage": {
+    "overview_json": "2/2 parseable",
+    "model_rows": 13,
+    "suite_scores_per_row": 10,
+    "arithmetic_probes": "13/13",
+    "overlap_rows": "5/5 exact score+n",
+    "archived_run_dirs": "12/12",
+    "archived_primary_metric_files": "60/60",
+    "new_model_run_dirs": "0/4 local",
+    "distinct_checkpoint_paths": 6,
+    "local_checkpoint_paths": "0/6",
+    "full_raw_prediction_files": "28/40 recovered in hidden extraction",
+    "four_model_exact_common_support_suites": "6/10",
+    "practice_state": "269 cards unseen / no coaching_state"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one Robot Harness immutable aggregate-bundle gate; no new knowledge node/card and PER-019 remains gated)",
+    "artifact_identity": "PASS WITH WARNING (five report/builder artifacts frozen by SHA; all are untracked in the external agent repo)",
+    "json_parse": "PASS (both overview JSON files parse and expose model/suite/metric/n mappings)",
+    "arithmetic_reproduction": "PASS (13/13 D/OOD/all means reproduced exactly)",
+    "overlap_consistency": "PASS (five shared rows have identical suite scores and n in both reports)",
+    "metric_semantics": "PASS WITH WARNING (five distinct primary metric meanings; all_avg classified as descriptive index only)",
+    "sample_support": "PASS WITH WARNING (six suites have exact four-model ID set/order; holdout, cross-source and two ToolACE suites remain incomplete)",
+    "new_model_lineage": "WARN (122B/35B comparison input and four run dirs are remote-referenced and local-missing)",
+    "archived_metrics": "PASS WITH WARNING (12/12 archived run dirs and 60/60 metrics present; only aggregate/group/failure samples are local)",
+    "raw_predictions": "PASS WITH WARNING (ordinary synced dirs omit raw; hidden extraction yielded 28/40 primary files and 17,828 valid rows; 12 files remain absent)",
+    "checkpoint_lineage": "WARN (six remote model/checkpoint paths map to 0/6 local binaries; no content hash/load smoke)",
+    "proxy_boundary": "PASS (project sandbox/browser metrics are not promoted to robot/browser closed-loop success)",
+    "ownership_boundary": "PASS WITH WARNING (builder/report provenance is untracked; candidate confirmation remains pending)",
+    "html_static_validation": "PASS (ARIS academic v1, one H1, valid hierarchy, two formula blocks, formula-em=0 and no page-wide overflow after partial-raw correction)",
+    "local_links": "PASS (included in 133 affected-page local-link checks; no missing target/anchor)",
+    "source_sha": "PASS (canonical Markdown, HTML metadata and review JSON SHA synchronized)",
+    "browser_visual_check": "PASS (localhost at 1440x1000 and 800x1000 after partial-raw correction; sticky/static TOC transition, MathJax and table containment verified)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Archive and hash the 122B/35B comparison JSON and four D/OOD run directories.",
+    "Recover the 12 missing primary files: base/SFT holdout and cross-source plus four-model ToolACE schema-given/absent.",
+    "Freeze suite inputs, prompt/tool schema, generation config and one scorer/backend before paired rescoring the six exact-support suites.",
+    "Freeze scorer, schema, suite JSONL, prompt/template, generation config and semantic-backend revisions.",
+    "Obtain immutable checkpoint/config/tokenizer/parent manifests or local binaries for content hash and load smoke.",
+    "Keep heterogeneous suite metrics separate or pre-register a utility weighting contract.",
+    "Complete candidate ownership confirmation before attributing builder, metric selection, run execution or result interpretation.",
+    "Do not create coaching_state.md, change mastery or start PER-019 without the repository's training/evidence gate."
+  ],
+  "next": "Run one Robot Harness ownership-confirmation drill; if continuing evidence, recover only the 12 missing primary files or freeze one scorer/checkpoint-complete paired suite. Keep all cards unseen."
+}

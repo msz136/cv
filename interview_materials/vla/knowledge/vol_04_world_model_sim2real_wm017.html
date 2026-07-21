@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 World Model / Sim2Real：Heterogeneous Embodiment Schema（WM-017）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm017.md">
+<meta name="aris:source-sha256" content="39a086d3f1b89b4b3d3c502864dc70f8dc591efb68705c1796190210cdd6c7e6">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>39a086d3f1b89b4b3d3c502864dc70f8dc591efb68705c1796190210cdd6c7e6</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm017.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">证据边界与学习位置</a></li><li><a href="#1">1. 统一容器不等于统一语义</a></li><li><a href="#2-schema">2. 七层 schema 合同</a></li><li><a href="#3-batch-mask">3. Batch 合同与 mask</a></li><li><a href="#3-1-missing-modality">3.1 Missing modality</a></li><li><a href="#3-2-terminal-padding">3.2 Terminal padding</a></li><li><a href="#4-action-horizon">4. Action 与 horizon 的对齐</a></li><li><a href="#5-world-loss">5. 不污染 world loss 的训练路径</a></li><li><a href="#6">6. 最小审计伪代码</a></li><li><a href="#7">7. 评估与失败诊断</a></li><li><a href="#8">8. 项目挂钩与真实性边界</a></li><li><a href="#9">9. 结论与后续</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 World Model / Sim2Real：Heterogeneous Embodiment Schema（WM-017）</h1>
+<div class="meta">状态：<code>drafted / knowledge_19_of_44 / card_deferred / WARN</code> 报告日期：2026-07-17 证据截止：2026-07-17 当前节点：<code>VLA-WM-017</code>；本轮只生成 knowledge node，不生成题卡，不创建 coaching state。 前置：<a href="vol_04_world_model_sim2real_wm016.html">WM-016 Joint Objective</a>、<a href="../sources/vol_04_wm017_heterogeneous_schema_source_freeze.html">WM-017 Source Freeze</a>、<a href="../sources/vol_04_uwm_video_action_claim_to_code.html">UWM Source Audit B</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>heterogeneous robots 的 camera、state、action 和 horizon 如何统一而不污染 world loss？核心不是把不同机器人 zero-pad 成同一 shape，而是同时冻结字段语义、坐标/单位、时间、有效性 mask、embodiment condition、normalizer、prediction target 和 reduction。</p>
+<h2 id="section-2">证据边界与学习位置</h2>
+<pre><code class="language-text">WM-015 video/action coupling
+                 ↓
+WM-016 joint objective / mask / reduction
+                 ↓
+WM-017 heterogeneous camera/state/action/horizon schema
+                 ↓
+WM-018 horizon trade-off；WM-019 metric boundary；WM-020 bad cases</code></pre>
+<p>本页的来源边界：</p>
+<ul><li>Open X-Embodiment frozen README 支持 RLDS episode/step 容器、dataset metadata 入口，以及 RT-1-X 的 workspace RGB/task string/7D action 说明；不支持所有子数据集共享 camera、action semantics 或 horizon。[1][2]</li><li>UWM frozen code 同时存在 LIBERO [7] action 与 DROID [10] action；<code>action_len=16</code>、<code>num_frames=19</code> 是配置合同，不是跨 embodiment 方法常数。[3]</li><li>用户项目的 adapter、normalizer、checkpoint 和跨机器人结果仍需本地 artifacts；本页不把 Open X 统一格式写成个人已完成的转换工程。[4]</li></ul>
+<h2 id="1">1. 统一容器不等于统一语义</h2>
+<p>Open X-Embodiment 用 RLDS episode 形式组织 step 序列，便于下游读取；这解决的是 container/schema 的互操作性。它没有自动解决以下问题：</p>
+<ol><li>action 是 absolute、delta 还是 velocity；</li><li>gripper 值是 opening、binary command 还是另一种 actuator convention；</li><li>state 是 proprio、机器人状态还是 simulator ground truth；</li><li>workspace、wrist、agentview 的视角、内外参和 crop 是否一致；</li><li>control frequency、action repeat、timestamp 与 history/future horizon 是否一致。</li></ol>
+<p>RT-1-X README 只描述 workspace RGB camera 和 task string，明确不接 wrist camera 或 depth；它的 7 个变量也不能外推为所有机器人 action 维度。面试中应把“官方示例的输入合同”与“跨 embodiment 统一合同”分开。</p>
+<h2 id="2-schema">2. 七层 schema 合同</h2>
+<table><thead><tr><th>层</th><th>要冻结的字段</th><th>未冻结时的风险</th><th>必要证据</th></tr></thead><tbody>
+<tr><td>语义</td><td>action/state/gripper 的单位和含义</td><td>同名 action 被错误拼接</td><td>dataset card、adapter、unit test</td></tr>
+<tr><td>几何</td><td>camera intrinsics/extrinsics、frame、axis、flip/crop</td><td>wrist 与 workspace 或左右视角混淆</td><td>calibration manifest、round-trip</td></tr>
+<tr><td>时间</td><td>timestamp、control Hz、action repeat、history/future、terminal</td><td>index 代替时间；重复 terminal 被当 target</td><td>timestamp/valid-step audit</td></tr>
+<tr><td>形状</td><td>camera 数量、resolution、state/action dim、chunk</td><td>zero-pad 没有 valid-axis mask</td><td>shape manifest、field mask</td></tr>
+<tr><td>条件</td><td>embodiment/robot/task/camera availability</td><td>missing modality 只填零，模型学 zero shortcut</td><td>presence mask、condition token</td></tr>
+<tr><td>归一化</td><td>per-source/per-robot stats、clipping、dtype</td><td>不同 unit/range 共用错误统计量</td><td>stats SHA、round-trip</td></tr>
+<tr><td>目标</td><td>video latent、action、value、continuation 与 reduction</td><td>padding/缺失输入进入 world loss</td><td>target mask、有效分母、分源 loss</td></tr>
+</tbody></table>
+<p>这七层是审计清单，不是要求所有项目最终使用同一表示。统一前先保留 source metadata，统一后仍能追溯原始字段。</p>
+<h2 id="3-batch-mask">3. Batch 合同与 mask</h2>
+<p>可以用如下抽象 batch 表达“同 shape 但语义仍可追溯”：</p>
+<div class="formula">\[
+\mathcal{B}=\{x_{b,t},m^{obs}_{b,t},m^{act}_{b,t},e_b,\tau_{b,t},s_b\}.
+\]</div>
+<p>变量解释：(x) 是转换后的观测/动作字段；(m^{obs})、(m^{act}) 是观测和动作有效 mask；(e_b) 是 embodiment/task condition；(	au) 是 timestamp；(s_b) 是 source、normalizer、version metadata。直觉是 padding 只改变存储 shape，mask 和 metadata 才保留语义。实现映射是 dataset adapter、collator、normalizer registry、model condition 和 loss reduction。</p>
+<h3 id="3-1-missing-modality">3.1 Missing modality</h3>
+<p>如果机器人没有 wrist camera，直接用零图像会让模型把“全零”误当作稳定的视觉模式。更安全的做法是：保留 camera-presence mask 或 condition token，并在目标构造时防止缺失 frame 进入 video/world loss；评估时要单独报告 workspace-only、wrist-only、both 和 missingness 条件。</p>
+<h3 id="3-2-terminal-padding">3.2 Terminal padding</h3>
+<p>不同 episode 的 horizon 不同时常需要 padding。padding action、重复最后一帧或 repeated terminal action 都必须带 valid-step mask；否则 world loss 会把“没有真实未来”的复制值当成真实 transition。mask 应参与 reduction，而不是只在 dataloader 中记录后丢失。</p>
+<h2 id="4-action-horizon">4. Action 与 horizon 的对齐</h2>
+<p>UWM 的 LIBERO 与 DROID shape 已显示：action dimension 可为 [7] 或 [10]，而 <code>action_len=16</code> 属于 frozen config。跨机器人 adapter 必须显式记录：</p>
+<ul><li>action dimension 与每一维单位；</li><li>absolute/delta/velocity 语义；</li><li>rotation representation 与 gripper convention；</li><li>control frequency、timestamp 和 action repeat；</li><li>history length、future length、chunk length 与 replan horizon；</li><li>normalize/denormalize 的统计量、版本和 clipping。</li></ul>
+<p>若只在最后补零，模型无法知道缺少的是维度、时间步还是 modality。应保留 <code>valid_axis_mask</code>、<code>valid_step_mask</code> 和 <code>camera_presence</code>，并在 action execution 前做 normalize→denormalize→controller round-trip。</p>
+<h2 id="5-world-loss">5. 不污染 world loss 的训练路径</h2>
+<ol><li><strong>数据入口</strong>：adapter 输出 canonical fields、source id、embodiment id、camera presence、timestamp 和 valid masks。</li><li><strong>模型入口</strong>：missing camera/state 使用 presence token/mask；action 与 future video 保持各自 schema。</li><li><strong>目标构造</strong>：terminal padding、缺失 camera、无 action sample 不得静默进入对应 world/action loss。</li><li><strong>归一化</strong>：按 source/robot 记录 stats SHA，不把不同单位混用同一统计量。</li><li><strong>聚合</strong>：记录 per-source/per-embodiment loss 和有效元素分母，再决定 weighting；数据最多的来源不能自动定义 joint objective。</li><li><strong>评估</strong>：按 embodiment、camera availability、horizon 和 task family 分层，不能只报混合平均值。</li></ol>
+<h2 id="6">6. 最小审计伪代码</h2>
+<pre><code class="language-python">def convert_and_mask(step, adapter, normalizers):
+    # 1. Preserve source and embodiment metadata before tensor padding.
+    item = adapter.to_canonical(step)
+
+    # 2. Convert units/frames and retain explicit presence/valid masks.
+    item = adapter.align_geometry_and_time(item)
+    item[&quot;action&quot;] = normalizers[item[&quot;source_id&quot;]].normalize(item[&quot;action&quot;])
+
+    # 3. Padding changes shape only; invalid steps must not become targets.
+    item[&quot;target_mask&quot;] = item[&quot;valid_step_mask&quot;] &amp; item[&quot;camera_presence&quot;]
+    return item
+
+def aggregate_world_loss(items, per_element_loss):
+    # 4. Aggregate by valid elements and report source/embodiment strata.
+    return masked_mean(per_element_loss, items[&quot;target_mask&quot;])</code></pre>
+<p>代码映射：<code>to_canonical</code> 是字段语义转换，<code>align_geometry_and_time</code> 处理 frame/timestamp，normalizer 必须按 source/robot 绑定，<code>target_mask</code> 才能进入最终 reduction。伪代码不声称某个现有项目已经实现这些接口；它是审计与设计模板。</p>
+<h2 id="7">7. 评估与失败诊断</h2>
+<table><thead><tr><th>症状</th><th>优先检查</th><th>不应直接结论</th></tr></thead><tbody>
+<tr><td>混合 loss 下降、某机器人 success 降</td><td>per-embodiment loss、normalizer、action semantics、camera presence</td><td>统一训练无效</td></tr>
+<tr><td>video loss 降、contact fail</td><td>camera/frame、horizon、control Hz、terminal mask</td><td>world model 学坏</td></tr>
+<tr><td>action round-trip 失败</td><td>absolute/delta/velocity、axis、gripper、stats SHA</td><td>policy head 不兼容</td></tr>
+<tr><td>长 horizon 末端漂移</td><td>timestamp、repeat、valid-step、replan horizon</td><td>模型容量不足</td></tr>
+<tr><td>缺 wrist camera 时性能异常</td><td>presence token、zero shortcut、camera-specific normalization</td><td>数据质量差</td></tr>
+</tbody></table>
+<p>最小实验队列：schema manifest、normalize/denormalize/controller round-trip、terminal-mask loss A/B、camera presence ablation、per-embodiment weighted/unweighted loss、fixed/variable-horizon paired rollout 和 timestamp/control-frequency smoke。</p>
+<h2 id="8">8. 项目挂钩与真实性边界</h2>
+<p>UWM/LIBERO 项目可讲 action/history/normalizer/reset/checkpoint/rollout protocol 的核对；不能声称已经完成 Open X-style 全数据统一。OpenPiVLA、WAM、Harness 的 camera/action schema 必须分别回到 config、processor、controller 与 eval wrapper 取证；它们都叫 <code>action</code> 不代表语义相同。</p>
+<p>任何“跨 embodiment 统一提升”都需要 per-source/per-robot result、有效分母、normalizer/version 和 paired protocol。混合 world loss 下降只能说明训练信号变化，不能直接证明跨机器人 success 提升。</p>
+<h2 id="9">9. 结论与后续</h2>
+<p>WM-017 的核心答案是：统一 episode container 和字段入口，但保留 action/camera/state/horizon 的语义、单位、时间、presence/valid mask、normalizer 和 source metadata；只有在 target mask 与有效分母正确后，才聚合 world/action loss，并按 embodiment 分层评估。</p>
+<p>本节点为 <code>WARN</code>：Open X 与 UWM 的公开 schema 边界已核验，adapter manifest、round-trip、terminal-mask A/B、per-embodiment eval 和个人项目统一证据仍 pending。本轮不生成 WM-017 题卡；下一步可单独生成一张保持 <code>unseen</code> 的题卡。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li><a href="https://github.com/google-deepmind/open_x_embodiment/blob/9eeb68b989efbcf474e8fb9019e01d02b962a604/README.md">Open X-Embodiment frozen README</a>。</li><li><a href="https://robotics-transformer-x.github.io/">Open X-Embodiment / RT-X paper landing page</a>。</li><li><a href="../sources/vol_04_uwm_video_action_claim_to_code.html">UWM Source Audit B</a>。</li><li><a href="../sources/vol_04_wm017_heterogeneous_schema_source_freeze.html">WM-017 Source Freeze</a>。</li><li><a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO evidence inventory</a>。</li></ol>
+</article></body></html>

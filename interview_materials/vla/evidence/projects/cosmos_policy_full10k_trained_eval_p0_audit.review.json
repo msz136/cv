@@ -1,0 +1,56 @@
+{
+  "artifact": "evidence/projects/cosmos_policy_full10k_trained_eval_p0_audit.md",
+  "html": "evidence/projects/cosmos_policy_full10k_trained_eval_p0_audit.html",
+  "review_date": "2026-07-21",
+  "status": "p0_audited / trained-run-remote-artifact-backed / checkpoint-unverified / scorer-policy-local / ownership-pending / WARN",
+  "verdict": "WARN",
+  "source_sha256": "DB83888B1279E548EBCA64260094489366905C632C5CC4F9E44F834BC12D66CF",
+  "scope": {
+    "project": "Cosmos Policy full10k trained-run RoboCasa evaluation",
+    "run_id": "full10k-20260620-5ep-alltasks",
+    "formal_tasks": 24,
+    "episodes": 120,
+    "raw_successes": 2,
+    "artifact_successes_excluded": 2,
+    "trusted_successes": 0,
+    "trusted_denominator": 118,
+    "action_debug_files": 24,
+    "action_debug_lines": 4066,
+    "local_media": 14,
+    "candidate_transcripts": 0,
+    "mastery_changes": 0,
+    "coaching_state_created": false
+  },
+  "frozen_inputs": {
+    "formal_status_tsv_sha256": "7FCA2C1C57EEAD560D602A6F3CFAF6D0BE7C21F747AEF8F567662C66B2BEC55C",
+    "eval_summary_json_sha256": "C9538A2E418BCBEDD88B8DCFB308F0E1AF428DBA2912A959DEA946872A3247BE",
+    "eval_summary_csv_sha256": "676062F1318ADF3CC7DE4188AE575878BA1A779EFBE7214CA49FE6F2341D06BB",
+    "dataset_statistics_sha256": "BFEC3286EF23AADF19B42C33937118C540073C44F668BA012D9E8B773AA77E41",
+    "dataset_stats_contract_sha256": "D41BC62760B937939067958D4FAAE78F08CFD0D823C4BD74F9A10F7265B8EA8A",
+    "light_archive_sha256": "853E2434EF48AA774FAB59C13EED663AA85364956AB3E3F50A76CEF4B2B715C3"
+  },
+  "checks": {
+    "status_coverage": "PASS (24 unique tasks, 5 trials each, 120 total, 24/24 exit_code=0)",
+    "summary_alignment": "PASS (24 rows and exact status task-set match)",
+    "raw_log_recount": "PASS (24 formal logs sum to 2/120)",
+    "trusted_recount": "PASS WITH WARNING (CoffeeServeMug episode 1/2 length=1 excluded by local policy; 0/118)",
+    "action_debug_integrity": "PASS (24 JSONL files, 4066 lines, all 32x7 float64, no malformed/non-finite/task mismatch)",
+    "protocol_consistency": "PASS WITH WARNING (command/config fields fixed; remote checkpoint/stats/embedding identities lack immutable local revision hashes)",
+    "checkpoint_boundary": "PASS WITH WARNING (all traces reference iter_000010000 path; no local checkpoint binary or fresh-process reload parity)",
+    "media_boundary": "PASS WITH WARNING (14 local media and 169-entry light archive are not a complete 120-episode media/JSONL bundle)",
+    "scorer_boundary": "PASS WITH WARNING (length<5 exclusion is local audit policy, not asserted as official RoboCasa definition)",
+    "run_family_separation": "PASS (full10k trained, official-HF, 8-GPU gate, 1k failure and 1x1 smoke remain separate)",
+    "causal_uplift_boundary": "PASS (no trained-vs-official uplift is claimed)",
+    "ownership_boundary": "PASS WITH WARNING (candidate/operator/reviewer not confirmed per file)",
+    "html_static_validation": "PENDING (run academic renderer and repository validator)",
+    "browser_visual_check": "PENDING (check desktop and narrow layout after rendering)"
+  },
+  "open_items": [
+    "Freeze iter_000010000 checkpoint/stats/embedding revision identity with immutable SHA or ETag and perform fresh-process reload parity.",
+    "Version the length<5 artifact/invalid policy and retain raw episode-level JSONL with termination/error fields.",
+    "Provide a complete 120-episode media/locator bundle; 14 local media are only partial.",
+    "Confirm candidate/operator/reviewer ownership for launcher, wrapper, protocol patch and audit decisions.",
+    "Run a matched 24x5 paired eval before making any trained-vs-baseline uplift claim."
+  ],
+  "next": "Render this canonical audit with ARIS academic v1, sync WAM inventory and project reconciliation indexes, then keep PROJ-WAM cards unseen until a real candidate answer."
+}

@@ -1,0 +1,72 @@
+{
+  "artifact": "questions/vol_06_per013.md",
+  "html": "questions/vol_06_per013.html",
+  "question_list": "questions/vol_06_per013.question_list.md",
+  "knowledge": "knowledge/vol_06_per013_pointcloud_voxel_bev_occupancy.md",
+  "source_freeze": "sources/vol_06_per013_pointcloud_voxel_bev_occupancy_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / VLA-PER-013 / card_1_of_1",
+  "verdict": "WARN",
+  "source_sha256": "A8D294736A6CC433E8DA2ACA0680A7273455D19BB9AAD0368D7D24635966D8D1",
+  "question_count": 1,
+  "covered_question_ids": [
+    "VLA-PER-013"
+  ],
+  "difficulty_distribution": {
+    "L1": 0,
+    "L2": 0,
+    "L3": 1,
+    "L4": 0,
+    "L5": 0
+  },
+  "priority_distribution": {
+    "P0": 0,
+    "P1": 1
+  },
+  "practice_distribution": {
+    "unseen": 1,
+    "weak": 0,
+    "pass": 0,
+    "strong": 0,
+    "stale": 0
+  },
+  "answer_length_chars": {
+    "short_answer_min": 180,
+    "short_answer_max": 180,
+    "short_answer_average": 180,
+    "short_answer_threshold": 180,
+    "mechanism_answer_min": 348,
+    "mechanism_answer_max": 348,
+    "mechanism_answer_average": 348,
+    "mechanism_answer_threshold": 350
+  },
+  "checks": {
+    "bounded_slice": "PASS (one PER-013 atomic card is created from synchronized source and knowledge; no PER-014 artifact, mastery mutation or coaching_state.md)",
+    "details_block_well_formed": "PASS (1/1 Markdown and HTML details/summary block is balanced and foldable)",
+    "question_id_unique": "PASS (VLA-PER-013 occurs once; the global registry synchronizes to 264 unique generated cards)",
+    "required_fields": "PASS (intent, short answer, mechanism, diagnosis/evidence, project hook, follow-up, easy-error, dangerous answer, sources and state are present)",
+    "answer_conciseness": "PASS (30-second answer 180 chars; mechanism answer 348 chars)",
+    "source_references": "PASS WITH WARNING (PER-013 source/knowledge and pinned PointNet++/VoxelNet/PointPillars/Minkowski/BEVFusion/Occupancy Networks/OpenPCDet/OctoMap sources are cited; no local 3D model/config/checkpoint or matched benefit exists)",
+    "sampling_contract": "PASS (function-level permutation invariance is separated from FPS start, radius/K, voxel cap and pipeline-order behavior; FPS is not promoted to universal accuracy)",
+    "voxel_aggregation_contract": "PASS (frame/origin/range/axis/floor, boundary/collision/cap/drop and the [0,2] versus [1,1] MeanVFE alias are retained)",
+    "sparse_contract": "PASS WITH WARNING (SubM, stride sparse and inverse convolution active patterns and coordinate/kernel overhead are distinct; no unconditional latency or memory benefit is claimed)",
+    "pillar_bev_contract": "PASS WITH WARNING (spatial z-bin loss, retained z feature, D-to-channel height compression and BEV calibration/time are explicit; no local pillar/BEV encoder exists)",
+    "occupancy_contract": "PASS (explicit grid, probabilistic octree and implicit threshold semantics are distinct; unknown is not observed free and occupancy score is not collision safety)",
+    "diagnostic_order": "PASS (source/frame/time through sampling, quantization, aggregation, sparse active pattern, BEV calibration, occupancy semantics, grounding and controller is ordered around first divergence)",
+    "deterministic_probes": "PASS (FPS coverage, voxel boundary, MeanVFE alias, dense memory, pillar height and implicit-threshold probes are retained in the compact card)",
+    "local_harness_boundary": "PASS WITH WARNING (2D tri-state map, 54,856-point PCD schema, path/URL bridge and third-party path census support asset/interface facts only; map generation, online ingestion, local encoder, benefit, robot result and candidate ownership are not inferred)",
+    "html_static_validation": "PASS (ARIS academic v1; source SHA synchronized; one H1, three H2 including TOC, one foldable summary, two unique IDs, balanced inline/display MathJax configuration delimiters, required palette/serif/sticky 260px TOC/900px breakpoint/print rules and zero formula-em/control-character issues)",
+    "local_links": "PASS (five knowledge, source and evidence href occurrences resolve locally)",
+    "browser_visual_check": "BLOCKED (the existing in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "practice_state": "PASS (card remains unseen; no oral answer was provided and coaching_state.md is absent)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep VLA-PER-013 unseen until the candidate answers it orally.",
+    "Archive any local point-cloud ingestion, frame/time manifest, voxel/pillar/BEV/occupancy config, checkpoint, raw tensor and matched evaluation if they exist.",
+    "Archive planner rejection reasons, controller revision and episode traces before making collision-safety, execution or robot-success claims.",
+    "Confirm candidate ownership per local file and decision; public repositories, vendored code, assets and Git identity are insufficient.",
+    "Do not create coaching_state.md until an actual oral drill is completed."
+  ],
+  "next": "Freeze only the VLA-PER-014 3D semantic/open-vocabulary grounding source in the next bounded slice; do not generate its knowledge/card or change mastery in the same slice."
+}

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：Pseudo-label、Teacher Noise、Confidence Calibration、Leakage 与 Curriculum（PER-011）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per011_pseudo_label_teacher_noise_calibration_leakage.md">
+<meta name="aris:source-sha256" content="7f0512c52bf9b0528679150fb19994211eb60afbc2d894500aed2b2488c44777">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>7f0512c52bf9b0528679150fb19994211eb60afbc2d894500aed2b2488c44777</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per011_pseudo_label_teacher_noise_calibration_leakage.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与边界</a></li><li><a href="#1-30-pseudo-label-label">1. 30秒直觉：Pseudo-label是一条有血缘的记录，不是一列Label</a></li><li><a href="#2-typed-pseudo-label-record">2. Typed Pseudo-label Record：可重放是可靠性的前提</a></li><li><a href="#2-1-schema">2.1 最小Schema</a></li><li><a href="#2-2">2.2 三个不可混淆的轴</a></li><li><a href="#3-teacher-target-noise-taxonomy">3. Teacher Target 与Noise Taxonomy</a></li><li><a href="#4-hard-soft-teacher-forced-free-generation">4. Hard、Soft、Teacher-forced 与Free-generation怎样选</a></li><li><a href="#5-fixmatch-confidence-gate-threshold">5. FixMatch式Confidence Gate：Threshold只定义选择</a></li><li><a href="#5-1-hard-pseudo-label-mask">5.1 Hard Pseudo-label与Mask</a></li><li><a href="#5-2-masked-loss-reduction-trap">5.2 Masked Loss与Reduction Trap</a></li><li><a href="#6-quality-contract-coverage-accepted-error-risk-coverage">6. Quality Contract：Coverage、Accepted Error与Risk–Coverage</a></li><li><a href="#6-1">6.1 两个最小量</a></li><li><a href="#6-2-threshold">6.2 为什么高Threshold仍可能错</a></li><li><a href="#7-confidence-calibration-score">7. Confidence Calibration：Score怎样变成可解释概率</a></li><li><a href="#7-1-temperature-scaling">7.1 Temperature Scaling</a></li><li><a href="#7-2-ece">7.2 ECE有完整协议</a></li><li><a href="#7-3-calibration-set">7.3 Calibration Set不能被回收进训练</a></li><li><a href="#8-selection-bias-route-class-balance">8. Selection Bias与Route/Class Balance</a></li><li><a href="#9-noisy-student-filter-balance-iteration">9. Noisy Student：Filter、Balance与Iteration都是协议</a></li><li><a href="#10-curriculum-schedule">10. Curriculum：不是所有Schedule都叫课程学习</a></li><li><a href="#11-leakage-taxonomy-row-teacher">11. Leakage Taxonomy：从同一Row到Teacher上游数据</a></li><li><a href="#11-1">11.1 十层检查</a></li><li><a href="#11-2-alias-path">11.2 Alias-path反例</a></li><li><a href="#11-3-fail-closed">11.3 Fail-closed原则</a></li><li><a href="#12-fail-closed-pipeline">12. Fail-closed Pipeline与伪代码</a></li><li><a href="#13-opd">13. 本地OPD：四条链必须分开口述</a></li><li><a href="#13-1-mix-builder-route-confidence-gate">13.1 Mix Builder：人工Route，不是Confidence Gate</a></li><li><a href="#13-2-top-1-cache-teacher-forced-token-distillation">13.2 Top-1 Cache：Teacher-forced Token Distillation</a></li><li><a href="#13-3-top-1-trainer-route">13.3 Top-1 Trainer：固定Route权重</a></li><li><a href="#13-4-online-kl-veto-logging-quality-gate">13.4 Online KL / Veto：Logging不是Quality Gate</a></li><li><a href="#14-raw-holdout">14. 本地Raw Holdout：强证据与剩余未知</a></li><li><a href="#15-playbook-student">15. 诊断Playbook：Student没提升时先查哪里</a></li><li><a href="#16">16. 面试回答模板、追问与危险答案</a></li><li><a href="#16-1">16.1 两分钟结构化回答</a></li><li><a href="#16-2">16.2 高频追问</a></li><li><a href="#16-3">16.3 危险答案与修正</a></li><li><a href="#17-project-truth-boundary-hook">17. Project Truth Boundary与项目Hook</a></li><li><a href="#17-1-opd-hook">17.1 OPD Hook</a></li><li><a href="#17-2-robot-harness-hook">17.2 Robot Harness Hook</a></li><li><a href="#18-checklist">18. 白板Checklist与练习标准</a></li><li><a href="#19">19. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：Pseudo-label、Teacher Noise、Confidence Calibration、Leakage 与 Curriculum（PER-011）</h1>
+<div class="meta">状态：<code>drafted / VLA-PER-011 / source_synced / card_synced / WARN</code> 更新日期：2026-07-20 前置：<code>VLA-PER-009</code> matching/loss、<code>VLA-PER-010</code> metric/parser、VOL 02 imitation learning；后续：<code>VLA-PER-012</code> grounding methods、<code>VLA-PER-015</code> perception→action gate。 来源入口：<a href="../sources/vol_06_per011_pseudo_label_teacher_noise_calibration_leakage_source_freeze.html">PER-011 Pseudo-label / Teacher Noise / Calibration / Leakage Source Freeze</a>。本页只做冻结证据的教学转译；atomic card已在独立切片同步并保持<code>unseen</code>，真实口述状态仍未开始。</div>
+<h2 id="question">问题（Question）</h2>
+<p>面试官问“你们用teacher做pseudo-label，怎么保证标签可靠、没有数据泄漏”时，不能只回答“设0.95阈值并做了去重”。需要讲清楚：teacher在什么输入和decode协议下产生hard/soft target；confidence是什么单位；是否在独立有标签validation上校准；threshold后的coverage、accepted error和class/route bias怎样变化；每轮teacher/student怎样版本化；row、image、fingerprint、semantic、teacher-training和model-selection leakage分别怎样检查。</p>
+<p>本节点建立的主链是：</p>
+<pre><code class="language-text">candidate provenance
+  -&gt; teacher checkpoint + inference protocol
+  -&gt; typed hard / soft target
+  -&gt; confidence + calibration revision
+  -&gt; accept / reject / reweight
+  -&gt; coverage + accepted risk + distribution shift
+  -&gt; curriculum / iteration manifest
+  -&gt; leakage gates
+  -&gt; same-protocol student evaluation
+  -&gt; project truth boundary</code></pre>
+<h2 id="section-2">知识地图位置与边界</h2>
+<table><thead><tr><th>相邻节点</th><th>该节点负责</th><th>PER-011负责</th></tr></thead><tbody>
+<tr><td>VOL 02 IL</td><td>behavior cloning、DAgger、covariate shift</td><td>perception teacher生成的数据与可靠性合同</td></tr>
+<tr><td>PER-006</td><td>image resize/crop、camera/time lineage</td><td>lineage怎样写入pseudo record与split gate</td></tr>
+<tr><td>PER-009</td><td>top-1 CE、full-vocabulary KL、mask与reduction</td><td>target由谁产生、为何可信、怎样筛选和迭代</td></tr>
+<tr><td>PER-010</td><td>strict parser、metric、denominator、protocol comparability</td><td>calibration split、accepted-set quality与leakage层级</td></tr>
+<tr><td>PER-012</td><td>具体grounding/VLM方法谱系</td><td>teacher/data机制，不展开模型百科</td></tr>
+<tr><td>PER-015</td><td>uncertainty到reachability/action/robot gate</td><td>不从static pseudo-label或holdout分数推出robot success</td></tr>
+<tr><td>VOL 05</td><td>通用CI、paired test、评估工程</td><td>selective risk、teacher lineage和pseudo-feedback leakage</td></tr>
+</tbody></table>
+<h2 id="1-30-pseudo-label-label">1. 30秒直觉：Pseudo-label是一条有血缘的记录，不是一列Label</h2>
+<p>一个可靠的30秒回答是：</p>
+<div class="meta">我先把pseudo-label定义成带sample/image fingerprint、teacher checkpoint、prompt/decode、target type、confidence语义、calibration revision、acceptance decision和round的typed record。高confidence只是teacher自认为确定，不等于正确；所以threshold必须和coverage、独立gold audit上的accepted error以及class/route分布一起报告。temperature scaling只在独立有标签validation上拟合，不能把generation temperature或entropy logging叫校准。泄漏也分row、image、content、semantic、teacher training和model selection多层，任一身份未知都应fail closed。</div>
+<p>这段回答主动封住四种常见偷换：</p>
+<ol><li>“teacher输出”被默认等同于gold；</li><li>“0.95 confidence”被默认等同于95%正确率；</li><li>“path overlap为0”被默认等同于完全无泄漏；</li><li>“超参随step变化”被默认等同于有效curriculum。</li></ol>
+<h2 id="2-typed-pseudo-label-record">2. Typed Pseudo-label Record：可重放是可靠性的前提</h2>
+<h3 id="2-1-schema">2.1 最小Schema</h3>
+<pre><code class="language-json">{
+  &quot;sample_id&quot;: &quot;...&quot;,
+  &quot;source_id&quot;: &quot;...&quot;,
+  &quot;image_id&quot;: &quot;...&quot;,
+  &quot;content_fingerprint&quot;: &quot;sha256:...&quot;,
+  &quot;split&quot;: &quot;train_unlabeled | calibration | validation | holdout&quot;,
+  &quot;teacher_revision&quot;: &quot;checkpoint-sha256:...&quot;,
+  &quot;teacher_training_manifest&quot;: &quot;manifest-sha256:...&quot;,
+  &quot;prompt_revision&quot;: &quot;sha256:...&quot;,
+  &quot;decode_mode&quot;: &quot;teacher_forced | free_generation&quot;,
+  &quot;target_type&quot;: &quot;hard_token | soft_distribution | point | box | text&quot;,
+  &quot;target&quot;: &quot;...&quot;,
+  &quot;confidence_type&quot;: &quot;max_probability | margin | sequence_probability | none&quot;,
+  &quot;raw_confidence&quot;: null,
+  &quot;calibration_revision&quot;: null,
+  &quot;acceptance&quot;: {&quot;decision&quot;: &quot;accept | reject&quot;, &quot;threshold&quot;: null, &quot;weight&quot;: 1.0},
+  &quot;route&quot;: &quot;object | region | both | general&quot;,
+  &quot;round&quot;: 0
+}</code></pre>
+<p>工程直觉是：任何会改变target、选择集合或风险解释的字段，都必须成为artifact identity的一部分。只缓存label ID而不缓存teacher和confidence，会导致后续无法回答“哪个teacher在什么阈值下接收了多少样本”。</p>
+<h3 id="2-2">2.2 三个不可混淆的轴</h3>
+<table><thead><tr><th>轴</th><th>选项A</th><th>选项B</th><th>为什么不同</th></tr></thead><tbody>
+<tr><td>inference</td><td>teacher-forced</td><td>free generation</td><td>前者看到gold response prefix/位置；后者自行生成完整结构，exposure与格式失败不同</td></tr>
+<tr><td>target</td><td>hard argmax</td><td>soft distribution</td><td>hard target丢弃非top-1概率，无法恢复teacher uncertainty</td></tr>
+<tr><td>score state</td><td>raw confidence</td><td>calibrated confidence</td><td>后者还绑定有标签fit split、方法、参数和revision</td></tr>
+</tbody></table>
+<p>对grounding还要区分token correctness、sequence exactness、strict parser validity和parsed geometry correctness。单token概率高，不代表整个point/box sequence格式正确或几何正确。</p>
+<h2 id="3-teacher-target-noise-taxonomy">3. Teacher Target 与Noise Taxonomy</h2>
+<p>设teacher logits为\(z_T(x)\)，温度为\(T&gt;0\)，soft target写为：</p>
+<div class="formula">\[
+q_T^{(T)}(c\mid x)
+=\operatorname{softmax}\!\left(\frac{z_T(x)}{T}\right)_c,
+\qquad
+\tilde y=\arg\max_c q_T(c\mid x).
+\]</div>
+<p>变量解释：\(x\)是输入，\(c\)是token/class，\(q_T^{(T)}\)是温度化分布，\(\tilde y\)是hard target。直觉上，soft target保留teacher对其他类别的相对判断，hard target只留下冠军。实现映射：PER-011 source显示本地top-1 cache只保存argmax IDs；online trainer才计算full-vocabulary KL，二者不能被统称为同一种pseudo-label。</p>
+<table><thead><tr><th>Noise层</th><th>典型失败</th><th>最小诊断</th><th>该诊断不能证明</th></tr></thead><tbody>
+<tr><td>semantic</td><td>指错对象、关系判断错</td><td>labeled gold accuracy、accepted precision</td><td>robot可执行性</td></tr>
+<tr><td>representation</td><td>point/box/text不足以下游使用</td><td>representation-specific gold</td><td>action reachability</td></tr>
+<tr><td>format/parser</td><td>tag缺失、坐标越界、空结构</td><td>strict validity与invalid reasons</td><td>语义正确</td></tr>
+<tr><td>exposure</td><td>teacher-forced依赖gold prefix</td><td>paired free-generation eval</td><td>所有domain shift</td></tr>
+<tr><td>domain</td><td>新相机、场景或语言分布外</td><td>per-domain risk–coverage</td><td>未观测OOD</td></tr>
+<tr><td>class/route</td><td>easy/common类被过度接收</td><td>accepted histogram与per-group risk</td><td>分布已公平</td></tr>
+<tr><td>correlated</td><td>teacher/student共享系统性错误</td><td>gold audit、diverse teachers</td><td>完全独立错误</td></tr>
+<tr><td>temporal</td><td>旧cache被新round误消费</td><td>round/checkpoint manifest</td><td>内容无泄漏</td></tr>
+</tbody></table>
+<h2 id="4-hard-soft-teacher-forced-free-generation">4. Hard、Soft、Teacher-forced 与Free-generation怎样选</h2>
+<table><thead><tr><th>方案</th><th>保留信息</th><th>优点</th><th>主要风险</th><th>需要记录</th></tr></thead><tbody>
+<tr><td>hard token</td><td>argmax ID</td><td>存储与训练简单</td><td>丢失uncertainty，错误被当one-hot</td><td>teacher、位置、mask、ID、confidence</td></tr>
+<tr><td>soft token</td><td>vocabulary distribution</td><td>可表达相似类别与暗知识</td><td>存储/计算高，temperature敏感</td><td>logits/probs、T、vocab、mask</td></tr>
+<tr><td>teacher-forced cache</td><td>gold response位置的teacher target</td><td>与监督token对齐稳定</td><td>exposure bias；不是自由生成</td><td>prefix/labels、supervised positions</td></tr>
+<tr><td>free-generation structure</td><td>teacher自己生成point/box/text</td><td>更接近部署输出</td><td>格式/sequence error与decode随机性</td><td>prompt、decode、raw output、parser</td></tr>
+</tbody></table>
+<p>选择原则不是“soft永远优于hard”，而是目标与风险对齐：若要蒸馏token分布，可用soft KL；若要构建可部署的结构化pseudo dataset，必须自由生成、保存raw output并走strict parser。二者可以共同存在，但应是不同artifact和metric。</p>
+<h2 id="5-fixmatch-confidence-gate-threshold">5. FixMatch式Confidence Gate：Threshold只定义选择</h2>
+<h3 id="5-1-hard-pseudo-label-mask">5.1 Hard Pseudo-label与Mask</h3>
+<p>令\(x_i^w,x_i^s\)分别为同一无标签样本的weak和strong view，teacher在weak view上产生hard target：</p>
+<div class="formula">\[
+\tilde y_i=\arg\max_c p_T(c\mid x_i^w),
+\qquad
+m_i=\mathbf 1\!\left[\max_c p_T(c\mid x_i^w)\ge\tau\right].
+\]</div>
+<p>变量解释：\(\tau\)是threshold，\(m_i\)是accept mask。直觉上，模型只学习teacher最有把握的样本。实现映射：冻结FixMatch代码对weak logits取argmax与max probability，再用默认0.95阈值形成mask；但代码没有承诺0.95的样本就有95%正确率。</p>
+<h3 id="5-2-masked-loss-reduction-trap">5.2 Masked Loss与Reduction Trap</h3>
+<div class="formula">\[
+L_u=\frac{1}{B}\sum_{i=1}^{B}m_i\,
+\operatorname{CE}\!\left(p_S(\cdot\mid x_i^s),\tilde y_i\right),
+\qquad
+\rho_\tau=\frac{1}{B}\sum_{i=1}^{B}m_i.
+\]</div>
+<p>变量解释：\(B\)是全部unlabeled batch size，\(L_u\)是pseudo loss，\(\rho_\tau\)是coverage。直觉上，FixMatch实现的<code>mean(loss * mask)</code>仍除以总batch，而不是accepted count；coverage下降会同时缩小有效loss scale。实现映射：复现时必须同时冻结threshold、pseudo-loss weight、batch组成和reduction。</p>
+<p>确定性反例：confidence为\([0.96,0.94]\)，\(\tau=0.95\)，per-sample CE为\([0.2,0.8]\)。mask是\([1,0]\)，total-batch mean为0.1，而accepted-only mean为0.2。只说“用了masked CE”不足以复现objective。</p>
+<h2 id="6-quality-contract-coverage-accepted-error-risk-coverage">6. Quality Contract：Coverage、Accepted Error与Risk–Coverage</h2>
+<h3 id="6-1">6.1 两个最小量</h3>
+<div class="formula">\[
+\operatorname{coverage}(\tau)=\Pr(m=1),
+\qquad
+\eta_\tau=\Pr(\tilde y\ne y\mid m=1).
+\]</div>
+<p>变量解释：coverage是候选池中被接收的比例，\(\eta_\tau\)是accepted-set error，需要独立gold labels。直觉上，threshold解决的是“收多少”，gold audit才回答“收进来的有多错”。实现映射：没有gold audit时可以报告score分布与coverage，但不能报告accepted precision或声称teacher可靠。</p>
+<h3 id="6-2-threshold">6.2 为什么高Threshold仍可能错</h3>
+<p>若teacher对错误class给0.99，\(\tau=0.95\)和0.98都会接收它。threshold只能截断teacher自己的score，无法修复overconfidence、domain shift或系统性偏差。</p>
+<p>最低报告表应包含：</p>
+<table><thead><tr><th>Threshold</th><th>Candidate N</th><th>Accepted N</th><th>Coverage</th><th>Gold-audit N</th><th>Accepted error</th><th>Strict validity</th><th>Class/route drift</th></tr></thead><tbody>
+<tr><td>0.90</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+<tr><td>0.95</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+<tr><td>0.99</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+</tbody></table>
+<p>对grounding还要分token/sequence/parser/geometry risk；只用token-level max probability做threshold，不能直接代表结构化输出risk。</p>
+<h2 id="7-confidence-calibration-score">7. Confidence Calibration：Score怎样变成可解释概率</h2>
+<h3 id="7-1-temperature-scaling">7.1 Temperature Scaling</h3>
+<p>固定模型参数，在独立有标签calibration set \(\mathcal V\)上拟合标量\(T&gt;0\)：</p>
+<div class="formula">\[
+T^*=\arg\min_{T&gt;0}\sum_{i\in\mathcal V}
+-\log \operatorname{softmax}\!\left(\frac{z_i}{T}\right)_{y_i}.
+\]</div>
+<p>变量解释：\(z_i\)是样本logits，\(y_i\)是真实label，\(T^*\)是validation NLL最优温度。直觉上，它不改argmax class，而是调整分布尖锐程度，使score更接近经验正确率。实现映射：必须保存fit split、logits/checkpoint、optimizer或搜索方法和\(T^*\)；generation <code>temperature/top_p</code>控制采样，不是这条校准过程。</p>
+<h3 id="7-2-ece">7.2 ECE有完整协议</h3>
+<p>把样本按confidence分到bins \(B_b\)，top-label Expected Calibration Error写为：</p>
+<div class="formula">\[
+\operatorname{ECE}=\sum_{b=1}^{M}\frac{|B_b|}{N}
+\left|\operatorname{acc}(B_b)-\operatorname{conf}(B_b)\right|.
+\]</div>
+<p>变量解释：\(M\)是bin数，\(N\)是样本数，acc/conf是每个bin的经验准确率与平均confidence。直觉上，它测量“说有多确定”与“实际多常正确”的差距。实现映射：需冻结bin edges、equal-width/equal-mass、top-label/classwise、sample unit和correctness定义；TorchMetrics的top-label分类实现不能自动定义VLA sequence或point/box正确性。</p>
+<p>四样本\((0.55,0),(0.60,1),(0.85,1),(0.90,0)\)分成两bin时，ECE为0.225；改变binning数值会改变。因此ECE只能在同一协议下比较，并应和risk–coverage一起看。</p>
+<h3 id="7-3-calibration-set">7.3 Calibration Set不能被回收进训练</h3>
+<p>若用于拟合\(T\)或threshold的labels又进入student train，之后还把同一split当独立评估，就产生data reuse。建议把<code>calibration</code>、<code>model_selection_validation</code>和<code>sealed_holdout</code>作为不同ACL角色；任何角色转换都要生成新protocol revision。</p>
+<h2 id="8-selection-bias-route-class-balance">8. Selection Bias与Route/Class Balance</h2>
+<p>设\(g\)表示class、route、source或domain，threshold后的训练分布为：</p>
+<div class="formula">\[
+p_\tau(x,y,g)=p(x,y,g\mid m=1)
+\propto p(m=1\mid x,y,g)\,p(x,y,g).
+\]</div>
+<p>变量解释：\(p(m=1\mid x,y,g)\)是某组样本被接收的概率。直觉上，如果common object比rare relation更容易拿高confidence，accepted set会越来越偏向easy/common，而不是原candidate pool的随机子集。实现映射：每次filter后都要保存candidate/accepted/rejected的route、class、source、domain histogram和per-group risk。</p>
+<p>常见修正与边界：</p>
+<table><thead><tr><th>手段</th><th>解决什么</th><th>新风险</th></tr></thead><tbody>
+<tr><td>per-group threshold</td><td>不同组score尺度不同</td><td>需要每组gold calibration；小组方差高</td></tr>
+<tr><td>quota / balancing</td><td>避免rare group被清空</td><td>可能保留低质量样本</td></tr>
+<tr><td>reliability weight</td><td>让低可靠target贡献更小</td><td>权重本身也要校准</td></tr>
+<tr><td>active relabeling</td><td>把困难样本交给human/gold</td><td>成本与抽样偏差</td></tr>
+<tr><td>diverse teacher agreement</td><td>降低单teacher偶然错误</td><td>teacher错误可能相关</td></tr>
+</tbody></table>
+<p>平衡predicted class不等于平衡真实class，更不等于平衡场景难度或route；必须以gold audit和downstream结果复核。</p>
+<h2 id="9-noisy-student-filter-balance-iteration">9. Noisy Student：Filter、Balance与Iteration都是协议</h2>
+<p>冻结Noisy Student代码所表达的最小循环是：</p>
+<pre><code class="language-text">labeled data -&gt; train teacher_r
+candidate unlabeled -&gt; teacher_r inference -&gt; pseudo_manifest_r
+pseudo_manifest_r -&gt; threshold filter + class/route balance
+labeled + accepted pseudo -&gt; noisy student_r
+student_r same-protocol eval -&gt; promote or reject -&gt; teacher_(r+1)</code></pre>
+<p>每轮需要版本化：</p>
+<table><thead><tr><th>Manifest字段</th><th>防止的问题</th></tr></thead><tbody>
+<tr><td>round与teacher checkpoint</td><td>旧cache被新round误消费</td></tr>
+<tr><td>candidate manifest/hash</td><td>候选池悄悄变化</td></tr>
+<tr><td>prompt/decode/inference revision</td><td>target变化无法解释</td></tr>
+<tr><td>calibration与threshold</td><td>acceptance policy不可重放</td></tr>
+<tr><td>accepted/rejected counts</td><td>有效数据量不透明</td></tr>
+<tr><td>route/class/source histogram</td><td>selection bias被掩盖</td></tr>
+<tr><td>student config/checkpoint</td><td>teacher晋升身份不清</td></tr>
+<tr><td>evaluation protocol与decision</td><td>用不同口径晋升teacher</td></tr>
+</tbody></table>
+<p>teacher晋升不能只看training loss；应预注册same-protocol validation metric、risk–coverage和failure gates。若换了split、parser、prompt或checkpoint pool，不能把分数差称为单因素teacher迭代收益。</p>
+<h2 id="10-curriculum-schedule">10. Curriculum：不是所有Schedule都叫课程学习</h2>
+<p>一个可验证curriculum至少包含：</p>
+<ol><li><strong>ordering signal</strong>：confidence、difficulty、agreement、round或human audit；</li><li><strong>schedule</strong>：何时放宽threshold、加入新domain/route或更新teacher；</li><li><strong>intervention</strong>：样本以什么顺序和权重进入哪个objective；</li><li><strong>counterfactual</strong>：random order、fixed threshold或fixed teacher基线；</li><li><strong>promotion gate</strong>：什么证据允许进入下一轮。</li></ol>
+<p>示例manifest：</p>
+<pre><code class="language-json">{
+  &quot;round&quot;: 2,
+  &quot;teacher_revision&quot;: &quot;sha256:...&quot;,
+  &quot;calibration_revision&quot;: &quot;sha256:...&quot;,
+  &quot;thresholds&quot;: {&quot;object&quot;: 0.97, &quot;region&quot;: 0.93},
+  &quot;accepted_by_route&quot;: {&quot;object&quot;: 21000, &quot;region&quot;: 18000, &quot;both&quot;: 3000},
+  &quot;gold_audit&quot;: {&quot;n&quot;: 800, &quot;accepted_error&quot;: 0.06},
+  &quot;student_revision&quot;: &quot;sha256:...&quot;,
+  &quot;evaluation_protocol&quot;: &quot;sha256:...&quot;,
+  &quot;promotion_decision&quot;: &quot;accept&quot;
+}</code></pre>
+<p>本地<code>veto_beta</code>随step线性变化，只证明detached student logits混入teacher logits的比例变化。没有easy-to-hard样本顺序、gold-calibrated ordering和fixed-β对照时，安全名称是<code>target-logit mixing schedule</code>，不能直接叫“校准curriculum已验证有效”。</p>
+<h2 id="11-leakage-taxonomy-row-teacher">11. Leakage Taxonomy：从同一Row到Teacher上游数据</h2>
+<h3 id="11-1">11.1 十层检查</h3>
+<table><thead><tr><th>层级</th><th>典型污染</th><th>最低Gate</th><th>仍然未知</th></tr></thead><tbody>
+<tr><td>row</td><td>同一JSON row重复</td><td>canonical row hash</td><td>文本改写</td></tr>
+<tr><td>source</td><td>holdout source混入train</td><td>source ACL/blocklist</td><td>跨source复制</td></tr>
+<tr><td>image path/ID</td><td>同一路径或ID跨split</td><td>normalized key join</td><td>alias path、重编码</td></tr>
+<tr><td>content fingerprint</td><td>相同bytes/内容重复</td><td>byte/normalized-image SHA</td><td>crop、resize、近重复</td></tr>
+<tr><td>perceptual duplicate</td><td>不同bytes的近似图</td><td>pHash/embedding NN audit</td><td>threshold误差</td></tr>
+<tr><td>semantic</td><td>同场景、模板或语义泄漏</td><td>entity/template/cluster audit</td><td>难以穷尽的同源关系</td></tr>
+<tr><td>teacher training</td><td>teacher上游见过holdout</td><td>dataset/checkpoint lineage</td><td>黑盒预训练数据</td></tr>
+<tr><td>preprocessing</td><td>split前用全数据拟合统计量</td><td>train-only fit manifest</td><td>processor隐藏状态</td></tr>
+<tr><td>model selection</td><td>反复看test挑模型/阈值</td><td>validation + sealed test</td><td>人工观察后的隐性决策</td></tr>
+<tr><td>pseudo feedback</td><td>holdout prediction进入下一轮train</td><td>immutable ACL与artifact lineage</td><td>缓存/人工复制</td></tr>
+</tbody></table>
+<h3 id="11-2-alias-path">11.2 Alias-path反例</h3>
+<p><code>sourceA/images/001.jpg</code>和<code>sourceB/copied/cup.jpg</code>若内容相同，<code>hash(source + path)</code>不同，可能进入不同split；content hash或perceptual fingerprint才会暴露它。因此“image-path overlap=0”只能证明同一个key没重复，不能证明无内容泄漏。</p>
+<h3 id="11-3-fail-closed">11.3 Fail-closed原则</h3>
+<p>以下任一情况应拒绝生成或消费pseudo-label：</p>
+<ul><li>split未知或sample命中holdout ACL；</li><li>缺content fingerprint；</li><li>teacher checkpoint/training lineage未知；</li><li>calibration split与train/holdout角色冲突；</li><li>cache round和teacher revision不匹配；</li><li>duplicate check失败或检查程序没有成功退出。</li></ul>
+<p>目录名含<code>high_quality</code>或<code>no_eval_holdout</code>只是字符串，不是审计证据。证据必须是manifest、join结果、hash、脚本revision与退出状态。</p>
+<h2 id="12-fail-closed-pipeline">12. Fail-closed Pipeline与伪代码</h2>
+<pre><code class="language-python">def build_pseudo_manifest(candidate, teacher, calibration, acl, policy):
+    # 1. Freeze all identities before inference; unknown lineage is a hard failure.
+    assert candidate.manifest_sha256
+    assert teacher.checkpoint_sha256 and teacher.training_manifest_sha256
+    assert calibration.fit_split == &quot;calibration&quot;
+    assert calibration.fit_split not in {&quot;train_unlabeled&quot;, &quot;holdout&quot;}
+
+    accepted, rejected, seen = [], [], set()
+    for sample in candidate.rows:
+        # 2. Enforce sample- and content-level holdout isolation.
+        assert sample.sample_id not in acl.holdout_sample_ids
+        assert sample.content_fingerprint not in acl.holdout_fingerprints
+        assert sample.content_fingerprint not in seen
+        seen.add(sample.content_fingerprint)
+
+        # 3. Generate under a frozen prompt/decode protocol and keep raw output.
+        pred = teacher.infer(sample, protocol=policy.inference_protocol)
+
+        # 4. Transform raw score with a validation-fitted calibration revision.
+        conf = calibration.transform(pred.raw_confidence)
+        threshold = policy.threshold[(sample.route, sample.source_id)]
+        record = typed_record(sample, teacher, pred, conf, calibration, policy)
+
+        # 5. Reject invalid structure before confidence selection.
+        if not pred.strict_valid:
+            record.reject_reason = &quot;strict_invalid&quot;
+            rejected.append(record)
+        elif conf &lt; threshold:
+            record.reject_reason = &quot;below_threshold&quot;
+            rejected.append(record)
+        else:
+            accepted.append(record)
+
+    # 6. Report coverage, gold-audited risk and distribution shift, then freeze hashes.
+    report_coverage_risk_balance(accepted, rejected, policy.gold_audit)
+    return freeze_manifest(accepted, rejected, teacher, calibration, acl, policy)</code></pre>
+<p>实现审查顺序应固定为：identity/ACL → raw generation → strict validity → calibration → threshold → balance → gold audit → immutable manifest。若先filter后丢弃raw output，就无法区分teacher语义错、格式错和parser错。</p>
+<h2 id="13-opd">13. 本地OPD：四条链必须分开口述</h2>
+<h3 id="13-1-mix-builder-route-confidence-gate">13.1 Mix Builder：人工Route，不是Confidence Gate</h3>
+<p><code>build_opd_mix_v1.py</code>按source/bucket指定<code>teacher=obj/reg/both</code>，目标比例35% object、35% region、30% general，样本不足时回采。它没有读取teacher confidence、entropy或calibration，也没有在该层做fingerprint dedup。</p>
+<p>安全表述：</p>
+<div class="meta">这一层做的是数据配比和teacher route assignment，不是基于校准置信度的pseudo-label筛选。目录名里的high-quality/no-holdout需要另用manifest和重叠检查验证。</div>
+<h3 id="13-2-top-1-cache-teacher-forced-token-distillation">13.2 Top-1 Cache：Teacher-forced Token Distillation</h3>
+<p><code>prepare_opd_top1_cache.py</code>让teacher进入<code>eval()</code>和<code>inference_mode()</code>，在真实assistant response的supervised token positions上取logits argmax，保存<code>obj_top1_ids/reg_top1_ids</code>及count。</p>
+<pre><code class="language-text">image + prompt + gold response positions
+  -&gt; teacher-forced token logits
+  -&gt; per-position argmax IDs
+  -&gt; cached hard distillation targets</code></pre>
+<p>它不是<code>image + prompt -&gt; teacher自由生成point/box -&gt; parser</code>。cache也没有confidence、margin、entropy、temperature、threshold或accept/reject字段，因此不能事后重算coverage与accepted error。</p>
+<h3 id="13-3-top-1-trainer-route">13.3 Top-1 Trainer：固定Route权重</h3>
+<p><code>train_opd_top1_vl.py</code>直接消费缓存IDs；<code>both</code> route固定0.5/0.5。它支持“hard teacher targets进入训练”的代码事实，不支持“target经过校准过滤”或“权重反映teacher可靠性”。hard CE公式属于PER-009，本页只解释target quality evidence。</p>
+<h3 id="13-4-online-kl-veto-logging-quality-gate">13.4 Online KL / Veto：Logging不是Quality Gate</h3>
+<p><code>train_opd_online_vl.py</code>冻结teacher、使用<code>eval()</code>、可选teacher/student rollout并计算full-vocabulary KL；teacher entropy与top-k overlap被记录，但未据此拒绝或降权target。sampling temperature/top-p控制rollout采样，不是calibration。</p>
+<p>若target logits为：</p>
+<div class="formula">\[
+z&#x27;=z_T+\beta z_S^{\operatorname{detach}},
+\]</div>
+<p>变量解释：\(z_T\)是teacher logits，\(z_S^{\operatorname{detach}}\)是不回传梯度的student logits，\(\beta\)是<code>veto_beta</code>。改变\(\beta\)会改变soft target，但没有gold \(y\)就不能判断它更正确。实现映射：安全名称是target-logit mixing，不是confidence calibration或已验证curriculum。</p>
+<h2 id="14-raw-holdout">14. 本地Raw Holdout：强证据与剩余未知</h2>
+<p><code>eval_raw_holdout_v1/summary.json</code>报告：10,000 rows、8,251 unique images、10,000 unique fingerprints、reported fingerprint duplicate=0；10,000 rows均<code>image_seen_in_train=false</code>，blocklist覆盖source keys、fingerprints和713,545 train images。</p>
+<table><thead><tr><th>可以说</th><th>不能说</th></tr></thead><tbody>
+<tr><td>当前summary对应manifest通过了记录中的row/image/fingerprint可见gate</td><td>teacher checkpoint从未见过相同上游数据</td></tr>
+<tr><td>blocklist和fingerprint检查是比路径名更强的证据</td><td>semantic/near-duplicate完全为零</td></tr>
+<tr><td>static holdout支持格式/几何诊断</td><td>static grounding等同robot success</td></tr>
+<tr><td>可见train-image overlap被报告为false</td><td>test从未参与prompt/parser/checkpoint选择</td></tr>
+</tbody></table>
+<p>安全结论应分层写：<code>row/source/image/fingerprint checked</code>；<code>near-duplicate/semantic/teacher lineage unknown</code>；<code>model-selection process not sealed</code>。不能压成一个<code>no_leakage=true</code>。</p>
+<h2 id="15-playbook-student">15. 诊断Playbook：Student没提升时先查哪里</h2>
+<table><thead><tr><th>症状</th><th>首查证据</th><th>常见根因</th><th>下一Probe</th></tr></thead><tbody>
+<tr><td>accepted N突然下降</td><td>threshold、calibration revision、score histogram</td><td>温度/teacher/domain变化</td><td>固定candidate做paired score diff</td></tr>
+<tr><td>overall涨、rare route跌</td><td>accepted-by-route、per-group risk</td><td>selection bias</td><td>per-route threshold/quota matched A/B</td></tr>
+<tr><td>train loss低、free generation差</td><td>teacher-forced vs free mode</td><td>exposure/format error</td><td>同checkpoint paired free-generation eval</td></tr>
+<tr><td>confidence高但gold错</td><td>reliability bins、risk–coverage</td><td>overconfidence/OOD</td><td>labeled audit + temperature scaling</td></tr>
+<tr><td>新round结果不可复现</td><td>teacher/cache/manifest hash</td><td>revision混用</td><td>fail round identity check</td></tr>
+<tr><td>holdout异常高</td><td>overlap、teacher lineage、selection log</td><td>content/semantic/model-selection leakage</td><td>near-dup audit + sealed rerun</td></tr>
+<tr><td>entropy下降但效果不升</td><td>gold risk与strict validity</td><td>score更尖锐而非更正确</td><td>paired correctness/calibration audit</td></tr>
+<tr><td>veto schedule有变化无收益</td><td>β日志、fixed-β baseline</td><td>target mixing无有效机制</td><td>matched ablation</td></tr>
+</tbody></table>
+<p>推荐诊断顺序：先检查identity和split，再检查target mode与strict validity，然后检查calibration/risk–coverage，最后才讨论student architecture或优化器。数据身份不稳定时，调模型无法产生可信因果结论。</p>
+<h2 id="16">16. 面试回答模板、追问与危险答案</h2>
+<h3 id="16-1">16.1 两分钟结构化回答</h3>
+<div class="meta">我把teacher supervision拆成生成、选择、训练和评估四段。生成段冻结teacher checkpoint、prompt/decode和teacher-forced/free-generation模式，并保存typed target和raw output。选择段不把confidence当正确率，而是在独立有标签calibration set上拟合temperature，按threshold报告coverage、accepted error和class/route分布；FixMatch式masked loss还要说明分母是总batch。迭代段记录每轮teacher、candidate、filter/balance、student和promotion manifest。泄漏段分别检查row、source、image/path、content/near-duplicate、semantic、teacher training和model selection。对本地OPD，我只能说有人工route mix、teacher-forced top-1 token cache、online KL/veto和10k holdout gate；cache没有confidence，entropy只是logging，所以不能说伪标签已校准，也不能从static holdout推出robot成功率。</div>
+<h3 id="16-2">16.2 高频追问</h3>
+<ol><li>为什么0.95 confidence不代表95%正确率？</li><li>FixMatch的masked loss到底除accepted count还是总batch？</li><li>temperature scaling和generation temperature有什么区别？</li><li>ECE为什么不能脱离binning、sample unit和correctness定义？</li><li>sequence/point/box pseudo-label的confidence怎么定义？</li><li>threshold升高为什么可能让long-tail更差？</li><li>class balance为什么不等于真实分布无偏？</li><li>Noisy Student每轮必须冻结哪些identity？</li><li>什么条件下一个schedule才配称curriculum？</li><li>path overlap=0为什么仍可能image leakage？</li><li>teacher预训练污染和student split污染怎样区分？</li><li>为什么本地top-1 cache不是自由生成pseudo-label dataset？</li><li>entropy下降为何不能证明校准变好？</li><li>10k holdout当前证明了哪几层、没证明哪几层？</li></ol>
+<h3 id="16-3">16.3 危险答案与修正</h3>
+<table><thead><tr><th>危险答案</th><th>问题</th><th>安全修正</th></tr></thead><tbody>
+<tr><td>“0.95以上就是高质量标签”</td><td>confidence≠correctness</td><td>报coverage、gold accepted error与分层risk</td></tr>
+<tr><td>“调temperature做了校准”</td><td>可能只是sampling temperature</td><td>说明独立validation拟合\(T\)与held-out检验</td></tr>
+<tr><td>“entropy越来越低，teacher更准”</td><td>可能只是更尖锐/过度自信</td><td>配对gold accuracy与calibration</td></tr>
+<tr><td>“image path不重叠，所以没泄漏”</td><td>alias/content/semantic仍可能重叠</td><td>加content/perceptual/semantic audit</td></tr>
+<tr><td>“top-1 cache是teacher生成标签”</td><td>隐藏teacher-forced exposure</td><td>说清监督token位置argmax</td></tr>
+<tr><td>“veto beta是curriculum”</td><td>只有schedule，没有ordering/baseline/effect</td><td>称target-logit mixing schedule</td></tr>
+<tr><td>“holdout无重复，结果绝对可信”</td><td>teacher/model-selection污染未封</td><td>分层陈述checked与unknown</td></tr>
+<tr><td>“静态grounding提升就能上机器人”</td><td>perception→action gate缺失</td><td>留给PER-015和closed-loop证据</td></tr>
+</tbody></table>
+<h2 id="17-project-truth-boundary-hook">17. Project Truth Boundary与项目Hook</h2>
+<table><thead><tr><th>证据层</th><th>当前可以说</th><th>当前不能说</th><th>补强动作</th></tr></thead><tbody>
+<tr><td>public mechanism</td><td>FixMatch threshold/mask；Noisy Student filter/balance/iteration；calibration与curriculum合同</td><td>已在OPD等价复现并有效</td><td>配置、日志与matched result</td></tr>
+<tr><td>local code</td><td>mix route、path-hash split、top-1 cache、hard trainer、online KL/veto存在</td><td>全部由候选人原创/亲自实现</td><td>git blame/PR/周报/本人确认</td></tr>
+<tr><td>target semantics</td><td>cache是teacher-forced token argmax</td><td>自由生成point/box pseudo dataset</td><td>raw generation + parser manifest</td></tr>
+<tr><td>confidence</td><td>online记录entropy/top-k overlap</td><td>已做gating/calibration</td><td>labeled calibration、\(T^*\)、risk–coverage</td></tr>
+<tr><td>leakage</td><td>10k summary报告image/fingerprint gate</td><td>semantic/teacher/model-selection完全无污染</td><td>near-dup、teacher lineage、sealed test</td></tr>
+<tr><td>outcome</td><td>static raw holdout summary存在</td><td>pseudo-label因果提升或robot success</td><td>exact raw/checkpoint、ablation、robot trials</td></tr>
+</tbody></table>
+<h3 id="17-1-opd-hook">17.1 OPD Hook</h3>
+<p>OPD是本节点的主要项目hook，但答案必须按“公开机制→本地代码事实→缺失证据”三层展开。最有区分度的点不是声称teacher pipeline先进，而是准确发现：top-1 cache缺confidence字段、teacher-forced与free-generation不同、online entropy没有成为selection gate、visible leakage gate仍留teacher lineage未知。</p>
+<h3 id="17-2-robot-harness-hook">17.2 Robot Harness Hook</h3>
+<p>Robot Harness只能作为下游消费与安全门提醒：即使static perception pseudo-label可靠，仍需PER-015的reachability、uncertainty、controller和closed-loop failure gate。本节点没有证据把OPD holdout结果映射成robot成功率。</p>
+<h2 id="18-checklist">18. 白板Checklist与练习标准</h2>
+<p>面试前能在白板上独立写出：</p>
+<ul><li>typed pseudo-label record的十个关键identity；</li><li>hard/soft与teacher-forced/free-generation四象限；</li><li>threshold mask、masked loss、coverage和accepted error公式；</li><li>temperature scaling与ECE，并说明sample unit/binning；</li><li>selection后的条件分布与route/class drift；</li><li>Noisy Student round manifest和promotion gate；</li><li>curriculum的ordering/schedule/intervention/baseline；</li><li>十层leakage taxonomy和alias-path反例；</li><li>本地OPD四条链及每条claim boundary；</li><li>一段两分钟回答和至少六个追问。</li></ul>
+<p>本页<code>drafted</code>不等于掌握。只有候选人真实口述、追问、纠错并记录状态后，题卡才可从<code>unseen</code>推进；本轮不创建<code>coaching_state.md</code>。</p>
+<h2 id="19">19. 结论与下一步</h2>
+<p>Pseudo-label系统的核心不是选一个threshold，而是建立可重放的teacher/data/selection/iteration身份，并用独立gold证据测量risk–coverage。Calibration解决score解释，balance处理selection distribution，curriculum规定有对照的呈现顺序，leakage gate保护评估独立性；四者不能互相替代。</p>
+<p>本地OPD当前最准确的结论是：存在人工route mix、teacher-forced top-1 token cache、hard-target/online KL训练代码与10k raw holdout的可见image/fingerprint gate；但尚无confidence-aware cache、独立calibration、accepted-set gold audit、teacher lineage、sealed model selection或robot结果。</p>
+<p>下一bounded slice只冻结<code>VLA-PER-012</code> segmentation/depth/keypoint/affordance source；不生成knowledge/card，不创建<code>coaching_state.md</code>，不改变任何既有mastery。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_06_per011_pseudo_label_teacher_noise_calibration_leakage_source_freeze.html">PER-011 Pseudo-label / Teacher Noise / Calibration / Leakage Source Freeze</a>：固定论文、官方代码、本地OPD脚本、SHA、deterministic probes与truth boundary。</li><li>Sohn et al., <a href="https://arxiv.org/abs/2001.07685v2">FixMatch v2</a>；<a href="https://github.com/google-research/fixmatch/tree/d4985a158065947dba803e626ee9a6721709c570">official implementation@d4985a1</a>。</li><li>Xie et al., <a href="https://arxiv.org/abs/1911.04252v4">Noisy Student v4</a>；<a href="https://github.com/google-research/noisystudent/tree/aac52bf02448f6e45aee6c418f3e588803e4fa43">official implementation@aac52bf</a>。</li><li>Guo et al., <a href="https://arxiv.org/abs/1706.04599v2">On Calibration of Modern Neural Networks v2</a>。</li><li><a href="https://github.com/Lightning-AI/torchmetrics/blob/37a808094850aa1e05bc6e9fcf63fae86dfd01ce/src/torchmetrics/classification/calibration_error.py">TorchMetrics Calibration Error@37a8080</a>。</li><li>Bengio et al., <a href="https://icml.cc/Conferences/2009/papers/119.pdf">Curriculum Learning</a>，ICML 2009。</li><li>Kapoor &amp; Narayanan, <a href="https://arxiv.org/abs/2207.07048v1">Leakage and the Reproducibility Crisis in ML-based Science v1</a>。</li><li><a href="vol_06_per009_grounding_matching_negative_loss.html">PER-009 Grounding Matching / Negative / Loss</a> 与 <a href="vol_06_per010_grounding_metric_parser_protocol.html">PER-010 Grounding Metric / Parser / Protocol</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>：本地mix/cache/train/eval事实与ownership/robot边界。</li></ol>
+</article></body></html>

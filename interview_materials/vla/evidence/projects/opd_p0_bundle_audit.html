@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OPD / VLM Grounding P0 Bundle Audit：Data Route / Distillation / Holdout</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\opd_p0_bundle_audit.md">
+<meta name="aris:source-sha256" content="5e98b4877ba6c8d21a617e53326a9f473cb968dfba5273ca63241196d5103fe3">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>5e98b4877ba6c8d21a617e53326a9f473cb968dfba5273ca63241196d5103fe3</code>；生成自：<code>interview_materials\vla\evidence\projects\opd_p0_bundle_audit.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论</a></li><li><a href="#2-p0-gate-matrix">2. P0 gate matrix</a></li><li><a href="#3">3. 已核验的结果边界</a></li><li><a href="#4">4. 面试可用与禁用表述</a></li><li><a href="#5-p0">5. 关闭 P0 的最小动作</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>OPD / VLM Grounding P0 Bundle Audit：Data Route / Distillation / Holdout</h1>
+<div class="meta">状态：<code>p0_audited / protocol-bounded / raw-prediction-missing / ownership-pending / WARN</code> 审计日期：2026-07-21 范围：只审计五 expert 数据构造、student route metadata、coldstart/online OPD summary、10k raw-holdout manifest/table 和 point scorer 记录；不把组合路线结果升级为单因果 OPD uplift。</div>
+<h2 id="1">1. 结论</h2>
+<p>OPD 已具备可定位的数据和训练机制证据：image-hash split、五 expert 配额、route metadata、coldstart teacher rollout、student-rollout/full-vocabulary KL、OPD5000 checkpoint 曲线、10k holdout quota 和 leakage audit 均有本地脚本/表格/summary。结果可以绑定到具体 checkpoint、format/pool 子集和 protocol-limited scorer。</p>
+<p>P0 仍未闭合：模型权重、optimizer/RNG、完整 raw predictions、统一 scorer manifest、旧版 OPD final 与新版 OPD5000 的单一 lineage、SFT-only/single-teacher/no-synthetic ablation、operator/reviewer 和逐文件 ownership 缺失。</p>
+<pre><code class="language-text">P0 status = PARTIAL / PROTOCOL-BOUNDED
+eligible causal claims = 0
+eligible checkpoint/result ownership = 0
+allowed = data route, teacher/student mechanism, leakage gate, bounded tables
+forbidden = “OPD alone caused uplift”, “I own OPD5000 checkpoint”, “static holdout = robot success”</code></pre>
+<h2 id="2-p0-gate-matrix">2. P0 gate matrix</h2>
+<table><thead><tr><th>P0 字段</th><th>当前证据</th><th>状态</th><th>安全解释</th></tr></thead><tbody>
+<tr><td>data split / quota</td><td>800k/20k builder、image-hash split、五 expert、10k holdout quota</td><td><code>PRESENT</code></td><td>可讲数据合同与 leakage gate</td></tr>
+<tr><td>route metadata</td><td>target/candidate expert、seen/unseen、boundary/format-conflict</td><td><code>PRESENT</code></td><td>metadata route，不称 learned router</td></tr>
+<tr><td>teacher/student training</td><td>coldstart500、student rollout、full-vocab KL、skip=64k</td><td><code>PRESENT WITH WARNING</code></td><td>可讲训练机制；coldstart-only 增益未隔离</td></tr>
+<tr><td>checkpoint curve</td><td>ckpt1000–5000 by-format/by-pool tables</td><td><code>PARTIAL</code></td><td>必须绑定 pool；不同指标最佳 checkpoint 不同</td></tr>
+<tr><td>raw holdout</td><td>10k manifest、dedupe/leakage audit、aggregate tables</td><td><code>PARTIAL</code></td><td>raw predictions/per-sample JSON 缺</td></tr>
+<tr><td>scorer/protocol</td><td>original strict、protocol-fixed strict、lenient point tables</td><td><code>PARTIAL</code></td><td>prompt/scorer hash 和统一版本仍缺</td></tr>
+<tr><td>model lineage</td><td>OPD final 与 OPD5000 new-experts 分开报告</td><td><code>CONFLICT OPEN</code></td><td>不能拼成单调训练曲线</td></tr>
+<tr><td>ablation</td><td>无 SFT-only、single-teacher、no-synthetic、ratio 对照</td><td><code>MISSING</code></td><td>不能归因 OPD 单因素</td></tr>
+<tr><td>checkpoint/optimizer</td><td>artifact manifest 明确排除 weights/optimizer/raw predictions</td><td><code>MISSING</code></td><td>不称 checkpoint/result-owned</td></tr>
+<tr><td>ownership</td><td>13-row ledger，<code>msz136</code>/<code>mousongzhe</code> scaffold 与后续同步分开</td><td><code>PENDING</code></td><td>Git author 不等于逐文件 ownership</td></tr>
+</tbody></table>
+<h2 id="3">3. 已核验的结果边界</h2>
+<ul><li>10k holdout quota：box 6,100、point 1,400、text 2,500；unique images 8,251；三类 leakage fingerprint 为 0，但重复图片路径不等于重复样本；</li><li>OPD5000 ckpt5000 的 Box Acc@0.5=<code>0.5238</code>、Point Hit@100=<code>0.8729</code>、Text exact=<code>0.8724</code>，必须带 pool/format/protocol；</li><li>box IoU 最佳点在 ckpt3000，keepalive text 在 ckpt4000，不能称 ckpt5000 全局最佳；</li><li>旧版 OPD final 与新版 OPD5000 ckpt5000 是不同 run lineage；</li><li>静态 grounding/VQA holdout 不等于 VLN/ObjectNav 或机器人闭环成功。</li></ul>
+<h2 id="4">4. 面试可用与禁用表述</h2>
+<p>可以说：</p>
+<div class="meta">“我把数据先按 image-hash 做隔离，再把 reasoning、object、region、spatial relation 和 RoboPoint 组织成五个 expert；student 里保留 route metadata，先做五教师 coldstart，再做 student rollout/full-vocabulary KL。评估时我把 10k raw-holdout 按 box/point/text 和 original/protocol-fixed/lenient scorer 分开，且不同 pool 的最佳 checkpoint 不同。由于权重、raw predictions、统一 scorer 和 matched ablation 未闭合，我把这些称为组合路线的 protocol-bounded evidence，不把它归因成 OPD 单独 uplift。”</div>
+<p>不能说：</p>
+<ol><li>OPD 单独带来全部提升；</li><li>OPD5000 ckpt5000 是所有任务的全局最佳；</li><li>报告数字是本人拥有的可加载 checkpoint 结果；</li><li>10k static holdout 等于真实机器人/导航成功率；</li><li><code>msz136</code>/<code>mousongzhe</code> Git author 自动证明所有文件由本人独立实现。</li></ol>
+<h2 id="5-p0">5. 关闭 P0 的最小动作</h2>
+<ol><li>将 OPD final、coldstart500、OPD5000 的 code/config/data/scorer/checkpoint parent SHA 收敛为 lineage manifest；</li><li>同一 holdout、n 和 scorer 重跑 base/SFT-only/coldstart-only/OPD，并保留 raw predictions/per-sample JSON；</li><li>固定三套 point scorer、prompt hash 和 parser tests；</li><li>候选人回答 <code>OWN-OPD-001</code>，明确数据、训练、评估、运行和工具协作边界。</li></ol>
+<p>在这些字段闭合前，OPD 保持 <code>PARTIAL/WARN</code>，不改变 <code>PROJ-OPD-*</code> 或通用题卡 mastery。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="opd_claim_evidence_inventory.md">OPD Claim–Evidence Inventory</a></li><li><a href="opd_ownership_ledger.md">OPD Ownership Ledger</a></li><li><a href="../p0_artifact_intake_contract.md">五项目 P0 Artifact Intake Contract</a></li></ol>
+</article></body></html>

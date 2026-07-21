@@ -1,0 +1,51 @@
+{
+  "artifact": "sources/vol_05_eng013_reproducibility_source_freeze.md",
+  "html": "sources/vol_05_eng013_reproducibility_source_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "source_frozen / VLA-ENG-013_knowledge+card_drafted / unseen",
+  "verdict": "WARN",
+  "source_sha256": "AF21822B7617FB3117768034C985737833DE6A2A34F58CA42766F8A03C9B56EE",
+  "coverage": {
+    "knowledge_id": "VLA-ENG-013",
+    "topic": "seed / determinism / sampler cursor / reproducibility",
+    "official_pages_checked": 7,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "pytorch_docs": "2.13",
+    "numpy_docs": "1.26",
+    "distributed_sampler": "PyTorch 2.13 data.html anchor",
+    "related_local_audit": "sources/vol_05_batch1_independent_fact_review.html"
+  },
+  "normalized_main_text_sha256": {
+    "pytorch_reproducibility": "5a19f15c86d56dbd0f9ea0572b86e960475328c99c36408cfb82d4fce90a03c5",
+    "pytorch_data_distributed_sampler": "9032517582f5a20a811008e4f71a81e356d058380cfc985b552ef338b1cecf5f",
+    "torch_get_rng_state": "68f3efc879a6a9c84a3fbf7ff72c8981c788b021b88698b5fbc58b1bcdc72050",
+    "torch_set_rng_state": "d5c6b11ba57b56686c4b5d88bf2f55dcea7cbc923e0a7399584d4245dcddd7b4",
+    "torch_cuda_get_rng_state_all": "25cd8d0b28fcd18c4d3a02d8ed537d512abc6a62b2eb1c57af3efe1a8c09fe0b",
+    "torch_cuda_set_rng_state_all": "2eb06b6c1058f8595e5b28f69fece528b725527c1fe9fd6ec3f81dba3284e237",
+    "numpy_random_seed": "312e83995a2006d130efb04f802be1cbad551da045a54e7af2462ae99d3b9ef3"
+  },
+  "checks": {
+    "bounded_slice": "PASS (source freeze remains scoped to ENG-013; its knowledge and one card are drafted while ENG-014..016 remain deferred)",
+    "reproducibility_boundary": "PASS WITH WARNING (PyTorch cross-release/platform non-guarantee and deterministic trade-off verified)",
+    "dataloader_worker_seed": "PASS (worker_init_fn/generator reseed semantics sourced)",
+    "distributed_sampler": "PASS WITH WARNING (constant dataset/order, common seed, drop_last and set_epoch semantics sourced; cursor resume not provided)",
+    "rng_state_api": "PASS WITH WARNING (CPU and CUDA state get/set APIs sourced; Python/NumPy/worker/sampler state remains separate)",
+    "numpy_seed": "PASS WITH WARNING (legacy singleton seed sourced; dedicated Generator recommendation retained)",
+    "resume_contract_boundary": "PASS (epoch-boundary versus mid-epoch exact resume explicitly separated)",
+    "project_truth_boundary": "PASS (no local sampler cursor, RNG bundle or fixed-batch resume artifact upgraded)",
+    "html_static_validation": "PASS (source SHA, one H1, ten H2, three H3, three tables and two commented pseudocode blocks)",
+    "local_links": "PASS (all relative prior-audit and artifact links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)"
+  },
+  "open_items": [
+    "Keep ENG-013 knowledge and its single card synchronized; retain unseen until a real oral answer exists.",
+    "Collect fixed-batch epoch-boundary and mid-epoch replay artifacts before upgrading project-facing resume claims.",
+    "Do not describe DistributedSampler as an automatic sampler-cursor checkpoint.",
+    "Keep ENG-014..016 planned until separate source gates are ready."
+  ],
+  "next": "Run a real ENG-013 oral drill or independent wording review; begin ENG-014 only through a separate source-first gate."
+}

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 PER-004 Source Freeze：VLN / ObjectNav 任务、观测与成功协议</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per004_vln_objectnav_source_freeze.md">
+<meta name="aris:source-sha256" content="bc17d769f934e7f1713b62229623ec8bf8b9e4bf02e4a75f9062eee1fd3b0b18">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>bc17d769f934e7f1713b62229623ec8bf8b9e4bf02e4a75f9062eee1fd3b0b18</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per004_vln_objectnav_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 冻结来源与指纹</a></li><li><a href="#2-taxonomy-goal-contract">2. 任务 taxonomy：相似输入，不同 goal contract</a></li><li><a href="#3-episode-observation-action-goal-contract">3. Episode / observation / action / goal contract</a></li><li><a href="#3-1-episode">3.1 Episode 最小字段</a></li><li><a href="#3-2-observation">3.2 Observation 合同</a></li><li><a href="#3-3-action-stop">3.3 Action 与 stop</a></li><li><a href="#3-4-goal-viewpoint">3.4 Goal 与 viewpoint</a></li><li><a href="#4">4. 成功与效率指标</a></li><li><a href="#4-1-success-sr">4.1 Success、SR 与停止条件</a></li><li><a href="#4-2-spl">4.2 SPL</a></li><li><a href="#4-3-vln">4.3 VLN 常见配套指标</a></li><li><a href="#5-simulator-protocol">5. Simulator protocol 与真实机器人边界</a></li><li><a href="#6">6. 与现有项目的真实挂钩</a></li><li><a href="#7-source-gate">7. Source gate 结论与下游范围</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 PER-004 Source Freeze：VLN / ObjectNav 任务、观测与成功协议</h1>
+<div class="meta">状态：<code>source_frozen / VLA-PER-004 / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-18 证据截止：2026-07-18 本切片冻结 Vision-and-Language Navigation（VLN）与 ObjectNav 的任务合同、episode/observation/action/goal schema、停止与成功谓词、SPL 等指标以及 simulator-to-real 边界；不把模拟器成功、论文指标或项目中的 grounding 字段写成个人导航成果。</div>
+<h2 id="question">问题（Question）</h2>
+<p>VLN、ObjectNav 和“带语言的物体导航”都涉及视觉、语言与移动动作，但它们的 goal contract、监督信号和 success predicate 并不相同。面试中应先说明任务与 episode schema，再说明 action/stop 如何进入 simulator，最后说明 SR/SPL 等指标到底以什么分母、路径和阈值计算。</p>
+<p>最小链路：</p>
+<pre><code class="language-text">episode(scene + start pose + goal/instruction + split)
+  → observations(rgb/depth/semantic + pose + text + valid)
+  → action(discrete/continuous + stop)
+  → simulator transition(navmesh/collision/controller)
+  → success predicate + path/length metrics
+  → protocol-scoped report (not real-robot success)</code></pre>
+<h2 id="1">1. 冻结来源与指纹</h2>
+<table><thead><tr><th>来源</th><th>类型 / revision</th><th>SHA-256（原始文件）</th><th>可支持的事实</th><th>不能支持的 claim</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/facebookresearch/habitat-lab/blob/0fb6f43ffe806a8088a171b036336c093bcf604e/README.md">Habitat-Lab README</a></td><td>official repo；commit <code>0fb6f43ffe806a8088a171b036336c093bcf604e</code>；访问 2026-07-18</td><td><code>49ffbba6a3e459e382aebcc1724a9682ebb3c4eec85df7f6e2aa92ee0eefa8a7</code></td><td>Habitat-Lab 是高层 embodied-AI task/train/eval 框架，使用 Habitat-Sim，MIT 代码许可；README 明确提示 v0.3.4 之后不再由 Meta 内部团队主动维护</td><td>当前本地环境、数据资产或任何项目已经复现官方结果</td></tr>
+<tr><td><a href="https://github.com/facebookresearch/habitat-lab/blob/0fb6f43ffe806a8088a171b036336c093bcf604e/habitat-lab/habitat/tasks/nav/object_nav_task.py">ObjectNav task implementation</a></td><td>official source；同一 commit</td><td><code>a22a9369012bc22b2202ada66cbf2f533527f9579f14037e7a1e84d0724ce0b6</code></td><td><code>ObjectNav-v1</code>、<code>ObjectGoalNavEpisode</code>、<code>ObjectGoal</code>、<code>ObjectViewLocation</code>、object category/ID sensor 与 view-point 字段</td><td>所有 ObjectNav benchmark 都使用相同 category map、success radius 或 view-point 生成协议</td></tr>
+<tr><td><a href="https://github.com/facebookresearch/habitat-lab/blob/0fb6f43ffe806a8088a171b036336c093bcf604e/habitat-lab/habitat/tasks/nav/nav.py">Navigation task and measures</a></td><td>official source；同一 commit</td><td><code>3ce31b1bb75cc733c09d777e1ff0f18fb99c1882206a9496da648c1bd6ee549d</code></td><td><code>NavigationEpisode</code> 的 start pose/scene/goals、<code>StopAction</code>、<code>Success</code> 依赖停止与距离阈值、<code>SPL</code> 依赖 success 与路径长度、PointGoal/GPS/Compass 观测</td><td>只看到类定义就能证明某个实验使用了特定 config、阈值、seed 或 denominator</td></tr>
+<tr><td><a href="https://github.com/facebookresearch/habitat-lab/blob/0fb6f43ffe806a8088a171b036336c093bcf604e/habitat-lab/habitat/datasets/object_nav/object_nav_dataset.py">ObjectNav dataset loader</a></td><td>official source；同一 commit</td><td><code>a04c0e9822085999697a9ea1f19523b74d7a5e06fed674e2f76d3220b95a8408</code></td><td><code>ObjectNav-v1</code> episode JSON 的 category mappings、scene/episode IDs、goals-by-category、view points 和 shortest paths 读取方式</td><td>数据文件中的 scene split、goal generation 或评测分母已自动等同于另一版本</td></tr>
+<tr><td><a href="https://github.com/facebookresearch/habitat-sim/blob/57ee4941dc4765240f0f91f70b2c97a919bf9038/README.md">Habitat-Sim README</a></td><td>official simulator repo；commit <code>57ee4941dc4765240f0f91f70b2c97a919bf9038</code>；访问 2026-07-18</td><td><code>2422fd0b1c58dc9939fc3e74d6b39415e202df651dd93b87204d3871bfc803b8</code></td><td>RGB-D/egomotion sensors、navmesh/physics、scene assets 与 headless/sim setup；同样注明 v0.3.4 之后的维护提示</td><td>simulator 中的导航成功等价于真实机器人闭环成功，或场景/传感器/控制频率与本地项目相同</td></tr>
+<tr><td><a href="https://github.com/facebookresearch/habitat-sim/blob/57ee4941dc4765240f0f91f70b2c97a919bf9038/src/esp/nav/PathFinder.h">Habitat-Sim PathFinder</a></td><td>official source；同一 commit</td><td><code>9baeef24a29963e11e34df4446c0809f8106e7c23b065cf25be4f4d2a0a4a1e2</code></td><td>navmesh 的可行走区域、geodesic shortest path、isNavigable、tryStep/无滑移和 agent-height/radius/slope 约束</td><td>navmesh shortest path 是执行 controller 的真实轨迹，或不同 agent radius/碰撞模型结果可直接比较</td></tr>
+<tr><td><a href="https://github.com/jacobkrantz/VLN-CE/blob/729d141b2ee10628061ada74dd3a5b9f70faeba5/README.md">VLN-CE README</a></td><td>official benchmark repo；commit <code>729d141b2ee10628061ada74dd3a5b9f70faeba5</code>；访问 2026-07-18</td><td><code>33c547d6d6fa8a7deca433c5e441894aad72d676dfca152fea0cd4ef80b9a41c</code></td><td>连续环境中的 R2R/RxR instruction-following、Habitat 依赖、R2R/RxR split、trajectory JSONL；README 给出 challenge action/observation contract 示例及 TL/NE/OS/SR/SPL 字段</td><td>README 中的 baseline 数字是可迁移的当前 SOTA，或与其他 Habitat 版本、硬件、数据预处理天然可复现</td></tr>
+<tr><td><a href="https://arxiv.org/abs/1711.07280">R2R paper</a></td><td>primary paper；CVPR 2018；arXiv version</td><td>—</td><td>语言指令驱动的 indoor route following、路径/指令配对与导航评估语境</td><td>R2R 的离散/图导航协议自动等同于 VLN-CE 的连续控制协议</td></tr>
+<tr><td><a href="https://arxiv.org/abs/1904.10151">REVERIE paper</a></td><td>primary paper；CVPR 2020；arXiv version</td><td>—</td><td>remote referring expression、导航到物体附近并进行 object grounding；导航成功与目标物体 grounding 是不同层级</td><td>REVERIE 的 object grounding 结果等于 ObjectNav category-goal 成功，或只凭语言 grounding 就证明了移动控制</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2006.13171">ObjectNav Revisited</a></td><td>primary evaluation paper；arXiv 2020</td><td>—</td><td>ObjectNav 指标与评测协议的再审视、不同 success/efficiency 结果的解释风险</td><td>论文中的诊断自动覆盖用户项目的场景、seed、controller 或真实硬件</td></tr>
+<tr><td><a href="https://arxiv.org/abs/1807.06757">SPL paper</a></td><td>primary metric paper；2018</td><td>—</td><td>Success weighted by Path Length 的定义与导航效率语境</td><td>只报 SPL 就能恢复 success radius、路径记录、episode filtering 或统计置信区间</td></tr>
+</tbody></table>
+<h2 id="2-taxonomy-goal-contract">2. 任务 taxonomy：相似输入，不同 goal contract</h2>
+<table><thead><tr><th>任务</th><th>goal / instruction</th><th>常见 observation</th><th>action / stop</th><th>核心 success 语义</th></tr></thead><tbody>
+<tr><td>ObjectNav</td><td>目标物体类别或 object ID；ObjectGoal 还可含 room、view points</td><td>RGB/Depth/Semantic、object-goal sensor、pose/GPS/Compass</td><td>离散移动/转向或连续速度；显式 <code>stop</code></td><td>先停止，再检查当前位置到目标点或目标 view-point 的距离是否低于 config 阈值；阈值与 <code>distance_to</code> 配置必须随实验冻结</td></tr>
+<tr><td>R2R/RxR VLN</td><td>自然语言 route instruction；R2R/RxR 数据还定义 scene、start pose、split 与参考轨迹</td><td>RGB/RGB-D、pose/GPS/Compass、语言 token；连续 VLN 还记录真实轨迹</td><td>图/离散动作或连续前进/转角/俯仰；终止通常是 <code>stop</code></td><td>目标附近成功与路径效率联合报告；instruction following 不等于 object grounding</td></tr>
+<tr><td>REVERIE</td><td>instruction + referring expression 指向具体物体</td><td>视觉、语言、pose、候选 object/region</td><td>导航动作 + object selection/grounding</td><td>至少拆成“是否到达目标区域”和“是否选中正确物体”，不能合并为单一导航分数</td></tr>
+</tbody></table>
+<p>面试回答应先问清楚：目标是类别、实例、房间、坐标还是引用表达式；动作是 nav-graph edge、固定步长、速度控制还是 waypoint；success 是 stop 后距离阈值、视野/IoU、object ID 还是 task-specific predicate。</p>
+<h2 id="3-episode-observation-action-goal-contract">3. Episode / observation / action / goal contract</h2>
+<h3 id="3-1-episode">3.1 Episode 最小字段</h3>
+<pre><code class="language-text">episode_id
+scene_id / scene_dataset_config
+start_position (x, y, z)
+start_rotation (quaternion)
+goals (position/radius 或 ObjectGoal + view_points)
+instruction / reference expression（VLN/REVERIE）
+shortest_paths（若 protocol 提供）
+split / seed / dataset revision</code></pre>
+<p><code>scene_id</code> 和 <code>start pose</code> 决定 reset；<code>goals</code> 决定 success 的目标对象；<code>shortest_paths</code> 只能作为数据或评估辅助，不能默认代表 agent 实际走过的路径。没有 split、seed、dataset revision 和 episode denominator，单个成功数不能复核。</p>
+<h3 id="3-2-observation">3.2 Observation 合同</h3>
+<p>至少记录：</p>
+<ul><li>RGB/Depth/Semantic 的 sensor UUID、分辨率、内参/噪声与有效值约定；</li><li>agent pose、GPS/Compass 或其他 frame 定义；</li><li>instruction token、语言、reference expression 与 padding/mask；</li><li>capture/step timestamp、history/stack 规则和缺失传感器 mask；</li><li>simulator 版本、场景资产、navmesh 版本以及 action repeat/control-hz。</li></ul>
+<p>一个合法 tensor 不代表语义合同正确：RGB 与 depth 交换、语言 padding 未 mask、pose 在错误 frame 或 terminal observation 重复，均可能保持 shape 正确而让导航结果失真。</p>
+<h3 id="3-3-action-stop">3.3 Action 与 stop</h3>
+<p>Habitat-Lab 的 <code>StopAction</code> 将 task 的 <code>is_stop_called</code> 置为真；<code>Success</code> 再结合距离度量与 success distance 判定。VLN-CE README 的 challenge 示例还固定了 30° turn、0.25 m step 和 480×640 RGB-D，这些是特定 challenge contract，不是所有 VLN benchmark 的 universal defaults。连续速度 action 还要冻结速度范围、time step、碰撞/滑移策略和 controller。</p>
+<h3 id="3-4-goal-viewpoint">3.4 Goal 与 viewpoint</h3>
+<p>ObjectNav 的 <code>ObjectGoal</code> 可有 <code>object_id</code>、category、room 和 <code>view_points</code>。因此“到达物体位置”“进入可见 view-point”“停在阈值半径内”可能是不同协议。若实验把 <code>distance_to=VIEW_POINTS</code>、<code>distance_to=POINT</code> 或 semantic category 互换，SR/SPL 不可直接横比。</p>
+<h2 id="4">4. 成功与效率指标</h2>
+<h3 id="4-1-success-sr">4.1 Success、SR 与停止条件</h3>
+<p>对每个 episode (i)，先固定 success predicate (S_iin{0,1})：例如 <code>stop_called == true</code> 且 geodesic distance 小于 <code>success_distance</code>。Success Rate 为</p>
+<div class="formula">\[
+SR = \frac{1}{N}\sum_{i=1}^{N} S_i.
+\]</div>
+<p>如果任务要求 object ID、view-point 可见性、region IoU 或语言引用匹配，predicate 需要显式写出来；“最终位置看起来接近”不能替代 protocol。</p>
+<h3 id="4-2-spl">4.2 SPL</h3>
+<p>对成功定义和最短参考路径均已冻结时，常用 Success weighted by Path Length 为</p>
+<div class="formula">\[
+SPL = \frac{1}{N}\sum_{i=1}^{N} S_i\frac{L_i}{\max(P_i,L_i)},
+\]</div>
+<p>其中 (L_i) 是 protocol 规定的 shortest/geodesic path length，(P_i) 是 agent 实际记录的 path length。失败 episode 的 (S_i=0)，绕路会降低比值。实现中还要明确：是否含 stop 前最后一步、是否按 geodesic 还是 Euclidean、是否按 view-point 集合取最小距离。</p>
+<h3 id="4-3-vln">4.3 VLN 常见配套指标</h3>
+<table><thead><tr><th>指标</th><th>含义</th><th>不能单独证明</th></tr></thead><tbody>
+<tr><td>TL</td><td>Trajectory Length</td><td>走得短不代表到达正确目标</td></tr>
+<tr><td>NE</td><td>final navigation error</td><td>没有 stop 或 success predicate 时不能当 SR</td></tr>
+<tr><td>OS</td><td>oracle success；轨迹中任一步曾到达</td><td>agent 是否知道何时 stop</td></tr>
+<tr><td>SR</td><td>episode-level success ratio</td><td>路径是否高效、是否跨 split 泛化</td></tr>
+<tr><td>SPL</td><td>success 与路径效率的联合值</td><td>真实机器人稳定性或任务操作成功</td></tr>
+</tbody></table>
+<p>指标必须绑定 episode 数、split、scene/goal protocol、action space、controller、seed、dataset revision 和失败 trace。VLN-CE README 的历史 baseline 表只能作为该仓库的参考记录，不能跨版本当作当前比较基线。</p>
+<h2 id="5-simulator-protocol">5. Simulator protocol 与真实机器人边界</h2>
+<table><thead><tr><th>证据层级</th><th>最小 artifact</th><th>仍不能支持</th></tr></thead><tbody>
+<tr><td>task schema</td><td>dataset JSON、episode 字段、instruction/goal parser、split manifest</td><td>agent 学到了有效导航</td></tr>
+<tr><td>simulator execution</td><td>reset/step log、action space、sensor config、navmesh/scene revision</td><td>真实相机、底盘和控制器成功</td></tr>
+<tr><td>offline/teacher-forced</td><td>参考轨迹、action imitation loss、per-step error</td><td>closed-loop success</td></tr>
+<tr><td>simulated closed-loop</td><td>全 episode denominator、SR/SPL/TL/NE/OS、seed 与 failure traces</td><td>跨 simulator、跨 scene asset 或 real-world 泛化</td></tr>
+<tr><td>real closed-loop</td><td>真机传感器/控制日志、时间同步、碰撞与安全记录、同 protocol 对照</td><td>没有 matched sim-real protocol 时的因果归因</td></tr>
+</tbody></table>
+<p>主要 sim-to-real 差异包括：navmesh 与真实可通行区域、碰撞/滑移模型、相机内外参和噪声、控制周期与延迟、reset/终止条件、场景资产与光照、语言/目标标注以及安全停止机制。即使 simulator SR=1，也只能说明该 simulator protocol 下的 episode 成功。</p>
+<h2 id="6">6. 与现有项目的真实挂钩</h2>
+<table><thead><tr><th>项目</th><th>当前可连接的节点</th><th>明确不能升级为</th></tr></thead><tbody>
+<tr><td>OPD / VLM grounding</td><td>point/box/text route、坐标与 scorer，可作为导航前的目标 grounding 输入</td><td>VLN/ObjectNav episode、navmesh trajectory、SPL 或真实移动成功</td></tr>
+<tr><td>Robot Harness</td><td>tool schema、timeout/cancel/compensation，可讨论如何把导航工具接入系统</td><td>Habitat task success、R2R/RxR 指令跟随或移动控制结果</td></tr>
+<tr><td>OpenPiVLA</td><td>observation/action packaging、policy latency、action chunk contract</td><td>导航 benchmark 的 SR/SPL，除非有独立 episode 与轨迹 artifact</td></tr>
+<tr><td>WAM / Cosmos</td><td>simulator rollout provenance 与 metric boundary</td><td>ObjectNav/VLN 结果、3D navigation 或真机闭环</td></tr>
+<tr><td>UWM / LIBERO</td><td>simulator reset、任务协议、closed-loop evaluation 的证据分层</td><td>语言导航或 ObjectNav 的目标/指标</td></tr>
+</tbody></table>
+<h2 id="7-source-gate">7. Source gate 结论与下游范围</h2>
+<p>已冻结：</p>
+<ol><li>VLN、ObjectNav、REVERIE 的 goal、instruction、action 与 success predicate 不能混写；先冻结 episode contract，再解释指标。</li><li>Habitat-Lab 的 ObjectNav success 依赖 stop、距离度量和 config；ObjectGoal 的 category/ID/view-point 字段不等同于统一的“到物体位置”。</li><li>SPL 必须绑定最短路径、实际轨迹、success predicate、episode denominator 与版本化 protocol；跨 benchmark/版本比较前要核对 action space、scene、split、controller 和数据预处理。</li><li>simulator success、offline proxy 与 real robot closed-loop 是不同证据层；现有 OPD/Harness/WAM/UWM 证据不支持个人 VLN/ObjectNav 成果。</li></ol>
+<p>知识页与 <code>VLA-PER-004</code> 原子题卡已将 episode JSON、instruction/action mask、stop-success-SPL 计算、REVERIE 的双层 success、navmesh 与连续控制 failure tree 展开；本地 benchmark run artifact 仍缺。</p>
+<p>当前 verdict：<code>WARN</code>。来源足以冻结任务与评估合同，但没有用户本地 VLN/ObjectNav 运行 artifact、真实机器人导航日志或可复现 benchmark bundle。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="https://github.com/facebookresearch/habitat-lab/blob/0fb6f43ffe806a8088a171b036336c093bcf604e/README.md">Habitat-Lab frozen README</a>、<a href="https://github.com/facebookresearch/habitat-lab/blob/0fb6f43ffe806a8088a171b036336c093bcf604e/habitat-lab/habitat/tasks/nav/object_nav_task.py">ObjectNav task</a>、<a href="https://github.com/facebookresearch/habitat-lab/blob/0fb6f43ffe806a8088a171b036336c093bcf604e/habitat-lab/habitat/tasks/nav/nav.py">navigation measures</a>。</li><li><a href="https://github.com/facebookresearch/habitat-sim/blob/57ee4941dc4765240f0f91f70b2c97a919bf9038/README.md">Habitat-Sim frozen README</a> 与 <a href="https://github.com/facebookresearch/habitat-sim/blob/57ee4941dc4765240f0f91f70b2c97a919bf9038/src/esp/nav/PathFinder.h">PathFinder</a>。</li><li><a href="https://github.com/jacobkrantz/VLN-CE/blob/729d141b2ee10628061ada74dd3a5b9f70faeba5/README.md">VLN-CE frozen README</a>。</li><li><a href="https://arxiv.org/abs/1711.07280">R2R</a>、<a href="https://arxiv.org/abs/1904.10151">REVERIE</a>、<a href="https://arxiv.org/abs/2006.13171">ObjectNav Revisited</a>、<a href="https://arxiv.org/abs/1807.06757">SPL</a>。</li><li>本仓库前置切片：<a href="vol_06_per001_grounding_coordinate_source_freeze.html">PER-001 Grounding</a>、<a href="vol_06_per002_3d_lift_frame_source_freeze.html">PER-002 3D Lift</a>、<a href="vol_06_per003_multiview_temporal_source_freeze.html">PER-003 Multi-view/Temporal</a>。</li></ol>
+</article></body></html>

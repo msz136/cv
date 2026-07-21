@@ -1,0 +1,29 @@
+{
+  "artifact": "sources/vol_06_per002_3d_lift_frame_source_freeze.md",
+  "html": "sources/vol_06_per002_3d_lift_frame_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-PER-002 / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "a91a32eca547738c0cc76895f299dfae49ea134fd54944dc9eb538fba1228b93",
+  "covered_question_ids": [
+    "VLA-PER-002"
+  ],
+  "checks": {
+    "primary_sources": "PASS WITH WARNING (OpenCV calibration/depth tutorials and ROS REP-103/105 are pinned with commit and response hashes)",
+    "3d_lift_contract": "PASS (intrinsics, distortion, depth source, inverse projection, extrinsic transform, frame IDs, timestamps and units are separated)",
+    "frame_convention": "PASS WITH WARNING (ROS conventions are a reference; no user project is assumed to use ROS frames)",
+    "uncertainty_and_sync": "PASS (depth invalidity, registration, timestamp skew, TF interpolation and uncertainty ledger are explicit)",
+    "project_evidence_boundary": "PASS (OPD remains static 2D holdout; WAM camera/controller fields do not become calibration or 3D success evidence)",
+    "html_static_validation": "PASS (one H1, formulas, tables, source SHA and section anchors rendered)",
+    "local_links": "PASS (PER-001, OPD and WAM evidence links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "downstream_artifacts": "PASS WITH WARNING (knowledge page and VLA-PER-002 question card synchronized; local 3D artifact remains missing)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the PER-002 knowledge page and atomic card synchronized; keep the card unseen and do not claim 3D project ownership.",
+    "If a local calibration/depth/TF artifact appears, bind it to image size, units, timestamp, frame and revision hashes.",
+    "Keep 2D grounding, 3D target validity, controller execution and closed-loop success as separate evidence levels."
+  ],
+  "next": "Run a PER-001..004 oral drill or collect one local 3D roundtrip artifact; keep all cards unseen."
+}

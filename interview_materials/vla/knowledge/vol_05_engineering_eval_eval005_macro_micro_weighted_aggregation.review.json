@@ -1,0 +1,69 @@
+{
+  "artifact": "knowledge/vol_05_engineering_eval_eval005_macro_micro_weighted_aggregation.md",
+  "html": "knowledge/vol_05_engineering_eval_eval005_macro_micro_weighted_aggregation.html",
+  "review_date": "2026-07-18",
+  "status": "drafted / VLA-EVAL-005 / knowledge_27_of_44 / card_1_of_1_unseen / review_warn",
+  "verdict": "WARN",
+  "source_sha256": "3c356f67392c266019cff9d97ae09763ed6c308c93aad55d0871c993632d5e17",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 26,
+    "new_nodes": 1,
+    "total_drafted_nodes": 27,
+    "covered_ids": ["VLA-EVAL-005"],
+    "drafted_cards_for_new_nodes": 1,
+    "practice_state": "unseen / not_orally_drilled",
+    "difficulty": "L2",
+    "priority": "P0"
+  },
+  "source_scope": {
+    "source_freeze": "sources/vol_05_eval005_aggregation_estimand_source_freeze.html",
+    "official_code": [
+      "google-research/rliable at 3ccd9f4",
+      "LIBERO metric.py at 8f1084e",
+      "OpenPI LIBERO README at 15a9616"
+    ],
+    "method_sources": [
+      "Agarwal et al. 2021",
+      "Simpson 1951",
+      "UWM arXiv 2504.02792v3"
+    ],
+    "local_project_hooks": [
+      "UWM equal-n five-task final summary and old/new book_caddy conflict",
+      "OpenPiVLA equal-suite archive 97.4 arithmetic and missing denominators",
+      "OPD 6100/1400/2500 heterogeneous static metric pools"
+    ]
+  },
+  "checks": {
+    "bounded_slice": "PASS (one EVAL-005 knowledge node and one atomic card; EVAL-006 deferred)",
+    "intuition_and_estimand": "PASS (voting intuition tied to explicit target population and weight vector)",
+    "per_task_formula": "PASS (k_t/n_t with protocol and exclusion mapping)",
+    "macro_micro_weighted": "PASS (all formulas, variables, implicit weights and use conditions covered)",
+    "balanced_identity": "PASS (macro=micro equal-n proof and semantic caveat)",
+    "simpson_reversal": "PASS (common-support/common-weight repair explained)",
+    "suite_hierarchy": "PASS (suite and conditional task weights separated)",
+    "training_seed_hierarchy": "PASS (run × task matrix and top-level replicate boundary)",
+    "uncertainty": "PASS WITH WARNING (fixed task versus task population, cluster/bootstrap and exchangeability caveat)",
+    "missingness_and_coverage": "PASS (fail-closed task registry, exclusions and weight coverage)",
+    "model_comparison": "PASS (common weights and EVAL-004 pair-level effect retained)",
+    "robust_aggregates": "PASS (rliable IQM/median/profile are distinct and supplementary)",
+    "project_truth_boundary": "PASS (no new project score or comparison claim)",
+    "pseudocode": "PASS (version validation, labeled aggregates and top-level cluster bootstrap; marked as design contract)",
+    "minimum_module_contract": "PASS (intuition, definitions, formulas, implementation mapping, trade-offs, bad cases, project hooks and references)",
+    "html_static_validation": "PASS (one H1, seventeen H2, nine H3, three tables, three code blocks and seven formula blocks)",
+    "math_delimiters": "PASS (seven display blocks have matched delimiters)",
+    "local_links": "PASS (all seven local link references resolve)",
+    "source_sha": "PASS (Markdown SHA matches HTML metadata and review JSON)",
+    "card_alignment": "PASS (one VLA-EVAL-005 card follows the same estimand and evidence contract)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Collect a task/version/protocol registry and raw episode manifests before implementing project-level aggregation.",
+    "Freeze deployment weights independently of model outcomes; report safety-critical tasks as gates where appropriate.",
+    "Reconcile UWM old/final task summaries and OpenPiVLA suite denominators before strengthening project hooks.",
+    "Do not update mastery or create coaching_state.md until a real oral answer is recorded."
+  ],
+  "next": "Proceed only to VLA-EVAL-006 benchmark/environment/controller/scorer versioning; keep this node WARN/unseen."
+}
+

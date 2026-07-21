@@ -1,0 +1,53 @@
+{
+  "artifact": "sources/openpivla_official_checkpoint_immutable_manifest_gate.md",
+  "html": "sources/openpivla_official_checkpoint_immutable_manifest_gate.html",
+  "review_date": "2026-07-21",
+  "status": "local_file_manifest_complete / remote_checkpoint_unavailable / WARN",
+  "verdict": "WARN",
+  "source_sha256": "CBDF6AF4B9AA288C596797F293E7C6275C1E4BFE952714D5A17C9B35BBE23B2E",
+  "evidence_cutoff": "2026-07-21",
+  "local_project_root": "C:\\Users\\mousongzhe\\Project\\openpivla_deployment",
+  "manifest": {
+    "deployment_and_code_files": 4,
+    "aloha_bundle_files": 13,
+    "libero_bundle_files": 9,
+    "total_local_files_hashed": 26,
+    "checkpoint_binary_files_hashed": 0,
+    "norm_stats_files_hashed": 0
+  },
+  "remote_targets": {
+    "pi0_aloha_sim": {
+      "root": "/data/msz/openpivla/models/openpi-assets/checkpoints/pi0_aloha_sim",
+      "local_exists": false,
+      "deployment_note": "historical 11.189 GiB / 21 files",
+      "params_manifest": "UNVERIFIED",
+      "norm_stats_manifest": "UNVERIFIED"
+    },
+    "pi05_libero": {
+      "root": "/data/msz/openpivla/models/openpi-assets/checkpoints/pi05_libero",
+      "local_exists": false,
+      "deployment_note": "historical approximately 11.6 GiB",
+      "params_manifest": "UNVERIFIED",
+      "norm_stats_manifest": "UNVERIFIED"
+    }
+  },
+  "checks": {
+    "local_file_hash_recompute": "PASS (26 local files enumerated with byte count and SHA-256)",
+    "aloha_bundle_manifest": "PASS WITH WARNING (13 files hashed; official checkpoint binary absent)",
+    "libero_bundle_manifest": "PASS WITH WARNING (9 files hashed; official checkpoint binary absent)",
+    "checkpoint_binary_manifest": "UNVERIFIED (remote /data/msz paths are not mounted in the current workspace)",
+    "norm_stats_manifest": "UNVERIFIED (load paths are present in serve logs, files are not locally readable)",
+    "fine_tune_lineage": "UNVERIFIED (official checkpoints only; no private Qwen3-VL/LoRA binary)",
+    "ownership": "PENDING (no pre-snapshot diff or oral confirmation)",
+    "html_static_validation": "PASS (full repository validator: 385 canonical triplets, zero missing/sha/template/math/link/reconciliation failures; 280 unique cards remain unseen)",
+    "browser_visual_check": "PASS WITH WARNING (rechecked 2026-07-21 at localhost desktop 1280x1000 and narrow 800x1000: one H1, sticky 260px TOC on desktop, static TOC on narrow, zero page-wide overflow, five tables and code block contained, zero formula em nodes and broken anchors)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Export read-only per-file params/assets SHA, manifest root, OpenPI commit and processor/tokenizer revision from the original remote environment if available.",
+    "Persist exact server/client argv, UTC timestamp, shared run UUID and request IDs in the next deployment run.",
+    "If remote checkpoint access is unavailable, run a matched LIBERO failure probe with axis/order/unit, normalizer, controller and scorer fixed.",
+    "Keep PROJ-OPENPIVLA-007/008 unseen until a real oral response is recorded."
+  ],
+  "next": "Attempt a read-only remote checkpoint manifest; otherwise move to the matched LIBERO failure probe without upgrading checkpoint lineage or ownership."
+}

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 EVAL-010 Source Freeze：Regression Gate、Golden Set 与 Canary Rollout</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_eval010_regression_gate_golden_set_canary_rollout_source_freeze.md">
+<meta name="aris:source-sha256" content="512d9e16b392e7258358c0092dff6ff5049890040d8d5efd1fdadfe7048b2911">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>512d9e16b392e7258358c0092dff6ff5049890040d8d5efd1fdadfe7048b2911</code>；生成自：<code>interview_materials\vla\sources\vol_05_eval010_regression_gate_golden_set_canary_rollout_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、Revision 与支持边界</a></li><li><a href="#2">2. 六个对象必须分开</a></li><li><a href="#3-golden-set">3. Golden Set 合同</a></li><li><a href="#3-1">3.1 组成</a></li><li><a href="#3-2">3.2 版本与污染</a></li><li><a href="#4-paired-regression-non-inferiority-gate">4. Paired Regression 与 Non-inferiority Gate</a></li><li><a href="#5-hard-gate-soft-guardrail">5. Hard Gate 与 Soft Guardrail</a></li><li><a href="#5-1-hard-veto">5.1 Hard veto</a></li><li><a href="#5-2-soft-metric">5.2 Soft metric</a></li><li><a href="#6-gate-eval-009-bundle">6. Gate 配置必须绑定 EVAL-009 Bundle</a></li><li><a href="#7-shadow-canary-promote-abort">7. Shadow → Canary → Promote / Abort</a></li><li><a href="#7-1">7.1 状态机</a></li><li><a href="#7-2-comparable-canary">7.2 Comparable canary</a></li><li><a href="#7-3-canary">7.3 Canary 的结论边界</a></li><li><a href="#8-release-decision">8. Release Decision 伪代码</a></li><li><a href="#9-evidence-mapping">9. 五项目 Evidence Mapping</a></li><li><a href="#10">10. 高频反例</a></li><li><a href="#11-source-gate">11. Source Gate 结论与下一入口</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 EVAL-010 Source Freeze：Regression Gate、Golden Set 与 Canary Rollout</h1>
+<div class="meta">状态：<code>source_frozen / VLA-EVAL-010 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-18 证据截止：2026-07-18 本切片冻结golden set、paired regression、hard/soft gate、shadow/canary、promotion/abort/rollback与五项目证据边界；只生成一张<code>VLA-EVAL-010</code>原子题卡，VOL 05同步为knowledge/cards 32/44。</div>
+<h2 id="question">问题（Question）</h2>
+<p>怎样防止一个新VLA checkpoint在overall分数看似更高时，悄悄破坏关键task、safety、latency或真实执行路径？答案不是“再跑一次benchmark”，而是把固定golden set、预注册regression gate与有限暴露canary串成可审计、可终止、可回滚的release state machine。</p>
+<h2 id="1-revision">1. 冻结来源、Revision 与支持边界</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>类型 / revision / license</th><th>SHA-256</th><th>支持范围</th><th>不支持</th></tr></thead><tbody>
+<tr><td>S1</td><td>Breck et al., <em>The ML Test Score</em></td><td>primary paper；Proceedings of IEEE Big Data 2017；Google Research页面与PDF，访问2026-07-18；论文再分发许可未断言</td><td>page <code>e1588aa27c4a0aa74435327e92400443faf0b1ddf623068845571346484e1f6b</code>；PDF <code>8db5862dc7c7aaa2c55bb43bd42fc55531a0503782b7026b5811c00c98befd31</code></td><td>重要slice的absolute/incremental release tests；serving前自动bless/veto；small-scale canary；old/new并行、小流量逐步增加；rollback与持续质量/性能监控</td><td>不定义VLA golden schema、paired CI、机器人安全认证或本文阈值</td></tr>
+<tr><td>S2</td><td>Argo Rollouts official repository</td><td>official-code；HEAD commit <code>9273b0ee05dbb629cc72fb9d343c08356c8379c8</code>；Apache-2.0</td><td>LICENSE <code>c996fc213c94f4a4a838407d355b081226caa7b103a4f239bb87fb8f1d8e3a60</code>；canary <code>d50dadb21ed9ec2010be77ec0c7cde8af90a1b32e5af005102fad6a841b8c4ee</code>；analysis <code>2e4a68131130e307c396bd0cf431667152e599e056464e6eb22d2e18f348f8ae</code>；spec <code>0bcdbf333ffe7978f1530c3b79272a4098948154dde14bbf1807b212b6b8a665</code></td><td><code>setWeight</code>、pause、inline/background analysis、success/failure/inconclusive、abort与rollback window等progressive-delivery机制</td><td>不证明用户项目使用Argo，不把pod traffic机制自动映射成机器人动作安全</td></tr>
+<tr><td>S3</td><td>Google SRE Workbook, <em>Canarying Releases</em></td><td>official documentation；官方URL；当前环境TLS与浏览器导航均失败，未取得2026-07-18响应bytes</td><td><code>unavailable</code></td><td>只作canary术语与baseline/canary比较的补充阅读入口</td><td>不承担本页任何唯一强主张，不伪造revision、SHA或可达性</td></tr>
+<tr><td>S4</td><td>EVAL-004/005/006/007/009 canonical source freezes</td><td>local canonical prerequisite</td><td>EVAL-004 <code>c89c052a...427313</code>；EVAL-005 <code>16b6a4c7...804ff46</code>；EVAL-006 <code>8a2ccfbc...ccd054</code>；EVAL-007 <code>66800fd2...6e278</code>；EVAL-009 <code>be6945d...13dea</code></td><td>paired unit、aggregation、protocol identity、coverage与raw-to-summary bundle前置合同</td><td>不证明regression/canary已实施</td></tr>
+<tr><td>S5</td><td>五项目inventories + WAM artifact manifest</td><td>local-evidence</td><td>Robot Harness <code>66acc52c...aa291e</code>；OPD <code>0a68251d...db12bb</code>；OpenPiVLA <code>a3c644f9...ce293</code>；WAM <code>078c86b1...772d</code>；UWM <code>728b8326...3674d</code>；WAM manifest <code>1ab87092...8f697</code></td><td>当前checkpoint、suite、summary、trace与协议缺口</td><td>不升级为自动gate、线上canary或个人ownership</td></tr>
+</tbody></table>
+<p>S1的PDF明确提出：重要data slice不能被global summary掩盖；serving前应由自动系统bless或veto；offline testing不能保证live production；new/old model可并行并让new model先接小比例流量；rollback需要预先练习。S2则提供一套通用progressive-delivery控制面。本文把它们转换为VLA release合同，转换部分标为engineering synthesis。</p>
+<p>S3核验限制是本节点的显式open item，不用搜索摘要或记忆补写网页原文。完整本地SHA见对应review；S4中的省略写法只用于表格可读性。</p>
+<h2 id="2">2. 六个对象必须分开</h2>
+<table><thead><tr><th>对象</th><th>固定什么</th><th>回答什么问题</th><th>不能替代</th></tr></thead><tbody>
+<tr><td>checkpoint curve</td><td>多个training step的summary</td><td>训练过程中哪个点更好</td><td>同协议release gate</td></tr>
+<tr><td>smoke test</td><td>少量load/inference/episode</td><td>artifact是否基本可运行</td><td>golden suite与统计判断</td></tr>
+<tr><td>holdout summary</td><td>固定数据上的aggregate</td><td>候选的离线表现</td><td>raw paired rows与live path</td></tr>
+<tr><td>golden set</td><td>immutable case IDs、expected result/invariant、slice</td><td>每次release必须守住哪些行为</td><td>candidate-specific临时样例</td></tr>
+<tr><td>regression gate</td><td>预注册metric、margin、CI、hard veto、missing policy</td><td>候选能否进入下一阶段</td><td>canary泛化与安全系统</td></tr>
+<tr><td>shadow/canary</td><td>live path的受限exposure、guardrail、abort/rollback</td><td>真实serving/control链路是否出现回归</td><td>全量部署与分布外保证</td></tr>
+</tbody></table>
+<p>项目有checkpoint表、smoke或summary，不等于后三项已形成系统。</p>
+<h2 id="3-golden-set">3. Golden Set 合同</h2>
+<p>本文把黄金集合（golden set）定义为：release决策前冻结、可逐case复算、包含expected output或hard invariant的版本化集合。它至少包含：</p>
+<pre><code class="language-text">golden_case_id, suite_revision, input_or_episode_ref/hash,
+task/slice/difficulty/safety labels, init/seed,
+expected_output_or_invariants, scorer/parser/protocol revision,
+criticality, weight, active_since, retired_at/reason</code></pre>
+<h3 id="3-1">3.1 组成</h3>
+<ol><li><strong>common support</strong>：baseline与candidate在同case、同protocol、同scorer上配对；</li><li><strong>critical slices</strong>：grasp/contact、long horizon、OOD view、latency-sensitive path等预先定义；</li><li><strong>hard invariants</strong>：shape/axis/unit/finite、allowed action/tool、scope、forbidden side effect、controller limit；</li><li><strong>known failures</strong>：历史incident或bad case可进入集合，但必须保存来源、修复与防止训练污染的策略；</li><li><strong>private holdback</strong>：避免反复调参只优化公开golden；访问与使用次数应留ledger。</li></ol>
+<h3 id="3-2">3.2 版本与污染</h3>
+<ul><li>candidate评估开始后，不因candidate失败而改expected result、slice或margin；修改需新suite revision并让baseline/candidate都重跑。</li><li>golden不是永远不变：新增真实failure、分布变化或标注修正时append新版本；retirement必须有reason、替代case和历史可追踪性。</li><li>release golden、training/dev set与最终holdback分开；发现训练重叠时标记contaminated并fail closed，不能静默换分母。</li><li>safety-critical case不能用overall提升抵消，也不能只因“长期没失败”随意删除。</li></ul>
+<h2 id="4-paired-regression-non-inferiority-gate">4. Paired Regression 与 Non-inferiority Gate</h2>
+<p>把每个指标统一成“越大越好”的效用（oriented utility）<code>u_k</code>。对同一golden case <code>i</code>：</p>
+<div class="formula">\[
+\Delta_{i,k}=u_k(c,i)-u_k(b,i),
+\qquad
+\bar\Delta_k=\frac{1}{n_k}\sum_{i=1}^{n_k}\Delta_{i,k}.
+\]</div>
+<p>变量解释：<code>c/b</code>分别是candidate与baseline；<code>k</code>是success、point hit、negative latency、negative intervention等指标；<code>n_k</code>只包含预注册的valid paired support。实现映射：逐case raw row保留两侧输出、valid/exclusion与score contribution；不能从两个独立aggregate相减伪装成paired证据。</p>
+<p>对critical metric <code>k</code>，给定允许的non-inferiority margin <code>δ_k</code>：</p>
+<div class="formula">\[
+G_{offline}=
+\mathbb{1}[H_{schema}=H_{safety}=H_{lineage}=1]
+\prod_{k\in\mathcal K_{critical}}
+\mathbb{1}\!\left[\operatorname{LCB}_{1-\alpha}(\bar\Delta_k)\ge -\delta_k\right].
+\]</div>
+<p>变量解释：hard gate任何一项失败即为0；<code>LCB</code>是预注册方法得到的单侧置信下界；<code>δ_k</code>来自业务/安全容忍度，不由candidate结果倒推；<code>α</code>与多指标处理在gate config中冻结。实现映射：gate输出每个metric/slice的estimate、interval、margin、decision和raw bundle SHA。样本不足、missing、invalid、CI不可算或protocol漂移默认fail closed。</p>
+<p>若没有足够paired样本，可使用预注册的exact/paired bootstrap或纯hard threshold，但必须如实说明统计能力；不能用“p&gt;0.05”推出等价，也不能把overall mean当作所有slice的non-regression证明。</p>
+<h2 id="5-hard-gate-soft-guardrail">5. Hard Gate 与 Soft Guardrail</h2>
+<h3 id="5-1-hard-veto">5.1 Hard veto</h3>
+<ul><li>model/processor/normalizer/checkpoint/protocol/scorer lineage不完整；</li><li>parser失败、shape/axis/unit错误、NaN/Inf、动作越界；</li><li>critical/safety case出现forbidden side effect、scope violation或emergency-stop触发；</li><li>planned/valid/excluded/missing不守恒，或candidate与baseline不在common support；</li><li>latency deadline、memory limit或controller constraint超过预注册硬限。</li></ul>
+<h3 id="5-2-soft-metric">5.2 Soft metric</h3>
+<p>overall success、per-task uplift、energy、smoothness、p50/p95 latency、intervention、timeout与drift都可以是多目标指标；但soft不等于可以随意平均。release报告至少同时展示global、per-task、critical slice、safety与systems performance。一个“overall +1% / safety -20%”的candidate必须被critical gate拒绝，不能用weighted sum洗掉。</p>
+<h2 id="6-gate-eval-009-bundle">6. Gate 配置必须绑定 EVAL-009 Bundle</h2>
+<pre><code class="language-text">release_gate/
+  gate_config.json             # baseline/candidate, metrics, margins, CI, decisions
+  golden_manifest.json         # case IDs, revision, expected/invariant, slices
+  protocol_manifest.json       # env/controller/parser/scorer/policy identities
+  raw/base/...                 # EVAL-009 recomputable bundle
+  raw/candidate/...
+  paired_delta.parquet
+  decision.json                # pass/fail + per-gate evidence
+  approvals.json               # human/safety sign-off where required
+  checksums/manifest-sha256.txt</code></pre>
+<p><code>decision.json</code>不能只写<code>pass=true</code>；必须能回跳到case、raw output、trace/video、scorer与threshold revision。人工override若存在，要记录who/why/expiry，并禁止覆盖hard safety veto。</p>
+<h2 id="7-shadow-canary-promote-abort">7. Shadow → Canary → Promote / Abort</h2>
+<h3 id="7-1">7.1 状态机</h3>
+<pre><code class="language-text">candidate built
+  -&gt; offline golden gate
+  -&gt; shadow: same live observations, no actuator authority
+  -&gt; canary-1: allowlisted low-risk task/init/robot or small traffic
+  -&gt; canary-2: wider support after minimum exposure + decision window
+  -&gt; promote
+  -&gt; continuous monitoring
+
+any hard breach / analysis failure / timeout
+  -&gt; abort -&gt; traffic/authority back to known-good baseline -&gt; incident bundle</code></pre>
+<p>Argo Rollouts的<code>setWeight</code>、pause、AnalysisRun、failure/success limits、abort与rollback window说明progressive delivery需要显式step与decision对象；机器人/VLA只能借用控制思想，不能把Kubernetes流量权重直接当作机械臂安全认证。[2]</p>
+<h3 id="7-2-comparable-canary">7.2 Comparable canary</h3>
+<ul><li>baseline与canary尽量处于同时间窗、同输入support、同scorer；不能拿上周baseline与今天canary直接比。</li><li>冻结exposure unit：request、episode、task-init、robot-hours或control steps；同时冻结minimum exposure与decision window。</li><li>观测success/safety、p50/p95/p99 latency、deadline miss、timeout、intervention、emergency stop、forbidden action、resource与distribution drift。</li><li>shadow阶段保留candidate raw action但不执行；如果candidate影响环境，后续就不再是paired counterfactual，必须明确因果边界。</li><li>abort是自动停止扩量；rollback是恢复已验证的model+processor+normalizer+controller bundle，两者都要演练。</li></ul>
+<h3 id="7-3-canary">7.3 Canary 的结论边界</h3>
+<p>canary通过只说明“在已暴露support、时窗、authority与样本量下没有触发预注册拒绝条件”。它不证明全任务泛化、极端tail safety、长期drift稳定或真实机器人认证。对机器人，独立safety controller、workspace/velocity/force limits和human stop不能由模型canary替代。</p>
+<h2 id="8-release-decision">8. Release Decision 伪代码</h2>
+<pre><code class="language-python">def release_candidate(base_bundle, candidate_bundle, gate_cfg):
+    # 1. Verify immutable lineage and the same golden/protocol/scorer contract.
+    verify_bundle_and_common_support(base_bundle, candidate_bundle, gate_cfg)
+
+    # 2. Fail closed on schema, action, safety, missingness, or deadline invariants.
+    run_hard_gates(candidate_bundle, gate_cfg.hard_invariants)
+
+    # 3. Compute paired deltas and pre-registered one-sided non-inferiority decisions.
+    decision = compare_paired_metrics(base_bundle, candidate_bundle,
+                                      margins=gate_cfg.margins,
+                                      interval_method=gate_cfg.interval_method)
+    if not decision.all_critical_pass:
+        return abort_and_record(&quot;offline_regression&quot;, decision)
+
+    # 4. Shadow first: score live observations without granting actuator authority.
+    shadow = run_shadow(candidate_bundle, guardrails=gate_cfg.shadow_guardrails)
+    if shadow.hard_breach:
+        return abort_and_record(&quot;shadow_breach&quot;, shadow)
+
+    # 5. Increase allowlisted exposure only after minimum samples and decision windows.
+    for stage in gate_cfg.canary_stages:
+        result = run_canary(stage, baseline=gate_cfg.known_good)
+        if result.hard_breach or not result.analysis_pass:
+            return rollback_known_good_and_record(stage, result)
+
+    return promote_with_continuous_monitoring(candidate_bundle)</code></pre>
+<p>这是release-contract伪代码，不是五项目已有部署系统。</p>
+<h2 id="9-evidence-mapping">9. 五项目 Evidence Mapping</h2>
+<table><thead><tr><th>项目</th><th>当前证据</th><th>可作为的输入</th><th>当前不能声称</th></tr></thead><tbody>
+<tr><td>Robot Harness</td><td>8B/32B base/SFT/GRPO suite与checkpoint metrics；base/SFT <code>n=1333</code>、GRPO <code>n=1000</code>；hidden-embedding与token-overlap scorer不同；safety弱、browser format-only</td><td>对齐common suite/scorer后构造tool/scope/safety golden；safety应hard gate</td><td>已有同协议base→GRPO regression gate；已有真实browser/robot canary</td></tr>
+<tr><td>OPD</td><td>10k raw-holdout input、ckpt1000–5000 by-format/by-pool curve；不同pool最佳checkpoint不同</td><td>设计box/point/text与pool vector golden，禁止单一overall选择</td><td>已有raw-prediction paired gate、统一lineage、自动promotion或canary</td></tr>
+<tr><td>OpenPiVLA</td><td>public smoke、formal report、official-checkpoint diagnostics；97.4为archive summary</td><td>load/parser/action-shape smoke可作hard gate候选</td><td>formal Qwen checkpoint与97.4已闭合golden regression；diagnostic rollout能替代其lineage</td></tr>
+<tr><td>WAM</td><td>CoffeePressButton episode0 base/trained paired trace/video</td><td>一个diagnostic regression case</td><td>golden suite、完整分母、自动gate或canary</td></tr>
+<tr><td>UWM</td><td>user-confirmed <code>186/250</code> summary与协议脚本</td><td>固定task/init/warmup/normalizer字段作为未来golden manifest</td><td>250 raw episode paired gate、checkpoint-bound regression或canary</td></tr>
+</tbody></table>
+<p>因此五项目当前均处于“可以设计与补做”而非“已实现release system”。面试中可讲gate设计、证据缺口和补强顺序，不可把本文伪代码改成经历完成时态。</p>
+<h2 id="10">10. 高频反例</h2>
+<ol><li>每次candidate失败就把golden case删掉或改阈值；</li><li>用不同n、不同scorer、不同init的两个summary相减；</li><li>overall提升掩盖critical slice或safety下降；</li><li>missing/timeout/crash从分母静默移除；</li><li>只设“成功阈值”，不设minimum exposure与decision window；</li><li>canary和baseline不在同时间窗或不同版本serving path；</li><li>abort只有命令没有known-good bundle与rollback drill；</li><li>shadow candidate动作实际影响环境，却继续声称严格paired；</li><li>canary通过后声称全量泛化或安全认证；</li><li>把部署框架能力写成项目已使用事实。</li></ol>
+<h2 id="11-source-gate">11. Source Gate 结论与下一入口</h2>
+<p>EVAL-010保持<code>WARN</code>：公开来源足以支持slice-aware release tests、automated bless/veto、small-scale canary、progressive analysis、abort/rollback；本文已冻结golden/gate/canary的VLA工程合同。五项目没有同时闭合common-support raw bundle、预注册gate decision与live canary evidence，SRE页面当前也未重新抓取。</p>
+<p>下一节点固定为<code>VLA-EVAL-011</code>：offline metric与online success的相关性分析。真实口述前不创建<code>coaching_state.md</code>。</p>
+<h2 id="references">References</h2>
+<ol><li>Eric Breck et al., <a href="https://research.google/pubs/the-ml-test-score-a-rubric-for-ml-production-readiness-and-technical-debt-reduction/"><em>The ML Test Score: A Rubric for ML Production Readiness and Technical Debt Reduction</em></a>, IEEE Big Data 2017；<a href="https://storage.googleapis.com/gweb-research2023-media/pubtools/4156.pdf">frozen PDF</a>。</li><li>Argo Rollouts, <a href="https://github.com/argoproj/argo-rollouts/blob/9273b0ee05dbb629cc72fb9d343c08356c8379c8/docs/features/canary/index.md">Canary strategy</a>, <a href="https://github.com/argoproj/argo-rollouts/blob/9273b0ee05dbb629cc72fb9d343c08356c8379c8/docs/features/analysis.md">Analysis</a>, <a href="https://github.com/argoproj/argo-rollouts/blob/9273b0ee05dbb629cc72fb9d343c08356c8379c8/docs/features/specification.md">Specification</a>。</li><li>Google SRE Workbook, <a href="https://sre.google/workbook/canarying-releases/"><em>Canarying Releases</em></a>（当前环境抓取受阻，只作补充入口）。</li><li><a href="vol_05_eval004_paired_init_seed_significance_source_freeze.html">EVAL-004</a>、<a href="vol_05_eval005_aggregation_estimand_source_freeze.html">EVAL-005</a>、<a href="vol_05_eval006_benchmark_env_controller_scorer_versioning_source_freeze.html">EVAL-006</a>、<a href="vol_05_eval007_init_seed_task_coverage_difficulty_source_freeze.html">EVAL-007</a>、<a href="vol_05_eval009_raw_predictions_episode_trace_video_recomputable_summary_source_freeze.html">EVAL-009</a>。</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest</a>与五项目inventories。</li></ol>
+</article></body></html>

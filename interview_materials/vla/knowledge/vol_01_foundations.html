@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 01 Foundations：机器人、深度学习与强化学习的共同语言</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_01_foundations.md">
+<meta name="aris:source-sha256" content="33ebfe611adaca7d9287866f782f46f198f6562f6932e3fd75ef16488b61fa1e">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>33ebfe611adaca7d9287866f782f46f198f6562f6932e3fd75ef16488b61fa1e</code>；生成自：<code>interview_materials\vla\knowledge\vol_01_foundations.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">口述目标</a></li><li><a href="#section-3">背景与动机</a></li><li><a href="#section-4">基础概念与术语</a></li><li><a href="#section-5">几何、状态与控制</a></li><li><a href="#observation-state-action">Observation、State、Action 的层次</a></li><li><a href="#section-7">齐次坐标与坐标变换</a></li><li><a href="#forward-kinematics-jacobian">Forward Kinematics 与 Jacobian</a></li><li><a href="#action">Action 归一化、反归一化与执行</a></li><li><a href="#pid">PID 与延迟</a></li><li><a href="#impedance-control-mpc-learned-policy">Impedance Control、MPC 与 Learned Policy</a></li><li><a href="#transformer">深度学习与 Transformer</a></li><li><a href="#mse-huber">MSE、Huber 与交叉熵</a></li><li><a href="#scaled-dot-product-attention">Scaled Dot-Product Attention</a></li><li><a href="#layernorm-rmsnorm">LayerNorm 与 RMSNorm</a></li><li><a href="#pre-norm-lora">Pre-Norm、残差与 LoRA</a></li><li><a href="#mdp-rl">MDP、RL 与策略评估</a></li><li><a href="#mdp-bellman">MDP 与 Bellman 方程</a></li><li><a href="#td-on-off-policy">TD 误差与 on/off-policy</a></li><li><a href="#proxy-online-success">为什么离线 proxy 不等于 online success</a></li><li><a href="#pipeline">Pipeline 与伪代码</a></li><li><a href="#step-mask-action">训练 step：带 mask 的连续 action 监督</a></li><li><a href="#section-23">闭环执行：重新观测、反归一化与重规划</a></li><li><a href="#section-24">实现映射与项目挂钩</a></li><li><a href="#section-25">公源/本地设计边界</a></li><li><a href="#section-26">公有设计 / 上游公开流程</a></li><li><a href="#section-27">本地证据</a></li><li><a href="#section-28">本地推断</a></li><li><a href="#section-29">尚未核实</a></li><li><a href="#section-30">方法对比与选择建议</a></li><li><a href="#section-31">风险与后续建议</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 01 Foundations：机器人、深度学习与强化学习的共同语言</h1>
+<div class="meta">状态：<code>batch1+2+3_fact_reviewed_candidate / WARN</code> 报告日期：2026-07-16 证据截止：2026-07-16 适用岗位：VLA / 具身智能算法 / 多模态机器人策略 本卷不展开：VLA 专属 action head、Flow Matching 细节、World Model 训练细节和个人项目完整复盘；这些内容分别放到 VOL 03、VOL 04、VOL 07。</div>
+<h2 id="question">问题（Question）</h2>
+<p>本卷要让你能用同一套语言回答四类问题：</p>
+<ul><li><strong>数据/模型问题</strong>：observation、state、action、token、mask 和 loss 在张量层面是什么？</li><li><strong>机器人问题</strong>：坐标变换、Jacobian、控制频率、延迟和 action denormalization 为什么会影响闭环？</li><li><strong>训练问题</strong>：Transformer、归一化、MSE、交叉熵、Bellman target 和 advantage 各自监督什么？</li><li><strong>评估问题</strong>：离线 proxy、online success、reward、value 和 success predicate 为什么不能混为一谈？</li></ul>
+<h3 id="section-2">口述目标</h3>
+<p>面试官问“你做 VLA 需要哪些基础”时，先给结论：</p>
+<div class="meta">VLA 不是只把图像和语言喂给大模型；它把观测和任务条件编码成策略输入，再把输出变成带坐标、尺度、时序和控制约束的动作。因而基础要同时覆盖表示学习、序列建模、机器人几何、控制延迟和闭环评估。</div>
+<h2 id="section-3">背景与动机</h2>
+<p>VLA 面试常见的失分不是完全不会某个名词，而是把不同层次混在一起：把 <code>state</code> 当成 <code>observation</code>，把离线动作 MSE 当成真实成功率，把 action token 当成控制器动作，把 reward 当成 value，或者把一个归一化配置当成算法创新。</p>
+<p>本卷建立一条最小因果链：</p>
+<pre><code class="language-text">传感器 / 图像 / 语言 / proprioception
+                ↓
+       observation 与 state 表示
+                ↓
+   几何坐标、Transformer 表示、策略输出
+                ↓
+  normalization / denormalization / controller
+                ↓
+       robot closed-loop rollout 与评估</code></pre>
+<p>这条链既能解释一般 VLA，也能连接你的 OpenPiVLA、UWM、WAM 和 OPD 项目；但具体项目 claim 仍必须回到本地页面和日志，而不是由基础公式自动推出。</p>
+<h2 id="section-4">基础概念与术语</h2>
+<table><thead><tr><th>术语</th><th>口语解释</th><th>严谨边界</th><th>常见误区</th></tr></thead><tbody>
+<tr><td>Observation</td><td>机器人此刻能读到的传感器输入</td><td>(o_t)，可能是不完整、有噪声的状态观测</td><td>直接把 observation 当完整 state</td></tr>
+<tr><td>State</td><td>足以决定未来转移的系统状态</td><td>(s_t)，在 MDP 中定义转移与奖励</td><td>只要有一张图就一定是 state</td></tr>
+<tr><td>Proprioception</td><td>机器人自身关节/末端/速度等本体感知</td><td>状态向量的一部分，维度和坐标系需明确</td><td>不说明单位、顺序和时间戳</td></tr>
+<tr><td>Action</td><td>策略发给控制器的控制量</td><td>(a_t)，可为位置、速度、力矩或 chunk</td><td>忽略 action 轴顺序、尺度和执行频率</td></tr>
+<tr><td>Policy</td><td>从条件到动作的映射</td><td>\(\pi_\theta(a_t\mid o_{\le t},c)\)</td><td>把 action head 等同整个 policy</td></tr>
+<tr><td>Closed loop</td><td>执行动作后重新观测并纠偏</td><td>rollout 中 \(o_t\to a_t\to o_{t+1}\) 的循环</td><td>把一次性序列预测当稳定执行</td></tr>
+<tr><td>Protocol</td><td>评估时固定的初始化、归一化、步数和成功判定</td><td>benchmark 的可比性条件</td><td>只比较最终百分比</td></tr>
+</tbody></table>
+<h2 id="section-5">几何、状态与控制</h2>
+<h3 id="observation-state-action">Observation、State、Action 的层次</h3>
+<p>通俗地说，图像、关节角和任务文本是“模型看见的东西”，state 是描述系统未来演化所需的信息，action 是控制器真正执行的量。真实机器人通常只能获得部分 state，因此策略需要在历史 observation 或记忆上做推断。</p>
+<p>专业地说，若系统满足 Markov 性质，状态转移可以写为 \(p(s_{t+1}\mid s_t,a_t)\)。实际 VLA 的输入往往是 \(o_t\)、历史帧、语言条件 \(c\) 和 proprioception 的组合，因此更安全的面试表述是“策略条件输入”，不要未经证据声称它拥有完整 state。</p>
+<h3 id="section-7">齐次坐标与坐标变换</h3>
+<p>在机器人学里，旋转和平移常合并到齐次变换矩阵：</p>
+<div class="formula">\[
+T_{ab}=
+\begin{bmatrix}
+R_{ab} &amp; p_{ab}\\
+0_{1\times3} &amp; 1
+\end{bmatrix},\qquad
+\tilde p_a=T_{ab}\tilde p_b.
+\]</div>
+<p>变量解释：\(R_{ab}\in SO(3)\) 表示坐标系 \(b\) 到 \(a\) 的旋转，\(p_{ab}\) 是原点平移，\(\tilde p=[p_x,p_y,p_z,1]^\top\) 是齐次点。直觉是先把点放到统一的坐标协议里，才能比较 action、目标框或末端位姿。实现映射是矩阵乘法；但你当前仓库没有提供 OpenPiVLA 的具体坐标变换代码，因此只能把它作为通用基础，不能声称某个本地函数一定采用此轴序。</p>
+<p>矩阵乘法顺序不可随意交换：</p>
+<div class="formula">\[
+T_{ac}=T_{ab}T_{bc},\qquad T_{ab}T_{bc}\ne T_{bc}T_{ab}.
+\]</div>
+<p>这解释了为什么相机坐标、机器人 base、末端坐标和世界坐标的命名必须写清楚；顺序错时，模型可能在数值上输出“合理”的动作，却在物理空间中朝错误方向运动。</p>
+<h3 id="forward-kinematics-jacobian">Forward Kinematics 与 Jacobian</h3>
+<p>给定关节角 \(q\)，forward kinematics 计算末端位姿 \(x=f(q)\)。局部速度关系由 Jacobian 给出：</p>
+<div class="formula">\[
+\dot x=J(q)\dot q.
+\]</div>
+<p>变量解释：\(\dot q\) 是关节速度，\(\dot x\) 可包含末端线速度和角速度，\(J(q)\) 是随姿态变化的 Jacobian。直觉是它把“关节空间的小动作”映射到“末端空间的小动作”；接近奇异位形时，\(J\) 的 rank 或条件数退化，在 inverse/伪逆映射中，为实现某些末端速度可能需要很大的关节速度，并放大测量噪声。实现上需要明确 Jacobian 的轴序、单位和参考坐标系；VLA 输出若是末端增量，仍需经过控制器或 IK 才能执行。</p>
+<h3 id="action">Action 归一化、反归一化与执行</h3>
+<p>连续 action 常在训练前做逐维归一化：</p>
+<div class="formula">\[
+\hat a_t^{(i)}=\frac{a_t^{(i)}-\mu_i}{\sigma_i+\epsilon},\qquad
+a_t^{(i)}=(\sigma_i+\epsilon)\hat a_t^{(i)}+\mu_i.
+\]</div>
+<p>这里 \(\mu_i,\sigma_i\) 是第 \(i\) 个动作维度的统计量，\(\hat a\) 是模型空间，\(a\) 是控制器空间。直觉是让不同单位和量级的轴在训练中有相近的数值尺度；实现中必须保证训练和推理使用同一版本 normalizer、轴顺序、gripper 约定和 clipping 规则。<code>denormalization</code> 正确不等于控制安全，还要检查控制频率、动作范围和执行窗口。</p>
+<h3 id="pid">PID 与延迟</h3>
+<p>最基础的 PID 控制器可以写为：</p>
+<div class="formula">\[
+u_t=K_Pe_t+K_I\sum_{k=0}^{t}e_k\Delta t+K_D\frac{e_t-e_{t-1}}{\Delta t}.
+\]</div>
+<p>\(e_t\) 是目标与当前状态的误差，\(u_t\) 是控制输出，\(\Delta t\) 是控制周期。P 项响应当前误差，I 项消除稳态偏差，D 项抑制变化过快；实现时需考虑积分饱和、导数噪声、derivative kick、滤波和输出限幅。VLA 负责高层动作并不意味着可以忽略底层控制器：推理延迟、观测延迟和 replan 间隔会改变闭环有效频率。</p>
+<h3 id="impedance-control-mpc-learned-policy">Impedance Control、MPC 与 Learned Policy</h3>
+<p>这三类方法通常不在同一层竞争。impedance control 规定接触中的力—位移动态关系；MPC 用模型和约束滚动求解有限时域动作；learned policy/VLA 从高维观测与语言条件预测目标、动作或 action chunk。实际系统常让 VLA 给 subgoal/reference，再由 MPC、IK 或 impedance/controller 执行。</p>
+<p>令 \(e=x-x_d\)，一种目标阻抗关系可写为：</p>
+<div class="formula">\[
+M_d\ddot e+D_d\dot e+K_de=F_{ext}.
+\]</div>
+<p>\(M_d,D_d,K_d\) 是期望惯性、阻尼和刚度，\(F_{ext}\) 是外部交互力。直觉是规定机器人受力后的动态响应，而不是只追踪位置。实现上必须说明力/位姿 frame、传感器、底层 torque/position loop、采样周期、饱和和滤波；“用了 impedance”不等于天然安全或稳定。</p>
+<p>有限时域 MPC 可抽象为：</p>
+<div class="formula">\[
+\min_{u_{0:H-1}}
+\sum_{k=0}^{H-1}\ell(x_k,u_k)+\ell_f(x_H),
+\quad
+x_{k+1}=f(x_k,u_k),
+\quad
+x_k\in\mathcal X,\ u_k\in\mathcal U.
+\]</div>
+<p>\(H\) 是规划 horizon，\(f\) 是动力学模型，\(\ell,\ell_f\) 是阶段/终端代价，\(\mathcal X,\mathcal U\) 是状态和控制约束。MPC 每次只执行第一步或短前缀后重新估计和求解；它能显式处理约束，但会受模型失配、状态估计、solver deadline 和 terminal design 影响。</p>
+<p>learned policy 可写为 \(\pi_\theta(a_t\mid o_{\le t},c)\) 或 chunk distribution。它擅长视觉/语言条件与复杂数据分布，却仍依赖 action normalization、frame/unit、controller rate、replan、safety limit 和 success predicate。模型输出可能是直接 action、末端目标、MPC reference 或 residual；接口语义不同，不能仅按维度判断。</p>
+<table><thead><tr><th>场景</th><th>合理组合</th><th>首要检查</th></tr></thead><tbody>
+<tr><td>接触、插入、表面跟随</td><td>policy 给目标，impedance/admittance 处理力—位移关系</td><td>force sensing、stiffness/damping、delay</td></tr>
+<tr><td>动力学和约束较可信</td><td>policy/world model 给 reference/model，MPC 做 constrained replan</td><td>model error、state estimate、solver deadline</td></tr>
+<tr><td>高维视觉语言与多任务</td><td>learned policy/VLA 负责条件理解，controller 负责执行</td><td>data coverage、OOD、action contract</td></tr>
+<tr><td>长时序且模型不准</td><td>subgoal/chunk + 短 horizon replan + recovery/fallback</td><td>observation age、failure detector、fallback</td></tr>
+</tbody></table>
+<h2 id="transformer">深度学习与 Transformer</h2>
+<h3 id="mse-huber">MSE、Huber 与交叉熵</h3>
+<p>连续动作回归常用带 mask 的均方误差：</p>
+<div class="formula">\[
+\mathcal L_{\text{MSE}}
+=\frac{\sum_{t,d}m_{t,d}(\hat a_{t,d}-a_{t,d})^2}
+{\sum_{t,d}m_{t,d}+\epsilon}.
+\]</div>
+<p>(m_{t,d}) 表示第 (t) 步第 (d) 个动作维度是否有效。它与 action padding、缺失标签或只训练部分 head 直接对应；不能只写“算 MSE”，还要说明 mask 和 reduction。Huber loss 在小误差区近似二次、大误差区近似一次，通常更抗 outlier。离散 token 或工具调用则常用 cross-entropy，监督对象是目标 token 的类别，而不是连续坐标本身。</p>
+<h3 id="scaled-dot-product-attention">Scaled Dot-Product Attention</h3>
+<p>Transformer 的核心注意力为：</p>
+<div class="formula">\[
+\operatorname{Attention}(Q,K,V)
+=\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}+M\right)V.
+\]</div>
+<p>(Q,K,V) 分别是 query、key、value，(d_k) 是 key 的通道维度，(M) 是 causal/padding 等 mask。除以 (sqrt{d_k}) 可以抑制点积随维度增长造成的 softmax 饱和；mask 负责禁止无效位置或未来 token。实现映射是 <code>scaled_dot_product_attention</code> 或等价的矩阵运算；在 VLA 中，图像、语言、proprio 和 action token 的拼接顺序及 mask 决定信息能否跨模态流动。</p>
+<h3 id="layernorm-rmsnorm">LayerNorm 与 RMSNorm</h3>
+<p>LayerNorm 对一个 token 的特征维度做标准化：</p>
+<div class="formula">\[
+\operatorname{LN}(x)=\gamma\odot\frac{x-\mu(x)}{\sqrt{\sigma^2(x)+\epsilon}}+\beta.
+\]</div>
+<p>它减去均值并除以标准差；\(\gamma,\beta\) 是可学习的缩放与偏置。RMSNorm 去掉均值中心化，只使用均方根：</p>
+<div class="formula">\[
+\operatorname{RMSNorm}(x)=g\odot\frac{x}{\sqrt{\frac1d\sum_{i=1}^d x_i^2+\epsilon}}.
+\]</div>
+<p>两式的变量和实现都对应最后一维的 hidden state。面试不要绝对化地说 RMSNorm 一定更好：它减少了计算和参数，但是否更稳定要看 backbone、精度和训练设置。Qwen3-VL 的具体 norm 配置属于上游模型事实，应以官方模型卡/源码为准；本卷只准备原理。</p>
+<h3 id="pre-norm-lora">Pre-Norm、残差与 LoRA</h3>
+<p>Transformer block 中，pre-norm 常把归一化放在子层之前，post-norm 放在残差相加之后。回答时重点讲梯度路径和深层训练稳定性，不要只背位置。</p>
+<p>LoRA 将可训练更新限制为低秩矩阵：</p>
+<div class="formula">\[
+W&#x27;=W+\frac{\alpha}{r}BA,
+\]</div>
+<p>其中 (W) 是冻结的原权重，(A\in\mathbb R^{r\times d})、(B\in\mathbb R^{d'\times r})，(r\ll\min(d,d'))。直觉是用低秩子空间近似任务更新；它节省显存和优化参数，但低秩假设可能限制任务适应能力。OpenPiVLA 页面中的 Qwen3-VL + LoRA 属于你的本地训练路径，具体注入层和 rank 仍需以项目代码/配置核对。</p>
+<h2 id="mdp-rl">MDP、RL 与策略评估</h2>
+<h3 id="mdp-bellman">MDP 与 Bellman 方程</h3>
+<p>Markov Decision Process 可表示为 \((\mathcal S,\mathcal A,P,R,\gamma)\)。给定策略 \(\pi\)，状态价值为：</p>
+<div class="formula">\[
+V^\pi(s)=\mathbb E_{a\sim\pi,\,s&#x27;\sim P}
+\left[r(s,a)+\gamma V^\pi(s&#x27;)\right].
+\]</div>
+<p>\(P(s'\mid s,a)\) 是转移分布，\(r\) 是即时奖励，\(\gamma\) 是折扣因子。这里公式把 \(r(s,a)\) 视为条件期望 reward；若 reward 还依赖 \(s'\)，应把它放进对转移的期望。Bellman 方程表达“当前价值等于即时收益加折扣后的未来价值”；它不等于某个模型的训练 loss，必须先说明 value target 的构造。</p>
+<p>动作价值和优势函数为：</p>
+<div class="formula">\[
+Q^\pi(s,a)=\mathbb E[r_t+\gamma V^\pi(s_{t+1})\mid s_t=s,a_t=a],\qquad
+A^\pi(s,a)=Q^\pi(s,a)-V^\pi(s).
+\]</div>
+<p>优势表示某个动作相对于当前状态平均水平好多少。PPO/GRPO 等算法会用到 advantage 或相对优势，但 WAM 中的 value head、离线 MSE 和在线 reward 不是同一对象。</p>
+<h3 id="td-on-off-policy">TD 误差与 on/off-policy</h3>
+<p>一步 TD 误差可写成：</p>
+<div class="formula">\[
+\delta_t=r_t+\gamma(1-d_t^{term})V_\phi(s_{t+1})-V_\phi(s_t),
+\]</div>
+<p>其中 \(d_t^{term}\in\{0,1\}\) 只表示真实环境终止。真实终止通常停止 bootstrap；time-limit <code>truncated</code> 通常仍应从 \(V_\phi(s_{t+1})\) bootstrap，不能无条件把两者压成一个 <code>done</code>。on-policy 方法使用当前或近当前策略采样的数据，分布更新更贴近当前 policy 但样本复用受限；off-policy 方法可以复用 replay/history，但要处理行为策略与目标策略的分布差异。off-policy 不等于 offline RL，前者仍可持续与环境交互。</p>
+<h3 id="proxy-online-success">为什么离线 proxy 不等于 online success</h3>
+<p>离线 action MSE 只衡量数据集状态上的动作接近程度：</p>
+<div class="formula">\[
+\mathbb E_{(o,a)\sim D}\left[\|\pi_\theta(o)-a\|^2\right].
+\]</div>
+<p>online success 还受到动作误差累积、接触动力学、视觉分布偏移、控制延迟、重规划和 success predicate 的影响。因此 WAM 面试回答必须把 policy MSE 说成离线代理指标，而不是“策略成功率提升”；UWM 的 0.744 目前只保留为 user-confirmed remote final，必须带 strict fixed-init 等协议与 raw-bundle 缺口，不能写成本地 artifact-verified benchmark。</p>
+<h2 id="pipeline">Pipeline 与伪代码</h2>
+<h3 id="step-mask-action">训练 step：带 mask 的连续 action 监督</h3>
+<pre><code class="language-python">def masked_action_step(batch, policy, optimizer, normalizer):
+    # Read images, language, proprioception, action labels, and valid masks.
+    obs = batch[&quot;observation&quot;]
+    action = batch[&quot;action&quot;]
+    mask = batch[&quot;action_mask&quot;]
+
+    # Normalize action with the same statistics used by the dataset contract.
+    target = normalizer.normalize(action)
+
+    # Encode multimodal inputs and predict the action representation.
+    pred = policy(obs)
+
+    # Only valid time/dimension entries contribute to the regression objective.
+    loss = ((pred - target) ** 2 * mask).sum() / (mask.sum() + 1e-6)
+
+    # Update the trainable parameters and clear gradients for the next step.
+    loss.backward()
+    optimizer.step()
+    optimizer.zero_grad(set_to_none=True)
+    return loss</code></pre>
+<p>这是知识层伪代码，不声称与你本地 OpenPiVLA trainer 的函数名一致；真实字段、action window 和 collator 需要在 VOL 07 的项目证据中逐项核对。</p>
+<h3 id="section-23">闭环执行：重新观测、反归一化与重规划</h3>
+<pre><code class="language-python">def closed_loop_rollout(env, policy, normalizer, task, replan_steps):
+    # Reset the environment with the benchmark&#x27;s declared initialization protocol.
+    obs, info = env.reset(task)
+    terminated, truncated, success = False, False, False
+
+    while not (terminated or truncated or success):
+        # Build the policy input from images, language, and proprioception.
+        model_obs = build_observation(obs, task)
+
+        # Predict a normalized action chunk, not yet a controller-space command.
+        normalized_chunk = policy(model_obs)
+
+        # Convert back to controller units and enforce the declared action limits.
+        action_chunk = normalizer.denormalize(normalized_chunk)
+        action_chunk = clip_to_controller_range(action_chunk)
+
+        # Execute only a short prefix, then re-observe to reduce open-loop drift.
+        for action in action_chunk[:replan_steps]:
+            obs, reward, terminated, truncated, info = env.step(action)
+            success = bool(info.get(&quot;success&quot;, False))
+            if terminated or truncated or success:
+                break
+
+    # Keep task success separate from termination/truncation and preserve traces.
+    return success, info.get(&quot;trace&quot;, [])</code></pre>
+<p>闭环的关键不是“模型输出了一个 chunk”，而是 chunk 执行多少步、何时重新观测、如何反归一化、如何判定终止和如何记录失败。它直接连接 OpenPiVLA 的 action window/controller 讨论和 UWM 的 strict eval 讨论。</p>
+<h2 id="section-24">实现映射与项目挂钩</h2>
+<table><thead><tr><th>基础概念</th><th>本地项目证据</th><th>当前能安全说的内容</th><th>尚待核对</th></tr></thead><tbody>
+<tr><td>action window / normalization / controller</td><td><code>interview_materials/03_openpivla_action_modeling.html</code></td><td>你理解并复原了动作表示、归一化、chunk 和 controller 的闭环关系</td><td>具体源码函数、轴顺序和归一化文件路径</td></tr>
+<tr><td>offline action MSE vs online rollout</td><td><code>interview_materials/04_cosmos_wam_multitask_training.html</code></td><td>WAM 页把 policy MSE 作为离线代理，并主动区分 online success</td><td>每个 MSE 数字的完整数据划分和脚本路径</td></tr>
+<tr><td>fixed-init / warmup / normalizer</td><td><code>interview_materials/05_uwm_libero_eval_protocol.html</code></td><td>UWM 的 strict 协议是可比性前提</td><td>所有 checkpoint 与 normalizer checksum</td></tr>
+<tr><td>Transformer / VLM backbone</td><td><code>interview_materials/02_opd_vlm_grounding.html</code>、简历 HTML</td><td>可以讲多模态输入、grounding 输出协议和数据分布</td><td>Qwen3-VL 具体 layer/config 需官方源码或本地 config</td></tr>
+<tr><td>schema / reward / eval</td><td><code>interview_materials/01_robot_harness_tool_training.html</code></td><td>可解释三者在工具调用训练中的不同角色</td><td>runtime 代码、训练字段覆盖统计和完整 reward checker</td></tr>
+</tbody></table>
+<h2 id="section-25">公源/本地设计边界</h2>
+<h3 id="section-26">公有设计 / 上游公开流程</h3>
+<ul><li>Transformer attention、LayerNorm、RMSNorm、MDP、Bellman 和经典机器人几何属于公开基础知识。</li><li>OpenVLA、openpi、Diffusion Policy、ACT、LIBERO 等仓库和论文的具体接口与 benchmark 以其官方版本为准。</li></ul>
+<h3 id="section-27">本地证据</h3>
+<ul><li>五个现有项目 HTML、简历 HTML 和 <code>output/resume_restructure_plan.md</code> 是当前工作区可直接读取的证据。</li><li>它们支持你如何叙述项目、哪些指标出现过以及哪些风险已经被主动承认。</li></ul>
+<h3 id="section-28">本地推断</h3>
+<ul><li>从项目页可以推断你需要把 action normalization、评估协议和数据分布作为统一的解释链；这不是某个单一源码函数的直接证明。</li></ul>
+<h3 id="section-29">尚未核实</h3>
+<p>&lt;div class="warning"&gt;⚠️ 当前工作区没有 OpenPiVLA、WAM、UWM 的完整源码、normalizer 文件和训练日志，因此本卷不把伪代码中的字段名、函数名或张量 shape 写成本地实现事实。&lt;/div&gt;</p>
+<h2 id="section-30">方法对比与选择建议</h2>
+<table><thead><tr><th>问题</th><th>选择/解释</th><th>面试防线</th></tr></thead><tbody>
+<tr><td>连续动作监督</td><td>MSE 简单稳定；Huber 更抗 outlier；是否有效取决于 action normalization 和闭环执行</td><td>不把 MSE 下降说成成功率提升</td></tr>
+<tr><td>离散 token 监督</td><td>Cross-entropy 适合 token 序列，复用语言模型解码；动作精度和串行延迟需要额外讨论</td><td>不说 token 化“没有精度损失”</td></tr>
+<tr><td>on-policy vs off-policy</td><td>前者数据贴近当前策略，后者复用数据但有 distribution shift</td><td>先问数据来自哪个 policy</td></tr>
+<tr><td>pre-norm vs post-norm</td><td>关注深层梯度路径与训练稳定性，不背绝对结论</td><td>具体 backbone 配置要查源码</td></tr>
+<tr><td>高层 policy vs 低层 controller</td><td>policy 负责任务条件下的动作意图，controller 负责时序、限幅、动力学和安全</td><td>明确接口和单位</td></tr>
+<tr><td>offline proxy vs online eval</td><td>proxy 便宜、可定位，online 更接近任务目标但受 protocol 影响</td><td>同时报告数据划分和 rollout 协议</td></tr>
+</tbody></table>
+<h2 id="section-31">风险与后续建议</h2>
+<ol><li><strong>基础概念不能只背公式</strong>：每个公式都要能说明变量、shape、代码位置和失败模式。</li><li><strong>坐标协议是高危点</strong>：仍需补一张 action axis/order/coordinate checklist，连接 OpenPiVLA 和 UWM；本轮只修复公式转义，不把轴序写成本地事实。</li><li><strong>缺源码时要主动降级</strong>：当前本卷只写通用机制，不把伪代码说成已验证的本地实现。</li><li><strong>题卡需要口述校准</strong>：本卷清单中的 P0 题先进入题库，P1/P2 根据第一次 drill 的表现调整。</li><li><strong>下一卷衔接</strong>：VOL 02 进入 BC、DAgger、PPO、GRPO、SFT/DPO 和数据分布；VOL 03 再展开 VLA action head、Diffusion/Flow Matching。</li></ol>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Vaswani et al., <a href="https://arxiv.org/abs/1706.03762">“Attention Is All You Need,”</a> 2017.</li><li>Ba, Kiros, Hinton, <a href="https://arxiv.org/abs/1607.06450">“Layer Normalization,”</a> 2016.</li><li>Zhang and Sennrich, <a href="https://arxiv.org/abs/1910.07467">“Root Mean Square Layer Normalization,”</a> 2019.</li><li>Sutton and Barto, <a href="http://incompleteideas.net/book/the-book-2nd.html"><em>Reinforcement Learning: An Introduction</em>, 2nd ed.</a></li><li>Lynch and Park, <a href="https://modernrobotics.northwestern.edu/chapters/chapter4/"><em>Modern Robotics</em>, Chapter 4: Forward Kinematics.</a></li><li>PyTorch, <a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html"><code>torch.nn.LayerNorm</code> documentation.</a></li><li>PyTorch, <a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html"><code>scaled_dot_product_attention</code> documentation.</a></li><li><a href="https://github.com/openvla/openvla">OpenVLA official repository.</a></li><li>Physical Intelligence, <a href="https://github.com/Physical-Intelligence/openpi"><code>openpi</code> official repository.</a></li><li><a href="https://github.com/Lifelong-Robot-Learning/LIBERO">LIBERO official repository.</a></li><li>本地项目证据：<code>interview_materials/01_robot_harness_tool_training.html</code>、<code>02_opd_vlm_grounding.html</code>、<code>03_openpivla_action_modeling.html</code>、<code>04_cosmos_wam_multitask_training.html</code>、<code>05_uwm_libero_eval_protocol.html</code>。</li><li>PyTorch, <a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.MSELoss.html"><code>torch.nn.MSELoss</code> documentation.</a></li><li>PyTorch, <a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.HuberLoss.html"><code>torch.nn.HuberLoss</code> documentation.</a></li><li>PyTorch, <a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html"><code>torch.nn.CrossEntropyLoss</code> documentation.</a></li><li>Gymnasium, <a href="https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/">Handling Time Limits.</a></li><li>Lynch and Park, <a href="https://modernrobotics.northwestern.edu/chapters/chapter5/"><em>Modern Robotics</em>, Chapter 5: Velocity Kinematics and Statics.</a></li><li>Åström and Murray, <a href="https://fbsbook.org/"><em>Feedback Systems</em>.</a></li><li><a href="../sources/vol_01_batch2_mdp_td_control_independent_fact_review.html">VOL 01 Batch 2 MDP / TD / Control Independent Fact Review.</a></li><li>Hogan, <a href="https://doi.org/10.1115/1.3140702">Impedance Control: An Approach to Manipulation, Part I.</a></li><li>Rawlings, Mayne, Diehl, <a href="https://sites.engineering.ucsb.edu/~jbraw/mpc/MPC-book-2nd-edition-5th-printing.pdf"><em>Model Predictive Control: Theory, Computation, and Design</em>.</a></li><li>Chi et al., <a href="https://arxiv.org/abs/2303.04137">Diffusion Policy.</a></li><li>Kim et al., <a href="https://arxiv.org/abs/2406.09246">OpenVLA.</a></li><li><a href="../sources/vol_01_batch3_advanced_control_independent_fact_review.html">VOL 01 Batch 3 Advanced Control Independent Fact Review.</a></li></ol>
+</article></body></html>

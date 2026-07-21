@@ -1,0 +1,59 @@
+{
+  "artifact": "sources/vol_05_eng014_hardware_operator_compatibility_source_freeze.md",
+  "html": "sources/vol_05_eng014_hardware_operator_compatibility_source_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "source_frozen / VLA-ENG-014_knowledge+card_drafted / unseen",
+  "verdict": "WARN",
+  "source_sha256": "18450A288D6FF530495975E07AD3E360FAD9E9F235CFCF65A3D7190E34363163",
+  "coverage": {
+    "knowledge_id": "VLA-ENG-014",
+    "topic": "CUDA / MACA / ROCm hardware migration and operator compatibility",
+    "official_pages_checked": 7,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "pytorch_docs": "2.13",
+    "rocm_docs": "7.14.0 compatibility matrix",
+    "nvidia_docs": "CUDA Compatibility current page",
+    "metax_mcpytorch": "b3db5eed6a6e330133cd3d4b173f8da392aa6bcb (branch 2.4)",
+    "metax_mctriton": "7dd407c26568fceaca44cb894138e5202d369805 (branch 3.0)",
+    "access_date": "2026-07-17"
+  },
+  "normalized_main_text_sha256": {
+    "pytorch_cuda_semantics": "1537cdfe8dd17c4180c1447b04d45b0bc86115f98e1b110225827a425e7445ed",
+    "pytorch_hip_semantics": "f3be3994e659d0adac61cfc2e24b824b33ffd899b8732dc13e2c7880a19f3dfb",
+    "pytorch_cpp_extension": "c8e00d9715e7db1edf259128149f1fb98ed8d21a1c2f533e4b4a7f80f73b1cf9",
+    "rocm_compatibility_matrix": "bb3071cd6b2e8cdbdbea5190731b497cc80867a593690884e4be556c97ed8ad0",
+    "nvidia_cuda_compatibility": "0964aa382ab5d31e83e490d2e31542d8601ff39fcef62221ae5dfc7edab20aa9",
+    "mcpytorch_readme_raw": "3fc2c258bf98718de80b62faea90e6d1a65a605aada1f4f65d89224bc455744d",
+    "mctriton_readme_raw": "82a3029dc001b38cd9c28a355c98170259f29c216b81aef322c9bda69c5441ed"
+  },
+  "checks": {
+    "bounded_slice": "PASS (ENG-014 source freeze, one knowledge node and one atomic card are drafted; ENG-015..016 remain deferred)",
+    "compatibility_layers": "PASS WITH WARNING (L0 device/runtime through L5 workload/eval are explicitly separated)",
+    "cuda_async_and_timing": "PASS (PyTorch CUDA semantics source synchronized with explicit event/synchronize boundary)",
+    "hip_interface_boundary": "PASS WITH WARNING (HIP reuses torch.cuda interfaces; custom CUDA extension parity is not inferred)",
+    "rocm_matrix_boundary": "PASS WITH WARNING (framework/Python/GPU/OS/driver coupling sourced; local runtime not verified)",
+    "nvidia_driver_boundary": "PASS WITH WARNING (minor/forward compatibility has documented limits; not operator parity)",
+    "metax_toolchain_boundary": "PASS WITH WARNING (mcPytorch and mcTriton commits sourced; custom kernel/build parity remains unverified)",
+    "operator_matrix": "PASS WITH WARNING (backend/dtype/shape/layout/grad/async/distributed/VLA dimensions proposed as engineering contract)",
+    "formula": "PASS WITH WARNING (relative error and synchronized latency are labeled project validation metrics, not vendor guarantees)",
+    "project_truth_boundary": "PASS (OpenPiVLA eager/MACA evidence remains stability/local-call-graph only; no performance uplift)",
+    "html_static_validation": "PASS (source SHA, one H1, ten H2, eight H3, six tables, one commented pseudocode block and two formula blocks)",
+    "local_links": "PASS (all relative source and project links are expected to resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "knowledge": "PASS WITH WARNING (one node drafted after wording review; source/evidence WARN remains)",
+    "knowledge_card": "PASS WITH WARNING (one knowledge node and one unseen atomic card drafted; no oral answer exists)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the ENG-014 card unseen until a real oral answer is recorded.",
+    "Collect backend x dtype x shape x layout x forward/backward operator smoke artifacts for the actual VLA stack.",
+    "Run synchronized parity/latency and 2-rank communication tests; do not infer performance from eager fallback or single-card startup.",
+    "Keep MACA and mcTriton toolchain claims tied to the frozen commits; do not generalize to every C500 image or custom kernel.",
+    "Keep the ENG-014 source, knowledge and card synchronized; keep ENG-015..016 deferred until their own source gates are ready."
+  ],
+  "next": "Run a one-question oral drill for VLA-ENG-014 or begin ENG-015 source-first; keep mastery unseen until a real answer exists."
+}

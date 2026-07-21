@@ -1,0 +1,42 @@
+{
+  "artifact": "sources/vol_04_wm019_metric_boundary_source_freeze.md",
+  "html": "sources/vol_04_wm019_metric_boundary_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-WM-019 / metric-ladder / WARN",
+  "verdict": "WARN",
+  "source_sha256": "2CFF5C30C82EC70901957FD244F056FA32982B9BE10411735C0A8AA6214B08A5",
+  "covered_question_ids": ["VLA-WM-019"],
+  "source_scope": {
+    "world_model": "sources/vol_04_world_model_foundations_claim_to_code.html",
+    "uwm": "sources/vol_04_uwm_video_action_claim_to_code.html",
+    "benchmark": "sources/vol_04_benchmark_evidence_claim_to_protocol.html",
+    "statistics": "sources/vol_05_eval003_success_rate_confidence_interval_source_freeze.html",
+    "project_evidence": [
+      "evidence/projects/uwm_libero_claim_evidence_inventory.html",
+      "evidence/projects/wam_claim_evidence_inventory.html"
+    ]
+  },
+  "checks": {
+    "bounded_slice": "PASS (source freeze remained a separate slice; downstream knowledge and one unseen card are complete)",
+    "metric_ladder": "PASS (offline fit, one-step, open-loop, world proxy, simulator and real closed-loop separated)",
+    "proxy_boundary": "PASS WITH WARNING (PSNR/SSIM/FVD/latent/action metrics not treated as success)",
+    "statistical_unit": "PASS (episode/task/row/step units and denominator requirements separated)",
+    "protocol_contract": "PASS (checkpoint, schema, normalizer, horizon, reset, controller, seed and predicate required)",
+    "causal_diagnostic": "PASS (action sensitivity, per-offset error and proxy-vs-simulator paired tests listed)",
+    "project_truth_boundary": "PASS (project metrics and ownership remain evidence-bound)",
+    "html_static_validation": "PASS (one H1, ten H2 including the generated TOC heading, four tables, local links and metric ladder)",
+    "local_links": "PASS (all repository-local audit and inventory targets resolve)",
+    "source_sha": "PASS (canonical Markdown SHA matches HTML meta and review JSON)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "paired_metric_eval": "PENDING",
+    "episode_artifacts": "PENDING",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Run per-offset teacher-forced/open-loop metrics and action sensitivity tests.",
+    "Freeze checkpoint, protocol, denominator and scorer artifacts before proxy/simulator comparison.",
+    "Keep UWM/WAM/OpenPiVLA/OPD percentages in their metric-specific evidence layers.",
+    "Keep the generated WM-019 card unseen until a real oral answer is recorded; knowledge and card slices remain separately auditable."
+  ],
+  "next": "Run a WM-015..019 oral drill or collect paired/evidence artifacts; keep WM-020..038 deferred."
+}

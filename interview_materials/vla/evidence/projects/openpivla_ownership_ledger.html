@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenPiVLA Ownership Ledger：个人贡献、文件归属与面试口径</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\openpivla_ownership_ledger.md">
+<meta name="aris:source-sha256" content="564cf577b1dd41d98fcd8ae568a3bf68ef9a47af4ca37cacf150cd37866a4851">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>564cf577b1dd41d98fcd8ae568a3bf68ef9a47af4ca37cacf150cd37866a4851</code>；生成自：<code>interview_materials\vla\evidence\projects\openpivla_ownership_ledger.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. 问题（Question）</a></li><li><a href="#2-role-fit-jd">2. Role Fit 与 JD 能力映射</a></li><li><a href="#3-ownership">3. Ownership 证据合同</a></li><li><a href="#3-1-and-gate">3.1 五层 AND-gate</a></li><li><a href="#3-2">3.2 状态词汇</a></li><li><a href="#4-git-upstream">4. Git 与 upstream 冻结事实</a></li><li><a href="#4-1">4.1 本地仓库</a></li><li><a href="#4-2-frozen-openpi">4.2 Frozen OpenPI 对照</a></li><li><a href="#5-per-file-per-decision-ownership-matrix">5. Per-file / per-decision ownership matrix</a></li><li><a href="#6-claim-ownership-reconciliation">6. Claim → ownership reconciliation</a></li><li><a href="#7-production-gap-ownership">7. Production Gap：从快照到可抗追问 ownership</a></li><li><a href="#8-question-tree">8. Question Tree 与回答分层</a></li><li><a href="#8-1">8.1 主追问树</a></li><li><a href="#8-2">8.2 高压题：这个项目到底哪部分是你写的？</a></li><li><a href="#9-sp-ssp">9. SP/SSP 证据就绪度评分</a></li><li><a href="#10">10. 候选人确认表</a></li><li><a href="#11">11. 分阶段补强计划</a></li><li><a href="#12-output-pack">12. Output Pack：当前可用与补证后表达</a></li><li><a href="#12-1-bullet">12.1 简历 bullet 三档</a></li><li><a href="#12-2">12.2 两分钟项目叙事骨架</a></li><li><a href="#12-3-6">12.3 面试前 6 题</a></li><li><a href="#13-ownership">13. Ownership 审计伪代码</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>OpenPiVLA Ownership Ledger：个人贡献、文件归属与面试口径</h1>
+<div class="meta">状态：<code>ownership_audited / coarse_git_supported / candidate_confirmation_pending / WARN</code> 审查日期：2026-07-19 证据截止：2026-07-19 项目范围：<code>C:\Users\mousongzhe\Project\openpivla_deployment</code>、OpenPI frozen upstream、当前简历和 OpenPiVLA 项目题卡。 结论先行：本地 Qwen3-VL/LoRA trainer、JSON action route、recipes、smoke、deployment/eval scripts 与报告均有可读取的 local-direct 证据；但它们一次性进入一个 1326-path 的初始仓库快照，OpenPiVLA 自身没有更早的逐文件 Git 历史。因此当前可以证明“本地快照包含一套区别于 frozen upstream 的实现”，不能仅凭 commit author 证明每个文件由候选人独立设计、编写和运行。个人 ownership 仍需候选人逐项确认，并补 before/after diff、设计记录、运行日志或协作说明。</div>
+<div class="meta">2026-07-19 evidence update：<a href="../../sources/openpivla_formal_json_ce_shape_contract_artifact_gate.html"><code>OpenPiVLA JSON/CE + H/D Shape Contract Artifact Gate</code></a> 已直接复核 <code>formal_train.py</code> 的 <code>limit=16</code> serializer、<code>H=15,D=72</code> recipe/smoke 与 AST formatter probe。它强化了 <code>OPV-OWN-002/003</code> 的技术事实与风险发现，但不改变个人 role-confirmation-pending、checkpoint lineage 或 benchmark ownership 状态。</div>
+<div class="meta">2026-07-19 parser/round-trip update：<a href="../../sources/openpivla_action_json_parser_roundtrip_artifact_gate.html"><code>Action JSON Parser / Round-trip Gate</code></a> 证明 Python JSON 只可逆恢复 <code>15×16</code> retained prefix、相对 <code>15×72</code> 丢 840 positions；formal package 没有 action-output parser，collator 是 full-sequence CE。<code>pi0_aloha_sim</code> 的 7D/4-step official WebSocket artifact 是平行 lineage。技术风险已复核，但谁设计/发现/修复仍由候选人确认。</div>
+<h2 id="1-question">1. 问题（Question）</h2>
+<p>面试官问“OpenPiVLA 哪部分是你做的？”时，应该怎样把以下五件事分开：</p>
+<ol><li>OpenPI / FAST 的公开上游设计；</li><li>本地仓库中确实存在的代码、配置、脚本和报告；</li><li>候选人亲手实现、修改、调试或验收的动作；</li><li>协作者、历史归档或工具辅助产生的部分；</li><li>benchmark 数字、checkpoint 和闭环结果的归属。</li></ol>
+<p>本页是 ownership ledger，不是重新认领项目，也不是对 97.4% 的结果升级。没有候选人确认或独立过程证据的条目一律保持 <code>role-confirmation-pending</code>。</p>
+<h2 id="2-role-fit-jd">2. Role Fit 与 JD 能力映射</h2>
+<p>当前没有具体 JD，因此只映射通用 VLA / Robot Policy / Multimodal Training / Embodied Evaluation 岗位。</p>
+<table><thead><tr><th>岗位能力</th><th>本地可核证据</th><th>Ownership 强度</th><th>当前策略</th></tr></thead><tbody>
+<tr><td>多模态训练适配</td><td>Qwen3-VL loader、PEFT LoRA、chat template、causal CE、adapter save path</td><td>文件事实强；个人角色待确认</td><td>面试先解释输入、label、loss、保存语义，再说明个人动作</td></tr>
+<tr><td>VLA action representation</td><td>action window → compact JSON；<code>H=15,D=72</code> 与 formatter <code>limit=16</code> 冲突</td><td>文件事实强；设计决策 ownership 未证实</td><td>用“采用/实现该路线”替代“发明新 action tokenizer”</td></tr>
+<tr><td>数据与 recipe 工程</td><td>VLA-only、VLM-only、co-train recipes/configs/scripts；public smoke manifests</td><td>local-direct；full-data 与个人决策部分未闭合</td><td>可讲 schema、mixture、public/private 边界，不把 smoke 当 formal result</td></tr>
+<tr><td>国产算力迁移</td><td>MACA/C500 runtime、eager path、remote layout、formal report</td><td>report-supported；raw remote run 与个人操作记录不足</td><td>可讲迁移问题和验收设计，不写硬件带来算法提升</td></tr>
+<tr><td>Policy serving / evaluation</td><td>ALOHA、LIBERO、LeRobot action eval scripts 与 artifacts</td><td>local-direct；主要绑定 official checkpoint</td><td>可讲 eval engineering，不绑定 formal Qwen 或 97.4%</td></tr>
+<tr><td>实验与结果</td><td>formal report、smoke summaries、archive table</td><td>summary/report 层；C3 与 ownership 均未闭合</td><td>禁止“本人训练并超过官方”</td></tr>
+</tbody></table>
+<h2 id="3-ownership">3. Ownership 证据合同</h2>
+<h3 id="3-1-and-gate">3.1 五层 AND-gate</h3>
+<p>一个“我负责并完成了 X”的强主张，至少需要五类证据共同成立：</p>
+<div class="formula">\[
+G(c)=I(c)\land A(c)\land D(c)\land V(c)\land O(c).
+\]</div>
+<p>变量解释：<code>I</code> 是 identity，证明审查的是哪个文件、commit、run 或 checkpoint；<code>A</code> 是 artifact，证明实现或结果实体存在；<code>D</code> 是 decision/process provenance，证明为什么这样做、由谁决定和如何修改；<code>V</code> 是 verification，证明候选实现被运行或验收；<code>O</code> 是 ownership boundary，证明个人、协作者、工具和上游各承担什么。直觉上，Git author 只覆盖 <code>I</code> 的一部分，代码存在只覆盖 <code>A</code>，两者都不能替代 <code>D/V/O</code>。实现映射是 <code>git log/diff</code>、源码、设计记录、命令日志、review/协作记录与候选人确认表。</p>
+<h3 id="3-2">3.2 状态词汇</h3>
+<table><thead><tr><th>状态</th><th>含义</th><th>可用动词</th></tr></thead><tbody>
+<tr><td><code>upstream-verified</code></td><td>frozen paper/repo 直接支持的公开设计</td><td>“上游实现/论文提出”</td></tr>
+<tr><td><code>local-snapshot</code></td><td>本地 commit 中存在文件或 artifact</td><td>“本地快照包含”</td></tr>
+<tr><td><code>git-coarse</code></td><td>commit author/committer 是候选人，但无细粒度历史</td><td>“由候选账号提交快照”</td></tr>
+<tr><td><code>self-attested</code></td><td>简历/口述声明本人做过，尚无独立过程证据</td><td>“候选人自述负责”</td></tr>
+<tr><td><code>role-confirmed</code></td><td>候选人逐项确认亲手/协作/工具边界</td><td>“我负责/我实现”</td></tr>
+<tr><td><code>process-supported</code></td><td>有 before/after diff、设计记录、命令或 review 佐证</td><td>“我设计并完成/定位并修复”</td></tr>
+<tr><td><code>result-owned</code></td><td>checkpoint、protocol、raw result 和个人角色连续闭合</td><td>“我完成并得到……”</td></tr>
+</tbody></table>
+<h2 id="4-git-upstream">4. Git 与 upstream 冻结事实</h2>
+<h3 id="4-1">4.1 本地仓库</h3>
+<table><thead><tr><th>检查</th><th>结果</th><th>能证明</th><th>不能证明</th></tr></thead><tbody>
+<tr><td>Project commit</td><td><code>c4469eb8ec4bb879bdb7d12cf9a303c8264a41ea</code>，2026-06-28，author/committer <code>mousongzhe</code></td><td>候选账号提交了初始快照</td><td>快照内每个文件均为其独立原创</td></tr>
+<tr><td>commit 范围</td><td>root commit 一次加入 1326 paths；其中 OpenPiVLA 360 paths</td><td>OpenPiVLA 作为大快照的一部分进入 Git</td><td>生成顺序、协作者、工具或历史来源</td></tr>
+<tr><td>numstat</td><td>OpenPiVLA text paths 合计约 66,757 additions；binary paths 不计行数</td><td>快照规模与审查范围</td><td>工作量归属或代码质量</td></tr>
+<tr><td>path history</td><td><code>git log --all -- openpivla_deployment</code> 只有上述 1 条 commit</td><td>当前 Git 没有更早/后续 OpenPiVLA diff</td><td>文件在进入 Git 前如何形成</td></tr>
+<tr><td>key-file history</td><td><code>formal_train.py</code>、<code>data.py</code>、<code>recipes.py</code>、<code>DEPLOYMENT.md</code> 的 <code>--follow</code> 均只有 root commit</td><td>关键文件与快照绑定</td><td>哪些行是手写、移植、生成或协作</td></tr>
+<tr><td>current worktree</td><td>OpenPiVLA 路径无未提交修改；Project 的 dirty state 位于 UWM 报告文件</td><td>本轮审查未混入 OpenPiVLA 未提交变化</td><td>remote 主机是否有更新 artifact</td></tr>
+</tbody></table>
+<h3 id="4-2-frozen-openpi">4.2 Frozen OpenPI 对照</h3>
+<p>Physical Intelligence/OpenPI commit <code>15a9616a00943ada6c20a0f158e3adb39df2ccac</code> 的 GitHub tree 在 2026-07-19 返回 177 项、<code>truncated=false</code>；其中没有 <code>vla_qwen3_repro</code> 或 <code>train_vla_qwen3*</code> 路径。这个事实支持“本地训练模块不是该 frozen upstream tree 中的原文件”，但不支持“因此必然由候选人独立原创”。本地实现仍可能来自历史私有分支、协作者、工具辅助或重新组织的代码，必须由 role ledger 继续区分。</p>
+<h2 id="5-per-file-per-decision-ownership-matrix">5. Per-file / per-decision ownership matrix</h2>
+<table><thead><tr><th>ID</th><th>文件 / 决策</th><th>Local artifact 事实</th><th>Git / upstream 事实</th><th>当前 role verdict</th><th>当前安全口径</th><th>升级所需证据</th></tr></thead><tbody>
+<tr><td><code>OPV-OWN-001</code></td><td><code>formal_train.py</code>：Qwen3-VL + LoRA trainer</td><td>608 行；加载 <code>Qwen3VLForConditionalGeneration</code>、注入 LoRA、计算 <code>outputs.loss</code>、保存 adapter/processor；SHA <code>51b67d...ccc6f94</code></td><td>blob <code>aafd6e...</code>; 仅 root commit；frozen upstream 无该路径</td><td><code>local-snapshot / git-coarse / role-pending</code></td><td>“项目快照包含一条 Qwen3-VL+LoRA formal training path”</td><td>候选人确认具体函数；pre-snapshot diff；运行命令和 review</td></tr>
+<tr><td><code>OPV-OWN-002</code></td><td>action JSON dataset / collator</td><td><code>DroidActionTextDataset</code> 构造 <code>{"actions":...}</code>；Qwen chat template；只有 padding label 为 <code>-100</code>，其余 full chat token 监督</td><td>位于同一 608 行文件；无逐函数历史</td><td><code>local-direct / full-sequence-CE / decision-owner-pending</code></td><td>“本地路线采用 assistant JSON content + full-chat causal CE，不等价于 FAST”</td><td>为什么选 JSON、为何没有 assistant mask、parser/round-trip、候选人修改点</td></tr>
+<tr><td><code>OPV-OWN-003</code></td><td><code>H=15,D=72</code> 与 <code>limit=16</code></td><td>recipe/smoke 输出 <code>(B,15,72)</code>；formatter 每步最多 16 数；probe 确认丢 840/1080 positions，parser missing</td><td>冲突与 negative evidence 可直接复核</td><td><code>technical-finding-verified / parser-missing / fixer-pending</code></td><td>“审计发现 lossy shape contract 尚未闭合”</td><td>谁发现、何时、是否在别处修复、strict parser 与 controller mapping</td></tr>
+<tr><td><code>OPV-OWN-004</code></td><td><code>recipes.py</code> + YAML + launch scripts</td><td>三类 mode、数据组、100k 计划、batch/save/eager 参数可读</td><td>recipes blob <code>89a076...</code>; 三组文件都只在 root commit</td><td><code>local-snapshot / role-pending</code></td><td>“本地工程组织了三类可审计 recipe”</td><td>逐文件亲手/协作确认；历史 shell/config diff；run manifest</td></tr>
+<tr><td><code>OPV-OWN-005</code></td><td><code>data.py</code> / public smoke</td><td>288 行；public robot/VLM roots、shape padding/repeat、manifest 与 batch；三份 smoke summary 可读</td><td>blob <code>ed7b80...</code>; root commit；smoke 明确 <code>private_data_deployed=false</code></td><td><code>local-direct / verification-local / role-pending</code></td><td>“public smoke 验证 schema、shape 和 tiny step”</td><td>smoke command/stdout、谁运行、private data manifest、同 formatter parity</td></tr>
+<tr><td><code>OPV-OWN-006</code></td><td><code>runner.py</code> / <code>model_probe.py</code></td><td>runtime、base-model probe、tiny train step、public/full plan 分层</td><td>blobs <code>878184...</code> / <code>3d87d1...</code>; root commit</td><td><code>local-snapshot / role-pending</code></td><td>“项目提供分层 smoke/probe 工具”</td><td>候选人实现范围、failure log、工具辅助与 review 记录</td></tr>
+<tr><td><code>OPV-OWN-007</code></td><td>eager / MACA formal path</td><td>CLI 默认 eager；deployment/report 记录 MACA Torch 与历史 flash-attention failure</td><td>code + report 直接；full formal logs/checkpoints 仅 remote-referenced</td><td><code>engineering-choice-supported / decision-owner-pending</code></td><td>“在 MACA 上采用 eager 作为兼容路径”</td><td>候选人决策确认、eager/flash A/B、raw traceback、remote log/export</td></tr>
+<tr><td><code>OPV-OWN-008</code></td><td>formal 100k runs / checkpoint saving</td><td>report 记录三条 <code>complete @ 100000</code>；代码可保存 adapter/processor</td><td>remote log/checkpoint 不在本地；path 不是 bytes</td><td><code>report-supported / result-owner-blocked</code></td><td>“报告记录三条 formal completion”</td><td>三条 raw log、checkpoint SHA、load smoke、run operator 与 reviewer</td></tr>
+<tr><td><code>OPV-OWN-009</code></td><td>LIBERO / ALOHA rollout scripts</td><td>322 行 LIBERO true rollout、265 行 ALOHA rollout；episode/video/summary artifacts 可读</td><td>blobs <code>57a976...</code> / <code>a29f98...</code>; root commit；使用 official checkpoints</td><td><code>local-direct / execution-role-pending</code></td><td>“项目搭建 official-checkpoint rollout diagnostics”</td><td>谁编写/运行、命令、env commit、formal Qwen checkpoint parity</td></tr>
+<tr><td><code>OPV-OWN-010</code></td><td>LeRobot action eval / dashboards</td><td>457 行 server eval；timeout、future-window、L1/action norm、summary/dashboard</td><td>blob <code>5dcefd...</code>; artifacts 在 root snapshot</td><td><code>local-direct / execution-role-pending</code></td><td>“项目提供 offline action-interface diagnostics”</td><td>运行者/作者确认、raw request trace、metric reducer tests</td></tr>
+<tr><td><code>OPV-OWN-011</code></td><td><code>DEPLOYMENT.md</code> / remote operations</td><td>543 行记录 remote layout、stop boundary、checkpoint/log 路径和 simulator classification</td><td>blob <code>b358c4...</code>; root commit；文档不是 remote state proof</td><td><code>documentation-direct / operator-pending</code></td><td>“部署记录定义了环境和证据边界”</td><td>shell history、sync manifest、remote file hashes、候选人操作范围</td></tr>
+<tr><td><code>OPV-OWN-012</code></td><td>formal report / archived 97.4</td><td>1439 行报告；含 formal run table、loss curves、<code>224_h10_40000</code> 97.4 summary</td><td>blob <code>bd0fbe...</code>; raw checkpoint/protocol/episodes 缺失</td><td><code>report-supported / C3-and-owner-blocked</code></td><td>“committed report 汇总 archived 97.4%”</td><td>raw eval bundle、reducer、checkpoint lineage、运行/分析/审查角色</td></tr>
+<tr><td><code>OPV-OWN-013</code></td><td>OpenPI / FAST 方法</td><td>frozen upstream 直接支持 policy、normalizer、FAST DCT/BPE、official LIBERO baseline</td><td>public upstream；本地 custom path不在 frozen tree</td><td><code>upstream-only</code></td><td>“我基于/对照 OpenPI 与 FAST”</td><td>永远不升级为个人原创；只确认适配或复现部分</td></tr>
+</tbody></table>
+<h2 id="6-claim-ownership-reconciliation">6. Claim → ownership reconciliation</h2>
+<table><thead><tr><th>面试/简历 claim</th><th>Claim 等级</th><th>当前 Evidence Contract</th><th>当前处理</th></tr></thead><tbody>
+<tr><td>“实现 Qwen3-VL + PEFT LoRA formal trainer”</td><td>C1</td><td>code exists + custom path absent upstream + coarse Git；缺个人逐项确认/diff</td><td>候选人确认 <code>OPV-OWN-001/002</code> 后可保留；否则降为“参与搭建”</td></tr>
+<tr><td>“设计 assistant-side JSON action representation”</td><td>C2</td><td>code fact成立；设计动机、alternative、owner、roundtrip 缺</td><td>当前改为“采用/实现 JSON action route”</td></tr>
+<tr><td>“组织三类 recipe”</td><td>C1/C2</td><td>recipes/config/scripts direct；个人决策和 formal raw artifacts不全</td><td>候选人确认后可写“负责组织”；不写三条模型均验证</td></tr>
+<tr><td>“完成 MACA/C500 迁移”</td><td>C2</td><td>eager/runtime/deployment/report支持；raw remote run和operator history缺</td><td>写“迁移训练路径/处理兼容性”；不要写性能 uplift</td></tr>
+<tr><td>“完成三条 100k 训练”</td><td>C3</td><td>report-supported + remote-referenced</td><td>不作为独立 verified 结果；面试主动说明 raw artifact pending</td></tr>
+<tr><td>“取得 LIBERO 97.4%，高于官方”</td><td>C3</td><td>archive summary；protocol/lineage/raw/ownership 均缺</td><td>禁写“高于官方”；只可陈述报告中存在该归档汇总</td></tr>
+<tr><td>“完成 LIBERO/ALOHA rollout 验证”</td><td>C2/C3</td><td>local artifacts存在，但使用 official checkpoints</td><td>可讲 eval engineering；不能绑定 formal Qwen/97.4</td></tr>
+<tr><td>“OpenPiVLA 核心方法是我原创”</td><td>C2/C3</td><td>与 frozen OpenPI/FAST 冲突</td><td>明确拒绝；贡献应落在适配、contract、诊断和证据工程</td></tr>
+</tbody></table>
+<h2 id="7-production-gap-ownership">7. Production Gap：从快照到可抗追问 ownership</h2>
+<table><thead><tr><th>当前做法</th><th>大厂面试官会追问</th><th>缺口等级</th><th>最小补证据</th><th>安全表达</th></tr></thead><tbody>
+<tr><td>一次性 initial snapshot</td><td>哪个文件是你改的？相对上游 diff 在哪？</td><td>P0</td><td>导出 pre-snapshot 来源、逐文件 diff/patch、角色确认</td><td>“本地快照包含；个人改动以 ledger 为准”</td></tr>
+<tr><td>文档引用 remote checkpoint</td><td>checkpoint 能加载吗？和 log 对得上吗？</td><td>P0</td><td>checkpoint/processor SHA、load stdout、run manifest</td><td>“报告记录完成，权重待核”</td></tr>
+<tr><td>JSON action route</td><td>为什么这样设计？为何 full-sequence CE？如何 decode/controller round-trip？</td><td>P0</td><td>schema、assistant span、strict parser、sentinel、axis/unit/normalizer</td><td>“本地采用 JSON/full-chat CE，parser/controller 闭环仍缺”</td></tr>
+<tr><td>official checkpoint diagnostics</td><td>是你训练的模型吗？</td><td>P0</td><td>formal Qwen checkpoint → same harness manifest</td><td>“只证明 eval pipeline，不证明 formal 模型效果”</td></tr>
+<tr><td>report 97.4</td><td>trial/seed/init/protocol/raw episodes 呢？</td><td>P0</td><td>raw eval bundle与冻结 reducer</td><td>“archive-summary-only”</td></tr>
+<tr><td>未记录协作者/工具</td><td>哪段由 AI/同事生成？你如何审查？</td><td>P0</td><td>contribution ledger、review notes、现场解释</td><td>“按亲手/协作/工具辅助逐项说明”</td></tr>
+<tr><td>只有最终代码</td><td>遇到什么 bad case，怎么定位？</td><td>P1</td><td>failure→hypothesis→diff→rerun timeline</td><td>“当前代码证明结果形态，不证明问题解决过程”</td></tr>
+</tbody></table>
+<h2 id="8-question-tree">8. Question Tree 与回答分层</h2>
+<h3 id="8-1">8.1 主追问树</h3>
+<pre><code class="language-text">你个人做了什么？
+  ├─ 回答 trainer
+  │    ├─ 哪些 class/function 亲手写？
+  │    ├─ 相对 frozen OpenPI 的 diff 在哪？
+  │    └─ 为什么 JSON/CE，不用 FAST/action expert？
+  ├─ 回答 MACA 迁移
+  │    ├─ 原始 traceback 是什么？
+  │    ├─ 为什么选 eager？做过 A/B 吗？
+  │    └─ 哪条 checkpoint 真正加载过？
+  ├─ 回答评估
+  │    ├─ official checkpoint 还是 formal Qwen？
+  │    ├─ H/K、normalizer、controller、success predicate是什么？
+  │    └─ 97.4 的 raw episodes 在哪？
+  └─ 回答“全部负责”
+       ├─ 初始快照为何没有逐文件历史？
+       ├─ 协作者和工具辅助边界是什么？
+       └─ 现场选一个函数解释输入、输出、失败和验收</code></pre>
+<h3 id="8-2">8.2 高压题：这个项目到底哪部分是你写的？</h3>
+<ul><li><strong>危险回答</strong>：整个 OpenPiVLA 都是我写的；Git author 是我，所以这些代码全是我的。</li><li><strong>可过回答</strong>：我负责本地 Qwen/LoRA formal path、recipe 和评估适配；OpenPI/FAST 是上游。当前 Git 是一次性快照，逐文件历史不完整，所以我会按文件说明亲手、协作和工具辅助边界。</li><li><strong>强回答（仅在候选人确认后使用）</strong>：我亲手负责 <code>formal_train.py</code> 中的 Qwen/LoRA load、JSON action dataset/collator 和 adapter save，负责 <code>recipes.py</code> 与三类 launcher 的 run contract，并在 MACA 上处理 eager fallback；rollout scripts 中我负责的是某几个明确函数和验收。OpenPI policy/FAST 不属于我的原创，97.4 也只是 archive summary。可以现场从一个 sample 进入 formatter、labels、<code>outputs.loss</code> 和 checkpoint save 逐行解释，同时指出 <code>D=72</code> 与 <code>limit=16</code> 尚未闭合。</li></ul>
+<p>强回答不是自动批准稿；候选人没有逐项确认前，只能使用“可过回答”。</p>
+<h2 id="9-sp-ssp">9. SP/SSP 证据就绪度评分</h2>
+<p>这不是候选人能力评分，而是 OpenPiVLA 项目当前能否抗大厂追问的证据评分。</p>
+<table><thead><tr><th>维度</th><th>分数（5）</th><th>依据</th></tr></thead><tbody>
+<tr><td>岗位相关性</td><td>4.5</td><td>VLA action、multimodal training、policy serving 和 LIBERO 高相关</td></tr>
+<tr><td>机制深度</td><td>4.0</td><td>能解释 Qwen/LoRA、JSON/CE、FAST 边界、H/D/K 与 controller contract</td></tr>
+<tr><td>工程闭环</td><td>3.5</td><td>trainer/recipe/smoke/deployment/eval artifact 齐；formal raw checkpoint 与 lineage 缺</td></tr>
+<tr><td>指标可信度</td><td>1.5</td><td>97.4 仍是 archive-summary-only；official 96.85 不可直接比较</td></tr>
+<tr><td>Ownership 清晰度</td><td>2.0</td><td>本页完成逐文件分类，但个人动作、协作和工具边界尚未由候选人确认</td></tr>
+<tr><td>抗追问能力</td><td>3.0</td><td>技术路径可讲；一旦追问 diff、运行者、checkpoint 与 raw result 仍有断点</td></tr>
+<tr><td>合计</td><td><strong>18.5 / 30</strong></td><td>ownership 结构已建立，但没有新增独立个人贡献证据，不人为加分</td></tr>
+</tbody></table>
+<p>一票否决项：把 upstream 当原创；把 root commit author 当全部文件作者；把 official checkpoint rollout 绑定 formal Qwen；把 report/path 当 checkpoint；把 archive 97.4 写成本人超过官方。</p>
+<h2 id="10">10. 候选人确认表</h2>
+<p>下一次口述或材料核对时，只需逐项回答“亲手 / 协作 / 工具辅助 / 上游 / 不确定”，并给出一条可验证细节：</p>
+<ol><li><code>formal_train.py</code> 的哪些函数由你从零写、改写或审查？原始来源在哪里？</li><li>JSON action representation 是谁决定的？为什么设 <code>limit=16</code>？是否有 parser？</li><li><code>recipes.py</code> 的三条 recipe 是你根据哪些历史日志恢复的？哪些字段只是归档转述？</li><li>三条 <code>run_formal_*.sh</code> 是谁编写并在 remote 执行的？你是否亲自查看过最终 checkpoint？</li><li>eager fallback 是你定位并决定的吗？原始 flash-attention traceback 和验证命令是什么？</li><li>ALOHA、LIBERO、LeRobot 三类 eval scripts 中哪些由你编写、修改或只负责运行？</li><li>formal report 与 dashboard 是手写、脚本生成、AI 辅助还是协作产物？你审查了哪些结论？</li><li>参与该项目的其他人、AI 工具或历史代码分别贡献了什么？</li></ol>
+<p>这些回答没有发生前，不创建 coaching state，也不把本页状态升级为 <code>role-confirmed</code>。</p>
+<h2 id="11">11. 分阶段补强计划</h2>
+<table><thead><tr><th>时间</th><th>动作</th><th>完成标准</th><th>状态</th></tr></thead><tbody>
+<tr><td>半天</td><td>完成上述 8 项角色确认；每个关键文件选择 1 个可现场解释的函数</td><td>13 个 ledger 行都有 <code>role</code> 和 <code>source</code></td><td><code>待候选人确认</code></td></tr>
+<tr><td>1 天</td><td>找回 pre-snapshot 来源，生成 custom path 相对上游/历史分支的 diff；记录工具/协作者</td><td>Qwen/JSON/recipe/eval 的 authored/modified/reviewed 边界可复查</td><td><code>待补做</code></td></tr>
+<tr><td>3 天</td><td>导出三条 formal log/checkpoint manifest，并做 load smoke；补 action roundtrip</td><td>C1/C2 和 run ownership 不再只靠快照/报告</td><td><code>待补做</code></td></tr>
+<tr><td>1 周</td><td>补 formal Qwen same-harness eval、raw episodes、protocol diff 和失败复盘</td><td>C3 才有升级可能；不保证得到 uplift</td><td><code>待补做</code></td></tr>
+</tbody></table>
+<h2 id="12-output-pack">12. Output Pack：当前可用与补证后表达</h2>
+<h3 id="12-1-bullet">12.1 简历 bullet 三档</h3>
+<ul><li><strong>保守版（当前外部证据即可支持）</strong>：参与 OpenPI/OpenPiVLA 训练复现，搭建 Qwen3-VL + PEFT LoRA formal training path、VLA/VLM/co-train recipes 与 public smoke/eval diagnostics；明确 local JSON/causal-CE 与 FAST/action expert 的实现边界。</li><li><strong>标准版（候选人逐文件确认后）</strong>：负责 Qwen3-VL + LoRA trainer、assistant-side JSON action supervision 与三类训练 recipe 的实现和 MACA 兼容性适配，并通过 public smoke、checkpoint 保存合同与 official-checkpoint rollout diagnostics 验证训练/评估接口。</li><li><strong>偏强版（必须补 diff、checkpoint/load、formal eval 后）</strong>：设计并落地可追溯的 Qwen-based VLA training/eval pipeline，闭合数据、动作表示、checkpoint、policy serving 与 LIBERO raw evaluation lineage；具体结果只使用同协议可重算数据。当前禁止写成已完成态。</li></ul>
+<h3 id="12-2">12.2 两分钟项目叙事骨架</h3>
+<div class="meta">这个项目的上游基础是 OpenPI 和 FAST，我不会把 policy/action tokenizer 的公开方法算成个人原创。项目本地恢复出一条可审查的 formal path：Qwen3-VL + PEFT LoRA，机器人 action window 写入 assistant JSON content，当前 collator 实际优化 full-chat causal CE，并组织 VLA-only、VLM-only、co-train 三类 recipe；在 MACA/C500 环境里用 eager、public smoke、adapter/processor 保存和 deployment diagnostics 检查 contract。  当前最重要的技术发现是三条边界：FAST DCT/BPE 与 local JSON text 不能混写；<code>H=15,D=72</code> 经 <code>limit=16</code> 丢失 77.78% schema positions 且没有 formal parser/controller；7D/4-step official WebSocket eval 也不是 formal Qwen lineage。项目报告的 100k/97.4 仍缺 checkpoint、raw episodes、protocol 与 lineage，所以我不声称超过 official 96.85。个人贡献只按候选人确认的 trainer、recipe、兼容性与评估脚本逐项说明。</div>
+<p>叙事最后一句必须依据候选人确认表改写；未确认前不要把“项目本地做的是”自动替换为“我独立完成”。</p>
+<h3 id="12-3-6">12.3 面试前 6 题</h3>
+<ol><li>从 DROID row 到 Qwen <code>outputs.loss</code> 的完整数据流是什么？</li><li>JSON/CE 路线与 FAST DCT/BPE 的目标、token 和 decode 差异是什么？</li><li><code>H=15,D=72</code> 与 <code>limit=16</code> 为什么是高危 bug，而不是普通配置差异？</li><li>eager fallback 解决了什么已知失败，又牺牲了什么？怎样做 matched A/B？</li><li>report-supported 100k、checkpoint verified、benchmark verified 三者差在哪？</li><li>请逐文件说明你的亲手、协作、工具辅助与上游边界。</li></ol>
+<h2 id="13-ownership">13. Ownership 审计伪代码</h2>
+<pre><code class="language-python">def accept_personal_claim(claim, ledger):
+    # 1. File/run identity must be frozen; a path without bytes is insufficient.
+    if not ledger.identity_and_artifact(claim):
+        return &quot;reject_strong_claim&quot;
+
+    # 2. A snapshot author does not prove who designed or wrote each file.
+    if not ledger.role_confirmed(claim):
+        return &quot;use_participated_or_project_contains&quot;
+
+    # 3. Strong design/fix language requires decision history and verification.
+    if claim.level &gt;= &quot;C2&quot; and not ledger.process_and_test_supported(claim):
+        return &quot;downgrade_to_implemented_or_adapted&quot;
+
+    # 4. Numeric result ownership requires checkpoint, protocol and raw outputs.
+    if claim.level == &quot;C3&quot; and not ledger.raw_result_chain_complete(claim):
+        return &quot;report_summary_only&quot;
+
+    return &quot;claim_allowed_with_exact_scope&quot;</code></pre>
+<p>该伪代码是本仓库的面试真实性 gate，不是 OpenPI 的官方实现。它把本页 <code>identity/artifact/decision/verification/ownership</code> 五层合同映射成可执行的审查顺序。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li><a href="openpivla_claim_evidence_inventory.html">OpenPiVLA Claim–Evidence Inventory</a>，12 条 claim 与 evidence tier。</li><li><a href="../../sources/openpivla_batch2_evidence_freeze.html">OpenPiVLA Batch 2 Evidence Freeze</a>，eager、smoke/formal/raw ladder、lineage 与 shape conflict。</li><li><a href="../../knowledge/vol_05_engineering_eval_eval022_paper_repo_checkpoint_runtime_ownership_evidence_audit.html">VOL 05 EVAL-022 Evidence Audit</a>，Git identity、artifact integrity 与 ownership 非替代关系。</li><li><a href="../../questions/proj_openpivla.html">OpenPiVLA Batch 1 Cards</a> 与 <a href="../../questions/proj_openpivla_batch2.html">Batch 2 Cards</a>，12 张题卡，全部 unseen。</li><li>Local Project Git：<code>C:\Users\mousongzhe\Project</code>，commit <code>c4469eb8ec4bb879bdb7d12cf9a303c8264a41ea</code>。</li><li>Local formal trainer：<code>openpivla_deployment/repro_train/openpi_src/src/openpi/training/vla_qwen3_repro/formal_train.py</code>，SHA-256 <code>51b67d3e04496e68076bf6461506141ebcddf9a82e6c30af1fdc0f1f2ccc6f94</code>。</li><li>Local recipes/data：<code>recipes.py</code> SHA-256 <code>397d1b384a2bd93d9dc81b7003e6ab7bfac3fc458ea04008197c3f503f9d780e</code>；<code>data.py</code> SHA-256 <code>32c6aa76929d941c4832d2eb4c2550527d3e607e31c2a9f5507cc76eeedbc2ec</code>。</li><li>Local deployment record：<code>openpivla_deployment/DEPLOYMENT.md</code>，SHA-256 <code>c0a3dd0c0da8c1c0d36023046d5337900a71680b413657bc9b1062eef2eea14e</code>。</li><li>Local formal report：<code>openpivla_deployment/artifacts/vla_formal_reproduction_report_20260617.html</code>，SHA-256 <code>d74126a3896f68ad44b75c7a88f1b7b9a90cb55df0c6c6beb90a5748e9e8e074</code>。</li><li>Physical Intelligence, <a href="https://api.github.com/repos/Physical-Intelligence/openpi/commits/15a9616a">OpenPI commit API</a>，resolved commit <code>15a9616a00943ada6c20a0f158e3adb39df2ccac</code>；tree checked 2026-07-19。</li><li>Physical Intelligence, <a href="https://arxiv.org/abs/2501.09747">FAST</a>，upstream action tokenization method；不证明 local formal route 使用 FAST。</li><li><a href="../../../../output/mousongzhe_resume_optimized.html">Optimized Resume</a> 与 <a href="../../../03_openpivla_action_modeling.html">OpenPiVLA 项目面试页</a>，当前候选人自述与安全投递口径。</li><li><a href="../../sources/openpivla_action_json_parser_roundtrip_artifact_gate.html">OpenPiVLA Action JSON Parser / Round-trip Artifact Gate</a>，72→16、full-sequence CE、parser absence 与 official-eval parallel lineage。</li></ol>
+</article></body></html>

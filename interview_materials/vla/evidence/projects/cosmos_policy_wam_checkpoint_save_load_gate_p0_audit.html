@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmos Policy / WAM Checkpoint Save-Load Gate：P0 证据审计</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.md">
+<meta name="aris:source-sha256" content="d5a4db639c3c0c152d55f3f9c6f6bedd8e18408f306036a28da5154bab3d9aac">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>d5a4db639c3c0c152d55f3f9c6f6bedd8e18408f306036a28da5154bab3d9aac</code>；生成自：<code>interview_materials\vla\evidence\projects\cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2-question">2. 问题（Question）</a></li><li><a href="#3-p0-promotion">3. P0 promotion 结论</a></li><li><a href="#4-frozen-inputs-sha-256">4. Frozen inputs 与 SHA-256</a></li><li><a href="#5">5. 官方与本地训练合同</a></li><li><a href="#6">6. 模型输入输出与保存边界</a></li><li><a href="#7-run">7. Run 总账</a></li><li><a href="#8-loss">8. 训练 Loss 曲线与可比性</a></li><li><a href="#9">9. 保存失败与资源失败的因果分析</a></li><li><a href="#9-1-save2k-kill">9.1 save2k：长跑/外部 kill 线</a></li><li><a href="#9-2-no-cycle-save1500-api-first-divergence">9.2 no-cycle save1500：保存 API first divergence</a></li><li><a href="#9-3-failure">9.3 为什么两个 failure 不能合并</a></li><li><a href="#10">10. 假设—证据—修复审计</a></li><li><a href="#11-save-load-smoke">11. 恢复所需的最小 save/load smoke</a></li><li><a href="#12-ownership">12. 公源、本地证据与 Ownership 边界</a></li><li><a href="#13">13. 面试可用口径</a></li><li><a href="#30">30 秒版本</a></li><li><a href="#step-001500-checkpoint">高压追问：目录里有 `step_001500`，为什么不是 checkpoint？</a></li><li><a href="#5-step-smoke">高压追问：为什么 5-step smoke 通过还不够？</a></li><li><a href="#14">14. 下一步与关闭条件</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>Cosmos Policy / WAM Checkpoint Save-Load Gate：P0 证据审计</h1>
+<div class="meta">状态：<code>p0_audited / base-load-backed / train-save-gate-failed / checkpoint-binary-missing / ownership-pending / WARN</code> 审计日期：2026-07-21 证据截止：2026-06-25 范围：只审计 <code>muxi_deepspeed_1epoch_20260623</code> 归档中的 base-model load、1-step/5-step smoke、9907-step save2k gate 与 no-cycle save1500 gate；不把 smoke 的成功、base-load 的完整 key 对齐或空的 output directory写成“训练完成”或“checkpoint 可加载”。</div>
+<h2 id="1">1. 结论先行</h2>
+<p>本轮把上一轮“保存接口失败”的叙述升级成了可复核的 <strong>save/load gate ledger</strong>：</p>
+<ol><li>13 个 <code>base_load_summary.json</code> 都指向同一个 HF cache snapshot，报告 <code>715</code> keys、<code>missing_count=0</code>、<code>unexpected_count=0</code>。这证明 base model 初始化/加载契约在这些进程中通过了 key-level check；它不是训练后 checkpoint 的 load parity。</li><li><code>batch_size=1</code> 的 8-GPU fixed-optional 1-step smoke、<code>batch_size=8</code> 的 1-step smoke 和 no-cycle 5-step smoke 都有 <code>exit=0</code>；它们只覆盖短步训练与初始化，不覆盖保存、重启、完整 epoch 或 eval。</li><li>独立 <code>9907</code>-step、8-GPU、global batch 128 的 save2k run 在 step 1903 附近出现 rank <code>-9</code>，launcher 记录 <code>EXIT=247</code>；这是长跑/资源 gate 的失败线，不是 save/load 成功线。</li><li>no-cycle、同为 <code>9907</code> steps 的 save1500 run 进入保存点后明确失败：DeepSpeed 调用 <code>module.state_dict(destination=..., prefix=..., keep_vars=...)</code>，Cosmos <code>DiffusionModel.state_dict()</code> 不接受 <code>destination</code>，launcher <code>EXIT=1</code>。这条 first divergence 比“目录存在”更强，但仍没有产生可加载权重。</li><li><code>remote_outputs_20260629</code> 目录共 <code>65</code> 个文件、<code>18</code> 个 run contract、<code>13</code> 个 base-load summary、<code>9</code> 个 exit-code 文件，<strong>0 个 checkpoint-like binary</strong>（<code>.pt/.pth/.ckpt/.safetensors/.bin</code> 或 checkpoint 文件名）。因此当前 P0 状态是 <code>PARTIAL</code>：base load 通过，短 smoke 通过，长训与 save gate 未闭合，checkpoint/save-load parity 缺失。</li></ol>
+<p>面试最安全的说法是：</p>
+<div class="meta">我把“模型能初始化”“1-step/5-step smoke 能跑”“长跑资源 gate”“保存接口”拆开验收。base HF snapshot 的 715 个 key 在 13 条 load summary 中都无 missing/unexpected；短 smoke 有 exit 0。但 9907-step save2k 线在长跑中以 rank -9/EXIT=247 退出，no-cycle save1500 线又在 DeepSpeed 标准 <code>state_dict</code> 参数签名处退出。归档中没有训练产出的 checkpoint binary 或新进程 reload parity，所以我能认领的是 gate 分层和 first divergence 审计，不能说 1 epoch 已完成或 checkpoint 可加载。</div>
+<h2 id="2-question">2. 问题（Question）</h2>
+<p>为什么不能把 <code>base_load_summary</code>、1-step/5-step smoke 或一个已经创建的 <code>step_001500</code> 目录当作 checkpoint 完成？哪一个 run 证明了长跑资源问题，哪一个 run 证明了保存 API 问题？当前证据能把“初始化、训练、保存、重启加载、评测”五个 gate 关闭到哪一层？</p>
+<h2 id="3-p0-promotion">3. P0 promotion 结论</h2>
+<pre><code class="language-text">P0 status = PARTIAL
+base-model initialization = PRESENT
+short training smoke = PRESENT
+long-run 1-epoch completion = 0
+checkpoint save = 0
+new-process load parity = 0
+same-checkpoint eval = 0
+ownership = PENDING</code></pre>
+<table><thead><tr><th>Gate</th><th>证据</th><th>状态</th><th>能说什么</th><th>不能说什么</th></tr></thead><tbody>
+<tr><td>base model load</td><td>13 summaries；715 keys；missing/unexpected=0</td><td><code>PRESENT</code></td><td>HF snapshot 在这些进程中 key-level load 通过</td><td>不能说本地训练 checkpoint 已保存/可重载</td></tr>
+<tr><td>1-step smoke</td><td>fixed-optional 与 bs8 记录 <code>exit=0</code></td><td><code>PRESENT / SMOKE</code></td><td>初始化、一个 training step 和分布式启动可运行</td><td>不能覆盖 checkpoint 或长时资源</td></tr>
+<tr><td>no-cycle 5-step</td><td><code>smoke5_exit_code.txt=0</code>，5 条 metrics</td><td><code>PRESENT / SMOKE</code></td><td>iterator 修复下短运行可启动</td><td>不能证明 9907 steps、save 或 eval</td></tr>
+<tr><td>9907-step save2k</td><td>run contract + launcher <code>rank=-9</code>/<code>EXIT=247</code></td><td><code>FAILED</code></td><td>长跑在保存前后出现外部 kill/资源失败线</td><td>不能把中间 loss 当 epoch 结果</td></tr>
+<tr><td>9907-step no-cycle save1500</td><td>launch log TypeError at <code>state_dict(destination=...)</code>，<code>EXIT=1</code></td><td><code>FAILED / FIRST DIVERGENCE</code></td><td>保存 API 的具体错误点可复核</td><td>不能说 <code>step_001500</code> 目录就是权重</td></tr>
+<tr><td>checkpoint binary</td><td>65-file archive 中 checkpoint-like count <code>0</code></td><td><code>MISSING</code></td><td>只能保留 remote output path/日志</td><td>不能给 checkpoint SHA 或 reload parity</td></tr>
+<tr><td>new-process reload</td><td>没有 load-after-save command/result</td><td><code>MISSING</code></td><td>只能把它列为恢复动作</td><td>不能说参数、optimizer、global step 已恢复</td></tr>
+<tr><td>matched eval</td><td>没有同一 produced checkpoint 的 eval bundle</td><td><code>MISSING</code></td><td>不升级为 trained-model benchmark</td><td>不能与 official-HF <code>84/118</code> join</td></tr>
+<tr><td>ownership</td><td>operator/patch author/reviewer 未人工确认</td><td><code>PENDING</code></td><td>只能讲 evidence-backed run boundary</td><td>不能从远端路径推导个人贡献</td></tr>
+</tbody></table>
+<h2 id="4-frozen-inputs-sha-256">4. Frozen inputs 与 SHA-256</h2>
+<table><thead><tr><th>证据</th><th>SHA-256</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>base_load_summary.json</code>（13 份内容相同）</td><td><code>197419EDBEB136DC54F8CC746C5E889FC03FA37A2C0CDA077D4F43441DE81CB9</code></td><td>load path、HF cache snapshot、715 keys、missing/unexpected</td></tr>
+<tr><td>save2k <code>run_contract.json</code></td><td><code>A8D8EB2FE76F2B9EA80DB23C6DCCE006D6B981B68396BEA16E31A5EF9F852BC8</code></td><td>8 GPU、per-GPU batch 16、9907 steps、save every 2000、5 frames</td></tr>
+<tr><td>save2k <code>launch.log</code></td><td><code>F416050867C71ECC6BA5A7C67AFC67028B04BEC7A1E9DC4F4956BEA5531616C2</code></td><td>base load、长跑退出、rank -9 与 <code>EXIT=247</code></td></tr>
+<tr><td>no-cycle save1500 <code>run_contract.json</code></td><td><code>201B4EEA49DCC5B53F6785B10D1DB3697E286C046A3FA2E060CA063CC7465DF2</code></td><td>同一 9907-step contract、save every 1500</td></tr>
+<tr><td>no-cycle save1500 <code>launch.log</code></td><td><code>8FEC262805242AFC3FCD7846A3DDB1043860E17BF5DEB008369D7CD9F67061C3</code></td><td>DeepSpeed <code>state_dict(destination=...)</code> TypeError、<code>EXIT=1</code></td></tr>
+<tr><td>no-cycle smoke5 <code>run_contract.json</code></td><td><code>1D0BFE1F1125FC78FA224DA4449E7C60E22161B29345FA0D5F27830AD4E11B18</code></td><td>8 GPU、batch16、5 steps、save disabled、5-frame contract</td></tr>
+<tr><td>no-cycle smoke5 metrics</td><td><code>5CBD9BBCCE2B3EF171A35F022F84C8320248033F2C0502FCD3251EDFB7D0C50A</code></td><td>5 step-level scalar records</td></tr>
+<tr><td>no-cycle smoke5 exit code</td><td><code>9A271F2A916B0B6EE6CECB2426F0B3206EF074578BE55D9BC94F6F3FE3AB86AA</code></td><td>内容为 <code>0</code></td></tr>
+<tr><td>formal1420 metrics snapshot</td><td><code>EDC4799C7494ADE72B9A93D692472B2C1BD3712ECB5C5AD92597CB6540511D31</code></td><td>13 条 early scalar records；不是完整曲线</td></tr>
+<tr><td>parent <code>metrics.jsonl</code></td><td><code>C9B8B081EA3FF1329804DD6923FC5ED3AA3EA8FA36BF7E0248DF050B51608C28</code></td><td>save2k 线仅保留 step100 单条 metrics</td></tr>
+<tr><td>1-epoch evidence freeze</td><td><code>7C9C4EA2B317A00DF72B1CB29457B1ACD112066C01AA25BC6E750F8D0DE91AA6</code></td><td>前一切片的 cgroup-OOM / step1500 边界</td></tr>
+<tr><td>WAM full10k reconciliation</td><td><code>70DB0DD0271FD3A90E9DF0D011AA30A52CBFB8E6131773CFCC36C128DC122706</code></td><td>与独立 full10k run family 分离</td></tr>
+</tbody></table>
+<p>原始归档根目录：</p>
+<pre><code class="language-text">C:\Users\mousongzhe\Project\report\cosmos_policy_eval\muxi_deepspeed_1epoch_20260623</code></pre>
+<p>其中 <code>remote_outputs_20260629</code> 只包含日志、JSON、contract 和脚本快照；本页没有把远端 <code>/data/msz/wm/outputs/...</code> 路径当作本地权重证据。</p>
+<h2 id="5">5. 官方与本地训练合同</h2>
+<p>5 条主要 run contract 均采用 Cosmos Predict2 / RoboCasa route：</p>
+<table><thead><tr><th>字段</th><th>save2k / save1500 formal</th><th>no-cycle smoke5</th><th>证据边界</th></tr></thead><tbody>
+<tr><td>experiment</td><td><code>cosmos_predict2_2b_480p_robocasa_50_demos_per_task</code></td><td>同上</td><td>contract 直接证据</td></tr>
+<tr><td>data_dir</td><td><code>success_only_from_all_episodes</code></td><td>同上</td><td>path reference，不等于本地数据 hash</td></tr>
+<tr><td>rollout_data_dir</td><td><code>all_episodes</code></td><td>同上</td><td>path reference</td></tr>
+<tr><td>T5</td><td><code>success_only_from_all_episodes/t5_embeddings.pkl</code></td><td>同上</td><td>未冻结 binary/hash</td></tr>
+<tr><td>model class</td><td><code>CosmosPolicyVideo2WorldModel</code></td><td>同上</td><td>contract 直接证据</td></tr>
+<tr><td>dataset class</td><td><code>RoboCasaDataset</code></td><td>同上</td><td>contract 直接证据</td></tr>
+<tr><td>batch / world size</td><td>16 per GPU / 8</td><td>16 per GPU / 8</td><td>global batch 128；不是结果本身</td></tr>
+<tr><td>max steps</td><td>9907</td><td>5</td><td>smoke 与 formal gate 不可混合</td></tr>
+<tr><td>save interval</td><td>2000 或 1500</td><td>0</td><td>smoke 禁止把不保存当作 save 通过</td></tr>
+<tr><td>p_world_model</td><td>0.5</td><td>0.5</td><td>objective-side contract</td></tr>
+<tr><td>action loss multiplier</td><td>1</td><td>1</td><td>objective-side contract</td></tr>
+<tr><td>conditional frames</td><td><code>[5,5]</code></td><td><code>[5,5]</code></td><td>与上轮 TurnOffMicrowave 诊断的 conditioning 边界一致</td></tr>
+</tbody></table>
+<p>base model load summary 的 <code>local_path</code> 是：</p>
+<pre><code class="language-text">/data/msz/wm/hf_cache/hub/models--nvidia--Cosmos-Predict2-2B-Video2World/
+snapshots/f50c09f5d8ab133a90cac3f4886a6471e9ba3f18/model-480p-16fps.pt</code></pre>
+<p>这表示进程从 HF cache snapshot 读入上游 base model；它不是 <code>iter_001500</code> 或 <code>iter_010000</code> 的训练产物。</p>
+<h2 id="6">6. 模型输入输出与保存边界</h2>
+<p>从 contract 可直接确认的模型接口是：<code>RoboCasaDataset → model.training_step(data_batch, iteration) → CosmosPolicyVideo2WorldModel</code>。数据 batch 包含 RoboCasa images/proprio/T5 conditioning 与 action/future/value route，但该归档没有单独的 head-shape manifest，因此不把“action/world/value 三个独立 head”写成实现事实；更保守的解释是共享模型内的路由、slot 和 loss contract。</p>
+<p>保存前至少需要同时满足模型参数、优化器/调度器状态、global step 与 DeepSpeed 分片元数据的可写入；本轮只看到 DeepSpeed 进入 <code>_save_checkpoint → module_state_dict → module.state_dict(...)</code>，没有看到 save/load 完成记录。</p>
+<p>对一个 run \(r\)，本页把验收状态写成：</p>
+<div class="formula">\[
+G_r=(L_r,T_r,S_r,R_r,E_r),
+\]</div>
+<p>其中 \(L\) 是 base-load key check，\(T\) 是 training-step smoke，\(S\) 是 checkpoint save，\(R\) 是新进程 reload parity，\(E\) 是同 checkpoint eval。当前 smoke run 的状态近似为 \((1,1,0,0,0)\)，formal save2k/save1500 run 分别是 \((1,?,0,0,0)\) 与 \((1,1,0,0,0)\)。变量与状态来自 <code>base_load_summary</code>、<code>run_contract</code>、<code>launch.log</code> 和缺失的 checkpoint/reload artifact；直觉是“初始化通过”不能跨越保存、重启和评测三个 gate。</p>
+<h2 id="7-run">7. Run 总账</h2>
+<table><thead><tr><th>Run ID</th><th>目的/变化</th><th>配置</th><th>结果</th><th>结论</th></tr></thead><tbody>
+<tr><td><code>ds_base_load_smoke_1548</code></td><td>只验证上游 base load</td><td>1 process、max steps 0</td><td>715 keys，missing/unexpected 0</td><td>load gate 通过；无训练/保存</td></tr>
+<tr><td><code>ds_train_smoke_1556</code></td><td>1-step train smoke</td><td>1-step、fp route</td><td>base load summary 通过</td><td>短训练启动；无 save/load</td></tr>
+<tr><td><code>ds_8gpu_1step_fixedoptional_1728</code></td><td>修复 optional metrics/config 的 8-GPU 1-step smoke</td><td>batch1/GPU、world8、max1</td><td><code>exit=0</code></td><td>分布式短 smoke 通过</td></tr>
+<tr><td><code>ds_8gpu_bs8_1step_1738</code></td><td>batch8 1-step 对照</td><td>batch8/GPU、world8、max1</td><td><code>exit=0</code></td><td>batch 变体短 smoke 通过</td></tr>
+<tr><td><code>ds_8gpu_bs16_nocycle_smoke5_1400</code></td><td>iterator no-cycle 最小 smoke</td><td>batch16/GPU、world8、max5、save0</td><td><code>exit=0</code>；5 metrics</td><td>iterator 修复短 smoke 通过</td></tr>
+<tr><td><code>ds_8gpu_bs16_1epoch_save2k_2040</code></td><td>formal 9907-step gate，save every 2000</td><td>batch16/GPU、world8、p_world=.5</td><td>rank -9、<code>EXIT=247</code>；仅 step100 metrics</td><td>长跑资源/外部 kill 线失败</td></tr>
+<tr><td><code>ds_8gpu_bs16_1epoch_nocycle_save1500_1420</code></td><td>no-cycle 后重跑 formal gate</td><td>batch16/GPU、world8、save every1500</td><td>保存时 TypeError，<code>EXIT=1</code></td><td>save API first divergence</td></tr>
+<tr><td><code>formal1420_metrics_snapshot</code></td><td>对 no-cycle formal run 的 early snapshot</td><td>13 scalar records</td><td>step13 loss <code>2.6662</code>；随后仍在 save gate失败</td><td>只能作为片段，不是完整 loss curve</td></tr>
+</tbody></table>
+<h2 id="8-loss">8. 训练 Loss 曲线与可比性</h2>
+<p>本轮没有完整可绘制的 formal loss curve：</p>
+<ul><li>parent save2k <code>metrics.jsonl</code> 只有 1 条 step100 记录，loss <code>0.609638</code>；</li><li>no-cycle smoke5 有 5 条记录，loss 从 <code>2.911592</code> 到 <code>2.995014</code>，但只有 5 steps；</li><li>formal1420 snapshot 有 13 条 early records，step13 loss <code>2.666178</code>，随后保存 gate 失败。</li></ul>
+<p>因此不能把三条线连接成一条“训练收敛曲线”，也不能用 step100 的 <code>mse_loss=0.053420</code> 叫作 epoch MSE。保存的标量可以用于诊断字段覆盖：例如 step100 记录 <code>world_model_sample_frac=0.1953</code>、<code>value_function_sample_frac=0.3281</code>、GT gripper negative fraction <code>0.6465</code>；它们说明 loss logging 在早期可用，不说明最终策略效果。</p>
+<h2 id="9">9. 保存失败与资源失败的因果分析</h2>
+<h3 id="9-1-save2k-kill">9.1 save2k：长跑/外部 kill 线</h3>
+<p>save2k contract 的 <code>max_steps=9907</code>、<code>batch_size_per_gpu=16</code>、<code>world_size=8</code> 与 <code>save_every_steps=2000</code>。launch log 最终记录一个 rank 以 <code>-9</code> 退出，DeepSpeed launcher 汇总 <code>EXIT=247</code>；前一审计中的 cgroup memory 证据把 step1903 的异常归入 CPU cgroup OOM 候选。当前页只把它称为 <strong>resource/launcher failure line</strong>，因为本 bundle 没有完整 cgroup event 文件、最终 RSS 曲线或 checkpoint artifact。</p>
+<h3 id="9-2-no-cycle-save1500-api-first-divergence">9.2 no-cycle save1500：保存 API first divergence</h3>
+<p>no-cycle run 的 5-step smoke 通过后，formal save1500 继续到保存点。错误栈核心是：</p>
+<pre><code class="language-text">DeepSpeed engine._save_checkpoint
+  -&gt; module_state_dict
+  -&gt; self.module.state_dict(destination=destination, prefix=prefix, keep_vars=keep_vars)
+TypeError: DiffusionModel.state_dict() got an unexpected keyword argument &#x27;destination&#x27;
+EXIT=1</code></pre>
+<p>这条证据比“step_001500 目录存在”更强，因为它说明程序在实际生成可用 module state dict 前已经失败。但没有 patch diff、修复后 rerun、非空权重清单或 load parity，所以根因只确认到 API compatibility boundary，修复状态仍是 <code>OPEN</code>。</p>
+<h3 id="9-3-failure">9.3 为什么两个 failure 不能合并</h3>
+<p>save2k 的 first failure 是长跑/外部 kill 线；save1500 的 first failure 是 state-dict signature 线；两者的 save interval、日期、输出目录不同。把 <code>EXIT=247</code>、<code>EXIT=1</code>、某个中间 loss 和一个远端 full10k checkpoint 拼成“同一条 1 epoch 训练”会丢失 run identity。</p>
+<h2 id="10">10. 假设—证据—修复审计</h2>
+<table><thead><tr><th>假设/问题</th><th>证据</th><th>修复/下一动作</th><th>当前状态</th></tr></thead><tbody>
+<tr><td>base model 没有正确加载</td><td>13 summaries，715 keys，missing/unexpected=0</td><td>保留 snapshot identity；继续做 produced-checkpoint reload</td><td><code>REJECTED FOR BASE LOAD</code></td></tr>
+<tr><td>1-step/5-step 分布式路径完全不可运行</td><td>fixedoptional/bs8/smoke5 exit0</td><td>将 smoke 与 formal gate 分开记录</td><td><code>REJECTED FOR SHORT SMOKE</code></td></tr>
+<tr><td>no-cycle 修复已完成全训练</td><td>smoke5 exit0，但 formal save1500 exit1</td><td>先完成 save/load smoke 再跑长训</td><td><code>REJECTED</code></td></tr>
+<tr><td>save2k 是保存 API 失败</td><td>save2k log 最终是 rank -9/EXIT247；没有 state_dict TypeError 作为 first error</td><td>单独保留 resource failure line</td><td><code>NOT THE SAME FAILURE</code></td></tr>
+<tr><td>save1500 只是远端同步延迟</td><td>launch log 有明确 TypeError，archive 无 checkpoint binary</td><td>修复 <code>state_dict</code> 标准签名并做新进程 reload</td><td><code>REJECTED</code></td></tr>
+<tr><td><code>step_001500</code> 目录等于 checkpoint</td><td>archive checkpoint-like count=0；错误发生在 module state dict</td><td>生成 file manifest/hash、参数 key/shape、global step</td><td><code>REJECTED</code></td></tr>
+<tr><td>early loss <code>0.0534</code> 是 epoch-level result</td><td>parent metrics 只有 step100 一条</td><td>记录 step/aggregation，补完整 curve</td><td><code>REJECTED</code></td></tr>
+<tr><td>base load 通过即可跑 eval</td><td>没有 produced checkpoint、reload 或 matched eval</td><td>完成 save→destroy→load→fixed-input parity</td><td><code>REJECTED</code></td></tr>
+</tbody></table>
+<h2 id="11-save-load-smoke">11. 恢复所需的最小 save/load smoke</h2>
+<pre><code class="language-python">def verify_checkpoint_gate(model, engine, fixed_batch, output_dir):
+    # 1. Run one real DeepSpeed training step under the target config.
+    train_step(engine, fixed_batch)
+
+    # 2. Save model, optimizer, scheduler and global-step metadata through the real API.
+    tag = &quot;step_000001&quot;
+    engine.save_checkpoint(output_dir, tag=tag)
+
+    # 3. End the process so reload is not satisfied by in-memory parameters.
+    destroy_process_group_and_exit()
+
+    # 4. Start a fresh process, load the exact manifest and assert shard completeness.
+    fresh_engine = build_engine_from_same_contract()
+    load_result = fresh_engine.load_checkpoint(output_dir, tag=tag)
+    assert load_result is not None
+    assert parameter_keys_and_shapes_match(fresh_engine, output_dir, tag)
+
+    # 5. Compare a fixed forward/loss before and after reload, including global step.
+    reloaded = fresh_engine.forward(fixed_batch)
+    assert close_enough(reloaded, reference_output)
+    assert fresh_engine.global_steps == 1
+    return &quot;save_load_parity_pass&quot;</code></pre>
+<p>这段伪代码是验收协议，不是归档中已经成功运行的脚本。<code>state_dict(destination=None, prefix='', keep_vars=False)</code> 兼容层、DeepSpeed shard/optimizer/scheduler metadata、文件 SHA、固定输入输出 parity 和新进程边界都必须在真实 run 中落档后，才能把 <code>S=R=1</code> 写入 gate state。</p>
+<h2 id="12-ownership">12. 公源、本地证据与 Ownership 边界</h2>
+<table><thead><tr><th>层级</th><th>本页支持</th><th>不支持</th></tr></thead><tbody>
+<tr><td>公有上游</td><td>PyTorch/DeepSpeed 标准 state-dict 调用形态；Cosmos Predict2/RoboCasa contract</td><td>个人设计了 Cosmos 架构</td></tr>
+<tr><td>本地证据</td><td>base load summary、run contract、metrics、launch logs、exit codes</td><td>训练 checkpoint binary/hash、reload parity</td></tr>
+<tr><td>本地推断</td><td>save2k 与 save1500 是两类 first divergence；gate 必须拆分</td><td>资源失败的唯一 root cause、修复后必然成功</td></tr>
+<tr><td>未核实</td><td>candidate/operator/reviewer、patch author、远端权重归属</td><td>“我完成了 1 epoch”“我修复了 DeepSpeed”</td></tr>
+</tbody></table>
+<h2 id="13">13. 面试可用口径</h2>
+<h3 id="30">30 秒版本</h3>
+<div class="meta">我把 checkpoint gate 拆成 base load、短 smoke、长跑、save、reload、eval 六层。13 个 base-load summary 都是 715 keys 且 missing/unexpected 为 0；8-GPU 1-step 和 no-cycle 5-step smoke 也能 exit 0。但 9907-step save2k 线在长跑中以 rank -9/EXIT=247 退出，no-cycle save1500 线又在 DeepSpeed 调用 <code>state_dict(destination=...)</code> 时 TypeError/EXIT=1。归档里 65 个文件没有任何 checkpoint-like binary，所以我能说初始化和 failure boundary 可审计，不能说 1 epoch 完成或 checkpoint 已可加载。</div>
+<h3 id="step-001500-checkpoint">高压追问：目录里有 <code>step_001500</code>，为什么不是 checkpoint？</h3>
+<div class="meta">因为保存流程在生成 module state dict 时就失败了：DeepSpeed 传入 PyTorch 标准的 <code>destination/prefix/keep_vars</code>，Cosmos 的 override 不接受 <code>destination</code>。目录存在只说明 save routine 开始，不能证明 module weights、optimizer/scheduler、global step 或分片元数据写完。下一步必须做真实 1-step save，销毁进程，新进程 reload，核对文件清单/hash、key/shape、global step 和固定输入 forward parity。</div>
+<h3 id="5-step-smoke">高压追问：为什么 5-step smoke 通过还不够？</h3>
+<div class="meta">因为 smoke 的 save interval 是 0，且只有 5 steps；它只验证 no-cycle iterator、模型初始化、一个短训练路径和进程退出。正式 gate 需要 9907 steps、定期保存、最后保存、跨进程 reload 和同协议 eval。这个项目里 smoke 通过后，formal run 仍在 save1500 处暴露 state-dict 签名错误，正说明短 smoke 不是完整验收。</div>
+<h2 id="14">14. 下一步与关闭条件</h2>
+<ol><li>给 <code>DiffusionModel.state_dict</code> compatibility layer 补标准签名，并记录实际 diff、author 和 review boundary；不要只吞掉关键字参数。</li><li>在 1-step/真实 DeepSpeed config 下完成 save→process exit→fresh load→fixed-input parity，生成 checkpoint file manifest 与 SHA-256。</li><li>重新跑 save1500 formal gate，保留每个 rank 的 status、checkpoint shard、optimizer/scheduler/global-step 元数据。</li><li>只有产生可加载 checkpoint 后，才做同 checkpoint 的 TurnOffMicrowave/RoboCasa eval；不要拿 official-HF <code>84/118</code> 或 full10k remote path 做无 key join。</li><li>由候选人确认 iterator patch、state-dict patch、运行者、日志审计者与 reviewer 的角色；工具/协作者/上游代码分开登记。</li></ol>
+<p>在这些条件闭合前，本页保持 <code>PARTIAL/WARN</code>。它可以用于回答“如何定义 save/load gate、如何定位 first divergence”，不能用于宣称 1 epoch 完成、训练 uplift 或 checkpoint ownership。</p>
+<h2 id="references">References</h2>
+<ol><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\muxi_deepspeed_1epoch_20260623\remote_outputs_20260629\</code>（65-file archive；run contracts、base-load summaries、metrics、launch logs）。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\muxi_deepspeed_1epoch_20260623\remote_outputs_20260629\ds_8gpu_bs16_1epoch_save2k_20260623_2040\launch.log</code>。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\muxi_deepspeed_1epoch_20260623\remote_outputs_20260629\ds_8gpu_bs16_1epoch_nocycle_save1500_20260624_1420\launch.log</code>。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\muxi_deepspeed_1epoch_20260623\remote_outputs_20260629\ds_8gpu_bs16_nocycle_smoke5_20260624_1400\run_contract.json</code> 与 <code>base_load_summary.json</code>。</li><li><code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\muxi_deepspeed_1epoch_20260623\nocycle_fix_20260624\smoke5_exit_code.txt</code>、<code>smoke5_metrics.jsonl</code>。</li><li><a href="../../sources/vol_04_cosmos_policy_1epoch_evidence_freeze.html">Cosmos 1 Epoch Evidence Freeze</a>。</li><li><a href="../../sources/vol_04_cosmos_policy_wam_full10k_run_reconciliation.html">WAM 1 epoch / full10k Run Reconciliation</a>。</li><li><a href="wam_claim_evidence_inventory.html">WAM Claim–Evidence Inventory</a>。</li></ol>
+</article></body></html>

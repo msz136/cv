@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 Source Audit A：World Model / PlaNet / DreamerV3 独立事实复核</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_world_model_foundations_independent_fact_review.md">
+<meta name="aris:source-sha256" content="da16c172179cae926d329259e76955a55555fe53a15233f265d1f74a3d421ae4">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>da16c172179cae926d329259e76955a55555fe53a15233f265d1f74a3d421ae4</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_world_model_foundations_independent_fact_review.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">复核方法与证据等级</a></li><li><a href="#1-world-models-vae-mdn-rnn-controller">1. World Models：VAE、MDN-RNN 与 controller 的分解已核对</a></li><li><a href="#2-planet-deterministic-stochastic-latent-overshooting-online-planning">2. PlaNet：deterministic/stochastic latent、overshooting 与 online planning 已核对</a></li><li><a href="#3-dreamerv3-rssm-frozen-repo">3. DreamerV3 RSSM：论文因子分解与 frozen repo 路径已核对</a></li><li><a href="#4-dreamerv3-kl-free-nats-repo-provenance">4. DreamerV3 的 KL/free-nats 与 repo provenance 边界</a></li><li><a href="#5-one-step-open-loop-actionability-metric-boundary">5. one-step、open-loop、actionability 与 metric boundary</a></li><li><a href="#6">6. 题目覆盖与回写矩阵</a></li><li><a href="#section-9">复核结论与未解决项</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 Source Audit A：World Model / PlaNet / DreamerV3 独立事实复核</h1>
+<div class="meta">状态：<code>reviewed_slice / WARN</code> 复核日期：2026-07-16 证据截止：2026-07-16 复核范围：<code>VLA-WM-001..014</code>、<code>VLA-WM-019..021</code> 的 source audit；下一知识批只开放 <code>VLA-WM-001..010</code>。 结论先行：World Models、PlaNet、DreamerV3 的关键方法事实和 DreamerV3 frozen repo 的实现边界已独立核对；DreamerV3 repo 是 reimplementation，不应称作论文作者官方代码；PlaNet latent overshooting 不能外推为 DreamerV3 的实现事实。</div>
+<h2 id="question">问题（Question）</h2>
+<p>本记录回答：Source Audit A 中关于 world-model 概率合同、World Models、PlaNet、DreamerV3 RSSM、imagination actor-critic、KL/free-nats、one-step/open-loop 和 metric boundary 的主张，哪些可回到 primary paper 或 frozen official-code，哪些只能作为分析框架？</p>
+<p>本次复核只读取 frozen paper/repository 内容，不执行 DreamerV3 训练、不下载 checkpoint、不声称复现论文结果，也不把通用机制写成本地项目贡献。</p>
+<h2 id="section-2">复核方法与证据等级</h2>
+<table><thead><tr><th>等级</th><th>含义</th><th>面试口径</th></tr></thead><tbody>
+<tr><td><code>primary-checked</code></td><td>直接核对论文 HTML/Ar5iv 的正文、公式或实验描述</td><td>“论文定义/报告……”</td></tr>
+<tr><td><code>official-code-checked</code></td><td>直接读取 frozen repo 的 README、源码或配置</td><td>“该 commit 的实现……”</td></tr>
+<tr><td><code>framework</code></td><td>根据论文/代码抽出的评估或诊断设计</td><td>“我会这样区分/测试……”</td></tr>
+<tr><td><code>warning</code></td><td>事实方向正确，但来源是 reimplementation、配置依赖或缺实验 artifact</td><td>“在该来源/配置范围内……”</td></tr>
+<tr><td><code>blocked</code></td><td>本地 checkpoint、运行日志、结果或 ownership 缺失</td><td>不升级为复现或个人成果</td></tr>
+</tbody></table>
+<p>冻结对象：World Models <code>arXiv 1803.10122</code>、PlaNet <code>arXiv 1811.04551</code>、DreamerV3 <code>arXiv 2301.04104</code>，以及 <code>danijar/dreamerv3@e3f02248693a79dc8b0ebd62c93683888ddaccfe</code>。</p>
+<h2 id="1-world-models-vae-mdn-rnn-controller">1. World Models：VAE、MDN-RNN 与 controller 的分解已核对</h2>
+<p>World Models 论文把系统拆成视觉模型 V、记忆模型 M 和 controller C。VAE 把每帧图像压成 latent (z_t)；MDN-RNN 预测动作和历史条件下的未来 latent 分布；controller 读取 latent 与 recurrent state 产生动作。论文给出了 <code>env.reset → vae.encode → controller.action → env.step → rnn.forward</code> 的 rollout 逻辑。[1]</p>
+<p>论文还明确展示了在模型生成的 dream 中训练/部署 controller，并把 decoder 用于可视化。因此 Audit A 中“world model 不等于视频生成器；是否可行动要看 action condition、状态变量和执行合同”的表述有 primary 支持；“dream controller 的收益与 model exploitation 风险需要单独审计”属于同源分析边界，不是本地实验结果。</p>
+<h2 id="2-planet-deterministic-stochastic-latent-overshooting-online-planning">2. PlaNet：deterministic/stochastic latent、overshooting 与 online planning 已核对</h2>
+<p>PlaNet 论文摘要和方法部分直接写明：latent dynamics 同时包含 deterministic 与 stochastic transition；提出 multi-step variational inference objective <code>latent overshooting</code>；利用 learned latent dynamics 在 latent space 进行 online planning，并采用 receding-horizon 方式每步重新规划。[2]</p>
+<p>论文还讨论了 learned model planning 的风险，包括多个可能未来、分布外过度自信，以及模型误差造成的规划问题。因此 Audit A 中“latent overshooting 约束多步预测”和“不能从视觉质量直接推导 long-horizon planning 成功”是有 primary 依据的。</p>
+<p>一个必须保留的边界是：PlaNet 的 overshooting 是 PlaNet 论文机制；当前 DreamerV3 frozen repo 的 <code>rssm.py</code> 显示 observe/imagine、dyn/rep KL 和 free-nats，但没有足够证据把它命名为 PlaNet overshooting。题库和知识页不得写成“DreamerV3 使用 PlaNet overshooting”。</p>
+<h2 id="3-dreamerv3-rssm-frozen-repo">3. DreamerV3 RSSM：论文因子分解与 frozen repo 路径已核对</h2>
+<p>DreamerV3 论文把 world model 写成 RSSM：序列模型由前一时刻 (h_{t-1},z_{t-1},a_{t-1}) 得到 (h_t)，posterior (q_phi(z_tmid h_t,x_t)) 使用当前 observation，prior (p_phi(z_tmid h_t)) 在 imagination 时不读取未来 observation；decoder、reward、continue 预测器作用在 latent feature 上。[3]</p>
+<p>frozen repo 的 <code>dreamerv3/rssm.py</code> 与论文合同逐项对应：</p>
+<table><thead><tr><th>论文/概念</th><th>frozen code evidence</th><th>复核结论</th></tr></thead><tbody>
+<tr><td>posterior filtering</td><td><code>RSSM.observe</code></td><td><code>official-code-checked</code></td></tr>
+<tr><td>action-conditioned prior imagination</td><td><code>RSSM.imagine</code></td><td><code>official-code-checked</code></td></tr>
+<tr><td>dynamics/representation KL</td><td><code>RSSM.loss</code> 中 <code>dyn</code> / <code>rep</code></td><td><code>official-code-checked</code></td></tr>
+<tr><td>stop-gradient 方向</td><td><code>sg(post)</code> 与 <code>sg(prior)</code> 两条 KL</td><td><code>official-code-checked</code></td></tr>
+<tr><td>free nats</td><td><code>free_nats=1.0</code> 与 <code>jnp.maximum</code></td><td><code>official-code-checked</code></td></tr>
+<tr><td>actor/critic imagination</td><td><code>Agent.loss</code> 调用 <code>dyn.imagine</code>、lambda-return 与 policy/value loss</td><td><code>official-code-checked</code></td></tr>
+</tbody></table>
+<p>DreamerV3 论文也直接描述 world model 预测 future representation/reward、actor 选择 action、critic 评估 outcome，并使用 imagined trajectories 学习 actor/critic。[3] 因而 Audit A 的 posterior/prior、imagination 和 actor-critic 主线可以保留。</p>
+<h2 id="4-dreamerv3-kl-free-nats-repo-provenance">4. DreamerV3 的 KL/free-nats 与 repo provenance 边界</h2>
+<p>论文给出 prediction、dynamics 和 representation loss，并说明 dynamics/representation loss 的 stop-gradient 方向、loss scale 与 free bits clipping；论文文字写的是低于 <code>1 nat</code> 时裁剪相关项。[3]</p>
+<p>frozen <code>rssm.py</code> 采用 <code>free_nats: float = 1.0</code>，并分别计算 <code>KL[sg(post) || prior]</code> 与 <code>KL[post || sg(prior)]</code> 后用 <code>jnp.maximum</code> 截断；<code>configs.yaml</code> 另记录 <code>loss_scales</code>、RSSM 维度和 replay-value 相关配置。[4] 这支持机制映射，但具体训练结果仍依赖 config、数据、checkpoint 和运行环境。</p>
+<p>README 的 Disclaimer 直接称该仓库是基于开源 DreamerV2 的 DreamerV3 reimplementation，并与 Google/DeepMind 无关。[4] 因此面试中应说“该 frozen repo 的 reimplementation code path”，不能说“DreamerV3 官方作者代码”或从 repo 推导个人项目结果。</p>
+<h2 id="5-one-step-open-loop-actionability-metric-boundary">5. one-step、open-loop、actionability 与 metric boundary</h2>
+<p>以下内容属于 <code>framework</code>，不是某个论文的单一 benchmark recipe：</p>
+<ol><li>teacher-forced one-step 使用真实历史，open-loop rollout 使用模型自己的前一步预测；两者必须分开报告。</li><li>action-conditioned 只说明 action 进入条件，不自动证明可干预；action-swap、magnitude sweep、cloned-state intervention 与 closed-loop trace 是合理的验证设计。</li><li>PSNR/SSIM/FVD、latent KL、reward/value loss、action loss、open-loop error 与 closed-loop success 处于不同证据层，不能跨层替代。</li><li>aleatoric/epistemic 是分析分类；ensemble、posterior sample 或 disagreement 只是估计手段，不能自动等价于真实风险。</li></ol>
+<p>这些框架与 PlaNet/DreamerV3 对 long-horizon model bias、future prediction 和 imagined control 的讨论一致，但本地尚无 calibration、action-swap、world-model checkpoint 或 rollout trace，不能写成“已验证”。</p>
+<pre><code class="language-python">def audit_world_model_claim(claim, paper, repo, local_artifacts):
+    # 1. Split the claim into method, implementation, metric and ownership atoms.
+    atoms = split_claim_into_atoms(claim)
+
+    # 2. Match each atom to primary paper and frozen-code evidence.
+    upstream = [match_primary_or_code(atom, paper, repo) for atom in atoms]
+
+    # 3. Require checkpoint/runtime artifacts before calling a local result reproduced.
+    if local_artifacts.missing(&quot;checkpoint&quot;, &quot;config&quot;, &quot;episodes&quot;):
+        return phrase_as_upstream_or_framework(upstream)
+
+    # 4. Only a continuous paper -&gt; repo -&gt; runtime -&gt; ownership chain allows a strong claim.
+    return build_evidence_bounded_answer(upstream, local_artifacts)</code></pre>
+<h2 id="6">6. 题目覆盖与回写矩阵</h2>
+<table><thead><tr><th>范围</th><th>复核状态</th><th>允许动作</th></tr></thead><tbody>
+<tr><td><code>VLA-WM-001..010</code></td><td><code>PASS WITH WARNING</code></td><td>可进入下一批知识页；保留 paper/reimplementation/local boundary</td></tr>
+<tr><td><code>VLA-WM-011..014</code></td><td><code>PASS WITH WARNING</code></td><td>继续留在 Source Audit A，后续单独生成知识批</td></tr>
+<tr><td><code>VLA-WM-019..021</code></td><td><code>PASS AS FRAMEWORK</code></td><td>指标与 imagination 机制可教，但不写本地结果</td></tr>
+<tr><td>DreamerV3 repo provenance</td><td><code>PASS WITH WARNING</code></td><td>不称官方作者代码</td></tr>
+<tr><td>PlaNet overshooting → DreamerV3</td><td><code>BLOCKED FOR STRONG CLAIM</code></td><td>不做跨方法实现归因</td></tr>
+<tr><td>用户 WAM/UWM 项目证据</td><td><code>BLOCKED</code></td><td>等 checkpoint、normalizer、run/episode artifact</td></tr>
+</tbody></table>
+<p>本次没有发现需要改写 Audit A 核心技术事实的错误；新增的边界是把“PlaNet overshooting 不可外推到 DreamerV3”显式列为禁止升级项。下一知识批只开放 <code>VLA-WM-001..010</code>，不生成题卡。</p>
+<h2 id="section-9">复核结论与未解决项</h2>
+<p>Source Audit A 的关键 primary/official-code 事实已独立复核，review 仍保持 <code>WARN</code>，原因是：没有 DreamerV3 checkpoint/result reproduction、没有用户本地 world-model artifacts、浏览器 <code>file://</code> 视觉 QA 受策略阻断、也没有真实口述。知识页可以进入下一增量，但不能把模块状态推进到 <code>reviewed</code> 或 <code>drilled</code>。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Ha &amp; Schmidhuber, “World Models”, arXiv <code>1803.10122</code>，<a href="https://ar5iv.labs.arxiv.org/html/1803.10122">Ar5iv HTML</a>；<a href="https://arxiv.org/abs/1803.10122">arXiv record</a>。</li><li>Hafner et al., “Learning Latent Dynamics for Planning from Pixels” (PlaNet), arXiv <code>1811.04551</code>，<a href="https://ar5iv.labs.arxiv.org/html/1811.04551">Ar5iv HTML</a>；<a href="https://arxiv.org/abs/1811.04551">arXiv record</a>。</li><li>Hafner et al., “Mastering Diverse Domains through World Models” (DreamerV3), arXiv <code>2301.04104</code>，<a href="https://arxiv.org/html/2301.04104">HTML</a>。</li><li><code>danijar/dreamerv3@e3f02248693a79dc8b0ebd62c93683888ddaccfe</code>，<a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/README.md">README</a>、<a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/dreamerv3/rssm.py"><code>rssm.py</code></a>、<a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/dreamerv3/agent.py"><code>agent.py</code></a>、<a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/dreamerv3/configs.yaml"><code>configs.yaml</code></a>、<a href="https://github.com/danijar/dreamerv3/blob/e3f02248693a79dc8b0ebd62c93683888ddaccfe/LICENSE"><code>LICENSE</code></a>。</li><li>本仓库 <a href="vol_04_world_model_foundations_claim_to_code.md">Source Audit A canonical Markdown</a>、<a href="vol_04_world_model_foundations_claim_to_code.html">HTML</a> 与 <a href="vol_04_world_model_foundations_claim_to_code.review.json">review</a>。</li></ol>
+</article></body></html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UWM `libero_90.pt` 本地 Immutable Checkpoint Manifest Gate</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\uwm_libero90_checkpoint_immutable_manifest_gate.md">
+<meta name="aris:source-sha256" content="a89c15d72d4504253e332052ad6a0b1a8f87d0dd26fb3201235359b2c7bfe554">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>a89c15d72d4504253e332052ad6a0b1a8f87d0dd26fb3201235359b2c7bfe554</code>；生成自：<code>interview_materials\vla\sources\uwm_libero90_checkpoint_immutable_manifest_gate.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. Question 与证据边界</a></li><li><a href="#2-immutable-manifest">2. Immutable manifest 合同</a></li><li><a href="#3-manifest">3. 本地文件 manifest</a></li><li><a href="#3-1-project-wide-negative-scan">3.1 Project-wide negative scan</a></li><li><a href="#4-container-metadata">4. Container 与静态 metadata 复核</a></li><li><a href="#5-base-checkpoint-robocasa-fine-tune">5. Base checkpoint 与 RoboCasa fine-tune 的身份分离</a></li><li><a href="#6-evidence-gate-reconciliation">6. 与既有 evidence gate 的 reconciliation</a></li><li><a href="#7">7. 面试安全口径</a></li><li><a href="#30">30 秒回答</a></li><li><a href="#section-10">高频追问</a></li><li><a href="#8-gate">8. Gate 状态与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>UWM <code>libero_90.pt</code> 本地 Immutable Checkpoint Manifest Gate</h1>
+<div class="meta">状态：<code>local-binary-verified / base-checkpoint-only / fine-tune-lineage-open / WARN</code> 审查日期：2026-07-21；证据截止：2026-07-21 范围：<code>C:\Users\mousongzhe\project\wm\uwm_robocasa_transfer</code> 中 UWM 官方 LIBERO base checkpoint 与加载脚本。 结论先行：本次在用户提供的 project copy 中发现并重新哈希了 <code>libero_90.pt</code> 本体；它是一个可读取的 4.04 GB PyTorch archive，SHA-256 为 <code>E43C562E1D5145662006877AAC0FB30C3C5D57302AEFC16524DA2D862D694602</code>。归档内部可静态确认顶层包含 <code>model</code>、<code>optimizer</code>、<code>scaler</code>、<code>scheduler</code>、<code>action_normalizer</code>、<code>lowdim_normalizer</code> 与 <code>step=100000</code> 等字段，且 <code>action_normalizer</code>/<code>lowdim_normalizer</code> 的值为 <code>None</code>。这关闭了“base binary 只有远端路径引用”的旧缺口，但不证明 RoboCasa 微调后的 <code>models.pt</code>、normalizer、fresh-process reload、评估 scorer 或个人 ownership。</div>
+<h2 id="1-question">1. Question 与证据边界</h2>
+<p>本页只回答四个可审计问题：</p>
+<ol><li>当前 project copy 是否真的包含 UWM <code>libero_90.pt</code> binary？</li><li>文件的字节数、SHA-256、容器结构和 checkpoint step 是什么？</li><li>它能支持“加载了哪个 base checkpoint”的哪一级面试表述？</li><li>哪些仍不能从 base binary 推断到 RoboCasa fine-tune 或结果 claim？</li></ol>
+<p>本页把四层证据分开：</p>
+<table><thead><tr><th>层级</th><th>本页材料</th><th>允许的结论</th></tr></thead><tbody>
+<tr><td><code>local-direct</code></td><td><code>.pt</code> 文件、zip member inventory、<code>data.pkl</code> 静态 opcode、下载脚本与 README</td><td>文件存在、hash、容器字段、上游路径/用途说明</td></tr>
+<tr><td><code>upstream/recipe</code></td><td><code>download_uwm_libero90_checkpoint.sh</code>、UWM transfer README</td><td>该文件被项目当作官方 UWM LIBERO base 输入；下载来源与命名合同</td></tr>
+<tr><td><code>local-inference</code></td><td><code>models_100001</code>、<code>step=100000</code> 与字段结构的共同解释</td><td>这是可用于迁移初始化的训练 checkpoint，而非只含裸模型权重的 state dict</td></tr>
+<tr><td><code>unverified</code></td><td>RoboCasa <code>models.pt</code>、normalizer JSON、fresh reload、episode scorer、ownership</td><td>不能把 base checkpoint 的 hash 当作 fine-tune 或 benchmark 证据</td></tr>
+</tbody></table>
+<h2 id="2-immutable-manifest">2. Immutable manifest 合同</h2>
+<p>对 checkpoint artifact (c)，最小可复核记录定义为：</p>
+<div class="formula">\[
+M(c)=\bigl(\text{path},\;\text{bytes},\;\text{sha256},\;\text{container},\;\text{logical\_step},\;\text{role}\bigr).
+\]</div>
+<p>变量解释：<code>path</code> 是 project copy 内的相对路径，<code>bytes</code> 是文件长度，<code>sha256</code> 用于检测替换，<code>container</code> 是 PyTorch archive 的成员摘要，<code>logical_step</code> 是 checkpoint 内记录的训练步，<code>role</code> 区分 base、fine-tune、eval-only 等身份。直觉上，只有这些字段一起冻结，面试中才可以回答“server/loader 实际拿到哪一个文件”，而不是只复述一个字符串路径。此处的 <code>logical_step</code> 与 <code>role=official UWM base</code> 仍需和上游发布记录一同解释，不能单独证明训练 provenance。</p>
+<pre><code class="language-python">def verify_checkpoint(path, expected_sha256):
+    # 1. 只读计算文件 hash；不覆盖、不重新保存、不改变用户 project copy。
+    digest = sha256_file(path)
+    assert digest == expected_sha256
+
+    # 2. 只列出 PyTorch zip members 与 data.pkl；不执行 pickle 中的任意对象构造。
+    members = list_zip_members(path)
+    metadata = disassemble_pickle_without_unpickling(path, &quot;models_100001/data.pkl&quot;)
+
+    # 3. 把 base binary、fine-tune checkpoint 和 normalizer 分开登记。
+    return {&quot;sha256&quot;: digest, &quot;members&quot;: members, &quot;metadata&quot;: metadata}</code></pre>
+<h2 id="3-manifest">3. 本地文件 manifest</h2>
+<p>根目录：<code>C:\Users\mousongzhe\project\wm\uwm_robocasa_transfer</code>。</p>
+<table><thead><tr><th>ID</th><th>相对路径</th><th>字节数</th><th>SHA-256</th><th>角色</th><th>状态</th></tr></thead><tbody>
+<tr><td>C01</td><td><code>_downloads/libero_90.pt</code></td><td><code>4,044,929,076</code></td><td><code>E43C562E1D5145662006877AAC0FB30C3C5D57302AEFC16524DA2D862D694602</code></td><td>UWM LIBERO base checkpoint binary</td><td><code>local-direct</code></td></tr>
+<tr><td>C02</td><td><code>_downloads/libero_90_chunk7.bin</code></td><td><code>268,435,456</code></td><td><code>13B10DFCEF838A3AF30EAF2BF21CE7A306BB31A9B62AD5EA63A60BFA8427596D</code></td><td>下载过程中的独立 chunk artifact；不宣称可重组为 C01</td><td><code>local-direct / role-open</code></td></tr>
+<tr><td>C03</td><td><code>download_uwm_libero90_checkpoint.sh</code></td><td><code>697</code></td><td><code>0C18903D55BB25E1EAFE8731B7770A5BBCCF9E4B5178985CC3DE0362B21F8DCE</code></td><td>下载与软链接合同</td><td><code>local-direct</code></td></tr>
+<tr><td>C04</td><td><code>README.md</code></td><td><code>6,087</code></td><td><code>E05378FC0E1718B073635EFB5159B9FF7DBB0EFB50C817FE7C2F35E1E57C63D0</code></td><td>项目用途、checkpoint smoke 与 hash 文字记录</td><td><code>local-direct</code></td></tr>
+</tbody></table>
+<p>文件时间只作为辅助字段：C01 最后修改时间为 <code>2026-06-22 11:07:14 UTC</code>。时间戳不能替代 hash，也不能证明该文件被某一次 RoboCasa rollout 实际加载。</p>
+<h3 id="3-1-project-wide-negative-scan">3.1 Project-wide negative scan</h3>
+<p>为避免“只看了一个已知目录”造成假阴性，本次还在 <code>C:\Users\mousongzhe\project</code> 全树按扩展名扫描 <code>.pt/.pth/.ckpt/.safetensors/.bin</code>。结果只有 C01 与 C02 两个文件：</p>
+<table><thead><tr><th>扫描结果</th><th>数量</th><th>解释</th></tr></thead><tbody>
+<tr><td><code>libero_90.pt</code></td><td>1</td><td>UWM base binary，C01</td></tr>
+<tr><td><code>libero_90_chunk7.bin</code></td><td>1</td><td>独立下载 chunk，C02；未证明可重组</td></tr>
+<tr><td><code>models.pt</code> / <code>checkpoint_step_*.pt</code></td><td>0</td><td>当前 project copy 中没有可直接冻结的 RoboCasa target checkpoint</td></tr>
+<tr><td><code>.safetensors</code> / <code>.ckpt</code> / <code>.pth</code></td><td>0</td><td>未发现其他常见 checkpoint 格式</td></tr>
+</tbody></table>
+<pre><code class="language-powershell"># 只读负向检索：不把日志中的字符串或目录名误当作 binary。
+Get-ChildItem $project -Recurse -File |
+  Where-Object { $_.Extension -in &#x27;.pt&#x27;,&#x27;.pth&#x27;,&#x27;.ckpt&#x27;,&#x27;.safetensors&#x27;,&#x27;.bin&#x27; }</code></pre>
+<p>这个负向结果只对当前 Windows project copy 有效；它不能排除远端 <code>/data/msz/...</code> 或其他未挂载目录中存在 target checkpoint。因此安全结论是“本地 target binary 尚未归档”，不是“target checkpoint 从未生成”。</p>
+<h2 id="4-container-metadata">4. Container 与静态 metadata 复核</h2>
+<p><code>libero_90.pt</code> 以 PyTorch zip archive 开头（magic bytes <code>PK\x03\x04</code>），共 <code>1070</code> 个 member，唯一顶层目录为 <code>models_100001/</code>。本次没有调用 <code>torch.load</code> 去构造完整 4 GB tensor；而是读取 <code>data.pkl</code> 并用 <code>pickletools</code> 做不执行对象的 opcode inspection。这样能确认字段名与 storage metadata，同时避免把静态检查误写成模型 forward 或 fresh-load 证明。</p>
+<table><thead><tr><th>检查</th><th>结果</th><th>可支持的结论</th></tr></thead><tbody>
+<tr><td>archive header</td><td><code>PK\x03\x04</code></td><td>文件是 zip-based PyTorch serialization</td></tr>
+<tr><td>member count</td><td><code>1070</code></td><td>归档含大量 tensor storage，不是空壳路径</td></tr>
+<tr><td>top-level prefix</td><td><code>models_100001/</code></td><td>文件内部目录名与 step 命名一致</td></tr>
+<tr><td><code>data.pkl</code> bytes</td><td><code>182,415</code></td><td>metadata pickle 可独立读取</td></tr>
+<tr><td>tensor-key strings</td><td><code>453</code>（unique <code>452</code>）</td><td>约 452 个带 weight/bias/running-stat 名称的 tensor key 字符串；不等同于 loader report 的 model-key count</td></tr>
+<tr><td>optimizer / scaler / scheduler</td><td>字段字符串存在</td><td>归档不仅有 model 字段；是否按某次 run 恢复仍需 loader log</td></tr>
+<tr><td><code>last_epoch</code></td><td><code>100001</code></td><td>scheduler metadata 中存在该值</td></tr>
+<tr><td><code>step</code></td><td><code>100000</code></td><td>顶层末尾 metadata 记录该逻辑 step</td></tr>
+<tr><td>normalizer fields</td><td><code>action_normalizer=None</code>、<code>lowdim_normalizer=None</code></td><td>base binary 不提供可直接继承的 target normalizer</td></tr>
+</tbody></table>
+<p>这里的“字段存在”来自 pickle opcode，不是把所有 tensor 载入 CPU 后的运行时对象 dump；因此它是 metadata-level evidence。项目 README 另记录了一次 checkpoint smoke：<code>454/454</code> 个 shape-compatible model keys 被加载，并按设计跳过两个 normalizer 字段。[1][2]</p>
+<h2 id="5-base-checkpoint-robocasa-fine-tune">5. Base checkpoint 与 RoboCasa fine-tune 的身份分离</h2>
+<p>当前身份元组应写成：</p>
+<pre><code class="language-text">base = (
+  role=&quot;official UWM LIBERO base&quot;,
+  path=&quot;_downloads/libero_90.pt&quot;,
+  sha256=&quot;E43C...694602&quot;,
+  logical_step=100000,
+  action_normalizer=None,
+  lowdim_normalizer=None
+)
+
+target_finetune = (
+  role=&quot;RoboCasa target fine-tune&quot;,
+  checkpoint_path=&quot;not frozen in this gate&quot;,
+  normalizer_path=&quot;run-specific JSON, not frozen here&quot;,
+  scorer=&quot;not frozen here&quot;
+)</code></pre>
+<p>因此，base binary 的 SHA 可以证明“这份本地 UWM 初始化文件没有被无声替换”，但不能证明：</p>
+<ul><li>RoboCasa <code>models.pt</code> 是由它初始化并成功保存的；</li><li><code>--reset-action-head</code>、7D→12D action adaptation 或 task/prompt/state/right-view head 采用了哪个 exact config；</li><li>fine-tune 后的 normalizer 与 checkpoint 属于同一 run；</li><li>rollout server 在 fresh process 中重新加载了同一 binary；</li><li><code>0–2/54</code> 或 <code>0/54</code> 等闭环结果来自可复放且同一 scorer 的 checkpoint；</li><li>上游 UWM architecture、迁移 patch 或完整 run 是候选人独立原创。</li></ul>
+<h2 id="6-evidence-gate-reconciliation">6. 与既有 evidence gate 的 reconciliation</h2>
+<p>旧的 <code>vol_05_local_artifact_gate_eng004_006</code> 以当时可见的 report snapshot 为依据，曾把 <code>libero_90.pt</code> 标成“只有远端路径引用”。本次新证据位于用户明确提供的 <code>project</code> copy，且包含 C01 binary；因此该旧结论应改写为：</p>
+<table><thead><tr><th>Claim</th><th>修订前</th><th>当前修订</th><th>仍未闭合</th></tr></thead><tbody>
+<tr><td>base checkpoint binary</td><td>remote-path-only</td><td><code>local-direct</code>，C01 hash 可复算</td><td>上游发布 revision、下载来源与 loader run UUID</td></tr>
+<tr><td>base model key load</td><td>report reference</td><td>README + loader code 支持 <code>454/454</code> smoke claim</td><td>一次带 stdout/summary/hash 的 fresh rerun</td></tr>
+<tr><td>target fine-tune checkpoint</td><td>unverified</td><td>仍 <code>unverified</code></td><td><code>models.pt</code> binary/hash、normalizer、config、fresh reload</td></tr>
+<tr><td>closed-loop benchmark</td><td>unverified</td><td>仍 <code>unverified</code></td><td>episode JSONL、scorer/version、denominator、matched protocol</td></tr>
+<tr><td>ownership</td><td>unverified</td><td>仍 <code>unverified</code></td><td>逐文件个人/协作/工具辅助确认</td></tr>
+</tbody></table>
+<p>这不是把 base checkpoint 误升级为 RoboCasa 结果；它只修正了“本地是否有 base binary”这一项。</p>
+<h2 id="7">7. 面试安全口径</h2>
+<h3 id="30">30 秒回答</h3>
+<p>“我会把 base checkpoint 和 fine-tune checkpoint 分开验。当前 project copy 里确实有 UWM 的 <code>libero_90.pt</code>，文件大小是 4,044,929,076 bytes，SHA-256 是 <code>E43C562E...694602</code>；我还静态检查了 PyTorch archive，确认它内部是 <code>models_100001</code>、逻辑 step 100000，并且 action/lowdim normalizer 在 base 中是空值。项目 README 和 loader report 记录过 shape-compatible smoke，但这只能证明 base 初始化文件和加载合同，不能证明 RoboCasa 的 <code>models.pt</code>、normalizer、fresh-process reload 或 benchmark scorer。后者必须用 run-specific checkpoint hash、effective argv、episode bundle 和 ownership 再闭合。”</p>
+<h3 id="section-10">高频追问</h3>
+<ol><li><strong>为什么 <code>summary.json</code> 的 checkpoint 字符串不够？</strong> 因为字符串没有绑定文件 hash、加载进程、normalizer、代码 revision 和 run UUID；它可能只是传入参数或上游路径。</li><li><strong>base hash 是否证明微调成功？</strong> 不证明。它只冻结初始化文件；微调后的 binary 和 target normalizer 是另一条 lineage。</li><li><strong>为什么不直接 <code>torch.load</code> 作为验证？</strong> 4 GB 文件的静态 manifest 足以先验证 identity；完整 load 还需要记录 device、代码 revision、shape-match report 和 fresh-process output parity。</li><li><strong>你能说“我训练了这个 checkpoint”吗？</strong> 只有在 run manifest、保存产物、日志、加载复现与 ownership 逐项闭合后才能用更强措辞；当前安全说法是“按 UWM base checkpoint 开展迁移/训练尝试并审计加载合同”。</li></ol>
+<h2 id="8-gate">8. Gate 状态与下一步</h2>
+<table><thead><tr><th>Gate</th><th>状态</th><th>下一最小补件</th></tr></thead><tbody>
+<tr><td>C01 base binary existence/hash</td><td><code>PASS</code></td><td>保留 SHA 与 byte count；不移动原文件</td></tr>
+<tr><td>C01 archive metadata</td><td><code>PASS WITH WARNING</code></td><td>如需更强结论，保存一次 trusted loader 的 CPU shape report</td></tr>
+<tr><td>base→RoboCasa fine-tune lineage</td><td><code>WARN</code></td><td><code>models.pt</code>、exact config、normalizer 与 shared run ID</td></tr>
+<tr><td>fine-tune fresh-load parity</td><td><code>UNVERIFIED</code></td><td>新进程 reload + parameter/schema parity</td></tr>
+<tr><td>closed-loop scorer/denominator</td><td><code>UNVERIFIED</code></td><td>episode JSONL、scorer revision、task/init/seed tuple</td></tr>
+<tr><td>ownership</td><td><code>PENDING</code></td><td>候选人逐文件标注亲手/协作/工具辅助/只运行/只审查</td></tr>
+</tbody></table>
+<p>本页不新增题卡，不改变任何 <code>unseen</code> 状态，也不把 C01 的 base hash 写成 RoboCasa 成绩。现有 <code>PROJ-UWM-*</code> 与 RoboCasa ActionHeadFix 题卡继续保持 <code>unseen</code>。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>本地项目 README：<code>C:\Users\mousongzhe\project\wm\uwm_robocasa_transfer\README.md</code>（C04；含 base hash、checkpoint smoke 口径与运行合同）。</li><li>本地加载实现：<code>C:\Users\mousongzhe\project\wm\uwm_robocasa_transfer\uwm_robocasa_train.py</code>（<code>torch_load_checkpoint</code>、<code>load_shape_compatible</code>、<code>checkpoint_smoke</code>）。</li><li>本地下载合同：<code>C:\Users\mousongzhe\project\wm\uwm_robocasa_transfer\download_uwm_libero90_checkpoint.sh</code>（C03）。</li><li>本地 base binary：<code>C:\Users\mousongzhe\project\wm\uwm_robocasa_transfer\_downloads\libero_90.pt</code>（C01；SHA-256 由本次只读扫描重算）。</li><li><a href="vol_05_uwm_libero_robocasa_transfer_evidence_freeze.html">UWM/LIBERO/RoboCasa transfer evidence freeze</a>。</li><li><a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO project claim inventory</a>。</li><li><a href="../evidence/projects/uwm_robocasa_actionheadfix_30epoch_train_eval_p0_audit.html">UWM RoboCasa ActionHeadFix P0 audit</a>。</li></ol>
+</article></body></html>

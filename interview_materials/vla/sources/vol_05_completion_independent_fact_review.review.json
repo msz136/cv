@@ -1,0 +1,45 @@
+{
+  "artifact": "sources/vol_05_completion_independent_fact_review.md",
+  "html": "sources/vol_05_completion_independent_fact_review.html",
+  "review_date": "2026-07-19",
+  "status": "completion_audited / VOL-05 / coverage_44_of_44 / WARN",
+  "verdict": "WARN",
+  "source_sha256": "643341487E2CA7D233D95DD4AE064B5B8776EBC90C8691BDF9B956910CDECB4B",
+  "coverage": {
+    "planned_volume_count": 44,
+    "knowledge_nodes": 44,
+    "question_nodes": 44,
+    "source_entry_groups": 33,
+    "global_question_bank_count": 254,
+    "global_question_ids_unique": true,
+    "practice_state": "all VOL 05 cards unseen / no oral drill",
+    "node_ranges": [
+      "VLA-ENG-001..022",
+      "VLA-EVAL-001..022"
+    ]
+  },
+  "checks": {
+    "bounded_slice": "PASS (one volume-level completion audit; no new knowledge node or card generated)",
+    "artifact_matrix": "PASS (44 nodes each have knowledge Markdown/HTML/review and question Markdown/HTML/question-list/review; Batch 1/2A pages are explicitly shared)",
+    "source_entry_coverage": "PASS (Batch 1 and Batch 2A independent reviews plus 31 node-level source-freeze/review entries)",
+    "question_id_integrity": "PASS (44 VOL 05 IDs present and globally unique in the master index; all remain unseen)",
+    "canonical_sha": "PASS WITH WARNING (new audit SHA is synchronized; historical EVAL-003 metadata anomaly is reported, not repaired)",
+    "html_static_validation": "PASS (one H1, seven H2, four H3, ARIS academic v1 palette/serif/sticky TOC/900px rule, 145 local/external references parsed)",
+    "local_links": "PASS (0 missing relative targets in the generated audit HTML)",
+    "project_truth_boundary": "PASS (five projects remain WARN; no checkpoint, metric, causal or ownership claim upgraded)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy)",
+    "oral_drill": "PENDING (no real spoken response was collected)"
+  },
+  "historical_anomalies": [
+    "knowledge/vol_05_engineering_eval_eval003.review.json declares a stale SHA",
+    "sources/vol_05_eval003_success_rate_confidence_interval_source_freeze.review.json and its HTML metadata declare a stale SHA",
+    "Some older review records use short SHA formats; they are not rewritten in this completion slice"
+  ],
+  "open_items": [
+    "Do not interpret 44/44 as mastered; begin oral drill only after the user provides a real response.",
+    "Keep OPD, Robot Harness, OpenPiVLA, WAM and UWM claims bounded by their weakest missing artifact edge.",
+    "If metadata repair is desired, run a separate repair slice with explicit diff and re-render evidence.",
+    "Browser visual QA remains pending until file:// policy permits it or a supported local server path is available."
+  ],
+  "next": "Choose one cross-volume source audit, one project ownership-ledger slice, or the first real oral drill; do not bulk-generate another volume."
+}

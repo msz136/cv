@@ -1,0 +1,69 @@
+{
+  "artifact": "questions/vol_06_per010.md",
+  "html": "questions/vol_06_per010.html",
+  "question_list": "questions/vol_06_per010.question_list.md",
+  "knowledge": "knowledge/vol_06_per010_grounding_metric_parser_protocol.md",
+  "source_freeze": "sources/vol_06_per010_grounding_metric_parser_protocol_source_freeze.md",
+  "review_date": "2026-07-20",
+  "status": "drafted / VLA-PER-010 / card_1_of_1",
+  "verdict": "WARN",
+  "source_sha256": "A6A780CBC7545B957CEA6B06BFD6FFB67073E850E111C1B395DB71F587E997C4",
+  "question_count": 1,
+  "covered_question_ids": [
+    "VLA-PER-010"
+  ],
+  "difficulty_distribution": {
+    "L1": 0,
+    "L2": 1,
+    "L3": 0,
+    "L4": 0,
+    "L5": 0
+  },
+  "priority_distribution": {
+    "P0": 1,
+    "P1": 0
+  },
+  "practice_distribution": {
+    "unseen": 1,
+    "weak": 0,
+    "pass": 0,
+    "strong": 0,
+    "stale": 0
+  },
+  "answer_length_chars": {
+    "short_answer_min": 180,
+    "short_answer_max": 180,
+    "short_answer_average": 180,
+    "short_answer_threshold": 180,
+    "mechanism_answer_min": 338,
+    "mechanism_answer_max": 338,
+    "mechanism_answer_average": 338,
+    "mechanism_answer_threshold": 350
+  },
+  "checks": {
+    "bounded_slice": "PASS (one PER-010 atomic card was created from the synchronized source and knowledge; no PER-011 artifact or mastery change)",
+    "details_block_well_formed": "PASS (1/1 Markdown and HTML details/summary block is balanced and foldable)",
+    "question_id_unique": "PASS (VLA-PER-010 occurs once; the global registry synchronizes to 261 unique generated cards)",
+    "required_fields": "PASS (intent, short answer, mechanism, diagnosis/evidence, project hook, follow-up, easy-error, dangerous answer, sources and state are present)",
+    "answer_conciseness": "PASS (30-second answer 180 chars; mechanism answer 338 chars)",
+    "source_references": "PASS WITH WARNING (PER-010 source/knowledge, pinned MDETR/COCO API/RoboPoint/MMPose and OPD inventory are cited; raw predictions, exact checkpoint hashes and parser-v2 paired rerun remain missing)",
+    "parser_validity_contract": "PASS WITH WARNING (tag/syntax/coordinate/geometry and strict-vs-lenient channels remain separate; current local mixed-grounding and fallback behavior remains unsafe)",
+    "metric_non_equivalence": "PASS (IoU/Acc, RefExp R@k, COCO AP/AR, PCK, mask-hit and fixed-coordinate any-pair Hit are not conflated)",
+    "matching_and_denominator": "PASS WITH WARNING (multi-point nearest-pair optimism, invalid/empty/duplicate policy and bool-vs-numeric denominators are explicit; no task-specific OPD one-to-one metric is archived)",
+    "protocol_comparability": "PASS (data/sample, checkpoint, prompt/decode, transform, parser/scorer, matching, threshold and aggregation identity are required before comparison)",
+    "mdetr_revision_gate": "PASS WITH WARNING (the paper/code IoU/GIoU discrepancy and deterministic threshold flip are retained without asserting one cross-revision metric)",
+    "local_opd_boundary": "PASS WITH WARNING (local parser/scorer and 10k inventory facts support a three-protocol reconciliation plan, not standard PCK, robot success, causality or candidate ownership)",
+    "html_static_validation": "PASS (ARIS academic v1; source SHA synchronized; one H1, three H2 including TOC, one foldable summary, balanced inline Markdown/MathJax and zero formula-em/control-character issues)",
+    "local_links": "PASS (knowledge, source and evidence links resolve locally)",
+    "browser_visual_check": "BLOCKED (the existing in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "practice_state": "PASS (card remains unseen; no oral answer was provided and coaching_state.md is absent)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep VLA-PER-010 unseen until the candidate answers it orally.",
+    "Archive raw predictions, exact checkpoint/generation config and sample/image/gold hashes before parser protocol reconciliation.",
+    "Publish strict parser v2 golden tests and report original-strict, protocol-fixed-strict and lenient-diagnostic results separately.",
+    "Do not create coaching_state.md until an actual oral drill is completed."
+  ],
+  "next": "Generate only the VLA-PER-011 pseudo-label/teacher-noise source freeze; do not generate its knowledge/card or change mastery in the same slice."
+}

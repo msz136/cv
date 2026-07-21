@@ -1,0 +1,44 @@
+{
+  "artifact": "sources/vol_04_uwm_independent_fact_review.md",
+  "html": "sources/vol_04_uwm_independent_fact_review.html",
+  "review_date": "2026-07-17",
+  "status": "independent_review / UWM / WARN",
+  "verdict": "WARN",
+  "source_sha256": "4E16E0B024E17E7A6022026DF54ED4C1BBA4B6604266E61DBC5AA17F17C3FB74",
+  "frozen_revision": "WEIRDLabUW/unified-world-model@b7d4067c8859775e5b08f681e76d538015cdd445",
+  "raw_sources": {
+    "configs/model/uwm.yaml": "9C2EB19F65ED823C06F3D9C6A1520FF62393BA6DC4B1820E50AEA0F4BA62D152",
+    "models/uwm/uwm.py": "ADD93268D82B784CC733C84F8A09E98115C0ACC370FC9894BC9373976EF39E26",
+    "experiments/uwm/train.py": "7971ECEAB5495C4BD534F48AF5BE075751465CCB3E0E0F6549CAA9C5483E8707",
+    "experiments/uwm/train_robomimic.py": "71F8CBD2FAC379A69221B4224699E3777443F042D37279BC5BA5666284D07678",
+    "environments/robomimic/wrappers.py": "981088E44B22E1B7E68EB2679DFBE931D6839E33B43F2B45DA24913A9D2374AD",
+    "README.md": "84FDD2F1E3E3E90E33B65148F196EBE9DD7024514D0F911BD7D173F5D9406B16",
+    "official_project_page": "6C6155C17F807F55CCA22D40AF877CFFBB166D0116A3F3C04D72C2577EE623C6",
+    "arxiv_abstract_page": "1B71E15DE9AE075D10810403ACB1D69C1D9B8C3A72FA288531932CDD841BA5CD"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one independent UWM Audit B review; no knowledge/card generated)",
+    "raw_commit_fetch": "PASS (all eight requested raw/web sources fetched read-only; frozen commit pinned)",
+    "dual_modality_architecture": "PASS (shared token sequence, action/video decoders, DualTimestepEncoder directly observed)",
+    "action_free_semantics": "PASS WITH WARNING (max action timestep verified; zero action input and loss behavior separated)",
+    "action_mask_boundary": "PASS WITH WARNING (claim that action_mask is a loss mask rejected; full action MSE is directly visible)",
+    "inference_mode_mapping": "PASS WITH WARNING (forward/inverse/marginal/joint methods mapped; scheduler endpoint numerical smoke pending)",
+    "shape_and_default_config": "PASS (action_len=16, low_dim/language flags and 100/10 diffusion steps directly verified)",
+    "metric_boundary": "PASS (validation action/image proxy metrics separated from rollout success)",
+    "checkpoint_runtime_boundary": "PASS WITH WARNING (load/save fields and README paths visible; no hash/weights/runtime)",
+    "license_boundary": "PASS WITH WARNING (LICENSE/COPYING/NOTICE raw paths returned 404; reuse license unresolved)",
+    "local_project_evidence": "PASS (no project score or ownership claim upgraded)",
+    "html_static_validation": "PASS (one H1, eight H2, four H3, three tables, five local/external references)",
+    "local_links": "PASS (five repository-local links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Verify diffusers timesteps[0]/[-1] endpoint semantics in a pinned runtime.",
+    "Run action-free video sample-loss gradient and explicit masked-loss ablation if runtime/checkpoint becomes available.",
+    "Obtain and hash one checkpoint only if access and license permit; record config/normalizer manifest.",
+    "Keep strict LIBERO protocol and personal project scores in VOL 07 evidence, not this method review.",
+    "Keep all VOL 04 cards unseen until real oral practice."
+  ],
+  "next": "Run a one-question VLA-WM-015 oral drill or generate the separate WM-016 knowledge/card slice; keep WM-017..038 deferred until their own evidence gates."
+}

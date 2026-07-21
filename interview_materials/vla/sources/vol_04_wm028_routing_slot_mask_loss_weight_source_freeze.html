@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-028 Source Freeze：Routing、Slot Mask 与 Loss Weight 防污染合同</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm028_routing_slot_mask_loss_weight_source_freeze.md">
+<meta name="aris:source-sha256" content="b610b9998a7aa6eddd101247ca171dc226b111f6d09f6997d8bd81f38661c9db">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>b610b9998a7aa6eddd101247ca171dc226b111f6d09f6997d8bd81f38661c9db</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm028_routing_slot_mask_loss_weight_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 来源冻结</a></li><li><a href="#2-1-frozen-sha">2.1 Frozen 文件与 SHA</a></li><li><a href="#3">3. 五层控制面</a></li><li><a href="#4-frozen-cosmos-routing-condition-contract">4. Frozen Cosmos routing 与 condition contract</a></li><li><a href="#5-target-valid-metric-mask">5. Target、valid 与 metric mask</a></li><li><a href="#5-1-target-mask">5.1 Target mask</a></li><li><a href="#5-2-valid-padding-mask">5.2 Valid/padding mask</a></li><li><a href="#5-3-metric-mask">5.3 Metric mask</a></li><li><a href="#6-effective-weight-lambda">6. Effective weight：不只是一个 lambda</a></li><li><a href="#7-frozen-code">7. Frozen code 的三项关键边界</a></li><li><a href="#8">8. 最小防污染断言与测试</a></li><li><a href="#9">9. 可审计伪代码</a></li><li><a href="#10-wam">10. WAM 真实性边界</a></li><li><a href="#11">11. 下一入口</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 WM-028 Source Freeze：Routing、Slot Mask 与 Loss Weight 防污染合同</h1>
+<div class="meta">审计日期：2026-07-18 状态：source_frozen / VLA-WM-028 / knowledge_synced / card_synced / WARN 覆盖题目：VLA-WM-028 本轮边界：冻结 sample routing、condition/target/valid/metric mask、reduction 与 effective weight 的分层合同，并独立回查 frozen Cosmos commit；不声称推荐的 valid mask/per-role normalization 已存在于上游或用户 WAM，也不声称某种比例/权重已提升闭环。</div>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>Routing 决定样本承担什么角色。</strong>demo、world rollout、value rollout 的来源、比例和 label 语义必须先确定；loss weight 不能把错误 role 变正确。[S1][S2]</li><li><strong>Condition mask 与 target mask 控制不同信息流。</strong>condition mask 决定哪些 slot 作为 clean input，target mask 决定哪些预测误差进入反向；valid/padding mask 决定 target 是否真实有效，metric mask 只决定日志统计。四者不能复用一个字段。[S2][S3]</li><li><strong>Effective weight 不等于配置里的 \(\lambda\)。</strong>采样概率、每个 role 的 active slot 数、每 slot 元素数、noise weight、reduction denominator 和显式 multiplier 共同决定实际 loss/gradient share。</li><li><strong>Frozen Cosmos base recipe 并未默认做 role-isolated target masking。</strong>配置类中 <code>mask_loss_for_action_future_state_prediction=False</code>、<code>mask_value_prediction_loss_for_policy_prediction=False</code>、<code>action_loss_multiplier=1</code>，基础 LIBERO/RoboCasa experiment config 没有覆写；因此 optional branch 不能写成所有官方 checkpoint 的既定行为。[S2]</li><li><strong>Frozen target mask 后仍做 full-tensor mean。</strong>代码先将 <code>final_mask_B_T</code> 乘到 EDM loss，再对整个 \(B\times C\times T\times H\times W\) 求 mean；active slot 少的 role 会被隐式降权。若要比较 per-role normalized objective，必须明确这是新的设计/消融，不是 frozen exact loss。[S2]</li><li><strong>WAM 本地 resolved config 仍缺。</strong>没有 local config、checkpoint、mask dump、role histogram、loss denominator、gradient/paired episodes 和 ownership，不能说“本人已通过 routing/mask/weight 消除污染”。[S5]</li></ol>
+<h2 id="2">2. 来源冻结</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>冻结版本</th><th>可支持</th><th>不能支持</th><th>状态</th></tr></thead><tbody>
+<tr><td>S1</td><td>Kim et al., <em>Cosmos Policy</em> + claim-to-code audit</td><td>arXiv:2601.16163v1；paper CC BY 4.0</td><td>policy/world/value 概率角色、约 50/25/25 base routing、joint latent contract</td><td>所有 run 使用同一比例；用户本地结果</td><td>primary / WARN</td></tr>
+<tr><td>S2</td><td><code>NVlabs/cosmos-policy</code> official code</td><td>commit <code>18a2accadf4e7a3531e56754102af5a24d2316da</code>，Apache-2.0</td><td>dataset role flags、condition mask、target-mask branches、defaults、global mean reduction、action multiplier</td><td>用户 resolved override、checkpoint 兼容性、local execution</td><td>official-code / checked</td></tr>
+<tr><td>S3</td><td>WM-025 Slot / Mask / Loss Source Freeze</td><td>本地 canonical + review</td><td>slot layout、四类 mask、EDM/component metric 边界与基础单测</td><td>WM-025 审计化归一式是 frozen exact reduction</td><td>supporting / WARN</td></tr>
+<tr><td>S4</td><td>WM-027 Negative Transfer / Gradient Conflict</td><td>本地 canonical + review</td><td>contract-first 顺序、norm/gradient share 与 matched outcome</td><td>gradient surgery 可以修 routing/mask bug</td><td>supporting / WARN</td></tr>
+<tr><td>S5</td><td>WAM Claim–Evidence Inventory</td><td>2026-07-18</td><td>local diagnostic 边界和 config/checkpoint/mask/gradient/ownership 缺口</td><td>historical metrics 或污染根因已确认</td><td>local-evidence / WARN</td></tr>
+</tbody></table>
+<h3 id="2-1-frozen-sha">2.1 Frozen 文件与 SHA</h3>
+<table><thead><tr><th>文件</th><th>作用</th><th>SHA-256</th></tr></thead><tbody>
+<tr><td><code>cosmos_policy/datasets/libero_dataset.py</code></td><td>demo/rollout routing、world/value role、slot index、return</td><td><code>0114300e72ab52acc0946cc4563aef8af924cc5c2413a4c2329c1f0eade9fe02</code></td></tr>
+<tr><td><code>cosmos_policy/datasets/robocasa_dataset.py</code></td><td>同上；显式 <code>p_world_model</code></td><td><code>2c4e5f0d2e05647a9ed573b671e7966fbd55683697c7bb105418ba33ed661004</code></td></tr>
+<tr><td><code>cosmos_policy/models/policy_video2world_model.py</code></td><td>role-conditioned clean input mask</td><td><code>13312470552a9fe9b6a8915f214331902b455a279fd985b9121683c484622eb2</code></td></tr>
+<tr><td><code>cosmos_policy/models/policy_text2world_model.py</code></td><td>target mask、multiplier、EDM loss 与 reduction</td><td><code>cd7cc70b831fedd56be4fb474916250c372c6fcea1c44730600ee1a7d73987c4</code></td></tr>
+<tr><td><code>cosmos_policy/config/experiment/cosmos_policy_experiment_configs.py</code></td><td>base LIBERO/RoboCasa dataset routing</td><td><code>bc75c73d04f6f57c7e3e07f6fb5fc8dac8b6b8c40ffb326354e64c4693e4d807</code></td></tr>
+</tbody></table>
+<h2 id="3">3. 五层控制面</h2>
+<table><thead><tr><th>层</th><th>字段/对象</th><th>回答的问题</th><th>失败后果</th></tr></thead><tbody>
+<tr><td>sample admission</td><td>dataset source、split、success/failure、embodiment</td><td>样本能否进入训练？</td><td>label/domain 污染</td></tr>
+<tr><td>role routing</td><td><code>rollout_data_mask</code>、world/value role flag</td><td>这条样本承担 policy/world/value 哪个角色？</td><td>错 objective、错 condition</td></tr>
+<tr><td>condition mask</td><td>clean input mask</td><td>模型在该角色下可以看见哪些 slot？</td><td>target leakage 或缺条件</td></tr>
+<tr><td>target + valid mask</td><td>role target、padding validity</td><td>哪些误差真实有效并进入反向？</td><td>目标串线、terminal repeat 污染、empty loss</td></tr>
+<tr><td>weight + reduction</td><td>sampling ratio、slot count、noise weight、multiplier、denominator</td><td>每个 role 最终有多大优化影响？</td><td>某目标被淹没或主任务被压制</td></tr>
+</tbody></table>
+<p>metric mask 独立于上述训练面：它只选择 action/future/value 的日志切片，不能反向证明 training mask 生效。</p>
+<h2 id="4-frozen-cosmos-routing-condition-contract">4. Frozen Cosmos routing 与 condition contract</h2>
+<p>LIBERO/RoboCasa index space 先按 demo、success rollout、failure rollout 组织。demo 的 <code>rollout_data_mask=0</code>；rollout 为 1。rollout 再分 world/value role；LIBERO 固定 \(p_{world}=0.5\)，RoboCasa 暴露 <code>p_world_model</code>，默认 0.5。基础 experiment config 的 <code>demonstration_sampling_prob=0.5</code>、<code>success_rollout_sampling_prob=0.5</code>，于是得到约 policy/world/value = 50/25/25，但这是指定 frozen recipe 的期望比例，不是每个 finite batch 或所有 checkpoint 的事实。[S1][S2]</p>
+<p>role 到 condition 的 frozen 语义：</p>
+<table><thead><tr><th>Role</th><th>Clean condition</th><th>主要生成/预测对象</th></tr></thead><tbody>
+<tr><td>policy demo</td><td>current state \(s\)</td><td>action，joint regime 还可含 future/value</td></tr>
+<tr><td>world rollout</td><td>current state + action \((s,a)\)</td><td>future state；value 可作为 joint output</td></tr>
+<tr><td>value rollout</td><td>除 value frame 外的 prefix \((s,a,s')\)</td><td>value frame</td></tr>
+<tr><td>state-value variant</td><td>future state \(s'\)</td><td>\(V(s')\)</td></tr>
+<tr><td>Q variant</td><td>current state + action \((s,a)\)</td><td>\(Q(s,a)\)</td></tr>
+</tbody></table>
+<p><code>condition_video_input_mask=1</code> 表示 clean condition，0 表示 denoise/predict。这个方向必须随字段名、shape、dtype、slot index 一起冻结；不能凭“1 通常表示有效 target”的习惯解释。[S2]</p>
+<h2 id="5-target-valid-metric-mask">5. Target、valid 与 metric mask</h2>
+<h3 id="5-1-target-mask">5.1 Target mask</h3>
+<p>若 role-isolated target masking 打开，目标真值表应是：demo 只计 action slot，world sample 只计 future proprio/images，value sample 只计 value frame。Frozen code 的 <code>mask_loss_for_action_future_state_prediction</code> 实现了这一 optional branch，但默认 <code>False</code>，base experiment config 未覆写。[S2]</p>
+<p>核心 invariant：</p>
+<div class="formula">\[
+m^{target}_{b,t}=1\Longrightarrow
+\text{slot}(t)\in\mathcal T(r_b),
+\]</div>
+<div class="formula">\[
+m^{target}_{b,t}=1\Longrightarrow
+m^{condition}_{b,t}=0
+\quad\text{for a role-isolated predicted target}.
+\]</div>
+<p>变量解释：\(r_b\) 是 sample role，\(\mathcal T(r_b)\) 是该 role 允许的 target slot 集；第二式阻止同一真正 target 同时作为 clean condition。它是 role-isolated 设计 invariant；frozen joint objective 在 target-mask branch 关闭时不是该 isolated regime，不能用这条式子反向否定它。</p>
+<h3 id="5-2-valid-padding-mask">5.2 Valid/padding mask</h3>
+<p>推荐再有独立 \(q_{b,t}\) 表示该 target 是否来自真实时刻，而非 terminal clamp/repeated action：</p>
+<div class="formula">\[
+m^{effective}_{b,t}=m^{target}_{b,t}q_{b,t}.
+\]</div>
+<p>变量解释：\(q=0\) 应排除越过 episode 末端的 action/future target。Frozen LIBERO/RoboCasa dataset 会 clamp future index、重复最后 action，未提供独立 valid-step mask；因此 \(q\) 是推荐补强，不是上游已存在事实。[S2][S3]</p>
+<h3 id="5-3-metric-mask">5.3 Metric mask</h3>
+<p>component action/future/value L1/MSE 可按 role/slot 切片监控，但它们不等于 <code>kendall_loss</code> 的 exact target mask。必须分别记录 <code>training_target_mask_sha</code> 与 <code>metric_slice_version</code>，避免日志看似分开、反向仍联合。</p>
+<h2 id="6-effective-weight-lambda">6. Effective weight：不只是一个 lambda</h2>
+<p>先把每个 latent frame 的 EDM error 写成：</p>
+<div class="formula">\[
+e_{b,t}=\frac{1}{CHW}
+\sum_{c,h,w}w(\sigma_{b,t})
+\left(x_{0,bcthw}-\hat x_{0,bcthw}\right)^2.
+\]</div>
+<p>变量解释：\(w(\sigma)\) 是 noise-level weight，\(e_{b,t}\) 已对 channel/spatial 元素取平均；实现对应 <code>pred_mse * weights_per_sigma</code>。</p>
+<p>一种 per-role normalized 设计可写为：</p>
+<div class="formula">\[
+\mathcal L_r=
+\frac{\sum_{b,t}\mathbf 1[r_b=r]
+m^{target}_{b,t}q_{b,t}e_{b,t}}
+{\sum_{b,t}\mathbf 1[r_b=r]m^{target}_{b,t}q_{b,t}+\epsilon},
+\qquad
+\mathcal L=\sum_r\lambda_r\mathcal L_r.
+\]</div>
+<p>变量解释：该式让 \(\lambda_r\) 更接近显式 role weight，并对 active target 数归一化；它是审计/消融设计，不是 frozen Cosmos exact reduction。</p>
+<p>Frozen code 的 exact 路径是：先把 frame mask/multiplier 乘到 EDM tensor，再对整个 tensor <code>mean()</code>。因此其优化影响近似同时依赖：</p>
+<div class="formula">\[
+\text{exposure}_r
+\propto
+p_r\times E[N_r^{active}]\times
+\lambda_r\times E[w(\sigma)],
+\]</div>
+<p>变量解释：\(p_r\) 是 role 采样概率，\(N_r^{active}\) 是 active frame/element 数，\(\lambda_r\) 包括 action multiplier 等显式缩放。残差与参数 Jacobian 还会进一步决定 gradient share，所以最终要测 \(\lVert\lambda_r g_r\rVert\)，不能只看 exposure。</p>
+<h2 id="7-frozen-code">7. Frozen code 的三项关键边界</h2>
+<ol><li><code>mask_loss_for_action_future_state_prediction=False</code>：默认不启用 role-isolated action/future/value target mask。</li><li><code>action_loss_multiplier=1</code> 且类型为 integer：默认不额外 upweight action；若改为非整数，代码会 cast 为 integer，resolved config 必须显式记录。</li><li><code>mask_value_prediction_loss_for_policy_prediction</code> 会构造 <code>final_mask_B_T</code>，但 frozen apply-mask 条件没有包含该 flag。主 base config 未打开它，不能据此否定官方 checkpoint；个人配置若打开，必须用 non-zero loss/gradient test 验证，而不是信配置名。[S2]</li></ol>
+<h2 id="8">8. 最小防污染断言与测试</h2>
+<ol><li><strong>Role one-hot</strong>：demo 不得同时是 rollout；rollout 的 world/value role 必须恰有一个为 1。</li><li><strong>Role×slot truth table</strong>：打印每种 role 的 condition、target、valid、metric mask；核对 0/1 方向、shape、dtype 和 slot index。</li><li><strong>No-target-leak</strong>：role-isolated regime 中，真正 target 不得同时 clean-conditioned；故意翻转一位应触发测试。</li><li><strong>Empty-target fail-fast</strong>：每个 active role 的 valid target count &gt; 0；不能把全零 mask 当作 loss=0 的好结果。</li><li><strong>Padding invariance</strong>：改变 padded value 但保持 valid target 不变，loss/gradient 应不变；若变化说明 q/denominator 错。</li><li><strong>Mixture calibration</strong>：采样至少一个统计 window，observed role/token/active-slot share 接近 resolved expectation，而非只读 config。</li><li><strong>Weight monotonicity</strong>：单独改变 multiplier 时，目标 slot 的 pre-clip gradient/exposure 按预期变化，其他 slot 不应意外改变。</li><li><strong>Distributed parity</strong>：单卡与 DDP/FSDP 在同 logical batch 上的 role count、loss numerator/denominator 和 gradient share 对齐。</li><li><strong>Matched outcome</strong>：action-only、joint、isolated-mask、per-role-normalized、weight/ratio sweep 固定数据/算力/协议，最后比较闭环。</li></ol>
+<h2 id="9">9. 可审计伪代码</h2>
+<pre><code class="language-python">def build_multirole_loss(batch, model, resolved_contract):
+    # 1. Route every sample to exactly one semantic training role.
+    role = validate_one_hot_role(batch.role_flags)
+
+    # 2. Build independent masks; never reuse condition as target/metric validity.
+    condition_mask = build_condition_mask(role, batch.slot_indices)
+    target_mask = build_target_mask(role, batch.slot_indices)
+    valid_mask = build_valid_mask(batch.episode_length, batch.target_timestep)
+    assert_no_target_leak(role, condition_mask, target_mask)
+
+    # 3. Compute the exact noise-weighted tensor before any diagnostic slicing.
+    edm_tensor = model.exact_edm_error(batch, condition_mask)
+    effective_mask = target_mask * valid_mask
+    assert_valid_target_count(effective_mask, role)
+
+    # 4. Normalize and weight according to the resolved experiment contract.
+    per_role_loss = reduce_per_role(edm_tensor, effective_mask, role)
+    total_loss = sum(resolved_contract.loss_weight[r] * per_role_loss[r] for r in role.types)
+
+    # 5. Log observed role/slot/denominator and gradient share, not config alone.
+    audit_role_exposure_and_gradient(total_loss, per_role_loss, role, effective_mask)
+    return total_loss</code></pre>
+<p>这段伪代码是推荐的防污染合同，不是 frozen Cosmos 或用户 WAM 已存在实现。复现 exact frozen behavior 时，应保留其 full-tensor mean 与 optional flags，再以独立 arm 比较改造。</p>
+<h2 id="10-wam">10. WAM 真实性边界</h2>
+<p>当前 inventory 只能支持“上游 routing/slot/mask/loss contract 已核，并设计了审计清单”。CoffeePressButton 单 episode trace 不包含训练 role histogram、resolved flags、mask tensor、denominator 或 gradient；它不能证明训练污染、修复或收益。[S5]</p>
+<p>安全说法：<strong>“我会把 sample role、condition、target、valid、metric mask 和 reduction 分开审计，并用 observed exposure/gradient share 与 matched closed-loop 验证。”</strong></p>
+<p>不能说：<strong>“我已调好 50/25/25 和 loss weight，消除了 WAM 多目标污染。”</strong></p>
+<h2 id="11">11. 下一入口</h2>
+<p>下一 bounded slice 是 <code>VLA-WM-029</code>：value 在 imagined/OOD state 上为何失准，以及 calibration/pessimism 如何限制 planning 风险。WM-029 应复用本页的 value role/label/valid contract，不再重复 mask 实现。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Kim et al., <a href="https://arxiv.org/abs/2601.16163v1">Cosmos Policy: Fine-Tuning Video Models for Visuomotor Control and Planning</a>, 2026。</li><li>NVlabs, <a href="https://github.com/NVlabs/cosmos-policy/tree/18a2accadf4e7a3531e56754102af5a24d2316da"><code>cosmos-policy@18a2acc</code></a>。重点：<a href="https://github.com/NVlabs/cosmos-policy/blob/18a2accadf4e7a3531e56754102af5a24d2316da/cosmos_policy/datasets/libero_dataset.py">dataset routing</a>、<a href="https://github.com/NVlabs/cosmos-policy/blob/18a2accadf4e7a3531e56754102af5a24d2316da/cosmos_policy/models/policy_video2world_model.py">condition mask</a>、<a href="https://github.com/NVlabs/cosmos-policy/blob/18a2accadf4e7a3531e56754102af5a24d2316da/cosmos_policy/models/policy_text2world_model.py">target mask / reduction</a>。</li><li><a href="vol_04_wm025_cosmos_wam_slot_mask_loss_source_freeze.html">WM-025 Slot / Mask / Loss Source Freeze</a>。</li><li><a href="vol_04_wm027_auxiliary_negative_transfer_gradient_conflict_source_freeze.html">WM-027 Negative Transfer / Gradient Conflict</a>。</li><li><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM Claim–Evidence Inventory</a>。</li></ol>
+</article></body></html>

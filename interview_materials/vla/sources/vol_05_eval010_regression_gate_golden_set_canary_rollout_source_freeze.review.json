@@ -1,0 +1,44 @@
+{
+  "artifact": "sources/vol_05_eval010_regression_gate_golden_set_canary_rollout_source_freeze.md",
+  "html": "sources/vol_05_eval010_regression_gate_golden_set_canary_rollout_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-EVAL-010 / knowledge_drafted / card_1_of_1_unseen / WARN",
+  "verdict": "WARN",
+  "source_sha256": "512d9e16b392e7258358c0092dff6ff5049890040d8d5efd1fdadfe7048b2911",
+  "coverage": {
+    "knowledge_id": "VLA-EVAL-010",
+    "public_source_groups_checked": 2,
+    "public_source_groups_retrieval_blocked": 1,
+    "project_inventories_checked": 5,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "ml_test_score": "IEEE Big Data 2017 / Google Research PDF SHA-256 8db5862dc7c7aaa2c55bb43bd42fc55531a0503782b7026b5811c00c98befd31",
+    "argo_rollouts": "commit 9273b0ee05dbb629cc72fb9d343c08356c8379c8 / Apache-2.0",
+    "sre_canarying_releases": "official URL / 2026-07-18 retrieval blocked / no response SHA asserted"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one EVAL-010 source, knowledge node and unseen card; EVAL-011 deferred)",
+    "source_freeze": "PASS WITH WARNING (ML Test Score and Argo revisions/hashes frozen; SRE official page retrieval blocked and non-authoritative for unique claims)",
+    "concept_separation": "PASS (checkpoint curve, smoke, summary, golden, regression gate and canary separated)",
+    "golden_contract": "PASS (immutable cases/expected/invariants/slices, contamination, versioning and retirement covered)",
+    "paired_gate": "PASS (common support, per-case delta, non-inferiority LCB, pre-registered margins and fail-closed missingness)",
+    "multi_metric_safety": "PASS (global/per-task/critical/safety/latency cannot be averaged to hide a hard regression)",
+    "canary_state_machine": "PASS (shadow, bounded exposure, minimum window, analysis, abort and full-bundle rollback)",
+    "project_truth_boundary": "PASS (five projects mapped without claiming an implemented release system)",
+    "canonical_sha": "PASS (Markdown, HTML metadata and review SHA match)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, fourteen H2, seven H3, three tables, four code blocks, two formula blocks, zero formula em)",
+    "local_links": "PASS (relative references resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Collect common-support raw bundles and pre-registered gate decisions before claiming regression protection.",
+    "Do not infer deployment or canary usage from Argo documentation or from checkpoint/smoke artifacts.",
+    "Retry the SRE official page only in an environment that can record the exact response revision/hash; no current claim depends uniquely on it.",
+    "Do not create coaching_state.md before a real oral response."
+  ],
+  "next": "Proceed only to VLA-EVAL-011 offline metric versus online success correlation; keep VLA-EVAL-010 WARN/unseen."
+}

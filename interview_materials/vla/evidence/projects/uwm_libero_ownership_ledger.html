@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UWM / LIBERO Ownership Ledger：协议迁移、数据管线与结果边界</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\uwm_libero_ownership_ledger.md">
+<meta name="aris:source-sha256" content="8bb8e60a91111d1a15e4101a49a4e31d42750efcc92f5ba154dfaf98d4789e2f">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>8bb8e60a91111d1a15e4101a49a4e31d42750efcc92f5ba154dfaf98d4789e2f</code>；生成自：<code>interview_materials\vla\evidence\projects\uwm_libero_ownership_ledger.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#0-self-report-artifact-ownership">0. 候选人项目范围自述（self-report，不等于 artifact/ownership 证明）</a></li><li><a href="#1-question">1. 问题（Question）</a></li><li><a href="#2-role-fit-jd">2. Role Fit 与 JD 能力映射</a></li><li><a href="#3-ownership">3. Ownership 证据合同</a></li><li><a href="#3-1-and-gate">3.1 五层 AND-gate</a></li><li><a href="#3-2">3.2 状态词汇</a></li><li><a href="#4-git-run-lineage">4. Git、工作树与 run lineage 冻结事实</a></li><li><a href="#4-1-project-history">4.1 Project history</a></li><li><a href="#4-2-current-worktree-boundary">4.2 Current worktree boundary</a></li><li><a href="#4-3-result-artifact-boundary">4.3 Result artifact boundary</a></li><li><a href="#5-per-file-per-decision-ownership-matrix">5. Per-file / per-decision ownership matrix</a></li><li><a href="#6-claim-ownership-reconciliation">6. Claim → ownership reconciliation</a></li><li><a href="#7-production-gap">7. Production Gap：抗追问最小补证据</a></li><li><a href="#8-question-tree">8. Question Tree 与回答分层</a></li><li><a href="#9-sp-ssp">9. SP/SSP 证据就绪度</a></li><li><a href="#10">10. 候选人确认表</a></li><li><a href="#11">11. 分阶段补强计划</a></li><li><a href="#12-output-pack">12. Output Pack</a></li><li><a href="#12-1-bullet">12.1 简历 bullet 三档</a></li><li><a href="#12-2">12.2 两分钟叙事骨架</a></li><li><a href="#12-3-6">12.3 面试前 6 题</a></li><li><a href="#13-ownership">13. Ownership 审计伪代码</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>UWM / LIBERO Ownership Ledger：协议迁移、数据管线与结果边界</h1>
+<div class="meta">状态：<code>ownership_audited / coarse_git_supported / candidate_confirmation_pending / WARN</code> 审查日期：2026-07-21 证据截止：2026-07-21 项目范围：<code>C:\Users\mousongzhe\Project</code> 中的 UWM/LIBERO official repro、RoboCasa transfer、DataLoader stall diagnosis、strict/reset recovery 与用户确认结果。 结论先行：本地可以核验 LIBERO task mapping、finetune/rollout launcher、<code>pruned_init</code>/warmup 协议、DataLoader-only smoke，以及RoboCasa actionheadfix一条30-epoch run的8×54 raw rollout；但 project snapshot 是一次性快照，RoboCasa 路径经历多次同步。当前 <code>mousongzhe</code> 提交证明的是候选账号提交了这些 artifact，不证明每个函数由候选人独立设计、编写、运行或验收。LIBERO <code>186/250</code> 仍是用户确认summary；RoboCasa raw denominator虽已存在，produced checkpoint binary/hash、env/scorer/videos与个人角色仍未闭合。</div>
+<h2 id="0-self-report-artifact-ownership">0. 候选人项目范围自述（self-report，不等于 artifact/ownership 证明）</h2>
+<p>2026-07-21，候选人在本线程明确表示：</p>
+<div class="meta">“做了 UWM 在 LIBERO 的 fine-tune 和 eval，做了 UWM 在 RoboCasa 的尝试，协议对齐和训练评估。”</div>
+<p>这条自述用于把 UWM 两条线纳入面试准备和 artifact 搜索范围；它不自动证明具体代码 ownership、checkpoint lineage、严格/重置协议下的结果归因，或 RoboCasa 的 root cause。当前安全映射如下：</p>
+<table><thead><tr><th>自述范围</th><th>当前证据层</th><th>现在可用的安全动词</th><th>仍不能直接说</th></tr></thead><tbody>
+<tr><td>UWM / LIBERO fine-tune</td><td><code>candidate-self-report</code> + local launcher/protocol inventory</td><td>“开展 LIBERO 适配与 fine-tune 训练链对齐”</td><td>独立设计 UWM architecture、拥有可加载 checkpoint、结果已 result-owned</td></tr>
+<tr><td>UWM / LIBERO eval</td><td><code>candidate-self-report</code> + strict/reset/Table II protocol evidence</td><td>“运行/审计 LIBERO 评估协议”</td><td>把 strict、reset-style、Table II 结果混成一个分数，或把用户确认数字写成 raw 本地结果</td></tr>
+<tr><td>UWM / RoboCasa 尝试、协议对齐与训练评估</td><td><code>candidate-self-report</code> + actionheadfix/raw rollout 与诊断部分支持</td><td>“尝试 RoboCasa 迁移、对齐 action/normalizer/controller/eval contract 并做训练诊断”</td><td>已定位 root cause、完整成功率、checkpoint/env/scorer ownership</td></tr>
+</tbody></table>
+<p>在候选人逐项回答本页 ownership questions 前，这三行保持 <code>candidate-self-report / role-confirmation-pending</code>，不迁移为 <code>role-confirmed</code> 或 <code>result-owned</code>。</p>
+<h2 id="1-question">1. 问题（Question）</h2>
+<p>面试官问“UWM/LIBERO 哪些是你做的？”时，要拆开：</p>
+<ol><li>UWM shared diffusion 与 LIBERO benchmark 的上游机制；</li><li>本地 snapshot 中的迁移脚本、patch、配置、报告和诊断 artifact；</li><li>候选人亲手设计、修改、运行、审查或验收的动作；</li><li>上游 repo、远端运行者、协作者和工具辅助的边界；</li><li>checkpoint、normalizer、episode trace、success summary 与论文比较的归属。</li></ol>
+<p>本页不是把项目页中的“负责/迁移”自动认证为个人贡献。没有候选人逐项确认或过程证据的行保持 <code>role-confirmation-pending</code>。</p>
+<h2 id="2-role-fit-jd">2. Role Fit 与 JD 能力映射</h2>
+<table><thead><tr><th>岗位能力</th><th>本地可核证据</th><th>Ownership 强度</th><th>当前策略</th></tr></thead><tbody>
+<tr><td>VLA/VLM 训练迁移</td><td>LIBERO-90→LIBERO-10 finetune launcher、DDP patch、task map、checkpoint path contract</td><td>local-direct；个人动作待确认</td><td>可讲训练/评估接口迁移，不说原创 UWM architecture</td></tr>
+<tr><td>Policy rollout / benchmark protocol</td><td>fixed-pruned-init、5-step warmup、50 rollouts/task、success summary</td><td>local-direct / user-confirmed final</td><td>先绑定 init/seed/normalizer/horizon/scorer，再说数字</td></tr>
+<tr><td>数据管线工程</td><td>Zarr/HDF5 buffer、infinite sampler、preload、workers/prefetch/pin 与 stall benchmark</td><td>local-direct；full GPU A/B 缺</td><td>可讲 DataLoader diagnosis，不承诺训练吞吐 uplift</td></tr>
+<tr><td>跨 benchmark 适配</td><td>RoboCasa action/state/prompt/normalizer/eval patches、30-epoch train log与8×54 raw rollout</td><td>local-direct / remote-snapshot-raw</td><td>讲train→closed-loop failure，不写RoboCasa benchmark success</td></tr>
+<tr><td>结果与可比性</td><td>0.744、0.928、Table II≈0.79 的 protocol reconciliation</td><td>user-confirmed/report-supported；C3 未闭合</td><td>不把 0.744 写成本地 raw verified 或严格论文复现</td></tr>
+</tbody></table>
+<h2 id="3-ownership">3. Ownership 证据合同</h2>
+<h3 id="3-1-and-gate">3.1 五层 AND-gate</h3>
+<p>强主张“我负责并完成了 X”至少需要：</p>
+<div class="formula">\[
+G(c)=I(c)\land A(c)\land D(c)\land V(c)\land O(c).
+\]</div>
+<p><code>I</code> 是 file/commit/run identity，<code>A</code> 是 artifact，<code>D</code> 是设计与修改过程，<code>V</code> 是运行/验收，<code>O</code> 是个人、上游、协作者和工具边界。commit author、项目 report、远端 path 和一个 summary JSON 都只能覆盖部分层级。</p>
+<h3 id="3-2">3.2 状态词汇</h3>
+<table><thead><tr><th>状态</th><th>含义</th><th>可用动词</th></tr></thead><tbody>
+<tr><td><code>upstream-verified</code></td><td>frozen UWM/LIBERO source audit 支持的公开机制/协议</td><td>“上游定义/论文使用”</td></tr>
+<tr><td><code>snapshot-local</code></td><td>本地 Git snapshot 中存在文件或报告</td><td>“本地快照包含”</td></tr>
+<tr><td><code>git-coarse</code></td><td>候选账号提交，但没有逐文件历史</td><td>“候选账号提交了快照”</td></tr>
+<tr><td><code>self-attested</code></td><td>简历/项目页自述本人负责</td><td>“候选人自述负责”</td></tr>
+<tr><td><code>role-confirmed</code></td><td>候选人逐项确认亲手/协作/工具/运行角色</td><td>“我负责/我修改”</td></tr>
+<tr><td><code>result-owned</code></td><td>checkpoint、normalizer、protocol、episodes、scorer 与角色闭合</td><td>“我完成并得到……”</td></tr>
+</tbody></table>
+<h2 id="4-git-run-lineage">4. Git、工作树与 run lineage 冻结事实</h2>
+<h3 id="4-1-project-history">4.1 Project history</h3>
+<table><thead><tr><th>检查</th><th>结果</th><th>能证明</th><th>不能证明</th></tr></thead><tbody>
+<tr><td>当前 HEAD</td><td><code>6c524d9c6c6226075f100cdac395fef2fdc37671</code>，2026-07-02；author/committer <code>mousongzhe</code></td><td>当前 committed snapshot 的提交身份</td><td>每个文件由候选人独立完成</td></tr>
+<tr><td>初始 Project snapshot</td><td><code>c4469eb8ec4bb879bdb7d12cf9a303c8264a41ea</code>，root commit</td><td>初始项目材料一次进入 Git；UWM official repro 当时尚不存在</td><td>初始文件来源、协作者和生成顺序</td></tr>
+<tr><td>UWM official repro recovery</td><td><code>0341c5016a63c4160a9027e5c333a33ce880bd1d</code>；21 files / 3,784 additions</td><td>18 个 <code>uwm_libero_official_repro</code> 路径和 recovery report 在候选账号提交中进入</td><td>远端训练/rollout 是否由候选人执行，逐行 ownership</td></tr>
+<tr><td>RoboCasa transfer evolution</td><td><code>796374c</code>、<code>57bf4e</code>、<code>a37a386</code>、<code>2a2912d</code>、<code>1a03fe</code>、<code>8eaddf</code>、<code>6c524d9</code></td><td>路径经历多次候选账号提交和诊断迭代</td><td>每次修改的设计者、运行者、reviewer</td></tr>
+</tbody></table>
+<h3 id="4-2-current-worktree-boundary">4.2 Current worktree boundary</h3>
+<p><code>Project</code> 当前不是 clean worktree：<code>report/uwm_libero_strict_eval_recovery_20260702/sync_manifest.json</code> 与 <code>sync_summary.md</code> 有未提交修改，<code>final_strict_eval_user_confirmed_20260705.json</code> 是未跟踪文件。这个状态能证明“当前工作区保存了 recovery/user-confirmed material”，不能证明它们已经进入 HEAD，也不能把用户确认 JSON 变成本地 raw episode bundle。</p>
+<h3 id="4-3-result-artifact-boundary">4.3 Result artifact boundary</h3>
+<p>当前没有本地 5-task checkpoint、normalizer hash、250 条 episode JSONL、失败视频、逐样本 scorer 或完整 remote log。因此：</p>
+<ul><li><code>local-direct</code>：脚本、patch、静态报告、DataLoader-only smoke 和 Git blob；</li><li><code>report-supported</code>：项目 report 中的 Book-Caddy 42/50、路径和诊断叙事；</li><li><code>user-confirmed-remote-final</code>：用户确认的 186/250 及 per-task summary；</li><li><code>protocol-limited</code>：fixed-pruned-init、reset-style 与 Table II OOD 之间的数字；</li><li><code>remote-snapshot-raw</code>：RoboCasa actionheadfix同一run的train log、normalizer与8×54 raw rollout；</li><li><code>result-owned</code>：当前未达到，不能说候选人拥有 0.744 的 checkpoint/result。</li></ul>
+<h2 id="5-per-file-per-decision-ownership-matrix">5. Per-file / per-decision ownership matrix</h2>
+<table><thead><tr><th>ID</th><th>文件 / 决策</th><th>Local artifact 事实</th><th>Git / run 事实</th><th>当前 role verdict</th><th>当前安全口径</th><th>升级所需证据</th></tr></thead><tbody>
+<tr><td><code>UWM-OWN-001</code></td><td>Project initial snapshot 与 UWM/RoboCasa 路径来源</td><td><code>c4469eb</code> 是 root snapshot；当时 <code>uwm_libero_official_repro</code> 不存在，RoboCasa transfer 有 50 个初始路径</td><td>author <code>mousongzhe</code>；无 pre-snapshot history</td><td><code>snapshot-local / git-coarse / role-pending</code></td><td>“项目快照包含 UWM/RoboCasa 相关材料”</td><td>pre-snapshot 来源、协作者/工具记录、候选人逐项确认</td></tr>
+<tr><td><code>UWM-OWN-002</code></td><td><code>scripts/libero_official_common.py</code> task map / shape contract</td><td>五 task、HDF5/BDDL/pruned-init/buffer、RGB <code>[128,128,3]</code>、LIBERO action <code>[7]</code>；SHA <code>DE9D…7E2B</code></td><td>87 行在 <code>0341c50</code> 一次进入</td><td><code>local-direct / decision-owner-pending</code></td><td>“本地 adapter 固定了 task 与 shape 合同”</td><td>为什么选这些字段、原始 upstream diff、运行命令、review</td></tr>
+<tr><td><code>UWM-OWN-003</code></td><td><code>scripts/uwm_libero_rollout_eval.py</code> strict/reset evaluator</td><td><code>uwm_reset</code> 与 <code>libero_fixed_init</code>、5-step warmup、seed/init/checkpoint/horizon/summary；SHA <code>05E9…F3943</code></td><td>211 行在 <code>0341c50</code> 一次进入</td><td><code>local-direct / process-role-pending</code></td><td>“本地实现了可审计 rollout protocol”</td><td>亲手函数、same-checkpoint paired run、episode trace、scorer tests</td></tr>
+<tr><td><code>UWM-OWN-004</code></td><td>5-task rollout launcher</td><td>8 shard、50 rollouts/task、600-step/manifest/output-root contract；SHA <code>C61C…EE32</code></td><td>270 行在 <code>0341c50</code> 一次进入</td><td><code>local-direct / operator-pending</code></td><td>“项目提供 5-task rollout launcher”</td><td>remote shell history、运行者、完整 output manifest、失败重试记录</td></tr>
+<tr><td><code>UWM-OWN-005</code></td><td>5-task finetune launcher + DDP path</td><td>LIBERO-90 checkpoint、5 task、DDP、batch/steps、output checkpoint contract；SHA <code>E5B6…9D92</code></td><td>101 行在 <code>0341c50</code> 一次进入</td><td><code>local-direct / role-pending</code></td><td>“本地组织了 LIBERO finetune path”</td><td>base checkpoint/normalizer、effective config、train log、候选人改动点</td></tr>
+<tr><td><code>UWM-OWN-006</code></td><td><code>prepare_libero_buffers.py</code> 与 dataset buffer route</td><td>HDF5/BDDL → compressed Zarr buffer 的准备脚本；SHA <code>2517…4E8A</code></td><td>106 行在 <code>0341c50</code> 一次进入</td><td><code>local-direct / data-owner-pending</code></td><td>“项目建立了 LIBERO buffer preparation path”</td><td>数据来源、过滤/切分决策、运行输出、hash manifest</td></tr>
+<tr><td><code>UWM-OWN-007</code></td><td>DataLoader stall benchmark</td><td>finite/infinite/preload A/B；p95 wait 13.862s→0.194s；SHA <code>47A2…6B36</code></td><td>141 行在 <code>0341c50</code>；DataLoader-only，不是 GPU training</td><td><code>process-supported / verification-role-pending</code></td><td>“我定位了数据等待路径的候选原因”需候选人确认</td><td>benchmark command、raw timing、memory/throughput matched GPU smoke</td></tr>
+<tr><td><code>UWM-OWN-008</code></td><td><code>repo_patch/datasets/utils/loader.py</code> + sampler</td><td>infinite sampler、workers/prefetch/pin；loader SHA <code>FC8E…3551</code>，sampler SHA <code>6B45…DA95</code></td><td>patch 在 <code>0341c50</code>；无 upstream before/after provenance</td><td><code>snapshot-local / implementation-role-pending</code></td><td>“本地 patch 包含 preload/infinite loader 选项”</td><td>upstream diff、亲手/协作/工具边界、unit test、full run验证</td></tr>
+<tr><td><code>UWM-OWN-009</code></td><td><code>repo_patch/experiments/uwm/train_robomimic.py</code> 与 <code>train.py</code></td><td>pretrain load、num_steps、rollout hooks、timing；train_robomimic SHA <code>8423…40BD</code></td><td>228 行 patch 在 <code>0341c50</code>，无逐函数历史</td><td><code>snapshot-local / role-pending</code></td><td>“项目 patch 扩展了训练与 rollout hooks”</td><td>patch 来源、代码 review、实际执行命令、checkpoint load</td></tr>
+<tr><td><code>UWM-OWN-010</code></td><td><code>sync_manifest.json</code> / <code>sync_summary.md</code> recovery</td><td>记录 remote host、script hashes、strict/reset 差异；当前文件已被工作树修改</td><td>committed blob 与 current SHA 不同；final JSON 未跟踪</td><td><code>working-tree / report-editor-pending</code></td><td>“当前工作树保存了 recovery note”</td><td>谁修改、SSH/raw output、manifest commit、reviewer确认</td></tr>
+<tr><td><code>UWM-OWN-011</code></td><td><code>final_strict_eval_user_confirmed_20260705.json</code></td><td>user-confirmed per-task 0.88/0.80/0.76/0.66/0.62，186/250=0.744；当前 SHA <code>7616…6D11</code></td><td>未跟踪文件；result source 明确为 user-confirmed remote final</td><td><code>user-confirmed-remote-final / result-owner-blocked</code></td><td>“用户确认的 fixed-pruned-init summary”</td><td>checkpoint/normalizer/init/episode/scorer bundle、运行/审查角色</td></tr>
+<tr><td><code>UWM-OWN-012</code></td><td>RoboCasa transfer patch/actionhead diagnostics</td><td>train/rollout code、30-epoch train log、12D normalizer与8×54 raw JSON；full-h4 <code>0/54</code>/contact <code>45/54</code>；train SHA <code>EFC5…1FFE</code></td><td><code>796374c</code>→<code>6c524d9</code>迭代；remote_sync cache非committed result bundle</td><td><code>remote-snapshot-raw / checkpoint-unverified / role-pending</code></td><td>“参与跨 benchmark contract 调试并审计train→closed-loop断层”</td><td>upstream diff、produced checkpoint SHA/fresh-load、env/scorer/videos、候选人/远端运行者确认</td></tr>
+<tr><td><code>UWM-OWN-013</code></td><td>UWM shared diffusion / LIBERO benchmark method</td><td>source audits 支持 shared action/video diffusion、独立 timestep、LIBERO protocol 与 Table II OOD</td><td>upstream revisions <code>b7d4067…</code> / <code>8f1084e…</code>；不属于本地原创</td><td><code>upstream-verified / upstream-only</code></td><td>“基于/对照 UWM 与 LIBERO 上游方法”</td><td>永远不升级为个人原创；只确认适配、迁移或复现工作</td></tr>
+</tbody></table>
+<h2 id="6-claim-ownership-reconciliation">6. Claim → ownership reconciliation</h2>
+<table><thead><tr><th>面试/简历 claim</th><th>当前证据合同</th><th>安全处理</th></tr></thead><tbody>
+<tr><td>“我迁移并完成 UWM/LIBERO 训练闭环”</td><td>scripts/patch/report direct；远端 train/checkpoint/operator/role 未闭合</td><td>候选确认前用“项目包含/参与迁移”；确认后绑定具体文件和命令</td></tr>
+<tr><td>“我取得 LIBERO 5-task 74.4%”</td><td>0.744 是 user-confirmed remote final，无本地 checkpoint/episodes</td><td>说“用户确认的 fixed-pruned-init summary”，不说 local raw verified</td></tr>
+<tr><td>“74.4% 复现官方 0.79”</td><td>init/shift/background/seeds/scorer 不同，inventory 判定 NON_COMPARABLE</td><td>禁止“严格复现/只差4.6pp”作为强结论</td></tr>
+<tr><td>“0.928 说明模型成功率更高”</td><td>reset-style 与 fixed-pruned-init 协议不同</td><td>只说 protocol sensitivity diagnostic</td></tr>
+<tr><td>“我解决了 DataLoader 性能问题”</td><td>DataLoader-only p95 A/B 有直接证据；GPU throughput/memory 未验证</td><td>说“定位并验证 DataLoader-only wait 降低”，不报训练吞吐 uplift</td></tr>
+<tr><td>“RoboCasa benchmark 已完成”</td><td>有一条8×54 raw success bundle但只有项目协议、无produced checkpoint/env-scorer/videos</td><td>保持<code>protocol-bounded</code>，讲跨benchmark train→closed-loop failure</td></tr>
+<tr><td>“UWM architecture 是我设计的”</td><td>source audit 指向 upstream shared diffusion mechanism</td><td>明确上游；个人贡献只落在迁移、协议、诊断和验收</td></tr>
+<tr><td>“Git author 证明所有代码是我写的”</td><td>一次性 snapshot + 多次同步；无逐文件 provenance</td><td>用 13 行 ledger 区分 snapshot、self-attested、role pending 和 upstream</td></tr>
+</tbody></table>
+<h2 id="7-production-gap">7. Production Gap：抗追问最小补证据</h2>
+<table><thead><tr><th>Gap</th><th>面试官追问</th><th>最小补证据</th><th>当前表达</th></tr></thead><tbody>
+<tr><td>快照来源</td><td><code>c4469eb</code> 之前代码从哪来？</td><td>pre-snapshot source/patch/contributor record</td><td><code>git-coarse</code></td></tr>
+<tr><td>trainer ownership</td><td>哪个函数是你亲手改的？</td><td>before/after diff、review note、现场解释</td><td><code>role-pending</code></td></tr>
+<tr><td>checkpoint/normalizer</td><td>0.744 用的权重和 normalizer 是什么？</td><td>binary/config/normalizer hash + load smoke</td><td><code>user-confirmed-remote-final</code></td></tr>
+<tr><td>episode evidence</td><td>186/250 的 250 个 episode 在哪？</td><td>per-episode JSONL/video/terminal reason/scorer</td><td><code>raw bundle missing</code></td></tr>
+<tr><td>protocol comparison</td><td>为什么不和 0.79 直接比？</td><td>exact init/seed/shift/background/scorer manifest</td><td><code>NON_COMPARABLE</code></td></tr>
+<tr><td>DataLoader diagnosis</td><td>preload 是否提高完整训练吞吐？</td><td>30–100 step GPU matched A/B、memory、data_wait/train/total</td><td><code>smoke-bounded</code></td></tr>
+<tr><td>RoboCasa result</td><td>actionheadfix 后 success 多少？</td><td>8×54 raw JSON已存在；仍需checkpoint SHA/fresh-load、env/scorer/videos和repeat</td><td><code>raw-rollout-backed / result-owner-blocked</code></td></tr>
+<tr><td>tool/collaboration</td><td>哪些由协作者或 AI 辅助？</td><td>contribution ledger、review记录、运行者名单</td><td>不推断 Codex-primary</td></tr>
+</tbody></table>
+<h2 id="8-question-tree">8. Question Tree 与回答分层</h2>
+<pre><code class="language-text">你个人做了什么？
+  ├─ 训练：LIBERO-90→LIBERO-10 的 launcher、patch、normalizer 和 checkpoint contract 哪些是你改的？
+  ├─ 评估：fixed-pruned-init、reset-style、Table II OOD 的 tuple 如何冻结？
+  ├─ 数据：zarr 小 chunk 的 first failure、preload/infinite 的验证范围是什么？
+  ├─ 结果：0.744 的 checkpoint、250 episodes、scorer 和运行者在哪？
+  └─ 归属：UWM architecture、上游 patch、协作者、工具和你自己的动作如何分开？</code></pre>
+<p><strong>危险回答</strong>：说“我把 UWM 完整复现了，74.4% 就是我的 benchmark 结果，Git author 证明所有 patch 都是我写的”。</p>
+<p><strong>可过回答</strong>：我把贡献拆成迁移、协议、数据管线和诊断。LIBERO 186/250仍是用户确认summary；RoboCasa一条30-epoch run已有8×54 raw rollout，可讲full-h4 <code>0/54</code>和contact <code>45/54</code>的失败断层，但checkpoint/env-scorer/ownership仍未闭合。UWM architecture属于上游，我的具体ownership按文件、命令、远端运行和验收记录回答。</p>
+<p><strong>强回答（补证后才可用）</strong>：我能从一个具体 launcher/patch 说明输入、改动、失败、验证和输出 manifest，并给出同 checkpoint paired protocol、normalizer hash、episode JSONL 和 scorer；对不能闭合的部分主动降级为 report-supported 或 user-confirmed。</p>
+<h2 id="9-sp-ssp">9. SP/SSP 证据就绪度</h2>
+<table><thead><tr><th>维度</th><th>分数（5）</th><th>依据</th></tr></thead><tbody>
+<tr><td>岗位相关性</td><td>4.5</td><td>VLA 训练迁移、闭环 rollout、benchmark protocol 和数据管线高度相关</td></tr>
+<tr><td>机制深度</td><td>4.0</td><td>shared diffusion、task map、init/warmup、normalizer、stall diagnosis 可解释</td></tr>
+<tr><td>工程闭环</td><td>3.7</td><td>scripts/patch/report与RoboCasa 8×54 raw齐；produced checkpoint/load/env-scorer/videos仍缺</td></tr>
+<tr><td>指标可信度</td><td>2.5</td><td>LIBERO 0.744 user-confirmed；RoboCasa raw denominator可复算但协议/权重未闭合</td></tr>
+<tr><td>Ownership 清晰度</td><td>2.0</td><td>13-row ledger 建立；逐文件、工具、运行者确认 pending</td></tr>
+<tr><td>抗追问能力</td><td>3.0</td><td>protocol boundary 强；结果和个人实现仍有断点</td></tr>
+<tr><td>合计</td><td><strong>19.7 / 30</strong></td><td>证据就绪度，不是候选人能力评分；项目保持 WARN</td></tr>
+</tbody></table>
+<h2 id="10">10. 候选人确认表</h2>
+<p>请逐项回答“亲手 / 协作 / 工具辅助 / 只审查 / 只运行 / 不确定”：</p>
+<ol><li><code>c4469eb</code> 初始 snapshot 中的 UWM/RoboCasa 文件来自哪里？<code>0341c50</code> 的 official repro 由谁设计、实现和 review？</li><li><code>libero_official_common.py</code> 的五 task、shape、pruned-init 和 buffer 选择是谁决定的？</li><li><code>uwm_libero_rollout_eval.py</code> 中 strict/reset、warmup、seed/init、horizon 和 summary 逻辑哪些由你修改？</li><li>finetune/rollout launcher 与 <code>train_robomimic.py</code> patch 谁编写、谁在 remote 执行、谁验收 checkpoint？</li><li>DataLoader stall benchmark 与 loader/sampler patch 的 first failure、修改和 matched validation 是什么？</li><li>0.744 的 checkpoint、normalizer、250 episodes 和 scorer 由谁生成、保管、审查？</li><li>RoboCasa actionheadfix、dataset、rollout 和 loss report 中哪些是你亲手、协作或工具辅助？</li><li>UWM shared diffusion architecture 与 LIBERO Table II 哪些明确属于上游，你的个人贡献如何界定？</li></ol>
+<p>在真实回答发生前，不创建 <code>coaching_state.md</code>，不把任一行升级为 <code>role-confirmed</code> 或 <code>result-owned</code>。</p>
+<h2 id="11">11. 分阶段补强计划</h2>
+<table><thead><tr><th>阶段</th><th>动作</th><th>完成标准</th><th>状态</th></tr></thead><tbody>
+<tr><td>半天</td><td>完成 8 项 ownership drill；每个关键脚本选一个现场解释点</td><td>13 行均有 role/source/verification</td><td>待候选人确认</td></tr>
+<tr><td>1 天</td><td>将 committed sync manifest、工作树 recovery 和 user-confirmed JSON 标成不同 lineage</td><td>final result 不再依赖单个 summary/path</td><td>待补做</td></tr>
+<tr><td>3 天</td><td>获取 checkpoint/normalizer/init/episode/scorer，做 load smoke 与 same-checkpoint paired protocol</td><td>0.744 至少形成可复算 C3 bundle</td><td>待补做</td></tr>
+<tr><td>1 周</td><td>做 30–100 step GPU DataLoader matched A/B，并为 RoboCasa 建 action/state/normalizer/eval manifest</td><td>stall 诊断与跨 benchmark 迁移均有可验证闭环</td><td>待补做</td></tr>
+</tbody></table>
+<h2 id="12-output-pack">12. Output Pack</h2>
+<h3 id="12-1-bullet">12.1 简历 bullet 三档</h3>
+<ul><li><strong>当前保守版</strong>：参与 UWM/LIBERO 训练与 rollout 迁移、固定 strict/reset 评估协议、定位 Zarr/DataLoader stall，并整理用户确认的 fixed-pruned-init 结果及不可比性边界。</li><li><strong>候选确认后标准版</strong>：负责指定 UWM/LIBERO launcher、协议开关、数据管线诊断和评估验收；以文件/commit/命令说明个人、协作与上游边界。</li><li><strong>补齐 C3 后偏强版</strong>：在 checkpoint、normalizer、episode、scorer 和 paired protocol 完整后，给出可复算的 LIBERO 结果与 GPU stall A/B；当前禁止提前使用。</li></ul>
+<h3 id="12-2">12.2 两分钟叙事骨架</h3>
+<div class="meta">UWM 项目我主要做的是训练到闭环评估的协议工程：LIBERO侧固定task map、pruned-init、warmup、normalizer和success tuple，并用DataLoader-only smoke定位zarr等待；<code>186/250</code>仍是用户确认summary，不能与Table II直接横比。RoboCasa侧有一条actionheadfix 30-epoch raw sweep：8卡训练完成，同checkpoint的8×54 rollout都无env error但只有0–2 success，full-h4 <code>0/54</code>且contact <code>45/54</code>，所以定位为train→closed-loop failure。UWM架构属于上游；我的具体贡献按脚本、命令、远端运行和验收记录逐项确认。</div>
+<h3 id="12-3-6">12.3 面试前 6 题</h3>
+<ol><li>fixed-pruned-init、reset-style、UWM Table II OOD 三种评估 tuple 分别是什么？</li><li>为什么 <code>0.928→0.744</code> 主要应解释为 protocol gap，而不是模型权重退化？</li><li><code>libero_official_common.py</code>、rollout evaluator 与 finetune launcher 如何串成一条 lineage？</li><li>Zarr preload/infinite 为什么能降低 DataLoader-only p95 wait？怎样证明 GPU training 也受益？</li><li>RoboCasa action/state/prompt/normalizer/eval contract 的 first-failure 如何定位？</li><li>哪些是 UWM/LIBERO 上游，哪些文件/决策是你亲手、协作、工具辅助、只运行或只审查？</li></ol>
+<h2 id="13-ownership">13. Ownership 审计伪代码</h2>
+<pre><code class="language-python">def accept_uwm_claim(claim, ledger):
+    if not ledger.identity_and_artifact(claim):
+        return &quot;reject_strong_claim&quot;
+    if not ledger.role_confirmed(claim):
+        return &quot;use_snapshot_or_user_confirmed_wording&quot;
+    if claim.level &gt;= &quot;C2&quot; and not ledger.process_and_verification(claim):
+        return &quot;downgrade_to_migrated_or_reviewed&quot;
+    if claim.level == &quot;C3&quot; and not ledger.checkpoint_protocol_episode_chain(claim):
+        return &quot;report_or_user_summary_only&quot;
+    return &quot;claim_allowed_with_exact_scope&quot;</code></pre>
+<p>这段伪代码是本仓库真实性 gate，不是 UWM 官方实现。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li><a href="uwm_libero_claim_evidence_inventory.html">UWM / LIBERO Claim–Evidence Inventory</a>：12 条 claim、strict/reset、DataLoader 和 RoboCasa 边界。</li><li><a href="../../questions/proj_uwm.html">UWM 项目题卡</a>：当前 <code>PROJ-UWM-001</code> protocol-boundary card；本 ledger 将新增 ownership card。</li><li><a href="../evidence_manifest.html">Evidence Manifest</a>：五项目 evidence 与 ownership 状态总索引。</li><li><a href="../../knowledge/00_vla_knowledge_map.html">VLA Knowledge Map</a>：VOL 07 项目深挖与题目 ID 空间。</li><li>Local Git repository <code>C:\Users\mousongzhe\Project</code>，HEAD <code>6c524d9c6c6226075f100cdac395fef2fdc37671</code>；official repro <code>0341c5016a63c4160a9027e5c333a33ce880bd1d</code>；RoboCasa evolution <code>796374c</code>→<code>6c524d9</code>。</li><li><code>wm/uwm_libero_official_repro/scripts/uwm_libero_rollout_eval.py</code> SHA-256 <code>05E912C2096EFF4BFE8D061E4C334517B03DE80847793D83025A2AA3E18F3943</code> 与 <code>scripts/libero_official_common.py</code> SHA-256 <code>DE9DB94113554DB50B151900647E6D32BFFB9649C7F4D1D97EA0D65A8A937E2B</code>。</li><li><a href="../../sources/vol_04_benchmark_evidence_claim_to_protocol.html">UWM benchmark evidence audit</a> 与 <a href="../../sources/vol_04_uwm_video_action_claim_to_code.html">UWM video/action audit</a>：上游/本地机制和 Table II 协议边界。</li><li><a href="../../../../output/mousongzhe_resume_optimized.html">Optimized Resume</a> 与 <a href="../../../05_uwm_libero_eval_protocol.html">UWM 项目面试页</a>：候选人自述和投递口径，未经本 ledger 自动认证。</li><li><a href="uwm_robocasa_actionheadfix_30epoch_train_eval_p0_audit.html">UWM RoboCasa ActionHeadFix 30-Epoch P0 Audit</a>：run-specific raw rollout与checkpoint/ownership边界。</li></ol>
+</article></body></html>

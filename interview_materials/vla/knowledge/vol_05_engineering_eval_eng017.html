@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：训练可观测性（ENG-017）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eng017.md">
+<meta name="aris:source-sha256" content="bf17aab61f74d7fc506790a228d734f5be5dadada08d4cb4d1253dbbeb4ec1e7">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>bf17aab61f74d7fc506790a228d734f5be5dadada08d4cb4d1253dbbeb4ec1e7</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eng017.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1">1. 短答：五层事件合同</a></li><li><a href="#2">2. 直觉：给训练装五个仪表盘</a></li><li><a href="#3">3. 五层观测字段</a></li><li><a href="#4-loss-gradient-clipping">4. Loss、gradient 与 clipping</a></li><li><a href="#4-1-loss-component-mask">4.1 Loss component 和 mask</a></li><li><a href="#4-2-grad-norm">4.2 Grad norm 不只记录一个数字</a></li><li><a href="#5-amp-scale-overflow-skipped-step">5. AMP scale、overflow 与 skipped step</a></li><li><a href="#6-step-timeline-data-compute-comm-logging">6. Step timeline：data、compute、comm、logging 分开</a></li><li><a href="#6-1-data-wait">6.1 Data wait</a></li><li><a href="#6-2-communication">6.2 Communication</a></li><li><a href="#7-profiler-anomaly-detection">7. Profiler 与 anomaly detection 的正确使用</a></li><li><a href="#8">8. 告警与归因矩阵</a></li><li><a href="#9">9. 本地项目映射与真实性边界</a></li><li><a href="#10-upstream">10. 验证伪代码（工程合同，不是 upstream 实现）</a></li><li><a href="#11">11. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：训练可观测性（ENG-017）</h1>
+<div class="meta">状态：<code>drafted / knowledge_19_of_44 / card_1_of_1_unseen / review_warn</code> 报告日期：2026-07-17 证据截止：2026-07-17 当前节点：<code>VLA-ENG-017</code>；来源已冻结，单张题卡同步生成并保持 <code>unseen</code>。 来源入口：<a href="../sources/vol_05_eng017_training_observability_source_freeze.html">ENG-017 Training Observability Source Freeze</a>。 核心边界：loss、grad、AMP overflow、data wait、communication 和 lineage 是不同事件层；summary/config 不能替代 per-step/per-rank trace、matched A/B 或 first-failure replay。</div>
+<h2 id="question">问题（Question）</h2>
+<p><code>VLA-ENG-017</code>：训练 loss 看起来正常但吞吐下降、梯度爆炸或多卡变慢时，如何设计可观测性系统定位第一处故障？</p>
+<p>回答不能只说“加 TensorBoard”。要明确：</p>
+<ol><li>记录哪些数值、时间和 lineage 字段；</li><li>每个字段由哪个 rank/step/event owner 产生；</li><li>如何用同步计时、Profiler、AMP 状态和 request trace 复现；</li><li>哪些本地项目材料只是 summary/config，不能升级成稳定性或性能结论。</li></ol>
+<h2 id="section-2">知识地图位置与前置依赖</h2>
+<pre><code class="language-text">ENG-003 data/compute timing + ENG-005 AMP/grad
+                 ↓
+numerical / data / compute / distributed / lifecycle events
+                 ↓
+Profiler + first-failure replay + alert policy
+                 ↓
+checkpoint lineage、closed-loop eval 与 incident review</code></pre>
+<p>前置：</p>
+<ul><li><code>VLA-ENG-003</code>：DataLoader、host→device、GPU 和同步时间。</li><li><code>VLA-ENG-005</code>：AMP、effective batch、gradient clipping 和 overflow。</li><li><code>VLA-ENG-006/013</code>：checkpoint、RNG、sampler cursor 与 replay。</li><li><code>VLA-ENG-015/016</code>：offload、多教师 schedule 与 memory/latency 账本。</li></ul>
+<h2 id="1">1. 短答：五层事件合同</h2>
+<p><strong>30 秒回答</strong>：我把观测拆成 numerical、data、compute、distributed、lifecycle 五层：记录 loss component/mask、grad norm/clip、AMP scale/overflow/skipped step，再同步拆 data_wait、forward/backward、all-reduce、optimizer、checkpoint 和 logging。每条事件带 run/step/rank/config/data hash。当前 UWM/OPD 有部分 summary 和 profile hook，但没有完整 rank trace、overflow 时间序列或 matched A/B，不能声称吞吐或稳定性结论。</p>
+<h2 id="2">2. 直觉：给训练装五个仪表盘</h2>
+<ul><li><strong>numerical 仪表盘</strong>：模型有没有产生 finite loss/gradient，是否一直被 clipping 或跳过 optimizer step？</li><li><strong>data 仪表盘</strong>：GPU 是在计算，还是在等 decode、collate、host→device 或 queue？</li><li><strong>compute 仪表盘</strong>：forward/backward/optimizer 各自耗时多少，peak memory 是否变化？</li><li><strong>distributed 仪表盘</strong>：哪一个 rank、bucket 或 collective 在等，通信是否和计算 overlap？</li><li><strong>lifecycle 仪表盘</strong>：这条曲线来自哪个 code/data/config/checkpoint，能否用固定 request trace 重放？</li></ul>
+<p>一条曲线如果没有 <code>run_id</code>、<code>step</code>、<code>rank</code>、单位和 config/data hash，就无法证明两个 run 可比。</p>
+<h2 id="3">3. 五层观测字段</h2>
+<table><thead><tr><th>层</th><th>最小字段</th><th>第一处故障问题</th><th>不能替代</th></tr></thead><tbody>
+<tr><td>numerical</td><td>loss component、有效 token/sample、finite、grad norm、clip ratio、AMP scale、overflow/skipped step、lr</td><td>优化是否真的更新，哪一项先异常？</td><td>online success</td></tr>
+<tr><td>data</td><td>sample/request ID、decode/collate、<code>data_wait_ms</code>、host→device、queue depth</td><td>GPU 是否在等输入？</td><td>仅看 CPU 利用率</td></tr>
+<tr><td>compute</td><td>forward/backward/optimizer、peak memory、Profiler range</td><td>模型计算/内存哪里变慢？</td><td>未同步 wall-clock</td></tr>
+<tr><td>distributed</td><td>rank/world-size、collective name、bytes、wait/overlap、错误码</td><td>哪个 rank/collective 拖慢？</td><td>单卡 profile</td></tr>
+<tr><td>lifecycle</td><td>code/config/data/normalizer hash、checkpoint、scaler/RNG/sampler、event timestamp</td><td>结果能否复现、归属和回滚？</td><td>无 lineage 的截图</td></tr>
+</tbody></table>
+<p>每条 event 至少包含：</p>
+<pre><code class="language-text">run_id, code_sha, config_sha, data_sha, step, epoch, rank, world_size,
+event, value, unit, sample_count, token_count, finite, route_or_task,
+timestamp_wall, timestamp_mono, checkpoint_id, scaler_state, error_code</code></pre>
+<p><code>timestamp_mono</code> 用来做同一进程内的 elapsed time；<code>timestamp_wall</code> 方便跨机器关联。两者都要保留，不能只依赖 wall clock。</p>
+<h2 id="4-loss-gradient-clipping">4. Loss、gradient 与 clipping</h2>
+<h3 id="4-1-loss-component-mask">4.1 Loss component 和 mask</h3>
+<p>VLA 的 aggregate loss 可能混合 action、文本、format、aux 或 route loss。每个 component 都要写：mask 定义、有效元素数量、reduction、dtype 和 data split。可用一个通用形式表示：</p>
+<div class="formula">\[
+L=\frac{\sum_i m_i\,\ell_i}{\max(\sum_i m_i,1)}
+\]</div>
+<p>其中 (m_i) 是有效 token/step/dimension mask，(ell_i) 是逐元素 loss。这个公式不是某个框架的默认实现；它提醒面试时先问“分母和 mask 是什么”，否则不同 padding/route 的 loss 不可比。</p>
+<h3 id="4-2-grad-norm">4.2 Grad norm 不只记录一个数字</h3>
+<p>PyTorch <code>clip_grad_norm_</code> 返回 total gradient norm，并支持 <code>error_if_nonfinite</code>；但 DDP/FSDP/ZeRO 中要明确它是 local shard、框架 global norm，还是 clipping 前/后的值。建议记录：</p>
+<ul><li><code>grad_norm_pre_clip</code>、<code>grad_norm_post_clip</code>；</li><li>clip threshold 和 <code>clip_ratio</code>；</li><li>finite flag、模块/bucket owner；</li><li>AMP unscale 是否已完成；</li><li>optimizer step 是否实际执行。</li></ul>
+<p>如果每步都被裁剪，loss 下降也可能只是“更新被限制”；如果 norm 突然变为 NaN，要回到第一处非有限 input/operation，而不是直接增大 clip threshold。</p>
+<h2 id="5-amp-scale-overflow-skipped-step">5. AMP scale、overflow 与 skipped step</h2>
+<p>PyTorch AMP 文档说明 gradient scaling 先放大 loss/backward 的梯度，optimizer 更新前要 unscale；FP16 可能 overflow，GradScaler 的 scale 也不保证始终大于 1。DeepSpeed <code>steps_per_print</code> 文档把 skipped optimizer updates（可能由 mixed-precision overflow 触发）纳入进度报告。</p>
+<p>所以应把以下事件分开记录：</p>
+<table><thead><tr><th>事件</th><th>需要回答的问题</th></tr></thead><tbody>
+<tr><td><code>micro_step_finished</code></td><td>backward 是否完成？</td></tr>
+<tr><td><code>optimizer_step_executed</code></td><td>参数是否真的更新？</td></tr>
+<tr><td><code>amp/overflow</code></td><td>哪个 rank/loss component 触发非有限？</td></tr>
+<tr><td><code>amp/scale_before/after</code></td><td>scale 如何 backoff/grow，连续 skipped 几次？</td></tr>
+<tr><td><code>scheduler_step</code></td><td>scheduler 按 micro step 还是 optimizer step 前进？</td></tr>
+</tbody></table>
+<p>“loss 没有 NaN”不能证明没有 overflow；“scale 变化”也不能证明根因已找到。</p>
+<h2 id="6-step-timeline-data-compute-comm-logging">6. Step timeline：data、compute、comm、logging 分开</h2>
+<p>一个 optimizer step 可先拆成：</p>
+<div class="formula">\[
+T_{\mathrm{step}}=T_{\mathrm{data}}+T_{\mathrm{fwd}}+T_{\mathrm{bwd}}+T_{\mathrm{optim}}+T_{\mathrm{comm}}+T_{\mathrm{ckpt}}+T_{\mathrm{log}}+T_{\mathrm{sync}}
+\]</div>
+<p>其中 (T_{\mathrm{data}}) 可继续拆 decode/collate/host→device，(T_{\mathrm{comm}}) 要带 collective 名称和 bytes；(T_{\mathrm{log}}) 是观测开销，必须计入而不能假设为零。每段需要明确开始/结束事件和同步方式；未同步 GPU wall-clock 只能算 enqueue 时间。</p>
+<h3 id="6-1-data-wait">6.1 Data wait</h3>
+<p>DataLoader 的 worker/prefetch 语义只告诉你数据如何被取出，不自动告诉你 stall 根因。建议同时记录 <code>next(loader)</code> wait、decode、collate、host→device、queue depth、worker restart/error 和 sample ID。UWM 的 DataLoader-only stall smoke 可以作为 local clue，但不能直接归因某个 storage 格式或完整训练吞吐。</p>
+<h3 id="6-2-communication">6.2 Communication</h3>
+<p>DDP 官方语义是 replica 间 gradient all-reduce，输入切分由用户负责。通信观测要按 rank/collective/bucket 记录 duration、bytes、wait、overlap 和 error；单卡 profile 或全局平均 step time 不能告诉你哪个 rank 拖慢了训练。</p>
+<h2 id="7-profiler-anomaly-detection">7. Profiler 与 anomaly detection 的正确使用</h2>
+<p>PyTorch Profiler 的 schedule 把窗口分成 wait、warmup、active，可选择 CPU/CUDA activities；CUPTI 不可用时 CUDA trace 内容会受限。生产训练建议短窗口采样：固定 rank、warmup 后 active、明确同步，并把 profiler overhead 单独记录。</p>
+<p><code>torch.autograd.detect_anomaly(check_nan=True)</code> 会保存 forward traceback，使 backward 出错时能定位创建该 function 的 forward，并在 backward NaN 时抛错。它适合 tiny batch/固定 request trace 的 first-failure replay，不适合长期全量开启。</p>
+<p>建议路径：</p>
+<ol><li>常规训练只保留轻量 scalar、rank summary、sample/lineage 字段。</li><li>发现第一处非有限或 rank skew 后，冻结 request trace、seed、config、input 和 checkpoint。</li><li>开启 anomaly/短 profiler window，重放少量 steps，保留 raw trace。</li><li>修复后关闭高开销 debug，重新跑 matched smoke 和独立 eval。</li></ol>
+<h2 id="8">8. 告警与归因矩阵</h2>
+<table><thead><tr><th>现象</th><th>第一检查</th><th>不要直接做</th></tr></thead><tbody>
+<tr><td>连续 NaN/Inf loss 或 grad</td><td>input ID、loss component、AMP scale、rank、anomaly replay</td><td>只调大 clip 或自动重启丢失首个样本</td></tr>
+<tr><td>skipped optimizer step 连续增加</td><td>scale/overflow/finite、dtype、loss component</td><td>把 skipped 当作普通 step 计入吞吐</td></tr>
+<tr><td><code>data_wait/step</code> 突增</td><td>worker、decode、queue、storage、host→device</td><td>先归因模型变慢</td></tr>
+<tr><td>单 rank comm p95 偏高</td><td>collective、bytes、bucket、rank skew、overlap</td><td>看平均值后说通信已优化</td></tr>
+<tr><td>profile 后吞吐下降</td><td>profiler/logging overhead、active window</td><td>把 profile run 与 baseline 直接比较</td></tr>
+<tr><td>loss 正常、闭环失败</td><td>parser/denorm/controller/eval protocol</td><td>继续只调学习率</td></tr>
+</tbody></table>
+<h2 id="9">9. 本地项目映射与真实性边界</h2>
+<p>本仓库既有证据支持：</p>
+<ul><li>UWM/OPD 的配置和 summary 中出现 GradScaler、gradient accumulation、throughput/profile 配置；ENG-004..006 artifact gate 明确尚缺 overflow/scale/grad-norm/clip-ratio 时间序列、fixed-effective-batch A/B 和 rank-level trace。</li><li>OPD inventory/report 有 <code>train_loss</code>、<code>last_opd_loss</code>、<code>last_opd_topk_overlap</code> 以及 grad norm、entropy、overlap、route loss 等 hook/summary；这能支持“有观测入口或摘要”，不能证明优化稳定性或任务成功。</li><li>OpenPiVLA 有 formal trainer、smoke、diagnostic/report 和 eager/MACA call graph，但没有完整 per-step telemetry、formal checkpoint bundle 或 matched cross-backend profiler。</li></ul>
+<p>安全回答：</p>
+<div class="meta">“我会把训练监控拆成 numerical、data、compute、distributed 和 lineage 五层。loss 之外，我会记录 mask count、grad norm/clip、AMP scale/overflow/skipped step，再用同步计时和短 profiler 窗口拆 data_wait、forward/backward、all-reduce、optimizer、checkpoint 和 logging。当前项目有 summary 和部分 profile/loss hook，但没有完整 rank trace、overflow 时间序列或 matched A/B，所以我把它称为可观测性合同，而不是已经证明了吞吐或稳定性。”</div>
+<table><thead><tr><th>口径</th><th>证据等级</th><th>面试安全表达</th></tr></thead><tbody>
+<tr><td>DeepSpeed <code>steps_per_print</code>/<code>wall_clock_breakdown</code></td><td>official-doc</td><td>字段的官方语义</td></tr>
+<tr><td>UWM GradScaler/throughput/profile 配置</td><td>local-direct metadata</td><td>存在观测入口，缺时间序列</td></tr>
+<tr><td>OPD loss/overlap/route summary</td><td>local-direct/report-supported</td><td>有摘要指标，不等于稳定性因果</td></tr>
+<tr><td>communication 占比、overflow 根因、吞吐提升</td><td>unverified</td><td>需要 rank trace、AMP event、matched A/B</td></tr>
+</tbody></table>
+<h2 id="10-upstream">10. 验证伪代码（工程合同，不是 upstream 实现）</h2>
+<pre><code class="language-python">def train_step_with_observability(batch, model, optimizer, scaler, profiler):
+    # 1. Start a monotonic step span and record request/config lineage.
+    step = start_event(&quot;step&quot;, batch.request_ids, rank=dist.get_rank())
+
+    # 2. Measure data wait separately from model compute and keep masks/counts.
+    with span(&quot;forward&quot;, sync_before=False):
+        with autocast_context():
+            outputs = model(batch.inputs)
+            loss_parts, valid_count = compute_masked_losses(outputs, batch)
+            loss = reduce_loss(loss_parts, valid_count)
+
+    # 3. Scale/backward, unscale before clipping, then record finite/overflow state.
+    scaler.scale(loss).backward()
+    scaler.unscale_(optimizer)
+    grad_norm = clip_and_measure_grad_norm(model, max_norm=cfg.max_norm)
+    scaler.step(optimizer)       # may be skipped when gradients are non-finite
+    scaler.update()
+
+    # 4. Persist compute/comm/wait/AMP/lifecycle events before closing the step span.
+    record_scalars(loss_parts, valid_count, grad_norm, scaler.get_scale())
+    profiler.step()
+    return finish_event(step, collect_rank_comm_and_wait_buckets())</code></pre>
+<p>伪代码表达观测顺序：lineage → masked loss → scaled backward → unscale/clip → possible skipped step → profiler/event flush。实际 AMP、FSDP/ZeRO、异步通信和同步 API 必须按目标环境实现；代码本身不是性能或稳定性证明。</p>
+<h2 id="11">11. 结论与下一步</h2>
+<p>训练可观测性不是把日志数量堆多，而是让每个数值、时间和状态都能回到一个可复现的 step/rank/request。Loss、grad、AMP overflow、data wait、communication 和 logging overhead 必须分层；Profiler/anomaly 只在短窗口和 first-failure replay 中使用。当前本地材料足以建立 schema 和诊断路线，但不足以声称 UWM/OPD/OpenPiVLA 已完成 per-rank telemetry、AMP 稳定性或吞吐优化。</p>
+<p>当前节点已完成知识页和一张 <code>unseen</code> 题卡；仍保持 <code>WARN</code>。下一步可进行 ENG-017 一题口述，或补 overflow/rank trace/first-failure artifacts；ENG-018 继续后置。</p>
+<h2 id="references">References</h2>
+<ol><li>PyTorch 2.13，<a href="https://docs.pytorch.org/docs/2.13/amp.html">Automatic Mixed Precision</a>：autocast、GradScaler、unscale 与 overflow/scale 边界。</li><li>PyTorch 2.13，<a href="https://docs.pytorch.org/docs/2.13/profiler.html">Profiler</a>：activities、schedule、wait/warmup/active 与 CUPTI 边界。</li><li>PyTorch 2.13，<a href="https://docs.pytorch.org/docs/2.13/autograd.html">Autograd anomaly detection</a>：forward traceback 与 backward NaN 检查。</li><li>PyTorch 2.13，<a href="https://docs.pytorch.org/docs/2.13/generated/torch.nn.parallel.DistributedDataParallel.html">DistributedDataParallel</a>：gradient all-reduce 与 input-sharding 边界。</li><li>PyTorch 2.13，<a href="https://docs.pytorch.org/docs/2.13/generated/torch.nn.utils.clip_grad_norm_.html"><code>clip_grad_norm_</code></a>：total norm 与 non-finite 检查。</li><li>PyTorch 2.13，<a href="https://docs.pytorch.org/docs/2.13/data.html">DataLoader</a>：worker/prefetch/iterator 语义。</li><li>DeepSpeed，<a href="https://www.deepspeed.ai/docs/config-json/">Config JSON</a>：<code>steps_per_print</code>、skipped updates 与 <code>wall_clock_breakdown</code>。</li><li>本仓库，<a href="../sources/vol_05_eng017_training_observability_source_freeze.html">ENG-017 Source Freeze</a>、<a href="../knowledge/vol_05_engineering_eval.html">VOL 05 Batch 1 knowledge</a>、<a href="../sources/vol_05_local_artifact_gate_eng004_006.html">ENG-004..006 Artifact Gate</a> 与 <a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD evidence inventory</a>。</li></ol>
+</article></body></html>

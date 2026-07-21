@@ -1,0 +1,79 @@
+{
+  "artifact": "sources/vol_04_world_model_foundations_independent_fact_review.md",
+  "html": "sources/vol_04_world_model_foundations_independent_fact_review.html",
+  "review_date": "2026-07-16",
+  "status": "reviewed_slice",
+  "verdict": "WARN",
+  "source_sha256": "da16c172179cae926d329259e76955a55555fe53a15233f265d1f74a3d421ae4",
+  "scope": {
+    "question_ids": [
+      "VLA-WM-001",
+      "VLA-WM-002",
+      "VLA-WM-003",
+      "VLA-WM-004",
+      "VLA-WM-005",
+      "VLA-WM-006",
+      "VLA-WM-007",
+      "VLA-WM-008",
+      "VLA-WM-009",
+      "VLA-WM-010",
+      "VLA-WM-011",
+      "VLA-WM-012",
+      "VLA-WM-013",
+      "VLA-WM-014",
+      "VLA-WM-019",
+      "VLA-WM-020",
+      "VLA-WM-021"
+    ],
+    "next_knowledge_batch": "VLA-WM-001..010",
+    "method": "Independent HTTP reads of primary paper HTML/Ar5iv and frozen DreamerV3 repository files; no training or checkpoint execution",
+    "evidence_cutoff": "2026-07-16"
+  },
+  "sources_checked": [
+    {
+      "label": "World Models",
+      "type": "primary",
+      "revision": "arXiv 1803.10122",
+      "supports": ["VAE frame compression", "MDN-RNN future latent prediction", "controller action loop", "dream rollout/controller boundary"]
+    },
+    {
+      "label": "PlaNet",
+      "type": "primary",
+      "revision": "arXiv 1811.04551",
+      "supports": ["deterministic and stochastic transitions", "latent overshooting", "latent-space online/receding-horizon planning", "model/planning risk discussion"]
+    },
+    {
+      "label": "DreamerV3 paper",
+      "type": "primary",
+      "revision": "arXiv 2301.04104",
+      "supports": ["RSSM factorization", "posterior/prior distinction", "world-model prediction", "imagined actor/critic", "lambda returns", "free bits and KL loss directions"]
+    },
+    {
+      "label": "danijar/dreamerv3",
+      "type": "official-code",
+      "revision": "e3f02248693a79dc8b0ebd62c93683888ddaccfe",
+      "supports": ["README reimplementation disclaimer", "RSSM observe/imagine/loss", "stop-gradient KL directions", "free_nats clipping", "Agent imagination/lambda-return paths", "config loss scales and dimensions"]
+    }
+  ],
+  "checks": {
+    "world_models_architecture": "PASS (VAE/MDN-RNN/controller and dream loop checked against primary paper)",
+    "planet_latent_planning": "PASS (deterministic/stochastic transition, latent overshooting and online planning checked against primary paper)",
+    "dreamerv3_paper_contract": "PASS (RSSM, imagination, actor/critic, lambda-return, KL/free-bits wording checked against primary paper)",
+    "dreamerv3_code_mapping": "PASS WITH WARNING (frozen source paths checked; repository is a reimplementation, not authors' official code)",
+    "planet_to_dreamerv3_overshooting": "BLOCKED FOR STRONG CLAIM (not supported by current frozen DreamerV3 code evidence)",
+    "framework_classification": "PASS (one-step/open-loop, actionability, uncertainty and metric ladders remain framework/design)",
+    "next_batch_readiness": "PASS WITH WARNING (WM-001..010 source anchors are adequate; knowledge page and cards are not yet generated)",
+    "local_project_evidence": "MISSING (no local world-model checkpoint, run log or episode artifacts)",
+    "browser_visual_check": "BLOCKED (in-app Browser URL policy rejects file:// local pages)",
+    "oral_drill": "PENDING",
+    "html_static_validation": "PASS (one H1, 11 H2 sections, 3 tables, 1 commented pseudocode block, source SHA rendered)"
+  },
+  "open_items": [
+    "Do not call danijar/dreamerv3 authors' official implementation.",
+    "Do not claim DreamerV3 uses PlaNet latent overshooting without a new direct implementation source.",
+    "Keep local WAM/UWM project claims behind checkpoint/config/episode evidence.",
+    "Generate only the WM-001..010 knowledge page next; do not generate its cards in the same increment.",
+    "Keep browser visual QA recorded as blocked by file:// policy and do not substitute static checks."
+  ],
+  "next": "Use this reviewed source slice to write the VLA-WM-001..010 canonical knowledge page, then independently validate its structure before generating cards."
+}

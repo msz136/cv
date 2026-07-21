@@ -1,0 +1,37 @@
+{
+  "artifact": "evidence/projects/wm019_wam_matched_checkpoint_protocol_bridge.md",
+  "html": "evidence/projects/wm019_wam_matched_checkpoint_protocol_bridge.html",
+  "review_date": "2026-07-18",
+  "status": "matched_checkpoint_path / offline_to_rollout_bridge / binary_unverified / WARN",
+  "verdict": "WARN",
+  "source_sha256": "648F4D3180BF99299DFB5C6E826592BF861B372416DC4BBCEA5854DAD263CCE3",
+  "covered_question_ids": ["VLA-WM-019"],
+  "identity": {
+    "checkpoint_path_exact_equal": true,
+    "checkpoint_path_sha256": "6CAE0B6BAA4378F25A0AF92720303922B709F7B8A21994684E6F77B6ED14E833",
+    "offline_metrics_sha256": "C9AB7F04AFD9C9057CC548BF0176285E001BA778BCD37DC4FB7D857E29BAEC9D",
+    "rollout_manifest_sha256": "809AE4F879C9421F954C7BFC26C70005B94387412449039F9FA8B6E479EF55CC",
+    "rollout_video_sha256": "59176353B1E069C6F3A3A20BDF13EE6A9FFD969537C5501B685293D87802877E"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one exact checkpoint-path bridge; offline and rollout protocols remain separated)",
+    "identity": "PASS (offline metrics and trained rollout manifest contain identical checkpoint path and matching task semantics)",
+    "protocol_separation": "PASS (seed, episode, horizon, output and denominator differences explicitly recorded)",
+    "binary_boundary": "WARN (path-string fingerprint only; checkpoint binary/content hash unavailable)",
+    "metric_boundary": "PASS WITH WARNING (PSNR/SSIM proxy not mixed with action trace or success)",
+    "project_truth_boundary": "PASS (no causal, uplift, benchmark or ownership claim promoted)",
+    "html_static_validation": "PASS (one H1, eight H2 including generated TOC, two tables)",
+    "local_links": "PASS (future metric, action trace, manifest and gate links resolve)",
+    "source_sha": "PASS (canonical Markdown SHA matches HTML meta and review JSON)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Obtain checkpoint binary or immutable remote content hash plus processor/normalizer/config SHA.",
+    "Match task/init/seed between offline future metrics and action rollout.",
+    "Add iter_000005000 rollout or multi-sample/multi-seed iter_000010000 evidence.",
+    "Do not infer proxy-success correlation or action causality from exact path identity alone.",
+    "Do not create coaching_state.md or mark WM-019 practiced without a real oral answer."
+  ],
+  "next": "Add one matched checkpoint/protocol artifact with binary/config fields or run one VLA-WM-015..019 oral drill; keep all cards unseen."
+}

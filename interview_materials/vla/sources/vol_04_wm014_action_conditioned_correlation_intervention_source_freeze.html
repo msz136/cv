@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-014 Source Freeze：Action-conditioned Prediction、相关性与可干预 Dynamics</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm014_action_conditioned_correlation_intervention_source_freeze.md">
+<meta name="aris:source-sha256" content="24c685bee2e0abbb3df4ae555e1959b84a83e21d2feebe5d6e8fd83684dbf1dd">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>24c685bee2e0abbb3df4ae555e1959b84a83e21d2feebe5d6e8fd83684dbf1dd</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm014_action_conditioned_correlation_intervention_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 冻结结论</a></li><li><a href="#2">2. 一手来源与冻结快照</a></li><li><a href="#3-action">3. “Action进入网络”只是什么证据</a></li><li><a href="#4-observational-interventional-query">4. Observational 与 interventional query</a></li><li><a href="#5">5. 隐藏混杂的积分差异</a></li><li><a href="#6">6. 什么时候两者可以相等</a></li><li><a href="#7-partial-observability">7. Partial observability 是首要混杂来源</a></li><li><a href="#8-positivity-action-support">8. Positivity / action support</a></li><li><a href="#9-commanded-action-executed-action">9. Commanded action不等于executed action</a></li><li><a href="#10-action-ignoring-action-shortcut">10. Action ignoring 与 action shortcut不同</a></li><li><a href="#11-sensitivity-causal-alignment">11. Sensitivity不等于causal alignment</a></li><li><a href="#12-conditional-effect">12. Conditional effect</a></li><li><a href="#13-effect-alignment-error">13. Effect-alignment error</a></li><li><a href="#14-distributional-intervention-metric">14. Distributional intervention metric</a></li><li><a href="#15-cloned-state-action-swap">15. Cloned-state action-swap</a></li><li><a href="#16-clone">16. 真实机器人不能完美clone怎么办</a></li><li><a href="#17-negative-controls">17. Negative controls</a></li><li><a href="#18-cross-policy-invariance">18. Cross-policy invariance</a></li><li><a href="#19-causal-confusion">19. Causal Confusion 提醒了什么</a></li><li><a href="#20-causal-dynamics-learning">20. Causal Dynamics Learning 提醒了什么</a></li><li><a href="#21-counterfactual-model">21. Counterfactual model 的假设</a></li><li><a href="#22-causalworld">22. CausalWorld 的证据角色</a></li><li><a href="#23">23. 最小证据阶梯</a></li><li><a href="#24">24. 最小可审计伪代码</a></li><li><a href="#25-matched-evaluation">25. Matched evaluation</a></li><li><a href="#26-failure-first">26. Failure-first 诊断</a></li><li><a href="#27">27. 项目真实性边界</a></li><li><a href="#28-claim-ledger">28. Claim ledger</a></li><li><a href="#29">29. 仍待独立复核与补证据</a></li><li><a href="#30">30. 参考来源</a></li><li><a href="#31-vol-04">31. VOL 04 收口</a></li></ol></nav>
+<h1>VOL 04 WM-014 Source Freeze：Action-conditioned Prediction、相关性与可干预 Dynamics</h1>
+<div class="meta">冻结日期：2026-07-18 状态：source_frozen / VLA-WM-014 / knowledge_synced / card_synced / WARN 覆盖题目：VLA-WM-014 本轮边界：只冻结“action进入模型”到“action effect与环境干预一致”的证据阶梯、观测条件分布与do-intervention差异、隐藏混杂/状态充分性/overlap/执行动作合同、cloned-state action-swap与matched evaluation；不声称仅凭action-conditioned loss即可识别因果dynamics，也不把公开方法写成本地WAM/UWM因果验证。</div>
+<h2 id="1">1. 冻结结论</h2>
+<ol><li>action-conditioned只说明模型形式包含action：\(\hat y=f_\theta(x,a)\)。模型仍可能忽略action、利用behavior-policy shortcut，或在数据支持外随意外推。</li><li>观测条件分布 \(p(y\mid x,a)\) 与干预分布 \(p(y\mid x,\operatorname{do}(a))\) 只有在state/history充分阻断混杂、action有overlap、标签与执行一致等假设下才可等同。</li><li>若隐藏变量 \(u\) 同时影响policy选择action与未来outcome，观测数据会用 \(p(u\mid x,a)\) 混合结果；真正干预应保持 \(p(u\mid x)\)，两者不同。</li><li>action sensitivity或非零Jacobian只能证明模型对输入action有反应，不能证明反应方向、幅度、时序和物理后果正确。</li><li>最强可重复验证是在相同simulator state/exogenous seed下执行多个action，比较模型与环境的counterfactual effect；真实机器人无法完美clone时，需要matched initial conditions、多次安全随机干预与置信区间。</li><li>VLA系统必须以<strong>实际执行action</strong>作为干预：policy output、denormalized command、controller setpoint与measured actuator motion必须分开，否则模型可能学的是command correlation而非physical consequence。</li><li>WAM/UWM公开结构支持action/future或action/video coupling，但当前本地证据没有same-state action intervention、effect-alignment或real counterfactual bundle，不能称causal/actionable dynamics已验证。</li></ol>
+<h2 id="2">2. 一手来源与冻结快照</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>冻结版本与响应 SHA-256</th><th>本节点支持</th><th>不能外推</th></tr></thead><tbody>
+<tr><td>S1</td><td>Oh et al., <em>Action-Conditional Video Prediction using Deep Networks in Atari Games</em></td><td>arXiv <code>1507.08750</code>；ar5iv response <code>484d2f12defb0d3297b31bc5a83b99fec539a5db68843b10225f80fd5daafea1</code></td><td>action-conditioned future prediction的建模范式</td><td>输入action即因果识别、机器人可干预性</td></tr>
+<tr><td>S2</td><td>de Haan et al., <em>Causal Confusion in Imitation Learning</em></td><td>arXiv <code>1905.11979</code>；ar5iv response <code>98767a4890019076caab95dd23ea7e7e6c0bc2b0d0d9468800c946ca72dc19ba</code></td><td>demonstration中的nuisance/confounder、低held-out误差仍部署失败、intervention/expert解混杂思路</td><td>world-model exact effect、任意offline data可识别</td></tr>
+<tr><td>S3</td><td>Buesing et al., <em>Woulda, Coulda, Shoulda: Counterfactually-Guided Policy Search</em></td><td>arXiv <code>1811.06272</code>；ar5iv response <code>74a19c6fa5cf253550576e2b05524e712e770cbd9a1a7a8e9f5b39be6183bc75</code></td><td>structural causal model、abduction/action/prediction式counterfactual与hidden-confounder/inference假设</td><td>通用真实机器人counterfactual已可靠</td></tr>
+<tr><td>S4</td><td>Ahmed et al., <em>CausalWorld</em></td><td>arXiv <code>2010.04296</code>；ar5iv response <code>263b079fe7a2fdd6eaf2e3d8f5d2452d7386c19e915ec93759197f03a479b5ef</code></td><td>robotic manipulation causal variables、do-interventions与transfer benchmark</td><td>simulator intervention等于real-world effect</td></tr>
+<tr><td>S5</td><td>Wang et al., <em>Causal Dynamics Learning for Task-Independent State Abstraction</em></td><td>arXiv <code>2206.13452</code>；ar5iv response <code>bf64fbb272cf172253b4d58eeb2c14fb18e42d565f5aa7130d27837d0a4da858</code></td><td>dense dynamics的spurious dependency、causal dependency/state abstraction与unseen-state generalization</td><td>所有视觉world model都能恢复真实causal graph</td></tr>
+<tr><td>S6</td><td>action-conditioned official/author code</td><td><code>junhyukoh/nips2015-action-conditional-video-prediction@a8f6545e9df65803227f83c65f926ddc54bff848</code>；README <code>885a5057b4d1f03043eddd7558edf11dfdb21d22f2395f78bfe780fdf720d467</code></td><td>repo明确对应S1、action log与action-count输入</td><td>current dependencies、causal effect</td></tr>
+<tr><td>S7</td><td>causal intervention code</td><td><code>pimdh/causal-confusion@3c0d31601cdee160f12eaae0de4747ff5703d857</code>；README <code>b448d14c85f04466a08a0628e0273c5afe1b44fcbc89e3572915263e2c70f76d</code>；policy-execution intervention <code>f6f5aa1c76efcc452aad8abf3ce5e2a3427507ad788618f179d616c3e3a2f6e8</code></td><td>repo对应S2并实现MountainCar graph-conditioned/intervention-by-policy-execution slice</td><td>全论文环境、world dynamics或license完整性</td></tr>
+<tr><td>S8</td><td>CausalWorld official code</td><td><code>rr-learning/CausalWorld@1045277101a92c506db42704da28f6e7227d401b</code>；README <code>3a6394d32638306a7cd741e36c11f757ada78a717187708991381ce815f99e4c</code>；MIT LICENSE <code>446e7f9eef1cb8133ffbb5ce20e8bc7c0a99ce3b5bb38611789484c5f2435e5a</code></td><td>exposed variables、<code>do_intervention</code>接口与counterfactual environment</td><td>real-hardware intervention</td></tr>
+<tr><td>S9</td><td>DreamerV3 frozen reimplementation</td><td><code>danijar/dreamerv3@e3f02248693a79dc8b0ebd62c93683888ddaccfe</code>；<code>rssm.py</code> SHA <code>d6d50166914e94fb8bd17a5d5dbda9d42cdd37b85819bb1e9fff3a64d4ad2eb6</code></td><td>action确实进入RSSM <code>_core</code>，作为“syntactic conditioning”代码例</td><td>action effect与环境一致、论文作者官方code</td></tr>
+<tr><td>S10</td><td><a href="vol_04_world_model_foundations_claim_to_code.html">Source Audit A</a> 与 <a href="vol_04_world_model_foundations_independent_fact_review.html">独立事实复核</a></td><td>canonical SHA <code>bb48af7605688132ddd589109c8417dd0ebfe65f504a98cf5ab660f01e34ba7b</code> / <code>da16c172179cae926d329259e76955a55555fe53a15233f265d1f74a3d421ae4</code></td><td>actionability、action-swap与local-evidence边界；WM-014可生成</td><td>local causal validation</td></tr>
+<tr><td>S11</td><td><a href="vol_04_wm013_latent_overshooting_multistep_consistency_source_freeze.html">WM-013 Multi-step</a> 与 <a href="vol_04_wm020_failure_diagnostics_source_freeze.html">WM-020 Diagnostics</a></td><td>canonical SHA <code>9f2d68af1cec4c012f60f2c4e1e288e67b07953d9177c6c3171b0bf0d304a4e7</code> / <code>4053bb051296bcc785a3e1b7f7ddf0a0c75339dcb4f8c84aed755b49888c06dd</code></td><td>multi-step与failure-probe去重边界</td><td>causal claim已完成</td></tr>
+<tr><td>S12</td><td><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a>、<a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO</a> inventories</td><td>canonical SHA <code>078c86b1484fe38fdd136428123c9529c6b750dfea5e031ec506cf617517772d</code> / <code>728b8326dc345072886d0909fe2b8d81dfde3993771e7febed446d471bd3674d</code></td><td>project mechanism/protocol与缺失artifact</td><td>personal causal/action-intervention result</td></tr>
+</tbody></table>
+<h2 id="3-action">3. “Action进入网络”只是什么证据</h2>
+<p>若模型写成：</p>
+<div class="formula">\[
+\hat y_{t+1}=f_\theta(x_t,a_t),
+\]</div>
+<p>只能证明函数签名接受action。还需逐级验证：</p>
+<ol><li>action path没有被mask/scale/shape bug破坏；</li><li>输出对action有统计敏感性；</li><li>预测的action effect与environment intervention方向/幅度一致；</li><li>多步、OOD和closed-loop仍可用。</li></ol>
+<p>S1/S6是action-conditioned prediction的典型建模证据，但不提供第三、四层的通用保证。</p>
+<h2 id="4-observational-interventional-query">4. Observational 与 interventional query</h2>
+<p>观测条件：</p>
+<div class="formula">\[
+p(y_{t+1}\mid x_t,a_t=a).
+\]</div>
+<p>干预条件：</p>
+<div class="formula">\[
+p(y_{t+1}\mid x_t,\operatorname{do}(a_t=a)).
+\]</div>
+<p>变量解释：conditioning是在日志中筛出“policy碰巧/决定采取a”的样本；<code>do(a)</code>是外部把action设为a并切断其原有policy生成机制。直觉是“看到做过a的人”不等于“让同一个状态执行a”。实现映射：日志训练通常给前者；cloned-state simulator或安全随机实验才能近似后者。</p>
+<h2 id="5">5. 隐藏混杂的积分差异</h2>
+<p>设隐藏变量 \(u_t\) 同时影响behavior policy的action与future outcome：</p>
+<div class="formula">\[
+p(y\mid x,a)
+=\int p(y\mid x,a,u)\,p(u\mid x,a)\,du,
+\]</div>
+<div class="formula">\[
+p(y\mid x,\operatorname{do}(a))
+=\int p(y\mid x,a,u)\,p(u\mid x)\,du.
+\]</div>
+<p>变量解释：观测条件会因“谁/何时选择a”改变hidden-state mixture；干预固定action但不应改变pre-action \(u\) 分布。直觉是专家只在快碰撞时刹车，日志可能学到“刹车与碰撞相关”，并非刹车导致碰撞。实现映射：机器人中的 \(u\) 可是未观测接触、速度、operator意图、controller状态、遮挡或task phase。[S2][S3]</p>
+<h2 id="6">6. 什么时候两者可以相等</h2>
+<p>需要至少说明以下识别假设：</p>
+<ul><li><strong>state/history sufficiency / conditional exchangeability</strong>：给定 \(x_t\) 或belief/history后，潜在结果与action assignment无剩余混杂；</li><li><strong>positivity/overlap</strong>：每个关心的state附近，不同action都有非零支持；</li><li><strong>consistency</strong>：日志中标记的action与定义的intervention版本一致；</li><li><strong>no interference / stable mechanism</strong>：一个trial的action不改变另一个trial结果，环境机制在比较间稳定；</li><li><strong>correct temporal order</strong>：pre-action covariates不包含post-action变量或future leakage。</li></ul>
+<p>深度模型预测准确不会自动使这些假设成立。</p>
+<h2 id="7-partial-observability">7. Partial observability 是首要混杂来源</h2>
+<p>当前RGB \(o_t\) 往往缺速度、遮挡后对象、contact force、gripper load与controller integrator。behavior policy可能使用proprio/history/privileged state选action，但world model只看image；于是action携带hidden state信息，模型把action当“状态提示”，而不是物理干预。</p>
+<p>检查：增加history/belief/proprio后，observational effect是否变化；在相同full simulator state下action swap；比较image-matched但hidden-state不同的pair。</p>
+<h2 id="8-positivity-action-support">8. Positivity / action support</h2>
+<p>若expert在某state只选一个action，则 \(p(y\mid x,\operatorname{do}(a'))\) 对未见 \(a'\) 不可从该日志直接识别。连续action更严重：有限trajectory只覆盖state-action manifold的窄邻域。</p>
+<p>实现上记录state-conditioned action density、nearest-neighbor distance、ensemble/OOD score与safe support mask；support外prediction只能称外推，必须限险或补intervention data。</p>
+<h2 id="9-commanded-action-executed-action">9. Commanded action不等于executed action</h2>
+<p>至少区分：</p>
+<pre><code class="language-text">policy raw action
+  → denormalized / frame-converted command
+  → clipped / shielded controller setpoint
+  → actuator command
+  → measured joint/EE motion and contact</code></pre>
+<p>若world target由measured motion产生，但condition只用raw command，delay、clip、shield与controller会成为hidden mediator/confounder。可干预dynamics应记录并选择清楚的treatment：nominal command、approved action还是executed physical motion。</p>
+<h2 id="10-action-ignoring-action-shortcut">10. Action ignoring 与 action shortcut不同</h2>
+<ul><li><strong>action ignoring</strong>：改变action，模型输出几乎不变；常因narrow action distribution、history足以预测或action path bug。</li><li><strong>action shortcut</strong>：模型对action敏感，但action只是behavior-policy/task phase标签；在同state反事实action上effect错误。</li></ul>
+<p>前者可由shuffle/zero/Jacobian发现；后者必须通过同state environment intervention发现。</p>
+<h2 id="11-sensitivity-causal-alignment">11. Sensitivity不等于causal alignment</h2>
+<p>模型局部敏感度：</p>
+<div class="formula">\[
+J_a(x,a)=\frac{\partial\,\mathbb E_\theta[Y\mid x,a]}{\partial a}.
+\]</div>
+<p>变量解释：\(J_a\) 量化模型输出对action的局部导数。非零只说明模型“使用action”；符号/尺度可能错误，且离散action、clip与contact处不可微。实现映射：用finite difference/action sweep，并与environment effect curve对齐，而不是单独报告gradient norm。</p>
+<h2 id="12-conditional-effect">12. Conditional effect</h2>
+<p>对两个action：</p>
+<div class="formula">\[
+\tau(x;a,a&#x27;)
+=\mathbb E[Y\mid x,\operatorname{do}(a)]
+-\mathbb E[Y\mid x,\operatorname{do}(a&#x27;)].
+\]</div>
+<p>变量解释：\(Y\) 可是next pose、latent、reward、contact event或success。直觉是同一个pre-action context下只改变action的后果差。实现映射：连续action要明确delta、unit/frame、horizon与随机seed；不能用不同initial state的raw outcome差替代effect。</p>
+<h2 id="13-effect-alignment-error">13. Effect-alignment error</h2>
+<p>对cloned simulator state \(s\)：</p>
+<div class="formula">\[
+\mathcal E_{\mathrm{effect}}
+=\mathbb E_{s,a,a&#x27;}\left[
+\left\|
+(\hat Y_s(a)-\hat Y_s(a&#x27;))
+-(Y_s^{\mathrm{env}}(a)-Y_s^{\mathrm{env}}(a&#x27;))
+\right\|_W
+\right].
+\]</div>
+<p>变量解释：\(W\) 可按position/orientation/contact/reward单位加权。直觉是比较“action改变了多少”，消除共同baseline bias。实现映射：保存snapshot/hash、exogenous seed、两action、predicted/actual outcomes、effect residual与validity；随机环境需多seed比较distribution而非一条sample。</p>
+<h2 id="14-distributional-intervention-metric">14. Distributional intervention metric</h2>
+<p>随机/多模态环境应比较：</p>
+<div class="formula">\[
+\mathcal D\left(
+p_\theta(Y\mid s,\operatorname{do}(a)),
+p_{\mathrm{env}}(Y\mid s,\operatorname{do}(a))
+\right),
+\]</div>
+<p>其中 \(\mathcal D\) 可是proper scoring rule、Wasserstein/MMD或任务定义距离。必须用matched random seeds或足够repeats估计aleatoric spread；单sample MSE不能区分随机未来与model error。</p>
+<h2 id="15-cloned-state-action-swap">15. Cloned-state action-swap</h2>
+<p>最小simulator实验：</p>
+<ol><li>freeze full state、object/contact/controller state与random seed；</li><li>给model相同可用observation/history；</li><li>生成action pair：expert vs perturbed、positive vs negative、zero vs nonzero；</li><li>从同snapshot分别执行；</li><li>比较one-step与multi-steppose/contact/reward/termination effect；</li><li>按action support、state family与horizon分层。</li></ol>
+<p>cloned simulator提供强干预证据，但只证明该simulator/controller contract，不证明real physics。</p>
+<h2 id="16-clone">16. 真实机器人不能完美clone怎么办</h2>
+<p>使用matched初始条件与安全设计：</p>
+<ul><li>fixture/jig/automatic reset减少state差；</li><li>randomized small perturbation而非危险大action；</li><li>多次trial估计initial-state与outcome不确定性；</li><li>pre-action sensor/contact/controller trace做matching/adjustment；</li><li>hard safety gate、short prefix、fallback与operator approval；</li><li>报effect CI、invalid/reset failure与coverage。</li></ul>
+<p>不能把两个不同起点各跑一次的差叫counterfactual truth。</p>
+<h2 id="17-negative-controls">17. Negative controls</h2>
+<table><thead><tr><th>Probe</th><th>预期</th><th>暴露问题</th></tr></thead><tbody>
+<tr><td>zero action</td><td>静态/惯性基线</td><td>模型凭时间预测</td></tr>
+<tr><td>action shuffle</td><td>prediction应显著变差</td><td>action ignoring/数据泄漏</td></tr>
+<tr><td>sign/axis swap</td><td>effect方向应相应改变</td><td>action order/frame shortcut</td></tr>
+<tr><td>scale sweep</td><td>与actuator/clip曲线一致</td><td>非物理线性外推</td></tr>
+<tr><td>impossible/out-of-support action</td><td>高uncertainty/拒绝</td><td>过度自信</td></tr>
+<tr><td>nuisance intervention</td><td>physical effect尽量不变</td><td>background/task-ID shortcut</td></tr>
+</tbody></table>
+<p>negative control失败不能直接定位root cause，但能否定“可干预dynamics已验证”的强claim。</p>
+<h2 id="18-cross-policy-invariance">18. Cross-policy invariance</h2>
+<p>用不同behavior policy收集相同environment dynamics：expert、random、安全扰动、recovery policy。真正transition mechanism在给定充分state/action后应较稳定；若 \(p_\theta(y\mid x,a)\) 随policy ID/数据配比大变，说明action携带policy/context shortcut或state不充分。</p>
+<p>必须固定environment/controller revision，并显式记录policy mixture；不同policy访问不同state support时不能无调整比较。</p>
+<h2 id="19-causal-confusion">19. Causal Confusion 提醒了什么</h2>
+<p>S2展示behavior cloning可能依赖与expert action相关但非causal的nuisance变量，即使training/held-out imitation error低，部署distribution shift仍失败；paper与S7讨论expert/intervention或policy execution帮助识别正确图结构。</p>
+<p>映射到world model：低next-frame loss也可能来自policy/task/background correlation。该论文不直接证明某个world model错误，只支持“观测拟合不能替代干预验证”的方法边界。</p>
+<h2 id="20-causal-dynamics-learning">20. Causal Dynamics Learning 提醒了什么</h2>
+<p>S5指出dense dynamics model容易使用state/action间不必要依赖并在unseen state泛化差，提出学习稀疏causal dependency/state abstraction。对WM-014的启示是：prediction graph越密不代表机制越真；需要dependency intervention、跨context稳定性与downstream effect。</p>
+<p>不能把S5在特定simulated环境的理论/实验结果泛化成视觉VLA已恢复真实causal graph。</p>
+<h2 id="21-counterfactual-model">21. Counterfactual model 的假设</h2>
+<p>S3的counterfactually-guided policy search使用structural causal model，通过已观察trajectory反推noise，再修改action并预测结果；paper也明确讨论noise inference、model accuracy与hidden-confounder假设的限制。</p>
+<p>因此“同一噪声下换action”的counterfactual比独立sampling更强，但前提是SCM/noise posterior可信。普通conditional generator随机换action不自动成为structural counterfactual model。</p>
+<h2 id="22-causalworld">22. CausalWorld 的证据角色</h2>
+<p>S4/S8提供robotic manipulation simulator、exposed causal variables与<code>do_intervention</code>接口，可构造controlled environment/goal/robot/property changes和counterfactual-style evaluation。</p>
+<p>它证明“如何建立可干预benchmark”，不证明在CausalWorld上通过的model能迁移real robot，也不证明user项目已经运行该benchmark。</p>
+<h2 id="23">23. 最小证据阶梯</h2>
+<table><thead><tr><th>Level</th><th>Evidence</th><th>允许说</th><th>不允许说</th></tr></thead><tbody>
+<tr><td>C0 syntax</td><td>action tensor连入transition</td><td>action-conditioned architecture</td><td>使用了action effect</td></tr>
+<tr><td>C1 sensitivity</td><td>swap/Jacobian/shuffle</td><td>model output depends on action</td><td>effect正确</td></tr>
+<tr><td>C2 observational</td><td>held-out \(p(y\mid x,a)\)</td><td>data-distribution prediction好</td><td>do-effect已识别</td></tr>
+<tr><td>C3 simulator intervention</td><td>cloned-state action pairs</td><td>simulator contract内effect aligned</td><td>real effect</td></tr>
+<tr><td>C4 cross-policy/shift</td><td>多policy/context稳定</td><td>mechanism更稳健</td><td>任意OOD保证</td></tr>
+<tr><td>C5 real matched intervention</td><td>safe repeated real trials</td><td>指定hardware/protocol effect证据</td><td>普遍因果模型</td></tr>
+<tr><td>C6 closed-loop</td><td>planning/control success + safety</td><td>指定任务可用</td><td>所有内部变量都因果正确</td></tr>
+</tbody></table>
+<h2 id="24">24. 最小可审计伪代码</h2>
+<pre><code class="language-python">def audit_action_effect(model, env, snapshots, action_pairs, protocol):
+    records = []
+    for snapshot in snapshots:
+        # 1. Restore identical full simulator/controller state and exogenous seed.
+        base = env.restore(snapshot, seed=protocol.seed)
+        obs = protocol.policy_observation(base)
+
+        for action_a, action_b in action_pairs(base):
+            # 2. Verify support, units and the exact executed-action transform.
+            pair = protocol.validate_and_transform(action_a, action_b, base)
+
+            # 3. Query model outcomes while changing only the action.
+            pred_a = model.rollout(obs, pair.model_a, horizon=protocol.horizon)
+            pred_b = model.rollout(obs, pair.model_b, horizon=protocol.horizon)
+
+            # 4. Execute both actions from the same restored state/seed.
+            real_a = env.restore(snapshot, seed=protocol.seed).rollout(pair.env_a)
+            real_b = env.restore(snapshot, seed=protocol.seed).rollout(pair.env_b)
+
+            # 5. Compare effect deltas, not unmatched raw outcomes.
+            records.append(compare_effect(pred_a - pred_b, real_a - real_b,
+                                          support=pair.support))
+    return summarize_by_state_action_horizon(records)</code></pre>
+<p>真实机器人版本不能直接restore，需改为matched reset/repeated safe trials并报告initial-state差异。</p>
+<h2 id="25-matched-evaluation">25. Matched evaluation</h2>
+<p>固定model/checkpoint、dataset、state snapshots、action transform/controller、horizon、random seed/repeats与metric：</p>
+<table><thead><tr><th>Arm</th><th>目的</th></tr></thead><tbody>
+<tr><td>no-action model</td><td>action信息增量</td></tr>
+<tr><td>conditioned observational</td><td>标准held-out prediction</td></tr>
+<tr><td>action shuffle/zero</td><td>ignoring/shortcut negative control</td></tr>
+<tr><td>same-state action pairs</td><td>interventional effect alignment</td></tr>
+<tr><td>cross-policy data</td><td>behavior-policy invariance</td></tr>
+<tr><td>nuisance intervention</td><td>spurious context dependency</td></tr>
+<tr><td>support/OOD sweep</td><td>positivity与uncertainty</td></tr>
+<tr><td>closed-loop planner</td><td>effect是否带来控制收益</td></tr>
+</tbody></table>
+<p>同报observation/latent/reward/contact/termination effect、distributional calibration、support coverage、latency/compute与closed-loop success/safety。</p>
+<h2 id="26-failure-first">26. Failure-first 诊断</h2>
+<table><thead><tr><th>症状</th><th>首查</th></tr></thead><tbody>
+<tr><td>action shuffle几乎不影响</td><td>action path/mask、history shortcut、narrow data</td></tr>
+<tr><td>model effect非零但env为零</td><td>command clip/deadband、controller、shortcut</td></tr>
+<tr><td>effect符号相反</td><td>axis/frame/unit/time index、confounding</td></tr>
+<tr><td>observational好、cloned差</td><td>hidden state、policy shortcut、support不足</td></tr>
+<tr><td>simulator好、real差</td><td>dynamics/contact/controller/camera gap</td></tr>
+<tr><td>small action好、large action崩</td><td>support、saturation、nonlinearity、uncertainty</td></tr>
+<tr><td>cross-policy效果漂移</td><td>state不充分、policy ID leakage、mixture shift</td></tr>
+<tr><td>planning选极端action</td><td>OOD exploitation、uncalibrated effect/value</td></tr>
+</tbody></table>
+<h2 id="27">27. 项目真实性边界</h2>
+<p>WAM/Cosmos可以讲action/future/value slot、action-conditioned future与planning contract；UWM可以讲action/video shared diffusion、action-free/action-present routes与LIBERO protocol。它们当前没有：</p>
+<ul><li>cloned-state action-pair dataset；</li><li>predicted-vs-environment effect delta；</li><li>cross-policy/action-support audit；</li><li>measured executed-action/controller trace；</li><li>real matched intervention。</li></ul>
+<p>安全口径：</p>
+<div class="meta">我会把action-conditioned分成syntax、sensitivity、observational fit、sim intervention与real/closed-loop五层。WAM/UWM目前支持前两层的上游机制和部分sim protocol，但没有effect-alignment artifact，所以我不会称其为causal dynamics已验证。</div>
+<h2 id="28-claim-ledger">28. Claim ledger</h2>
+<table><thead><tr><th>Claim</th><th>来源</th><th>等级</th><th>状态</th></tr></thead><tbody>
+<tr><td>action可作为future predictor输入</td><td>S1/S6/S9</td><td>primary + code</td><td>checked / syntax only</td></tr>
+<tr><td>observational imitation/dynamics可利用spurious correlate</td><td>S2/S5</td><td>primary</td><td>checked with scope</td></tr>
+<tr><td>counterfactual prediction依赖SCM/noise inference/hidden-confounder假设</td><td>S3</td><td>primary</td><td>checked</td></tr>
+<tr><td>CausalWorld提供robotic do-intervention接口</td><td>S4/S8</td><td>primary + official code</td><td>checked / sim only</td></tr>
+<tr><td>cloned-state effect alignment是本节点验证设计</td><td>S1–S12 synthesis</td><td>engineering design</td><td>WARN / needs execution</td></tr>
+<tr><td>WAM/UWM已验证causal/action-interventional dynamics</td><td>S12</td><td>missing local evidence</td><td>rejected</td></tr>
+</tbody></table>
+<h2 id="29">29. 仍待独立复核与补证据</h2>
+<ol><li>primary/code事实已复核，本节点独立事实复核仍标<code>PENDING</code>。</li><li>需要local action path/mask/normalizer/controller trace与action shuffle/sweep。</li><li>需要simulator snapshot+seed+action-pair+predicted/actual effect bundle。</li><li>需要cross-policy/support/OOD、distributional repeats与same-protocol closed-loop结果。</li><li>real claim需要safe randomized/matched trials、measured action、initial-state trace、CI与safety approval。</li><li>浏览器<code>file://</code> visual QA受策略阻断，只能做renderer/static/link validation。</li><li>没有真实口述，不创建<code>coaching_state.md</code>，题卡保持<code>unseen</code>。</li></ol>
+<h2 id="30">30. 参考来源</h2>
+<ol><li>Oh et al., <a href="https://arxiv.org/abs/1507.08750"><em>Action-Conditional Video Prediction using Deep Networks in Atari Games</em></a>, 2015。</li><li>de Haan et al., <a href="https://arxiv.org/abs/1905.11979"><em>Causal Confusion in Imitation Learning</em></a>, NeurIPS 2019。</li><li>Buesing et al., <a href="https://arxiv.org/abs/1811.06272"><em>Woulda, Coulda, Shoulda: Counterfactually-Guided Policy Search</em></a>, ICLR 2019。</li><li>Ahmed et al., <a href="https://arxiv.org/abs/2010.04296"><em>CausalWorld</em></a>, 2020。</li><li>Wang et al., <a href="https://arxiv.org/abs/2206.13452"><em>Causal Dynamics Learning for Task-Independent State Abstraction</em></a>, ICML 2022。</li><li><a href="https://github.com/junhyukoh/nips2015-action-conditional-video-prediction/tree/a8f6545e9df65803227f83c65f926ddc54bff848">Action-conditional code</a>、<a href="https://github.com/pimdh/causal-confusion/tree/3c0d31601cdee160f12eaae0de4747ff5703d857">Causal Confusion code</a>、<a href="https://github.com/rr-learning/CausalWorld/tree/1045277101a92c506db42704da28f6e7227d401b">CausalWorld code</a>。</li><li><a href="vol_04_world_model_foundations_claim_to_code.html">VOL 04 Source Audit A</a> 与 <a href="vol_04_world_model_foundations_independent_fact_review.html">独立事实复核</a>。</li><li><a href="vol_04_wm013_latent_overshooting_multistep_consistency_source_freeze.html">WM-013 Multi-step Consistency</a> 与 <a href="vol_04_wm020_failure_diagnostics_source_freeze.html">WM-020 Failure Diagnostics</a>。</li><li><a href="../evidence/projects/wam_claim_evidence_inventory.html">WAM</a> 与 <a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO</a> evidence inventories。</li></ol>
+<h2 id="31-vol-04">31. VOL 04 收口</h2>
+<p>完成本节点后，VOL 04 <code>VLA-WM-001..044</code> 的44个knowledge/card节点全部覆盖；这只表示页面<code>drafted/WARN</code>，不表示独立事实复核、项目artifact或真实口述已完成。下一步转入全局剩余卷的首个source-ready缺口，不创建coaching state。</p>
+</article></body></html>

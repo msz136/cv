@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 Source Audit C：Cosmos Policy / WAM Claim-to-Code</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_04_cosmos_policy_wam_claim_to_code.md">
+<meta name="aris:source-sha256" content="f4a9131f5900e4861adfe72c0c28ed4444cfea4997e4d5b85f2c700a87b71905">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>f4a9131f5900e4861adfe72c0c28ed4444cfea4997e4d5b85f2c700a87b71905</code>；生成自：<code>interview_materials\vla\sources\vol_04_cosmos_policy_wam_claim_to_code.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 来源与证据边界</a></li><li><a href="#3-policy-world-model-value">3. 概率合同：policy、world model 与 value</a></li><li><a href="#4-latent-sequence">4. Latent sequence 与注入/提取</a></li><li><a href="#4-1-frozen-layouts">4.1 Frozen layouts</a></li><li><a href="#4-2-action-latent-injection">4.2 Action latent injection</a></li><li><a href="#4-3-value-future-image">4.3 Value 与 future image</a></li><li><a href="#5-routing-conditioning-loss">5. 训练 routing、conditioning 与 loss</a></li><li><a href="#5-1-dataset-routing">5.1 Dataset routing</a></li><li><a href="#5-2-conditioning-mask">5.2 Conditioning mask</a></li><li><a href="#5-3-edm-loss-target-mask">5.3 EDM loss 与 target mask</a></li><li><a href="#6-sampling-parallel-autoregressive-denoising-steps">6. Sampling：parallel、autoregressive 与 denoising steps</a></li><li><a href="#6-1-sampler-contract">6.1 Sampler contract</a></li><li><a href="#6-2-direct-policy">6.2 Direct policy</a></li><li><a href="#6-3-autoregressive-planning">6.3 Autoregressive planning</a></li><li><a href="#7-best-of-n-value">7. Best-of-N 与 value 风险</a></li><li><a href="#8-libero-robocasa-eval">8. LIBERO / RoboCasa eval 合同</a></li><li><a href="#8-1-libero">8.1 LIBERO</a></li><li><a href="#8-2-robocasa">8.2 RoboCasa</a></li><li><a href="#8-3-protocol-comparability">8.3 Protocol comparability</a></li><li><a href="#9-checkpoint">9. Checkpoint、资产与许可证边界</a></li><li><a href="#10-offline-proxy-online-success-wam">10. Offline proxy、online success 与 WAM 项目边界</a></li><li><a href="#11">11. 失败诊断与最小测试矩阵</a></li><li><a href="#12">12. 面试答题骨架与当前边界</a></li><li><a href="#12-1-30">12.1 30 秒回答</a></li><li><a href="#12-2">12.2 尚未核实</a></li><li><a href="#13-references">13. 参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 Source Audit C：Cosmos Policy / WAM Claim-to-Code</h1>
+<div class="meta">审计日期：2026-07-16 状态：drafted / paper_v1_full_text_reviewed / repo_frozen_and_line_audited / hf_model_revisions_frozen / independent_fact_reviewed / WARN 覆盖题目：VLA-WM-008..009、VLA-WM-022..030、VLA-WM-040..044 frozen repo：NVlabs/cosmos-policy @ 18a2accadf4e7a3531e56754102af5a24d2316da（commit date 2026-01-22）</div>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>Cosmos Policy 不是在视频 backbone 后外挂 action/world/value 三个 head。</strong>论文和 frozen code 都把当前 proprio、action chunk、未来 proprio、future images 与 value 编排进同一 video latent sequence；低维量通过 latent injection 覆写 placeholder frame，训练与采样继续复用 Cosmos-Predict2 的 diffusion transformer。[1][2]</li><li><strong>“同一模型有三种角色”由 conditioning 与 loss routing 决定。</strong>base training 的示范/rollout sample 约按 50% policy、25% world model、25% value function 分流；policy、world、value 分别对不同 latent prefix 条件化并预测不同 target slot，而不是仅靠三个 loss 名称。[1][2]</li><li><strong>direct policy 与 planning 是两个不同推理合同。</strong>direct eval 一次并行生成 action/future/value，但只执行 action；planning 先采样 action，再条件生成 future state，再评分 value，best-of-N 选择最高分候选。[1][2]</li><li><strong>可用 planning 需要 rollout distribution 与独立 planning checkpoint。</strong>论文明确 base demonstration-only model 的 world/value 对失败分布覆盖不足；其 ALOHA planning 实验使用 rollout 数据细化 world/value，并 dual-deploy 原 policy checkpoint 与 refined planning checkpoint。[1]</li><li><strong>latent injection 不是“语义 token”。</strong>action (K\times D_a) 被 flatten/repeat 到 (16\times 28\times 28) latent volume；解码时把可整除的完整 action copies reshape 后求均值。value 则把整个 value frame 求均值，再从 ([-1,1]) 映射到 ([0,1])。[1][2]</li><li><strong>LIBERO 与 RoboCasa 的执行合同不同。</strong>LIBERO 是 16×7 action chunk 并默认全 16 步 open-loop；RoboCasa 是 32×7 chunk、默认执行前 16 步，再在环境侧拼接 5 维 inactive mobile-base action 形成 12D controller action。[2][3][4][5]</li><li><strong>官方 direct-policy 分数不能写成本地 WAM 结果。</strong>论文/模型卡报告 LIBERO 98.5% 和 RoboCasa 67.1%，它们绑定官方 checkpoint、task set、50 trials、三 seeds 与指定 runtime；任何本地 45%、71.19%、0-success 或 offline MSE 必须由本地 artifact 单独证明。[1][6][7]</li><li><strong>论文、代码与权重许可证不同。</strong>arXiv v1 是 CC BY 4.0，frozen GitHub tree 是 Apache-2.0，而两个 HF policy model card 声明 NVIDIA One-Way Noncommercial License；不能用 repo license 推断 checkpoint 可商用。[1][2][6][7]</li><li><strong>当前审计与后续独立复核均未运行 GPU inference 或新 rollout。</strong>已核对 paper→repo→model card→eval path，并在独立复核中下载固定 config/statistics、重哈希本地 diagnostic；checkpoint tensor、完整 dataset revision、runtime reproduction 与候选人 ownership 仍未闭合，review 必须保持 WARN。[8]</li></ol>
+<h2 id="2">2. 来源与证据边界</h2>
+<table><thead><tr><th>编号</th><th>来源</th><th>冻结版本</th><th>可支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td>[1]</td><td>Kim et al., Cosmos Policy paper</td><td>arXiv 2601.16163v1，提交 2026-01-22；CC BY 4.0</td><td>latent injection、三类概率合同、50/25/25 routing、rollout refinement、best-of-N、论文 protocol/metric</td><td>用户本地 checkpoint、日志、0-success、个人贡献</td></tr>
+<tr><td>[2]</td><td>NVlabs/cosmos-policy</td><td>commit 18a2accadf4e7a3531e56754102af5a24d2316da；Apache-2.0</td><td>dataset slot、mask、loss、sampler、get_action、planning、eval wrapper 的 frozen code 行为</td><td>命令未执行；main/commit 与任一缓存权重不自动兼容</td></tr>
+<tr><td>[3]</td><td>同 commit 的 README / LIBERO.md</td><td>同上</td><td>官方 quickstart、model ID、16-step chunk、5-step denoise、500 trials/suite、训练命令</td><td>README command 不证明本机复现</td></tr>
+<tr><td>[4]</td><td>同 commit 的 ROBOCASA.md</td><td>同上</td><td>24 tasks、50 demos/task、32-step chunk、16-step execution、50 trials/task、seeds</td><td>文档默认值不等于用户项目 protocol</td></tr>
+<tr><td>[5]</td><td>Frozen LIBERO/RoboCasa eval source</td><td>同上</td><td>reset/warmup/init/camera/controller/action queue/success predicate</td><td>尚未与外部 benchmark commit 做独立复核</td></tr>
+<tr><td>[6]</td><td>nvidia/Cosmos-Policy-LIBERO-Predict2-2B model card/API</td><td>revision cb689ec0e3347c13667d70a78a3447388f5c3bb8</td><td>model I/O、official checkpoint files、98.5% protocol、NSCLv1</td><td>未下载 checkpoint；card 的数字仍是上游声明</td></tr>
+<tr><td>[7]</td><td>nvidia/Cosmos-Policy-RoboCasa-Predict2-2B model card/API</td><td>revision 4b2a04c80d97202f86127ebec80461e8016ec1dc</td><td>model I/O、official checkpoint files、67.1% protocol、NSCLv1</td><td>未下载 checkpoint；不能证明某个本地 cache revision</td></tr>
+<tr><td>同源推断</td><td>[1]–[7] 联合分析</td><td>evidence cutoff 2026-07-16</td><td>claim-to-code、shape、mask、protocol 与风险边界</td><td>不替代 runtime experiment、独立事实审查和视觉 QA</td></tr>
+</tbody></table>
+<p>基础权重 <code>nvidia/Cosmos-Predict2-2B-Video2World</code> 的 HF API revision 冻结为 <code>f50c09f5d8ab133a90cac3f4886a6471e9ba3f18</code>。训练 config 的 <code>load_path</code> 指向其中 <code>model-480p-16fps.pt</code>，但本轮没有下载该权重或验证文件 hash。[2]</p>
+<h2 id="3-policy-world-model-value">3. 概率合同：policy、world model 与 value</h2>
+<p>令 (s_t=(o_t,p_t,c)) 表示当前多视角 observation (o_t)、proprio (p_t) 与任务文本 (c)，(a_{t:t+K-1}in\mathbb R^{K\times D_a}) 是 action chunk，(s'\approx s_{t+K}) 是未来 observation proxy，(G_{t+K}) 是 Monte Carlo return。论文把三种训练角色写成：[1]</p>
+<div class="formula">\[
+\begin{aligned}
+\text{policy: }&amp;p_\theta(a,s&#x27;,G\mid s),\\
+\text{world: }&amp;p_\theta(s&#x27;,G\mid s,a),\\
+\text{value: }&amp;p_\theta(G\mid s,a,s&#x27;).
+\end{aligned}
+\]</div>
+<p>变量解释：这里的 (s') 实际只包含 (t+K) 时刻的 proprio 与 camera observations，并非可直接访问的完整 simulator state；(G) 是终局稀疏奖励按 (gamma^{H-t}) 折扣后的 empirical return。实现映射：同一 latent sequence 保持固定布局，<code>num_conditional_frames</code>、input mask 与 sample mask 改变哪部分是 clean condition、哪部分参与 denoising target。[1][2]</p>
+<p>这三条合同不能合并成“一个 joint loss 自动学会 planning”。base policy 可以并行生成三个 output，但只有在 world/value 对候选 action 的 OOD future 可靠且 value 已校准时，才可用于 action selection。论文自己也把 demonstration-only direct policy 与 rollout-refined planning model 分开。[1]</p>
+<h2 id="4-latent-sequence">4. Latent sequence 与注入/提取</h2>
+<h3 id="4-1-frozen-layouts">4.1 Frozen layouts</h3>
+<table><thead><tr><th>Suite</th><th>latent sequence（去掉 tokenizer 内部 spatial token）</th><th>state_t</th><th>action / proprio</th></tr></thead><tbody>
+<tr><td>LIBERO</td><td>blank, current proprio, wrist, primary, action, future proprio, future wrist, future primary, value</td><td>9</td><td>action 16×7；proprio 9D</td></tr>
+<tr><td>RoboCasa</td><td>blank, current proprio, wrist, left primary, right primary, action, future proprio, future wrist, future left, future right, value</td><td>11</td><td>action 32×7；proprio 9D</td></tr>
+</tbody></table>
+<p>每个语义 frame 对应 (C'\times H'\times W'=16\times28\times28) latent volume。Wan2.1 tokenizer 的 temporal compression factor 是 4，所以 config 以一张首 blank 加每个 semantic frame 的四张重复 image 组织 33-frame LIBERO input 或 41-frame RoboCasa input。[1][2]</p>
+<h3 id="4-2-action-latent-injection">4.2 Action latent injection</h3>
+<p>令归一化 action chunk 为 (A\in[-1,1]^{K\times D_a})，latent volume 元素数为 (M=C'H'W')，action 元素数为 (L=KD_a)。frozen code 的注入可写为：</p>
+<div class="formula">\[
+z_a=\operatorname{reshape}\left(
+\operatorname{repeat}(\operatorname{vec}(A),\lceil M/L\rceil)_{1:M}
+\right)\in\mathbb R^{C&#x27;\times H&#x27;\times W&#x27;}.
+\]</div>
+<p>变量解释：<code>replace_latent_with_action_chunk</code> 先 flatten (A)，按 ceiling repeat 填满 latent，再覆写 action latent index。它没有 action-specific learned encoder；学习发生在共享 diffusion transformer 中。[2]</p>
+<p>提取时，<code>extract_action_chunk_from_latent_sequence</code> 只取可组成完整 action copies 的前 (qL) 个元素，其中 (q=\lfloor M/L\rfloor)，reshape 成 (q\times K\times D_a) 后平均：</p>
+<div class="formula">\[
+\hat A=\frac{1}{q}\sum_{j=1}^{q}\operatorname{reshape}(z_a^{(j)},K,D_a).
+\]</div>
+<p>实现含义：注入时可能存在最后一个不完整重复片段，提取时它被丢弃；这应在极端 (K,D_a) 组合与换机器人时单测。输出随后按 dataset <code>actions_min/actions_max</code> 反归一化，不能跳过 checkpoint 对应的 statistics 文件。[2]</p>
+<h3 id="4-3-value-future-image">4.3 Value 与 future image</h3>
+<p>value scalar 被扩展到整个 value frame；采样后对该 frame 的全部元素求均值，并计算 (hat V=\operatorname{clip}((\bar z_v+1)/2,0,1))。future images 需要先把 blank/proprio/action 注入位置换回 VAE 编码前的 clean placeholder latent，再用 tokenizer decode；因此“保存了 future image”不代表执行时这些 latent 会送入 controller。[1][2]</p>
+<h2 id="5-routing-conditioning-loss">5. 训练 routing、conditioning 与 loss</h2>
+<h3 id="5-1-dataset-routing">5.1 Dataset routing</h3>
+<p>LIBERO/RoboCasa dataset 把索引空间组织为 demos、success rollouts、failure rollouts。demo sample 的 <code>rollout_data_mask=0</code>；rollout sample 为 1。若 <code>return_value_function_returns=True</code>，rollout sample 再随机选择 world-model 或 value-function 角色。base config 令 demonstration sampling probability 0.5、success rollout sampling probability 0.5，而每个 rollout sample 内 world/value 默认各占一半，对应论文约 50/25/25 的 batch 角色比例。[1][2]</p>
+<p>future index 固定为 (t+K)，episode 尾部 clamp 到最后一帧；action chunk 不足时重复最后动作补齐。value label 使用 future index 对应的 return。尾部 padding 没有独立 valid-step mask，因而边界样本会把 repeated terminal actions 作为真实 target；这是 frozen behavior，不应当作通用设计最优解。[2]</p>
+<h3 id="5-2-conditioning-mask">5.2 Conditioning mask</h3>
+<table><thead><tr><th>角色</th><th>clean condition</th><th>target/主要用途</th></tr></thead><tbody>
+<tr><td>policy demo</td><td>current state (s)</td><td>action、future state、value 可联合预测</td></tr>
+<tr><td>world rollout</td><td>current state + action</td><td>future proprio/images；value 可作为 auxiliary</td></tr>
+<tr><td>value rollout</td><td>full prefix (s,a,s')</td><td>value frame</td></tr>
+<tr><td>rollout state-value variant</td><td>future state only</td><td>(V(s'))，mask current state/action</td></tr>
+<tr><td>rollout Q variant</td><td>current state + action only</td><td>(Q(s,a))，mask future state</td></tr>
+</tbody></table>
+<p><code>CosmosPolicyVideo2WorldModel.get_data_and_condition</code> 对 world sample 把 action frame 置为 clean condition；对 value sample 把除 value frame 之外的 frames 置 clean。V/Q 变体再对 current/action 或 future slots 做 input masking。这里 <code>mask=1</code> 表示 clean condition，<code>mask=0</code> 表示需 denoise/predict；与某些 attention mask 语义相反，面试时必须说清 mask 类型。[2]</p>
+<h3 id="5-3-edm-loss-target-mask">5.3 EDM loss 与 target mask</h3>
+<p>frozen training 先把 action/proprio/value 写入 clean latent (x_0)，按 HybridEDMSDE 产生 noisy (x_t)，denoiser 输出 (hat x_0)。主项可抽象为：</p>
+<div class="formula">\[
+\mathcal L_{EDM}=
+\frac{1}{BCTHW}
+\sum_{b,t,c,h,w}
+m_{b,t}\,w(\sigma_{b,t})
+\left(x_{0,bcthw}-\hat x_{0,bcthw}\right)^2.
+\]</div>
+<p>变量解释：(m_{b,t}) 是 latent-frame loss mask，(w(\sigma)) 是 noise-level weight。<code>mask_loss_for_action_future_state_prediction=True</code> 时 demo 仅保留 action slot、world sample 仅保留 future state slots、value sample 仅保留 value slot；默认 config 未在本轮确认该 flag 被主实验打开，因此不能把可选分支写成所有 checkpoint 的既定 loss。[2]</p>
+<p>代码还可对 action slot 乘 <code>action_loss_multiplier</code>。各 action/future/value L1/MSE 同时被记录用于诊断，但主反向 loss 是 noise-weighted latent MSE，而不是日志里的 unweighted component L1。README 的“训练到 action L1 约 0.010/0.015”是经验阈值，不等于 closed-loop early stopping 充分条件。[2][3][4]</p>
+<p>另有一个必须保留为 WARN 的 frozen-code 风险：<code>mask_value_prediction_loss_for_policy_prediction</code> 分支会构造 <code>final_mask_B_T</code>，但随后决定是否把 mask 乘到 <code>kendall_loss</code> 的条件没有列入这个 flag。主 LIBERO/RoboCasa config 没有打开该 flag，所以不能据此否定官方 checkpoint；但如果个人 WAM 配置单独启用它，应先做非零 mask/gradient 单测，不能仅凭配置名声称 auxiliary value loss 已排除。[2]</p>
+<h2 id="6-sampling-parallel-autoregressive-denoising-steps">6. Sampling：parallel、autoregressive 与 denoising steps</h2>
+<h3 id="6-1-sampler-contract">6.1 Sampler contract</h3>
+<p><code>CosmosPolicySampler</code> 在 <code>sample_clean=True</code> 且请求 steps (&gt;1) 时，将 ODE solver 的 timestamp 数减一，最后再做一次 clean denoise；请求 1 step 时直接在首 sigma 上调用 denoiser。因此 CLI 的 <code>num_denoising_steps_action=5</code> 表示总 denoiser schedule contract，不应简单解读为“solver loop 五次”。[2]</p>
+<p>LIBERO/RoboCasa inference config 将 SDE range 覆盖为 (sigma_{min}=4,sigma_{max}=80)，默认 direct policy 用 5 denoising steps。论文报告 H100 上 5-step action/future/value parallel generation 约 0.61 s/chunk、1-step 约 0.16 s/chunk；这些是指定硬件 wall-clock，不是本机 latency 事实。[1][2]</p>
+<h3 id="6-2-direct-policy">6.2 Direct policy</h3>
+<p><code>get_action</code> 构造完整 latent sequence，以 current state slots 为 condition，一次采样得到 action/future/value。action 被反归一化后执行；future image/value 可用于可视化，但 direct eval 的 action selection 不读取它们。故“模型输出 value”不等于“在线 rollout 使用 value”。[1][2][5]</p>
+<h3 id="6-3-autoregressive-planning">6.3 Autoregressive planning</h3>
+<p>planning path 的顺序是：</p>
+<pre><code class="language-python">def best_of_n_step(observation, task, N):
+    # 1. Policy checkpoint samples N candidate action chunks using distinct seeds.
+    proposals = [policy.sample_action(observation, task, seed=i) for i in range(N)]
+
+    # 2. Planning checkpoint conditions on each proposal and predicts future state samples.
+    futures = [planning_model.sample_future(observation, action) for action in proposals]
+
+    # 3. Predict and aggregate values; paper uses future/value ensembles for ALOHA planning.
+    scores = [aggregate_value(planning_model.sample_value(future)) for future in futures]
+
+    # 4. Execute only the configured open-loop prefix, then observe the real environment again.
+    best = proposals[argmax(scores)]
+    return best[:num_open_loop_steps]</code></pre>
+<p>代码映射：<code>get_action</code> → <code>get_future_state_prediction</code> → <code>get_value_prediction</code>/<code>get_qvalue_prediction</code> → <code>max(seed_to_return_dict, key=value)</code> → action queue。论文 ALOHA planning 使用 (N=8)、每个 action 三个 future samples、每个 future 五个 value samples；repo 支持 serial/parallel worker pool、ensemble aggregation 与有限 search depth。[1][2][5]</p>
+<h2 id="7-best-of-n-value">7. Best-of-N 与 value 风险</h2>
+<p>best-of-N 的选择规则是：</p>
+<div class="formula">\[
+a^*=\arg\max_{a^{(i)}\sim\pi(\cdot\mid s),\;i=1..N}
+\widehat V\!\left(\hat s&#x27;^{(i)}\right),
+\qquad
+\hat s&#x27;^{(i)}\sim\hat T(\cdot\mid s,a^{(i)}).
+\]</div>
+<p>变量解释：(pi) 是原 policy checkpoint，(hat T,widehat V) 来自 refined planning checkpoint。它不是 CEM/MPPI：没有迭代更新 action distribution，只对 policy proposals 排序；search depth 默认为 1，论文也明确主要使用 one-layer search。[1][2]</p>
+<p>风险来自两层 optimizer's curse：候选越多，越容易选择 world-model hallucination 或过高 value estimate。论文用 rollout refinement、future/value ensemble 与 majority-mean 缓解，但不能消除 OOD calibration 问题。最小审计应同时报告：proposal diversity、future error、value calibration、rank correlation、selected-vs-random action success、N/latency 曲线与 failure traces。[1]</p>
+<p>repo 的 <code>aggregate_value_predictions</code> 支持 average、LCB、success_vote、majority_mean 等 scheme；默认 LIBERO/RoboCasa config 是 average。论文 ALOHA planning 的 majority-mean 不能自动外推为所有官方 checkpoint 的默认 runtime。[1][2]</p>
+<h2 id="8-libero-robocasa-eval">8. LIBERO / RoboCasa eval 合同</h2>
+<h3 id="8-1-libero">8.1 LIBERO</h3>
+<ol><li>使用 official suite task 与 default init states；每 task 取 <code>initial_states[episode_idx]</code> 后调用 <code>env.set_init_state</code>。</li><li>reset 后先执行 10 个 dummy actions 让物体稳定。</li><li>observation 为 agentview、wrist、9D proprio；图片按配置 vertical flip、JPEG、resize 与 center crop。</li><li>action queue 空时查询；默认 chunk 16、open-loop 16。</li><li><code>env.step(action.tolist())</code> 返回 <code>done</code> 即记 success；需在独立 benchmark audit 中确认 wrapper 的 done/success 等价和版本。</li><li>每 suite 默认 10 tasks×50 episodes=500 trials；paper/model card 的 98.5% 是四 suites、三 seeds 汇总口径。[1][3][5][6]</li></ol>
+<h3 id="8-2-robocasa">8.2 RoboCasa</h3>
+<ol><li>controller 为 OSC_POSE，robot 是 PandaMobile，object split B；默认 5 个 layout/style scenes，每 10 个 episode 切一个 scene。</li><li>每 episode 重建 env，seed 与 scene selection 进入 env kwargs；先 10 个 zero actions warmup。</li><li>observation 是 left/right third-person、wrist 与 9D proprio。</li><li>policy 输出 7D manipulation action；环境若要求 12D，则拼 <code>[0,0,0,0,-1]</code> 作为 inactive mobile-base controls。</li><li>default chunk 32，执行前 16 步再 requery；success 由 <code>env._check_success()</code>。</li><li>paper/model card 的 67.1% 是 24 tasks×50 trials×3 seeds=3600 trials；单 task 的 50 trials 不能直接称为 24-task average。[1][4][5][7]</li></ol>
+<h3 id="8-3-protocol-comparability">8.3 Protocol comparability</h3>
+<p>必须冻结 checkpoint/model revision、dataset stats、T5 cache、repo commit、Python/PyTorch/CUDA、GPU、task/suite、init state、seed、determinism、camera flip/JPEG/crop、chunk/open-loop horizon、denoise steps、controller、max steps、success predicate、trial count。缺任一项时，跨报告差异最多是 directional context。</p>
+<h2 id="9-checkpoint">9. Checkpoint、资产与许可证边界</h2>
+<table><thead><tr><th>Artifact</th><th>Frozen revision / file manifest</th><th>License / 风险</th></tr></thead><tbody>
+<tr><td>GitHub code</td><td>18a2acc…；LICENSE、README、model/dataset/eval source</td><td>Apache-2.0；个别源文件头部出现与根 license 不同的历史版权措辞，复用仍需法务审查</td></tr>
+<tr><td>LIBERO policy model</td><td>cb689ec…；<code>.pt</code>、config.json、stats JSON、T5 pickle、README</td><td>model card 声明 NSCLv1、非商用</td></tr>
+<tr><td>RoboCasa policy model</td><td>4b2a04…；<code>.pt</code>、config.json、stats JSON、T5 pickle、README</td><td>model card声明 NSCLv1、非商用</td></tr>
+<tr><td>Base Predict2 model</td><td>f50c09…；含 <code>model-480p-16fps.pt</code></td><td>gated=auto；本轮未下载；2026-07-20 独立复核确认 model card 为 NVIDIA Open Model License。[8]</td></tr>
+<tr><td>LIBERO/RoboCasa modified datasets</td><td>repo docs 给出 HF IDs</td><td>API/raw card 访问在本轮返回 401；数据条款与 artifact revision 尚未冻结</td></tr>
+</tbody></table>
+<p><code>snapshot_download(repo_id=...)</code> 在 code 中未传 revision，因此真实运行会解析当时的 remote HEAD。严格复现应改为显式 revision 或记录 cache snapshot SHA，并对 <code>.pt</code>、config、stats、T5 embedding 建 manifest/hash。[2]</p>
+<h2 id="10-offline-proxy-online-success-wam">10. Offline proxy、online success 与 WAM 项目边界</h2>
+<table><thead><tr><th>证据</th><th>可以证明</th><th>不能证明</th></tr></thead><tbody>
+<tr><td>action/future/value latent L1/MSE</td><td>frozen split/noise 下 component fitting</td><td>controller execution、causal dynamics、task success</td></tr>
+<tr><td>future image visualization</td><td>某候选的视觉预测</td><td>contact correctness、proprio/action axis、calibrated transition</td></tr>
+<tr><td>value MAE/MSE</td><td>labeled state distribution 上的 regression</td><td>top-N selection calibration、OOD ranking</td></tr>
+<tr><td>direct-policy success</td><td>固定 protocol 下 action execution</td><td>world/value auxiliary 的独立因果收益</td></tr>
+<tr><td>planning uplift</td><td>policy/planning/model/protocol 全部固定时的 selection gain</td><td>单独归因于 world、value 或 N，除非有消融</td></tr>
+</tbody></table>
+<p>WAM 项目数字必须留在 VOL 07 evidence layer：held-out MSE 需要 split、metric script、prediction/label artifact；官方 baseline 需要 model revision、24×5 或论文 protocol 的 summary；0-success 需要 local checkpoint load log、stats、action/gripper distribution、rollout video 与 harness hash。上游 latent injection、三目标 routing、best-of-N 均不能写成本人原创。</p>
+<h2 id="11">11. 失败诊断与最小测试矩阵</h2>
+<table><thead><tr><th>症状</th><th>首要证据</th><th>可能原因</th><th>最小实验</th></tr></thead><tbody>
+<tr><td>loss 正常、0 success</td><td>action hist、stats SHA、controller trace</td><td>normalizer/axis/gripper/controller mismatch</td><td>dataset action round-trip + one-step env replay</td></tr>
+<tr><td>future image好看、动作无效</td><td>action sensitivity、contact trace</td><td>action ignoring / visual shortcut</td><td>固定 observation，置换 action，测 future delta</td></tr>
+<tr><td>value loss低、best-of-N 更差</td><td>calibration/reliability、rank correlation</td><td>optimizer's curse / OOD overestimate</td><td>N sweep + random/median/top selector 对照</td></tr>
+<tr><td>direct policy可用、planning失败</td><td>policy/planning checkpoint manifest</td><td>planning model distribution shift</td><td>original vs refined world/value blind eval</td></tr>
+<tr><td>LIBERO高、RoboCasa低</td><td>suite I/O/controller/protocol</td><td>camera/action/chunk/contact difference</td><td>per-layer contract diff，而非只比平均分</td></tr>
+<tr><td>换硬件/torch 后掉点</td><td>env lockfile、determinism log</td><td>numeric sampling sensitivity</td><td>three-seed paired rerun</td></tr>
+<tr><td>chunk 前半好、后半漂</td><td>per-step action error/success</td><td>open-loop horizon过长</td><td>(K_{exec}\in\{1,4,8,16\}) paired sweep</td></tr>
+</tbody></table>
+<p>还应加入四个 deterministic unit tests：action latent injection→extraction round trip；value frame→scalar round trip；normalization→denormalization round trip；LIBERO 7D / RoboCasa 7→12D controller mapping。它们只验证接口，不替代 closed-loop rollout。</p>
+<h2 id="12">12. 面试答题骨架与当前边界</h2>
+<h3 id="12-1-30">12.1 30 秒回答</h3>
+<p>“Cosmos Policy 的关键不是给视频模型加三个 head，而是把 proprio、action chunk、future observation 和 value 都编码成同一 latent video sequence 的 frame。通过 condition mask 和 sample routing，同一 diffusion backbone 可以学 (p(a,s',V\mid s))、(p(s',V\mid s,a)) 和 (p(V\mid s,a,s'))。direct policy 一次并行生成三者但只执行 action；planning 则用原 policy 采样 N 个 action，再用 rollout-refined planning checkpoint 自回归预测 future/value，选最高 value。工程审计重点是 latent slot、loss mask、action stats、chunk/replan、checkpoint revision、init/warmup/controller 与 value calibration。论文官方分数不是我的本地项目结果。”</p>
+<h3 id="12-2">12.2 尚未核实</h3>
+<ul><li>已核实：arXiv v1 full text、paper license、frozen repo commit/date/root license、latent injection/extraction、routing/mask/loss/sampler、LIBERO/RoboCasa config/eval path、两个 HF policy model revision/file list/model-card license；2026-07-20 独立复核重新命中13/13 official files、三份 HF revision、10/10 probes、9/9 local artifacts，并补核 base model license。[8]</li><li>尚未核实：checkpoint tensor/local hash、modified dataset card/revision、真实 inference、official result reproduction、external benchmark commit 与本地 WAM result/ownership。</li><li>用户本地待取证：WAM config/checkpoint、training/held-out metric artifact、official baseline cache revision、0-success rollouts、personal diff/ownership。</li><li>本页不把任何 WAM 本地数字写成 verified result，不把 Cosmos 上游设计写成本人贡献。</li><li>下一步：Audit C public facts 已独立复核；若继续文档复核，只选择 Source Audit D（Sim2Real）。VOL 04 aggregate knowledge/cards 已为44/44且全部 <code>unseen</code>，真实口述前不改变 mastery。</li></ul>
+<h2 id="13-references">13. 参考文献（References）</h2>
+<ol><li>Kim et al., “Cosmos Policy: Fine-Tuning Video Models for Visuomotor Control and Planning”, arXiv 2601.16163v1, 2026. <a href="https://arxiv.org/abs/2601.16163v1">arXiv</a> / <a href="https://arxiv.org/html/2601.16163v1">HTML</a>。</li><li>NVlabs/cosmos-policy, frozen commit <code>18a2accadf4e7a3531e56754102af5a24d2316da</code>. <a href="https://github.com/NVlabs/cosmos-policy/tree/18a2accadf4e7a3531e56754102af5a24d2316da">GitHub</a>。重点文件：<code>policy_text2world_model.py</code>、<code>policy_video2world_model.py</code>、<code>cosmos_sampler.py</code>、<code>cosmos_utils.py</code>、dataset/config files。</li><li>Cosmos Policy LIBERO guide at the frozen commit. <a href="https://github.com/NVlabs/cosmos-policy/blob/18a2accadf4e7a3531e56754102af5a24d2316da/LIBERO.md">LIBERO.md</a>。</li><li>Cosmos Policy RoboCasa guide at the frozen commit. <a href="https://github.com/NVlabs/cosmos-policy/blob/18a2accadf4e7a3531e56754102af5a24d2316da/ROBOCASA.md">ROBOCASA.md</a>。</li><li>Frozen eval sources: <a href="https://github.com/NVlabs/cosmos-policy/blob/18a2accadf4e7a3531e56754102af5a24d2316da/cosmos_policy/experiments/robot/libero/run_libero_eval.py">LIBERO</a> / <a href="https://github.com/NVlabs/cosmos-policy/blob/18a2accadf4e7a3531e56754102af5a24d2316da/cosmos_policy/experiments/robot/robocasa/run_robocasa_eval.py">RoboCasa</a>。</li><li>NVIDIA, Cosmos-Policy-LIBERO-Predict2-2B model card, revision <code>cb689ec0e3347c13667d70a78a3447388f5c3bb8</code>. <a href="https://huggingface.co/nvidia/Cosmos-Policy-LIBERO-Predict2-2B/tree/cb689ec0e3347c13667d70a78a3447388f5c3bb8">Hugging Face</a>。</li><li>NVIDIA, Cosmos-Policy-RoboCasa-Predict2-2B model card, revision <code>4b2a04c80d97202f86127ebec80461e8016ec1dc</code>. <a href="https://huggingface.co/nvidia/Cosmos-Policy-RoboCasa-Predict2-2B/tree/4b2a04c80d97202f86127ebec80461e8016ec1dc">Hugging Face</a>。</li><li><a href="vol_04_cosmos_policy_wam_independent_fact_review.html">VOL 04 Audit C 独立事实复核</a>：paper、13个fixed-commit文件、HF revisions/config/statistics、10个deterministic probes与本地WAM artifacts已重新获取和reconcile，verdict为<code>PASS WITH WARNING</code>。</li></ol>
+</article></body></html>

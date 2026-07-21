@@ -1,0 +1,84 @@
+{
+  "artifact": "sources/vol_04_benchmark_evidence_claim_to_protocol.md",
+  "html": "sources/vol_04_benchmark_evidence_claim_to_protocol.html",
+  "review_date": "2026-07-16",
+  "status": "drafted",
+  "verdict": "WARN",
+  "source_sha256": "58a5636e953f44c2aa27e3acf65c621460186daf3732b916eac70e6ffab2de6a",
+  "evidence_cutoff": "2026-07-16",
+  "upstream": {
+    "libero_repo": "Lifelong-Robot-Learning/LIBERO@8f1084e3132a39270c3a13ebe37270a43ece2a01",
+    "libero_default_branch": "master",
+    "libero_license": "MIT",
+    "uwm_paper": "arXiv 2504.02792v3",
+    "uwm_repo": "WEIRDLabUW/unified-world-model@b7d4067c8859775e5b08f681e76d538015cdd445",
+    "uwm_license": "no LICENSE/COPYING/NOTICE found in frozen tree",
+    "cosmos_repo": "NVlabs/cosmos-policy@18a2accadf4e7a3531e56754102af5a24d2316da",
+    "cosmos_code_license": "Apache-2.0; checkpoint/model licenses remain separate",
+    "robocasa_cosmos_fork_observed": "moojink/robocasa-cosmos-policy@edd9a328b3ec98050f42d194c1419307a79c4d87, package 0.2.0",
+    "robocasa_official": "robocasa/robocasa@b4684e6ee37d377cc392e98302a6b916d588b415, package 1.0.1",
+    "worldgym_paper": "arXiv 2506.00613v3",
+    "worldgym_repo": "world-model-eval/world-model-eval@709665b29f5c95124e7dbc05b0d4d47cd353de97",
+    "worldgym_license": "no LICENSE/COPYING/NOTICE found in frozen tree"
+  },
+  "coverage": {
+    "question_ids": [
+      "VLA-WM-039",
+      "VLA-WM-040",
+      "VLA-WM-041",
+      "VLA-WM-042",
+      "VLA-WM-043",
+      "VLA-WM-044"
+    ],
+    "protocol_fields": 12,
+    "protocol_families_compared": 9,
+    "local_numeric_claims_verified_from_raw_artifacts": 0
+  },
+  "critical_findings": [
+    {
+      "severity": "HIGH",
+      "finding": "The local 74.4% fixed-pruned-init claim is not protocol-equivalent to UWM Table II v3.",
+      "evidence": "Table II uses 50 OOD initializations, a +0.03 object initialization range shift, background-object removal and three finetuning seeds; the local project page states pruned_init plus five zero-action warmup steps.",
+      "required_action": "Rename the local protocol or reproduce and archive the paper OOD environment modifications before claiming Table-II alignment."
+    },
+    {
+      "severity": "HIGH",
+      "finding": "Cosmos RoboCasa installation is not commit-pinned and targets a fork rather than the current official RoboCasa repository.",
+      "evidence": "Frozen ROBOCASA.md clones moojink/robocasa-cosmos-policy without a SHA; the observed fork is package 0.2.0 while frozen official RoboCasa is package 1.0.1.",
+      "required_action": "Record the actual installed fork commit, robosuite/MuJoCo versions and controller pickle hash for every result."
+    },
+    {
+      "severity": "HIGH",
+      "finding": "The project metrics 186/250, 232/250 and 84/118 have no raw run artifacts in the cv workspace.",
+      "evidence": "Workspace scan found resume/project HTML claims but no checkpoint, normalizer, per-episode summary, video/action trace or exact eval config.",
+      "required_action": "Keep the numbers in the claim queue and collect immutable run and episode manifests before promoting them to verified personal evidence."
+    }
+  ],
+  "checks": {
+    "libero_default_protocol": "PASS (fixed pruned init, 20 evaluations, five zero actions, cameras, controller, control frequency and horizons mapped)",
+    "uwm_table2_protocol": "PASS (v3 table values, five tasks, 50 OOD initializations, three seeds and environment modifications mapped)",
+    "uwm_repo_rollout": "PASS (random reset path, no warmup, chunk execution, success wrapper and 1000-step default mapped)",
+    "uwm_paper_repo_gap": "PASS WITH WARNING (public frozen repo does not expose the Table-II OOD environment modification entrypoint)",
+    "local_uwm_comparability": "FAIL FOR STRONG CLAIM (74.4% and 92.8% remain claim-only; Table-II alignment is not established)",
+    "cosmos_libero_protocol": "PASS (first 50 states, 10 close-gripper noops, suite horizons, 16/16 chunk, determinism and aggregation mapped)",
+    "cosmos_robocasa_protocol": "PASS WITH WARNING (24 tasks, scene schedule, object split, controller pickle, 32/16 chunk and success predicate mapped; runtime fork pin missing)",
+    "robocasa_version_boundary": "PASS (Cosmos fork 0.2.0 separated from current official 1.0.1)",
+    "worldgym_proxy_boundary": "PASS (generated-video GPT-4o voting score separated from simulator and real closed-loop success)",
+    "artifact_manifest": "PASS AS SPECIFICATION (run-level and episode-level fields defined; no local raw artifacts collected)",
+    "personal_truth_boundary": "PASS (upstream values, runner behavior, local claims and verified artifacts kept separate)",
+    "browser_visual_check": "BLOCKED (in-app Browser URL policy rejects file:// local pages)",
+    "independent_fact_review": "PASS WITH WARNING (independent frozen-source record: sources/vol_04_batch1_independent_fact_review.html)",
+    "local_checkpoint_and_episode_artifacts": "MISSING",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Independently verify the UWM v3 Appendix-A environment modification and the exact meaning of its reported intervals.",
+    "Locate the user's actual UWM and WAM repositories or exported run bundles, then hash checkpoint, normalizer, config and episode records.",
+    "Determine whether the local fixed-init protocol uses 50 unique pruned states, repeats states, or a custom state file.",
+    "Decode and summarize the exact RoboCasa controller pickle used by the local run without treating the current official repository as the runtime version.",
+    "Recover all 120 RoboCasa episodes and document the two excluded episodes with a predeclared validity rule.",
+    "Run browser visual QA and independent fact review before upgrading WARN.",
+    "Keep all generated question cards unseen until oral practice."
+  ],
+  "next": "Collect local checkpoint/normalizer/config/episode artifacts and run browser visual QA; keep all six WM-039..044 cards unseen and project metrics behind the VOL 07 evidence gate."
+}

@@ -1,0 +1,50 @@
+{
+  "artifact": "sources/uwm_libero90_checkpoint_immutable_manifest_gate.md",
+  "html": "sources/uwm_libero90_checkpoint_immutable_manifest_gate.html",
+  "review_date": "2026-07-21",
+  "status": "local_binary_verified / base_checkpoint_only / fine_tune_lineage_open / WARN",
+  "verdict": "WARN",
+  "source_sha256": "A89C15D72D4504253E332052AD6A0B1A8F87D0DD26FB3201235359B2C7BFE554",
+  "evidence_cutoff": "2026-07-21",
+  "local_project_root": "C:\\Users\\mousongzhe\\project\\wm\\uwm_robocasa_transfer",
+  "manifest": {
+    "base_checkpoint_path": "_downloads/libero_90.pt",
+    "base_checkpoint_bytes": 4044929076,
+    "base_checkpoint_sha256": "E43C562E1D5145662006877AAC0FB30C3C5D57302AEFC16524DA2D862D694602",
+    "auxiliary_chunk_bytes": 268435456,
+    "auxiliary_chunk_sha256": "13B10DFCEF838A3AF30EAF2BF21CE7A306BB31A9B62AD5EA63A60BFA8427596D",
+    "project_wide_binary_scan_count": 2,
+    "project_wide_target_models_pt_count": 0,
+    "project_wide_other_checkpoint_formats_count": 0,
+    "archive_member_count": 1070,
+    "archive_top_level": "models_100001/",
+    "data_pkl_bytes": 182415,
+    "tensor_key_strings": 453,
+    "unique_tensor_key_strings": 452,
+    "logical_step": 100000,
+    "normalizers": {
+      "action_normalizer": null,
+      "lowdim_normalizer": null
+    }
+  },
+  "checks": {
+    "binary_exists_and_hash_recomputed": "PASS (4,044,929,076-byte local PyTorch archive; SHA-256 recomputed)",
+    "container_static_inspection": "PASS WITH WARNING (zip member inventory and pickle opcode inspection; no full tensor load claimed)",
+    "base_checkpoint_role": "PASS WITH WARNING (project README/download script identify it as official UWM LIBERO base input)",
+    "checkpoint_smoke_lineage": "PASS WITH WARNING (README records 454/454 shape-compatible smoke; fresh stdout/hash/run UUID not frozen in this page)",
+    "target_finetune_checkpoint": "UNVERIFIED (RoboCasa models.pt binary and exact run identity not frozen here)",
+    "normalizer_lineage": "UNVERIFIED (base normalizer fields are null; target run JSON must be bound separately)",
+    "closed_loop_scorer": "UNVERIFIED (episode JSONL, scorer revision and denominator remain separate gates)",
+    "ownership": "PENDING (no candidate per-file confirmation)",
+    "html_static_validation": "PASS (repository validator: 387 canonical triplets, zero SHA/template/math/link/reconciliation failures)",
+    "browser_visual_check": "PASS WITH WARNING (Microsoft Edge 150 desktop 1280x1000 and narrow 800x1000: one H1, sticky-to-static TOC, serif academic palette, zero page-wide overflow, zero formula em and zero broken anchors)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Capture a trusted checkpoint-smoke stdout/summary with exact argv, code revision and the C01 SHA in one run manifest.",
+    "Hash the RoboCasa target models.pt and its action normalizer JSON, then bind both to a shared run UUID.",
+    "Run a fresh-process reload parity check before using stronger fine-tune or closed-loop claims.",
+    "Keep PROJ-UWM and RoboCasa ActionHeadFix cards unseen until a real oral response is recorded."
+  ],
+  "next": "Reconcile the newly discovered base binary into the UWM evidence inventory, then collect target models.pt/normalizer or perform one real project oral drill."
+}

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 EVAL-011 Source Freeze：Offline Metric 与 Online Success 的相关性分析</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_eval011_offline_metric_online_success_correlation_source_freeze.md">
+<meta name="aris:source-sha256" content="c4a085e96e8ae6ed4d22660b49d26d8faad0b338e8990b132ae3288ee28eb0dd">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>c4a085e96e8ae6ed4d22660b49d26d8faad0b338e8990b132ae3288ee28eb0dd</code>；生成自：<code>interview_materials\vla\sources\vol_05_eval011_offline_metric_online_success_correlation_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、Revision 与边界</a></li><li><a href="#2">2. 先定义“相关性的一个点”</a></li><li><a href="#2-1-panel">2.1 正确 panel</a></li><li><a href="#2-2">2.2 三种错误“扩样本”</a></li><li><a href="#3">3. 四个问题不是一个“相关系数”</a></li><li><a href="#4-pearson">4. Pearson：线性一致性与范围限制</a></li><li><a href="#5-spearman-kendall-mmrv">5. Spearman / Kendall 与 MMRV</a></li><li><a href="#6-online-success">6. Online Success 有测量误差</a></li><li><a href="#7-task-policy-hierarchy-simpson">7. Task / Policy Hierarchy 与 Simpson 风险</a></li><li><a href="#8-uncertainty">8. Uncertainty：在正确层级重采样</a></li><li><a href="#9-discovery-validation-prospective-gate">9. Discovery、Validation 与 Prospective Gate</a></li><li><a href="#10-correlation-causation">10. Correlation 不等于 Causation</a></li><li><a href="#11-evidence-mapping">11. 五项目 Evidence Mapping</a></li><li><a href="#12-artifact-bundle">12. 最小 Artifact Bundle</a></li><li><a href="#13">13. 分析伪代码</a></li><li><a href="#14-source-gate">14. Source Gate 结论与下一入口</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 EVAL-011 Source Freeze：Offline Metric 与 Online Success 的相关性分析</h1>
+<div class="meta">状态：<code>source_frozen / VLA-EVAL-011 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-18 证据截止：2026-07-18 本切片冻结matched policy-task panel、Pearson/Spearman/MMRV、层次二项映射、cluster uncertainty、held-out validation、proxy selection与因果边界；只生成一张<code>VLA-EVAL-011</code>原子题卡，VOL 05同步为knowledge/cards 33/44。</div>
+<h2 id="question">问题（Question）</h2>
+<p>action MSE、VLM/world-model proxy、simulator success或tool-call score能否预测真实closed-loop success？可信回答不能从一对数字或几千个episode计算“相关性”，而要把多个policy/checkpoint作为独立变异来源，在同task/protocol上得到matched offline-online panel，再区分线性关联、排序能力、预测校准与因果作用。</p>
+<h2 id="1-revision">1. 冻结来源、Revision 与边界</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>类型 / revision / license</th><th>SHA-256</th><th>支持范围</th><th>不支持</th></tr></thead><tbody>
+<tr><td>S1</td><td>Li et al., <em>Evaluating Real-World Robot Manipulation Policies in Simulation</em>（SIMPLER）</td><td>primary paper；arXiv <code>2405.05941v1</code>，2024-05-09；论文许可未断言</td><td>arXiv API <code>a20cd969be3c4a310fbdc719d695873d0f541501eb8b023ee5bf6b9ea5baa79d</code>；ar5iv HTML <code>19db19183e0c55e2d41358fc8f290d2d6326ad86ef62ecae8c17ae5b8521e97d</code></td><td>multiple policies上的paired sim-and-real performance；Pearson局限；MMRV定义；relative ranking与distribution-shift behavior；simulation不完全替代real eval</td><td>任意offline metric都与online success相关；论文结果自动迁移到用户项目</td></tr>
+<tr><td>S2</td><td><code>simpler-env/SimplerEnv</code></td><td>official-code；commit <code>06accaca93535902d408da4855f21cece12bceb7</code>（2025-12-20）；MIT</td><td>README <code>81aaa39d59e41c6b60d6ccdf09c17b1f0ca284ce7cb780b62b908afac6c0dc28</code>；metrics <code>ee8596be6997d41295bf5b25f90c9b5b3ba47ef2bd92296b8c45e7ffc5606dc6</code>；calc <code>c95963ec1452cb4f5f34db012eda79542c8afdd0465299ae30cf710c4b4a0521</code>；LICENSE <code>c28645822e5cdadf816144773ee153332449ae04aa6f0b6a6393e5611092f878</code></td><td><code>REAL_PERF/SIMPLER_PERF</code>的policy-task对齐、Pearson与MMRV实现</td><td>统计CI、cluster bootstrap、用户项目运行或real-robot evidence</td></tr>
+<tr><td>S3</td><td>Breck et al., <em>The ML Test Score</em></td><td>primary paper；IEEE Big Data 2017；Google Research页面/PDF；论文许可未断言</td><td>page <code>e1588aa27c4a0aa74435327e92400443faf0b1ddf623068845571346484e1f6b</code>；PDF <code>8db5862dc7c7aaa2c55bb43bd42fc55531a0503782b7026b5811c00c98befd31</code></td><td>offline proxy与online impact需要建立关系；可用small-scale A/B与故意降级模型测量；重要slice单独看</td><td>correlation阈值、VLA metric choice或因果保证</td></tr>
+<tr><td>S4</td><td>SciPy <code>stats</code></td><td>official-code；tag <code>v1.16.3</code>（tag object <code>56e567e70ccad213d04ab04e7cfe7365562a71f1</code>）；BSD-3</td><td><code>_stats_py.py</code> <code>c1f98867bce4a0bdb336b6c33bd930bcf50f8b9aae6a654e1f9a6d2064bda3b4</code>；<code>_resampling.py</code> <code>ad8335279281c69d4a3bbf4449100e3ac5e1f5bc7af360963133973ed2a64d7e</code>；LICENSE <code>221e59f5e910fd7f94e44f0dac77436a11338c285c6346232e4a850a50da0e94</code></td><td><code>pearsonr</code>、<code>spearmanr</code>、<code>kendalltau</code>、paired bootstrap的实现入口</td><td>自动选择统计单元、解决task/policy clustering或证明proxy有效</td></tr>
+<tr><td>S5</td><td>EVAL-003/005/006/007/009/010、WM-019与VOL 04 WM-040/041</td><td>canonical local prerequisites</td><td>EVAL-003 <code>3d00ba8a...4d490f</code>；EVAL-005 <code>16b6a4c7...804ff46</code>；EVAL-006 <code>8a2ccfbc...ccd054</code>；EVAL-007 <code>66800fd2...6e278</code>；EVAL-009 <code>be6945d...13dea</code>；EVAL-010 <code>512d9e16...b2911</code>；WM-019 <code>2cff5c30...b08a5</code>；VOL 04 <code>89a3a5ed...8effe</code></td><td>success uncertainty、aggregation/protocol/coverage、raw bundle、release gate与metric ladder</td><td>五项目已有matched correlation study</td></tr>
+<tr><td>S6</td><td>五项目inventories + WAM manifest</td><td>local-evidence</td><td>Robot Harness <code>66acc52c...aa291e</code>；OPD <code>0a68251d...db12bb</code>；OpenPiVLA <code>a3c644f9...ce293</code>；WAM <code>078c86b1...772d</code>；UWM <code>728b8326...3674d</code>；WAM manifest <code>1ab87092...8f697</code></td><td>当前offline/online artifact和缺口</td><td>项目相关性、因果或real-robot claim</td></tr>
+</tbody></table>
+<p>S1把policy作为圆点/比较对象，目标是simulation与real对relative policy performance的排序一致，而非逐episode相关。S4只提供统计实现；本页的层次模型、cluster resampling与held-out design是source-consistent engineering synthesis，不冒充SIMPLER或SciPy的原结论。</p>
+<h2 id="2">2. 先定义“相关性的一个点”</h2>
+<h3 id="2-1-panel">2.1 正确 panel</h3>
+<pre><code class="language-text">policy_variant_id, policy_family, checkpoint_sha, training_seed,
+task_id, task_slice, offline_metric_name/value/uncertainty,
+offline_split/scorer/protocol_sha,
+online_success_k/n, online_env/controller/predicate/protocol_sha,
+matched_support, exclusion_reason</code></pre>
+<p>设policy/checkpoint为<code>j=1..J</code>、task/slice为<code>t=1..T</code>。一个panel row是同一<code>(j,t)</code>在冻结offline与online协议上的一对结果。必须有多个真实不同的<code>j</code>；episode只是估计某个<code>p_{jt}</code>的重复观测，不会把<code>J=1</code>变成有相关性样本。</p>
+<h3 id="2-2">2.2 三种错误“扩样本”</h3>
+<ol><li>把同一个policy的1000个offline rows与50个online episodes逐行拼接；两侧没有一一对应单位。</li><li>把task×checkpoint所有格子当独立点；同policy和同task重复出现，标准误会过小。</li><li>把不同scorer、init、controller或success predicate的summary放到同一散点图；protocol effect被误当metric关系。</li></ol>
+<h2 id="3">3. 四个问题不是一个“相关系数”</h2>
+<table><thead><tr><th>目标</th><th>问题</th><th>合适输出</th><th>不足</th></tr></thead><tbody>
+<tr><td>linear association</td><td>offline每变化一单位，online是否近似线性变化</td><td>Pearson + scatter/residual + CI</td><td>对非线性、窄range、outlier敏感</td></tr>
+<tr><td>ranking</td><td>proxy能否把候选排对</td><td>Spearman/Kendall、pairwise sign、MMRV</td><td>不代表数值校准或绝对success</td></tr>
+<tr><td>prediction</td><td>能否预测新policy/task的online success</td><td>held-out hierarchical model、log loss/Brier/calibration</td><td>需要足够policy/task support</td></tr>
+<tr><td>causal effect</td><td>优化offline metric是否导致online提升</td><td>matched intervention/ablation</td><td>correlation本身不回答</td></tr>
+</tbody></table>
+<p>“相关性高”“排序可用”“概率校准”“改metric能提升success”必须使用不同措辞。</p>
+<h2 id="4-pearson">4. Pearson：线性一致性与范围限制</h2>
+<p>令<code>x_j</code>为方向统一成越大越好的offline score，<code>y_j</code>为同policy的online success estimate：</p>
+<div class="formula">\[
+r=\frac{\sum_{j=1}^{J}(x_j-\bar x)(y_j-\bar y)}
+{\sqrt{\sum_j(x_j-\bar x)^2}\sqrt{\sum_j(y_j-\bar y)^2}}.
+\]</div>
+<p>变量解释：一个<code>j</code>是一条policy/checkpoint，不是episode；loss需取负号或明确方向。直觉：<code>r</code>只衡量线性共同变化。实现映射：保存scatter、每点policy/task身份、protocol SHA与两轴CI；常数输入、很小<code>J</code>、极端点或窄performance range时不报告孤立<code>r</code>。</p>
+<p>SIMPLER明确指出Pearson可能惩罚正确但非线性的排序，也会在real policy性能很接近时被小噪声大幅影响。[S1]</p>
+<h2 id="5-spearman-kendall-mmrv">5. Spearman / Kendall 与 MMRV</h2>
+<p>Spearman可写为rank后的Pearson：</p>
+<div class="formula">\[
+\rho_s=\operatorname{Corr}(\operatorname{rank}(x_1,\ldots,x_J),
+\operatorname{rank}(y_1,\ldots,y_J)).
+\]</div>
+<p>变量解释：<code>ρ_s</code>回答单调排序，不要求数值线性；ties由冻结实现处理。实现映射：同时报告pairwise排序表，避免一个系数隐藏哪个关键candidate被排反。</p>
+<p>SIMPLER提出Mean Maximum Rank Violation（MMRV），让排错的重要性由real performance margin加权：</p>
+<div class="formula">\[
+V(i,j)=|y_i-y_j|\,\mathbb{1}[(x_i&lt;x_j)\ne(y_i&lt;y_j)],
+\qquad
+\operatorname{MMRV}=\frac{1}{J}\sum_{i=1}^{J}\max_j V(i,j).
+\]</div>
+<p>变量解释：若proxy把<code>i/j</code>顺序排反，<code>V</code>等于两者online差距；MMRV越低越好。实现映射：SIMPLER原式用于sim/real policy performance；推广到任意offline proxy是本文设计，前提是两轴同policy、同task support且<code>y</code>方向一致。MMRV仍受online estimate噪声影响，必须带uncertainty或敏感性分析。</p>
+<h2 id="6-online-success">6. Online Success 有测量误差</h2>
+<p>对policy <code>j</code>、task <code>t</code>，online success不是无噪声实数：</p>
+<div class="formula">\[
+K_{jt}\sim\operatorname{Binomial}(n_{jt},p_{jt}),
+\qquad \hat p_{jt}=K_{jt}/n_{jt}.
+\]</div>
+<p>变量解释：<code>K/n</code>来自冻结success predicate和有效episode denominator；<code>p</code>是该协议下潜在成功概率。实现映射：EVAL-003的Wilson/exact interval与EVAL-009 raw episode bundle给每个online点提供uncertainty；未知<code>n</code>的97.4不能进入定量panel。</p>
+<p>若offline metric本身来自有限rows/seeds，也要保存其SE/CI。忽略两轴measurement error通常会让关系不稳定或产生attenuation；增加每policy episode能缩小<code>p_j</code>误差，却不能替代更多policy variants。</p>
+<h2 id="7-task-policy-hierarchy-simpson">7. Task / Policy Hierarchy 与 Simpson 风险</h2>
+<p>一个可选的解释/预测模型是：</p>
+<div class="formula">\[
+K_{jt}\sim\operatorname{Binomial}(n_{jt},p_{jt}),
+\qquad
+\operatorname{logit}(p_{jt})=\alpha_t+\beta z(x_{jt})+u_j.
+\]</div>
+<p>变量解释：<code>α_t</code>控制task难度，<code>β</code>描述标准化offline score与online log-odds的条件关系，<code>u_j</code>表示policy层残差。实现映射：只有在<code>J/T</code>足够、设计预注册时才拟合；按policy family/task做held-out验证。该式是engineering synthesis，不是五项目已运行模型。</p>
+<p>把easy task的高offline/high success与hard task的低offline/low success混在一起，可能得到很高pooled correlation，即使每个task内proxy完全无用；因此至少同时报告pooled、within-task、per-task与leave-one-task-out结果。</p>
+<h2 id="8-uncertainty">8. Uncertainty：在正确层级重采样</h2>
+<p>SciPy <code>bootstrap(..., paired=True)</code>可保持两轴配对，但<code>paired=True</code>不会自动识别policy/task cluster。VLA panel建议：</p>
+<ol><li>primary resampling unit取policy/checkpoint或training run；</li><li>若目标是跨task泛化，再按task cluster分层/双层重采样；</li><li>同一policy内部episode用于重新估计<code>p_{jt}</code>，不能冒充独立policy；</li><li>每次bootstrap同时重算aggregation、rank、Pearson/Spearman/MMRV；</li><li>小<code>J</code>时展示所有points与leave-one-policy-out sensitivity，不用窄CI制造精确感。</li></ol>
+<p>没有跨policy variation或存在常数列时，相关系数不可识别；输出<code>not estimable</code>比填0更正确。</p>
+<h2 id="9-discovery-validation-prospective-gate">9. Discovery、Validation 与 Prospective Gate</h2>
+<pre><code class="language-text">discovery panel
+  -&gt; choose metric/direction/transform/model
+  -&gt; freeze proxy contract and decision rule
+  -&gt; held-out policy-family/task validation panel
+  -&gt; prospective candidate prediction
+  -&gt; online rollout reveals outcome
+  -&gt; append immutable row; monitor relationship drift</code></pre>
+<p>若在同一checkpoint曲线上试很多metric，最后挑相关性最高者并仍在同数据报告，结果存在selection optimism。Breck等建议用small-scale online experiment验证offline proxy；SIMPLER也强调simulation是real evaluation的补充而非完全替代。[S1][S3]</p>
+<p>用于EVAL-010 release gate时，offline proxy只能作screen：先在独立历史panel上证明对目标候选分布有排序/预测价值，再冻结阈值；critical/safety hard gate和必要online canary仍保留。</p>
+<h2 id="10-correlation-causation">10. Correlation 不等于 Causation</h2>
+<p>多个checkpoint的loss与success共同改善，可能由training step、model size、data amount或policy family共同驱动。要说“降低action MSE导致success提升”，至少需要：</p>
+<ul><li>预注册只改变该目标/权重的matched ablation；</li><li>同data/compute/protocol与多个training seeds；</li><li>offline和online都在held-out common support评估；</li><li>检查mediator、side effect和critical slice；</li><li>报effect/uncertainty，不只报跨arm correlation。</li></ul>
+<p>对已用offline metric选择的best checkpoint再估计相关性还会产生winner's curse；selection set与validation set必须分开。</p>
+<h2 id="11-evidence-mapping">11. 五项目 Evidence Mapping</h2>
+<table><thead><tr><th>项目</th><th>offline候选</th><th>online候选</th><th>当前panel判定</th><th>安全表述</th></tr></thead><tbody>
+<tr><td>Robot Harness</td><td>tool/coverage/argument/safety/browser suite</td><td>无真实robot/browser closed-loop success</td><td><code>MISSING</code>；base/SFT/GRPO的n/scorer也不同</td><td>可讲proxy冲突与未来panel设计；不能报tool→robot相关性</td></tr>
+<tr><td>OPD</td><td>ckpt1000–5000 box/point/text/by-pool</td><td>无matched robot/simulator closed-loop</td><td><code>OFFLINE ONLY</code></td><td>不同pool最佳点说明多目标rank风险，不是offline-online correlation</td></tr>
+<tr><td>OpenPiVLA</td><td>formal loss/smoke/diagnostic线索</td><td>97.4 archive simulator summary与official-checkpoint diagnostics不同lineage</td><td><code>UNMATCHED</code></td><td>先闭合per-checkpoint offline+LIBERO raw rows；当前不能拟合关系</td></tr>
+<tr><td>WAM</td><td>manifest明确offline target fit缺失</td><td>base/trained各一个CoffeePressButton失败episode，checkpoint未核</td><td><code>J&lt;=2 / MISSING</code></td><td>两条失败trace只作diagnostic；不能说MSE/proxy与success脱钩或相关</td></tr>
+<tr><td>UWM</td><td>training loss/DataLoader等材料，不是统一policy-quality metric</td><td>一个user-confirmed 186/250；reset 232/250是protocol变化</td><td><code>SINGLE POLICY / CONFOUNDED</code></td><td>strict/reset说明protocol sensitivity，不是policy correlation</td></tr>
+</tbody></table>
+<p>五项目目前都不能计算可信<code>r/ρ/MMRV/β</code>。本页提供的是补证据合同，不是新增项目结果。</p>
+<h2 id="12-artifact-bundle">12. 最小 Artifact Bundle</h2>
+<pre><code class="language-text">offline_online_panel/
+  panel_manifest.json        # policies, tasks, metrics, directions, exclusions
+  offline/raw_and_summary/   # metric rows + scorer/protocol SHA
+  online/episode_bundle/     # EVAL-009 raw episodes + k/n/CI
+  analysis/paired_panel.parquet
+  analysis/correlation.json  # r/rho/MMRV + interval/sensitivity
+  analysis/heldout_predictions.jsonl
+  figures/scatter_facets.svg
+  checksums/manifest-sha256.txt</code></pre>
+<h2 id="13">13. 分析伪代码</h2>
+<pre><code class="language-python">def validate_offline_online_proxy(panel, spec):
+    # 1. Validate one matched row per policy-task and freeze metric direction.
+    rows = validate_ids_protocols_common_support(panel, spec)
+
+    # 2. Keep policies as the primary variation unit; episodes estimate p_jt only.
+    points = aggregate_raw_rows_and_episodes(rows, by=[&quot;policy_id&quot;, &quot;task_id&quot;])
+
+    # 3. Report linear, rank and margin-weighted ranking views together.
+    stats = compute_pearson_spearman_kendall_mmrv(points)
+
+    # 4. Resample policy/task clusters, then run leave-one-policy/task sensitivity.
+    stats[&quot;intervals&quot;] = hierarchical_cluster_bootstrap(points, spec)
+    stats[&quot;sensitivity&quot;] = leave_one_cluster_out(points)
+
+    # 5. Fit only on discovery rows and score frozen predictions on held-out families/tasks.
+    predictor = fit_hierarchical_binomial(points.discovery, spec)
+    stats[&quot;heldout&quot;] = evaluate_predictions(predictor, points.validation)
+    return write_immutable_analysis_bundle(stats, spec)</code></pre>
+<p>这是analysis contract，不是五项目已有脚本。</p>
+<h2 id="14-source-gate">14. Source Gate 结论与下一入口</h2>
+<p>EVAL-011保持<code>WARN</code>：SIMPLER提供了多policy paired sim-real、Pearson/MMRV及“proxy不替代real”的一手案例；SciPy冻结了实现入口；ML Test Score支持offline-online关系需要实证验证。本页进一步冻结统计单元、层次结构、uncertainty、held-out与因果边界。五项目均没有可估计相关性的matched panel。</p>
+<p>下一节点固定为<code>VLA-EVAL-012</code>：OOD、扰动、遮挡、视角与鲁棒性矩阵。真实口述前不创建<code>coaching_state.md</code>。</p>
+<h2 id="references">References</h2>
+<ol><li>Li et al., <a href="https://arxiv.org/abs/2405.05941v1"><em>Evaluating Real-World Robot Manipulation Policies in Simulation</em></a>, 2024；<a href="https://ar5iv.labs.arxiv.org/html/2405.05941">ar5iv HTML</a>。</li><li><code>simpler-env/SimplerEnv</code> commit <a href="https://github.com/simpler-env/SimplerEnv/tree/06accaca93535902d408da4855f21cece12bceb7"><code>06accaca</code></a>，<a href="https://github.com/simpler-env/SimplerEnv/blob/06accaca93535902d408da4855f21cece12bceb7/simpler_env/utils/metrics.py">metrics.py</a>，MIT。</li><li>Breck et al., <a href="https://research.google/pubs/the-ml-test-score-a-rubric-for-ml-production-readiness-and-technical-debt-reduction/"><em>The ML Test Score</em></a>, IEEE Big Data 2017。</li><li>SciPy <code>v1.16.3</code>, <a href="https://github.com/scipy/scipy/blob/v1.16.3/scipy/stats/_stats_py.py"><code>_stats_py.py</code></a>与<a href="https://github.com/scipy/scipy/blob/v1.16.3/scipy/stats/_resampling.py"><code>_resampling.py</code></a>，BSD-3。</li><li><a href="vol_05_eval003_success_rate_confidence_interval_source_freeze.html">EVAL-003</a>、<a href="vol_05_eval005_aggregation_estimand_source_freeze.html">EVAL-005</a>、<a href="vol_05_eval006_benchmark_env_controller_scorer_versioning_source_freeze.html">EVAL-006</a>、<a href="vol_05_eval007_init_seed_task_coverage_difficulty_source_freeze.html">EVAL-007</a>、<a href="vol_05_eval009_raw_predictions_episode_trace_video_recomputable_summary_source_freeze.html">EVAL-009</a>、<a href="vol_05_eval010_regression_gate_golden_set_canary_rollout_source_freeze.html">EVAL-010</a>。</li><li><a href="vol_04_wm019_metric_boundary_source_freeze.html">WM-019 Metric Boundary</a>与<a href="../knowledge/vol_04_world_model_sim2real.html">VOL 04 WM-040/041</a>。</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest</a>与五项目inventories。</li></ol>
+</article></body></html>

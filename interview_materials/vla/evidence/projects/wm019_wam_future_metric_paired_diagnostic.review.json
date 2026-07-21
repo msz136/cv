@@ -1,0 +1,48 @@
+{
+  "artifact": "evidence/projects/wm019_wam_future_metric_paired_diagnostic.md",
+  "html": "evidence/projects/wm019_wam_future_metric_paired_diagnostic.html",
+  "review_date": "2026-07-18",
+  "status": "paired_metric_diagnostic / WAM / offline_future_image / checkpoint_unverified / WARN",
+  "verdict": "WARN",
+  "source_sha256": "DC58EE08006776333D0D2BF130DDEBA8896AFBC754E276B9F67D6CFE04CECE2E",
+  "covered_question_ids": ["VLA-WM-019"],
+  "inputs": {
+    "manifest_sha256": "8C4872F711897F718621C7AE8A6DF49EEDDE759CBECEDE530A3D82ABA819EC71",
+    "iter_5000_metrics_sha256": "0FD008BBAD68A9FDD273A7E1DC7659F0F6B66927194671AC112FA5DEDAF72C18",
+    "iter_10000_metrics_sha256": "C9AB7F04AFD9C9057CC548BF0176285E001BA778BCD37DC4FB7D857E29BAEC9D",
+    "iter_5000_summary_sha256": "9BDC8A438153DB2ED02BAC77DDF5964A7A3BA241BDEEB526D7993507D9CDDDAE",
+    "iter_10000_summary_sha256": "805112AB530C63DD0293E918731C3721707EC508B9239D7EE3F2DB935FC868A1"
+  },
+  "metrics": {
+    "sample_count": 1,
+    "future_frame_count": 12,
+    "iter_5000_future_psnr": 8.5813418454,
+    "iter_10000_future_psnr": 8.2140051576,
+    "iter_5000_future_ssim": 0.0452700028,
+    "iter_10000_future_ssim": 0.0428580477,
+    "iter_5000_condition_psnr": 15.5366232419,
+    "iter_10000_condition_psnr": 15.1975432224
+  },
+  "checks": {
+    "bounded_slice": "PASS (one offline future-image metric pair; action rollout remains a separate protocol)",
+    "input_identity": "PASS (same prompt, episode source, sample/future indices, chunk, steps and seed)",
+    "metric_fields": "PASS (future-only/condition-inclusive PSNR/SSIM, frame count and SSIM implementation recorded)",
+    "checkpoint_boundary": "WARN (both checkpoint values are remote paths; local binary/hash unavailable)",
+    "sample_denominator": "WARN (sample_count=1; no multi-seed or task denominator)",
+    "metric_ladder": "PASS WITH WARNING (offline visual proxy separated from action trace and closed-loop success)",
+    "project_truth_boundary": "PASS (no WAM success/uplift or personal result promoted)",
+    "html_static_validation": "PASS (one H1, eight H2 including generated TOC, four tables and one formula block)",
+    "local_links": "PASS (manifest, trace diagnostic, gate and source-freeze links resolve)",
+    "source_sha": "PASS (canonical Markdown SHA matches HTML meta and review JSON)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Obtain checkpoint/processor/normalizer/config hashes and repeat samples before interpreting checkpoint differences causally.",
+    "Match future-image metrics with action trace and simulator predicate under one frozen protocol.",
+    "Do not turn PSNR/SSIM deltas into action MSE, success, uplift or real-robot claims.",
+    "Keep WAM historical numeric claims evidence-limited and ownership-unverified.",
+    "Do not create coaching_state.md or mark WM-019 practiced without a real oral answer."
+  ],
+  "next": "Add one matched checkpoint/protocol artifact or run one VLA-WM-015..019 oral drill; keep all cards unseen."
+}

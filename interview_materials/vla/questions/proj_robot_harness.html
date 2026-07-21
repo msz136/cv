@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROJ-HARNESS：Robot Harness 项目原子题卡（Direct-Evidence Batch 1）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\proj_robot_harness.md">
+<meta name="aris:source-sha256" content="ab42f762ae9420ecedd6b87457329c4cc398dc724f907b9e5d3f044a50836f36">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>ab42f762ae9420ecedd6b87457329c4cc398dc724f907b9e5d3f044a50836f36</code>；生成自：<code>interview_materials\vla\questions\proj_robot_harness.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#a-harness-runtime">A. Harness runtime 与执行安全</a></li><li><a href="#b-sft-grpo-reward">B. SFT / GRPO 数据与 reward</a></li><li><a href="#c-run-lineage">C. Run lineage、指标与真实性边界</a></li><li><a href="#section-4">参考来源</a></li></ol></nav>
+<h1>PROJ-HARNESS：Robot Harness 项目原子题卡（Direct-Evidence Batch 1）</h1>
+<div class="meta">状态：<code>drafted / cards_8_of_8 / WARN</code> 更新日期：2026-07-17 当前题数：8 / 8 覆盖范围：<code>PROJ-HARNESS-001..008</code> 难度：L2 4 题 / L3 4 题 优先级：P0 7 题 / P1 1 题 练习状态：全部 <code>unseen</code> 使用方式：先闭卷回答 30 秒，再展开代码路径、指标协议和反例；未真实口述前不得改为 <code>pass/strong</code>。</div>
+<h2 id="a-harness-runtime">A. Harness runtime 与执行安全</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>PROJ-HARNESS-001</b> · Robot Harness 解决的核心问题是什么，为什么不只是普通 function calling？</summary>
+<p><strong>面试意图</strong>：判断你能否把平台工程表述成机器人可执行语义问题，又不夸成低层控制成果。</p>
+<p><strong>30 秒回答</strong>：它解决的不是“能否调用函数”，而是同一机器人上的 scope、排他动作、取消补偿和可恢复执行。harness 把约束写进 tool schema/runtime，并沉淀成 SFT/GRPO 与 eval 合同；它仍不等价于视觉或低层控制。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：普通 tool call 只关心名字和参数；机器人执行还要绑定 robot/chat/scope，防止同一机器人同时导航与执行冲突动作，并在用户取消或连接中断时停止任务、释放锁、保留结构化状态。训练侧再把 allowed/forbidden tools、trajectory、success criteria 与 scope 变成监督和 reward。这个链路降低上层动作语义错误，但没有覆盖相机 grounding、控制器时延和接触动力学。</p>
+<p><strong>诊断 / 证据</strong>：从一个导航请求追踪 <code>AgentDeps → filtered toolset → mutex → dispatch/poll → cancel/compensation → structured result</code>；再检查同 robot 并发、跨 robot 并发、取消前后和工具异常四类 trace。当前源码证明 contract，真实机器人 success 仍缺 runner/episode 证据。</p>
+<p><strong>项目挂钩</strong>：个人贡献应落在问题定义、约束取舍、数据/reward/eval 设计和验收；不能只说“搭了 Agent 平台”。</p>
+<p><strong>追问树</strong>：scope 与 robotId 有什么区别？为什么要排他动作？哪些约束在 runtime，哪些进入训练？</p>
+<p><strong>危险答案</strong>：说“tool accuracy 高就证明机器人控制成功”，或把 memory/subagent runtime 抽象说成模型已经学会的能力。</p>
+<p><strong>来源</strong>：[1][2][3][4]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>PROJ-HARNESS-002</b> · PydanticAI runtime 从请求到工具执行的主链路是什么？</summary>
+<p><strong>面试意图</strong>：确认你能从代码解释 context、toolset、流式协议与资源清理，而不是只背框架名。</p>
+<p><strong>30 秒回答</strong>：<code>_prepare_agent</code> 将 chat/scope/robot/token/cancel 写入 <code>AgentDeps</code>，组装 server/client toolset 后交给 PydanticAI。非流式 <code>run</code>，流式 <code>run_stream_events</code>；结束时释放 robot lock 与 cancel 状态。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：prompt context 先解析 bound robot 与非 system history；history 会压缩重复 turn，并剥离不应被模型复用的 action-tool 记录。server tools 由 registry 提供，client tools 以 external/deferred schema 加入；重名时 server tool 优先，以保留取消/补偿保证。运行结果转换为 OpenAI 或 UI SSE，并持久化 UI parts；finally 统一释放 request 关联的 robot locks。</p>
+<p><strong>诊断 / 证据</strong>：打印 <code>AgentDeps</code>、最终 tool name 集合、server/client 冲突项、stream event 与 cleanup trace；验证非流式、OpenAI SSE、UI SSE 和客户端断开四条路径。源码直接支持 call graph，线上吞吐和稳定性没有由这些文件自动证明。</p>
+<p><strong>项目挂钩</strong>：可讲“把 PydanticAI 作为统一执行入口并保持既有协议兼容”；不要把框架迁移本身称为算法创新。</p>
+<p><strong>追问树</strong>：为什么 server tool 优先？deferred tool 如何返回？action history 为什么要 strip？cancel event 放在哪里？</p>
+<p><strong>危险答案</strong>：把 client deferred tool 当成服务端已经执行，或说 history stripping 等于模型具备长期记忆。</p>
+<p><strong>来源</strong>：[1][3][4][5]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>PROJ-HARNESS-003</b> · mutex、取消检查和 compensation 为什么必须同时存在？</summary>
+<p><strong>面试意图</strong>：检查你是否理解机器人副作用工具的并发、超时和失败语义。</p>
+<p><strong>30 秒回答</strong>：执行类 tool 先按 robot/request/chat 申请互斥锁，调用前后检查 cancel；导航和订单轮询在 tool 内处理超时，取消时 best-effort stop/cancel，并返回结构化 error。它防止并发冲突和悬挂副作用，但不保证补偿必然成功。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：mutex 解决“同一 robot 两个排他任务”冲突；cancel event/registry 解决请求生命周期变化；compensation 处理动作已经发出后的外部副作用。导航 dispatch 后若取消，tool 会尝试 stop navigation；订单轮询取消则尝试 cancel order；协程被取消时还会安排 detached best-effort cleanup。三者缺一都会出现竞态、假完成或后台任务继续执行。</p>
+<p><strong>诊断 / 证据</strong>：做取消时序矩阵：dispatch 前、dispatch 后、poll sleep 前后、timeout、producer task cancellation；记录 lock、task/order id、stop/cancel result 和最终 error payload。补偿失败必须显式返回，不能吞掉异常后说系统安全。</p>
+<p><strong>项目挂钩</strong>：这类设计适合回答“机器人 Agent 与普通聊天 Agent 的系统差异”，也是取消补偿 reward 样本的 runtime 来源。</p>
+<p><strong>追问树</strong>：为什么是 best-effort？锁何时释放？跨 robot 是否可并发？超时后如何避免外部任务继续？</p>
+<p><strong>危险答案</strong>：说“收到 cancel 就一定停止物理机器人”，或用 mutex 代替外部系统的幂等和状态核验。</p>
+<p><strong>来源</strong>：[1][3][4]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="b-sft-grpo-reward">B. SFT / GRPO 数据与 reward</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>PROJ-HARNESS-004</b> · 62,223 条 SFT 数据是怎样构造的，哪些口径不能混淆？</summary>
+<p><strong>面试意图</strong>：看你能否讲清 schema、过滤、分组、来源构成，而不把混合数据说成机器人轨迹。</p>
+<p><strong>30 秒回答</strong>：62,223 是规范化混合 SFT 样本，不是机器人轨迹数。脚本统一 messages/tools/tool_calls，按 goal+trajectory 去重；project 只收非空 trajectory，ToolACE 排除，browser 保持 deferred，point/box/action-token auxiliary 过滤。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：manifest 为 train/dev/test 55,967/3,164/3,092；任务族含 core tool 26,114、browser deferred 18,221、project robot 4,726、general capability 10,000、workflow safety 2,930。project trajectory 转成 assistant tool_calls，并把 scope 写入 metadata；稳定 hash 防止同一 goal/trajectory 跨 split。低层坐标/框/action token 被排除，只保留高层 VQA 辅助。</p>
+<p><strong>诊断 / 证据</strong>：复算 manifest 总量、来源/任务族分布、split group overlap、project 空轨迹拒绝数和 ToolACE 过滤数；抽样检查 tools schema 与 assistant tool_calls。数量正确不代表来源质量、真实机器人覆盖或所有样本均为多模态。</p>
+<p><strong>项目挂钩</strong>：面试先报“混合 SFT 总量”，再给 project robot 子集和过滤逻辑；这是比只报 62k 更可信的数据设计回答。</p>
+<p><strong>追问树</strong>：为什么 ToolACE 排除？browser 为什么保留在 SFT？group key 如何防泄漏？VQA 会不会稀释 tool call？</p>
+<p><strong>危险答案</strong>：说“62,223 条全是真实机器人轨迹”，或只凭总量证明模型具备机器人闭环能力。</p>
+<p><strong>来源</strong>：[1][6]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>PROJ-HARNESS-005</b> · GRPO 数据为什么不能直接复用全部 SFT 样本？</summary>
+<p><strong>面试意图</strong>：判断你是否理解 teacher forcing 与可验证 reward task 的数据合同差异。</p>
+<p><strong>30 秒回答</strong>：GRPO 只保留可规则判分 task：allowed/forbidden tools、reference trajectory、success criteria、constraints、minefields；空轨迹 project、WebLINX/Mind2Web 不进 runner。8,916 条，train/dev/test=8,052/439/425。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：SFT 只需标准答案；GRPO 必须让 rollout 可评分，因此要保留 initial state、可用/禁用工具、参考轨迹、成功条件与风险字段。任务族包括 clarification 2,300、no-forbidden-side-effect 3,735、project robot 2,748、cancel compensation 120、bound scope 13。browser 没有 runner 时默认 disabled，project 没有轨迹时跳过，避免把不可执行样本硬塞进 reward。</p>
+<p><strong>诊断 / 证据</strong>：统计每个 split 的空 trajectory、missing tools/success criteria、browser disabled 和 group duplicate；对每个 task family 运行 gold trajectory scorer。若没有 executable runner 或规则 oracle，应降级为 SFT/OOD probe，而不是假装可做 online RL。</p>
+<p><strong>项目挂钩</strong>：个人设计价值在“把哪些样本放进 SFT、哪些能进入 GRPO、哪些只做 eval”这一分流，而不是把所有数据平均混合。</p>
+<p><strong>追问树</strong>：没有 reference trajectory 能不能做 RL？bound scope 为什么只有 13 条？browser runner 缺失会造成什么假标签？</p>
+<p><strong>危险答案</strong>：说“只要有 prompt 就能做 GRPO”，或把 browser deferred 样本当作真实网页执行轨迹。</p>
+<p><strong>来源</strong>：[1][7]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>PROJ-HARNESS-006</b> · schema-aware reward 与 1,200 条 tool-restraint 样本解决什么问题？</summary>
+<p><strong>面试意图</strong>：检查你能否解释 reward 分解、hard penalty、no-call 标签与 reward hacking 风险。</p>
+<p><strong>30 秒回答</strong>：reward 按 task family 加权 tool name/order/coverage、参数语义、scope、澄清、状态和取消补偿，并对 forbidden、越权、缺信息仍执行设 hard penalty；另合成 1,200 条 no-call restraint。AppWorld 空轨迹被排除，避免把 runner 缺失误标成拒绝。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：规则可写成组件加权和加 hard penalty；不同 family 强调不同目标，例如 project robot 偏 state/scope/order/arguments，clarification 偏先澄清和不执行。restraint 样本让工具可见但正确动作是拒绝或追问，最终 mixed train=9,252。脚本只从有 no-action 文本证据的候选生成；空轨迹本身不是 no-call 证据。安全 suite 仍弱，说明规则并未消除 hacking 或长链漏步。</p>
+<p><strong>诊断 / 证据</strong>：对 gold、空调用、只调用一步、越权 scope、带额外参数、正确拒绝做 reward unit test；比较 old/new reward 的 large drops，并做 no-restraint/no-scope/no-arg ablation。当前有规则和离线检查，缺同 protocol 因果消融。</p>
+<p><strong>项目挂钩</strong>：可讲“从平台失败模式反推 reward schema”；不能说 hard penalty 自动保证真实世界安全。</p>
+<p><strong>追问树</strong>：semantic match 怎样防宽松过头？为什么 exact 只作 diagnostic？no-call 如何避免全拒绝策略？GRPO 会不会 exploit scorer？</p>
+<p><strong>危险答案</strong>：把空 trajectory 一律当拒绝标签，或说 reward 达到高分就已经解决 side effect safety。</p>
+<p><strong>来源</strong>：[1][7][8][9]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="c-run-lineage">C. Run lineage、指标与真实性边界</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>PROJ-HARNESS-007</b> · 8B、32B base、32B SFT 和 GRPO checkpoint 指标应如何分层陈述？</summary>
+<p><strong>面试意图</strong>：训练你主动绑定 model/run/checkpoint/suite/n/scorer，避免用好看的数字拼接一条不存在的曲线。</p>
+<p><strong>30 秒回答</strong>：需分 run：8B v3 holdout 95.3%；32B base 37.8%；32B SFT 95.42%；GRPO ckpt100/200 为 95.6%。但前两类 n=1333、GRPO n=1000，base 还用 Qwen-hidden scorer，不能直接宣称严格因果提升。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：8B v3 是独立 full pipeline；32B base 单模型报告使用 schema-aware_v2 + Qwen hidden embedding。32B SFT 与 GRPO ladder 有本地 metrics，但 SFT/GRPO run manifest 使用 token-overlap fallback，GRPO 还截到 1,000 条 holdout。project suite 虽同为 n=130，也只证明结构化协议。面试可报每个 artifact 的值，但“37.8→95.6”必须先补同 scorer、同 n、同 suite 的 raw rerun。</p>
+<p><strong>诊断 / 证据</strong>：冻结 run ID、parent/checkpoint SHA、data/suite SHA、prompt/template、scorer/version/backend、n、raw predictions 和 summary；用统一 scorer 重算 base/SFT/ckpt100/200，再做逐样本 paired diff。当前 run/metrics 可读，统一比较 gate 未关闭。</p>
+<p><strong>项目挂钩</strong>：安全表达是“各自协议下分别达到”，并主动指出 comparator 缺口；这比把所有最好数字堆进简历更抗追问。</p>
+<p><strong>追问树</strong>：95.6 是哪个 checkpoint？为什么 n 不同？token overlap 和 hidden embedding 会影响什么？ckpt200 比 100 好吗？</p>
+<p><strong>危险答案</strong>：直接说“同协议从 37.8 提升到 95.6”，或把 8B 95.3 当成 32B GRPO 结果。</p>
+<p><strong>来源</strong>：[1][9][10][11][12]　<strong>练习状态</strong>：unseen</p>
+</details>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>PROJ-HARNESS-008</b> · project sandbox 100% 为什么仍不能证明真实机器人成功，项目贡献应怎样表述？</summary>
+<p><strong>面试意图</strong>：检查你能否同时守住 proxy metric、safety/browser 和个人 ownership 三条边界。</p>
+<p><strong>30 秒回答</strong>：sandbox 的 100% 与 argument 92.31/96.92 只证明结构化协议；safety 仍约 38%，browser 只是 deferred。候选人负责问题/约束/数据/reward/eval，Codex 主要实现；13-row ledger 不把 Git author 当手写证明。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：sandbox scorer 没有相机、控制器、接触和真实 success predicate；ckpt100/200 safety tool accuracy 约 38.75%/37.37%，browser 无 runner。ownership ledger 进一步区分：候选人 self-attested owner/reviewer，Codex-primary engineering；Git 中有 sandbox <code>+859/-46</code>、robot registry <code>+156/-34</code> 和训练 artifact sync，但 commit author 仍不等于代码作者。强项应落在具体约束取舍、review、验收和 bad-case 判断。</p>
+<p><strong>诊断 / 证据</strong>：ledger 结构已完成；下一 gate 是回答 8 个角色问题并给 decision/review 证据。当前 targeted tests 为 11 pass/1 config-drift fail，不能说 runtime 全绿；真实 effect-sink 仍缺。</p>
+<p><strong>项目挂钩</strong>：项目结尾先给协议层结果，再主动说明 safety/browser/effect-sink 和 Codex implementation 边界。</p>
+<p><strong>追问树</strong>：真实 success 还差哪些层？为什么 safety 比 project suite 差？哪些代码是你亲手写的？Codex 做了什么？</p>
+<p><strong>危险答案</strong>：说“sandbox 100% 所以机器人任务成功率 100%”，或把 Git commit author 当作全部 runtime/training/eval 的独立 ownership。</p>
+<p><strong>来源</strong>：[1][2][10][11][13][14]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-4">参考来源</h2>
+<ol><li><a href="../evidence/projects/robot_harness_claim_evidence_inventory.html">Robot Harness Claim–Evidence Inventory</a>：runtime、数据、reward、run/scorer 与 ownership 的冻结边界。</li><li><a href="../../01_robot_harness_tool_training.html">Robot Harness 项目页</a>：原有项目叙事、research framing 与高压追问。</li><li><code>C:\Users\mousongzhe\agent\server\agent\runtime.py</code>：PydanticAI Agent、AgentDeps、server/client toolset、stream/non-stream 和 cleanup。</li><li><code>C:\Users\mousongzhe\agent\server\tools\registry.py</code>：tool schema/过滤、robot mutex、取消、轮询、compensation 和 structured error。</li><li><code>C:\Users\mousongzhe\agent\server\agent\history.py</code>：history compaction、action tool history stripping 与消息转换。</li><li><code>C:\Users\mousongzhe\agent\remote_training_pipeline_scripts\prepare_sft_data.py</code> 与 <code>remote_training_pipeline_v2\manifests\sft_data_manifest.json</code>：SFT schema、过滤、split 与 62,223 条统计。</li><li><code>C:\Users\mousongzhe\agent\remote_training_pipeline_scripts\prepare_grpo_data.py</code> 与 <code>remote_training_pipeline_v2\manifests\grpo_data_manifest.json</code>：rewardable task contract、8,916 条统计与 eval suite 路由。</li><li><code>C:\Users\mousongzhe\agent\remote_training_pipeline_v2\scripts\build_grpo_tool_restraint_mix.py</code> 与 manifest：1,200 restraint、9,252 mixed train 和 AppWorld 排除。</li><li><code>C:\Users\mousongzhe\agent\remote_training_pipeline_v2\reports\final_pipeline_report.md</code>：8B v3 pipeline、suite 指标、failure samples 与 browser/safety 边界。</li><li><code>C:\Users\mousongzhe\agent\remote_training_pipeline_v2\reports\32b_native_tools_eval_report.md</code>：32B base run 与 Qwen-hidden rescore。</li><li><code>C:\Users\mousongzhe\agent\remote_training_pipeline_v2\reports\eval_32b_ckpt100_200_d_ood_compare_1000_ladder_20260622_140818_attempt3_d32_ood32_comparison.md</code>：32B SFT/GRPO ladder 与 D/OOD 分项。</li><li>本地 <code>native_tool_restraint_32b_sft_20260618_114113</code>、<code>...d_grpo32b_ckpt100/200</code> metrics/run manifests：n、scoring backend、checkpoint 与分项结果。</li><li>本地 <code>git log --follow</code>：只作 commit authorship signal；ledger 已建立但候选人角色确认仍缺。</li><li>本地 <a href="../evidence/projects/robot_harness_ownership_ledger.html">Robot Harness Ownership Ledger</a>：candidate-owner / Codex-primary implementation、13 个文件/决策、Git diff 与 targeted-test warning。</li></ol>
+</article></body></html>

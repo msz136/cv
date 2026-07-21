@@ -1,0 +1,40 @@
+{
+  "artifact": "sources/vol_06_per020_robustness_safety_fallback_source_freeze.md",
+  "html": "sources/vol_06_per020_robustness_safety_fallback_source_freeze.html",
+  "review_date": "2026-07-21",
+  "status": "source_frozen / VLA-PER-020 / primary_official_checked / independent_fact_reviewed / knowledge_synced / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "d9988ad30f3c64f6501d9ac375d74325e21b4d76bbd5688e2f25cb2997952076",
+  "question_ids": ["VLA-PER-020"],
+  "source_scope": {
+    "primary_papers": 2,
+    "official_code_docs": 4,
+    "cross_volume_sources": 2,
+    "deterministic_source_probes_passed": 10,
+    "deterministic_source_probes_total": 10
+  },
+  "checks": {
+    "bounded_slice": "PASS (source contract remains frozen; downstream knowledge/card were synchronized in separate slices, while coaching state and mastery remain untouched)",
+    "primary_official_gate": "PASS WITH WARNING (two pinned papers, robustness README/corruptions.py and Safety Gym README/engine.py checked; no benchmark or simulator runtime was executed)",
+    "robustness_semantics": "PASS (corruption family, severity, clean/shifted pair, deterministic generation and denominator are explicit)",
+    "uncertainty_boundary": "PASS (shifted calibration, risk-coverage, false-safe and false-alarm are separated from confidence-only claims)",
+    "safety_contract": "PASS (hard constraint, risk gate, queue flush, recovery, fallback and E-stop are represented as explicit execution states)",
+    "failure_taxonomy": "PASS (visual/sensor, representation/model, geometry/time, dynamics/control, protocol and orchestration failures are separated from unknown)",
+    "project_truth_boundary": "PASS (five projects remain bounded local hooks; no personal OOD, safety cost, zero-accident or E-stop result is inferred)",
+    "deterministic_probes": "PASS (10/10 source-text probes checked against pinned public files and WM-038 boundary)",
+    "html_static_validation": "PASS (ARIS academic v1; one H1, valid hierarchy, balanced MathJax, formula-em=0, contained tables/code and matching source SHA)",
+    "local_links": "PASS (WM-031, WM-038, PER-003 and PER-015 relative links resolve)",
+    "browser_visual_check": "PASS WITH WARNING (static ARIS palette/serif/sticky-TOC/contained-overflow checks passed; browser connector was unavailable in this environment, so no independent desktop or narrow screenshot was taken)",
+    "knowledge_node": "PASS (downstream PER-020 knowledge synchronized in a separate bounded slice)",
+    "question_card": "PASS (downstream PER-020 atomic card synchronized and kept unseen)",
+    "independent_fact_review": "PASS WITH WARNING (2 PDFs and 4 fixed official files were independently re-fetched with matching SHA; 10/10 probes and source→knowledge→card reconciliation passed)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "No local-direct corruption bundle, shifted sensor trace, per-step risk log, hardware E-stop audit or candidate ownership ledger is present.",
+    "The probes validate public source semantics only; they do not prove local benchmark reproduction or safety performance.",
+    "Keep PER-020 unseen until a real oral answer; do not create coaching_state.md without that answer.",
+    "Source/knowledge/card coverage does not prove local robustness, physical safety or mastery."
+  ],
+  "next": "Choose one real oral drill or an independent fact-review slice; keep mastery unchanged without a candidate answer."
+}

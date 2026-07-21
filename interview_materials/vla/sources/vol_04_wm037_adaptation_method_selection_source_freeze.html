@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-037 Source Freeze：Residual Policy、Online Adaptation、Test-time SysID 与 Data Aggregation</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm037_adaptation_method_selection_source_freeze.md">
+<meta name="aris:source-sha256" content="70e0db80a7c98b3fde2a625d2bbd5678bf7f850f3853b3035c794e47b1d71b37">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>70e0db80a7c98b3fde2a625d2bbd5678bf7f850f3853b3035c794e47b1d71b37</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm037_adaptation_method_selection_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 冻结结论</a></li><li><a href="#2">2. 一手来源与冻结快照</a></li><li><a href="#3">3. 先问：究竟更新什么</a></li><li><a href="#4-data-authority-actuation-authority">4. 两条选择轴：data authority 与 actuation authority</a></li><li><a href="#5-residual-policy">5. Residual policy：局部补偿，不是重做全部控制</a></li><li><a href="#6-explicit-osi-dynamics-parameter">6. Explicit OSI：估计有语义的 dynamics parameter</a></li><li><a href="#7-latent-adaptation-rma-extrinsics">7. Latent adaptation / RMA：估计任务相关 extrinsics</a></li><li><a href="#8-test-time-sysid-test-time-training">8. Test-time SysID 不等于 test-time training</a></li><li><a href="#9-simopt-outer-loop-simulator-distribution-adaptation">9. SimOpt：outer-loop simulator distribution adaptation</a></li><li><a href="#10-dagger-learner-induced-state-distribution">10. DAgger：修正 learner-induced state distribution</a></li><li><a href="#11-online-weight-fine-tune-authority">11. Online weight fine-tune：最高风险 authority</a></li><li><a href="#12">12. 方法选择矩阵</a></li><li><a href="#13">13. 时间尺度合同</a></li><li><a href="#14-adaptation-evidence-ladder">14. Adaptation evidence ladder</a></li><li><a href="#15-trace-manifest">15. 必须保存的 trace / manifest</a></li><li><a href="#16-matched-evaluation">16. Matched evaluation 合同</a></li><li><a href="#17">17. 选择与执行伪代码</a></li><li><a href="#18">18. 项目真实性边界</a></li><li><a href="#19-claim-ledger">19. Claim ledger</a></li><li><a href="#20">20. 面试答题骨架</a></li><li><a href="#21">21. 仍待独立复核与补证据</a></li><li><a href="#22">22. 参考来源</a></li><li><a href="#23">23. 下一边界</a></li></ol></nav>
+<h1>VOL 04 WM-037 Source Freeze：Residual Policy、Online Adaptation、Test-time SysID 与 Data Aggregation</h1>
+<div class="meta">冻结日期：2026-07-18 状态：source_frozen / VLA-WM-037 / knowledge_synced / card_synced / WARN 覆盖题目：VLA-WM-037 本轮边界：只冻结 adaptation 方法的“更新对象 × 时间尺度 × 数据/执行 authority × safety gate”选择合同；不提前展开 WM-038 uncertainty/safety/recovery 总课，不把 offline fine-tune、token rollout、simulator rollout 或公开论文机制写成个人真机 online adaptation 成果。</div>
+<h2 id="1">1. 冻结结论</h2>
+<ol><li>“online adaptation”不是一个算法名；必须先说明更新的是 <strong>action、context/latent、simulator distribution、dataset，还是 model weights</strong>。</li><li>residual policy 适合“已有可靠 base controller、误差局部且 action interface 可闭合”的场景；它扩大的是 action authority，不自动继承 base 的稳定性保证。</li><li>UP-OSI 从 history 显式估计 dynamics parameter；RMA 从 history 估计 task-relevant latent。二者都可在部署时保持 policy weights 不变。</li><li>SimOpt 用少量 real trajectory 的 behavior discrepancy 更新 simulator-parameter distribution；它不是逐步控制器适配，也不等于精确物理参数辨识。</li><li>DAgger 执行当前/混合 policy、让 expert 标注访问状态、聚合数据并训练下一版 policy；它不是 rollout 内无门槛地改权重。</li><li>若没有可靠 base、可观测 history、expert/reward、safe real rollout、回滚和 matched evaluation，就没有足够 authority 声称 real online adaptation。</li></ol>
+<h2 id="2">2. 一手来源与冻结快照</h2>
+<table><thead><tr><th>ID</th><th>Primary / official source</th><th>冻结版本与快照</th><th>本节点支持</th><th>不能外推</th></tr></thead><tbody>
+<tr><td>S1</td><td>Chebotar et al., <em>Closing the Sim-to-Real Loop: Adapting Simulation Randomization with Real World Experience</em></td><td>arXiv <code>1810.05687v4</code>；ar5iv 2026-07-18 response SHA-256 <code>d655425962c13511caf54a1c669144793e0747366db9f9b48d0f0d5d58ca2391</code></td><td>real/sim trajectory discrepancy、black-box simulator、KL-bounded distribution update</td><td>不支持“识别出真实唯一参数”或无风险 real rollout</td></tr>
+<tr><td>S2</td><td>Yu et al., <em>Preparing for the Unknown: Learning a Universal Policy with Online System Identification</em></td><td>arXiv <code>1702.02453v3</code>；ar5iv response SHA-256 <code>929c344cfa0c5c39f6010b79867c5d827bcd17634a004b87a543ee6c5f66aa5d</code></td><td>universal policy + history-to-parameter OSI</td><td>论文任务主要在 simulation；不支持个人真机验证</td></tr>
+<tr><td>S3</td><td>Kumar et al., <em>RMA: Rapid Motor Adaptation for Legged Robots</em></td><td>arXiv <code>2107.04034v1</code>；ar5iv response SHA-256 <code>4f09d9e44cb1726f4c2cae8cd90b35eed6d659199e53875c2420bccef42533b4</code></td><td>privileged extrinsics encoder、history adaptation module、asynchronous deployment</td><td>legged state/action recipe 不自动适配 image-based VLA/manipulation</td></tr>
+<tr><td>S4</td><td>Johannink et al., <em>Residual Reinforcement Learning for Robot Control</em></td><td>arXiv <code>1812.03201v2</code>；ar5iv response SHA-256 <code>5b0bc192221a41824801d96b76644ee61cd41b9a46482f933de5938ba9fe42df</code></td><td>conventional controller + learned residual、真实 contact-rich assembly</td><td>不提供任意 residual 的通用 stability/safety guarantee</td></tr>
+<tr><td>S5</td><td>Ross et al., <em>A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning</em></td><td>PMLR 15 official page response SHA-256 <code>e515cc08883fb65a967c7cc1cd4905107d7dc31aeed4a71c254ea250a670ad75</code>；official PDF SHA-256 <code>17bdd6e049e64f09010b322f9e2d4fb5c744c33ff7ac99b4c4561e39bd9082a7</code></td><td>DAgger learner-state collection、expert labels、dataset aggregation、retraining</td><td>sequence/IL theorem不自动提供真机安全或低标注成本</td></tr>
+<tr><td>S6</td><td><a href="vol_04_sim2real_claim_to_mechanism.html">VOL 04 Sim2Real Audit D</a></td><td>canonical SHA-256 <code>18318d37f2060a771d3074b3a2d70b7e07487091de23d9cf6a9599f4080ec200</code></td><td>方法初始对比、SimOpt/residual 公式和真实性边界</td><td>不是本地 adaptation 运行证据</td></tr>
+<tr><td>S7</td><td><a href="../evidence/evidence_manifest.html">Evidence Manifest</a></td><td>canonical SHA-256 <code>f3826289cdf2451758da11e0dddab3a7bb43d88b9a656fa340c08f71d16a21b6</code></td><td>五项目证据分级与缺口</td><td>不支持未归档的真机/在线更新成果</td></tr>
+<tr><td>S8</td><td><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Evidence Inventory</a></td><td>canonical SHA-256 <code>0a68251de06bc8494b7d2be5e6dc169fc860a629c2f312e623db69ed29db12bb</code></td><td>student token rollout + teacher forward 的本地机制边界</td><td>不是 robot-state DAgger 或 Sim2Real adaptation</td></tr>
+<tr><td>S9</td><td><a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO Evidence Inventory</a></td><td>canonical SHA-256 <code>728b8326dc345072886d0909fe2b8d81dfde3993771e7febed446d471bd3674d</code></td><td>offline finetune、sim rollout、protocol/failure instrumentation</td><td>不是 test-time SysID、residual 或 real hardware update</td></tr>
+<tr><td>S10</td><td><a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA Evidence Inventory</a></td><td>canonical SHA-256 <code>a3c644f949295d72889b2acf6456bfd050e05c147b14381bbb067504a34ce293</code></td><td>action/controller/rollout partial provenance</td><td>不支持 local real adaptation 或 matched uplift</td></tr>
+</tbody></table>
+<h2 id="3">3. 先问：究竟更新什么</h2>
+<table><thead><tr><th>方法族</th><th>rollout/test-time 改变量</th><th>policy weights 当场改变？</th><th>典型时间尺度</th><th>必要监督/authority</th></tr></thead><tbody>
+<tr><td>bounded residual</td><td>executed action correction (r_t)</td><td>通常否</td><td>control step</td><td>reliable base + action/safety limits</td></tr>
+<tr><td>explicit OSI</td><td>physical parameter estimate \(\hat\mu_t\)</td><td>否</td><td>step/window/episode</td><td>parameter labels in sim + informative history</td></tr>
+<tr><td>latent adaptation / RMA</td><td>task-relevant latent \(\hat z_t\)</td><td>否</td><td>fast window</td><td>privileged latent teacher + on-policy history</td></tr>
+<tr><td>SimOpt</td><td>simulator distribution \(p_\phi(\xi)\)</td><td>rollout 内否</td><td>real batch / outer loop</td><td>safe real trajectories + sim/real discrepancy</td></tr>
+<tr><td>DAgger</td><td>aggregated dataset \(D\)，随后训练 \(\pi_{i+1}\)</td><td>interaction 内通常否</td><td>collection/training iteration</td><td>expert labels on learner-visited states</td></tr>
+<tr><td>online weight fine-tune</td><td>model parameters \(\theta\)</td><td>是</td><td>batch/episode/stream</td><td>trusted reward/label + replay + rollback</td></tr>
+</tbody></table>
+<p>同一句“模型在线适配了”可能对应完全不同的风险面。面试回答必须先给更新对象、频率、数据来源和回滚点。</p>
+<h2 id="4-data-authority-actuation-authority">4. 两条选择轴：data authority 与 actuation authority</h2>
+<p>定义：</p>
+<ul><li><strong>data authority</strong>：能否获取 real trajectory、expert label、reward、privileged parameter、intervention/failure；</li><li><strong>actuation authority</strong>：方法能把多大的修正写入真实 controller/action，是否有 dimension mask、norm/rate/energy limit 与 fallback。</li></ul>
+<p>没有 data authority 时不能做 real-data adaptation；没有 actuation safety 时不能让 residual/新 policy 任意接管。方法“模型能力强”不能替代这两条合同。</p>
+<h2 id="5-residual-policy">5. Residual policy：局部补偿，不是重做全部控制</h2>
+<p>Residual RL 的公开结构是 conventional controller 与 learned residual 的 superposition：[S4]</p>
+<div class="formula">\[
+u_t=\operatorname{clip}_{\mathcal U}
+\left(u_{base}(s_t)+M_r\,r_\phi(h_t)\right).
+\]</div>
+<p>变量解释：\(u_{base}\) 是已验证 base controller，\(r_\phi\) 是 residual，\(M_r\) 是允许 residual 作用的 dimension/scale mask，\(\mathcal U\) 是动作可行域。直觉是 base 负责已建模部分，residual 只补局部误差。实现映射：记录 base action、raw/scaled residual、sum 前后 action、clip/saturation、controller output 与 fallback event。\(M_r\) 和 safety limits 是本节点的工程 gate，不是 S4 的通用稳定性定理。</p>
+<p>适用前提：base 已有可接受成功率/安全边界；action 的 frame/unit/order/frequency 闭合；误差可由有限 residual authority 修正。若 base interface 本身错误，residual 只会学习补偿 bug。</p>
+<h2 id="6-explicit-osi-dynamics-parameter">6. Explicit OSI：估计有语义的 dynamics parameter</h2>
+<p>UP-OSI 使用近期 state/action history 预测 dynamics parameter，再把估计与 state 一起输入 universal policy：[S2]</p>
+<div class="formula">\[
+\hat\mu_t=f_\psi(h_t),
+\qquad
+u_t=\pi_\theta(s_t,\hat\mu_t),
+\qquad
+h_t=(s_{t-L:t},u_{t-L:t-1}).
+\]</div>
+<p>变量解释：\(\mu\) 是 mass/friction/inertia 等有语义参数，\(L\) 是 history window；\(\theta,\psi\) 可在 deployment 固定。直觉是先判断“当前系统像哪个 dynamics”，再由 universal policy 条件化控制。实现映射：保存 history schema/timestamps、\(\hat\mu_t\)、sim label、parameter range、prediction residual、policy input 和 stale-window 标志。</p>
+<p>高风险点是 identifiability：若 excitation 不足，不同 \(\mu\) 可能生成相近 trajectory；显式参数可解释，不代表估计必然是真值。</p>
+<h2 id="7-latent-adaptation-rma-extrinsics">7. Latent adaptation / RMA：估计任务相关 extrinsics</h2>
+<p>RMA 两阶段训练先用 privileged environmental factors \(e_t\) 生成 latent extrinsics，再用 on-policy state/action history 预测该 latent：[S3]</p>
+<div class="formula">\[
+z_t=\mu(e_t),
+\qquad
+\hat z_t=\phi(h_t),
+\qquad
+u_t=\pi_\theta(s_t,u_{t-1},\hat z_t).
+\]</div>
+<p>变量解释：\(z_t\) 不要求逐维对应真实物理参数，只需保留 action-relevant information；\(\phi\) 是 adaptation module。直觉是“不必恢复世界真值，只要估计足够控制的上下文”。实现映射：训练时保存 privileged latent target 与 on-policy history，部署时保存 latent age、update frequency、staleness、OOD score 和 base-policy frequency。</p>
+<p>RMA 公布的 A1 部署中 base policy 100 Hz、adaptation module 10 Hz 且异步运行；这些是该平台实例，不是 VLA/manipulation 默认值。[S3]</p>
+<h2 id="8-test-time-sysid-test-time-training">8. Test-time SysID 不等于 test-time training</h2>
+<p>若 deployment 时只更新 \(\hat\mu_t\) 或 \(\hat z_t\)，而 \(\theta,\psi\) 固定，这是 <strong>inference-time context estimation</strong>，不是 gradient-based weight update。必须分别记录：</p>
+<ol><li>context estimator weights/version；</li><li>history window、sampling clock 与 missing/stale rule；</li><li>inferred parameter/latent 与 confidence/OOD；</li><li>policy weights 是否改变；</li><li>reset/episode boundary 是否清空 context。</li></ol>
+<p>把 RMA/OSI 说成“在线微调模型”是概念错误。</p>
+<h2 id="9-simopt-outer-loop-simulator-distribution-adaptation">9. SimOpt：outer-loop simulator distribution adaptation</h2>
+<p>SimOpt 用 fixed policy 的 real/sim observable trajectories 建 discrepancy，并通过 black-box sampling 更新 simulator parameter distribution；论文使用 KL-bounded relative-entropy update。[S1]</p>
+<div class="formula">\[
+\phi_{k+1}=\arg\min_\phi
+\mathbb E_{\xi\sim p_\phi}
+\left[D\!\left(\tau^{obs}_{sim}(\xi),\tau^{obs}_{real}\right)\right]
+\quad
+\text{s.t. }D_{KL}(p_\phi\Vert p_{\phi_k})\le\epsilon.
+\]</div>
+<p>变量解释：\(\xi\) 是 simulator parameter，\(D\) 是 observable trajectory discrepancy，\(\epsilon\) 限制一次 distribution shift。直觉是让“仿真行为分布”逐轮接近 real，而非强求唯一真实参数。实现映射：每轮冻结 policy/checkpoint、real trajectory、observation projection、distance metric、sampled \(\xi\)、cost、old/new distribution 和 reject reason。</p>
+<p>SimOpt 的 update 在 real-collection 外循环发生；若每次同时换 policy、controller、distance 与 task，就无法归因 distribution update。</p>
+<h2 id="10-dagger-learner-induced-state-distribution">10. DAgger：修正 learner-induced state distribution</h2>
+<p>DAgger 处理 imitation learning 中 expert-demonstration distribution 与 learner-induced distribution 的偏移。原论文算法为：[S5]</p>
+<div class="formula">\[
+\pi_i=\beta_i\pi^*+(1-\beta_i)\hat\pi_i,
+\qquad
+D\leftarrow D\cup\{(s,\pi^*(s)):s\sim d_{\pi_i}\},
+\qquad
+\hat\pi_{i+1}=\operatorname{Train}(D).
+\]</div>
+<p>变量解释：\(\pi^*\) 是 expert，\(\beta_i\) 是 expert mixing，\(d_{\pi_i}\) 是当前混合 policy 诱导的 state distribution。直觉是“让 learner 去到自己会去的状态，再请 expert 标答案”。实现映射：保存 rollout policy/mixing、visited state ID、expert label/intervention、dataset lineage、sampling weight、train checkpoint 和 validation selection。</p>
+<p>这不等于把失败 episode 无条件追加后继续训：必须有可靠 label、去重/权重、train/eval separation、版本化 lineage 与安全 collection gate。</p>
+<h2 id="11-online-weight-fine-tune-authority">11. Online weight fine-tune：最高风险 authority</h2>
+<p>直接在 deployment stream 更新 \(\theta\) 会同时改变 representation、policy output 与历史数据依赖。本节点只给工程边界，不把它绑定到某一篇论文的保证：</p>
+<ul><li>trusted reward/label 和 corruption/replay guard；</li><li>immutable base checkpoint、optimizer/replay snapshot；</li><li>shadow/canary → limited authority → rollout gate；</li><li>update norm、KL/action drift、holdout regression；</li><li>rollback trigger、max update/real-step budget、incident log。</li></ul>
+<p>若这些条件不满足，优先收集数据后离线更新，而不是在真机 rollout 内自由改权重。</p>
+<h2 id="12">12. 方法选择矩阵</h2>
+<table><thead><tr><th>当前条件</th><th>首选方向</th><th>为什么</th><th>必须先排除</th></tr></thead><tbody>
+<tr><td>reliable base；局部 contact/actuator residual</td><td>bounded residual</td><td>保留 base 分工，修正局部误差</td><td>frame/unit/timing bug、base 已不安全</td></tr>
+<tr><td>参数有语义、sim 可标、history 可辨识</td><td>explicit OSI</td><td>可解释 \(\hat\mu\)，policy 条件化</td><td>excitation 不足、parameter aliases</td></tr>
+<tr><td>hidden factors 快变、物理参数难辨、latent teacher 可建</td><td>RMA-style latent</td><td>task-relevant context，不追求物理真值</td><td>history/timing/OOD、跨域结构照搬</td></tr>
+<tr><td>少量 safe real trajectories；想改 simulator distribution</td><td>SimOpt</td><td>outer-loop behavior matching</td><td>不可比 observation、unsafe collection</td></tr>
+<tr><td>expert 能标 learner-visited states</td><td>DAgger</td><td>直击 compounding error/state shift</td><td>无 expert、无 intervention gate、label latency</td></tr>
+<tr><td>reward/labels 稳定且可 rollback；需广泛改 policy</td><td>staged fine-tune</td><td>改变能力范围最大</td><td>live uncontrolled update、forgetting</td></tr>
+</tbody></table>
+<p>方法可以组合，但应按单因素 gate 逐步叠加；不要一开始同时 residual + latent + DAgger + weight update。</p>
+<h2 id="13">13. 时间尺度合同</h2>
+<p>必须分开记录：</p>
+<ul><li>control loop：base/residual action；</li><li>context loop：OSI/RMA estimate；</li><li>episode loop：reset、context warmup、calibration probe；</li><li>collection loop：real trajectory/expert label；</li><li>training loop：dataset aggregation、policy update；</li><li>deployment loop：shadow/canary/promote/rollback。</li></ul>
+<p>异步模块要记录 estimate age；没有 timestamp 时，“适配慢”与“controller 错”不可区分。</p>
+<h2 id="14-adaptation-evidence-ladder">14. Adaptation evidence ladder</h2>
+<ol><li><code>mechanism_read</code>：能解释公开方法；</li><li><code>interface_replay</code>：离线 history/context/action replay；</li><li><code>sim_matched</code>：同 checkpoint adaptation on/off；</li><li><code>shadow_real</code>：真机只估计/预测，不接管；</li><li><code>limited_authority_real</code>：小 residual/latent gate；</li><li><code>protocol_complete_real</code>：多任务/seed、数据预算、安全与回滚；</li><li><code>deployment_claim</code>：持续监控、incident/rollback 与 ownership 完整。</li></ol>
+<p>低层证据不能替代高层。公开 RMA/Residual RL 结果只支持公源机制，不提升个人 evidence ladder。</p>
+<h2 id="15-trace-manifest">15. 必须保存的 trace / manifest</h2>
+<ul><li>base/adaptation/residual/policy checkpoint 与 optimizer/replay version；</li><li>observation/action/controller schema、unit/frame/order/frequency；</li><li>history window、timestamp、missing/stale/reset/warmup；</li><li>\(\hat\mu_t/\hat z_t\)、confidence/OOD、oracle target（若有）；</li><li>base/raw residual/final action、mask/scale/clip/saturation；</li><li>real trajectory ID、expert label/intervention、reward/success predicate；</li><li>SimOpt old/new distribution、sample/cost/KL/rejection；</li><li>DAgger dataset lineage、dedupe、sample weight、train/eval split；</li><li>safety gate、fallback、E-stop、rollback、incident/failure family；</li><li>real steps、expert queries、interventions、wall time 与 compute/data budget。</li></ul>
+<h2 id="16-matched-evaluation">16. Matched evaluation 合同</h2>
+<p>固定 task/init/seed、base checkpoint、camera/action/controller、horizon/replan、hardware/simulator build、success predicate 与 trial denominator：</p>
+<table><thead><tr><th>family</th><th>minimum matched arms</th><th>关键指标</th></tr></thead><tbody>
+<tr><td>residual</td><td>base / base+bounded residual / authority sweep / stale-OOD stress</td><td>success、residual norm/rate、clip、fallback</td></tr>
+<tr><td>OSI/RMA</td><td>no context / oracle context / inferred context / stale-corrupted history</td><td>success、estimate error、latent age、OOD</td></tr>
+<tr><td>SimOpt</td><td>nominal distribution / updated distribution / over-update / held-out real trajectory</td><td>discrepancy、KL、real steps、transfer metric</td></tr>
+<tr><td>DAgger</td><td>BC base / equal-budget DAgger rounds / no-new-state control</td><td>success、expert queries、interventions、coverage</td></tr>
+<tr><td>fine-tune</td><td>immutable base / staged update / replay-anchor ablation / rollback test</td><td>uplift、regression、drift、incident</td></tr>
+</tbody></table>
+<p>跨 family 比较还要报告 real-step、expert-label、compute 与 safety cost；不等预算的最高 success 不能直接归因“方法更好”。</p>
+<h2 id="17">17. 选择与执行伪代码</h2>
+<pre><code class="language-python">def choose_and_gate_adaptation(contract, evidence, method):
+    # 1. Freeze base policy, controller, action schema, task protocol and data budget.
+    run = freeze_run_manifest(contract, evidence)
+
+    # 2. Reject methods whose required authority or supervision is absent.
+    if not required_inputs_available(method, run):
+        return reject(&quot;missing_data_or_actuation_authority&quot;, run)
+
+    # 3. Start with shadow/offline replay; do not grant real action authority immediately.
+    shadow = evaluate_shadow_or_replay(method, run, log_context_and_residual=True)
+    if not shadow.within_contract:
+        return reject(&quot;shadow_contract_failed&quot;, shadow)
+
+    # 4. Run method-specific matched arms under a fixed real/expert/data budget.
+    matched = run_limited_authority_matched_arms(method, run, shadow)
+
+    # 5. Promote only if task gains, safety, drift and rollback gates all pass.
+    return promote_or_rollback(matched, run.promotion_gates)</code></pre>
+<p>伪代码重点是先判 authority、再 shadow、再有限接管、最后 promotion/rollback；它是 S1–S10 的工程综合，不是某篇论文的原始算法。</p>
+<h2 id="18">18. 项目真实性边界</h2>
+<p>当前本地证据支持：</p>
+<ul><li>UWM/LIBERO 有 offline finetune、simulator closed-loop rollout、protocol 和 failure instrumentation；</li><li>OpenPiVLA 有 action/controller/rollout partial provenance；</li><li>OPD 有 student token rollout、同一 response 的 teacher forward 与数据/训练 lineage。</li></ul>
+<p>当前不支持：</p>
+<ul><li>任何项目实现 residual controller、UP-OSI/RMA、SimOpt 或 robot-state DAgger；</li><li>真机 test-time parameter/latent estimation、在线权重更新或 safety promotion；</li><li>real adaptation uplift、expert intervention budget、rollback/incident 或 ownership 完整记录。</li></ul>
+<p>尤其要说清：OPD 的“online student-rollout”是 VLM token-space 蒸馏机制，不是机器人在线 system ID 或 DAgger；UWM 的 task finetune 是训练阶段离线更新，不是 rollout 中 adaptation。[S7–S10]</p>
+<h2 id="19-claim-ledger">19. Claim ledger</h2>
+<table><thead><tr><th>Claim</th><th>支持来源</th><th>证据等级</th><th>状态</th></tr></thead><tbody>
+<tr><td>residual = base controller + learned correction</td><td>S4</td><td>primary</td><td>checked</td></tr>
+<tr><td>UP-OSI = history→physical parameter→universal policy</td><td>S2</td><td>primary</td><td>checked with simulation scope</td></tr>
+<tr><td>RMA = privileged latent teacher + history adaptation module</td><td>S3</td><td>primary</td><td>checked with legged-platform scope</td></tr>
+<tr><td>SimOpt 用 real/sim trajectory discrepancy 更新 simulator distribution</td><td>S1</td><td>primary</td><td>checked</td></tr>
+<tr><td>DAgger 聚合 learner-visited state 的 expert labels 后重训</td><td>S5</td><td>peer-reviewed primary</td><td>checked</td></tr>
+<tr><td>authority/timescale/trace/matched matrix</td><td>S1–S10 + engineering synthesis</td><td>synthesis</td><td>WARN / needs execution</td></tr>
+<tr><td>用户项目已完成真机 online adaptation</td><td>S7–S10</td><td>missing local evidence</td><td>rejected</td></tr>
+</tbody></table>
+<h2 id="20">20. 面试答题骨架</h2>
+<p>安全答案应包含四句：</p>
+<ol><li>先说更新对象和时间尺度；</li><li>有可靠 base、局部误差选 bounded residual；参数可解释选 OSI，参数不可辨但 history 有信息选 latent adaptation；</li><li>少量安全 real trajectory 调 simulator distribution 选 SimOpt；有 expert label 修 learner-state shift 选 DAgger；</li><li>所有方法先 shadow/limited authority，报告 real steps、expert queries、drift、fallback、rollback；当前项目没有真机 bundle，不声称完成 adaptation。</li></ol>
+<h2 id="21">21. 仍待独立复核与补证据</h2>
+<ol><li>五篇一手来源已复核，source freeze 保持 <code>independent_fact_review=PENDING</code>。</li><li>需要 local adaptation implementation、history/context/residual trace 与 matched sim arms。</li><li>若要升级到 real claim，需要 safe collection、expert/reward provenance、intervention/incident、rollback 和 protocol-complete trials。</li><li>需要真实口述后才更新题卡状态；不得创建 <code>coaching_state.md</code>。</li><li>浏览器本地 <code>file://</code> 若受策略阻断，只记录静态验证，不能写 visual PASS。</li></ol>
+<h2 id="22">22. 参考来源</h2>
+<ol><li>Chebotar et al., <a href="https://arxiv.org/abs/1810.05687v4"><em>Closing the Sim-to-Real Loop: Adapting Simulation Randomization with Real World Experience</em></a>, 2019.</li><li>Yu et al., <a href="https://arxiv.org/abs/1702.02453v3"><em>Preparing for the Unknown: Learning a Universal Policy with Online System Identification</em></a>, 2017.</li><li>Kumar et al., <a href="https://arxiv.org/abs/2107.04034v1"><em>RMA: Rapid Motor Adaptation for Legged Robots</em></a>, 2021.</li><li>Johannink et al., <a href="https://arxiv.org/abs/1812.03201v2"><em>Residual Reinforcement Learning for Robot Control</em></a>, 2018.</li><li>Ross, Gordon and Bagnell, <a href="https://proceedings.mlr.press/v15/ross11a.html"><em>A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning</em></a>, PMLR 15, 2011.</li><li><a href="vol_04_sim2real_claim_to_mechanism.html">VOL 04 Sim2Real Audit D</a>.</li><li><a href="../evidence/evidence_manifest.html">Evidence Manifest</a>.</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Evidence Inventory</a>.</li><li><a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO Evidence Inventory</a>.</li><li><a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA Evidence Inventory</a>.</li></ol>
+<h2 id="23">23. 下一边界</h2>
+<p>下一 bounded slice 是 <code>VLA-WM-038</code>：uncertainty-aware planning、安全约束、fallback 与 recovery policy 如何形成最小闭环。本页不提前展开 chance constraint、risk critic、E-stop 或 recovery-state-machine 总课。</p>
+</article></body></html>

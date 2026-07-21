@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 World Model / Sim2Real：Metric Boundary（WM-019）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm019.md">
+<meta name="aris:source-sha256" content="f4c9e21d242feb6b8acb8b8a1475da3806b5a4f1532e12048795e80b90672712">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>f4c9e21d242feb6b8acb8b8a1475da3806b5a4f1532e12048795e80b90672712</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm019.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">证据边界与学习位置</a></li><li><a href="#1-metric-ladder">1. Metric ladder</a></li><li><a href="#2-psnr-ssim-fvd">2. PSNR、SSIM 与 FVD</a></li><li><a href="#2-1-psnr">2.1 PSNR</a></li><li><a href="#2-2-ssim">2.2 SSIM</a></li><li><a href="#2-3-fvd">2.3 FVD 类视频指标</a></li><li><a href="#3-latent-loss-action-mse">3. Latent loss 与 action MSE</a></li><li><a href="#4-teacher-forced-open-loop">4. Teacher-forced 与 open-loop</a></li><li><a href="#5-world-proxy-simulator-real-success">5. World proxy、simulator 与 real success</a></li><li><a href="#6">6. 可比性合同</a></li><li><a href="#7">7. 最小评估伪代码</a></li><li><a href="#8">8. 统计单位与项目边界</a></li><li><a href="#9">9. 结论与后续</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 World Model / Sim2Real：Metric Boundary（WM-019）</h1>
+<div class="meta">状态：<code>drafted / knowledge_21_of_44 / card_deferred / WARN</code> 报告日期：2026-07-17 证据截止：2026-07-17 当前节点：<code>VLA-WM-019</code>；本轮只生成 knowledge node，不生成题卡，不创建 coaching state。 前置：<a href="vol_04_world_model_sim2real_wm018.html">WM-018 Prediction Horizon</a>、<a href="../sources/vol_04_wm019_metric_boundary_source_freeze.html">WM-019 Metric Source Freeze</a>、<a href="../sources/vol_04_benchmark_evidence_claim_to_protocol.html">Benchmark Audit E</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>PSNR/SSIM/FVD、latent loss、action MSE 与 downstream success 各能证明什么？回答必须说明统计单位、prediction target、teacher-forcing/open-loop、protocol 与不可外推边界。</p>
+<h2 id="section-2">证据边界与学习位置</h2>
+<pre><code class="language-text">WM-018 horizon / open-loop compounding
+                 ↓
+WM-019 metric ladder and protocol boundary
+                 ↓
+WM-020 posterior collapse / action ignoring / shortcut
+                 ↓
+VOL 05 statistical evaluation and deployment evidence</code></pre>
+<p>本页基于 world-model foundation、UWM、benchmark/evidence 和 EVAL-003 source audits；不把用户项目页的百分比、MSE 或 proxy score升级为统一 metric contract。[1][2][3][4]</p>
+<h2 id="1-metric-ladder">1. Metric ladder</h2>
+<table><thead><tr><th>层级</th><th>典型指标</th><th>能证明</th><th>不能证明</th></tr></thead><tbody>
+<tr><td>offline target fit</td><td>action MSE、latent MSE/L1、reward/value loss</td><td>固定 split/target/reduction 的拟合</td><td>causal action、rollout stability、success</td></tr>
+<tr><td>teacher-forced one-step</td><td>PSNR/SSIM、one-step latent/video error</td><td>给定真实历史时的局部预测</td><td>自回归长期误差、控制可用性</td></tr>
+<tr><td>open-loop rollout</td><td>per-offset error、latent drift、FVD/视频 proxy</td><td>使用自身预测时的稳定性线索</td><td>simulator/real contact 与 task success</td></tr>
+<tr><td>world-model proxy</td><td>WorldGym/VLM scorer、generated-video task score</td><td>proxy 环境下的方向性筛选</td><td>simulator predicate、real robot success</td></tr>
+<tr><td>simulator closed loop</td><td>LIBERO/RoboCasa episode success</td><td>固定 env/controller/reset/predicate 的结果</td><td>real hardware transfer、某个 head 的独立因果贡献</td></tr>
+<tr><td>real closed loop</td><td>hardware success、failure trace</td><td>指定 robot/controller/protocol 的最终结果</td><td>其他 embodiment 泛化与内部机制解释</td></tr>
+</tbody></table>
+<p>证据只能逐级建立关联，不能从下一级平均分直接跳到上一级结论。</p>
+<h2 id="2-psnr-ssim-fvd">2. PSNR、SSIM 与 FVD</h2>
+<h3 id="2-1-psnr">2.1 PSNR</h3>
+<p>PSNR 基于像素均方误差，常见定义是：</p>
+<div class="formula">\[
+\operatorname{PSNR}=10\log_{10}\frac{MAX_I^2}{\operatorname{MSE}(I,\hat I)}.
+\]</div>
+<p>(MAX_I) 是像素取值上界，(I,hat I) 是真值与预测图像。它能反映像素重建误差，但可能偏好平均/模糊预测；背景和光照变化也会主导分数。</p>
+<h3 id="2-2-ssim">2.2 SSIM</h3>
+<p>SSIM 比较局部亮度、对比度和结构；它比纯像素 MSE 更关注局部结构，却仍不理解机器人动作语义、接触、可抓取性和任务 success predicate。</p>
+<h3 id="2-3-fvd">2.3 FVD 类视频指标</h3>
+<p>FVD/视频感知指标依赖 feature extractor、clip length、sample count、预处理和实现。它能描述视频分布或感知质量的差异，但“看起来真实”不等于 action-conditioned consequence 正确；应配 action perturbation 和物理/任务 probe。</p>
+<h2 id="3-latent-loss-action-mse">3. Latent loss 与 action MSE</h2>
+<p>latent/video loss 受 VAE/feature scale、prediction target、noise level、normalizer、mask 和 reduction 影响。不同 latent space 的绝对数值通常不能直接排序。</p>
+<p>action MSE 则依赖 action unit、absolute/delta/velocity、axis、gripper、horizon、padding 与 normalizer。低 action MSE 可能仍对应错误 controller mapping、错误 replan 或 distribution shift。</p>
+<p>UWM validation 记录 marginal/inverse/joint action MSE 与 marginal/forward/joint image MSE；它们是各 conditional slice 的 proxy，不能互相替代，也不能替代 LIBERO rollout success。[2]</p>
+<h2 id="4-teacher-forced-open-loop">4. Teacher-forced 与 open-loop</h2>
+<p>teacher-forced one-step 使用真实上一帧/latent 作为输入；open-loop 在第一步后使用模型自己的预测。两者的误差路径不同：</p>
+<div class="formula">\[
+e_{t+k}\lesssim L^k e_t+\sum_{j=0}^{k-1}L^j\delta_{t+k-1-j}.
+\]</div>
+<p>(e) 是状态/latent 误差，(L) 表示动力学的误差放大系数，(delta) 是每步模型误差。这是分析框架，不是某论文的 exact bound；它解释为何 one-step MSE 很低仍可能在长 rollout 中漂移。实现映射是按 future offset 报告 error，而不是只报全 horizon 平均值。</p>
+<h2 id="5-world-proxy-simulator-real-success">5. World proxy、simulator 与 real success</h2>
+<p>WorldGym 等方法在 generated video/world model 上使用 VLM/reward proxy，可以筛选策略、发现 failure mode；其 scorer、rollout length、初始图和 retry contract 与 LIBERO/RoboCasa <code>check_success</code> 不同。simulator closed-loop 又与真实机器人 camera、dynamics、latency、controller 和安全停止不同。[3]</p>
+<p>正确说法是：proxy 与下游 success 需要 matched checkpoint/task/init 的 paired validation、rank correlation 和 failure analysis；不能把 proxy score、sim success、real success 放进一个平均值。</p>
+<h2 id="6">6. 可比性合同</h2>
+<p>比较两个指标前至少冻结：</p>
+<ul><li>model/checkpoint、processor/normalizer revision；</li><li>data split、target schema、metric script、mask/reduction/valid count；</li><li>camera/preprocess、task/suite、initial state、warmup；</li><li>horizon、chunk/replan、controller、seed/determinism；</li><li>episode/trial denominator、invalid episode rule、success predicate；</li><li>proxy scorer/version 或 simulator/environment version。</li></ul>
+<p>若 protocol 不同，差值同时包含 model effect 与 protocol effect；相同任务名、相同分母仍不足以建立可比性。</p>
+<h2 id="7">7. 最小评估伪代码</h2>
+<pre><code class="language-python">def evaluate_metric_ladder(model, batch, env, protocol):
+    # 1. Compute target-specific offline metrics with valid masks and fixed reduction.
+    offline = compute_offline_metrics(model, batch, protocol.metric_spec)
+
+    # 2. Compare teacher-forced and open-loop errors by future offset.
+    rollout = compute_per_offset_rollout(model, batch, protocol.horizon)
+
+    # 3. Test whether predicted future changes under controlled action perturbations.
+    sensitivity = action_perturbation_test(model, batch)
+
+    # 4. Run closed-loop episodes under a frozen reset/controller/success contract.
+    success = run_episode_manifest(model, env, protocol)
+    return offline, rollout, sensitivity, success</code></pre>
+<p>关键是同一 checkpoint 的多层指标共同保存，而不是用一列 MSE 代替完整 evidence chain。</p>
+<h2 id="8">8. 统计单位与项目边界</h2>
+<p>rollout success 的基本单位通常是预先定义的 episode，需记录 task/init/seed/controller/predicate 和 (k/n)。action step、video frame、OPD raw row、box/point/text scorer 不能自动当作独立 Bernoulli episode。[4]</p>
+<ul><li>UWM 的 action/image MSE、reset-style、fixed-pruned-init 与 LIBERO result 必须分开命名。</li><li>WAM held-out MSE、World/value proxy、planning uplift、0-success 与官方 baseline 需要 checkpoint、prediction/label、episode trace、scorer 和 denominator。</li><li>OpenPiVLA 97.4% 与 OPD 10k raw-holdout 必须先定义 metric-specific denominator，不能直接套 rollout success CI。</li></ul>
+<h2 id="9">9. 结论与后续</h2>
+<p>WM-019 的核心是 metric ladder：视觉指标说明视觉相似，latent/action loss说明特定 target 的拟合，open-loop指标说明自回归稳定性线索，proxy/simulator/real success分别绑定不同环境与统计合同。只有协议冻结并做 paired validation，才能讨论相关性或下游收益。</p>
+<p>本节点为 <code>WARN</code>：公开 metric/protocol 边界已冻结，本地 per-offset、action sensitivity、proxy-vs-simulator paired test、checkpoint/denominator artifacts 仍 pending。本轮不生成 WM-019 题卡；下一步可单独生成一张保持 <code>unseen</code> 的题卡。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li><a href="../sources/vol_04_world_model_foundations_claim_to_code.html">World Model Foundations Audit</a>。</li><li><a href="../sources/vol_04_uwm_video_action_claim_to_code.html">UWM Source Audit B</a>。</li><li><a href="../sources/vol_04_benchmark_evidence_claim_to_protocol.html">Benchmark / Evidence Audit E</a>。</li><li><a href="../sources/vol_05_eval003_success_rate_confidence_interval_source_freeze.html">EVAL-003 statistical source freeze</a>。</li><li><a href="../sources/vol_04_wm019_metric_boundary_source_freeze.html">WM-019 Metric Source Freeze</a>。</li></ol>
+</article></body></html>

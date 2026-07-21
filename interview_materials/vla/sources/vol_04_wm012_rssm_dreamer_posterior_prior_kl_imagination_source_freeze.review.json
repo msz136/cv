@@ -1,0 +1,41 @@
+{
+  "artifact": "sources/vol_04_wm012_rssm_dreamer_posterior_prior_kl_imagination_source_freeze.md",
+  "html": "sources/vol_04_wm012_rssm_dreamer_posterior_prior_kl_imagination_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-WM-012 / knowledge_synced / card_synced",
+  "verdict": "WARN",
+  "source_sha256": "c5f8a2dd056736a8b7338cd76116631a8bf42a3d10c05e86d6bb4cfbf64ae6e0",
+  "frozen_sources": {
+    "planet": "arXiv:1811.04551 / ar5iv response SHA-256 6a9bed11e5963626016235227ab85594ae5d42773e675860788c51a071929a97",
+    "dreamerv1": "arXiv:1912.01603 / ar5iv response SHA-256 a9e11616b9bc421ac9886ad78fd2bfd1ac0bc1a44e9f6333a9c068da5eb52fec",
+    "dreamerv2": "arXiv:2010.02193 / ar5iv response SHA-256 4679cffcc4cd621d2adb7aca04cc3cfc60bf8f7f994c2678a9174ee2043039b1",
+    "dreamerv3": "arXiv:2301.04104 / arXiv HTML response SHA-256 7ce561853df3b35ccf0316476b3f7538b60117feb358bd562dc279f0d5067a26",
+    "dreamerv3_reimplementation": "danijar/dreamerv3@e3f02248693a79dc8b0ebd62c93683888ddaccfe / rssm.py + agent.py + configs.yaml + README source hashes",
+    "local_boundary": "Source Audit A + independent review + WM-011/WM-021 source freezes + WAM/UWM inventories"
+  },
+  "checks": {
+    "batch_boundary": "PASS (only VLA-WM-012 frozen; WM-013/014 not generated)",
+    "neighbor_deduplication": "PASS (WM-004 component flow, WM-011 objective semantics and WM-021 actor/critic optimization not duplicated)",
+    "primary_source_scope": "PASS (RSSM, DreamerV1/V2/V3 and KL/imagination claims tied to four primary papers)",
+    "repo_provenance": "PASS WITH WARNING (frozen source paths checked; repository is explicitly a reimplementation, not author-official code)",
+    "rssm_factorization": "PASS (deterministic memory, stochastic state, action-conditioned prior and observation posterior derived)",
+    "sequential_elbo": "PASS (generative model, filtering posterior, prediction likelihood and KL terms explicit)",
+    "kl_dual_role": "PASS (prior-learning and posterior-regularization gradients separated)",
+    "version_boundary": "PASS (DreamerV2 alpha=0.8 balancing separated from DreamerV3 dyn/rep/free-bits and frozen scales)",
+    "time_index_and_reset": "PASS (previous action, current observation, reset/carry masking and off-by-one boundary explicit)",
+    "imagination_path": "PASS (replay posterior starts followed by policy/core/prior/sample without future observation)",
+    "leakage_and_diagnostics": "PASS (future-observation removal, posterior/prior horizon, raw/clipped KL, entropy/usage and action interventions covered)",
+    "project_evidence_boundary": "PASS (WAM/UWM diffusion contracts not promoted to personal RSSM/Dreamer implementation)",
+    "html_static_validation": "PASS (canonical SHA embedded; one H1, thirty-one H2 headings, six tables, formulas, commented pseudocode and MathJax rendered)",
+    "local_links": "PASS (Source Audit A, WM-011/021 and WAM/UWM inventories resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "independent_fact_review": "PENDING"
+  },
+  "open_items": [
+    "Collect local previous-action/reset alignment tests, raw/clipped KL traces and categorical usage metrics.",
+    "Run posterior-versus-prior horizon curves, action interventions and cloned-state consequence tests.",
+    "Before any personal Dreamer claim, collect module path, local diff, config/checkpoint SHA, run ledger and ownership.",
+    "Keep VLA-WM-012 unseen until oral practice; do not create coaching_state.md without a real drill."
+  ],
+  "next": "Build only VLA-WM-013 latent overshooting / multi-step consistency; do not generate WM-014 in the same slice."
+}

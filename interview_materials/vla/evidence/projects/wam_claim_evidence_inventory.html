@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmos / WAM Claim–Evidence Inventory（WAM-01）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\wam_claim_evidence_inventory.md">
+<meta name="aris:source-sha256" content="ae34d4453524037bcd55a892c5ba2bf49dccd581d859ea6776ac7690f82a07a2">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>ae34d4453524037bcd55a892c5ba2bf49dccd581d859ea6776ac7690f82a07a2</code>；生成自：<code>interview_materials\vla\evidence\projects\wam_claim_evidence_inventory.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 范围、标签与判定规则</a></li><li><a href="#1-1-evidence-labels">1.1 Evidence labels</a></li><li><a href="#1-2-claim-levels">1.2 Claim levels</a></li><li><a href="#2-role-fit">2. Role Fit 与岗位能力映射</a></li><li><a href="#3-frozen-inputs">3. Frozen inputs 与当前工作区检索</a></li><li><a href="#4-claim-reconciliation-matrix">4. Claim reconciliation matrix</a></li><li><a href="#5">5. 三个关键冲突</a></li><li><a href="#5-1-0-90-0-95-0-75-local-0-success">5.1 `0.90–0.95 / 0.75` 与 local 0-success</a></li><li><a href="#5-2-full10k-eval-c500-final-checkpoint">5.2 full10k eval 与 C500 final checkpoint 缺失</a></li><li><a href="#5-3-head-upstream-slot-mask-contract">5.3 “三个 head”与 upstream slot/mask contract</a></li><li><a href="#6-truth-boundary">6. Truth boundary 与安全口径</a></li><li><a href="#section-13">当前仍不能升级成强结果项目的原因</a></li><li><a href="#section-14">当前保守表达</a></li><li><a href="#7-p0-artifact-manifest">7. P0 artifact manifest</a></li><li><a href="#evidence-promotion-pseudocode">Evidence promotion pseudocode</a></li><li><a href="#8">8. 必须回答的六个问题</a></li><li><a href="#9-preliminary-sp-ssp-project-scorecard">9. Preliminary SP/SSP project scorecard</a></li><li><a href="#9-5-artifact-discovery-addendum-2026-07-18">9.5 Artifact Discovery Addendum（2026-07-18）</a></li><li><a href="#10">10. 分阶段补强计划</a></li><li><a href="#11">11. 下一切片</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>Cosmos / WAM Claim–Evidence Inventory（WAM-01）</h1>
+<div class="meta">状态：<code>drafted / local_claim_audit / WARN / resume_safe_downgraded / diagnostic_artifacts_partial / ownership_ledger_added</code> 审查日期：2026-07-21 证据截止：2026-07-21 项目范围：Cosmos Policy / WAM 多目标后训练、RoboCasa official-checkpoint eval 与本地 0-success 诊断 目标岗位：VLA / World Model / Robot Learning 算法与训练评估方向 结论先行：上游 Cosmos Policy 的 action/future/value slot、routing、loss mask 与 RoboCasa protocol 已有 frozen paper/repo 支持；2026-07-17 对 <code>cv</code> 工作区的扫描未找到 WAM 训练/评测 raw bundle，因此历史本地数字先保持 <code>local-claim-only</code>。2026-07-18 在外部 <code>C:\Users\mousongzhe\Project\wm\outputs</code> 发现一组 CoffeePressButton diagnostic artifact；2026-07-21 又冻结了 8 卡 1 epoch gate 的运行合同与失败链、独立 full10k trained <code>iter_000010000</code> 的 RoboCasa 24×5 remote-artifact bundle（raw <code>2/120</code>、当前本地 policy trusted <code>0/118</code>，两个 CoffeeServeMug length=1 artifact success 被排除）、official-HF RoboCasa baseline 的 24×5 remote-artifact bundle（raw <code>86/120</code>、trusted <code>84/118</code>）、TurnOffMicrowave local 1k checkpoint 的 fixed-batch→closed-loop→same-input first-divergence 审计，以及 DeepSpeed base-load/short-smoke/formal-save gate 审计。新证据支持“trained-run 与 official-HF 评测链路、一个本地 0/1 失败链和 save/load first-divergence 可审计”，但不支持本地 checkpoint binary/hash、训练 uplift、官方 scorer 等价、唯一 root cause 或 ownership。2026-07-17 已完成安全降级：optimized resume 的 WAM 段不再包含 MSE、task success、official-HF reproduction 或 local 0-success 数字；投递 PDF 已从新 HTML 重建并完成 A4 单页视觉/文本检查。投递 release blocker 已关闭，但项目证据仍为 WARN，不能升级为 verified/reviewed。</div>
+<h2 id="question">问题（Question）</h2>
+<p>这份清单回答四个问题：当前 WAM 简历中哪些内容有上游事实支撑，哪些只是本地自述；<code>0.09718→0.05349</code>、<code>84/118</code>、<code>0.90–0.95 / 0.75</code> 与 <code>0 success</code> 分别属于哪个证据层；哪些表述现在能安全口述；要补什么 artifact 才能把 claim 从“知道/参与”升级为“负责/优化/结果影响”。</p>
+<p>本页不是新的项目成绩报告，也不把已有 HTML 相互引用当作独立证据。它把简历、项目页、旧版简历和 frozen upstream audit 当作不同来源，显式记录一致、冲突和缺失。[1][2][3][4][5][6][7]</p>
+<h2 id="1">1. 范围、标签与判定规则</h2>
+<h3 id="1-1-evidence-labels">1.1 Evidence labels</h3>
+<table><thead><tr><th>标签</th><th>定义</th><th>本页如何使用</th></tr></thead><tbody>
+<tr><td><code>upstream-verified</code></td><td>primary paper、官方 frozen repo/model card 可直接支持</td><td>只支持 Cosmos Policy 公有机制与官方协议，不支持个人运行</td></tr>
+<tr><td><code>local-direct</code></td><td>当前可读取 code/config/log/checkpoint/eval/episode artifact</td><td><code>cv</code> 工作区没有 WAM checkpoint；2026-07-18 在外部 <code>C:\Users\mousongzhe\Project\wm\outputs</code> 发现一组 manifest/trace/video diagnostic bundle，已单独登记，checkpoint 仍未验证</td></tr>
+<tr><td><code>local-claim-only</code></td><td>内容只出现在简历、项目页或重构计划</td><td>可作为待核线索，不能作为结果证明</td></tr>
+<tr><td><code>inference</code></td><td>从同源证据推得，但来源没有直接声明</td><td>必须写成假设或分析框架</td></tr>
+<tr><td><code>conflict</code></td><td>两个来源的 checkpoint、protocol 或结论无法同时对齐</td><td>在 provenance 澄清前禁止升级</td></tr>
+<tr><td><code>ownership-unverified</code></td><td>上游设计已核实，但缺 local diff/设计记录证明个人贡献</td><td>只能说“梳理/对齐/复现尝试”，不能说“设计/提出”</td></tr>
+</tbody></table>
+<h3 id="1-2-claim-levels">1.2 Claim levels</h3>
+<table><thead><tr><th>等级</th><th>允许的表达</th><th>最低证据</th></tr></thead><tbody>
+<tr><td>C0</td><td>了解、阅读、参与讨论</td><td>可解释的项目文档或口述</td></tr>
+<tr><td>C1</td><td>负责模块、实现、迁移</td><td>local code/diff、配置、命令或日志</td></tr>
+<tr><td>C2</td><td>设计、优化、定位根因</td><td>对照实验、bad case、设计记录、修复前后证据</td></tr>
+<tr><td>C3</td><td>提升 X%、达到成功率、完成上线/正式训练</td><td>完整 metric protocol、checkpoint、raw summary、可重放记录与 ownership</td></tr>
+</tbody></table>
+<p>强度不是按措辞感觉决定，而是按 <code>claim + protocol + artifact + ownership</code> 四项共同决定。缺任一项时，C2/C3 必须降级。[8]</p>
+<h2 id="2-role-fit">2. Role Fit 与岗位能力映射</h2>
+<p>本项目与 VLA/World Model 岗位的匹配点是：多目标训练合同、动作/未来/value 的信息流、RoboCasa closed-loop eval、normalization/controller boundary 和 0-success failure attribution。当前最强的是“能解释上游机制和应如何审计”，最弱的是“本地运行和个人改动没有 raw artifacts”。</p>
+<table><thead><tr><th>岗位能力项</th><th>当前材料</th><th>强度</th><th>缺口</th><th>当前策略</th></tr></thead><tbody>
+<tr><td>WAM/VLA architecture</td><td>frozen Cosmos audit 已核对 latent slot、condition/loss mask、direct/planning paths</td><td>中强（上游）</td><td>local tensor trace/diff 缺失</td><td>前置为机制理解，不包装成原创</td></tr>
+<tr><td>Multi-objective training</td><td>项目页描述 action/world/value routing 与 loss weighting</td><td>中（叙事）</td><td>exact local config、mask smoke、gradient trace 缺失</td><td>只说“梳理/对齐”，不说“设计并证明有效”</td></tr>
+<tr><td>Training/debugging</td><td>项目页记录 gripper、high-sigma、5-frame、OOM、state_dict 假设链</td><td>中低</td><td>日志、patch、rerun 与因果闭环缺失</td><td>说“形成诊断假设”，不说“定位根因”</td></tr>
+<tr><td>Offline evaluation</td><td>MSE 0.09718→0.05349 出现在三份自述材料</td><td>低</td><td>split、metric code、prediction/label artifact 缺失</td><td>从投递稿移除，待核后恢复</td></tr>
+<tr><td>Closed-loop evaluation</td><td>full10k trained 24×5 audit：raw 2/120、local-policy trusted 0/118；official-HF 24×5 audit：raw 86/120、trusted 84/118</td><td>中低</td><td>checkpoint revision/hash、完整 episode JSONL、scorer/version、matched trained-vs-baseline run 缺失</td><td>可讲两条 eval harness 与日志重算；不写成本地训练结果 uplift 或官方 scorer 等价</td></tr>
+<tr><td>Scientific ablation</td><td>已提出 action-only/+world/+value/all</td><td>弱</td><td>没有执行结果</td><td>标为可补做，不写成已完成</td></tr>
+<tr><td>Ownership</td><td>项目页称“我负责复现/诊断”</td><td>低</td><td>local diff、run ledger、人工贡献边界缺失</td><td>需要候选人逐项确认</td></tr>
+</tbody></table>
+<p>没有提供具体 JD，因此这里做的是目标岗位能力映射，不伪造公司面试流程或岗位关键词。</p>
+<h2 id="3-frozen-inputs">3. Frozen inputs 与当前工作区检索</h2>
+<table><thead><tr><th>Source</th><th>SHA-256</th><th>能支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td>optimized 简历 [1]</td><td><code>8e9c029d40163c83e9c689e22d326bca23efaf248f046d3fa40b402bd4b470a1</code></td><td>当前安全降级后的三条 WAM 表述</td><td>任一本地数字或完成态 ownership</td></tr>
+<tr><td>optimized 投递 PDF [11]</td><td><code>65b1dcd34cd6e357c6264effcf4b2683dea66508c6bc58315762b5e4c03ac74a</code></td><td>WAM 安全降级与 OpenPiVLA 安全重写已同步到可投递 A4 单页 PDF</td><td>项目 raw evidence</td></tr>
+<tr><td>WAM 项目页 [2]</td><td><code>251cbcac43a1acb2052e7866e2d5a9a6f71c01fd07ef0cdb0035d66f5ebc61a5</code></td><td>evidence-gated 叙事、失败假设、artifact queue</td><td>artifact 实际存在或结果已复现</td></tr>
+<tr><td>resume restructure plan [3]</td><td><code>e31ccb40381dc6abe9fd6b9622ab48b9a6cfc8fe71039f6d97db8722450e43e6</code></td><td>当前安全口径与 evidence queue</td><td>checkpoint/episode 归属</td></tr>
+<tr><td>research resume [4]</td><td><code>9a8828ae0b6317c107ab16ec3d106cad8ba944854469e7919a7ba0c1342b643f</code></td><td>full10k/loss/sample-count 历史表述</td><td>与 MACA 1-epoch 分支的关系</td></tr>
+<tr><td>engineering resume [5]</td><td><code>2aa3f0dae040ad5fb6bff32d68b5f4fff574bf4b2be80abc93d9f29b96f78732</code></td><td>同上历史表述</td><td>可加载 checkpoint 与正式 eval</td></tr>
+<tr><td>Cosmos source audit [6]</td><td><code>7f620f4ded9766f71bb75b0a927c168b8e5dec1875257dc94e2c8f35fdfd686f</code></td><td>frozen upstream mechanism、repo/model revision、protocol boundary</td><td>用户本地训练数字与 ownership</td></tr>
+<tr><td>Benchmark/evidence audit [7]</td><td><code>58a5636e953f44c2aa27e3acf65c621460186daf3732b916eac70e6ffab2de6a</code></td><td>paper→repo→checkpoint→runtime 证据合同</td><td>当前缺失的 local trained runtime artifacts</td></tr>
+<tr><td>Official-HF baseline P0 audit [11]</td><td><code>39E59144D6CE36135A09314294C5E399BC1F2D686A55486C919DA5F5A63972B8</code>（canonical audit）</td><td>24×5 logs、raw/trusted recount、protocol tuple、action-debug integrity</td><td>checkpoint binary/hash、完整 episode JSONL、candidate ownership</td></tr>
+<tr><td>TurnOffMicrowave trained-failure P0 audit [12]</td><td><code>80789C958CBDBBEF9FEDEDBA13D6BAFBECAB64FAE1A45E5AFF0C3470FFF57CAB</code>（canonical audit）</td><td>local 1k fixed-batch gate、<code>0/1</code> closed-loop、5-frame counterfactual、same-input first divergence、state mining 与 corrected overfit</td><td>immutable checkpoint binary/hash、matched patch→rerun、多 episode scorer、candidate ownership</td></tr>
+<tr><td>Checkpoint save-load gate P0 audit [13]</td><td><code>D5A4DB639C3C0C152D55F3F9C6F6BEDD8E18408F306036A28DA5154BAB3D9AAC</code>（canonical audit）</td><td>13 base-load summaries、715-key clean load、1/5-step smoke、9907-step save2k resource line、save1500 <code>state_dict(destination=...)</code> first divergence、0 checkpoint-like binaries</td><td>produced checkpoint、fresh-process reload parity、matched eval、patch ownership</td></tr>
+<tr><td>Full10k trained eval P0 audit [16]</td><td><code>DB83888B1279E548EBCA64260094489366905C632C5CC4F9E44F834BC12D66CF</code>（canonical audit）</td><td>full10k <code>iter_000010000</code> remote path 下24×5 status/log/summary 对齐，raw <code>2/120</code>、local-policy trusted <code>0/118</code>、24 action-debug/4066 lines/32×7 finite</td><td>checkpoint binary/hash、fresh-process reload、official scorer equivalence、完整 episode JSONL、matched uplift、candidate ownership</td></tr>
+</tbody></table>
+<p>2026-07-17 对 <code>C:\Users\mousongzhe\cv</code> 做文件名与全文检索时，确实未找到这些外部 Project artifacts；这个历史结论只覆盖当时的 <code>cv</code> 工作区。2026-07-21 对 <code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval\remote_artifacts</code> 做了独立只读审计：full10k trained run 有 24 条 <code>*-5ep-alltasks-*</code> logs、24 个 action-debug JSONL、24/24 formal <code>exit_code=0</code>，raw <code>2/120</code>；两个 <code>CoffeeServeMug</code> length=1 success 按当前本地 policy 排除后为 <code>0/118</code>。同一目录另有 25 个 command manifest、14 个本地同步 media 和 169-entry light archive；仍没有 <code>.pt/.ckpt/.safetensors</code>，不能代替完整 120 episode media/JSONL。official-HF baseline 保持独立 bundle 与 <code>86/120</code> raw、<code>84/118</code> trusted 口径。</p>
+<p>安全降级前的 optimized resume、项目页与 restructure plan SHA 分别为 <code>58c004d85b60...</code>、<code>1de96b9cc2b5...</code>、<code>96cb4f8c3168...</code>；它们保留在本 review 的变更历史中，用于证明本次处理确实移除了投递稿的未核验 C3 表述，而不是重写证据来源。</p>
+<h2 id="4-claim-reconciliation-matrix">4. Claim reconciliation matrix</h2>
+<table><thead><tr><th>ID</th><th>当前 claim</th><th>出处</th><th>等级</th><th>当前证据</th><th>Verdict</th><th>处理动作</th></tr></thead><tbody>
+<tr><td><code>WAM-CL-001</code></td><td>复现 RoboCasa WAM 1-epoch 后训练</td><td>optimized/project/旧简历 + <a href="cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.html">save-load gate P0 audit</a></td><td>C1/C2</td><td>8-GPU run contract、base-load、smoke、formal save2k/save1500 logs 可复核；长训与 checkpoint gate 失败</td><td><code>LOCAL-ARTIFACT-BACKED / GATE-FAILED</code></td><td>可说“开展并审计复现 gate”；不能说完成 1 epoch 或有可加载 checkpoint</td></tr>
+<tr><td><code>WAM-CL-002</code></td><td>设计 action/world/value 三目标、mask 互斥和 slot routing</td><td>optimized/project</td><td>C2</td><td>上游机制已核实；无 local diff</td><td><code>ownership-unverified</code></td><td>改为“按 upstream contract 梳理/对齐”；不得把 slot/mask 称个人原创</td></tr>
+<tr><td><code>WAM-CL-003</code></td><td>held-out policy MSE <code>0.09718→0.05349</code>，下降约 45%</td><td>pre-downgrade resume/project/plan</td><td>C3</td><td>无 split、metric script、pred/label、checkpoint</td><td><code>C3-BLOCKED / REMOVED</code></td><td>已从当前可投递稿移除；四类 artifacts 齐全后才可恢复</td></tr>
+<tr><td><code>WAM-CL-004</code></td><td>short-horizon 任务 <code>0.90–0.95</code>、pick/place <code>0.75</code></td><td>pre-downgrade resume/plan</td><td>C3</td><td>没有 task ID、trial、checkpoint、summary；历史项目页同时记录 local 0-success</td><td><code>CONFLICT / REMOVED</code></td><td>已从当前投递稿移除；先确认是否属于 official checkpoint、其他 run 或误写</td></tr>
+<tr><td><code>WAM-CL-005</code></td><td>official HF baseline 24×5 raw <code>86/120</code>、trusted <code>84/118=71.19%</code></td><td>project page + <a href="cosmos_policy_robocasa_baseline_p0_audit.html">official-HF P0 audit</a></td><td>C2/C3</td><td>24 task logs/status/action-debug 可复核；checkpoint 只有 remote path，2 个 artifact success 的 exclusion 规则是本地审计口径</td><td><code>REMOTE-ARTIFACT-BACKED / CHECKPOINT-UNVERIFIED</code></td><td>可说“运行并审计 official-HF eval harness”；不能说个人训练成绩或 uplift；补 revision/hash、完整 episode JSONL 与 ownership 后再升级</td></tr>
+<tr><td><code>WAM-CL-006</code></td><td>本地训练 checkpoint TurnOffMicrowave closed-loop <code>0/1</code></td><td>project page + <a href="cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.html">TurnOffMicrowave P0 audit</a></td><td>C2</td><td>1 episode、500 steps、32 queries、action-debug 与 same-input summaries 可复核；checkpoint 仍 remote-referenced</td><td><code>LOCAL-ARTIFACT-BACKED / CHECKPOINT-UNVERIFIED</code></td><td>可讲最小失败复现与 first divergence；不能写 benchmark success rate 或本地 checkpoint hash</td></tr>
+<tr><td><code>WAM-CL-007</code></td><td>failure first divergence 收窄到 5-frame contract 与 exact-observation transfer gap</td><td><a href="cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.html">TurnOffMicrowave P0 audit</a></td><td>C2</td><td>fixed batch sampled <code>-0.8277</code>、official/local exact first <code>-1.0156/+0.1429</code>、best-of-8 全正、top-24 negative <code>37.5%</code>；没有 matched fix→rerun</td><td><code>PARTIALLY-CONFIRMED / ROOT-CAUSE-OPEN</code></td><td>说“已确认 conditioning 差异与 transfer gap”，不说唯一 root cause 或已修复</td></tr>
+<tr><td><code>WAM-CL-008</code></td><td>在 MACA/C500 修复 dataloader cycle OOM 与 DeepSpeed state_dict</td><td>project page + <a href="../../sources/vol_04_cosmos_policy_1epoch_evidence_freeze.html">1 epoch freeze</a> + <a href="cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.html">save-load gate P0 audit</a></td><td>C1/C2</td><td>no-cycle 5-step <code>exit=0</code>、save2k rank -9/<code>EXIT=247</code>、save1500 <code>state_dict(destination=...)</code> TypeError/<code>EXIT=1</code> 可复核；patch diff/修复后 parity 仍缺</td><td><code>LOCAL-ARTIFACT-BACKED / PATCH-UNVERIFIED</code></td><td>可讲故障边界与验证设计；不能说修复已完成</td></tr>
+<tr><td><code>WAM-CL-009</code></td><td>full10k checkpoint 保存成功，iter 10000 loss=0.0543，sample counts 4950/2519/2531</td><td>research/engineering resume</td><td>C3</td><td>只在旧版简历；项目页又说 C500 1-epoch 无可加载 final checkpoint</td><td><code>RUN-PROVENANCE-OPEN</code></td><td>区分 hardware、run ID、base checkpoint、保存格式；不能合并为同一训练线</td></tr>
+<tr><td><code>WAM-CL-010</code></td><td>“我负责”官方路径复现、routing 与失败诊断</td><td>project page</td><td>C1/C2</td><td>无 ownership ledger 或 local diff</td><td><code>ownership-unverified</code></td><td>候选人按“亲手/协作/仅理解/工具辅助”逐项确认</td></tr>
+<tr><td><code>WAM-CL-011</code></td><td>full10k trained checkpoint path 下 RoboCasa 24×5 raw <code>2/120</code>、local-policy trusted <code>0/118</code></td><td><a href="cosmos_policy_full10k_trained_eval_p0_audit.html">Full10k trained eval P0 audit</a></td><td>C2</td><td>status/log/summary/action-debug 对齐；checkpoint 只有远端 path，<code>length&lt;5</code> exclusion 是本地审计 policy，完整 episode JSONL/scorer/ownership 缺失</td><td><code>REMOTE-ARTIFACT-BACKED / CHECKPOINT-UNVERIFIED</code></td><td>可说“运行并审计 full10k trained eval harness”；不能写官方 benchmark、checkpoint ownership 或相对 official-HF 的 uplift</td></tr>
+</tbody></table>
+<h2 id="5">5. 三个关键冲突</h2>
+<h3 id="5-1-0-90-0-95-0-75-local-0-success">5.1 <code>0.90–0.95 / 0.75</code> 与 local 0-success</h3>
+<p>两组表述不一定逻辑上绝对矛盾：成功率可能来自 official checkpoint、另一 local checkpoint、不同任务子集或不同协议。但当前材料没有给出身份元组：</p>
+<pre><code class="language-text">(run_id, checkpoint_sha, model_role, task_id, init_set, trial_count,
+ horizon, controller, success_predicate, summary_path)</code></pre>
+<p>因此现在无法判断它们能否并存。2026-07-17 已把成功率从投递稿移除；在身份元组和 raw episode records 完整前，不恢复该表述。</p>
+<h3 id="5-2-full10k-eval-c500-final-checkpoint">5.2 full10k eval 与 C500 final checkpoint 缺失</h3>
+<p>旧版 research/engineering resume 说 <code>full10k checkpoint 保存成功</code>；新增 remote-artifact audit 证明该独立 run 的 <code>iter_000010000</code> path 进入了完整 24×5 eval，raw <code>2/120</code>、当前本地 policy trusted <code>0/118</code>。项目页的高压回答说 MACA/C500 1-epoch 主线“当前没有可加载 final checkpoint”。这仍是两条不同硬件或不同阶段的 run：full10k 的 path、训练/eval logs 和 8-GPU save1500 failure 不能互相替代，且 full10k checkpoint binary/hash、fresh reload 和完整 scorer bundle 仍未闭合。面试中不得把 full10k 的 <code>0/118</code> 直接与 official-HF <code>84/118</code> 做 uplift。</p>
+<h3 id="5-3-head-upstream-slot-mask-contract">5.3 “三个 head”与 upstream slot/mask contract</h3>
+<p>frozen source audit 显示 Cosmos Policy 更接近在统一 latent video sequence 中注入/抽取 proprio、action、future 与 value，并用 condition/loss mask 和 sample routing 切换任务；把它简化成独立的 action/world/value 三个 head 适合初级直觉，但不能当作实现事实。[6] 面试安全说法是“共享 diffusion backbone，隔离的是 latent slots、condition/loss mask 和 sample route”。</p>
+<h2 id="6-truth-boundary">6. Truth boundary 与安全口径</h2>
+<table><thead><tr><th>内容</th><th>当前状态</th><th>简历</th><th>面试</th><th>证据到位后</th></tr></thead><tbody>
+<tr><td>阅读并解释 Cosmos Policy action/future/value contract</td><td><code>upstream-verified</code></td><td>可写为技术栈/理解，不作项目成果</td><td>可以机制级解释</td><td>无需升级为个人原创</td></tr>
+<tr><td>开展 local WAM 复现</td><td><code>local-claim-only</code></td><td>仅在候选人确认后用“开展/尝试复现”</td><td>说明当前材料缺 raw bundle</td><td>code/config/log/checkpoint 到位后升 C1</td></tr>
+<tr><td>MSE 45%</td><td><code>C3-BLOCKED / REMOVED</code></td><td>已从当前简历移除</td><td>不主动报数</td><td>split/script/prediction/checkpoint 齐全后恢复</td></tr>
+<tr><td>RoboCasa 0.90–0.95 / 0.75</td><td><code>CONFLICT / REMOVED</code></td><td>已从当前简历移除</td><td>不报数</td><td>checkpoint/task/trials/episodes 完整后重新判定</td></tr>
+<tr><td>official HF 71.19%</td><td><code>remote-artifact-backed / checkpoint-unverified</code></td><td>不写成本人模型成绩</td><td>可说按官方 checkpoint path 跑过并重算 eval；必须说明 86/120 vs 84/118 口径和缺失 local binary/hash</td><td>revision/hash + 完整 episode JSONL + scorer/version + ownership 后才可写“复现官方 checkpoint”</td></tr>
+<tr><td>full10k trained 24×5 <code>2/120</code> raw、<code>0/118</code> local-policy trusted</td><td><code>remote-artifact-backed / checkpoint-unverified</code></td><td>可写“审计 full10k trained eval harness”，不写官方 benchmark</td><td>说明两条 length=1 artifact、local invalid policy、24×5 protocol 与 remote checkpoint path；不把结果写成官方 scorer 或 uplift</td><td>checkpoint binary/hash + fresh reload + versioned scorer + complete episode JSONL + matched baseline + ownership</td></tr>
+<tr><td>local 0-success 与 root cause</td><td><code>claim-only / inference</code></td><td>不写性能结果</td><td>可以讲诊断框架，原因用“候选/待确认”</td><td>修复前后 paired rerun 后写 confirmed/partially confirmed</td></tr>
+<tr><td>上游 routing/mask</td><td><code>upstream-verified</code></td><td>不写“我设计”</td><td>说“我按 upstream contract 审计/对齐”</td><td>local substantive diff 到位后再描述个人修改</td></tr>
+</tbody></table>
+<h3 id="section-13">当前仍不能升级成强结果项目的原因</h3>
+<ol><li>最强的四组数字都没有 raw artifact。</li><li>历史 optimized resume 与项目页对本地 closed-loop 结果没有统一 provenance；当前简历已降级，但事实缺口仍未关闭。</li><li>full10k 与 MACA/C500 训练线没有 run ledger，可能被面试官一问即穿。</li><li>upstream architecture 与 personal contribution 没有 diff/ownership 分界。</li><li>现有诊断是合理假设链，但没有修复后的因果对照。</li></ol>
+<h3 id="section-14">当前保守表达</h3>
+<p>仅在候选人确认“确实亲手做过该复现”后，当前可用的最低风险版本是；optimized resume 已按这一边界落地：</p>
+<div class="meta">基于 Cosmos Policy / RoboCasa 公开 recipe 开展 WAM 后训练复现与失败诊断，重点梳理 action/future/value latent slot、condition/loss mask、action normalization 与 closed-loop eval contract；当前成果定位为复现与诊断，不宣称本地策略成功率提升。</div>
+<p>这句话是 C0/C1 边界表达，仍需候选人确认 ownership；它刻意不包含 45% MSE、0.90–0.95、0.75、71.19% 和已确认 root cause。</p>
+<h2 id="7-p0-artifact-manifest">7. P0 artifact manifest</h2>
+<table><thead><tr><th>Priority</th><th>Artifact</th><th>最低字段</th><th>关闭哪些 claim</th><th>当前状态</th></tr></thead><tbody>
+<tr><td>P0</td><td><code>wam_run_manifest.json</code></td><td>run ID、hardware、repo commit、base/model checkpoint SHA、config SHA、dataset/stats SHA、command、start/end/status</td><td>CL-001/009</td><td><code>MISSING</code></td></tr>
+<tr><td>P0</td><td>local code/config diff</td><td>changed files、diff、为什么改、author/tool boundary</td><td>CL-002/008/010</td><td><code>MISSING</code></td></tr>
+<tr><td>P0</td><td>MSE eval bundle</td><td>split manifest、metric code SHA、baseline/prediction/label、per-dim/aggregate result</td><td>CL-003</td><td><code>MISSING</code></td></tr>
+<tr><td>P0</td><td>task-success provenance</td><td>checkpoint、task IDs、init、trial count、horizon、controller、success predicate、episode records</td><td>CL-004/011</td><td><code>PARTIAL / full10k remote-artifact-backed; binary/hash, scorer version and complete episode records missing</code></td></tr>
+<tr><td>P0</td><td>full10k trained eval bundle</td><td>24×5 status/log/summary/action-debug、checkpoint/stats/embedding identity、raw/trusted recount、run-family join key</td><td>CL-011</td><td><code>PARTIAL / REMOTE-ARTIFACT-BACKED</code>; current local policy excludes two length=1 artifacts; checkpoint/reload/scorer/ownership remain open</td></tr>
+<tr><td>P0</td><td>official-HF eval bundle</td><td>HF repo+revision、config/stats SHA、24×5 episode records、raw/trusted exclusion reason、summary/videos</td><td>CL-005</td><td><code>PARTIAL / REMOTE-ARTIFACT-BACKED</code></td></tr>
+<tr><td>P0</td><td>local 0-success bundle</td><td>local checkpoint load log、same-protocol episodes、action/gripper hist、first-divergence trace</td><td>CL-006/007</td><td><code>PARTIAL / TURN-OFF-MICROWAVE ARTIFACT-BACKED</code>; immutable checkpoint、matched fix→rerun、multi-episode denominator 与 ownership 仍缺</td></tr>
+<tr><td>P0</td><td>checkpoint save-load gate bundle</td><td>base-load summaries、run contracts、short-smoke exit/metrics、formal save logs、checkpoint file manifest、fresh-process reload</td><td>CL-001/008/009</td><td><code>PARTIAL / BASE-LOAD-BACKED</code>; current archive has 0 produced checkpoint-like binaries and no reload parity</td></tr>
+<tr><td>P1</td><td>training curves</td><td>total/action/world/value diagnostic scalars、step、smoothing rule</td><td>CL-001/009</td><td><code>MISSING</code></td></tr>
+<tr><td>P1</td><td>debug patch bundle</td><td>OOM/state_dict before log、patch/diff、rerun log、checkpoint load smoke</td><td>CL-008</td><td><code>MISSING</code></td></tr>
+<tr><td>P1</td><td>ownership ledger</td><td>亲手实现、协作、只阅读、Codex/工具生成、上游未改五类</td><td>CL-002/010</td><td><code>MISSING</code></td></tr>
+</tbody></table>
+<h3 id="evidence-promotion-pseudocode">Evidence promotion pseudocode</h3>
+<pre><code class="language-python">def promote_claim(claim, bundle):
+    # 1. A metric claim must bind to one immutable run and checkpoint.
+    require(bundle.run_id and bundle.checkpoint_sha and bundle.config_sha)
+
+    # 2. Evaluation must expose the complete protocol and raw episode records.
+    require(bundle.protocol and bundle.episode_records and bundle.metric_code_sha)
+
+    # 3. Personal ownership must be separated from frozen upstream code.
+    require(bundle.ownership_ledger and bundle.local_diff)
+
+    # 4. Only then may a C2/C3 claim enter the resume or strong oral answer.
+    return &quot;verified&quot; if all_checks_pass(bundle) else &quot;claim-only&quot;</code></pre>
+<p>该伪代码表达的是证据门，不是用户项目中已经存在的实现。</p>
+<h2 id="8">8. 必须回答的六个问题</h2>
+<ol><li><code>0.90–0.95 / 0.75</code> 分别对应哪些 RoboCasa task、哪个 checkpoint、每项多少 trial、何种 init/horizon/controller？</li><li><code>full10k checkpoint</code> 与 MACA/C500 “无可加载 final checkpoint”是否是两条 run？各自的硬件、base checkpoint、run ID 和保存路径是什么？</li><li><code>0.09718→0.05349</code> 的 held-out split 怎样生成，MSE 对哪些 action steps/dimensions 求平均，prediction/label 文件在哪里？</li><li><code>84/118</code> 被排除的 2 条 episode 是什么异常？<code>86/120</code>、<code>84/118</code> 的 raw summary、视频与 model revision 在哪里？</li><li>哪些 WAM code/config 是你亲手改的，哪些来自 upstream，哪些由 Codex/同事/脚本完成？</li><li>gripper/high-sigma/conditioning/DeepSpeed 中，哪些只是假设，哪些有修复后的 paired rerun 能确认因果？</li></ol>
+<h2 id="9-preliminary-sp-ssp-project-scorecard">9. Preliminary SP/SSP project scorecard</h2>
+<p>这是“项目证据就绪度”而不是候选人能力评分；由于 raw artifacts 缺失，置信度为 <code>Medium-Low</code>。</p>
+<table><thead><tr><th>维度</th><th>分数（5）</th><th>依据</th></tr></thead><tbody>
+<tr><td>岗位相关性</td><td>4.0</td><td>WAM、multi-objective、RoboCasa eval 与 VLA 岗位高度相关</td></tr>
+<tr><td>机制深度</td><td>3.5</td><td>source audit 已达到 slot/mask/sampler/protocol 层，但项目页仍有 three-head 简化</td></tr>
+<tr><td>工程闭环</td><td>2.0</td><td>有诊断 bundle 与叙事，但缺完整 run bundle 与可加载 checkpoint</td></tr>
+<tr><td>指标可信度</td><td>1.0</td><td>四组本地/复现数字均无 raw artifact，且一组存在 provenance 冲突</td></tr>
+<tr><td>Ownership 清晰度</td><td>1.5</td><td>有自述，缺 local diff 与贡献分类</td></tr>
+<tr><td>抗追问能力</td><td>2.5</td><td>边界意识较好，但数字和 run 身份会被高压追问击穿</td></tr>
+<tr><td>合计</td><td><strong>14.5 / 30</strong></td><td>投递稿已安全降级，但当前仍不具备强结果项目的 raw evidence</td></tr>
+</tbody></table>
+<p>强结果升级阻断项：full10k/C500 run provenance 未拆开；现有 local direct 仅覆盖一组 CoffeePressButton diagnostic bundle，checkpoint/metric/denominator/ownership 仍未闭合。原 <code>WAM-CL-004</code> 投递 blocker 已通过安全降级关闭。</p>
+<h2 id="9-5-artifact-discovery-addendum-2026-07-18">9.5 Artifact Discovery Addendum（2026-07-18）</h2>
+<p>本 addendum 不回溯改写 2026-07-17 的 <code>cv</code> 工作区扫描，而是记录一次外部 Project 目录的只读发现。详细文件、SHA、manifest 字段和缺口见 <a href="wm019_wam_artifact_manifest.html">WM-019 WAM Diagnostic Artifact Manifest</a>；同一输入的结构/逐步差异计算见 <a href="wm019_wam_action_trace_paired_diagnostic.html">WM-019 WAM Action-Trace Paired Diagnostic</a>，离线 future-image PSNR/SSIM 对照见 <a href="wm019_wam_future_metric_paired_diagnostic.html">WM-019 WAM Future-Metric Paired Diagnostic</a>，两侧 <code>iter_000010000</code> 的 exact checkpoint-path bridge 见 <a href="wm019_wam_matched_checkpoint_protocol_bridge.html">WM-019 Matched-Checkpoint Protocol Bridge</a>。</p>
+<p>发现的代表性文件包括 CoffeePressButton base/trained diagnostic bundle、full10k trained 的 <code>eval_summary_conservative.json</code>/<code>formal_5ep_status.tsv</code>/24 条 task logs/24 个 action-debug JSONL、official-HF baseline 的 <code>eval_summary_officialhf_baseline.json</code>/<code>formal_5ep_status.tsv</code>/24 条 task logs/24 个 action-debug JSONL，以及 TurnOffMicrowave local 1k 的 fixed-batch、query-probe、state-mining 与 <code>0/1</code> eval summaries。四类证据必须分开：CoffeePressButton 是单 episode 失败诊断，full10k trained 是远端 <code>iter_000010000</code> path 下的 24×5 eval（raw <code>2/120</code>、local-policy trusted <code>0/118</code>），official-HF 是另一官方 checkpoint path 下的 24×5 eval，TurnOffMicrowave 是 local checkpoint 的一条可复核失败链。full10k、official-HF 与 TurnOffMicrowave 的 checkpoint、stats 与 T5 仍含 remote path reference；没有 local binary/hash，selected/local videos 也不能替代完整 episode bundle。</p>
+<p>因此：</p>
+<ul><li><code>WAM-CL-001</code> 可新增一条 <code>local-direct diagnostic / checkpoint-unverified</code> 证据线，但不能升级为完成 WAM 复现；</li><li><code>WAM-CL-005</code> 可从 <code>local-claim-only</code> 提升为 <code>remote-artifact-backed / checkpoint-unverified</code>，但不进入个人模型成绩或 uplift；</li><li><code>WAM-CL-011</code> 可登记为 full10k trained 24×5 的 <code>remote-artifact-backed / checkpoint-unverified</code>，raw/trusted 两套口径必须同时保留，不能与 official-HF 结果直接做因果 join；</li><li><code>WAM-CL-003..004/008..009</code> 的历史 MSE、task-success、uplift 与 full10k/C500 join 仍保持 <code>REMOVED</code>、<code>local-claim-only</code> 或 <code>RUN-PROVENANCE-OPEN</code>；<code>WAM-CL-006/007</code> 已有一条 local artifact-backed 的 TurnOffMicrowave 失败/first-divergence 证据线，但仍不升级为 benchmark 或 fixed root cause；</li><li>action trace 和 episode-0 <code>success=false</code> 只能支撑接口/失败诊断，不能构成 benchmark denominator、模型比较或 0-success 结论；</li><li>base/trained trace 的 <code>MAE=0.3100783611</code>、<code>RMSE=0.3906446459</code> 只是 JSONL 几何差异，不能替代 target-based action loss、checkpoint causal comparison 或 success uplift；</li><li><code>iter_000005000</code> 与 <code>iter_000010000</code> 的单 sample future-only PSNR 为 <code>8.5813</code> 与 <code>8.2140</code>、SSIM 为 <code>0.04527</code> 与 <code>0.04286</code>；它们是 offline visual proxy，样本数为 1，不能替代 action/simulator/real success。</li><li>ownership 仍需要逐文件 ledger，不能由 artifact 所在目录或 Git author 推断。</li></ul>
+<h2 id="10">10. 分阶段补强计划</h2>
+<table><thead><tr><th>时间</th><th>动作</th><th>完成标准</th><th>状态</th></tr></thead><tbody>
+<tr><td>半天</td><td>回答六个问题；补充 WAM diagnostic manifest；建立 run/metric/ownership 三张 manifest；先从投递稿降级冲突数字</td><td>每个数字都有唯一 run ID 或明确删除</td><td><code>部分完成 / P0 仍待补</code></td></tr>
+<tr><td>1 天</td><td>收集 config、command、checkpoint/load log、MSE script、official/local eval summary</td><td>P0 artifact 表至少关闭 4 项</td><td><code>待补做</code></td></tr>
+<tr><td>3 天</td><td>在同 split 重算 repeat/model MSE；做 official checkpoint 同协议重放；生成 per-episode ledger</td><td>数值可由命令重算，异常 episode 有原因</td><td><code>待补做</code></td></tr>
+<tr><td>1 周</td><td>在可加载 local checkpoint 上做 action-only/+world/+value/all 或最小 paired ablation，并记录 closed-loop failure trace</td><td>可以区分表示收益、接口错误和 closed-loop 失败</td><td><code>待补做</code></td></tr>
+</tbody></table>
+<p>任何补强只有在 artifacts 实际生成后才能改为“已做”。</p>
+<h2 id="11">11. 下一切片</h2>
+<p>2026-07-21 已完成五个独立 bounded slices：<a href="../../sources/vol_04_cosmos_policy_1epoch_evidence_freeze.html">Cosmos 1 epoch evidence freeze</a> 冻结 9907-step gate、step-1900 cgroup-OOM 与 step-1500 <code>state_dict</code> 保存失败；<a href="cosmos_policy_full10k_trained_eval_p0_audit.html">full10k trained eval P0 audit</a> 审计远端 <code>iter_000010000</code> path 下24×5 raw/trusted 与4066行 action-debug；<a href="cosmos_policy_robocasa_baseline_p0_audit.html">official-HF RoboCasa baseline P0 audit</a> 重算 24×5 raw/trusted 结果并冻结 action-debug integrity；<a href="cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.html">TurnOffMicrowave trained-failure P0 audit</a> 把 local <code>0/1</code> 收窄到 fixed-batch 可学但 official 5-frame exact-observation 不迁移；<a href="cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.html">checkpoint save-load gate P0 audit</a> 将 base-load、short smoke、resource failure 与 save API first divergence 分开。五者提升了 WAM 的训练/评测/诊断/保存门证据等级，但不改变 local trained checkpoint hash、1 epoch completion、paired uplift、唯一 root cause 和 ownership gates。</p>
+<p>优先级最高的下一步是二选一：</p>
+<ol><li>先补齐 <a href="wm019_wam_artifact_manifest.html">WAM diagnostic manifest</a> 与 <a href="cosmos_policy_full10k_trained_eval_p0_audit.html">full10k trained eval P0 audit</a> 的 checkpoint/hash、fresh reload、完整 denominator、versioned scorer 和 metric script，再决定是否能升级 <code>WAM-CL-003..004/006/011</code>；official-HF <code>WAM-CL-005</code> 的 24×5 remote-artifact audit 已完成，但仍需 revision/hash、完整 episode JSONL 与 ownership；或</li><li>在 WAM 保持 WARN 的同时，OpenPiVLA 已完成 direct audit 与安全简历重写；后续按 direct-evidence-bounded 题卡批次推进，WAM raw bundle 仍独立排队。</li></ol>
+<p>WAM optimized resume 安全降级已完成；raw evidence gate 未关闭前仍不生成 WAM 强回答卡，不创建 mastery/coaching state，也不把 G09 推进到 reviewed。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li><a href="../../../../output/mousongzhe_resume_optimized.html">optimized resume</a>，当前投递稿，WAM 三条 bullet。</li><li><a href="../../../04_cosmos_wam_multitask_training.html">Cosmos / WAM 项目面试页</a>，现有叙事、诊断与 artifact queue。</li><li><a href="../../../../output/resume_restructure_plan.md">resume restructure plan</a>，WAM 数字与谨慎边界。</li><li><a href="../../../../output/mousongzhe_resume_research.html">research resume</a>，历史 full10k/loss/sample-count 表述。</li><li><a href="../../../../output/mousongzhe_resume_engineering.html">engineering resume</a>，历史 full10k/loss/sample-count 表述。</li><li><a href="../../sources/vol_04_cosmos_policy_wam_claim_to_code.html">VOL 04 Cosmos Policy / WAM frozen source audit</a>；canonical <a href="../../sources/vol_04_cosmos_policy_wam_claim_to_code.md">Markdown</a>，review <a href="../../sources/vol_04_cosmos_policy_wam_claim_to_code.review.json">JSON</a>。</li><li><a href="../../sources/vol_04_benchmark_evidence_claim_to_protocol.html">VOL 04 Benchmark / Evidence audit</a>；canonical <a href="../../sources/vol_04_benchmark_evidence_claim_to_protocol.md">Markdown</a>，review <a href="../../sources/vol_04_benchmark_evidence_claim_to_protocol.review.json">JSON</a>。</li><li>ProjectProof evidence contract：本轮使用的 C0–C3 规则；该规则只定义证据门，不是用户项目事实。</li><li>Kim et al., <a href="https://arxiv.org/abs/2601.16163v1">Cosmos Policy: Fine-Tuning Video Models for Visuomotor Control and Planning</a>, 2026。</li><li><a href="../../sources/vol_04_cosmos_policy_1epoch_evidence_freeze.html">Cosmos 1 epoch evidence freeze</a>；canonical <a href="../../sources/vol_04_cosmos_policy_1epoch_evidence_freeze.md">Markdown</a>，review <a href="../../sources/vol_04_cosmos_policy_1epoch_evidence_freeze.review.json">JSON</a>。</li><li><a href="cosmos_policy_robocasa_baseline_p0_audit.html">Cosmos official-HF RoboCasa baseline P0 audit</a>；canonical <a href="cosmos_policy_robocasa_baseline_p0_audit.md">Markdown</a>，review <a href="cosmos_policy_robocasa_baseline_p0_audit.review.json">JSON</a>。</li><li>NVlabs, <a href="https://github.com/NVlabs/cosmos-policy/tree/18a2accadf4e7a3531e56754102af5a24d2316da"><code>cosmos-policy@18a2acc</code></a>，Apache-2.0 code；model weights 另受 model-card license 约束。</li><li><a href="../../../../output/pdf/mousongzhe_resume_after.pdf">optimized resume PDF</a>，由当前 optimized HTML 重新生成；PDF SHA-256 <code>65b1dcd34cd6e357c6264effcf4b2683dea66508c6bc58315762b5e4c03ac74a</code>，A4 单页，旧 WAM 数字文本检索为 0。</li><li><a href="cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.html">TurnOffMicrowave trained-failure P0 audit</a>；canonical <a href="cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.md">Markdown</a>，review <a href="cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.review.json">JSON</a>。</li><li><a href="cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.html">Checkpoint save-load gate P0 audit</a>；canonical <a href="cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.md">Markdown</a>，review <a href="cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.review.json">JSON</a>。</li><li><a href="cosmos_policy_full10k_trained_eval_p0_audit.html">Cosmos full10k trained eval P0 audit</a>；canonical <a href="cosmos_policy_full10k_trained_eval_p0_audit.md">Markdown</a>，review <a href="cosmos_policy_full10k_trained_eval_p0_audit.review.json">JSON</a>。</li></ol>
+</article></body></html>

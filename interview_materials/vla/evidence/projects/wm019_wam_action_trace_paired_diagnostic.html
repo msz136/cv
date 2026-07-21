@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WM-019 WAM Action-Trace Paired Diagnostic（CoffeePressButton）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\wm019_wam_action_trace_paired_diagnostic.md">
+<meta name="aris:source-sha256" content="913d68cb1e7be44fd108d2a06509d33ea04462b255a153af030b2f3c0a603fb5">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>913d68cb1e7be44fd108d2a06509d33ea04462b255a153af030b2f3c0a603fb5</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\wm019_wam_action_trace_paired_diagnostic.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 目的与边界</a></li><li><a href="#2-identity">2. 输入 identity</a></li><li><a href="#3-trace-integrity">3. Trace integrity</a></li><li><a href="#4-paired-difference">4. Paired difference</a></li><li><a href="#5-range-diagnostic">5. Range diagnostic</a></li><li><a href="#6-wm-019-ladder-placement">6. WM-019 ladder placement</a></li><li><a href="#7">7. 下一最小补件</a></li><li><a href="#section-8">参考来源</a></li></ol></nav>
+<h1>WM-019 WAM Action-Trace Paired Diagnostic（CoffeePressButton）</h1>
+<div class="meta">状态：<code>paired_diagnostic / local-direct-trace-math / checkpoint-unverified / WARN</code> 计算日期：2026-07-18 证据截止：2026-07-18 范围：只比较同一 CoffeePressButton episode 0、相同 seed/env_seed 和相同 300-step protocol 下的 base/trained <code>actions.jsonl</code>；不把 trace 差异解释为 checkpoint 因果、success uplift 或 benchmark 结果。</div>
+<h2 id="1">1. 目的与边界</h2>
+<p>WM-019 要求把 action MSE、open-loop trace 与 downstream success 分层。本切片只回答三个低层问题：</p>
+<ol><li>base/trained action trace 是否逐步对齐、shape 是否一致、是否有非有限值？</li><li>两条 trace 的逐步差异有多大？</li><li>两条 trace 的 <code>success_after_step</code>、reward 和 episode 长度是否支持更高层结论？</li></ol>
+<p>它不回答：哪个 checkpoint 更好、为什么不同、是否提升成功率、是否代表 WAM 全部任务。</p>
+<h2 id="2-identity">2. 输入 identity</h2>
+<table><thead><tr><th>side</th><th>manifest SHA</th><th>action trace SHA</th><th>protocol</th></tr></thead><tbody>
+<tr><td>base</td><td><code>63A518674F061D1C14A880805FF9C23DAC2425C9D7B34CC4C75FD3CEDBD33A86</code></td><td><code>C6A3623B26B97F7ED88AA13AE675C8315DC509D3D867CBB6E417CAF51F88525D</code></td><td>CoffeePressButton、episode 0、seed 195、env_seed 0、300 steps、open-loop 16、denoise 5</td></tr>
+<tr><td>trained</td><td><code>809AE4F879C9421F954C7BFC26C70005B94387412449039F9FA8B6E479EF55CC</code></td><td><code>9C6A4F00DA8107EB0C1FDDDC642D1986CD510D92F7F6E3A68ADE834E8B82CF2D</code></td><td>同上；checkpoint 字段仍为远端路径</td></tr>
+</tbody></table>
+<p>输入文件均来自 <a href="wm019_wam_artifact_manifest.html">WM-019 WAM Artifact Manifest</a>。本报告没有读取或修改远端 checkpoint。</p>
+<h2 id="3-trace-integrity">3. Trace integrity</h2>
+<table><thead><tr><th>check</th><th>base</th><th>trained</th><th>结论</th></tr></thead><tbody>
+<tr><td>rows</td><td>300</td><td>300</td><td>一致</td></tr>
+<tr><td><code>t</code> range</td><td>0..299</td><td>0..299</td><td>逐步对齐</td></tr>
+<tr><td><code>policy_action7</code> shape</td><td>300×7</td><td>300×7</td><td>一致</td></tr>
+<tr><td><code>env_action</code> shape</td><td>300×12</td><td>300×12</td><td>一致</td></tr>
+<tr><td>non-finite policy values</td><td>0</td><td>0</td><td>未发现 NaN/Inf</td></tr>
+<tr><td><code>success_after_step=True</code></td><td>0</td><td>0</td><td>两条 trace 都未触发成功字段</td></tr>
+<tr><td>reward sum</td><td>0.0</td><td>0.0</td><td>不能作为更高层 success 证明</td></tr>
+</tbody></table>
+<p>shape 与有限性检查只证明 JSONL 的结构可读；不证明动作语义、controller 映射或 checkpoint 内容正确。</p>
+<h2 id="4-paired-difference">4. Paired difference</h2>
+<p>对齐同一 <code>t</code> 后，令 (a_t^{(b)}) 和 (a_t^{(t)}) 分别为 base/trained 的 7 维 <code>policy_action7</code>，计算：</p>
+<div class="formula">\[
+\operatorname{MAE}=\frac{1}{Td}\sum_{t=1}^{T}\sum_{j=1}^{d}|a_{t,j}^{(b)}-a_{t,j}^{(t)}|,
+\qquad
+\operatorname{RMSE}=\sqrt{\frac{1}{Td}\sum_{t=1}^{T}\sum_{j=1}^{d}(a_{t,j}^{(b)}-a_{t,j}^{(t)})^2}.
+\]</div>
+<p>这里 (T=300,d=7)。它们只是两份 action trace 的几何差异，不是 action-label loss，也不等于成功率。</p>
+<table><thead><tr><th>measure</th><th>value</th></tr></thead><tbody>
+<tr><td>policy MAE</td><td><code>0.3100783611</code></td></tr>
+<tr><td>policy RMSE</td><td><code>0.3906446459</code></td></tr>
+<tr><td>per-dimension MAE</td><td><code>[0.38234915, 0.31824048, 0.27147196, 0.38302800, 0.30951413, 0.24404278, 0.26190202]</code></td></tr>
+<tr><td>mean policy norm, base</td><td><code>0.6584048120</code></td></tr>
+<tr><td>mean policy norm, trained</td><td><code>0.6782378918</code></td></tr>
+</tbody></table>
+<p>逐步差异明显，但由于两个 checkpoint binary 不在本地、没有 prediction target/metric script，也没有成功 episode，不能把差异归因于某个训练改动，更不能说 trained “更好”或“更差”。</p>
+<h2 id="5-range-diagnostic">5. Range diagnostic</h2>
+<table><thead><tr><th>dimension</th><th>base min</th><th>base max</th><th>trained min</th><th>trained max</th></tr></thead><tbody>
+<tr><td>0</td><td>0.074116</td><td>0.389210</td><td>-0.569726</td><td>0.206362</td></tr>
+<tr><td>1</td><td>0.064427</td><td>0.395674</td><td>-0.485705</td><td>0.294611</td></tr>
+<tr><td>2</td><td>0.081652</td><td>0.409145</td><td>-0.454376</td><td>0.420165</td></tr>
+<tr><td>3</td><td>0.050104</td><td>0.426199</td><td>-0.686172</td><td>0.402813</td></tr>
+<tr><td>4</td><td>0.027087</td><td>0.366351</td><td>-0.622367</td><td>0.335208</td></tr>
+<tr><td>5</td><td>-0.017900</td><td>0.354746</td><td>-0.501100</td><td>0.373214</td></tr>
+<tr><td>6</td><td>-0.049619</td><td>0.515565</td><td>-0.428721</td><td>0.371992</td></tr>
+</tbody></table>
+<p>范围差异可以作为 controller/action-normalizer 排查入口，但不能单凭 range 断言 high-sigma、gripper、normalizer 或动作顺序是根因。需要 action schema、normalizer、checkpoint 和 paired rerun 才能继续归因。</p>
+<h2 id="6-wm-019-ladder-placement">6. WM-019 ladder placement</h2>
+<table><thead><tr><th>层级</th><th>本切片能支持什么</th><th>仍不能支持什么</th></tr></thead><tbody>
+<tr><td>trace integrity</td><td>两份 JSONL 的 row/t/shape/finite/success 字段可审计</td><td>checkpoint 可加载、动作语义正确</td></tr>
+<tr><td>open-loop diagnostic</td><td>300-step trace 的逐步差异与范围差异</td><td>per-offset prediction error、action sensitivity causal test</td></tr>
+<tr><td>simulator success</td><td>episode 0 两边 <code>success=false</code> 字段</td><td>denominator、完整 suite success、模型比较</td></tr>
+<tr><td>project claim</td><td>“有一组可复核的 action-rollout diagnostic bundle”</td><td>WAM MSE、uplift、0-success benchmark、个人原创 architecture</td></tr>
+</tbody></table>
+<h2 id="7">7. 下一最小补件</h2>
+<ol><li>补 base/trained checkpoint 或 immutable remote hash，并绑定 processor/normalizer/config SHA。</li><li>把 alternate trained-video output root 绑定进 run manifest，并建立多 episode manifest 和 success predicate/denominator。</li><li>用同一 target/schema 计算 per-offset prediction error、action sensitivity 与 controller round-trip。</li><li>只有 paired rerun 显示固定 protocol 下的 success 差异，才讨论 model effect；当前不更新简历数字。</li></ol>
+<h2 id="section-8">参考来源</h2>
+<ol><li><a href="wm019_wam_artifact_manifest.html">WAM Artifact Manifest</a>。</li><li><a href="wam_claim_evidence_inventory.html">WAM Claim–Evidence Inventory</a>。</li><li><a href="../../sources/vol_04_wm019_project_metric_artifact_gate.html">WM-019 Project Metric Artifact Gate</a>。</li><li><a href="../../sources/vol_04_wm019_metric_boundary_source_freeze.html">WM-019 Metric Source Freeze</a>。</li></ol>
+</article></body></html>

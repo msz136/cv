@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：Point、Box、Text 与坐标协议（PER-001）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per001_grounding_coordinate.md">
+<meta name="aris:source-sha256" content="43d7cb67ae4726a759ff030abf97fe0c23f58d548527edf4d3eaffd3830e65e6">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>43d7cb67ae4726a759ff030abf97fe0c23f58d548527edf4d3eaffd3830e65e6</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per001_grounding_coordinate.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1-30-grounding">1. 30 秒直觉：grounding 是接口合同，不是一个分数</a></li><li><a href="#2">2. 三类输出合同</a></li><li><a href="#2-1-box">2.1 Box：目标区域</a></li><li><a href="#2-2-point-affordance">2.2 Point：位置或 affordance</a></li><li><a href="#2-3-text-phrase-grounding">2.3 Text：语言标签或 phrase grounding</a></li><li><a href="#3">3. 坐标变换：先声明假设，再写公式</a></li><li><a href="#4">4. 评估指标与证据阶梯</a></li><li><a href="#4-1-box-iou">4.1 Box IoU</a></li><li><a href="#4-2-point-hit-threshold">4.2 Point Hit@threshold</a></li><li><a href="#4-3-text-phrase-score">4.3 Text / phrase score</a></li><li><a href="#5-grounding-pipeline">5. 一个可审计的 grounding pipeline</a></li><li><a href="#6-grounding-action">6. 从 grounding 到 action：中间接口不能省略</a></li><li><a href="#7-opd">7. OPD 项目映射与真实性边界</a></li><li><a href="#8-trade-off-bad-case">8. Trade-off 与高概率 bad case</a></li><li><a href="#9">9. 面试回答检查表</a></li><li><a href="#10">10. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：Point、Box、Text 与坐标协议（PER-001）</h1>
+<div class="meta">状态：<code>drafted / VLA-PER-001 / knowledge_1_of_phase / card_synced / WARN</code> 报告日期：2026-07-18 证据截止：2026-07-18 来源入口：<a href="../sources/vol_06_per001_grounding_coordinate_source_freeze.html">PER-001 Grounding / Coordinate Source Freeze</a>。 项目入口：<a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>VLA 或 VLM grounding 面试不能只回答“模型找到了目标”。一个可执行的 grounding 输出必须同时说明：目标是什么、坐标在哪个空间、输出如何解析、怎样逆变换回原图，以及下游是否把它当作静态评估、规划输入还是控制 action。</p>
+<p>本页回答五个问题：</p>
+<ol><li>point、box、text 三种 grounding 输出有什么不同？</li><li><code>normalized cxcywh</code> 如何转换为 pixel <code>xyxy</code>，resize/letterbox 为什么会改变结果？</li><li>strict parser、lenient parser 和 protocol-fixed scorer 应怎样分层？</li><li>grounding score 为什么不能直接等价为 action success？</li><li>如何把这些合同映射到 OPD 的五 expert、point protocol 和 raw-holdout 证据？</li></ol>
+<h2 id="section-2">知识地图位置与前置依赖</h2>
+<pre><code class="language-text">VOL 01 坐标系 / 几何 / 图像尺寸
+          ↓
+PER-001 point-box-text contract
+          ↓
+PER-002 3D lift / camera calibration
+          ↓
+PER-003 multi-view fusion / temporal grounding
+          ↓
+VLA action head / planner / controller / closed-loop evaluation</code></pre>
+<p>前置知识是图像尺寸、坐标系、归一化和 parser 基础；后续节点将讨论深度、内外参、多视角融合和导航。Grounding DINO 和 RoboPoint 是公源机制参照，OPD 是项目证据 hook，不把项目数字当成通用算法结论。</p>
+<h2 id="1-30-grounding">1. 30 秒直觉：grounding 是接口合同，不是一个分数</h2>
+<p>grounding 的输出要像一个带 schema 的消息：<code>target</code>、<code>representation</code>、<code>coordinate_space</code>、<code>image_size</code>、<code>values</code>、<code>confidence</code>、<code>validity</code> 和 <code>parser_version</code>。同样四个数字，可能是 normalized <code>cxcywh</code>，也可能是 pixel <code>xyxy</code>；同样一串点，可能是部署要求的 <code>&lt;point&gt;...&lt;/point&gt;</code>，也可能只是 lenient parser 接受的 Python 风格字符串。若这些字段不固定，IoU 或 Hit@threshold 的变化无法判断来自模型、预处理、解析还是坐标换算。</p>
+<h2 id="2">2. 三类输出合同</h2>
+<h3 id="2-1-box">2.1 Box：目标区域</h3>
+<table><thead><tr><th>表示</th><th>例子</th><th>需要绑定</th><th>典型风险</th></tr></thead><tbody>
+<tr><td>normalized <code>cxcywh</code></td><td><code>(0.50, 0.40, 0.20, 0.10)</code></td><td>原图宽高、中心/尺寸语义、范围 <code>[0,1]</code></td><td>当成角点或使用错误宽高缩放</td></tr>
+<tr><td>pixel <code>xyxy</code></td><td><code>(x_min,y_min,x_max,y_max)</code></td><td>原点、边界是否 inclusive、rounding</td><td>x/y 交换、越界、IoU 改变</td></tr>
+<tr><td>normalized <code>xyxy</code></td><td>四个相对角点</td><td>normalization 轴、裁剪/填充规则</td><td>直接乘错 <code>W/H</code></td></tr>
+<tr><td>camera/world box</td><td>2D 区域加深度或平面假设</td><td>intrinsics、extrinsics、深度来源、frame ID</td><td>把 2D 区域中心当成 3D 抓取点</td></tr>
+</tbody></table>
+<p>Grounding DINO frozen inference code 给出一个具体实现：模型输出 <code>pred_boxes</code> 后先乘 <code>[W,H,W,H]</code>，再用 <code>box_convert(..., in_fmt="cxcywh", out_fmt="xyxy")</code>。这说明代码路径，但不说明任何自定义模型已经遵守同一合同。</p>
+<h3 id="2-2-point-affordance">2.2 Point：位置或 affordance</h3>
+<p>point 可以是目标中心、抓取候选、导航 waypoint 或 RoboPoint 风格的 spatial affordance keypoint。至少要记录：</p>
+<pre><code class="language-text">(x, y), coordinate_space, image_width, image_height,
+ordering, confidence, valid, parser_version</code></pre>
+<p><code>&lt;point&gt;[[x1,y1],[x2,y2]]&lt;/point&gt;</code>、<code>[(x1, y1), ...]</code> 和 JSON <code>{"points": ...}</code> 是三个不同的接口。多点输出还要定义顺序：按置信度、从左到右、沿轨迹，还是无序集合。顺序不清时，几何误差可能看似相同，但下游动作会执行到不同的点。</p>
+<h3 id="2-3-text-phrase-grounding">2.3 Text：语言标签或 phrase grounding</h3>
+<p>文本输出不能只保存最终字符串。应区分原始 phrase、规范化 label、token span、confidence、与 box/point 的关联，以及 <code>no-object</code>/<code>ambiguous</code> 状态。Grounding DINO 的 phrase extraction 使用 tokenized caption 和 text threshold；因此 phrase 命中不等于目标绑定正确，也不等于 action head 已消费该结果。</p>
+<h2 id="3">3. 坐标变换：先声明假设，再写公式</h2>
+<p>令原图宽高为 (W,H)，模型输出 normalized <code>cxcywh=(c_x,c_y,w,h)</code>。当没有裁剪或 padding 时，一种明确的 pixel <code>xyxy</code> 转换是：</p>
+<div class="formula">\[
+x_1=W\left(c_x-\frac{w}{2}\right),\qquad
+y_1=H\left(c_y-\frac{h}{2}\right),\qquad
+x_2=W\left(c_x+\frac{w}{2}\right),\qquad
+y_2=H\left(c_y+\frac{h}{2}\right).
+\]</div>
+<p>这里的 (c_x,c_y,w,h) 是相对于原图的归一化量；公式只负责尺度和参数化，不负责 letterbox padding、crop offset、相机外参、深度或控制器 frame。代码实现必须保留 transform metadata，否则只能得到“看起来在图上”的框。</p>
+<p>若预处理先把原图缩放为 (sW,sH)，并在左、上方向加入 padding ((p_x,p_y))，则模型坐标到预处理图坐标的框为：</p>
+<div class="formula">\[
+(x&#x27;_1,y&#x27;_1,x&#x27;_2,y&#x27;_2)=(s x_1+p_x,;s y_1+p_y,;s x_2+p_x,;s y_2+p_y).
+\]</div>
+<p>逆变换必须执行 (x=(x'-p_x)/s,;y=(y'-p_y)/s)，并在最终 rounding 前裁剪到原图边界。若把 (p_x,p_y) 忽略，目标会随横纵比变化系统性偏移；这不是模型“空间理解变差”的充分证据。</p>
+<h2 id="4">4. 评估指标与证据阶梯</h2>
+<h3 id="4-1-box-iou">4.1 Box IoU</h3>
+<p>两个二维框 (A,B) 的交并比为：</p>
+<div class="formula">\[
+\operatorname{IoU}(A,B)=\frac{|A\cap B|}{|A\cup B|}.
+\]</div>
+<p>IoU 只描述平面区域重叠；要报告阈值、样本数、空预测处理、坐标协议和 scorer 版本。它不包含动作单位、控制延迟、碰撞、接触稳定性或任务 success predicate。</p>
+<h3 id="4-2-point-hit-threshold">4.2 Point Hit@threshold</h3>
+<p>point 指标应明确距离单位：像素距离、归一化距离还是相机/世界坐标距离。<code>Hit@50</code> 与 <code>Hit@100</code> 只有在图像尺寸、有效样本、parser mode 和距离定义都固定时才可比较。strict parser=0 可能是格式不匹配；lenient parser 的提升只能说明兼容格式的几何估计，不可自动替代部署协议。</p>
+<h3 id="4-3-text-phrase-score">4.3 Text / phrase score</h3>
+<p>text exact、token overlap、phrase grounding accuracy 和 box/point pairing 是不同指标。字符串正确但坐标错，或者坐标正确但标签格式不符，都会在不同 scorer 下产生相反结论。因此结果表必须按 representation 和 protocol 分栏，不能把所有输出平均成一个“grounding accuracy”。</p>
+<h2 id="5-grounding-pipeline">5. 一个可审计的 grounding pipeline</h2>
+<pre><code class="language-python">def ground_and_validate(image, prompt, model, contract):
+    # 1. Preserve the original image size and reversible preprocess metadata.
+    preprocessed, transform = preprocess(image, contract.resize_policy)
+
+    # 2. Run the model; output type is explicit, not inferred from four numbers.
+    raw = model(preprocessed, prompt)
+    parsed = parse_output(raw, contract.parser_version)
+
+    # 3. Reject malformed or ambiguous outputs before any coordinate transform.
+    validate_representation(parsed, contract.representation,
+                            contract.coordinate_space, contract.value_range)
+
+    # 4. Undo padding/crop/resize and clip only under the declared policy.
+    original_space = inverse_transform(parsed, transform)
+    original_space = clip_or_reject(original_space, contract.boundary_policy)
+
+    # 5. Emit an auditable record for scorer and downstream planner/controller.
+    return {
+        &quot;target&quot;: parsed.target,
+        &quot;representation&quot;: contract.representation,
+        &quot;coordinate_space&quot;: &quot;original_pixel&quot;,
+        &quot;values&quot;: original_space.values,
+        &quot;confidence&quot;: parsed.confidence,
+        &quot;valid&quot;: parsed.valid,
+        &quot;parser_version&quot;: contract.parser_version,
+        &quot;transform_id&quot;: transform.id,
+    }</code></pre>
+<p>伪代码的关键是先解析和验证，再做逆变换；不能看到四个浮点数就直接 reshape。真正进入 action head 前，还需增加深度/外参、frame ID、单位和 controller schema 检查。</p>
+<h2 id="6-grounding-action">6. 从 grounding 到 action：中间接口不能省略</h2>
+<pre><code class="language-text">grounding output
+  → representation parser
+  → original-image coordinate
+  → camera/world lift (optional)
+  → target/affordance selection
+  → policy observation or planner goal
+  → normalized action + denormalization
+  → controller / safety predicate</code></pre>
+<p>这里至少有三个不同的成功事件：</p>
+<ol><li><strong>grounding valid</strong>：格式、范围和坐标合同通过；</li><li><strong>geometric match</strong>：IoU/Hit/距离达到 scorer 阈值；</li><li><strong>task success</strong>：规划器、控制器和环境 predicate 均通过。</li></ol>
+<p>第 1、2 层通过不能推出第 3 层。尤其是 point 中心不一定是抓取点，box 不含深度和遮挡信息，text label 也不包含动作方向或接触力。</p>
+<h2 id="7-opd">7. OPD 项目映射与真实性边界</h2>
+<table><thead><tr><th>OPD 证据</th><th>面试可说</th><th>不能升级为</th></tr></thead><tbody>
+<tr><td>五 expert mix：reasoning/object/region/spatial/point</td><td>数据构造显式分域，point/box/text 有不同 route</td><td>五个 expert 已分别独立最优或 route 已是 learned router</td></tr>
+<tr><td><code>target_expert</code> / <code>candidate_experts</code> / format-conflict metadata</td><td>路由监督和协议边界被写入样本</td><td>student 一定在推理时选择正确 expert</td></tr>
+<tr><td>raw-holdout dedupe audit</td><td>可审计 image/fingerprint/source-line/prompt-answer-image leakage gate</td><td>静态 holdout 等价真实机器人泛化</td></tr>
+<tr><td>original strict / protocol-fixed strict / lenient point scorer</td><td>能区分格式失败和几何能力</td><td>strict=0 直接等于模型不会 point grounding</td></tr>
+<tr><td>by-format / by-pool checkpoint table</td><td>结果必须绑定 checkpoint、子集和 scorer，且最佳点可能不同</td><td>ckpt5000 是所有任务池全局最佳，或提升由 OPD 单独造成</td></tr>
+</tbody></table>
+<p>项目材料支持的是数据路由、协议核对和评估边界；模型权重、完整 raw predictions、单因素 ablation 和逐文件 ownership 仍缺，题卡和口述应保持 <code>WARN/unseen</code>。</p>
+<h2 id="8-trade-off-bad-case">8. Trade-off 与高概率 bad case</h2>
+<table><thead><tr><th>决策</th><th>好处</th><th>风险 / 诊断</th></tr></thead><tbody>
+<tr><td>strict parser</td><td>部署协议稳定、失败可见</td><td>格式错误会掩盖几何能力；需 protocol-fixed 对照</td></tr>
+<tr><td>lenient parser</td><td>兼容历史输出、适合定位 parser bug</td><td>可能接受错误 axis/unit，不能作为生产 scorer</td></tr>
+<tr><td>normalized coordinates</td><td>跨分辨率方便</td><td>忘记 padding/crop 或 <code>W/H</code> 轴会产生系统偏移</td></tr>
+<tr><td>pixel coordinates</td><td>直观、易画框</td><td>强依赖 image size、resize 和 rounding</td></tr>
+<tr><td>point affordance</td><td>比 box 更接近抓取/导航候选</td><td>单点不含深度、姿态、遮挡与接触语义</td></tr>
+<tr><td>多点候选</td><td>可表达路径/抓取备选</td><td>顺序、去重、置信度和下游选择必须固定</td></tr>
+</tbody></table>
+<p>常见 bad case：把 <code>cxcywh</code> 当 <code>xyxy</code>；x/y 乘错图像尺寸；忽略 letterbox offset；用字符串命中代替 phrase grounding；strict=0 就断言能力为零；用 IoU/Hit 推断 controller success；把 OPD 的组合结果写成单一 OPD uplift；把 Git author 当作完整 ownership。</p>
+<h2 id="9">9. 面试回答检查表</h2>
+<p>回答 PER-001 时至少覆盖：</p>
+<ol><li>表示：point、box、text 的输出字段和用途；</li><li>坐标：原点、轴、范围、图像尺寸、resize/letterbox 逆变换；</li><li>解析：strict/lenient/protocol-fixed、invalid/no-object 和 parser version；</li><li>指标：IoU、Hit、text score 的单位、阈值、分母和 scorer；</li><li>闭环：grounding valid → geometric match → task success 的三层差异；</li><li>项目：OPD route/raw-holdout/point protocol 的可说与不可说边界。</li></ol>
+<h2 id="10">10. 结论与下一步</h2>
+<p>Grounding 的核心不是“输出一个框或点”，而是把 representation、coordinate transform、parser、scorer 和 downstream interface 固定成可审计合同。Grounding DINO 的 <code>cxcywh → xyxy</code> 代码是具体实现样例，RoboPoint 说明 point affordance 的机器人语义，OPD 提供真实项目中的多 expert、格式冲突和 raw-holdout 边界。当前节点 verdict 为 <code>WARN</code>；对应 <code>VLA-PER-001</code> 题卡已同步并保持 <code>unseen</code>，下一步进入真实口述或补 parser/normalizer roundtrip，再进入 3D lift / multi-view 的后续训练。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_06_per001_grounding_coordinate_source_freeze.html">PER-001 Grounding / Coordinate Source Freeze</a>。</li><li>Grounding DINO，<a href="https://arxiv.org/abs/2303.05499v1">arXiv:2303.05499v1</a> 与 <a href="https://github.com/IDEA-Research/GroundingDINO/tree/856dde20aee659246248e20734ef9ba5214f5e44">official repository @856dde20</a>。</li><li>RoboPoint，<a href="https://arxiv.org/abs/2406.10721v1">arXiv:2406.10721v1</a>。</li><li>本仓库 <a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>。</li></ol>
+</article></body></html>

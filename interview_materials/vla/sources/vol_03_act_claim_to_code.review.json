@@ -1,0 +1,55 @@
+{
+  "artifact": "sources/vol_03_act_claim_to_code.md",
+  "html": "sources/vol_03_act_claim_to_code.html",
+  "review_date": "2026-07-21",
+  "status": "independent_fact_reviewed",
+  "verdict": "WARN",
+  "source_sha256": "6C3C40330D13B1BB186B09EA744006667630CD4BD6AE1651EC1FDC38E8DC5A2A",
+  "evidence_cutoff": "2026-07-19",
+  "upstream": {
+    "paper": "Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware",
+    "paper_revision": "arXiv 2304.13705v1",
+    "paper_revision_verified": true,
+    "repository": "tonyzhaozh/act",
+    "commit": "742c753c0d4a5d87076c8f69e5628c79a8cc5488",
+    "commit_verified": true,
+    "license": "MIT",
+    "license_verified": true
+  },
+  "coverage": {
+    "question_ids": [
+      "VLA-ACT-011",
+      "VLA-ACT-012",
+      "VLA-ACT-013",
+      "VLA-ACT-014",
+      "VLA-ACT-015",
+      "VLA-ACT-016",
+      "VLA-ACT-017"
+    ],
+    "upstream_claims_audited": 15,
+    "local_project_claims_verified": 0
+  },
+  "checks": {
+    "paper_version_and_source": "PASS (arXiv API and v1 TeX source read)",
+    "repository_head": "PASS (git rev-parse matches frozen commit)",
+    "repository_license": "PASS (MIT LICENSE read)",
+    "model_and_data_paths": "PASS (detr_vae.py, transformer.py, policy.py, utils.py and imitate_episodes.py read)",
+    "cvae_train_infer_mapping": "PASS (posterior inputs, mu/logvar, reparameterization and test z=0 mapped)",
+    "tensor_contract": "PASS (H=num_queries, action output [B,H,14], paper real views separated from repo sim config)",
+    "loss_and_padding": "PASS WITH WARNING (masked L1 denominator retains padded slots; is_pad_head is not supervised)",
+    "paper_code_mismatches": "PASS WITH WARNING (Algorithm MSE vs prose/code L1; fixed/sinusoidal vs learned queries)",
+    "rollout_mapping": "PASS (no-aggregation H-step query/execute and per-step temporal aggregation mapped)",
+    "temporal_weight_order": "PASS WITH WARNING (oldest prediction receives the largest exponential weight)",
+    "public_local_boundary": "PASS (local OpenPiVLA H/K/action schema/checkpoint/97.4% remain pending)",
+    "html_static_validation": "PASS (one h1, source SHA, 35 fragments, local links, MathJax delimiters and commented pseudocode)",
+    "independent_fact_review": "PASS WITH WARNING (see vol_03_act_independent_fact_review)",
+    "browser_visual_check": "PASS WITH WARNING (localhost desktop 1440x1000 and narrow 800x1000; one H1, academic palette/serif, sticky-to-static TOC, contained tables/code/formulas, zero formula-em and no page-wide overflow)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the independently reviewed MSE/L1, query-embedding, masked-denominator and sentinel boundaries synchronized under future edits.",
+    "Collect local OpenPiVLA model horizon, executed prefix, replan condition, action axes, normalization assets, controller loop and eval summary.",
+    "Keep all future cards unseen until real oral practice."
+  ],
+  "next": "Run one real ACT/Diffusion oral drill or collect one immutable local OpenPiVLA runtime artifact; keep ACT-011..017 unseen until practice."
+}

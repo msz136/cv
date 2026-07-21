@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 08 SYS-004 原子题卡：Fault Recovery、Safety 与 Observability</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\vol_08_sys004.md">
+<meta name="aris:source-sha256" content="20d9d703990cd024572b1c0a67aee311973d8f1f401cb83776b593cc1a8b9e03">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>20d9d703990cd024572b1c0a67aee311973d8f1f401cb83776b593cc1a8b9e03</code>；生成自：<code>interview_materials\vla\questions\vol_08_sys004.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#vla">如何设计 VLA 系统的故障恢复、安全边界与可观测性？</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 08 SYS-004 原子题卡：Fault Recovery、Safety 与 Observability</h1>
+<div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-21 覆盖范围：<code>SYS-VLA-004</code> 难度：L3 1 题 优先级：P0 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_08_sys004_fault_recovery_safety_observability.html">SYS-004 Knowledge</a>；来源边界见 <a href="../sources/vol_08_sys004_fault_recovery_safety_observability_source_freeze.html">SYS-004 Source Freeze</a>。</div>
+<h2 id="vla">如何设计 VLA 系统的故障恢复、安全边界与可观测性？</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>SYS-VLA-004</b> · policy、controller、robot 或数据链路异常时，如何定位 first divergence、降级恢复并防止 stale action 造成物理风险？</summary>
+<p><strong>面试意图</strong>：判断你能否把状态机、证据链、safe-apply、lease fencing、rollback/replay 和独立 e-stop 边界连成闭环，而不是把“加日志、重试、stop”当作完整安全设计。</p>
+<p><strong>30 秒回答</strong>：用 trace/metric/log 找 first divergence，按 DEGRADED→HOLD/STOPPED 分级。action 校验 schema、时间、lease epoch、deadline；失败即丢弃并 hold/stop。恢复隔离后回滚兼容 bundle，用 replay/canary 验证；e-stop 属于独立安全链。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：让 observation→infer→apply→ack 共用 robot/session identity，关联 trace、metric、log。按 symptom→first divergence→root cause→outcome 诊断；liveness/readiness/startup 与 QoS 分开。<code>safe_apply</code> 检查 schema、normalizer/controller compatibility、freshness、deadline、lease epoch；失败则 quiesce、清旧 chunk，进入 hold/stop。rollback 用兼容矩阵和 bundle；replay 固定输入与版本，再做 canary。硬件 e-stop 独立断能。</p>
+<p><strong>诊断 / 证据</strong>：先找第一条可验证的时间戳分叉：capture→queue→infer→validate→apply→ack；记录 <code>A_age=t_apply-t_capture</code>、deadline miss、QoS drop、queue、lease epoch、controller ack 和状态迁移。做 stale response、model/schema mismatch、normalizer drift、timeout、partial sensor、controller restart、rollback 与 replay fault injection。没有本地 supervisor、controller acknowledgement、fault-injection matrix、immutable replay bundle 或 rollback compatibility artifact 时，只能讲设计合同，不能声称完成生产安全闭环。</p>
+<p><strong>项目挂钩</strong>：OpenPiVLA 可连接 WebSocket connect/infer timeout、parser/normalizer/action-shape 风险；Robot Harness 可连接 tool timeout、lock、cancel/compensation；OPD 可连接多教师/配置 lineage；WAM 可连接 simulator/chunk/controller diagnostics；UWM/LIBERO 可连接 loader、launcher、protocol 与 fixed-init 结果。五个项目都没有被证据证明拥有统一 fault supervisor、controller e-stop acknowledgement 或 production incident replay，不能把局部脚本写成个人安全平台 ownership。</p>
+<p><strong>追问树</strong>：liveness/readiness/startup 为什么不能互换？first divergence 如何区别 symptom 和 root cause？cancel、hold、stop、e-stop 的 owner 分别是谁？为什么 lease epoch 能挡 stale action？action age 与 inference latency 有什么区别？rollback 只换 checkpoint 够不够？如何保证 replay 不被 wall-clock、随机数或在线状态污染？QoS reliable 是否等于动作必达？controller 没 ack 时策略服务该做什么？</p>
+<p><strong>易错点</strong>：把重试当恢复；把服务进程存活当 readiness；只记录 error log 不记录 identity/timestamp；把 cancel 说成物理 stop；没有 fencing 仍执行旧 action；把上游 ROS/Kubernetes/OpenTelemetry 机制当个人 production evidence；把 simulator replay 当真实机器人安全结果。</p>
+<p><strong>危险答案</strong>：说“超时就重试直到成功”；说“服务返回 200 就代表机器人执行成功”；说“kill policy pod 就是 e-stop”；说“有 trace 就能证明 RCA”；或说“五个项目已经完成 fault supervisor、rollback 和物理安全闭环”。</p>
+<p><strong>来源</strong>：[1][2][3][4][5]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../knowledge/vol_08_sys004_fault_recovery_safety_observability.html">SYS-004 Knowledge</a>：fault state、first-divergence、safe-apply、lease fencing、rollback/replay 与项目边界。</li><li><a href="../sources/vol_08_sys004_fault_recovery_safety_observability_source_freeze.html">SYS-004 Source Freeze</a>：ROS 2、Kubernetes、OpenTelemetry、12 个 deterministic probes 与五项目证据边界。</li><li>ROS 2 <a href="https://design.ros2.org/articles/node_lifecycle.html">managed node lifecycle</a> 与 <code>ros2_control</code> <a href="https://control.ros.org/master/doc/ros2_control/controller_manager/doc/userdoc.html">controller manager</a>。</li><li>Kubernetes <a href="https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/">probes</a> 与 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">rollout/rollback</a>。</li><li>OpenTelemetry <a href="https://opentelemetry.io/docs/concepts/signals/">signals and context</a>；物理 e-stop 仍属于独立安全控制链，不由软件 tracing 或 policy response 取代。</li></ol>
+</article></body></html>

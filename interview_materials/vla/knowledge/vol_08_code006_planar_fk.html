@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 08 CODE-006：2-Link Planar Forward Kinematics</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_08_code006_planar_fk.md">
+<meta name="aris:source-sha256" content="fe032f988a21da2a1a805282516cc822ab205ee2c7a9fcc0af47f040bf106a4f">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>fe032f988a21da2a1a805282516cc822ab205ee2c7a9fcc0af47f040bf106a4f</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_08_code006_planar_fk.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 解析推导</a></li><li><a href="#2">2. 齐次变换形式</a></li><li><a href="#3-frame">3. 角度、长度与 frame</a></li><li><a href="#4-jacobian">4. Jacobian 直觉</a></li><li><a href="#5">5. 测试矩阵</a></li><li><a href="#6-vla">6. VLA / 项目映射</a></li><li><a href="#7">7. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 08 CODE-006：2-Link Planar Forward Kinematics</h1>
+<div class="meta">状态：<code>drafted / CODE-VLA-006 / knowledge_1_of_phase / card_synced / WARN</code> 报告日期：2026-07-18 证据截止：2026-07-18 来源入口：<a href="../sources/vol_08_code006_planar_fk_source_freeze.html">CODE-006 Source Freeze</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>二连杆平面 FK 是机器人几何题的最小闭环：给定 (l_1,l_2,\theta_1,\theta_2)，输出末端位置与平面姿态，并能解释 frame、单位、组合顺序、Jacobian 和边界姿态。</p>
+<h2 id="1">1. 解析推导</h2>
+<p>第一杆末端：</p>
+<div class="formula">\[
+p_1=\begin{bmatrix}l_1\cos\theta_1\\l_1\sin\theta_1\end{bmatrix}.
+\]</div>
+<p>第二杆相对第一杆的方向是 (	heta_1+	heta_2)，所以：</p>
+<div class="formula">\[
+x=l_1\cos\theta_1+l_2\cos(\theta_1+\theta_2),\quad
+y=l_1\sin\theta_1+l_2\sin(\theta_1+\theta_2).
+\]</div>
+<p>末端平面姿态：</p>
+<div class="formula">\[
+\phi=\theta_1+\theta_2.
+\]</div>
+<p>这里 (	heta_2) 是相对 joint angle；若输入给的是 world/global angle，第二项不能再次加 (	heta_1)。</p>
+<h2 id="2">2. 齐次变换形式</h2>
+<pre><code class="language-python">def planar_fk(l1, l2, theta1, theta2):
+    # Inputs use radians and the base frame is x-right/y-up.
+    c1, s1 = torch.cos(theta1), torch.sin(theta1)
+    c12, s12 = torch.cos(theta1 + theta2), torch.sin(theta1 + theta2)
+    x = l1 * c1 + l2 * c12
+    y = l1 * s1 + l2 * s12
+    phi = theta1 + theta2
+    return torch.stack((x, y, phi), dim=-1)</code></pre>
+<p>等价的矩阵链：</p>
+<div class="formula">\[
+T^0_E=R_z(\theta_1)T_x(l_1)R_z(\theta_2)T_x(l_2).
+\]</div>
+<p>矩阵乘法右到左，先做 joint rotation，再沿当前 link frame 平移。若把 (T_x(l_2)) 放到 rotation 前，结果会错误但 shape 仍然正确。</p>
+<h2 id="3-frame">3. 角度、长度与 frame</h2>
+<p>冻结：radian/degree、长度单位、joint zero、正方向、base frame、tool offset 和是否包含 calibration。ROS REP-103 推荐 SI units 和右手系，但项目自己的 joint convention 仍需从 URDF/config/driver 核验。角度忘记从 degree 转 radian 往往不会报 shape 错，只会产生完全错误的位置。</p>
+<h2 id="4-jacobian">4. Jacobian 直觉</h2>
+<p>对位置 (p=[x,y]^T)：</p>
+<div class="formula">\[
+J=\frac{\partial p}{\partial[\theta_1,\theta_2]}=
+\begin{bmatrix}
+-l_1\sin\theta_1-l_2\sin(\theta_1+\theta_2)&amp;-l_2\sin(\theta_1+\theta_2)\\
+l_1\cos\theta_1+l_2\cos(\theta_1+\theta_2)&amp;l_2\cos(\theta_1+\theta_2)
+\end{bmatrix}.
+\]</div>
+<p>小角度下 (Delta p\approx J\Delta\theta)。当两杆伸直或折叠时，Jacobian 可能退化，某些笛卡尔方向难以通过小关节变化实现；这只是局部可动性提示，不是完整控制器证明。</p>
+<h2 id="5">5. 测试矩阵</h2>
+<table><thead><tr><th>测试</th><th>断言</th><th>典型 bug</th></tr></thead><tbody>
+<tr><td>zero angles</td><td><code>(x,y)=(l1+l2,0)</code></td><td>sin/cos 或 frame 错</td></tr>
+<tr><td>(	heta_1=\pi/2)</td><td>末端沿 y 方向</td><td>degree/radian、轴方向错</td></tr>
+<tr><td>folded (	heta_2=\pi)</td><td>两杆相反</td><td>把 θ2 当 global angle</td></tr>
+<tr><td>negative angles</td><td>右手系方向一致</td><td>符号 convention 错</td></tr>
+<tr><td>matrix/analytic parity</td><td>两种 FK 误差在阈值内</td><td>composition 顺序错</td></tr>
+<tr><td>finite-difference Jacobian</td><td>数值导数接近解析 J</td><td>Jacobian 符号错</td></tr>
+<tr><td>batch</td><td><code>[B,2]→[B,3]</code> shape 正确</td><td>只支持 scalar</td></tr>
+<tr><td>unit mismatch</td><td>显式拒绝 degree/mm 配置</td><td>静默错单位</td></tr>
+</tbody></table>
+<h2 id="6-vla">6. VLA / 项目映射</h2>
+<p>grounding point 进入 robot base、waypoint 进入 planner、action pose 进入 controller 时，都可以复用 FK/SE(3) 的 frame 和单位审计。FK 只说明 joint→pose 的几何映射，不包含 IK、碰撞、动力学、接触或 closed-loop success。</p>
+<p>OPD/WAM/OpenPiVLA 的 camera/action 字段可作为接口讨论；Robot Harness/UWM 的 robot state schema 可作为 frame/shape 检查点。当前没有 CODE-VLA-006 的本地 URDF、joint calibration、controller trace 或真机结果。</p>
+<h2 id="7">7. 结论与下一步</h2>
+<p>二连杆 FK 的高分答案是：明确相对 joint angle、frame/单位，写出解析式和矩阵链，说明右到左 composition，再用 zero/90°/folded、matrix parity 和 finite-difference Jacobian 验证。它是几何层证据，不等于 IK、控制或真机成功。</p>
+<p>下一步：保持 <code>CODE-VLA-006</code> 题卡为 <code>unseen</code>，进行一次白板/口述练习，或补充本地 FK/URDF/Jacobian artifact。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_08_code006_planar_fk_source_freeze.html">CODE-006 Source Freeze</a>。</li><li>Modern Robotics <a href="https://modernrobotics.northwestern.edu/chapters/chapter4/">Chapter 4</a> 与 <a href="https://www.ros.org/reps/rep-0103.html">ROS REP-103</a>。</li><li>本仓库 <a href="vol_08_code005_transform.html">CODE-005 Transform</a> 与 <a href="vol_01_foundations.html">VOL 01 Foundations</a>。</li></ol>
+</article></body></html>

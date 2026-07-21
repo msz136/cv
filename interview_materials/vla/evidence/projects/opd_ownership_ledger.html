@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OPD / VLM Grounding Ownership Ledger：数据、路由、训练与结果归属</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\opd_ownership_ledger.md">
+<meta name="aris:source-sha256" content="43280ccda28125f284679d5612fac2ae1621cc9a97285970f35cf4ebe703b7ad">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>43280ccda28125f284679d5612fac2ae1621cc9a97285970f35cf4ebe703b7ad</code>；生成自：<code>interview_materials\vla\evidence\projects\opd_ownership_ledger.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. 问题（Question）</a></li><li><a href="#2-role-fit-jd">2. Role Fit 与 JD 能力映射</a></li><li><a href="#3-ownership">3. Ownership 证据合同</a></li><li><a href="#3-1-and-gate">3.1 五层 AND-gate</a></li><li><a href="#3-2">3.2 状态词汇</a></li><li><a href="#4-git-run-lineage">4. Git 与 run lineage 冻结事实</a></li><li><a href="#4-1">4.1 仓库与身份</a></li><li><a href="#4-2">4.2 结果与资产边界</a></li><li><a href="#5-per-file-per-decision-ownership-matrix">5. Per-file / per-decision ownership matrix</a></li><li><a href="#6-claim-ownership-reconciliation">6. Claim → ownership reconciliation</a></li><li><a href="#7-production-gap">7. Production Gap：抗追问最小补证据</a></li><li><a href="#8-question-tree">8. Question Tree 与回答分层</a></li><li><a href="#9-sp-ssp">9. SP/SSP 证据就绪度</a></li><li><a href="#10">10. 候选人确认表</a></li><li><a href="#11">11. 分阶段补强计划</a></li><li><a href="#12-output-pack">12. Output Pack</a></li><li><a href="#12-1-bullet">12.1 简历 bullet 三档</a></li><li><a href="#12-2">12.2 两分钟叙事骨架</a></li><li><a href="#12-3-6">12.3 面试前 6 题</a></li><li><a href="#13-ownership">13. Ownership 审计伪代码</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>OPD / VLM Grounding Ownership Ledger：数据、路由、训练与结果归属</h1>
+<div class="meta">状态：<code>ownership_audited / coarse_git_supported / candidate_confirmation_pending / WARN</code> 审查日期：2026-07-19 证据截止：2026-07-19 项目范围：<code>C:\Users\mousongzhe\muxi</code> 的 OPD / VLM grounding 数据管线、五 expert、online OPD、raw-holdout 与报告资产。 结论先行：本地仓库能直接核验五 expert mix、student route metadata、coldstart500、student-rollout OPD5000、ZeRO 配置和 10k raw-holdout 表；但 Git 是“大快照 + 后续同步”形态，且初始 OPD scaffold 使用 <code>msz136</code> 身份，后续材料使用 <code>mousongzhe</code> 身份。它们不能自动合并为“候选人逐文件独立原创”。当前可说“候选账号提交了这些快照，项目材料自述负责数据/训练/评估设计”，不可说所有代码、远端权重和指标均由候选人独立完成或拥有。</div>
+<h2 id="1-question">1. 问题（Question）</h2>
+<p>面试官问“OPD 哪部分是你做的？”时，需要同时拆开：</p>
+<ol><li>OPD / 多教师蒸馏的公开背景与项目已有 scaffold；</li><li>本地 commit 中确实存在的脚本、配置、manifest、summary 与评估表；</li><li>候选人亲手设计、修改、运行、审查或验收的动作；</li><li>协作者、历史账号、远端运行者和工具辅助的边界；</li><li>checkpoint、raw prediction、scorer 和最终数字的结果归属。</li></ol>
+<p>本页是 ownership ledger，不是把简历中的“设计/构建”重新认证为个人贡献。没有候选人逐项确认或过程证据的行保持 <code>role-confirmation-pending</code>。</p>
+<h2 id="2-role-fit-jd">2. Role Fit 与 JD 能力映射</h2>
+<table><thead><tr><th>岗位能力</th><th>本地可核证据</th><th>Ownership 强度</th><th>当前策略</th></tr></thead><tbody>
+<tr><td>VLM grounding 数据工程</td><td>五 expert 配额、image-hash split、source-line/fingerprint 与 route metadata</td><td>local-direct；个人决策待确认</td><td>可讲数据合同和泄漏 gate，不说全量数据由本人独立标注</td></tr>
+<tr><td>多教师 / 在线蒸馏</td><td><code>point/train_opd_online_vl.py</code>、coldstart/OPD run summary、full-vocab KL 字段</td><td>代码和 summary 强；运行者、设计者待确认</td><td>区分 metadata route 与 learned router，区分 teacher rollout 与 student rollout</td></tr>
+<tr><td>分布式训练工程</td><td><code>preloaded_zero3</code>、<code>zero3_opd_maca_gradclip5.json</code>、skip/prefix/save 配置</td><td>local-direct；远端运行闭环缺</td><td>可解释 ZeRO-3 合同，不声称性能或恢复收益</td></tr>
+<tr><td>评估协议设计</td><td>10k raw-holdout、dedupe audit、strict/protocol-fixed/lenient point 口径</td><td>local-direct / protocol-bounded</td><td>先讲 scorer 和分母，再讲数字；不能把静态 holdout 写成机器人成功率</td></tr>
+<tr><td>结果与因果归因</td><td>ckpt1000–5000 by-format/by-pool 表</td><td>report-supported / C3 未闭合</td><td>报告组合路线结果，不写 OPD 单因果 uplift 或“本人拥有 checkpoint”</td></tr>
+</tbody></table>
+<h2 id="3-ownership">3. Ownership 证据合同</h2>
+<h3 id="3-1-and-gate">3.1 五层 AND-gate</h3>
+<p>强主张“我负责并完成了 X”需要同时满足：</p>
+<div class="formula">\[
+G(c)=I(c)\land A(c)\land D(c)\land V(c)\land O(c).
+\]</div>
+<p><code>I</code> 是文件/commit/run identity，<code>A</code> 是 artifact，<code>D</code> 是设计与修改过程，<code>V</code> 是运行或验收，<code>O</code> 是个人、协作者、工具和上游边界。Git author 只覆盖 identity 的一部分；代码存在、summary 数字和 report 也不能替代 decision、verification 或 ownership。</p>
+<h3 id="3-2">3.2 状态词汇</h3>
+<table><thead><tr><th>状态</th><th>含义</th><th>可用动词</th></tr></thead><tbody>
+<tr><td><code>scaffold-snapshot</code></td><td>初始项目快照中存在</td><td>“项目快照包含”</td></tr>
+<tr><td><code>git-coarse</code></td><td>候选账号提交，但没有逐文件历史</td><td>“由候选账号提交快照”</td></tr>
+<tr><td><code>self-attested</code></td><td>简历/项目页自述本人负责</td><td>“候选人自述负责”</td></tr>
+<tr><td><code>role-confirmed</code></td><td>候选人逐项说明亲手/协作/工具边界</td><td>“我负责/我修改”</td></tr>
+<tr><td><code>process-supported</code></td><td>有 diff、命令、失败复盘或 review 证据</td><td>“我设计并验证”</td></tr>
+<tr><td><code>result-owned</code></td><td>checkpoint、协议、raw outputs、运行者和审查角色均闭合</td><td>“我完成并得到……”</td></tr>
+</tbody></table>
+<h2 id="4-git-run-lineage">4. Git 与 run lineage 冻结事实</h2>
+<h3 id="4-1">4.1 仓库与身份</h3>
+<table><thead><tr><th>检查</th><th>结果</th><th>能证明</th><th>不能证明</th></tr></thead><tbody>
+<tr><td>当前 HEAD</td><td><code>756e27e16adcfb3ccbfe98c2920dda42095b127f</code>，2026-07-07；author/committer <code>mousongzhe &lt;mousongzhe@acerobotics.com&gt;</code></td><td>当前 snapshot 的提交身份与版本</td><td>每一行代码均由该人独立编写</td></tr>
+<tr><td>初始 project code</td><td><code>929e650fa1e6d745942eed1eab64dd8fb7833d2a</code>，author/committer <code>msz136 &lt;msz136@users.noreply.github.com&gt;</code></td><td>仓库最早的代码快照身份</td><td><code>msz136</code> 与候选人的现实身份是否相同</td></tr>
+<tr><td>OPD scaffold</td><td><code>9700efb301fef4253ef3a703d91ba61e69cae1a6</code>，45 files / 5,912 additions，<code>msz136</code></td><td><code>opd_project</code> 训练/eval scaffold 在该快照进入</td><td>候选人是否亲手写、移植或审查 scaffold</td></tr>
+<tr><td>OPD data/eval batch</td><td><code>3ef636bdbfcf9654bd47719acc0dffb3b9095b6f</code>，<code>mousongzhe</code></td><td>五 expert builder、student builder、audit、raw-holdout evaluator/report 进入候选账号提交</td><td>远端运行者、个人设计过程和逐行 ownership</td></tr>
+<tr><td>OPD5000 sync</td><td><code>4c4bbfd42b1d7efee87de0d7eff78d4277fe38d4</code>，<code>mousongzhe</code></td><td><code>point/train_opd_online_vl.py</code>（1,015 行）及 coldstart/OPD5000 launch、manifest/table 进入</td><td>summary 中的远端权重和 raw predictions 属于谁</td></tr>
+</tbody></table>
+<p><code>point/train_opd_online_vl.py</code> 与根目录 <code>train_opd_online_vl.py</code> 不是同一 artifact：当前 SHA-256 分别为 <code>7103E3B28068A30978F2B14AD980E51CEC2EC60A0445B2B52243342CDA286336</code>（1,015 行）和 <code>BF9120B5D88180EA4C4725C6F4934913F35FDD36ECB4BC8E6B3B089FB964D8D9</code>（832 行），二者差异为 203 additions / 20 deletions。OPD5000 manifest 指向 <code>/data/msz/point/train_opd_online_vl.py</code>，所以结果叙事必须绑定 <code>point/</code> 版本和对应 run，而不是用根目录副本代替。</p>
+<h3 id="4-2">4.2 结果与资产边界</h3>
+<p><code>report/opd5000_newexperts_20260601/artifact_manifest.json</code> 明确本地只同步 code/scripts/configs/logs/eval summaries，排除模型权重、optimizer <code>.pt</code>、raw holdout JSONL 和 <code>predictions.jsonl</code>。因此：</p>
+<ul><li><code>local-direct</code>：源码、配置、manifest、summary/table 的字节和 SHA；</li><li><code>report-supported</code>：远端 run 的参数、路径和指标摘要；</li><li><code>protocol-bounded</code>：10k raw-holdout 的 scorer、pool、checkpoint 和 n 可读，但不能复算所有样本；</li><li><code>result-owned</code>：当前未达到，不能把 <code>OPD final</code> 或 <code>OPD5000 ckpt5000</code> 写成候选人个人 checkpoint/result ownership。</li></ul>
+<h2 id="5-per-file-per-decision-ownership-matrix">5. Per-file / per-decision ownership matrix</h2>
+<table><thead><tr><th>ID</th><th>文件 / 决策</th><th>Local artifact 事实</th><th>Git / run 事实</th><th>当前 role verdict</th><th>当前安全口径</th><th>升级所需证据</th></tr></thead><tbody>
+<tr><td><code>OPD-OWN-001</code></td><td><code>opd_project/</code> 初始训练/eval scaffold</td><td>配置、teacher forward、smoke、eval、REPORT 由 <code>9700efb</code> 一次加入</td><td>author 是 <code>msz136</code>；无更早逐文件历史</td><td><code>scaffold-snapshot / identity-unverified</code></td><td>“项目快照包含 OPD scaffold”</td><td>账号映射、来源/patch、候选人 review 或修改记录</td></tr>
+<tr><td><code>OPD-OWN-002</code></td><td><code>build_expert_mixes_seed0_v2.py</code> 五 expert mix</td><td>800k/20k、image-hash 5% candidate split、五域配额和 relation buckets；SHA <code>19D5…F2C2C</code></td><td>580 行一次进入 <code>3ef636b</code>，候选账号提交</td><td><code>local-direct / git-coarse / role-pending</code></td><td>“本地实现了可追溯的五 expert 数据构造脚本”</td><td>设计决策记录、替代配比、运行 stdout、候选人逐项确认</td></tr>
+<tr><td><code>OPD-OWN-003</code></td><td><code>build_opd_student_v1.py</code> route metadata</td><td>999,900 train、46,599 eval、target/candidate/seen/unseen/hard/boundary/format-conflict 字段；SHA <code>44BC…D3BE</code></td><td>700 行一次进入 <code>3ef636b</code></td><td><code>local-direct / git-coarse / role-pending</code></td><td>“student 数据写入了 route 与格式合同”</td><td>选 60/25/10/5 的依据、现场解释函数、实际生成日志</td></tr>
+<tr><td><code>OPD-OWN-004</code></td><td><code>audit_opd_student_v1.py</code> 数据审计</td><td>JSON、坐标、长度、图片/fingerprint/overlap 检查；SHA <code>B38F…D6BB</code></td><td>431 行一次进入 <code>3ef636b</code></td><td><code>local-direct / verification-role-pending</code></td><td>“本地有硬校验和 leakage audit”</td><td>谁运行、失败样例、修复 diff、审查结论</td></tr>
+<tr><td><code>OPD-OWN-005</code></td><td>semantic-nav box 清洗与伪标签筛选</td><td><code>point/build_clean_grounding_pool.py</code>、<code>build_semantic_nav_eval_set.py</code>；简历自述 13,879 boxes / 41,637 rows</td><td>两文件在 <code>9df95cc</code> 一次加入；底层标注和远端执行不在本地</td><td><code>self-attested / artifact-direct / role-pending</code></td><td>“项目材料自述先做 box 清洗和场景数据扩充”</td><td>原始输入、过滤阈值、人工/模型标注角色、held-out raw bundle</td></tr>
+<tr><td><code>OPD-OWN-006</code></td><td>raw-holdout 构造与去重 gate</td><td>10k quota、0 fingerprint/source-line/prompt-answer-image duplicate、0 train-image leakage；<code>evalset_summary</code> SHA <code>200F…6485</code>，<code>dedupe_audit</code> SHA <code>2E10…F96D</code></td><td>进入 <code>3ef636b</code>；评估样本和 predictions 未完整同步</td><td><code>process-supported / result-role-pending</code></td><td>“我能解释评估集阻断泄漏的规则”仅在候选人确认后使用</td><td>build command、冻结 prompt hash、逐样本 JSON、候选人运行/审查记录</td></tr>
+<tr><td><code>OPD-OWN-007</code></td><td><code>point/train_opd_online_vl.py</code> teacher route 与 full-vocab KL</td><td>1,015 行；<code>target</code> route、<code>preloaded_zero3</code>、teacher/student rollout、prefix loss、full-vocab support</td><td>9df 初始进入，4c4 增补；实际 manifest 指向 <code>point/</code> SHA <code>7103…6336</code></td><td><code>local-direct / git-coarse / role-pending</code></td><td>“项目实现了 route-driven online OPD 训练路径”</td><td>亲手函数清单、before/after diff、训练命令、失败复盘与 review</td></tr>
+<tr><td><code>OPD-OWN-008</code></td><td>coldstart500 launch 与 summary</td><td>teacher rollout、max_new_tokens=128、prefix=64、500 steps；summary SHA <code>90FD…D5FC0</code></td><td>launch/summary 在 <code>4c4bbf</code>；模型权重和 optimizer state 排除</td><td><code>report-supported / operator-pending</code></td><td>“报告记录五教师 coldstart500 配置”</td><td>remote log、checkpoint load smoke、运行者与候选人验收角色</td></tr>
+<tr><td><code>OPD-OWN-009</code></td><td>OPD5000 launch、skip 和 checkpoint schedule</td><td>student rollout、skip=64,000、max_new_tokens=64、prefix=64、save 1000–5000；summary SHA <code>2D67…547CE</code></td><td>launch/summary 在 <code>4c4bbf</code>；manifest remote root <code>/data/msz/point</code></td><td><code>report-supported / result-owner-blocked</code></td><td>“报告记录 OPD5000 run lineage 与 checkpoint 曲线”</td><td>immutable run manifest、权重/optimizer/RNG、raw predictions、operator/reviewer</td></tr>
+<tr><td><code>OPD-OWN-010</code></td><td>ZeRO-3/MACA 与 teacher residency contract</td><td><code>point/configs/zero3_opd_maca_gradclip5.json</code> SHA <code>CA5C…655F</code>；summary 写 <code>preloaded_zero3</code></td><td>config 由 9df/3ef/4c4 逐步出现；无 matched memory/throughput A/B</td><td><code>engineering-choice-supported / decision-owner-pending</code></td><td>“采用了 ZeRO-3 与 resident teacher 约束”</td><td>为什么常驻、显存/吞吐对照、MACA traceback、候选人决策记录</td></tr>
+<tr><td><code>OPD-OWN-011</code></td><td>raw evaluator 与 point protocol</td><td><code>eval_qwen_vl_raw_holdout.py</code>、strict/protocol-fixed/lenient 口径；evaluator SHA <code>2957…206B</code></td><td>evaluator 在 3ef/4c4；早期 prompt/parser mismatch 已在报告修正</td><td><code>process-supported / scorer-owner-pending</code></td><td>“我把格式合规和几何能力分开审计”需候选人确认</td><td>scorer version/prompt hash、parser tests、逐样本 predictions、review history</td></tr>
+<tr><td><code>OPD-OWN-012</code></td><td>by-format / by-pool checkpoint 表与综合选择</td><td>ckpt3000 IoU 最佳、ckpt5000 point/box Acc、ckpt4000 text 最佳；表 SHA <code>7D79…9934</code> / <code>54CA…ADCA</code></td><td>tables/model assets 在 <code>4c4bbf</code>；不同 pool 最佳点不一致</td><td><code>report-supported / selection-role-pending</code></td><td>“checkpoint 选择是多目标 trade-off，不是单一全局最佳”</td><td>selection freeze、未触碰 holdout 的选择集、候选人判断记录</td></tr>
+<tr><td><code>OPD-OWN-013</code></td><td>结果归属与简历数字</td><td><code>REPORT.md</code> SHA <code>0EC1…4170</code>、manifest SHA <code>0357…21A</code>；OPD final 与 OPD5000 分离</td><td>report/summary 是候选账号提交的文本快照；无本地 weights/raw predictions</td><td><code>report-supported / C3-blocked / candidate-confirmation-pending</code></td><td>“报告记录组合路线结果；我不把它升级为个人独立 checkpoint ownership 或单因果 uplift”</td><td>checkpoint bytes/load、同 suite ablation、raw scorer bundle、运行/分析/审查三方角色</td></tr>
+</tbody></table>
+<h2 id="6-claim-ownership-reconciliation">6. Claim → ownership reconciliation</h2>
+<table><thead><tr><th>面试/简历 claim</th><th>当前证据合同</th><th>安全处理</th></tr></thead><tbody>
+<tr><td>“设计五域数据与 OPD 路由”</td><td>脚本和项目页支持设计形态；个人决策与过程记录未闭合</td><td>候选人确认前用“项目构建/本地实现”；确认后再用“我设计”</td></tr>
+<tr><td>“训练了五个 expert 并完成 OPD5000”</td><td>summary/report 支持 run 参数和曲线；权重、optimizer、operator 缺</td><td>说“报告记录该 run”，不说“我独立训练并拥有 checkpoint”</td></tr>
+<tr><td>“OPD 比 SFT 高 11.5pp”</td><td>旧版/新版 lineage、数据和 scorer 不完全同一；无 SFT-only / single-teacher ablation</td><td>禁止单因果归因；拆为组合路线和 protocol-bounded comparison</td></tr>
+<tr><td>“point strict=0 说明 base 不会定位”</td><td>prompt/parser mismatch；lenient 与 protocol-fixed 结果相反</td><td>必须同时讲 original strict、protocol-fixed strict、lenient geometry</td></tr>
+<tr><td>“10k raw-holdout 证明真实导航成功率”</td><td>静态 box/point/text，虽有 semantic-nav 字段但无 episode/action trace</td><td>只说静态 grounding/VQA holdout，不写 VLN/ObjectNav 或真机成功</td></tr>
+<tr><td>“这些代码都是我写的”</td><td>候选账号 coarse commits + 初始 <code>msz136</code> scaffold，没逐文件历史</td><td>用 per-file ledger；明确 candidate confirmation pending</td></tr>
+</tbody></table>
+<h2 id="7-production-gap">7. Production Gap：抗追问最小补证据</h2>
+<table><thead><tr><th>Gap</th><th>面试官追问</th><th>最小补证据</th><th>当前表达</th></tr></thead><tbody>
+<tr><td>身份/快照边界</td><td><code>msz136</code> 和 <code>mousongzhe</code> 是谁？</td><td>账号映射、贡献记录、pre-snapshot patch</td><td>保持 <code>identity-unverified</code></td></tr>
+<tr><td>trainer 版本</td><td>为什么根目录和 <code>point/</code> 不同？</td><td>run manifest 绑定 script SHA、命令和代码 diff</td><td>只绑定 manifest 指向的 <code>point/</code></td></tr>
+<tr><td>checkpoint</td><td>权重能加载吗？</td><td>binary SHA、processor/config、load smoke</td><td><code>report-supported</code></td></tr>
+<tr><td>raw result</td><td>0.5238/0.8729 如何复算？</td><td>raw predictions、scorer commit、逐样本 JSON</td><td><code>protocol-bounded</code></td></tr>
+<tr><td>因果</td><td>OPD 单独贡献多少？</td><td>matched SFT-only/single-teacher/no-synthetic ablation</td><td>不做单因果归因</td></tr>
+<tr><td>运行角色</td><td>谁在 remote 执行和验收？</td><td>shell history、run owner、reviewer、failure timeline</td><td><code>operator-pending</code></td></tr>
+<tr><td>数据质量</td><td>13,879 boxes 谁标注/筛选？</td><td>输入 manifest、过滤日志、抽检与标注角色</td><td>只说项目材料自述</td></tr>
+<tr><td>工具协作</td><td>哪些由 AI/协作者生成？</td><td>contribution ledger、review notes、现场解释</td><td>不推断 Codex-primary</td></tr>
+</tbody></table>
+<h2 id="8-question-tree">8. Question Tree 与回答分层</h2>
+<pre><code class="language-text">你个人做了什么？
+  ├─ 数据：五 expert 配额、hash split、route metadata 的设计者是谁？
+  ├─ 训练：point/根目录脚本哪一版真的跑了？为什么 full-vocab KL？
+  ├─ 评估：strict/parser mismatch 如何发现？holdout 如何阻断泄漏？
+  ├─ 结果：ckpt5000 为什么不是所有 pool 最好？旧版 OPD final 是否同一 run？
+  └─ ownership：哪些亲手、协作、工具辅助、只审查或只运行？</code></pre>
+<p><strong>危险回答</strong>：Git author 是我，所以五个 expert、远端训练、checkpoint 和所有指标都是我独立完成的。</p>
+<p><strong>可过回答</strong>：我会把项目拆成数据、训练、评估和结果四条链。当前本地能直接核验五 expert mix、route metadata、<code>point/</code> 训练脚本、scorer 和报告表；但初始 scaffold 使用另一 Git 身份，OPD5000 权重/raw predictions 未同步，所以我只把候选账号提交的快照和项目自述称为参与证据，逐文件亲手/协作边界等候确认。</p>
+<p><strong>强回答（候选人确认并补证后才可用）</strong>：我能从一个具体函数说明输入、route、teacher forward、KL、保存和 scorer 的完整链路，并指出哪些决策由我做、哪些由协作者或工具实现；对于 <code>OPD final</code> 与 OPD5000，我会给出独立 manifest、checkpoint、prompt/scorer hash 和 raw predictions，不把组合提升包装成 OPD 单因果结果。</p>
+<h2 id="9-sp-ssp">9. SP/SSP 证据就绪度</h2>
+<table><thead><tr><th>维度</th><th>分数（5）</th><th>依据</th></tr></thead><tbody>
+<tr><td>岗位相关性</td><td>4.5</td><td>grounding、蒸馏、分布式训练与评估均直接相关</td></tr>
+<tr><td>机制深度</td><td>4.0</td><td>五 expert、route、coldstart、student rollout、full-vocab KL 和 protocol boundary 可解释</td></tr>
+<tr><td>工程闭环</td><td>3.5</td><td>scripts/configs/reports 完整；weights/optimizer/RNG/load smoke 缺</td></tr>
+<tr><td>指标可信度</td><td>2.5</td><td>raw-holdout table 与 leakage audit 可读；raw predictions/scorer bundle 未闭合</td></tr>
+<tr><td>Ownership 清晰度</td><td>2.0</td><td>13-row ledger 已建立；初始身份、逐文件角色和运行者仍待确认</td></tr>
+<tr><td>抗追问能力</td><td>3.0</td><td>机制与限制可讲；diff、checkpoint、因果和工具边界仍有断点</td></tr>
+<tr><td>合计</td><td><strong>19.5 / 30</strong></td><td>这是证据就绪度，不是候选人能力评分；WARN 不变</td></tr>
+</tbody></table>
+<h2 id="10">10. 候选人确认表</h2>
+<p>下一次口述或材料核对时逐项回答“亲手 / 协作 / 工具辅助 / 只审查 / 只运行 / 不确定”：</p>
+<ol><li><code>msz136</code> 与 <code>mousongzhe</code> 是否为同一实际贡献者？如果是，依据是什么？</li><li>五 expert 配额、image-hash split 和 relation bucket 是谁决定的？有哪些被否决的配比？</li><li><code>build_opd_student_v1.py</code> 中的 <code>seen/unseen/hard</code> 和 <code>format_conflict</code> 哪些字段由你设计或修改？</li><li><code>point/train_opd_online_vl.py</code> 哪些函数由你亲手写、修改、review 或只运行？实际 run 是否就是该 SHA？</li><li>coldstart500 与 OPD5000 是谁在 remote 执行、监控和验收？你看过哪些原始日志？</li><li>point strict/protocol-fixed/lenient scorer 的 mismatch 是谁发现和修正的？</li><li><code>OPD final</code>、OPD5000 ckpt5000 的 checkpoint、raw predictions 和结果表分别由谁生成、审查和保管？</li><li>哪些数据清洗、伪标签、报告或脚本由协作者、历史代码或 AI 工具产生？你如何验证它们？</li></ol>
+<p>这些问题没有真实回答前，不创建 <code>coaching_state.md</code>，不把任一行升级为 <code>role-confirmed</code> 或 <code>result-owned</code>。</p>
+<h2 id="11">11. 分阶段补强计划</h2>
+<table><thead><tr><th>阶段</th><th>动作</th><th>完成标准</th><th>状态</th></tr></thead><tbody>
+<tr><td>半天</td><td>完成 8 项候选人 ownership drill；每个关键函数选一个现场解释点</td><td>13 行均有 role/source/verification 字段</td><td>待候选人确认</td></tr>
+<tr><td>1 天</td><td>导出 <code>point/</code> run 的 script/config/data/scorer manifest，标记 <code>msz136</code> 与 <code>mousongzhe</code> 身份关系</td><td>OPD5000 lineage 不再依赖 path/summary 单点</td><td>待补做</td></tr>
+<tr><td>3 天</td><td>补 checkpoint load smoke、raw predictions 和三套 point scorer</td><td>C3 结果链至少可复算一条 checkpoint</td><td>待补做</td></tr>
+<tr><td>1 周</td><td>固定同一 raw-holdout 做 SFT-only、single-teacher、no-synthetic/synthetic-ratio 对照</td><td>组合效果可拆为可审查的机制证据</td><td>待补做</td></tr>
+</tbody></table>
+<h2 id="12-output-pack">12. Output Pack</h2>
+<h3 id="12-1-bullet">12.1 简历 bullet 三档</h3>
+<ul><li><strong>当前保守版</strong>：参与 VLM grounding 数据清洗、五 expert 路由与 online OPD 训练/评估闭环；以 raw-holdout、point protocol 和 checkpoint 曲线拆分组合结果与证据边界。</li><li><strong>候选确认后标准版</strong>：负责五域数据配比、route metadata、五教师 coldstart/OPD 训练 contract 及 strict holdout scorer 的设计与审查；具体文件按 ownership ledger 说明亲手与协作边界。</li><li><strong>补齐 C3 后偏强版</strong>：在固定数据、scorer、checkpoint lineage 和 raw predictions 下，完成 SFT-only/single-teacher/OPD 对照并给出可复算的多格式结果；当前禁止提前使用。</li></ul>
+<h3 id="12-2">12.2 两分钟叙事骨架</h3>
+<div class="meta">我先按 image-hash 做 train/eval 隔离，再把 reasoning、object、region、spatial relation 和 RoboPoint 组织成五个 expert，并在 student 行里保留 target/candidate route、seen/unseen、boundary 和 format-conflict。训练先用五教师 rollout 做 coldstart，再让 student rollout，由 route 对应 teacher 在同一 response 上做 full-vocabulary KL；这里的 route 是 metadata 驱动，不是已验证的 learned router。评估用 10k raw-holdout 按 box/point/text 分开，并区分 original strict、protocol-fixed strict 和 lenient geometry。OPD5000 ckpt5000 的 point/box/text 数字属于一条 report-supported new-experts run，不和旧版 OPD final 拼成一条曲线。我的具体个人贡献要按 ledger 中逐文件回答，当前不把 Git author、summary 或 report 当作独立 ownership 证明。</div>
+<h3 id="12-3-6">12.3 面试前 6 题</h3>
+<ol><li>为什么五 expert 不直接混合成一个 SFT 数据集？</li><li><code>target_expert</code> route 和 learned router 的训练/部署差别是什么？</li><li>coldstart teacher rollout 与 OPD5000 student rollout 的数据流和 loss 有何不同？</li><li>为什么 full-vocabulary KL、prefix=64、skip=64,000、<code>preloaded_zero3</code> 会同时影响工程合同？</li><li>point strict=0、protocol-fixed strict 和 lenient geometry 如何避免错误归因？</li><li>请从 <code>point/train_opd_online_vl.py</code> 的一个函数开始，说明哪些是你亲手、协作、工具辅助、只审查或只运行的。</li></ol>
+<h2 id="13-ownership">13. Ownership 审计伪代码</h2>
+<pre><code class="language-python">def accept_opd_claim(claim, ledger):
+    if not ledger.identity_and_artifact(claim):
+        return &quot;reject_strong_claim&quot;
+    if not ledger.role_confirmed(claim):
+        return &quot;use_project_contains_or_candidate_attested&quot;
+    if claim.level &gt;= &quot;C2&quot; and not ledger.process_and_verification(claim):
+        return &quot;downgrade_to_implemented_or_reviewed&quot;
+    if claim.level == &quot;C3&quot; and not ledger.checkpoint_protocol_raw_chain(claim):
+        return &quot;report_summary_only&quot;
+    return &quot;claim_allowed_with_exact_scope&quot;</code></pre>
+<p>这段伪代码是本仓库的真实性 gate，不是 OPD 官方实现。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li><a href="opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>：五 expert、student route、训练 lineage、raw-holdout、point protocol 与当前 WARN 边界。</li><li><a href="../../questions/proj_opd.html">OPD Batch 1 项目题卡</a>：8 张 direct-evidence-bounded unseen cards；本 ledger 新增 ownership 题卡。</li><li><a href="../evidence_manifest.html">Evidence Manifest</a>：五项目 evidence 与 ownership 状态总索引。</li><li><a href="../../knowledge/00_vla_knowledge_map.html">VLA Knowledge Map</a>：VOL 07 项目深挖与题目 ID 空间。</li><li>Local Git repository <code>C:\Users\mousongzhe\muxi</code>，HEAD <code>756e27e16adcfb3ccbfe98c2920dda42095b127f</code>；初始 scaffold <code>9700efb301fef4253ef3a703d91ba61e69cae1a6</code>；OPD data/eval <code>3ef636bdbfcf9654bd47719acc0dffb3b9095b6f</code>；OPD5000 sync <code>4c4bbfd42b1d7efee87de0d7eff78d4277fe38d4</code>。</li><li><code>report/opd5000_newexperts_20260601/artifact_manifest.json</code>（SHA-256 <code>035764A0461DEE5942AB25AF1BDFCD2514BD69AAC473B2DE8E43F3A7EC86021A</code>）：明确排除 weights、optimizer、raw holdout 与 predictions。</li><li><a href="../../../../output/mousongzhe_resume_optimized.html">Optimized Resume</a> 与 <a href="../../../02_opd_vlm_grounding.html">OPD 项目面试页</a>：当前候选人自述和投递口径，未经本 ledger 自动认证。</li></ol>
+</article></body></html>

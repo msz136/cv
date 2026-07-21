@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 08 CODE-VLA-004 原子手撕题卡：Masked MSE / Huber Loss</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_08_code004.md">
+<meta name="aris:source-sha256" content="ce9725d4b27b2b2f837404a4f171f4a635341457de83d5c37092746cfa8b1fad">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>ce9725d4b27b2b2f837404a4f171f4a635341457de83d5c37092746cfa8b1fad</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_08_code004.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#masked-mse-huber-action-loss">手写 masked MSE / Huber action loss</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 08 CODE-VLA-004 原子手撕题卡：Masked MSE / Huber Loss</h1>
+<div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-18 覆盖范围：<code>CODE-VLA-004</code> 难度：L2 1 题 优先级：P0 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_08_code004_masked_loss.html">CODE-004 Knowledge</a>；来源边界见 <a href="../sources/vol_08_code004_masked_loss_source_freeze.html">CODE-004 Source Freeze</a>。</div>
+<h2 id="masked-mse-huber-action-loss">手写 masked MSE / Huber action loss</h2>
+<details class="qa">
+<summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>CODE-VLA-004</b> · 请手写带 mask 的 MSE/Huber loss，并说明 reduction、空 mask、低精度与测试。</summary>
+<p><strong>面试意图</strong>：判断你能否处理 action padding、异构有效维、Huber delta、有效 denominator、分布式聚合和 VLA loss/mask 边界。</p>
+<p><strong>30 秒回答</strong>：先算 elementwise MSE/Huber，再乘 valid/action-dim mask，分母用有效权重和，不能 <code>mean(mask*loss)</code>。全零 mask 要 reject/skip；低精度用 fp32 累加。测试 padding 不变、delta/outlier、空 mask、分布式分母和梯度 parity。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：误差 e=pred-target；MSE=e²，Huber 在 |e|≤δ 用 0.5e²，否则 δ(|e|-0.5δ)。把 mask/weight 广播到 [B,H,D]，loss=sum(wmℓ)/sum(wm)；分布式先 all-reduce numerator/denominator 再相除。全零 mask 不是正常零 loss，要 reject/skip；NaN/Inf 在乘 mask 前查。测试 mask=1 parity、不同 padding/有效维、delta 边界、outlier、fp16 和 autograd。attention mask、action valid mask、token CE 与 diffusion/flow target 要分开。</p>
+<p><strong>诊断 / 证据</strong>：记录 pred/target/mask/weight shape、normalized/physical space、delta、numerator、denominator、有效 timestep/dim 和 skip reason。验证 <code>mask=1</code> 与框架 parity、同有效元素不同 padding 的 loss 不变、全零 mask 触发显式分支、Huber 在 delta 处连续、outlier 梯度线性、fp16/bf16 finite。多 rank 必须聚合 numerator/denominator，而不是平均各 rank mean。</p>
+<p><strong>项目挂钩</strong>：OpenPiVLA 可连接 action chunk、valid dims、normalizer 与 causal-CE；UWM/WAM 可连接 action/video target mask、timestep weight 和多任务 reduction；OPD 可连接 metric-specific denominator。安全表达是“我能实现和审计 masked loss”，不声称更换 Huber 后项目成功率提升。</p>
+<p><strong>追问树</strong>：为什么 <code>mean(mask*loss)</code> 错？全零 mask 返回零可以吗？Huber 与 SmoothL1 的 scale 有何区别？delta 在 normalized 还是 physical space？不同 action dim 如何公平聚合？分布式为何先聚合 numerator/denominator？attention mask 是否能直接当 loss mask？</p>
+<p><strong>易错点</strong>：padding 进入分母；全零 mask 伪装成低 loss；<code>0*NaN</code> 仍传播 NaN；Huber delta/系数错；把 task weight 当二值 valid mask；先 rank mean 再平均；把 token CE、diffusion target 和 action MSE 混成同一 loss。</p>
+<p><strong>危险答案</strong>：说“乘 mask 后直接 mean 即可”“空 mask 返回 0 最稳定”“Huber 一定优于 MSE”“所有任务按有效元素 micro-average 就公平”或“loss 降低证明机器人成功率提升”。</p>
+<p><strong>来源</strong>：[1][2][3]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../knowledge/vol_08_code004_masked_loss.html">CODE-004 Knowledge</a>：MSE/Huber、masked denominator、empty mask、weighting 与测试矩阵。</li><li><a href="../sources/vol_08_code004_masked_loss_source_freeze.html">CODE-004 Source Freeze</a>：PyTorch losses 与 VLA mask/reduction 边界。</li><li>PyTorch <a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.MSELoss.html"><code>MSELoss</code></a>、<a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.HuberLoss.html"><code>HuberLoss</code></a> 与 <a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.SmoothL1Loss.html"><code>SmoothL1Loss</code></a>。</li></ol>
+</article></body></html>

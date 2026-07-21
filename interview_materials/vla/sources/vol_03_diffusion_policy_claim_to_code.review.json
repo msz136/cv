@@ -1,0 +1,62 @@
+{
+  "artifact": "sources/vol_03_diffusion_policy_claim_to_code.md",
+  "html": "sources/vol_03_diffusion_policy_claim_to_code.html",
+  "review_date": "2026-07-19",
+  "status": "independent_fact_reviewed",
+  "verdict": "WARN",
+  "source_sha256": "2DB632245846A102B3895CD8EE38EC53D22F90EAAD0AB88D45C1BD9BBC66450D",
+  "evidence_cutoff": "2026-07-19",
+  "upstream": {
+    "paper": "Diffusion Policy: Visuomotor Policy Learning via Action Diffusion",
+    "paper_revision": "arXiv 2303.04137v5",
+    "paper_revision_verified": true,
+    "repository": "real-stanford/diffusion_policy",
+    "commit": "5ba07ac6661db573af695b419a7947ecb704690f",
+    "commit_verified": true,
+    "license": "MIT",
+    "license_verified": true,
+    "scheduler_dependency": "huggingface/diffusers v0.11.1",
+    "scheduler_dependency_verified": true
+  },
+  "coverage": {
+    "question_ids": [
+      "VLA-ACT-017",
+      "VLA-ACT-018",
+      "VLA-ACT-019",
+      "VLA-ACT-020",
+      "VLA-ACT-021",
+      "VLA-ACT-022"
+    ],
+    "upstream_claims_audited": 12,
+    "local_project_claims_verified": 0
+  },
+  "checks": {
+    "paper_version_and_source": "PASS (arXiv API and v5 TeX source read)",
+    "repository_head": "PASS (git rev-parse matches frozen commit)",
+    "repository_license": "PASS (MIT LICENSE read)",
+    "dependency_version": "PASS (conda_environment pins diffusers 0.11.1; tagged scheduler source read)",
+    "training_target": "PASS WITH WARNING (policy implements epsilon/sample targets, not v_prediction)",
+    "conditioning_paths": "PASS (global visual condition separated from non-global inpainting path)",
+    "horizon_mapping": "PASS (To/Tp/Ta, action slice and diffusion K separated)",
+    "normalization_and_padding": "PASS WITH WARNING (range normalizer, clip_sample, repeated boundary padding and absent valid_mask mapped)",
+    "simulation_rollout": "PASS (MultiStepWrapper executes returned action batch before re-observation)",
+    "real_rollout": "PASS WITH WARNING (policy action slice, timestamp queue and steps_per_inference are distinct)",
+    "paper_code_warm_start": "PASS WITH WARNING (paper option is absent; frozen policies restart from Gaussian noise)",
+    "inference_step_versions": "PASS WITH WARNING (paper text 10, paper table/runtime 16, frozen config 8)",
+    "public_local_boundary": "PASS (local OpenPiVLA scheduler, H/K, axes, latency and 97.4% remain pending)",
+    "html_static_validation": "PASS (one h1, source SHA, 36 fragments, local links, MathJax delimiters and commented pseudocode)",
+    "browser_visual_check": "BLOCKED (file:// navigation restricted in current environment)",
+    "independent_fact_review": "PASS WITH WARNING (see vol_03_diffusion_policy_independent_fact_review)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Paper warm-start wording and all frozen policy classes independently checked.",
+    "Synthetic boundary-padding and masked-MSE denominator probes completed in independent review.",
+    "Profile DDPM/DDIM step-count trade-offs on a target checkpoint and hardware rather than reusing paper latency.",
+    "Implement or explicitly reject v_prediction before selecting it in a scheduler config.",
+    "Use Source Audit E when finalizing the VLA-ACT-026 Diffusion/Flow comparison.",
+    "Collect local OpenPiVLA scheduler, action schema, normalization, model horizon, executed prefix, replan trigger and eval artifacts.",
+    "Keep future question cards unseen until real oral practice."
+  ],
+  "next": "Run one ACT/Diffusion oral drill or collect one local OpenPiVLA runtime artifact; keep VLA-ACT-017..022 unseen."
+}

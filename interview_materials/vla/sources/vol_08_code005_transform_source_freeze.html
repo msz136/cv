@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 08 CODE-005 Source Freeze：Homogeneous Transform Composition</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_08_code005_transform_source_freeze.md">
+<meta name="aris:source-sha256" content="0497da5483cdbf9177fdadb518a1eed3655edd60fde854d201e0d07006c48904">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>0497da5483cdbf9177fdadb518a1eed3655edd60fde854d201e0d07006c48904</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_08_code005_transform_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 来源与实现参照</a></li><li><a href="#2">2. 冻结数学与方向</a></li><li><a href="#3">3. 测试门</a></li><li><a href="#4-vla">4. VLA 边界</a></li><li><a href="#5-source-gate">5. Source gate 结论</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 08 CODE-005 Source Freeze：Homogeneous Transform Composition</h1>
+<div class="meta">状态：<code>source_frozen / CODE-VLA-005 / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-18 证据截止：2026-07-18 本切片冻结 SE(3) 齐次矩阵、frame/方向/单位、点与 pose 变换、逆变换和 roundtrip 测试边界；不把通用几何代码写成项目标定或控制成果。</div>
+<h2 id="question">问题（Question）</h2>
+<p>手撕 4×4 homogeneous transform composition 时，如何解释 (T^A_B) 的方向、点/pose 的乘法、逆变换、旋转正交性、单位和 frame，并设计 roundtrip 测试？</p>
+<h2 id="1">1. 来源与实现参照</h2>
+<table><thead><tr><th>来源</th><th>类型 / revision</th><th>可支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td><a href="https://www.ros.org/reps/rep-0103.html">ROS REP-103</a></td><td>standard；2026-07-18</td><td>SI units、坐标轴、右手系与 frame 约定</td><td>用户项目实际 frame/axis 已正确</td></tr>
+<tr><td><a href="https://www.ros.org/reps/rep-0105.html">ROS REP-105</a></td><td>standard；2026-07-18</td><td>map/odom/base_link 等移动机器人 frame 语义</td><td>项目已有同步 TF 或闭环定位</td></tr>
+<tr><td><a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.transform.Rotation.html">SciPy Rotation</a></td><td>official API docs；2026-07-18</td><td>rotation representation、compose、inverse、apply</td><td>用户项目使用同一 convention</td></tr>
+<tr><td>本仓库 <a href="../knowledge/vol_06_per002_3d_lift_frame.html">VOL 06 PER-002</a></td><td>local knowledge</td><td>pixel→camera→target、timestamped TF 与 uncertainty</td><td>项目已有真实 3D/控制成功</td></tr>
+</tbody></table>
+<h2 id="2">2. 冻结数学与方向</h2>
+<p>齐次变换：</p>
+<div class="formula">\[
+T^A_B=\begin{bmatrix}R^A_B&amp;t^A_B\\0&amp;1\end{bmatrix},\qquad
+\tilde p_A=T^A_B\tilde p_B.
+\]</div>
+<p>上标表示目标 frame，下标表示输入 frame；复合遵守矩阵右到左：(T^A_C=T^A_B T^B_C)。逆变换：</p>
+<div class="formula">\[
+(T^A_B)^{-1}=\begin{bmatrix}(R^A_B)^\top&amp;-(R^A_B)^\top t^A_B\\0&amp;1\end{bmatrix}.
+\]</div>
+<p>必须冻结列/行向量 convention、米/毫米、右手系、旋转表示、时间戳和 frame id；shape 正确不等于方向正确。</p>
+<h2 id="3">3. 测试门</h2>
+<p>最小矩阵：identity、pure translation、known 90° rotation、composition order、inverse roundtrip、point vs pose、rotation orthogonality/determinant、unit mismatch、frame label mismatch、batch shape 和 finite/NaN。不能只用可视化 overlay；应保存输入 frame、输出 frame、矩阵 revision 和误差阈值。</p>
+<h2 id="4-vla">4. VLA 边界</h2>
+<p>grounding point/box、depth lift、waypoint、robot action 都可能跨 camera/base/world frame；transform 只完成几何变换，不证明 planner/controller 或抓取成功。时间不同的 TF、标定 revision、pose uncertainty 和 action age 要独立记录。</p>
+<h2 id="5-source-gate">5. Source gate 结论</h2>
+<p>ROS 标准、SciPy API 与 PER-002 足以冻结 SE(3)、frame、单位和 roundtrip 合同；当前没有本地 CODE-VLA-005 实现、标定/TF parity 或 controller artifact，因此保持 <code>WARN</code>。</p>
+<p>下一步：保持已同步的 CODE-VLA-005 题卡为 <code>unseen</code>，进行白板练习或补充 TF/calibration roundtrip artifact。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="https://www.ros.org/reps/rep-0103.html">ROS REP-103</a> 与 <a href="https://www.ros.org/reps/rep-0105.html">REP-105</a>。</li><li>SciPy <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.transform.Rotation.html"><code>Rotation</code></a>。</li><li>本仓库 <a href="../knowledge/vol_06_per002_3d_lift_frame.html">VOL 06 PER-002</a>。</li></ol>
+</article></body></html>

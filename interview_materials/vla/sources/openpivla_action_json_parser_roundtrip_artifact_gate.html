@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenPiVLA Action JSON Parser / Round-trip Artifact Gate</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\openpivla_action_json_parser_roundtrip_artifact_gate.md">
+<meta name="aris:source-sha256" content="aa5fcbd39fa14d8c6e1246f4faf36ab3977829287f2cd4882110eb832e6ced26">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>aa5fcbd39fa14d8c6e1246f4faf36ab3977829287f2cd4882110eb832e6ced26</code>；生成自：<code>interview_materials\vla\sources\openpivla_action_json_parser_roundtrip_artifact_gate.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-role-fit">1. 项目分型与 Role Fit</a></li><li><a href="#2-evidence-freeze">2. Evidence freeze</a></li><li><a href="#3">3. 四层合同不能混写</a></li><li><a href="#4-72d-round-trip">4. 数学合同：保留前缀不等于 72D round-trip</a></li><li><a href="#5-deterministic-probes">5. Deterministic probes</a></li><li><a href="#6-loss-mask">6. Loss-mask 事实纠正</a></li><li><a href="#7-official-websocket-eval-qwen-parser">7. 为什么 official WebSocket eval 不能补 Qwen parser</a></li><li><a href="#8-parser">8. 缺失 parser 的最小生产合同</a></li><li><a href="#9-evidence-contract-claim">9. Evidence Contract 与 claim 更新</a></li><li><a href="#10-production-gap-question-tree">10. Production Gap、Question Tree 与局部评分</a></li><li><a href="#production-gap">Production Gap</a></li><li><a href="#question-tree">Question Tree</a></li><li><a href="#sp-ssp-action-contract">局部 SP/SSP 评分（只评 action-contract 证据）</a></li><li><a href="#11-upgrade-plan-output-pack">11. Upgrade Plan 与 Output Pack</a></li><li><a href="#30">30 秒回答</a></li><li><a href="#section-17">简历安全表达</a></li><li><a href="#12">12. 风险与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>OpenPiVLA Action JSON Parser / Round-trip Artifact Gate</h1>
+<div class="meta">状态：<code>local_direct_negative_evidence / retained_prefix_roundtrip_pass / controller_roundtrip_missing / WARN</code> 审查日期：2026-07-19 本地范围：<code>C:\Users\mousongzhe\Project\openpivla_deployment</code> 中 <code>vla_qwen3_repro</code> formal package、official OpenPI WebSocket eval script 与冻结 summary。 结论先行：当前 Qwen formal route 只实现 <strong>action window → assistant JSON training text</strong>，没有找到 Qwen generation、action JSON output parser、shape/finiteness validator、normalizer 或 controller adapter。Python <code>json.dumps→json.loads</code> 能无损恢复被保留的 <code>15×16</code> 前缀，但相对 recipe 的 <code>15×72</code> 已丢失 840/1080 个标量（77.78%），因此这不是 controller round-trip。另一个 7D/4-step WebSocket artifact 使用 official OpenPI checkpoint，是平行 lineage，不能替 Qwen JSON route 补证据。</div>
+<h2 id="question">问题（Question）</h2>
+<p><code>H=15,D=72</code> 的 action window 经 <code>limit=16</code> JSON formatter 后，是否存在可验证的 tokenizer/generation/parser/normalizer/controller round-trip？如果没有，当前代码到底证明了什么，哪些项目表述必须降级？</p>
+<h2 id="1-role-fit">1. 项目分型与 Role Fit</h2>
+<table><thead><tr><th>字段</th><th>当前判断</th></tr></thead><tbody>
+<tr><td>项目类型</td><td>VLA training/evaluation recovery + multimodal causal-LM action representation</td></tr>
+<tr><td>目标岗位</td><td>VLA / Robot Policy / Multimodal Training / Embodied Evaluation</td></tr>
+<tr><td>当前最像</td><td>有 formal training source 与多条 official-checkpoint eval diagnostics，但 Qwen text-action execution contract 未闭合的研究工程项目</td></tr>
+<tr><td>安全包装</td><td>“实现并审计 JSON action-supervision training path，定位 shape/loss-mask/parser lineage 风险”</td></tr>
+<tr><td>禁止包装</td><td>“完成了 72D Qwen action decoder、FAST 等价实现或 formal Qwen closed-loop deployment”</td></tr>
+</tbody></table>
+<p>本切片只关闭 parser/round-trip 证据门，不替候选人确认 ownership，也不把 local negative evidence 伪装成已修复功能。</p>
+<h2 id="2-evidence-freeze">2. Evidence freeze</h2>
+<table><thead><tr><th>ID</th><th>本地对象</th><th>直接支持</th><th>SHA-256</th></tr></thead><tbody>
+<tr><td>L01</td><td><code>...\vla_qwen3_repro\formal_train.py</code></td><td>formatter、JSON target、collator labels、Qwen/LoRA train loop；formal package 内没有 generation/parser call</td><td><code>51B67D3E04496E68076BF6461506141EBCDDF9A82E6C30AF1FDC0F1F2CCC6F94</code></td></tr>
+<tr><td>L02</td><td><code>...\vla_qwen3_repro\recipes.py</code></td><td><code>H=15,D=72</code> recipe intent</td><td><code>397D1B384A2BD93D9DC81B7003E6AB7BFAC3FC458EA04008197C3F503F9D780E</code></td></tr>
+<tr><td>L03</td><td><code>...\vla_qwen3_repro\runner.py</code></td><td>public smoke runner；没有 formal Qwen action generation/parser</td><td><code>F0908B9F824A0AAFD99F170F0FEB7F72E931F88EBC60594D9F5636E2539C13C5</code></td></tr>
+<tr><td>L04</td><td><code>scripts\eval_lerobot_action_server.py</code></td><td>official <code>WebsocketClientPolicy</code> 返回 numeric <code>response["actions"]</code>；按交集裁剪后算 L1</td><td><code>B1B7FB9B7A86355B9C1843CDE971B38FD26A2DAB1F18550128671F79F1AB4F39</code></td></tr>
+<tr><td>L05</td><td><code>scripts\export_bridge_fractal_rollout_actions.py</code></td><td>official OpenPI numeric action chunk、<code>:7</code> slice、replan steps</td><td><code>B8222F99F0ED08939E3B8D52DE30B9386729D3C43B3B3E6D1223AE4357EC3BC8</code></td></tr>
+<tr><td>A01</td><td><code>bridge_fractal_eval_real_v2/.../widowx_spoon_on_towel/summary.json</code></td><td>checkpoint=<code>pi0_aloha_sim</code>、numeric action <code>D=7,H=4</code>、4 samples</td><td><code>7238B0238315852730A559AF0E01678448E4507E76F7BBCCCE608C8D426CD4E1</code></td></tr>
+</tbody></table>
+<p>这些文件位于项目外本地目录，本轮只读，没有修改项目源码或生成新的项目 artifact。项目目录本身没有可用 <code>.git</code> metadata；ownership 继续依赖现有粗粒度 snapshot ledger 与候选人确认。</p>
+<h2 id="3">3. 四层合同不能混写</h2>
+<table><thead><tr><th>层</th><th>当前实现</th><th>当前 verdict</th></tr></thead><tbody>
+<tr><td>training target</td><td>DROID rows 经 <code>limit=16</code>、round(5)、tail-repeat 后写成 assistant JSON content</td><td><code>local-direct / lossy</code></td></tr>
+<tr><td>training objective</td><td><code>labels=input_ids.clone()</code>，只把 attention padding 设为 <code>-100</code></td><td><code>full-sequence causal CE</code>，不是 assistant-token-only CE</td></tr>
+<tr><td>formal Qwen inference</td><td>未找到 <code>model.generate</code>、<code>decode/batch_decode</code> 或 action-output <code>json.loads</code></td><td><code>missing</code></td></tr>
+<tr><td>robot execution</td><td>未找到 Qwen JSON schema validator、72D reconstruction、axis/unit、normalizer、controller adapter</td><td><code>missing</code></td></tr>
+</tbody></table>
+<p>formal package 中唯一的 <code>json.loads</code> 位于 <code>MindCubeDataset._load_rows</code>，读取 VLM QA 的输入 JSONL；它不是 action prediction parser。这个负面检索只证明冻结 package 中未出现相应 call，不证明其他未归档机器或分支绝对不存在 parser。</p>
+<h2 id="4-72d-round-trip">4. 数学合同：保留前缀不等于 72D round-trip</h2>
+<p>对非空、每行至少 16 维的典型输入，令 action window 为：</p>
+<div class="formula">\[
+A\in\mathbb R^{H\times D},\qquad H=15,\quad D=72.
+\]</div>
+<p>变量解释：\(H\) 是未来 action 行数，\(D\) 是 recipe/smoke 中的每行宽度。实现映射：<code>recipes.py</code> 给出 <code>action_horizon=15, action_dim=72</code>；该式是 schema intent，不是 serializer 输出事实。</p>
+<p>当前 formatter 对每行做：</p>
+<div class="formula">\[
+S(A)_{h,:}=\operatorname{round}\!\left(A_{h,0:\min(D,16)},5\right).
+\]</div>
+<p>变量解释：\(S\) 是 <code>_format_action_sequence</code>，只保留前 16 个标量并四舍五入到 5 位；短 window 还会重复最后一行。实现含义：即使 JSON parser 完全正确，也只能恢复 \(S(A)\)，不能逆推出被删除的 \(A_{:,16:72}\)。</p>
+<p>若用 Python 自带 JSON codec 记为 \(J^{-1}(J(\cdot))\)，本轮 probe 只得到：</p>
+<div class="formula">\[
+J^{-1}(J(S(A)))=S(A)\neq A.
+\]</div>
+<p>变量解释：等号左侧表示保留前缀的 Python object round-trip；右侧不等式来自 shape 和信息丢失，而不是数值误差。实现边界：这没有经过 Qwen tokenizer、model generation、schema validator、denormalizer 或 controller。</p>
+<h2 id="5-deterministic-probes">5. Deterministic probes</h2>
+<p>本轮从真实 AST 提取 <code>_to_flat_float_list</code>、<code>_format_action_sequence</code> 与 <code>Qwen3VLCollator</code>，不导入完整训练栈；所有 probes 只在内存中运行。</p>
+<table><thead><tr><th>Probe</th><th>结果</th><th>判定</th></tr></thead><tbody>
+<tr><td>两行 72D sentinel，<code>H=15</code></td><td>JSON parse 后 shape=<code>15×16</code></td><td>horizon 保留，72D 未保留</td></tr>
+<tr><td>serialized scalars</td><td>240；相对 <code>15×72=1080</code> 少 840</td><td>77.78% schema positions 未序列化</td></tr>
+<tr><td>retained prefix equality</td><td><code>True</code></td><td>只证明 Python JSON codec 对已保留数值可逆</td></tr>
+<tr><td>tail repeat</td><td>第 3–15 行共 13 行重复第 2 行</td><td>没有 valid length/mask，真实重复与 padding 不可区分</td></tr>
+<tr><td>empty window</td><td><code>15×1</code> 的 <code>[0.0]</code></td><td>output width 不固定为 16/72</td></tr>
+<tr><td>one empty row</td><td><code>15×0</code></td><td>可产生 ragged/zero-width action rows</td></tr>
+<tr><td>NaN row</td><td>输出 <code>{"actions":[[NaN],[NaN]]}</code></td><td>Python 可读回非有限值，但这是非标准 JSON，且没有 finite check</td></tr>
+<tr><td>collator labels</td><td><code>[11,12,13,14,-100]</code></td><td>仅 padding 被屏蔽；四个非 padding token 全部监督</td></tr>
+<tr><td>formal package AST calls</td><td><code>generate/decode/batch_decode=0</code>；<code>loads=1</code> at MindCube input</td><td>没有 Qwen action output parser 证据</td></tr>
+</tbody></table>
+<p>因此当前问题不是“parser 精度还没测”，而是 <strong>parser contract 尚未出现在冻结 formal path 中</strong>。</p>
+<h2 id="6-loss-mask">6. Loss-mask 事实纠正</h2>
+<p>旧材料把该 route 简写成“assistant token CE”。冻结代码实际是：</p>
+<pre><code class="language-python"># Chat template contains user prompt, wrappers and assistant JSON content.
+batch = processor(text=full_chat_text, padding=True, ...)
+
+# Only attention padding is ignored; prompt/wrapper tokens remain labels.
+labels = batch[&quot;input_ids&quot;].clone()
+labels[batch[&quot;attention_mask&quot;] == 0] = -100
+loss = model(**batch).loss</code></pre>
+<p>其 token-level objective 更准确地写为：</p>
+<div class="formula">\[
+\mathcal L_{\mathrm{full\mbox{-}seq}}
+=\frac{1}{N}\sum_{t:m_t=1}
+-\log p_\theta(x_t\mid x_{&lt;t}),
+\]</div>
+<p>变量解释：\(x_t\) 覆盖 chat template 的全部非 padding token，\(m_t\) 只是 attention mask，\(N=\sum_t m_t\)。实现映射：代码没有 assistant-span mask，HF causal LM 在内部做 next-token shift。它仍包含 action JSON 学习信号，但 loss 也包含可预测 prompt/wrapper；因此 loss 下降不能单独证明 action token 或 controller 行为改善。</p>
+<p>安全术语应从“assistant-token-only CE”改为：<strong>“assistant JSON content embedded in a full-chat causal-LM objective”</strong>。</p>
+<h2 id="7-official-websocket-eval-qwen-parser">7. 为什么 official WebSocket eval 不能补 Qwen parser</h2>
+<p><code>eval_lerobot_action_server.py</code> 的实际链路是：</p>
+<pre><code class="language-text">LeRobot obs
+  -&gt; official OpenPI WebsocketClientPolicy
+  -&gt; response[&quot;actions&quot;] numeric array
+  -&gt; min(gt_h, pred_h, requested_h) × min(gt_d, pred_d)
+  -&gt; offline L1 diagnostic</code></pre>
+<p>A01 明确记录 checkpoint <code>/.../pi0_aloha_sim</code>、<code>action_dim=7</code>、<code>action_horizon=4</code>。这证明 official checkpoint/server 的 numeric I/O 路径可以返回动作并形成离线 L1 artifact；它不经过 Qwen JSON generation，也不使用 <code>H=15,D=72</code> formal recipe。</p>
+<p>此外，eval script 用 <code>min</code> 裁剪 horizon/dim 后比较，没有 assert 预测 shape 等于目标 shape；因此即使该 official diagnostic 状态为 <code>ok</code>，也不能反向证明另一路 Qwen contract 严格匹配。</p>
+<h2 id="8-parser">8. 缺失 parser 的最小生产合同</h2>
+<p>以下是 <strong>建议补做</strong>，不是当前项目已有实现：</p>
+<pre><code class="language-python">def parse_action_json(text, *, expected_h=15, expected_d=72):
+    # 1. Use a strict JSON decoder; reject NaN/Infinity and extra prose.
+    obj = strict_json_loads(text)
+
+    # 2. Require exactly one actions field and a dense numeric matrix.
+    actions = require_dense_finite_matrix(obj, key=&quot;actions&quot;)
+
+    # 3. Reject shape mismatch instead of silently slicing/padding.
+    assert actions.shape == (expected_h, expected_d)
+
+    # 4. Apply the frozen normalizer/axis/unit contract.
+    env_actions = denormalize_and_map_axes(actions)
+
+    # 5. Enforce controller limits and record a round-trip trace.
+    return controller_safety_check(env_actions)</code></pre>
+<p>最低测试矩阵：valid sentinel、missing key、extra prose、ragged rows、empty rows、NaN/Infinity、wrong H、wrong D、axis permutation、unit mismatch、normalizer mismatch、gripper bounds、tail validity mask、JSON→array→controller→logged-command 逐维对账。</p>
+<h2 id="9-evidence-contract-claim">9. Evidence Contract 与 claim 更新</h2>
+<table><thead><tr><th>Claim</th><th>证据结论</th><th>当前安全表达</th><th>禁止升级</th></tr></thead><tbody>
+<tr><td><code>OPV-CL-002</code> JSON/CE route</td><td>formatter/target/labels direct；parser missing</td><td>“action window 被写入 assistant JSON content，并在 full-chat causal CE 中训练”</td><td>assistant-token-only loss、controller-ready decoder</td></tr>
+<tr><td><code>OPV-CL-003</code> FAST reuse</td><td>formal package 无 FAST processor call</td><td>“FAST 仅作 upstream 对照；local route 是 JSON text”</td><td>FAST 等价、DCT/BPE round-trip</td></tr>
+<tr><td><code>OPV-CL-004</code> H/D contract</td><td><code>15×72</code> intent → <code>15×16</code> serialized prefix；840 scalars missing</td><td>“定位到 lossy shape contract，尚未修复/闭环”</td><td>72D action semantics 已保留</td></tr>
+<tr><td><code>OPV-CL-010</code> rollout</td><td>official numeric WebSocket eval direct；Qwen lineage absent</td><td>“做过 official-checkpoint eval diagnostics”</td><td>formal Qwen closed-loop rollout</td></tr>
+<tr><td>Ownership</td><td>技术 finding 可复核；decision/fixer role 未确认</td><td>“仓库/项目中发现并记录风险”</td><td>“我独立定位并修复”</td></tr>
+</tbody></table>
+<h2 id="10-production-gap-question-tree">10. Production Gap、Question Tree 与局部评分</h2>
+<h3 id="production-gap">Production Gap</h3>
+<table><thead><tr><th>当前做法</th><th>生产追问</th><th>缺口</th><th>可补证据</th></tr></thead><tbody>
+<tr><td><code>json.dumps</code> training target</td><td>模型输出由谁解析？</td><td>generation/parser missing</td><td>immutable checkpoint + generation samples + parser source</td></tr>
+<tr><td><code>limit=16</code></td><td>72D 中被删的是哪些轴？</td><td>schema/axis ownership missing</td><td>field registry + sentinel axis test</td></tr>
+<tr><td>repeat-last padding</td><td>哪些行有效？</td><td>valid mask/length missing</td><td>explicit <code>valid_horizon</code> + loss/execution mask</td></tr>
+<tr><td>padding-only label mask</td><td>action signal占 loss 多少？</td><td>assistant-span mask/metric missing</td><td>token-span audit + masked-vs-full CE ablation</td></tr>
+<tr><td>official WebSocket L1</td><td>是否验证 formal Qwen？</td><td>checkpoint lineage mismatch</td><td>same formal checkpoint/server/parser/controller bundle</td></tr>
+</tbody></table>
+<h3 id="question-tree">Question Tree</h3>
+<pre><code class="language-text">为什么说 round-trip 没闭合？
+  -&gt; 如果只说 json.loads 成功：追问 72→16 的 840 个标量去哪了？
+  -&gt; 如果拿 official WebSocket eval 作证：追问 checkpoint/config 是否属于 Qwen formal lineage？
+  -&gt; 如果说 loss 能下降：追问 prompt/wrapper token 是否也进入 CE？
+  -&gt; 如果声称已修复：要求 parser source、strict schema、sentinel trace 与 controller log。</code></pre>
+<h3 id="sp-ssp-action-contract">局部 SP/SSP 评分（只评 action-contract 证据）</h3>
+<table><thead><tr><th>维度</th><th>当前分数 / 5</th><th>原因</th></tr></thead><tbody>
+<tr><td>技术洞察</td><td>4</td><td>能定位 loss mask、shape loss 与 parallel lineage</td></tr>
+<tr><td>可复现证据</td><td>3</td><td>source hash + deterministic probe 齐全，但没有 formal checkpoint/generation</td></tr>
+<tr><td>生产闭环</td><td>1</td><td>parser/normalizer/controller contract 缺失</td></tr>
+<tr><td>Ownership</td><td>1</td><td>candidate role/fixer 未确认</td></tr>
+<tr><td>面试防线</td><td>4</td><td>可明确说清“做了什么、没做什么、如何补”</td></tr>
+</tbody></table>
+<p>局部结论：这是一个可信的高价值 bad-case/审计故事，但还不是“Qwen VLA 部署成功”的项目结果。</p>
+<h2 id="11-upgrade-plan-output-pack">11. Upgrade Plan 与 Output Pack</h2>
+<table><thead><tr><th>时间</th><th>动作</th><th>证据升级</th><th>状态</th></tr></thead><tbody>
+<tr><td>半天</td><td>冻结 JSON schema、assistant span、axis/unit registry；补 strict parser 单测</td><td>CL-002/004 从 negative evidence 到 parser contract</td><td><code>可补做</code></td></tr>
+<tr><td>1 天</td><td>用 immutable Qwen checkpoint 生成 valid/invalid samples，跑 tokenizer→generate→parser</td><td>inference contract 可复现</td><td><code>可补做</code></td></tr>
+<tr><td>3 天</td><td>接 normalizer/controller dry-run，记录 sentinel 与 safety rejection trace</td><td>controller round-trip 可审计</td><td><code>可补做</code></td></tr>
+<tr><td>1 周</td><td>matched full-seq vs assistant-mask、16D vs intended schema ablation + closed-loop eval</td><td>训练目标与效果可比较</td><td><code>可补做</code></td></tr>
+</tbody></table>
+<h3 id="30">30 秒回答</h3>
+<p>“我复核后不会把这条路线说成已经完成 action round-trip。formal code 只把每步 action 截到 16 个数并写成 assistant JSON；Python JSON codec 能还原这个 <code>15×16</code> 前缀，但相对 recipe 的 <code>15×72</code> 少了 840 个标量，而且 package 里没有 Qwen generate、action parser、normalizer 或 controller adapter。collator 也只屏蔽 padding，所以是 full-chat causal CE，不是 assistant-token-only CE。项目里的 7D/4-step WebSocket eval 用的是 official OpenPI checkpoint，是另一条 lineage。当前可信贡献是实现/审计训练路径并定位 contract 风险，不能说 formal Qwen 已闭环部署。”</p>
+<h3 id="section-17">简历安全表达</h3>
+<ul><li>当前可写：<code>审计 Qwen3-VL JSON action-supervision path，定位 72→16 lossy serialization、full-sequence CE mask 与 official/Qwen rollout lineage 分叉，并建立 parser/controller 补证矩阵。</code></li><li>补做后可写：<code>实现 strict action JSON parser 与 tokenizer→generation→denormalizer→controller sentinel round-trip。</code></li><li>当前不建议写：<code>完成 72D Qwen action decoder并在机器人闭环验证。</code></li></ul>
+<h2 id="12">12. 风险与下一步</h2>
+<ol><li>本报告没有 immutable formal Qwen checkpoint，因此没有运行真实 generation；parser absence 是 frozen source/package 结论。</li><li>Python 对 <code>NaN</code> 的默认行为不是严格 JSON 合规；真正接口必须显式拒绝非有限值。</li><li>official OpenPI offline L1 使用 shape 交集，不能作为严格 I/O parity 或 closed-loop success。</li><li>candidate 尚未确认谁设计 <code>limit=16</code>、谁发现问题、是否曾在别处修复；ownership 保持 PENDING。</li><li>下一 bounded slice 优先做 OpenPiVLA ownership confirmation drill，或冻结一个 formal checkpoint/generation bundle；不新增项目题卡，不改变 12 张卡的 <code>unseen</code> 状态。</li></ol>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Local <code>formal_train.py</code>、<code>recipes.py</code>、<code>runner.py</code>，路径与 SHA 见 Evidence freeze。</li><li>Local <code>eval_lerobot_action_server.py</code>、<code>export_bridge_fractal_rollout_actions.py</code> 与 A01 summary，路径与 SHA 见 Evidence freeze。</li><li><a href="openpivla_formal_json_ce_shape_contract_artifact_gate.html">前一阶段 JSON/CE + H/D Shape Contract Gate</a>。</li><li><a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA Claim–Evidence Inventory</a>。</li><li><a href="../evidence/projects/openpivla_ownership_ledger.html">OpenPiVLA Ownership Ledger</a>。</li><li><a href="../questions/proj_openpivla.html">OpenPiVLA Batch 1 Cards</a> 与 <a href="../questions/proj_openpivla_batch2.html">Batch 2 Cards</a>。</li><li><a href="vol_03_pi0_fast_openpi_independent_fact_review.html">FAST / OpenPI upstream independent review</a>，只用于 upstream 方法与 local route 边界。</li></ol>
+</article></body></html>

@@ -1,0 +1,60 @@
+{
+  "artifact": "knowledge/vol_05_engineering_eval_eng014.md",
+  "html": "knowledge/vol_05_engineering_eval_eng014.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / VLA-ENG-014 / knowledge_16_of_44 / card_1_of_1_unseen",
+  "verdict": "WARN",
+  "source_sha256": "58C9824DAE2FDB81419D291690DB0949075681755605A81AA9669CD345BB00F9",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 15,
+    "new_nodes": 1,
+    "total_drafted_nodes": 16,
+    "covered_ids": ["VLA-ENG-014"],
+    "drafted_cards_for_new_nodes": 1,
+    "practice_state": "unseen",
+    "difficulty": "L3",
+    "priority": "P1"
+  },
+  "source_scope": {
+    "source_freeze": "sources/vol_05_eng014_hardware_operator_compatibility_source_freeze.html",
+    "official_docs": [
+      "PyTorch 2.13 CUDA semantics",
+      "PyTorch 2.13 HIP (ROCm) semantics",
+      "PyTorch 2.13 C++/CUDA extension",
+      "ROCm 7.14.0 compatibility matrix",
+      "NVIDIA CUDA Compatibility"
+    ],
+    "official_code": [
+      "MetaX-MACA/mcPytorch@b3db5e",
+      "MetaX-MACA/mcTriton@7dd407"
+    ],
+    "local_project_hooks": [
+      "sources/openpivla_batch2_evidence_freeze.html"
+    ]
+  },
+  "checks": {
+    "bounded_slice": "PASS (one VLA-ENG-014 knowledge node and one atomic card are drafted; ENG-015..016 remain deferred)",
+    "independent_wording_review": "PASS WITH WARNING (unsupported MCCL-specific example removed; license claim downgraded to repository LICENSE boundary)",
+    "compatibility_layers": "PASS WITH WARNING (L0 device/runtime through L5 workload/eval are separated from vendor guarantees)",
+    "cuda_hip_rocm_boundary": "PASS WITH WARNING (torch.cuda interface reuse and compatibility matrices are sourced; custom kernel parity is not inferred)",
+    "metax_toolchain_boundary": "PASS WITH WARNING (mcPytorch/mcTriton revisions support environment/build claims only)",
+    "operator_matrix": "PASS WITH WARNING (backend/dtype/shape/layout/grad/async/distributed/VLA fields proposed as engineering contract)",
+    "formula": "PASS WITH WARNING (relative error and synchronized latency are labeled project metrics, not official guarantees)",
+    "pseudocode": "PASS (commented verification order; backend-specific APIs remain explicit placeholders)",
+    "project_truth_boundary": "PASS (OpenPiVLA eager/MACA remains local-direct stability/call-graph evidence; no performance uplift)",
+    "minimum_module_contract": "PASS (intuition, source semantics, matrix, formulas, pseudocode, project mapping, trade-offs and bad cases included)",
+    "html_static_validation": "PASS (source SHA, one H1, thirteen H2, nine H3, three tables, two commented code blocks and two formula blocks)",
+    "local_links": "PASS (relative source-freeze and local-project links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "card": "PASS WITH WARNING (one atomic card drafted and kept unseen; no candidate answer exists)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Collect actual backend x dtype x shape x layout x forward/backward operator smoke artifacts for the VLA stack.",
+    "Run synchronized parity/latency and 2-rank communication tests; do not infer performance from eager fallback or single-card startup.",
+    "Keep MACA and mcTriton claims tied to frozen revisions; do not generalize to every C500 image or custom kernel.",
+    "Keep the single VLA-ENG-014 atomic card unseen until a real oral answer is recorded."
+  ],
+  "next": "Run a one-question oral drill for VLA-ENG-014 or begin ENG-015 source-first; keep ENG-015..016 undrafted until their source gates are ready."
+}

@@ -1,0 +1,40 @@
+{
+  "artifact": "evidence/projects/wm019_wam_artifact_manifest.md",
+  "html": "evidence/projects/wm019_wam_artifact_manifest.html",
+  "review_date": "2026-07-18",
+  "status": "manifested / WAM diagnostic bundle / checkpoint_unverified / WARN",
+  "verdict": "WARN",
+  "source_sha256": "1AB8709201E2E75F580CB0AA0F8465DEFB546D63B2AAB70A1752239A7DA8F697",
+  "covered_question_ids": ["VLA-WM-019"],
+  "bundle": {
+    "project": "Cosmos/WAM",
+    "task": "CoffeePressButton",
+    "episodes_manifested": 2,
+    "local_action_traces": 2,
+    "local_raw_videos": 2,
+    "checkpoint_binaries": 0,
+    "local_trained_raw_video": 1
+  },
+  "checks": {
+    "bounded_slice": "PASS (one representative WAM diagnostic bundle only; no benchmark claim)",
+    "file_hashes": "PASS (base/trained manifests, action traces, base raw video and rollout log hashed)",
+    "protocol_fields": "PASS (task, episode, seed, env_seed, steps, open-loop, denoise, controller and cameras read from manifest)",
+    "checkpoint_gate": "WARN (both checkpoint values are remote paths; local binary absent)",
+    "episode_gate": "WARN (episode 0 manifests and both raw videos exist; output-root reconciliation and multi-episode denominator remain missing)",
+    "metric_ladder": "PASS WITH WARNING (action trace/open-loop diagnostic separated from offline metric and success)",
+    "project_truth_boundary": "PASS (no uplift, benchmark or 0-success claim promoted)",
+    "html_static_validation": "PASS (one H1, nine H2 including generated TOC, three tables, one code block)",
+    "local_links": "PASS (WAM inventory and WM-019 source/gate links resolve)",
+    "source_sha": "PASS (canonical Markdown SHA matches HTML meta and review JSON)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Obtain base/trained checkpoint binary or immutable remote hash, plus processor/normalizer/config SHA.",
+    "Bind the alternate trained-video output root into a run manifest and add a full episode denominator/success predicate.",
+    "Add prediction/label metric script, per-offset error and action-sensitivity probe.",
+    "Separate WAM diagnostic bundle evidence from historical MSE/success/uplift claims and ownership.",
+    "Do not create coaching_state.md or mark WM-019 as practiced without a real oral answer."
+  ],
+  "next": "Add one matched checkpoint/protocol artifact linking offline metric and rollout, or run one WM-015..019 oral drill."
+}

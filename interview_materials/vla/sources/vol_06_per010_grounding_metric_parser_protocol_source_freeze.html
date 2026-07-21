@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 PER-010 Source Freeze：Grounding Metric、Strict Parser 与 Protocol Comparability</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per010_grounding_metric_parser_protocol_source_freeze.md">
+<meta name="aris:source-sha256" content="371c401c1b0a2c2075c03ee4a8cfd7fe9c60910444c4cbd3c7b0178509bd7852">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>371c401c1b0a2c2075c03ee4a8cfd7fe9c60910444c4cbd3c7b0178509bd7852</code>；生成自：<code>interview_materials\vla\sources\vol_06_per010_grounding_metric_parser_protocol_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-official-local-source-ledger">2. Primary / official / local source ledger</a></li><li><a href="#3">3. 与相邻节点的去重边界</a></li><li><a href="#4-typed-prediction-strict-parser">4. Typed Prediction 与 Strict Parser 合同</a></li><li><a href="#5-parser">5. 本地 Parser 的真实语义</a></li><li><a href="#6-box-iou-acc-threshold">6. Box IoU 与 Acc@Threshold</a></li><li><a href="#7-referring-expression-recall-k-mdetr-revision-trap">7. Referring-expression Recall@k 与 MDETR Revision Trap</a></li><li><a href="#8-coco-ap-ar-refexp-recall-k">8. COCO AP / AR 不是 RefExp Recall@k</a></li><li><a href="#9-pck-normalization-visibility-correspondence">9. PCK：Normalization、Visibility 与 Correspondence</a></li><li><a href="#10-robopoint-mask-hit-fixed-distance-hit">10. RoboPoint Mask-hit 与本地 Fixed-distance Hit</a></li><li><a href="#11-multi-point-matching-coverage-duplicate">11. Multi-point Matching、Coverage 与 Duplicate</a></li><li><a href="#12-invalid-empty-mixed-denominator-policy">12. Invalid、Empty、Mixed 与 Denominator Policy</a></li><li><a href="#13-aggregation-stratification">13. Aggregation 与 Stratification</a></li><li><a href="#14-protocol-identity-comparability-matrix">14. Protocol Identity 与 Comparability Matrix</a></li><li><a href="#15-opd-evaluator-code-mapping">15. 本地 OPD Evaluator Code Mapping</a></li><li><a href="#16-raw-holdout-protocol-reconciliation">16. Raw Holdout Protocol Reconciliation</a></li><li><a href="#17-probes">17. 五个确定性 Probes</a></li><li><a href="#17-1-iou-edge-cases">17.1 IoU edge cases</a></li><li><a href="#17-2-strict-gate-lenient-parse">17.2 Strict gate 与 lenient parse</a></li><li><a href="#17-3-any-pair-hit-set-quality">17.3 Any-pair Hit 与 set quality</a></li><li><a href="#17-4-field-specific-denominator">17.4 Field-specific denominator</a></li><li><a href="#17-5-mdetr-iou-giou-discrepancy">17.5 MDETR IoU / GIoU discrepancy</a></li><li><a href="#18-typed-metric-manifest-minimum-report">18. Typed Metric Manifest 与 Minimum Report</a></li><li><a href="#19-project-truth-boundary">19. Project Truth Boundary 与补证顺序</a></li><li><a href="#20-source-gate-bounded-slice">20. Source Gate 结论与下一 Bounded Slice</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 PER-010 Source Freeze：Grounding Metric、Strict Parser 与 Protocol Comparability</h1>
+<div class="meta">状态：<code>source_frozen / VLA-PER-010 / primary_official_checked / local_parser_scorer_holdout_boundary / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本切片只冻结raw output→parser→validity→matching→metric→denominator→protocol identity的评估合同；不生成knowledge/card，不展开PER-011 teacher noise/leakage或PER-015 action gate。</div>
+<h2 id="question">问题（Question）</h2>
+<p>Grounding输出应如何被strict parser解析？IoU、Acc@IoU、Referring-expression Recall@k、COCO AP/AR、PCK、mask-hit和固定像素距离Hit分别回答什么问题？invalid、empty、duplicate和多点匹配如何进入分母？两个都叫“Recall@1”或“Hit@50”的数字在什么条件下才可比较？本地OPD holdout的严格格式失败、宽松几何得分与项目能力边界应如何口述？</p>
+<p>本页冻结的可审计链为：</p>
+<pre><code class="language-text">raw model output
+  -&gt; expected representation + exact parser grammar/version
+  -&gt; syntax / tag / coordinate / geometry validity status
+  -&gt; representation-specific matching
+  -&gt; per-sample metric and invalid/empty treatment
+  -&gt; denominator + aggregation + stratification
+  -&gt; split/checkpoint/prompt/scorer protocol identity
+  -&gt; comparable / conditionally comparable / not comparable
+  -&gt; project claim boundary</code></pre>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>Parser是metric的一部分，不是清洗细节</strong>：同一raw output在strict与lenient parser下可能分别得到format failure和有效几何；只报告后者会把instruction following缺陷隐藏掉。</li><li><strong>解析成功、格式合规、坐标合法、几何正确是四个不同事件</strong>：应保存typed status，而不是用一个<code>valid=true</code>吞并所有失败原因。</li><li><strong>IoU本身不是Acc@IoU，也不是AP/AR</strong>：IoU是单对框overlap；Acc@\(\tau\)是阈值后的样本成功率；COCO AP/AR还绑定ranking、matching、IoU threshold grid、area range、category与<code>maxDets</code>。</li><li><strong>Referring-expression Recall@k只在明确top-k、overlap函数、阈值和每表达式GT结构后有意义</strong>。MDETR论文描述IoU-based Recall@k；冻结commit却以GIoU阈值判定并打印<code>Precision @ 1,5,10</code>，说明名字不能替代代码审计。</li><li><strong>PCK不是任意point distance threshold</strong>：它需要pred/GT keypoint对应关系、normalization factor、threshold、visibility mask与aggregation规则。本地<code>Hit@50/100</code>使用0..1000坐标上的任意pred–gold最近距离，不应称为标准PCK。</li><li><strong>RoboPoint mask-hit也不是PCK或point recall</strong>：其论文口径是预测点落入target mask的比例，分母是预测点；它不要求命中每个GT keypoint，也不惩罚遗漏全部target modes。</li><li><strong>多点集合不能只看最小任意对距离</strong>：一个准确点就能令本地<code>Hit@50</code>通过，即使其余预测/GT覆盖很差；至少要同时看pred→gold、gold→pred、count差异，必要时冻结one-to-one matching。</li><li><strong>invalid/empty必须预先写入denominator policy</strong>：本地bool rate按全部对应format样本数除，numeric mean跳过<code>None</code>；所以同一summary中的<code>format_pass</code>与<code>iou_mean</code>可能根本不是同一分母。</li><li><strong>Protocol identity必须包含split/data hash、sample IDs、checkpoint、prompt/template、decode、parser/scorer revision、representation、坐标系、matching、阈值、invalid policy与aggregation</strong>。字段不一致时，默认不可直接比较。</li><li><strong>本地OPD结论必须分三层</strong>：original strict、protocol-fixed strict、lenient geometry。现有inventory可支持静态holdout数字与格式诊断；不能把它升级为机器人成功率、OPD单因素因果或候选人ownership。</li></ol>
+<h2 id="2-primary-official-local-source-ledger">2. Primary / official / local source ledger</h2>
+<p>论文SHA对version-pinned PDF bytes计算；GitHub文本按UTF-8/LF冻结；本地文件按原始bytes。repository license只约束相应source code，不能自动覆盖paper、dataset、checkpoint或第三方asset。</p>
+<table><thead><tr><th>来源</th><th>类型 / revision / license</th><th>SHA-256</th><th>支持的事实</th><th>不能支持</th></tr></thead><tbody>
+<tr><td><a href="https://arxiv.org/abs/2104.12763v3">MDETR paper v3</a></td><td>primary；2022-03-25 v3；PDF读取2026-07-20</td><td><code>797ABB81609E021C653B9B435E56C7E8F9EDB784C04ACAE1F8E0EC375517C421</code></td><td>grounding Recall@k按top-k中是否存在IoU超过阈值的box；one-to-one referring-expression场景</td><td>冻结repo evaluator与论文文字完全同构</td></tr>
+<tr><td><a href="https://github.com/ashkamath/mdetr/blob/ea09acc44ca067072c4b143b726447ee7ff66f5f/datasets/refexp.py">MDETR RefExp evaluator</a></td><td>official-code；<code>ea09acc...</code>；Apache-2.0 header</td><td><code>FB53B06A4F8ACA0DCD64AEAB9E82000E81CCAFD8D2B5362EEFA5F3DB011FBC36</code></td><td><code>k=(1,5,10)</code>、threshold=.5、score排序、每expression success与dataset denominator；实际调用GIoU并打印Precision</td><td>所有MDETR revision、论文IoU描述或COCO AP</td></tr>
+<tr><td><a href="https://github.com/ashkamath/mdetr/blob/ea09acc44ca067072c4b143b726447ee7ff66f5f/.github/refexp.md">MDETR refexp guide</a></td><td>official-code/docs；同一commit</td><td><code>C53E16E40AF5DD0D5F929CFC1530BFF56E5AF1AAACC79157B9548D63735BF6A6</code></td><td>RefCOCO/+/g运行与split配置线索</td><td>evaluator内部overlap函数无需代码核验</td></tr>
+<tr><td><a href="https://github.com/ashkamath/mdetr/blob/ea09acc44ca067072c4b143b726447ee7ff66f5f/models/postprocessors.py">MDETR postprocessors</a></td><td>official-code；同一commit</td><td><code>F1A3C4926A053B69FC421BF5468DCFF78CA6CF211E6E0D09647872419FA311A8</code></td><td>score/box postprocessing bridge</td><td>final RefExp denominator或paper claim</td></tr>
+<tr><td><a href="https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py">COCO API cocoeval.py</a></td><td>official-code；<code>8c9bcc...</code>；BSD-style repo license</td><td><code>E514AF401848D5A4CC5D3512BD93D2C317F92272C6D30F218E0F00B7B4110534</code></td><td>IoU/recall grids、score排序、matching/ignore、precision/recall tensor、area/maxDets/category contracts</td><td>Referring-expression Recall@k、PCK或本地OPD scorer</td></tr>
+<tr><td><a href="https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/license.txt">COCO API license</a></td><td>official license text</td><td><code>BD8EF15597B3B292F3BB0FEED9701C1ACE5BCEBE07F28FB5047EC8D3D89471B1</code></td><td>repository source license线索</td><td>dataset media或第三方授权</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2406.10721v1">RoboPoint paper v1</a></td><td>primary；2024-06-15 v1；PDF读取2026-07-20</td><td><code>AE9E8476D63B82CCFA922905E6B410DC9EF302CD0618E11B79F10E06A5C8A1ED</code></td><td>spatial-affordance accuracy为predicted points落在target mask内的比例</td><td>标准PCK、本地fixed-distance Hit或robot success</td></tr>
+<tr><td><a href="https://arxiv.org/abs/1406.2984v1">MPII Human Pose paper v1</a></td><td>primary benchmark context；2014-06-11 v1</td><td><code>36E62198F0405D2E96C5FF6E965D689565A084860D152E235899DCCA4E92B476</code></td><td>MPII pose benchmark与PCKh语境</td><td>本轮直接从PDF冻结通用PCK实现公式；公式由下列implementation bridge限定</td></tr>
+<tr><td><a href="https://github.com/open-mmlab/mmpose/blob/759b39c13fea6ba094afc1fa932f51dc1b11cbf9/mmpose/evaluation/functional/keypoint_eval.py">MMPose keypoint_eval.py</a></td><td>implementation bridge；<code>759b39c...</code>；Apache-2.0</td><td><code>70892DE7B0378366F56B4474EE4C282181619BFDE38C627D41907A582E5F080A</code></td><td>normalized coordinate distance、visibility mask、threshold、missing target与per-keypoint aggregation</td><td>grounding point-set天然具有keypoint correspondence</td></tr>
+<tr><td><a href="https://github.com/open-mmlab/mmpose/blob/759b39c13fea6ba094afc1fa932f51dc1b11cbf9/LICENSE">MMPose LICENSE</a></td><td>Apache-2.0 text</td><td><code>AA2C6F3408169B96E5547C875DEB481C91502514C1885FA0ACB4B596C8909CB9</code></td><td>repository source license线索</td><td>dataset/model license自动闭合</td></tr>
+<tr><td><code>muxi/point/eval_qwen_vl_raw_holdout.py</code></td><td>local evaluator；<code>muxi@756e27e...</code>；selected path clean</td><td><code>29574ADCE53B254BC33ED39C370642707F570000F7F3FB8F037DBD1F5E0D206B</code></td><td>expected-format routing、lenient geometry parser、format gate、IoU/point/text score、mixed fallback与field-specific denominator</td><td>标准PCK/RefCOCO/COCO等价性、robot result或因果提升</td></tr>
+<tr><td><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a></td><td>repository local evidence inventory</td><td><code>C002B2275EB1F747E1E6F383CB271539F081AE8CCEE0C8D11AFC92EBABE99AFA</code></td><td>raw holdout构成/去重/leakage检查、checkpoint pool metrics、strict-vs-lenient诊断与claim边界</td><td>raw prediction已在本页重新归档、候选人ownership或closed-loop success</td></tr>
+<tr><td><a href="vol_06_per001_grounding_coordinate_source_freeze.html">PER-001 Source Freeze</a></td><td>repository-reviewed bridge</td><td>review SHA见对应记录</td><td>point/box/text schema、0..1000 coordinate与basic parser</td><td>PER-010的完整metric comparability</td></tr>
+<tr><td><a href="vol_06_per008_representation_choice_source_freeze.html">PER-008 Source Freeze</a></td><td>repository-reviewed bridge</td><td>review SHA见对应记录</td><td>representation choice与转换损失</td><td>parser、denominator或protocol identity</td></tr>
+<tr><td><a href="vol_06_per009_grounding_matching_negative_loss_source_freeze.html">PER-009 Source Freeze</a></td><td>repository-reviewed bridge</td><td>review SHA见对应记录</td><td>training matching/loss/reduction</td><td>evaluation metric或holdout comparability</td></tr>
+</tbody></table>
+<h2 id="3">3. 与相邻节点的去重边界</h2>
+<table><thead><tr><th>节点</th><th>已负责</th><th>PER-010只新增</th></tr></thead><tbody>
+<tr><td>PER-001</td><td>point/box/text schema、坐标协议、basic parser</td><td>strict/lenient双轨、invalid taxonomy与metric denominator</td></tr>
+<tr><td>PER-006</td><td>resize/crop/letterbox、camera/time lineage</td><td>只要求这些字段进入protocol identity，不重讲变换</td></tr>
+<tr><td>PER-007</td><td>open-vocabulary inference、threshold/NMS与phrase/box输出</td><td>evaluator读取什么、如何match和aggregate</td></tr>
+<tr><td>PER-008</td><td>point/box/mask/keypoint/affordance表示选择</td><td>representation-specific metric不可互换</td></tr>
+<tr><td>PER-009</td><td>Hungarian training matching、negative、loss/reduction</td><td>不把training cost/loss叫evaluation metric</td></tr>
+<tr><td>PER-011</td><td>teacher noise、confidence calibration、leakage、curriculum</td><td>本页只记录gold/split/protocol identity，不判断teacher可靠性</td></tr>
+<tr><td>PER-015</td><td>perception→action reachability、uncertainty与failure gate</td><td>不从static metric推出可执行动作或robot success</td></tr>
+<tr><td>VOL 05</td><td>通用统计、CI、paired test与evaluation engineering</td><td>本页新增grounding parser、matching和representation语义</td></tr>
+</tbody></table>
+<h2 id="4-typed-prediction-strict-parser">4. Typed Prediction 与 Strict Parser 合同</h2>
+<p>最小prediction record应同时保留raw与typed字段：</p>
+<pre><code class="language-json">{
+  &quot;sample_id&quot;: &quot;...&quot;,
+  &quot;expected_representation&quot;: &quot;point | box | text&quot;,
+  &quot;raw_output&quot;: &quot;...&quot;,
+  &quot;parser_revision&quot;: &quot;sha256:...&quot;,
+  &quot;parse_mode&quot;: &quot;strict | lenient_diagnostic&quot;,
+  &quot;tag_status&quot;: &quot;pass | missing | mixed | extra&quot;,
+  &quot;syntax_status&quot;: &quot;pass | no_match | ambiguous | trailing_content&quot;,
+  &quot;coordinate_status&quot;: &quot;pass | out_of_range | non_finite | wrong_arity&quot;,
+  &quot;geometry_status&quot;: &quot;pass | degenerate | empty&quot;,
+  &quot;parsed_prediction&quot;: null,
+  &quot;invalid_reason&quot;: null
+}</code></pre>
+<p>推荐strict grammar对完整字符串做<code>fullmatch</code>，而不是从任意prose中搜索数字。示意EBNF为：</p>
+<pre><code class="language-text">number      = optional_sign, digits, optional_decimal ;
+point       = &quot;[&quot;, number, &quot;,&quot;, number, &quot;]&quot; ;
+point_out   = &quot;&lt;point&gt;&quot;, &quot;[&quot;, point, {&quot;,&quot;, point}, &quot;]&quot;, &quot;&lt;/point&gt;&quot; ;
+box_out     = &quot;&lt;box&gt;&quot;, &quot;[&quot;, number, &quot;,&quot;, number, &quot;,&quot;, number, &quot;,&quot;, number, &quot;]&quot;, &quot;&lt;/box&gt;&quot; ;</code></pre>
+<p>grammar只是第一层；还应检查finite、坐标范围、arity、box的\(x_2&gt;x_1,y_2&gt;y_1\)，并明确是否允许空集合、额外文本、多个tag或point+box混合。strict score用于部署/指令遵循主结论；lenient parser只用于定位“格式错但几何可能对”的诊断，不得静默替换主口径。</p>
+<h2 id="5-parser">5. 本地 Parser 的真实语义</h2>
+<p><code>expected_format</code>从gold answer中的tag路由：只有<code>&lt;point&gt;</code>为point、只有<code>&lt;box&gt;</code>为box、两者都有为<code>mixed_grounding</code>、都没有为text。当前scorer没有<code>mixed_grounding</code>专门分支，因此该类会落入text scoring。</p>
+<p>本地几何parser比format gate更宽松：</p>
+<ol><li><code>parse_points</code>用全局regex搜索任意<code>[x,y]</code>，不要求它位于<code>&lt;point&gt;...&lt;/point&gt;</code>内；</li><li><code>parse_box</code>先匹配flat tagged box，再读取<code>&lt;box&gt;...&lt;/box&gt;</code>内前四个数字，最后可把文本中的前两个point pairs当box；</li><li><code>valid_box</code>要求四个坐标在0..1000且严格正面积；</li><li>box <code>format_pass</code>还要求raw string含<code>&lt;box&gt;</code>，point <code>format_pass</code>要求含<code>&lt;point&gt;</code>且所有parsed points在范围内；</li><li>几何metric仍可使用lenient parse结果，即使<code>format_pass=false</code>；</li><li>text branch无条件令<code>format_pass=true</code>，所以mixed grounding被错误路由后不会暴露grounding format failure。</li></ol>
+<p>这不是一个纯strict evaluator，而是“tag gate + lenient geometry extraction + format-specific scoring”的组合。安全报告必须同时给出strict format rate、lenient geometry coverage和原始invalid reasons。</p>
+<h2 id="6-box-iou-acc-threshold">6. Box IoU 与 Acc@Threshold</h2>
+<p>对corner boxes \(A,B\)，标准axis-aligned IoU为：</p>
+<div class="formula">\[
+\operatorname{IoU}(A,B)=\frac{|A\cap B|}{|A|+|B|-|A\cap B|}.
+\]</div>
+<p>本地实现对intersection宽高做non-negative clamp，并把union denominator下限设为\(10^{-9}\)。对有效pred/gold box，单样本<code>iou</code>是连续值；阈值准确率为：</p>
+<div class="formula">\[
+\operatorname{Acc@IoU}(\tau)=\frac{1}{N}\sum_{i=1}^{N}
+\mathbf 1\!\left[\operatorname{IoU}(\hat b_i,b_i)\ge\tau\right].
+\]</div>
+<p>变量解释：\(N\)必须写明是全部box样本、成功解析样本还是其他subset；本地<code>acc_iou_0_3/0_5/0_75</code>把invalid prediction记为false并除全部box样本，而<code>iou_mean</code>只在pred/gold都valid时记录numeric value。</p>
+<p>因此<code>Acc@0.5=0.52</code>不能推出mean IoU为0.52，反之亦然；改变inclusive <code>&gt;=</code>为strict <code>&gt;</code>、坐标反归一化、box order、parser或invalid denominator都可能改变数字。</p>
+<h2 id="7-referring-expression-recall-k-mdetr-revision-trap">7. Referring-expression Recall@k 与 MDETR Revision Trap</h2>
+<p>在one-expression/one-target的常见RefCOCO设置中，可抽象为：</p>
+<div class="formula">\[
+R@k(\tau)=\frac{1}{N}\sum_{i=1}^{N}
+\mathbf 1\!\left[\max_{j\le k} O(\hat b_{i,j},b_i)\ge\tau\right],
+\]</div>
+<p>其中\(O\)应被明确冻结为IoU、GIoU或其他overlap，预测框按何种score排序也属于protocol。这个量更像“每个expression的top-k success fraction”；在单GT设置下某些论文称Recall@k，冻结MDETR代码却打印Precision@k。名称本身不能消除语义歧义。</p>
+<p>MDETR v3论文说明用IoU threshold（通常0.5）判断top-k是否命中；<code>mdetr@ea09acc.../datasets/refexp.py</code>却调用<code>generalized_box_iou</code>，再以<code>&gt;=0.5</code>判定。确定性反例：</p>
+<pre><code class="language-text">A = [0, 0, 2, 2]
+B = [0.34, 0.34, 2.34, 2.34]
+IoU(A,B)  = 0.5254366562  -&gt; pass at 0.5
+GIoU(A,B) = 0.4832129730  -&gt; fail at 0.5</code></pre>
+<p>所以引用MDETR数字时必须绑定paper table或code revision；不能把paper的“IoU Recall@1”和该commit运行得到的“GIoU-threshold Precision@1”当成无条件同protocol结果。</p>
+<h2 id="8-coco-ap-ar-refexp-recall-k">8. COCO AP / AR 不是 RefExp Recall@k</h2>
+<p>冻结COCO API detection defaults包括：</p>
+<ul><li><code>iouThrs = 0.50:0.05:0.95</code>，共10个threshold；</li><li><code>recThrs = 0:0.01:1</code>，共101个recall positions；</li><li>detection <code>maxDets = [1,10,100]</code>；</li><li>precision tensor shape为<code>[T,R,K,A,M]</code>，recall为<code>[T,K,A,M]</code>；</li><li>absent categories以<code>-1</code>保存并在summary均值中排除；</li><li>detections按score稳定排序，随后按category/image/IoU threshold做matching，并处理ignore、crowd与area range。</li></ul>
+<p>COCO AP是precision–recall envelope在指定维度上的汇总，AR也依赖IoU grid、area与maxDets。RefExp R@k通常按expression做binary success。二者即使都含“recall”也不共享sample unit、matching、ranking、denominator或aggregation，不能只凭scalar名字比较。</p>
+<h2 id="9-pck-normalization-visibility-correspondence">9. PCK：Normalization、Visibility 与 Correspondence</h2>
+<p>一个常见normalized keypoint hit可写为：</p>
+<div class="formula">\[
+h_{n,k}(\tau)=
+\mathbf 1\!\left[
+\left\|\frac{\hat p_{n,k}-p_{n,k}}{s_n}\right\|_2&lt;\tau
+\right],
+\qquad m_{n,k}=1,
+\]</div>
+<p>其中\(s_n\)可为bbox尺度、head尺度或按H/W的二维normalization factor；\(m_{n,k}\)是visibility/validity mask。PCK还必须说明是先按keypoint type求accuracy再macro average，还是对全部visible joints做micro average。</p>
+<p>冻结MMPose实现对coordinate difference按<code>norm_factor[:,None,:]</code>逐维归一化，再取L2 distance；invisible target被mask掉，zero norm会令该sample所有keypoints无效，missing distance记为<code>-1</code>。<code>keypoint_pck_accuracy</code>先对每个keypoint type跨instances算threshold accuracy，再对有效keypoint types求mean。因此仅报告“PCK@0.2”仍不足以复现，必须给出normalizer、visibility与macro/micro规则。</p>
+<p>普通grounding point set往往没有固定keypoint identity。若pred point与GT point没有一一对应，直接套PCK公式会偷偷引入matching假设；应先冻结nearest-neighbor、Hungarian或semantic keypoint correspondence。</p>
+<h2 id="10-robopoint-mask-hit-fixed-distance-hit">10. RoboPoint Mask-hit 与本地 Fixed-distance Hit</h2>
+<p>RoboPoint v1将spatial-affordance accuracy定义为预测点落入ground-truth target mask的比例，可抽象为：</p>
+<div class="formula">\[
+\operatorname{MaskHit}=\frac{1}{|P|}\sum_{p\in P}\mathbf 1[p\in M].
+\]</div>
+<p>它主要衡量预测点precision-like有效性：如果只给一个位于mask内的点，score可很高；它不要求覆盖mask全部区域，也不等于GT point recall或PCK。</p>
+<p>本地point score先计算所有pred–gold pairs的Euclidean distance，再用全局最小值定义：</p>
+<div class="formula">\[
+d_{\min}=\min_{p\in P,g\in G}\lVert p-g\rVert_2,
+\qquad
+\operatorname{Hit@r}=\mathbf 1[d_{\min}\le r],
+\quad r\in\{50,100\}.
+\]</div>
+<p>坐标位于0..1000规范空间；没有image diagonal、bbox、head或object size normalization。它回答“是否至少有一对点足够近”，而不是“多少pred有效”“多少GT被覆盖”或“对应keypoint是否正确”。因此报告时应称<code>fixed-coordinate any-pair Hit@50/100</code>，不要简称PCK。</p>
+<h2 id="11-multi-point-matching-coverage-duplicate">11. Multi-point Matching、Coverage 与 Duplicate</h2>
+<p>本地还记录两个directed nearest-neighbor mean：</p>
+<div class="formula">\[
+d_{P\to G}=\frac{1}{|P|}\sum_{p\in P}\min_{g\in G}\lVert p-g\rVert_2,
+\qquad
+d_{G\to P}=\frac{1}{|G|}\sum_{g\in G}\min_{p\in P}\lVert g-p\rVert_2.
+\]</div>
+<p>前者更接近prediction purity，后者更接近GT coverage，但两者都允许many-to-one匹配；duplicate predictions会重复进入\(P\to G\)，却不增加\(G\to P\)覆盖。若任务要求一一对应，应改用version-pinned bipartite matching并冻结unmatched penalty。</p>
+<p>确定性probe：<code>P={(0,0),(1000,1000)}</code>、<code>G={(1,1),(900,900)}</code>时，\(d_{\min}=1.414\)，所以Hit@50/100都通过；但两个directed mean均约71.418。一个boolean hit掩盖了集合其余部分的偏差。必须联合报告count difference、两个directed means与任务相关coverage，不能只挑最好看的一个指标。</p>
+<h2 id="12-invalid-empty-mixed-denominator-policy">12. Invalid、Empty、Mixed 与 Denominator Policy</h2>
+<table><thead><tr><th>情况</th><th>Strict主指标建议</th><th>Lenient诊断</th><th>本地当前行为</th></tr></thead><tbody>
+<tr><td>缺tag但坐标可抽取</td><td>format failure；几何主指标按预注册policy记失败或separate</td><td>可计算diagnostic geometry</td><td><code>format_pass=false</code>，仍可能计算IoU/distance</td></tr>
+<tr><td>prose含<code>[x,y]</code></td><td>trailing/prose failure</td><td>可抽取point</td><td>point regex会抽取</td></tr>
+<tr><td><code>[(x,y)]</code>括号形式</td><td>syntax failure</td><td>parser若有显式legacy mode才可恢复</td><td>当前regex无法抽取</td></tr>
+<tr><td>out-of-range point</td><td>coordinate failure</td><td>保留raw与reason</td><td><code>coord_valid=false</code>，但若pred/gold非空仍计算distance</td></tr>
+<tr><td>degenerate/invalid box</td><td>geometry failure</td><td>不应伪造box</td><td>bool IoU hits=false，numeric IoU/center为<code>None</code></td></tr>
+<tr><td>empty prediction</td><td>explicit empty failure</td><td>记录empty而非parser crash</td><td>point hits=false，numeric distance为<code>None</code></td></tr>
+<tr><td>point+box mixed gold</td><td>单独mixed schema或拒绝</td><td>不应自动当text</td><td><code>expected_format=mixed_grounding</code>后落入text，<code>format_pass=true</code></td></tr>
+<tr><td>duplicate points</td><td>依任务去重或计入precision penalty</td><td>报告pre/post-dedup</td><td>当前保留，影响count与pred→gold mean</td></tr>
+</tbody></table>
+<p>本地<code>Metrics.summary</code>对bool字段以全部该format pool的<code>n</code>为分母；对numeric字段只除实际出现且finite的count。两条样本中一条invalid box、一条perfect box的probe得到：<code>format_pass=0.5</code>、<code>Acc@0.5=0.5</code>，但<code>iou_mean=1.0</code>。这不是矛盾，而是分母不同；若报告里不附<code>iou__count</code>，<code>1.0</code>会极具误导性。</p>
+<h2 id="13-aggregation-stratification">13. Aggregation 与 Stratification</h2>
+<p>至少区分以下aggregation unit：</p>
+<ol><li>sample/micro：每条样本等权；</li><li>image：同图多个prompt先聚合，避免多prompt图权重过大；</li><li>category/task/macro：各类别或point/box/text pool等权；</li><li>keypoint type：先跨instances聚合，再对valid types求mean；</li><li>episode/robot：属于另一evaluation unit，不能由static image sample替代。</li></ol>
+<p>同时应按expected representation、object size、point count、prompt template、source dataset、image uniqueness、validity reason与checkpoint分层。overall scalar可能被2,500条text、6,100条box和1,400条point的pool比例主导，不代表每个slice都改善。</p>
+<h2 id="14-protocol-identity-comparability-matrix">14. Protocol Identity 与 Comparability Matrix</h2>
+<p>建议protocol ID由canonical manifest序列化后计算SHA-256：</p>
+<pre><code class="language-json">{
+  &quot;dataset_revision&quot;: &quot;...&quot;,
+  &quot;split_and_sample_ids_sha256&quot;: &quot;...&quot;,
+  &quot;image_and_gold_sha256&quot;: &quot;...&quot;,
+  &quot;checkpoint_sha256&quot;: &quot;...&quot;,
+  &quot;processor_prompt_template&quot;: &quot;...&quot;,
+  &quot;decode_config&quot;: {},
+  &quot;expected_representation&quot;: &quot;...&quot;,
+  &quot;coordinate_and_image_transform&quot;: {},
+  &quot;parser_revision_and_mode&quot;: &quot;...&quot;,
+  &quot;matching_and_overlap&quot;: {},
+  &quot;thresholds&quot;: [],
+  &quot;invalid_empty_duplicate_policy&quot;: {},
+  &quot;denominators&quot;: {},
+  &quot;aggregation_and_strata&quot;: {},
+  &quot;scorer_runtime_revision&quot;: &quot;...&quot;
+}</code></pre>
+<table><thead><tr><th>差异</th><th>可比结论</th><th>理由</th></tr></thead><tbody>
+<tr><td>所有manifest字段相同，仅随机seed不同</td><td>可直接paired比较，另报不确定性</td><td>sample与scorer identity一致</td></tr>
+<tr><td>同raw predictions，仅strict parser修复且同时报告旧/新口径</td><td>条件可比</td><td>可隔离parser effect，但新旧scalar不能混成同一leaderboard</td></tr>
+<tr><td>IoU改GIoU、<code>&gt;=</code>改<code>&gt;</code>或threshold改变</td><td>不直接可比</td><td>per-sample success可能翻转</td></tr>
+<tr><td>invalid从false改为drop</td><td>不直接可比</td><td>denominator和selection改变</td></tr>
+<tr><td>fixed distance Hit改PCK</td><td>不可比</td><td>normalizer、correspondence和任务问题不同</td></tr>
+<tr><td>RefExp R@1改COCO AP</td><td>不可比</td><td>unit、ranking、matching、threshold grid不同</td></tr>
+<tr><td>split、image transform、prompt或checkpoint改变</td><td>不做单因素归因</td><td>多个causal factors同时变化</td></tr>
+<tr><td>static holdout改robot episode success</td><td>不可比</td><td>observation/action/unit/failure semantics不同</td></tr>
+</tbody></table>
+<h2 id="15-opd-evaluator-code-mapping">15. 本地 OPD Evaluator Code Mapping</h2>
+<p>本地code-to-metric映射如下：</p>
+<table><thead><tr><th>Expected pool</th><th>Parse / gate</th><th>Per-sample fields</th><th>主要风险</th></tr></thead><tbody>
+<tr><td>box</td><td>flat tag→tag body numbers→two point pairs；0..1000且正面积</td><td>format/coord、IoU、Acc@.3/.5/.75、center distance</td><td>lenient fallback可在format fail时仍得几何分；numeric denominator跳invalid</td></tr>
+<tr><td>point</td><td>任意文本全局抓<code>[x,y]</code>；tag与range另判</td><td>format/coord、counts、min/双向mean distance、Hit@50/100</td><td>any-pair hit过于乐观、无normalization、out-of-range仍可能算distance</td></tr>
+<tr><td>text</td><td>normalize后exact/loose/bool/MC</td><td>format恒true、text scores</td><td>loose match可能容忍额外文本</td></tr>
+<tr><td>mixed</td><td>没有专门branch</td><td>实际走text</td><td>grounding结构错误被隐藏</td></tr>
+</tbody></table>
+<p>这张表说明parser、format gate和metric computation必须分别记录。若要修复本地scorer，应先保存现有raw predictions并建立golden tests，再发布新parser revision；不能覆盖旧结果后仍沿用同一protocol名称。</p>
+<h2 id="16-raw-holdout-protocol-reconciliation">16. Raw Holdout Protocol Reconciliation</h2>
+<p>现有OPD inventory记录raw holdout为10,000条：box 6,100、point 1,400、text 2,500，共8,251 unique images；fingerprint、source-line、image+prompt+answer重复均为0，且与train image交集为0。OPD5000 checkpoint 5000在已记录pool上的数字包括Box Acc@0.5 <code>0.5238</code>、Point Hit@50/100 <code>0.7493/0.8729</code>、Text exact <code>0.8724</code>；不同pool最佳checkpoint并不相同。</p>
+<p>这些数字只在inventory冻结的dataset/evaluator语境内成立，且本页未重新归档对应raw predictions。早期point prompt要求裸<code>[(x,y)]</code>，当前strict gate要求<code>&lt;point&gt;...&lt;/point&gt;</code>；更具体地说，当前regex甚至不能解析圆括号pair形式，而能从裸<code>[x,y]</code>或prose中抽取坐标。因此需要分开：</p>
+<ol><li><strong>original strict</strong>：完全按原prompt、原parser与原scorer复现，作为历史结果；</li><li><strong>protocol-fixed strict</strong>：修复prompt/parser合同后重跑同raw sample IDs，发布新protocol ID；</li><li><strong>lenient geometry diagnostic</strong>：在raw outputs上尝试versioned recovery，只用于分析潜在几何能力。</li></ol>
+<p><code>strict=0</code>不能直接解释为几何能力为0；lenient geometry较高也不能抹去部署格式失败。最可信的修复证据是同一raw output同时跑old/new parser的paired transition matrix，再决定是否需要重新generation。</p>
+<h2 id="17-probes">17. 五个确定性 Probes</h2>
+<h3 id="17-1-iou-edge-cases">17.1 IoU edge cases</h3>
+<p>本地函数得到identical boxes=<code>1.0</code>、disjoint=<code>0.0</code>、touching edge=<code>0.0</code>。该probe验证continuous overlap边界，不验证parser或dataset。</p>
+<h3 id="17-2-strict-gate-lenient-parse">17.2 Strict gate 与 lenient parse</h3>
+<table><thead><tr><th>Raw output</th><th>Parsed points</th><th><code>format_pass</code></th></tr></thead><tbody>
+<tr><td><code>&lt;point&gt;[[100,200]]&lt;/point&gt;</code></td><td><code>(100,200)</code></td><td>true</td></tr>
+<tr><td><code>[[100,200]]</code></td><td><code>(100,200)</code></td><td>false</td></tr>
+<tr><td><code>answer is [100,200]</code></td><td><code>(100,200)</code></td><td>false</td></tr>
+<tr><td><code>[(100,200)]</code></td><td>empty</td><td>false</td></tr>
+</tbody></table>
+<p>该probe证明“能抽坐标”与“格式合规”不是同一事件，也纠正了把所有裸point形式都视为可恢复的错误假设。</p>
+<h3 id="17-3-any-pair-hit-set-quality">17.3 Any-pair Hit 与 set quality</h3>
+<p>前述two-point probe得到<code>min=1.414</code>、Hit@50/100=true，而两个directed means约71.418，说明一个近邻pair即可通过boolean hit。</p>
+<h3 id="17-4-field-specific-denominator">17.4 Field-specific denominator</h3>
+<p>一个invalid box加一个perfect box得到bool <code>format_pass=0.5</code>、<code>Acc@0.5=0.5</code>，但numeric <code>iou_mean=1.0</code>。metric output必须附每字段count。</p>
+<h3 id="17-5-mdetr-iou-giou-discrepancy">17.5 MDETR IoU / GIoU discrepancy</h3>
+<p>偏移框probe在0.5阈值下产生IoU pass、GIoU fail，证明paper文字、打印名称与code function必须同时冻结。</p>
+<h2 id="18-typed-metric-manifest-minimum-report">18. Typed Metric Manifest 与 Minimum Report</h2>
+<p>每次evaluation至少输出：</p>
+<pre><code class="language-json">{
+  &quot;protocol_id&quot;: &quot;sha256:...&quot;,
+  &quot;sample_id&quot;: &quot;...&quot;,
+  &quot;raw_output&quot;: &quot;...&quot;,
+  &quot;expected_representation&quot;: &quot;...&quot;,
+  &quot;parser_status&quot;: {},
+  &quot;parsed_prediction&quot;: null,
+  &quot;gold&quot;: null,
+  &quot;matching_trace&quot;: null,
+  &quot;per_sample_metrics&quot;: {},
+  &quot;included_in_denominators&quot;: {},
+  &quot;invalid_reason&quot;: null
+}</code></pre>
+<p>summary层至少给出每个field的numerator/denominator、invalid/empty/mixed counts、micro与pre-registered macro、slice表、checkpoint与protocol ID。只保存四舍五入scalar，无法重算parser transition、threshold curve、paired difference或bad-case taxonomy。</p>
+<h2 id="19-project-truth-boundary">19. Project Truth Boundary 与补证顺序</h2>
+<table><thead><tr><th>项目口径</th><th>当前可安全表述</th><th>当前不能声称</th></tr></thead><tbody>
+<tr><td>Public metrics</td><td>能解释IoU/Acc、RefExp top-k、COCO AP/AR、PCK、mask-hit和fixed-distance Hit的不同合同</td><td>名称相同即protocol相同</td></tr>
+<tr><td>MDETR audit</td><td>固定commit确有GIoU threshold与Precision打印，且可构造IoU/GIoU翻转样本</td><td>任意其他revision或公开leaderboard都受同一bug影响</td></tr>
+<tr><td>OPD parser</td><td>能逐函数说明strict gate与lenient geometry、mixed fallback和field-specific denominator</td><td>当前scorer是严格parser或标准PCK evaluator</td></tr>
+<tr><td>OPD holdout</td><td>inventory记录10k构成、去重/leakage检查和checkpoint-pool metrics</td><td>本页已绑定raw predictions、所有checkpoint hashes或新protocol重跑</td></tr>
+<tr><td>Robot claim</td><td>static grounding可作为perception诊断</td><td>robot task success、可达性、安全性或OPD单因素因果</td></tr>
+<tr><td>Ownership</td><td>能说明repo中观察到的代码与artifact</td><td>候选人亲自设计/实现/跑数，尚需真实口述与commit/日志证据</td></tr>
+</tbody></table>
+<p>补证顺序：archive raw predictions→冻结sample/image/gold hashes→给现有scorer加golden tests→发布strict parser v2而不覆盖v1→同raw output做paired reconciliation→必要时固定generation config重跑→按representation/slice报告counts与metrics→绑定candidate ownership→最后再接robot episode证据。</p>
+<h2 id="20-source-gate-bounded-slice">20. Source Gate 结论与下一 Bounded Slice</h2>
+<p>本切片已冻结：</p>
+<ol><li>raw output、strict/lenient parser、tag/syntax/coordinate/geometry status的typed边界；</li><li>box IoU、Acc@threshold、RefExp Recall@k与COCO AP/AR的非等价合同；</li><li>PCK的normalization/visibility/correspondence、RoboPoint mask-hit与本地fixed-distance Hit差异；</li><li>multi-point any-pair、directed coverage、duplicate与matching风险；</li><li>invalid/empty/mixed的分母和aggregation policy；</li><li>MDETR paper/code/name discrepancy及五个deterministic probes；</li><li>本地OPD scorer逐函数映射、10k holdout现有证据与三口径reconciliation；</li><li>protocol identity、comparability matrix、typed metric manifest与项目真实性边界。</li></ol>
+<p>当前verdict为<code>WARN</code>：primary/official/implementation/local code已冻结，但MDETR paper与固定commit存在IoU/GIoU口径差异；本地mixed grounding被当text、parser并非严格、numeric与bool denominator不同；早期point prompt与当前tag/regex不一致；raw predictions、exact checkpoint hashes、parser v2 paired rerun与candidate ownership仍未闭合。</p>
+<p><code>VLA-PER-010</code> knowledge与atomic card已在独立bounded slices同步，题卡保持<code>unseen</code>。下一bounded slice只冻结<code>VLA-PER-011</code> pseudo-label/teacher-noise source；不生成其knowledge/card，不创建<code>coaching_state.md</code>，不改变261张题卡的状态。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="https://arxiv.org/abs/2104.12763v3">MDETR v3</a> 与 <a href="https://github.com/ashkamath/mdetr/blob/ea09acc44ca067072c4b143b726447ee7ff66f5f/datasets/refexp.py">mdetr@ea09acc RefExp evaluator</a>。</li><li><a href="https://github.com/cocodataset/cocoapi/blob/8c9bcc3cf640524c4c20a9c40e89cb6a2f2fa0e9/PythonAPI/pycocotools/cocoeval.py">COCO API@8c9bcc cocoeval.py</a>。</li><li><a href="https://arxiv.org/abs/2406.10721v1">RoboPoint v1</a>。</li><li><a href="https://arxiv.org/abs/1406.2984v1">MPII Human Pose v1</a> 与 <a href="https://github.com/open-mmlab/mmpose/blob/759b39c13fea6ba094afc1fa932f51dc1b11cbf9/mmpose/evaluation/functional/keypoint_eval.py">MMPose@759b39 keypoint_eval.py</a>。</li><li><a href="vol_06_per001_grounding_coordinate_source_freeze.html">PER-001 Point / Box / Text Grounding Source Freeze</a>。</li><li><a href="vol_06_per008_representation_choice_source_freeze.html">PER-008 Representation Choice Source Freeze</a>。</li><li><a href="vol_06_per009_grounding_matching_negative_loss_source_freeze.html">PER-009 Matching / Negative / Loss Source Freeze</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>。</li><li><a href="../knowledge/vol_06_per010_grounding_metric_parser_protocol.html">PER-010 Grounding Metric / Parser / Protocol Knowledge</a>。</li><li><a href="../questions/vol_06_per010.html">PER-010 Grounding Metric / Parser / Protocol Atomic Card</a>。</li></ol>
+</article></body></html>

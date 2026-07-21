@@ -1,0 +1,31 @@
+{
+  "artifact": "knowledge/vol_06_per002_3d_lift_frame.md",
+  "html": "knowledge/vol_06_per002_3d_lift_frame.html",
+  "source_freeze": "sources/vol_06_per002_3d_lift_frame_source_freeze.md",
+  "review_date": "2026-07-18",
+  "status": "drafted / VLA-PER-002 / knowledge_1_of_phase / card_synced / WARN",
+  "verdict": "WARN",
+  "source_sha256": "64dbc11b0ac1f8748c0181067af3e3b97d1fc8a7e940d2d0d659b4850db26f49",
+  "question_ids": [
+    "VLA-PER-002"
+  ],
+  "checks": {
+    "source_gate": "PASS WITH WARNING (OpenCV/ROS source freeze is linked; local OPD/WAM material is used only for evidence boundaries)",
+    "technical_scope": "PASS (camera intrinsics/distortion, depth sources, inverse projection, frame transforms, timestamps, uncertainty and evidence ladder are covered)",
+    "formula_explanation": "PASS (pinhole backprojection and homogeneous transform define variables, frame direction and implementation assumptions)",
+    "pseudocode": "PASS (depth validation, inverse preprocess, rectification, backprojection, timestamped TF and uncertainty gate are commented)",
+    "project_evidence_boundary": "PASS (OPD remains static 2D evidence; WAM camera/controller fields do not become 3D or real-robot claims)",
+    "html_static_validation": "PASS (one H1, section anchors, formulas, tables, code block and canonical SHA rendered)",
+    "local_links": "PASS (PER-002 source freeze, PER-001, OPD and WAM links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "question_card": "PASS WITH WARNING (one VLA-PER-002 card is synchronized and remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the VLA-PER-002 atomic card unseen until oral practice.",
+    "If a local calibration/depth/TF artifact appears, bind image size, units, timestamps, frame IDs and revision hashes.",
+    "Keep projection math, calibration, TF, planner, controller and closed-loop evidence as separate gates.",
+    "Keep PER-003 multi-view/temporal evidence scoped to its own source/knowledge/card contract."
+  ],
+  "next": "Run a PER-001..004 oral drill or collect one local 3D roundtrip artifact; keep all cards unseen."
+}

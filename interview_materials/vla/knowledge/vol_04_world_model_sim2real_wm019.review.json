@@ -1,0 +1,51 @@
+{
+  "artifact": "knowledge/vol_04_world_model_sim2real_wm019.md",
+  "html": "knowledge/vol_04_world_model_sim2real_wm019.html",
+  "review_date": "2026-07-17",
+  "status": "drafted / VLA-WM-019 / knowledge_21_of_44 / card_deferred / review_warn",
+  "verdict": "WARN",
+  "source_sha256": "F4C9E21D242FEB6B8ACB8B8A1475DA3806B5A4F1532E12048795E80B90672712",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 20,
+    "new_nodes": 1,
+    "total_drafted_nodes": 21,
+    "covered_ids": ["VLA-WM-019"],
+    "drafted_cards_for_new_nodes": 0,
+    "practice_state": "card_deferred / no_oral_drill",
+    "difficulty": "L2",
+    "priority": "P0"
+  },
+  "source_scope": {
+    "metric_freeze": "sources/vol_04_wm019_metric_boundary_source_freeze.html",
+    "world_model": "sources/vol_04_world_model_foundations_claim_to_code.html",
+    "uwm": "sources/vol_04_uwm_video_action_claim_to_code.html",
+    "benchmark": "sources/vol_04_benchmark_evidence_claim_to_protocol.html",
+    "statistics": "sources/vol_05_eval003_success_rate_confidence_interval_source_freeze.html"
+  },
+  "checks": {
+    "bounded_slice": "PASS (one WM-019 knowledge node only; no card generated)",
+    "metric_ladder": "PASS (offline, one-step, open-loop, world proxy, simulator and real closed-loop separated)",
+    "visual_metric_boundary": "PASS WITH WARNING (PSNR/SSIM/FVD limitations and implementation dependence stated)",
+    "latent_action_boundary": "PASS (target, normalizer, mask, reduction and action schema dependencies stated)",
+    "rollout_boundary": "PASS (teacher-forced versus open-loop compounding and per-offset reporting mapped)",
+    "protocol_contract": "PASS (checkpoint/schema/normalizer/horizon/reset/controller/seed/predicate fields required)",
+    "statistical_unit": "PASS (episode versus step/frame/row/pool units separated)",
+    "pseudocode": "PASS (comments implement offline/open-loop/action-sensitivity/closed-loop ladder)",
+    "project_truth_boundary": "PASS (no local project metric upgraded across contracts)",
+    "html_static_validation": "PASS (one H1, thirteen H2 including the generated TOC heading, three H3, one table, display formulas and one commented code block)",
+    "local_links": "PASS (all repository-local source/audit links resolve)",
+    "source_sha": "PASS (canonical Markdown SHA matches HTML meta and review JSON)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "paired_metric_eval": "PENDING",
+    "episode_artifacts": "PENDING",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Run per-offset teacher-forced/open-loop metrics and action sensitivity tests.",
+    "Run proxy-vs-simulator paired validation with frozen checkpoint/task/init/scorer/predicate.",
+    "Obtain checkpoint, metric script, denominator and episode artifacts for project metrics.",
+    "WM-019 card was generated in a separate slice and remains unseen until oral practice; do not create coaching_state.md."
+  ],
+  "next": "Generate one VLA-WM-019 unseen atomic card or run a WM-015..018 oral drill; keep WM-020..038 deferred."
+}

@@ -1,0 +1,26 @@
+{
+  "artifact": "knowledge/vol_02_il_rl_posttraining.md",
+  "html": "knowledge/vol_02_il_rl_posttraining.html",
+  "review_date": "2026-07-19",
+  "status": "fact_reviewed_candidate / local_grpo_boundary_checked",
+  "verdict": "WARN",
+  "source_sha256": "90E70DBE1494B313AD4E7141160CFE47EA89836A108313BAA52C63D400429460",
+  "checks": {
+    "scope_boundary": "PASS (algorithm mechanisms separated from personal project facts)",
+    "primary_sources": "PASS for DAgger, GAE, PPO, CQL, IQL, DPO and GRPO",
+    "formula_explanations": "PASS (variables, intuition and implementation implications follow display equations)",
+    "pseudocode_comments": "PASS (post-training and group-relative update blocks contain comments)",
+    "schema_reward_eval_boundary": "PASS",
+    "public_local_boundary": "PASS",
+    "html_structure": "PASS (one h1, renderer-owned TOC, MathJax, responsive generated view)",
+    "exact_local_grpo_implementation": "PASS WITH WARNING (train_grpo.py/reward_spec/eval_grpo_tasks inspected; implementation is reward-shaped offline GRPO-style, not canonical online GRPO)",
+    "independent_fact_review": "PASS WITH WARNING (VOL 02 independent fact review frozen; GAE timeout, CQL partial objective and GRPO implementation boundaries recorded)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep local Harness GRPO-style trainer separate from canonical online GRPO claims; collect same-scorer raw base/SFT/GRPO bundle before causal language.",
+    "Keep all 40 VOL 02 question cards unseen; the card set is complete but not drilled.",
+    "Run a five-question oral drill before changing module status to reviewed/drilled."
+  ],
+  "next": "Run one VLA-RL oral drill after the two boundary patches; do not create coaching_state.md before a real answer."
+}

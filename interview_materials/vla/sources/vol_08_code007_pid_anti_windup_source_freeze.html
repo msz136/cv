@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 08 CODE-007 Source Freeze：PID Update with Anti-windup</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_08_code007_pid_anti_windup_source_freeze.md">
+<meta name="aris:source-sha256" content="292b7678f3801f1fa16a8b1533148249174eb80014d055c8004f19e7d093253a">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>292b7678f3801f1fa16a8b1533148249174eb80014d055c8004f19e7d093253a</code>；生成自：<code>interview_materials\vla\sources\vol_08_code007_pid_anti_windup_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-claim-boundary">1. 来源、版本与 claim boundary</a></li><li><a href="#2">2. 冻结接口与离散语义</a></li><li><a href="#3-anti-windup">3. Anti-windup 合同</a></li><li><a href="#3-1-conditional-integration">3.1 Conditional integration</a></li><li><a href="#3-2-back-calculation">3.2 Back-calculation</a></li><li><a href="#3-3-clamp-reset-izone">3.3 Clamp、reset 与 IZone 不等价</a></li><li><a href="#4-deterministic-probe">4. 最小 deterministic probe 矩阵</a></li><li><a href="#5">5. 项目真实性边界</a></li><li><a href="#6-source-gate">6. Source gate 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 08 CODE-007 Source Freeze：PID Update with Anti-windup</h1>
+<div class="meta">状态：<code>source_frozen / CODE-VLA-007 / knowledge_synced / card_pending / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本页冻结 PID update 的函数签名、离散时间语义、输出饱和、积分 anti-windup、reset 与测试 oracle；下游 knowledge 已在独立 bounded slice 生成，仍不把公开 controller 文档或本地基础知识写成候选人已经实现了闭环控制器。</div>
+<h2 id="question">问题（Question）</h2>
+<p>如何实现一个可测试的离散 PID 更新，使 <code>dt</code>、误差符号、导数状态、输出饱和与积分 anti-windup 语义明确？面试中必须能区分：输出 clamp、积分项 clamp、conditional integration、back-calculation、reset，以及这些机制对 VLA action/controller 边界的影响。</p>
+<h2 id="1-claim-boundary">1. 来源、版本与 claim boundary</h2>
+<table><thead><tr><th>来源</th><th>类型 / 固定信息</th><th>直接支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td><a href="https://control.ros.org/rolling/doc/ros2_controllers/pid_controller/doc/userdoc.html">ROS 2 control PID controller userdoc</a></td><td>official docs；抓取日期 2026-07-20；响应 SHA-256 <code>88aa83d02cd8712bcb9c00064fb033e1388034fdd81bb6a7965ef26ca146f11d</code></td><td><code>p/i/d</code> gains、<code>u_clamp</code>、<code>i_clamp</code>、<code>antiwindup_strategy={back_calculation,conditional_integration,none}</code> 与 <code>tracking_time_constant</code> 配置语义</td><td>本地机器人已使用 ROS 2 controller、调参结果或真实闭环成功</td></tr>
+<tr><td><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html">WPILib PIDController documentation</a></td><td>official docs；抓取日期 2026-07-20；响应 SHA-256 <code>5160878475dff0129ca10700ade06f1613f11ada79d8d93ad3a93cd1f2a5765a</code></td><td>固定 period 假设、<code>reset()</code>、integrator range、IZone、输出 clamp、continuous input 的 API/边界提醒</td><td>任何 VLA action 维度、机器人硬件或候选人 ownership</td></tr>
+<tr><td><a href="https://fbsbook.org/">Feedback Systems</a></td><td>textbook landing page；抓取日期 2026-07-20；响应 SHA-256 <code>1b550456ff5d81fad55e7ecf79822ed4a233872e7bccc0d089cd205c06200018</code></td><td>PID、饱和与反馈稳定性所需的控制理论入口</td><td>某一具体 anti-windup 离散实现的默认参数或项目收益</td></tr>
+<tr><td>本仓库 <a href="vol_01_batch3_advanced_control_independent_fact_review.html">VOL 01 advanced-control fact review</a></td><td>local canonical；已审查的控制基础与项目边界</td><td>PID/MPC/impedance/learned policy 的选择条件与真实性边界</td><td>CODE-007 的本地实现、白板通过或真机闭环</td></tr>
+</tbody></table>
+<p><code>checked</code> 只表示来源响应已记录并能支撑上表中的窄 claim。<code>back-calculation</code> 的离散公式、条件积分的判定顺序和测试矩阵属于本页明确标注的实现合同/推导，不是 ROS 2 或 WPILib 默认实现的逐行复刻。</p>
+<h2 id="2">2. 冻结接口与离散语义</h2>
+<p>建议把更新函数固定为：</p>
+<pre><code class="language-text">pid_step(setpoint, measurement, state, gains, limits, dt) -&gt; (u_sat, next_state, trace)</code></pre>
+<p>其中 <code>state</code> 至少包含上一时刻误差 <code>e_prev</code>、积分输出 <code>i_state</code> 和可选导数滤波状态；<code>trace</code> 记录 <code>e</code>、<code>p_term</code>、<code>i_term</code>、<code>d_term</code>、<code>u_unsat</code>、<code>u_sat</code>、饱和方向与 anti-windup 分支。<code>dt</code> 必须是正的、有限的、与控制周期同一时间单位；<code>dt=0</code>、负数、NaN 和突变都必须有显式策略，而不是静默当作固定周期。</p>
+<p>令误差采用 <code>e_k = setpoint - measurement</code>，并把 <code>i_state</code> 定义为已经乘过 <code>K_i</code> 的积分输出贡献：</p>
+<div class="formula">\[
+u^{\mathrm{unsat}}_k=K_p e_k+i_k+K_d\frac{e_k-e_{k-1}}{\Delta t},\qquad
+u_k=\operatorname{clip}(u^{\mathrm{unsat}}_k,u_{\min},u_{\max}).
+\]</div>
+<p>若实现采用相反误差符号，所有 P/I/D 与 anti-windup 判定必须成套翻转；只改 P 项符号会造成“看似能跑、饱和方向错误”的隐蔽 bug。</p>
+<h2 id="3-anti-windup">3. Anti-windup 合同</h2>
+<h3 id="3-1-conditional-integration">3.1 Conditional integration</h3>
+<p>当未饱和时积分正常累加；已经上饱和且误差仍推动输出向上，或已经下饱和且误差仍推动输出向下时，冻结积分。可写成：</p>
+<div class="formula">\[
+i_{k+1}=i_k+K_i\Delta t\,e_k\;\mathbf{1}\!\left[\neg\mathrm{sat}_k\;\lor\;\mathrm{error\ drives\ back\ from\ the\ rail}\right].
+\]</div>
+<p>判定必须基于 <code>u_unsat</code> 与 <code>u_sat</code> 的方向，而不是只检查 <code>abs(e)</code>；否则会在设定值跨越、负向饱和或不同误差定义下冻结错误。</p>
+<h3 id="3-2-back-calculation">3.2 Back-calculation</h3>
+<p>把执行器实际可实现的 <code>u_sat</code> 反馈回积分状态：</p>
+<div class="formula">\[
+i_{k+1}=i_k+\Delta t\left(K_i e_k+\frac{u_k-u^{\mathrm{unsat}}_k}{T_t}\right),
+\]</div>
+<p>其中 <code>T_t&gt;0</code> 是 tracking time constant。<code>u_sat-u_unsat</code> 把积累过多的积分贡献拉回可实现输出；<code>T_t</code> 太小会使积分状态剧烈追踪并放大噪声，太大则恢复慢。ROS 2 文档直接暴露该策略和 tracking-time 参数，但本页的离散状态定义仍需在代码中固定并测试。</p>
+<h3 id="3-3-clamp-reset-izone">3.3 Clamp、reset 与 IZone 不等价</h3>
+<ul><li><code>u_clamp</code> 限制最终输出；它本身不保证积分状态不会继续增长。</li><li><code>i_clamp</code> 限制积分贡献；它能减少 windup，但不等于 back-calculation 的动态回算。</li><li><code>reset()</code> 清除积分、导数历史与滤波器状态；重新启用、episode 切换、robot lease/episode epoch 变化时必须明确是否 reset。</li><li>IZone/误差门控是“何时允许积分”的策略，不能和输出饱和方向判定混为一谈。</li></ul>
+<h2 id="4-deterministic-probe">4. 最小 deterministic probe 矩阵</h2>
+<table><thead><tr><th>Probe</th><th>输入/条件</th><th>预期检查</th></tr></thead><tbody>
+<tr><td>P1</td><td><code>dt=0</code>、负数、NaN、Inf</td><td>reject 或显式 fallback；不得悄悄更新积分</td></tr>
+<tr><td>P2</td><td><code>K_i=0</code>、<code>K_d=0</code>、<code>dt</code> 改变</td><td>P-only/D-only 与时间尺度行为可解释</td></tr>
+<tr><td>P3</td><td>正误差触发上饱和</td><td>conditional integration 冻结；back-calculation 向下回拉</td></tr>
+<tr><td>P4</td><td>误差反向、仍在上饱和</td><td>积分允许消除 windup，不能继续冻结</td></tr>
+<tr><td>P5</td><td><code>u_min=u_max</code>、无限 clamp、<code>i_clamp</code></td><td>边界不产生 NaN；trace 说明饱和与积分状态</td></tr>
+<tr><td>P6</td><td>reset 后重复同一输入</td><td>输出/状态与新 episode 首步一致，旧导数不泄漏</td></tr>
+<tr><td>P7</td><td>角度环绕输入</td><td>只有显式启用 continuous input 才使用 shortest-path error</td></tr>
+<tr><td>P8</td><td>固定 seed 的 step-by-step replay</td><td>state、u_unsat、u_sat 与 trace 可逐步复现</td></tr>
+</tbody></table>
+<p>这些 probes 证明的是函数合同与数值行为，不证明控制器在某个机器人、VLA action schema 或真实硬件上稳定。</p>
+<h2 id="5">5. 项目真实性边界</h2>
+<p>现有五项目材料可以用于追问“动作输出、timeout/cancel、controller hook、simulator rollout 或 action normalization 如何与 PID 接口对齐”，但当前没有可闭合的 CODE-007 local implementation、joint feedback trace、matched controller comparison、anti-windup tuning log 或 candidate ownership artifact。因此安全表达是“我能解释并设计这个更新合同”，不能说“我已经在项目中实现并验证了 anti-windup PID”。</p>
+<h2 id="6-source-gate">6. Source gate 结论与下一步</h2>
+<p>ROS 2 与 WPILib 官方文档冻结了配置/API/边界语义，Feedback Systems 与本仓库 VOL 01 提供控制理论入口；本页补充的 conditional-integration/back-calculation 公式与 probe 矩阵明确标为实现合同。source gate 通过但保留 <code>WARN</code>，下一步只生成 CODE‑VLA‑007 knowledge，题卡继续后置。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="https://control.ros.org/rolling/doc/ros2_controllers/pid_controller/doc/userdoc.html">ROS 2 control PID controller userdoc</a>。</li><li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/controllers/pidcontroller.html">WPILib PIDController documentation</a>。</li><li><a href="https://fbsbook.org/">Feedback Systems</a>。</li><li>本仓库 <a href="vol_01_batch3_advanced_control_independent_fact_review.html">VOL 01 advanced-control fact review</a>。</li></ol>
+</article></body></html>

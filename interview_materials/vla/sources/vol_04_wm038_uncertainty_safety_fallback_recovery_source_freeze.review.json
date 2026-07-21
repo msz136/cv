@@ -1,0 +1,40 @@
+{
+  "artifact": "sources/vol_04_wm038_uncertainty_safety_fallback_recovery_source_freeze.md",
+  "html": "sources/vol_04_wm038_uncertainty_safety_fallback_recovery_source_freeze.html",
+  "review_date": "2026-07-18",
+  "status": "source_frozen / VLA-WM-038 / knowledge_synced / card_synced",
+  "verdict": "WARN",
+  "source_sha256": "017dbe706784aee02adcaa8393d34a281cab4bea07128da56f3d71a65eabbb3c",
+  "frozen_sources": {
+    "cautious_mpc": "arXiv:1705.10702v4 / ar5iv response SHA-256 2d96ea745b3e465c4181778d8ea31a71f68d3f14d8e000b61f8824ddbf2f8847",
+    "recovery_rl": "arXiv:2010.15920v2 / ar5iv response SHA-256 0e95072e0c1d883e3e9c808307498dc162d58d010ef202285809a2ef0369df12",
+    "cbf": "arXiv:1903.11199v1 / ar5iv response SHA-256 d9a799bdb3ea6358b5cb9af51c98afe1509ef43bb52f1dca2261c4bbb487f651",
+    "cpo": "arXiv:1705.10528v1 / ar5iv response SHA-256 30d6930c736dda6679c9c05d440a8b6297d6455e93721916a3e6e7cef5077654",
+    "local_boundary": "Sim2Real Audit D + Evidence Manifest + Robot Harness/OpenPiVLA/UWM evidence inventories"
+  },
+  "checks": {
+    "batch_boundary": "PASS (only VLA-WM-038 frozen; completed WM-039..044 are not regenerated)",
+    "primary_source_scope": "PASS (chance MPC, learned recovery, CBF runtime filtering and constrained policy training tied to four primary sources)",
+    "constraint_registry": "PASS AS ENGINEERING SYNTHESIS (source/frame/unit/margin/clock/severity/response/reset contract explicit)",
+    "chance_constraint": "PASS (probabilistic constraint and Gaussian deterministic-equivalent assumptions explicit)",
+    "uncertainty_calibration": "PASS AS DESIGN GATE (risk reliability, false-safe and risk-coverage required; uncalibrated spread remains heuristic)",
+    "cbf_boundary": "PASS (safe-set invariance and QP filter tied to dynamics/state/barrier/feasibility assumptions)",
+    "training_runtime_boundary": "PASS (CPO near-constraint training guarantee not promoted to per-step runtime hard safety)",
+    "recovery_boundary": "PASS (future-risk critic and task/recovery switch mapped; zero-risk guarantee rejected)",
+    "fallback_estop_boundary": "PASS AS ENGINEERING SYNTHESIS (recovery, conservative fallback and latched E-stop responsibilities separated)",
+    "chunk_queue_safety": "PASS (short-prefix approval and event-triggered queue flush/ack explicit)",
+    "matched_evaluation": "PASS (task/hard/risk/recovery/fallback/combined/fault arms with equal hazard exposure and safety/utility metrics)",
+    "project_evidence_boundary": "PASS (Robot Harness high-level cancel/compensation and sim rollouts not promoted to physical safety completion)",
+    "html_static_validation": "PASS (canonical SHA embedded; one H1, twenty-six H2 headings, seven tables, formulas, commented pseudocode and MathJax rendered)",
+    "local_links": "PASS (Audit D, Evidence Manifest and Robot Harness/OpenPiVLA/UWM inventories resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "independent_fact_review": "PASS WITH WARNING (reconciled by vol_04_sim2real_independent_fact_review.md; physical safety evidence remains missing)"
+  },
+  "open_items": [
+    "Collect a local constraint registry plus CBF/shield/risk/recovery/fallback state-machine implementation.",
+    "Run equal-hazard matched and fault-injection tests with false-safe, coverage, time-to-safe and gate-latency metrics.",
+    "Before real claims, collect low-level limits, E-stop, queue flush/ack, near-miss/incident and reset/approval records.",
+    "Keep VLA-WM-038 unseen until oral practice; do not create coaching_state.md without a real drill."
+  ],
+  "next": "Return to the first missing VOL 04 node VLA-WM-011; do not regenerate completed WM-039..044."
+}

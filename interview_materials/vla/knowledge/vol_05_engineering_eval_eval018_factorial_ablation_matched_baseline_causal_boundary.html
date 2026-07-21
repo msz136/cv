@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 Engineering / Evaluation：EVAL-018 Factorial Ablation、Matched Baseline 与因果边界</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_05_engineering_eval_eval018_factorial_ablation_matched_baseline_causal_boundary.md">
+<meta name="aris:source-sha256" content="50f0cbf2ec67b146ee383bcacccda735661db7d5cbffa431928e8bac7579f1d2">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>50f0cbf2ec67b146ee383bcacccda735661db7d5cbffa431928e8bac7579f1d2</code>；生成自：<code>interview_materials\vla\knowledge\vol_05_engineering_eval_eval018_factorial_ablation_matched_baseline_causal_boundary.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 问题与结论先行</a></li><li><a href="#2">2. 直觉：不要比较两个“礼包”</a></li><li><a href="#3">3. 五个基本对象</a></li><li><a href="#4-2-2-factorial">4. 最小2×2 Factorial</a></li><li><a href="#5">5. 主效应与交互效应</a></li><li><a href="#6">6. 回归模型只是计算器，不是因果许可证</a></li><li><a href="#7-matched-baseline">7. Matched Baseline 八项合同</a></li><li><a href="#8-seed-eval-pair-block-what-you-can">8. Seed 与 Eval Pair：Block What You Can</a></li><li><a href="#9-fixed-recipe-equal-search-budget">9. Fixed Recipe 与 Equal Search Budget</a></li><li><a href="#9-1">9.1 机制诊断</a></li><li><a href="#9-2">9.2 系统能力</a></li><li><a href="#10">10. 四本资源账</a></li><li><a href="#11-run-selection-test-leakage">11. 失败 Run、Selection 与 Test Leakage</a></li><li><a href="#12-binary-success-multiplicity">12. Binary Success、层次与 Multiplicity</a></li><li><a href="#13">13. 什么时候可以说“因果”</a></li><li><a href="#claim-ladder">Claim ladder</a></li><li><a href="#14-factor">14. Factor 多时怎么办</a></li><li><a href="#15-artifact-pipeline">15. Artifact 与执行 Pipeline</a></li><li><a href="#16">16. 五项目真实性映射</a></li><li><a href="#uwm-libero">UWM / LIBERO</a></li><li><a href="#wam-cosmos">WAM / Cosmos</a></li><li><a href="#openpivla">OpenPiVLA</a></li><li><a href="#robot-harness">Robot Harness</a></li><li><a href="#opd">OPD</a></li><li><a href="#17">17. 面试追问防线</a></li><li><a href="#18">18. 本节点状态</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 05 Engineering / Evaluation：EVAL-018 Factorial Ablation、Matched Baseline 与因果边界</h1>
+<div class="meta">状态：<code>drafted / VLA-EVAL-018 / knowledge_40_of_44 / card_1_of_1_unseen / review_warn</code> 更新日期：2026-07-19 难度：L3　优先级：P0 来源冻结：<a href="../sources/vol_05_eval018_factorial_ablation_matched_baseline_causal_boundary_source_freeze.html">EVAL-018 Source Freeze</a> 本页把“组件打开后指标更高”拆成可执行factor、matched cells、主效应/交互、run-level uncertainty和protocol内因果effect；不把五项目现有组合结果升级成单组件贡献。</div>
+<h2 id="1">1. 问题与结论先行</h2>
+<p>面试中最危险的回答是：“我把world loss加进去，成功率从A涨到B，所以world model有效。”这句话同时跳过了baseline是否matched、data/compute/seed/scorer是否共变、best checkpoint如何选、失败run是否被删，以及效果是否能外推。</p>
+<p>高分答案应先说：</p>
+<ol><li>定义要干预的factor和要估计的estimand；</li><li>用完整factorial cells分离main effect与interaction；</li><li>对training randomness和eval pairs做block/randomization，而不是把episode当training replicates；</li><li>冻结data、budget、selection和scorer，失败run也入账；</li><li>只在实验support内说因果，不从一个bundle contrast外推组件普遍有效。</li></ol>
+<h2 id="2">2. 直觉：不要比较两个“礼包”</h2>
+<pre><code class="language-text">危险比较：
+baseline = old data + old code + default lr + last checkpoint + scorer A
+candidate = more data + new head + tuned lr + best checkpoint + scorer B
+
+可解释比较：
+same frozen base bundle
+  × factor A on/off
+  × factor B on/off
+  × randomized/blocked training runs
+  × same paired evaluation registry</code></pre>
+<p>前者只能说“两个礼包数字不同”；后者才有机会回答某个factor的作用。factor不是标签，而是可执行、版本化的intervention：其code/config/data semantic diff必须可审计。</p>
+<h2 id="3">3. 五个基本对象</h2>
+<table><thead><tr><th>对象</th><th>面试中怎么定义</th><th>机器人/VLA例子</th></tr></thead><tbody>
+<tr><td>factor</td><td>一个预注册、可执行的变化</td><td>world loss on/off；route metadata on/off</td></tr>
+<tr><td>arm/cell</td><td>factor levels的完整组合</td><td>action-only、+world、+value、all</td></tr>
+<tr><td>experimental unit</td><td>独立接受factor并产生outcome的单位</td><td>一次完整training pipeline run</td></tr>
+<tr><td>outcome</td><td>protocol-bound metric/cost/failure</td><td>paired sim success、latency、OOM rate</td></tr>
+<tr><td>estimand</td><td>对什么随机性、预算和support取平均</td><td>frozen task/seed分布上的平均risk difference</td></tr>
+</tbody></table>
+<p>episode是trained policy的评估样本，不是独立training run。1000个episode不能补偿每个arm只有一个training seed。</p>
+<h2 id="4-2-2-factorial">4. 最小2×2 Factorial</h2>
+<p>以action主任务恒开、world/value为两个factor：</p>
+<table><thead><tr><th>Cell</th><th>World</th><th>Value</th><th>能回答什么</th></tr></thead><tbody>
+<tr><td>A00</td><td>off</td><td>off</td><td>action-only baseline</td></tr>
+<tr><td>A10</td><td>on</td><td>off</td><td>value关闭时world的simple effect</td></tr>
+<tr><td>A01</td><td>off</td><td>on</td><td>world关闭时value的simple effect</td></tr>
+<tr><td>A11</td><td>on</td><td>on</td><td>联合表现与interaction</td></tr>
+</tbody></table>
+<p>只跑A00和A11无法区分：A有效、B有效、两者都有效、只有interaction有效，或一个有益但被另一个抵消。NIST的full factorial要求每个factor setting与其他factor setting完整组合；<code>k</code>个二水平factor需要<code>2^k</code> cells。[1]</p>
+<h2 id="5">5. 主效应与交互效应</h2>
+<p>令<code>μ_ab</code>为冻结protocol内cell <code>(A=a,B=b)</code>的平均outcome。0/1编码下：</p>
+<div class="formula">\[
+\tau_A=\frac{(\mu_{10}-\mu_{00})+(\mu_{11}-\mu_{01})}{2},
+\qquad
+\tau_B=\frac{(\mu_{01}-\mu_{00})+(\mu_{11}-\mu_{10})}{2}.
+\]</div>
+<p>变量解释：<code>τ_A</code>把A在B=0和B=1时的两个simple effects平均；<code>τ_B</code>同理。直觉：主效应不是只看A10−A00。实现映射：从每个cell的seed×task raw rows计算contrast，并保留层次不确定性。[1][2]</p>
+<p>加性interaction为：</p>
+<div class="formula">\[
+\tau_{AB}=\mu_{11}-\mu_{10}-\mu_{01}+\mu_{00}.
+\]</div>
+<p>变量解释：若A、B作用完全加和，<code>τ_AB=0</code>；正值可能是协同，负值可能是冲突。实现映射：A11最好不够，必须同时有另外三个cells。对于success probability，这是risk-difference尺度interaction；换成logit/odds尺度结论可能不同，必须声明scale。</p>
+<h2 id="6">6. 回归模型只是计算器，不是因果许可证</h2>
+<p>可用±1编码拟合解释性模型：</p>
+<div class="formula">\[
+g\!\left(E[Y_{r,e}]\right)=
+\beta_0+\beta_Ax_A+\beta_Bx_B+\beta_{AB}x_Ax_B+b_r+c_e.
+\]</div>
+<p>变量解释：<code>r</code>是training run，<code>e</code>是task/init/eval block，<code>g</code>可为identity或logit；<code>b_r/c_e</code>表示层次/区组结构。直觉：模型把cell差异、interaction和nuisance block组织起来。实现映射：statsmodels可提供formula/ANOVA入口，但模型输出是否有因果意义仍取决于factor assignment、完整cells、missingness和protocol。[3]</p>
+<p>报告时优先给cell table、effect estimate、CI与practical margin；<code>p&lt;0.05</code>不能替代effect大小、方向稳定性和工程成本。</p>
+<h2 id="7-matched-baseline">7. Matched Baseline 八项合同</h2>
+<table><thead><tr><th>维度</th><th>必须冻结</th><th>不匹配时最多能说</th></tr></thead><tbody>
+<tr><td>initialization</td><td>base checkpoint bytes、processor/normalizer、freeze policy</td><td>不同lineage的bundle比较</td></tr>
+<tr><td>data</td><td>source pool、split、sampling、mix、dedupe</td><td>data+method联合变化</td></tr>
+<tr><td>optimization</td><td>optimizer、effective batch、schedule、precision</td><td>recipe联合变化</td></tr>
+<tr><td>budget</td><td>steps/tokens/FLOPs/wall-clock定义</td><td>不同资源下的系统比较</td></tr>
+<tr><td>tuning</td><td>search space、trials、compute、selection</td><td>candidate被额外调优</td></tr>
+<tr><td>evaluation</td><td>task/init/controller/scorer/pair IDs</td><td>protocol-confounded数字</td></tr>
+<tr><td>failure policy</td><td>OOM/NaN/timeout/invalid处理</td><td>survivor-only观察</td></tr>
+<tr><td>semantic diff</td><td>只含factor及必要mechanical adaptation</td><td>多因素bundle contrast</td></tr>
+</tbody></table>
+<p>“同名数据集”“同epoch”“同seed”都不自动matched。打开auxiliary objective若同时增加视频样本、head容量和训练步数，应拆factor，或诚实称为system-bundle intervention。</p>
+<h2 id="8-seed-eval-pair-block-what-you-can">8. Seed 与 Eval Pair：Block What You Can</h2>
+<p>NIST建议用blocking控制重要nuisance；Bouthillier等进一步指出ML benchmark需覆盖data sampling、augmentation、initialization和hyperparameter optimization等随机性，并推荐可行时做paired trainings。[1][2]</p>
+<p>对同一block的factor contrast：</p>
+<div class="formula">\[
+d_{s,e}=Y_{1,s,e}-Y_{0,s,e},
+\qquad
+\widehat\tau=\frac{1}{|S||E|}
+\sum_{s\in S}\sum_{e\in E}d_{s,e}.
+\]</div>
+<p>变量解释：<code>s</code>是training/data randomness block，<code>e</code>是相同task/init episode pair。直觉：先做block内差值，减少无关波动。实现映射：training/data/env/rollout/bootstrap seeds必须分字段；CI按training run与task/episode hierarchy cluster/bootstrap，不能把episode伪装成training replicate。[2][4]</p>
+<p>相同整数seed不保证新增module后RNG call sequence相同。能保持coupling时pair；不能时仍要随机化和重复，并明确哪些randomness未配对。</p>
+<h2 id="9-fixed-recipe-equal-search-budget">9. Fixed Recipe 与 Equal Search Budget</h2>
+<h3 id="9-1">9.1 机制诊断</h3>
+<div class="formula">\[
+\Delta_{\mathrm{fixed}}=
+E\!\left[Y(\mathrm{on},\lambda_0,B)-Y(\mathrm{off},\lambda_0,B)\right].
+\]</div>
+<p><code>λ0</code>是共同recipe，<code>B</code>是固定预算。它回答“其他recipe不变时打开组件怎样”，便于定位机制；但新组件可能需要不同loss weight/lr，负结果不代表最佳可达能力一定无效。</p>
+<h3 id="9-2">9.2 系统能力</h3>
+<div class="formula">\[
+\Delta_{\mathrm{tuned}}=
+E\!\left[Y(\mathrm{on},\widehat\lambda_{on},B,H)-
+Y(\mathrm{off},\widehat\lambda_{off},B,H)\right].
+\]</div>
+<p><code>H</code>是两arm相同的search space、trial/compute budget、validation selection与fresh holdout协议。它回答“给同等调参资源后哪个pipeline更好”。candidate调50次、baseline用默认值，既不是公平系统比较，也不能支持component因果。[2]</p>
+<p>两种estimand都值得报告，但不能混成一个结论。</p>
+<h2 id="10">10. 四本资源账</h2>
+<ol><li><strong>Data</strong>：unique samples、tokens/frames/actions、mix、repeat与augmentation；</li><li><strong>Optimization</strong>：updates、effective batch、schedule position与gradient accumulation；</li><li><strong>Compute</strong>：FLOPs近似、GPU-hours、peak memory、retry/failure；</li><li><strong>Capacity/runtime</strong>：trainable params、latency、throughput、planning calls。</li></ol>
+<p>同epoch在数据量不同的arms上不等token；同steps在模型FLOPs不同的arms上不等compute。可以并列fixed-token、equal-FLOP与equal-wall-clock结果，但必须先定义每个estimand。</p>
+<h2 id="11-run-selection-test-leakage">11. 失败 Run、Selection 与 Test Leakage</h2>
+<pre><code class="language-text">planned = not_started + started
+started = completed_valid + failed_runtime + excluded_protocol</code></pre>
+<p>OOM、NaN、timeout、load failure和invalid output必须保留。若factor导致更高failure rate，它就是重要engineering outcome；只比较survivors会产生post-treatment selection bias。</p>
+<p>checkpoint selection也要matched：</p>
+<ul><li>预注册metric、cadence、patience、tie-break与eligible set；</li><li>所有cells用同validation support和selection budget；</li><li>test/real-canary不参与调weight/threshold/checkpoint；</li><li>last、pre-registered selected与oracle-best分开；</li><li>repaired rerun使用新run ID，不能覆盖失败run。</li></ul>
+<h2 id="12-binary-success-multiplicity">12. Binary Success、层次与 Multiplicity</h2>
+<p>closed-loop success至少按cell报告<code>k/n/CI</code>、per-task结果、macro/micro、training-seed分布和paired difference。训练run是factor assignment unit；episode只估计该policy的conditional success。</p>
+<p>多个factors×tasks×metrics×checkpoints会制造大量比较。primary outcome、primary contrast、practical margin和confirmatory family应事前冻结；其余标exploratory。Holm/FDR可处理multiplicity，但修复不了不匹配protocol、post-hoc factor或失败run丢失。[4]</p>
+<h2 id="13">13. 什么时候可以说“因果”</h2>
+<p>potential outcome记为<code>Y_u(1),Y_u(0)</code>。随机化/区组化factorial要识别冻结protocol内effect，至少需要：[5]</p>
+<table><thead><tr><th>假设</th><th>对应工程检查</th></tr></thead><tbody>
+<tr><td>consistency</td><td>每个factor level只有一个版本化实现；无隐藏data/head/weight变体</td></tr>
+<tr><td>exchangeability</td><td>arm assignment不按好seed、好hardware或预览结果决定</td></tr>
+<tr><td>positivity</td><td>目标task/seed/hardware block内所有必要cells都有机会运行</td></tr>
+<tr><td>no interference</td><td>run间不共享会被candidate改变的数据、cache、label或adaptive scorer</td></tr>
+<tr><td>outcome accounting</td><td>failed/excluded/missing按预注册规则守恒</td></tr>
+</tbody></table>
+<p>即使全部满足，最强结论也是：“在冻结model/data/budget/task/eval support上，factor A使outcome平均变化多少。”它不自动意味着新机器人、真机、长期部署或所有VLA都受益。</p>
+<h3 id="claim-ladder">Claim ladder</h3>
+<pre><code class="language-text">mechanism hypothesis
+ -&gt; two bundle numbers differ
+ -&gt; matched contrast with uncertainty
+ -&gt; randomized factorial effect in frozen protocol
+ -&gt; replicated effect across new support
+ -&gt; deployment utility / safety evidence</code></pre>
+<p>不要跨级。</p>
+<h2 id="14-factor">14. Factor 多时怎么办</h2>
+<p><code>k</code>个二水平factor需要<code>2^k</code>cells。factor多时可先在offline/sim做screening，再对少数高价值factor跑完整factorial；若使用fractional factorial，必须声明resolution和alias structure。fractional design节省计算但会让某些effects混叠；one-factor-at-a-time则容易漏interaction。[1]</p>
+<p>推荐顺序：</p>
+<ol><li>机制/风险筛选2—4个factor；</li><li>低成本screening；</li><li>完整factorial+多个training seeds；</li><li>paired closed-loop confirmatory；</li><li>新support replication；</li><li>真实部署另走EVAL-017 gate。</li></ol>
+<h2 id="15-artifact-pipeline">15. Artifact 与执行 Pipeline</h2>
+<pre><code class="language-text">preregistration + base bundle
+ -&gt; design matrix + randomized blocks
+ -&gt; immutable planned run registry
+ -&gt; all attempts/checkpoints/failures
+ -&gt; common selection rule
+ -&gt; paired raw evaluation rows
+ -&gt; cell/main/interaction/cost summaries
+ -&gt; deviation + multiplicity + claim decision</code></pre>
+<pre><code class="language-python">def evaluate_factorial(spec, factor_grid, train_blocks, eval_pairs):
+    # Freeze every planned cell, estimand and outcome before seeing results.
+    design = randomize_within_blocks(factor_grid, train_blocks, spec)
+    registry = create_planned_registry(design)
+
+    for row in design:
+        # Materialize only declared factor changes and record semantic diffs.
+        arm = build_versioned_arm(spec.base_bundle, row.factor_levels)
+        assert_declared_diffs_only(arm, row)
+        try:
+            result = train_under_budget(arm, spec.budget)
+            registry.complete(row, result)
+        except Exception as failure:
+            # Failure is an outcome, not a seed that may be silently removed.
+            registry.fail(row, failure)
+
+    # Use one selection rule and the same task/init IDs for every valid arm.
+    selected = select_on_validation(registry, spec.selection)
+    raw = evaluate_same_pairs(selected, eval_pairs, spec.scorer)
+    return estimate_cells_effects_interactions_and_cost(raw, registry, spec)</code></pre>
+<p>这是应补做的实验合同，不是个人项目已有实现。[6]</p>
+<h2 id="16">16. 五项目真实性映射</h2>
+<h3 id="uwm-libero">UWM / LIBERO</h3>
+<p><code>186/250</code> fixed-pruned-init与<code>232/250</code> reset-style改变了init/warmup/distribution，是protocol sensitivity，不是模型factor effect；raw pairs/checkpoint也缺。先做同checkpoint、同episode IDs的protocol对照，再谈action-only/+video objective arms。[6]</p>
+<h3 id="wam-cosmos">WAM / Cosmos</h3>
+<p>action/future/value上游机制已核；action-only/+world/+value/all目前只是设计建议。本地只有单episode diagnostic，缺四cells、training seeds、checkpoint和完整closed-loop denominator。</p>
+<h3 id="openpivla">OpenPiVLA</h3>
+<p>formal Qwen causal-CE与archived flow-matching metadata不在同一闭合lineage，不能把差异叫objective ablation。official-checkpoint diagnostics与97.4 summary也不能替代formal matched cells。</p>
+<h3 id="robot-harness">Robot Harness</h3>
+<p>32B base与SFT/GRPO的holdout <code>n</code>和hidden-embedding/token-overlap scorer不同；当前ladder不能支持严格uplift。下一步先统一suite/n/scorer/raw prediction，再做scope/no-arg/restraint reward factorial。</p>
+<h3 id="opd">OPD</h3>
+<p>五teacher、coldstart、route KL、synthetic mix一起构成组合路线；缺SFT-only、single-teacher、no-synthetic、ratio/route ablation。可讲机制与10k static holdout结果，不能说某组件单独带来提升。</p>
+<p>五项目都未达到“matched factorial + full run ledger + paired raw eval + causal assumptions”的C2/C3门槛。</p>
+<h2 id="17">17. 面试追问防线</h2>
+<ul><li><strong>为什么不是只删模块？</strong> 因为要定义factor、estimand、预算和interaction；删模块可能同时改data/compute/capacity。</li><li><strong>为什么同seed还不够？</strong> 一个seed不代表随机性分布，且不同graph可能消费不同RNG序列。</li><li><strong>A11最好能说A、B都有效吗？</strong> 不能，必须看四cells的main/simple/interaction effects。</li><li><strong>baseline需要重新调参吗？</strong> fixed-recipe与equal-search-budget回答不同问题，应分开报告。</li><li><strong>OOM seed怎么处理？</strong> 进入planned/failed账本；不能静默删除或用新seed覆盖。</li><li><strong>episode很多为什么仍不显著？</strong> factor分配单位是training run，episode是层次内样本。</li><li><strong>什么时候能说因果？</strong> factor assignment、完整cells、consistency/exchangeability/positivity/no-interference和outcome accounting闭合时，只在冻结support内说。</li><li><strong>你的项目做过吗？</strong> 当前五项目没有完整matched factorial；我能讲设计与缺口，不能编造effect。</li></ul>
+<h2 id="18">18. 本节点状态</h2>
+<p>EVAL-018知识节点与一张题卡已起草并保持<code>WARN/unseen</code>。本页没有新增任何项目uplift、单组件因果或ownership结论；没有真实口述前不创建<code>coaching_state.md</code>。下一节点是<code>VLA-EVAL-019</code>：checkpoint selection、Pareto frontier与holdout overfit。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>NIST/SEMATECH, <a href="https://www.itl.nist.gov/div898/handbook/pri/section3/pri333.htm">Full factorial</a>、<a href="https://www.itl.nist.gov/div898/handbook/pri/section3/pri3331.htm">Two-level full factorial</a>与<a href="https://www.itl.nist.gov/div898/handbook/pri/section3/pri332.htm">Randomized block designs</a>。</li><li>Bouthillier et al., <a href="https://arxiv.org/abs/2103.03098v1"><em>Accounting for Variance in Machine Learning Benchmarks</em>, arXiv:2103.03098v1</a>。</li><li>statsmodels, <a href="https://github.com/statsmodels/statsmodels/blob/1bf73add5d92f64e48cf2ca143dfeef9811e4eac/statsmodels/stats/anova.py"><code>anova.py</code>@<code>1bf73ad</code></a>。</li><li><a href="vol_05_engineering_eval_eval004_paired_init_seed_significance.html">EVAL-004 Paired Evaluation</a>、<a href="vol_05_engineering_eval_eval005_macro_micro_weighted_aggregation.html">EVAL-005 Estimand</a>与<a href="vol_05_engineering_eval_eval009_recomputable_evaluation_bundle.html">EVAL-009 Recomputable Bundle</a>。</li><li>Hernán &amp; Robins, <a href="https://miguelhernan.org/whatifbook"><em>Causal Inference: What If</em></a>，2025-11-21 edition。</li><li><a href="../sources/vol_05_eval018_factorial_ablation_matched_baseline_causal_boundary_source_freeze.html">EVAL-018 Source Freeze</a>及<a href="../evidence/evidence_manifest.html">五项目inventories</a>。</li></ol>
+</article></body></html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 05 ENG-013：Seed、Determinism、Sampler Cursor 与 Resume 来源冻结</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eng013_reproducibility_source_freeze.md">
+<meta name="aris:source-sha256" content="af21822b7617fb3117768034c985737833de6a2a34f58ca42766f8a03c9b56ee">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>af21822b7617fb3117768034c985737833de6a2a34f58ca42766f8a03c9b56ee</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eng013_reproducibility_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 三个强度不要混为一谈</a></li><li><a href="#2">2. 冻结来源与版本</a></li><li><a href="#3">3. 官方语义核对</a></li><li><a href="#3-1-pytorch-reproducibility">3.1 PyTorch reproducibility 的否定边界</a></li><li><a href="#3-2-distributedsampler-set-epoch">3.2 DistributedSampler 的前提与 `set_epoch`</a></li><li><a href="#3-3-rng-state-api">3.3 RNG state API 的范围</a></li><li><a href="#4-resume-sampler-cursor">4. Resume / Sampler Cursor 工程合同</a></li><li><a href="#5-replay-smoke">5. 最小 replay smoke</a></li><li><a href="#6-claim">6. 不能支持的强 claim</a></li><li><a href="#7">7. 本地项目证据边界</a></li><li><a href="#8-source-freeze">8. Source Freeze 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 05 ENG-013：Seed、Determinism、Sampler Cursor 与 Resume 来源冻结</h1>
+<div class="meta">状态：<code>source_frozen / VLA-ENG-013_knowledge+card_drafted / unseen / WARN</code> 冻结日期：2026-07-17 对应问题：<code>VLA-ENG-013</code>——seed、determinism、sampler cursor 与复现实验如何设计？ 当前边界：本文件只冻结官方语义和工程合同；下游<a href="../knowledge/vol_05_engineering_eval_eng013.html">知识正文</a>与<a href="../questions/vol_05_engineering_eval_eng013.html">单张题卡</a>已生成，本地复现实验结论和掌握状态仍后置。 相关来源：<a href="vol_05_batch1_independent_fact_review.html">VOL 05 Batch 1 官方复核</a> 已核对 PyTorch 2.13 Reproducibility；本文件补齐 DistributedSampler 与 RNG state API。</div>
+<h2 id="1">1. 三个强度不要混为一谈</h2>
+<table><thead><tr><th>强度</th><th>要回答的问题</th><th>典型证据</th><th>本轮结论</th></tr></thead><tbody>
+<tr><td>固定 seed</td><td>同一次启动是否使用可解释的随机源？</td><td>Python/NumPy/torch CPU/CUDA seed、worker seed</td><td>API 可控制，但 seed 不是完整复现证明</td></tr>
+<tr><td>可复现实验</td><td>同一 code/data/env/protocol 能否重现样本顺序、指标和 artifact？</td><td>manifest、RNG state、sampler epoch/seed、run bundle、matched rerun</td><td>需要工程合同和 replay smoke</td></tr>
+<tr><td>精确中途续训</td><td>从 step (k) 恢复后，下一批 sample、梯度、optimizer/scaler 和结果是否一致？</td><td>sampler cursor、worker/prefetch policy、所有 RNG state、fixed-request diff</td><td>PyTorch 页面不自动提供；必须自行设计/验证</td></tr>
+</tbody></table>
+<p>“我设置了 <code>seed=42</code>”只覆盖第一层的一部分，不能直接回答后两层。</p>
+<h2 id="2">2. 冻结来源与版本</h2>
+<p>HTML 页面使用规范化正文指纹：移除 <code>script/style/nav/header/footer/svg</code>，合并正文空白后计算 normalized main-text SHA-256；连续 GET 的 raw HTML 可能包含动态资源，不作为稳定指纹。</p>
+<table><thead><tr><th>来源</th><th>版本 / URL</th><th>normalized text 长度 / SHA-256</th><th>支持内容</th><th>不支持内容</th></tr></thead><tbody>
+<tr><td>PyTorch Reproducibility</td><td><a href="https://docs.pytorch.org/docs/2.13/notes/randomness.html">2.13 randomness</a></td><td><code>11230</code> / <code>5a19f15c86d56dbd0f9ea0572b86e960475328c99c36408cfb82d4fce90a03c5</code></td><td>跨 release/platform 不保证完全复现、deterministic trade-off、torch/Python/NumPy RNG、DataLoader worker reseed</td><td>固定 seed 后任意环境 bitwise identical</td></tr>
+<tr><td>PyTorch DataLoader / DistributedSampler</td><td><a href="https://docs.pytorch.org/docs/2.13/data.html#torch.utils.data.distributed.DistributedSampler">2.13 data</a></td><td><code>47667</code> / <code>9032517582f5a20a811008e4f71a81e356d058380cfc985b552ef338b1cecf5f</code></td><td>worker generator、Iterable/Map semantics、DistributedSampler 的 constant-size/order、seed、drop_last、<code>set_epoch</code></td><td>mid-epoch cursor checkpoint、全局 replay contract</td></tr>
+<tr><td><code>torch.get_rng_state</code></td><td><a href="https://docs.pytorch.org/docs/2.13/generated/torch.get_rng_state.html">PyTorch 2.13</a></td><td><code>1100</code> / <code>68f3efc879a6a9c84a3fbf7ff72c8981c788b021b88698b5fbc58b1bcdc72050</code></td><td>CPU default generator state 是 ByteTensor</td><td>CUDA、NumPy、Python 或 sampler 状态自动包含其中</td></tr>
+<tr><td><code>torch.set_rng_state</code></td><td><a href="https://docs.pytorch.org/docs/2.13/generated/torch.set_rng_state.html">PyTorch 2.13</a></td><td><code>1142</code> / <code>d5c6b11ba57b56686c4b5d88bf2f55dcea7cbc923e0a7399584d4245dcddd7b4</code></td><td>恢复 CPU RNG state；CUDA 需其他 API</td><td>完整训练 resume 自动恢复</td></tr>
+<tr><td><code>torch.cuda.get_rng_state_all</code> / <code>set_rng_state_all</code></td><td><a href="https://docs.pytorch.org/docs/2.13/generated/torch.cuda.get_rng_state_all.html">get</a> / <a href="https://docs.pytorch.org/docs/2.13/generated/torch.cuda.set_rng_state_all.html">set</a></td><td><code>1050</code> / <code>25cd8d0b28fcd18c4d3a02d8ed537d512abc6a62b2eb1c57af3efe1a8c09fe0b</code>; <code>1097</code> / <code>2eb06b6c1058f8595e5b28f69fece528b725527c1fe9fd6ec3f81dba3284e237</code></td><td>所有 CUDA device 的 ByteTensor state 读写</td><td>Python/NumPy/worker/sampler cursor 自动恢复</td></tr>
+<tr><td>NumPy <code>random.seed</code></td><td><a href="https://numpy.org/doc/1.26/reference/random/generated/numpy.random.seed.html">NumPy 1.26</a></td><td><code>437</code> / <code>312e83995a2006d130efb04f802be1cbad551da045a54e7af2462ae99d3b9ef3</code></td><td>legacy singleton RandomState reseed；文档建议 dedicated Generator</td><td>新 Generator 实例、PyTorch worker 或完整 run replay</td></tr>
+</tbody></table>
+<h2 id="3">3. 官方语义核对</h2>
+<h3 id="3-1-pytorch-reproducibility">3.1 PyTorch reproducibility 的否定边界</h3>
+<p>PyTorch 2.13 明确声明：跨 release、individual commits、平台，以及 CPU/GPU 之间，完全可复现结果不被保证；deterministic operations 往往更慢。文档建议分别控制 torch、Python、NumPy 等随机源，并用 DataLoader 的 <code>worker_init_fn</code> 和 <code>generator</code> 处理 worker reseed。[1]</p>
+<p>因此安全表达是“在固定 release/platform/device 与明确随机源后，限制不确定性并做 replay”，不是“seed 后完全复现”。</p>
+<h3 id="3-2-distributedsampler-set-epoch">3.2 DistributedSampler 的前提与 <code>set_epoch</code></h3>
+<p>官方文档把 <code>DistributedSampler</code> 定义为把 dataset 子集分配给各 process，并假设 dataset 大小恒定、每次以相同顺序返回相同元素。<code>seed</code> 在 distributed group 中应一致；<code>drop_last=False</code> 时 sampler 会补 index 以使各 replica 可整除，<code>drop_last=True</code> 时丢掉尾部。文档还明确：每个 epoch 创建 DataLoader iterator 前调用 <code>set_epoch(epoch)</code>，否则多 epoch 会一直使用相同顺序。[2]</p>
+<p>这支持：</p>
+<ul><li><code>dataset length/order</code>、<code>world_size/rank</code>、<code>seed</code>、<code>shuffle</code>、<code>drop_last</code> 必须进入 run manifest。</li><li>resume 时不能只恢复 <code>epoch</code>；若从 epoch 中途恢复，还要知道已消费的 index/cursor 和 DataLoader/worker 行为。</li><li>把 <code>set_epoch</code> 放错位置会改变或冻结 shuffle 顺序，属于可诊断的 first-failure。</li></ul>
+<p>这不支持“DistributedSampler 自动保存 cursor”或“任意 dataset 动态增删仍可精确恢复”。</p>
+<h3 id="3-3-rng-state-api">3.3 RNG state API 的范围</h3>
+<p><code>torch.get_rng_state()</code> / <code>set_rng_state()</code> 针对 CPU default generator；CUDA 的 <code>get_rng_state_all()</code> / <code>set_rng_state_all()</code> 针对所有 CUDA device。它们是可组合的 state API，不是训练 checkpoint bundle：Python random、NumPy Generator、worker seed、sampler generator、prefetch queue 和 dataset transform counter 仍要单独处理。</p>
+<p>NumPy 1.26 的 <code>random.seed</code> 是 legacy singleton RandomState 的便利接口，文档建议 dedicated <code>Generator</code>。因此项目若同时使用 legacy API 和 Generator，必须记录每个 owner，不能只保存一个整数 seed。</p>
+<h2 id="4-resume-sampler-cursor">4. Resume / Sampler Cursor 工程合同</h2>
+<p>下面是本仓库建议的 resume bundle，不是 PyTorch 默认 schema：</p>
+<pre><code class="language-text">model / optimizer / scaler
+code + environment + dataset/transform manifest
+python RNG + numpy RNG/Generator states
+torch CPU RNG + per-CUDA-device RNG states
+world_size + rank + sampler seed/shuffle/drop_last
+dataset length/order + epoch + step_in_epoch + sampler cursor
+worker_init policy + DataLoader generator + prefetch/persistent policy
+next expected sample IDs / request trace</code></pre>
+<p><code>step_in_epoch</code> 不能自动等于 sampler cursor：batch size、drop_last、dynamic batching、worker prefetch、filtered sample 和 distributed padding 都可能让“已完成 optimizer step 数”与“已消费样本位置”不一致。若无法保存真实 cursor，应使用固定 request trace 或 deterministic skip/replay，并把结论降级为“epoch-boundary resume”。</p>
+<h2 id="5-replay-smoke">5. 最小 replay smoke</h2>
+<pre><code class="language-python">def resume_smoke(bundle, fixed_requests):
+    # Restore model/optimizer/scaler before consuming the next request.
+    restore_training_state(bundle)
+    restore_python_numpy_torch_cuda_rng(bundle)
+    restore_sampler_or_replay_cursor(bundle)
+    # Compare exact next sample IDs and one-step outputs, not only loss text.
+    got = next_batch_and_step(fixed_requests)
+    assert got.sample_ids == bundle.expected_next_sample_ids
+    assert close(got.loss, bundle.expected_loss, atol=bundle.tolerance)
+    return got</code></pre>
+<p>至少做两种测试：</p>
+<ol><li>epoch-boundary resume：保存 epoch 完成后的 bundle，比较下一 epoch 的 sample IDs 和 loss。</li><li>mid-epoch resume：在固定 request trace 的 step (k) 保存，恢复后比较下一批 IDs、RNG-dependent augmentation、loss、optimizer step 和 scaler state。</li></ol>
+<p>只比较最终 loss 或只确认 checkpoint 能 load，不能证明 sampler cursor、RNG、transform 和数据顺序被恢复。</p>
+<h2 id="6-claim">6. 不能支持的强 claim</h2>
+<table><thead><tr><th>强 claim</th><th>结论</th><th>安全替代</th></tr></thead><tbody>
+<tr><td><code>seed=42</code> 后完全复现</td><td>REJECT</td><td>固定主要 RNG，并在固定环境做 replay</td></tr>
+<tr><td><code>DistributedSampler</code> 自动恢复中途位置</td><td>REJECT</td><td>记录/重放 sampler cursor，或明确只支持 epoch-boundary</td></tr>
+<tr><td>保存 <code>torch.get_rng_state()</code> 就够了</td><td>REJECT</td><td>CPU/CUDA/Python/NumPy/worker/sampler 分层保存</td></tr>
+<tr><td>每 epoch 忘记 <code>set_epoch</code> 只影响性能</td><td>REJECT</td><td>会使多 epoch shuffle 顺序保持相同</td></tr>
+<tr><td>checkpoint 能 load 就证明 resume 正确</td><td>REJECT</td><td>做 fixed-batch/request next-step smoke</td></tr>
+<tr><td>动态 batch 与 prefetch 不影响 cursor</td><td>REJECT</td><td>把 batch policy、drop/filter/prefetch 作为 resume 合同</td></tr>
+</tbody></table>
+<h2 id="7">7. 本地项目证据边界</h2>
+<p>上一轮 ENG-004..006 artifact gate 只盘点了训练 summary、load report、normalizer、ZeRO 配置和 final-only manifest；没有 fixed-batch continuation、per-rank RNG、sampler cursor 或 next-sample replay artifact。因此本节点不能把任何个人项目写成“已完成精确 resume”。</p>
+<p>UWM DataLoader-only stall smoke 说明数据等待可以影响实验节奏，但不提供 sampler cursor 或 deterministic replay 证据。OpenPiVLA/OPD 的现有 inventory 也没有为本节点提供完整 RNG/cursor bundle；项目 hook 保持 <code>evidence missing / do not claim</code>。</p>
+<h2 id="8-source-freeze">8. Source Freeze 结论与下一步</h2>
+<p><code>VLA-ENG-013</code> 已达到 <code>source_frozen / knowledge+card_drafted / unseen / WARN</code>：</p>
+<ul><li>seed、不确定性、DistributedSampler、RNG API 的官方语义已冻结。</li><li>sampler cursor、dynamic batching resume、worker prefetch replay、完整 checkpoint bundle 是工程合同。</li><li>没有本地 fixed-batch/mid-epoch resume artifact，不升级项目真实性或 ownership。</li></ul>
+<p>下一步优先做 <code>VLA-ENG-013</code> 真实口述或独立 wording review；ENG-014..016 继续 source-first 后置。</p>
+<h2 id="references">References</h2>
+<ol><li>PyTorch 2.13 <a href="https://docs.pytorch.org/docs/2.13/notes/randomness.html">Reproducibility</a>。</li><li>PyTorch 2.13 <a href="https://docs.pytorch.org/docs/2.13/data.html#torch.utils.data.distributed.DistributedSampler">torch.utils.data / DistributedSampler</a>。</li><li>PyTorch 2.13 <a href="https://docs.pytorch.org/docs/2.13/generated/torch.get_rng_state.html">get/set RNG state</a>、<a href="https://docs.pytorch.org/docs/2.13/generated/torch.cuda.get_rng_state_all.html">CUDA all-device states</a>。</li><li>NumPy 1.26 <a href="https://numpy.org/doc/1.26/reference/random/generated/numpy.random.seed.html"><code>random.seed</code></a>。</li><li>本仓库 <a href="vol_05_batch1_independent_fact_review.html">VOL 05 Batch 1 official fact review</a> 与 <a href="vol_05_local_artifact_gate_eng004_006.html">ENG-004..006 artifact gate</a>。</li></ol>
+</article></body></html>

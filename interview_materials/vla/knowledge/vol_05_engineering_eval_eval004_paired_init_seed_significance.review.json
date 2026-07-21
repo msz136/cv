@@ -1,0 +1,69 @@
+{
+  "artifact": "knowledge/vol_05_engineering_eval_eval004_paired_init_seed_significance.md",
+  "html": "knowledge/vol_05_engineering_eval_eval004_paired_init_seed_significance.html",
+  "review_date": "2026-07-18",
+  "status": "drafted / VLA-EVAL-004 / knowledge_26_of_44 / card_1_of_1_unseen / review_warn",
+  "verdict": "WARN",
+  "source_sha256": "e9804cd011de375fbcc84fbaae4ea9c47b1c39ca8fbd0f929b7265004a549b37",
+  "coverage": {
+    "planned_volume_count": 44,
+    "previously_drafted_nodes": 25,
+    "new_nodes": 1,
+    "total_drafted_nodes": 26,
+    "covered_ids": ["VLA-EVAL-004"],
+    "drafted_cards_for_new_nodes": 1,
+    "practice_state": "unseen / not_orally_drilled",
+    "difficulty": "L3",
+    "priority": "P0"
+  },
+  "source_scope": {
+    "source_freeze": "sources/vol_05_eval004_paired_init_seed_significance_source_freeze.html",
+    "official_code": [
+      "statsmodels v0.14.6 contingency_tables.mcnemar",
+      "SciPy v1.16.3 permutation_test/bootstrap/binomtest",
+      "google-research/rliable at 3ccd9f4"
+    ],
+    "method_sources": [
+      "McNemar 1947",
+      "Newcombe 1998 paired proportion CI",
+      "Henderson et al. 2017",
+      "Colas et al. 2018",
+      "Agarwal et al. 2021"
+    ],
+    "local_project_hooks": [
+      "UWM fixed-pruned-init 186/250 versus reset-style 232/250 protocol boundary",
+      "OpenPiVLA archive-summary-only 97.4%",
+      "OPD 10,000-row static metric pool"
+    ]
+  },
+  "checks": {
+    "bounded_slice": "PASS (one EVAL-004 knowledge node and one atomic card; EVAL-005 deferred)",
+    "pair_contract": "PASS (pair_id, init hash, protocol hash, join and fail-closed rules covered)",
+    "seed_hierarchy": "PASS (four seed types and training-run replicate boundary covered)",
+    "four_cell_formula": "PASS (cell semantics and paired risk-difference implementation mapping)",
+    "exact_mcnemar": "PASS (conditional Binomial(d,0.5), d=n10+n01, d=0 caveat)",
+    "paired_resampling": "PASS (SciPy samples versus pairings and paired=True same-index rule)",
+    "cluster_and_power": "PASS WITH WARNING (task/init/rollout/training hierarchy and discordant-rate power covered; local analysis missing)",
+    "invalid_and_selection": "PASS (pre-registered missingness, validation selection and untouched holdout covered)",
+    "multiplicity": "PASS (primary endpoint, Holm and hierarchical handling separated from pairing validity)",
+    "practical_significance": "PASS (effect/CI/MDE separated from p-value)",
+    "project_truth_boundary": "PASS (no local significance claim; all three project metric families remain at their evidence levels)",
+    "pseudocode": "PASS (pair validation, exclusions, four-cell table, exact McNemar and paired bootstrap; explicitly marked as contract)",
+    "minimum_module_contract": "PASS (intuition, formal definitions, formulas, implementation mapping, trade-offs, bad cases, project hooks and references)",
+    "html_static_validation": "PASS (one H1, fifteen H2, nine H3, three tables, five code blocks and four formula blocks)",
+    "math_delimiters": "PASS (four display blocks have matched delimiters)",
+    "local_links": "PASS (all six local link references resolve)",
+    "source_sha": "PASS (Markdown SHA matches HTML metadata and review JSON)",
+    "secret_value_handling": "PASS (public revisions, project-safe metrics and hashes only)",
+    "card_alignment": "PASS (one VLA-EVAL-004 card follows the same source and evidence contract)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Collect UWM matched pair rows and protocol/checkpoint lineage before applying this method locally.",
+    "Collect multiple training-seed checkpoint pairs before making a training-method inference.",
+    "Freeze the target estimand and task weights in EVAL-005 before implementing task-stratified aggregation/bootstrap.",
+    "Do not update mastery or create coaching_state.md until a real oral answer is recorded."
+  ],
+  "next": "Proceed only to VLA-EVAL-005 macro/micro/per-task/weighted aggregation; keep this node WARN/unseen."
+}

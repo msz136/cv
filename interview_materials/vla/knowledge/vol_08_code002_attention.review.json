@@ -1,0 +1,30 @@
+{
+  "artifact": "knowledge/vol_08_code002_attention.md",
+  "html": "knowledge/vol_08_code002_attention.html",
+  "source_freeze": "sources/vol_08_code002_attention_source_freeze.md",
+  "review_date": "2026-07-18",
+  "status": "drafted / CODE-VLA-002 / knowledge_1_of_phase / card_synchronized / WARN",
+  "verdict": "WARN",
+  "source_sha256": "070ca8c4fc94d52a94163e64f2378cc836ed5e63d556c9c5c31239c35972c765",
+  "question_ids": [
+    "CODE-VLA-002"
+  ],
+  "checks": {
+    "source_gate": "PASS WITH WARNING (official PyTorch SDPA/MHA APIs, Transformer paper and VOL 01/03 audits are cited)",
+    "formula_and_code": "PASS (shape, scale, mask application, dropout, dtype and head merge are mapped with comments)",
+    "mask_and_causal": "PASS (bool/additive, causal direction, padding and all-masked rows are explicit)",
+    "test_matrix": "PASS (Lq/Lk, multi-head, dropout, low precision, NaN and autograd parity are included)",
+    "vla_project_boundary": "PASS (sequence layout/loss mask and project hooks are not promoted to performance claims)",
+    "html_static_validation": "PASS (one H1, twelve H2, tables, formula and commented code rendered)",
+    "local_links": "PASS (CODE-002 source freeze and VOL 01/VOL 03 links resolve)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy blocks local navigation; static checks do not substitute for visual QA)",
+    "question_card": "PASS WITH WARNING (one CODE-VLA-002 hand-coding card synchronized; it remains unseen)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Keep the synchronized CODE-VLA-002 hand-coding card unseen until a drill.",
+    "Add a local multi-backend forward/backward parity or profile artifact if available.",
+    "Keep attention mask and loss mask semantics separate; do not create coaching_state.md before a drill."
+  ],
+  "next": "Synchronize VOL 08/global indexes, then run a whiteboard drill or collect a parity artifact."
+}

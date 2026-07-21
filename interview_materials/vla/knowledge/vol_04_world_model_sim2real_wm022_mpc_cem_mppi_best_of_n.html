@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 World Model / Sim2Real：MPC、CEM/MPPI 与 Best-of-N（WM-022）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm022_mpc_cem_mppi_best_of_n.md">
+<meta name="aris:source-sha256" content="d4ceac1cf6689efec8ca547c967a9f8aee8df324e16e27ccc61822edf3b7b9c1">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>d4ceac1cf6689efec8ca547c967a9f8aee8df324e16e27ccc61822edf3b7b9c1</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm022_mpc_cem_mppi_best_of_n.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 共同抽象：候选—评分—执行</a></li><li><a href="#2-mpc">2. MPC：闭环执行范式</a></li><li><a href="#3-cem-elite-proposal">3. CEM：用 elite 更新 proposal 分布</a></li><li><a href="#4-mppi">4. MPPI：带代价权重的采样控制</a></li><li><a href="#5-best-of-n-planner">5. Best-of-N：选择器而不是完整 planner</a></li><li><a href="#6">6. 方法对照</a></li><li><a href="#7">7. 协议与失败诊断</a></li><li><a href="#8">8. 可审计伪代码</a></li><li><a href="#9">9. 项目挂钩与真实性边界</a></li><li><a href="#10">10. 结论与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 World Model / Sim2Real：MPC、CEM/MPPI 与 Best-of-N（WM-022）</h1>
+<div class="meta">状态：<code>drafted / VLA-WM-022 / knowledge_24_of_44 / card_synced / WARN</code> 报告日期：2026-07-18 证据截止：2026-07-18 当前节点：<code>VLA-WM-022</code>；本页比较候选规划范式，不声明本地 planner 结果。 前置：<a href="vol_04_world_model_sim2real_wm021_dreamer_imagination_actor_critic.html">WM-021 Dreamer Imagination</a>、<a href="../sources/vol_04_wm022_mpc_cem_mppi_best_of_n_source_freeze.html">WM-022 Source Freeze</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>MPC、CEM/MPPI 与 best-of-N trajectory selection 的共同点和差异是什么？高分回答要拆开 proposal、scorer、更新/选择、执行 prefix、replan 和证据边界。</p>
+<h2 id="1">1. 共同抽象：候选—评分—执行</h2>
+<p>四者都可放进同一流程：</p>
+<pre><code class="language-text">current state/observation
+        ↓
+proposal: action sequences / trajectories
+        ↓ world/value/reward/constraint scorer
+selection or proposal update
+        ↓ execute first step or prefix
+        ↺ observe again and replan</code></pre>
+<p>共同点是候选搜索和闭环反馈，不是必须使用同一个 model 或 optimizer。实现上需要记录 candidate count (N)、planning horizon (H)、execution prefix (K)、scorer version、constraint/fallback 和 latency；不能只保存最终 top score。</p>
+<h2 id="2-mpc">2. MPC：闭环执行范式</h2>
+<p>Model Predictive Control（MPC）通常在每个时刻用 dynamics/world model 预测候选未来，优化有限 horizon 的目标，只执行第一步或短 prefix，再读取新 observation 重复规划：</p>
+<div class="formula">\[
+\mathbf a^*_{t:t+H-1}=\arg\max_{\mathbf a}J(\hat s_{t:t+H}),\qquad
+\text{execute }a^*_t\text{ or }a^*_{t:t+K-1}.
+\]</div>
+<p>变量解释：(hat s) 是模型预测状态，(J) 是 reward/value/constraint 组合，(H) 是 planning horizon，(K) 是 execution prefix。MPC 的关键是反馈频率与 stale-action 控制，而不是某个特定采样器。模型偏差越大，通常越需要缩短 (K) 或加强 real observation 校正。[1]</p>
+<h2 id="3-cem-elite-proposal">3. CEM：用 elite 更新 proposal 分布</h2>
+<p>Cross-Entropy Method（CEM）从 action-sequence 分布 (q_eta(mathbf a)) 采样，使用 model/value scorer 评估，保留 top-(\rho) 的 elite，再用 elite 的均值/协方差更新 (q_eta)，重复若干轮：</p>
+<div class="formula">\[
+\eta_{j+1}=\operatorname{Fit}\left(\operatorname{Elite}_\rho\{\mathbf a_i,J_i\}\right).
+\]</div>
+<p>它的高分点是：CEM 是 proposal optimizer，可嵌入 MPC；多峰动作若用单一 Gaussian 可能早熟收缩；sample budget、elite ratio、协方差下界和随机 seed 都影响结果。CEM score 高不等于真实任务 success，必须保存 selected/unselected candidate 和 real outcome。</p>
+<h2 id="4-mppi">4. MPPI：带代价权重的采样控制</h2>
+<p>Model Predictive Path Integral（MPPI）通常围绕 nominal control 加噪声生成轨迹，按 cost/return 权重更新控制序列，并滚动执行。与 CEM 的直观区别是：CEM 以 elite 集合拟合 proposal；MPPI 更强调连续 cost-weighted update、噪声协方差、temperature 和控制平滑。具体公式、离散化、约束和温度必须以实现为准，不能把 source ledger 的方法名当作某个项目的 exact implementation。</p>
+<p>面试中应追问：cost 单位是否归一化？noise covariance 是否与 action unit 匹配？temperature 变化是否改变探索/最优解？控制器是否能执行 clip、rate limit、collision/safety constraint？</p>
+<h2 id="5-best-of-n-planner">5. Best-of-N：选择器而不是完整 planner</h2>
+<p>Best-of-N 一次生成 (N) 个候选 trajectory，用 value/reward/success/constraint scorer 选最高者：</p>
+<div class="formula">\[
+\hat\tau=\arg\max_{i\in\{1,\ldots,N\}}S(\tau_i).
+\]</div>
+<p>它可以和 MPC、CEM、MPPI 组合：例如 CEM 产生候选、best-of-N 做最终筛选，或每次 MPC replan 都选 N 条 trajectory。N 增大时，若 scorer 有偏，越容易选中 hallucination/过高 value 的候选（optimizer’s curse），同时 planning latency、通信和显存增加。因此要做 N sweep、rank calibration、random/median/top selector 和 selected-vs-unselected real trace。[2][3]</p>
+<h2 id="6">6. 方法对照</h2>
+<table><thead><tr><th>方法</th><th>proposal</th><th>更新/选择</th><th>典型执行</th><th>主要风险</th></tr></thead><tbody>
+<tr><td>MPC</td><td>优化或采样 sequence</td><td>每次重新求解</td><td>first step/prefix + replan</td><td>model bias、latency、controller mismatch</td></tr>
+<tr><td>CEM</td><td>分布采样</td><td>elite 拟合 mean/cov</td><td>可作为 MPC 内层</td><td>premature collapse、多峰丢失</td></tr>
+<tr><td>MPPI</td><td>nominal + noise trajectories</td><td>cost-weighted control update</td><td>滚动控制</td><td>temperature/noise/scale 错配</td></tr>
+<tr><td>best-of-N</td><td>N 个独立候选</td><td>scorer 排序取 top</td><td>一次执行或交给 MPC</td><td>scorer bias、N 放大 optimism</td></tr>
+</tbody></table>
+<h2 id="7">7. 协议与失败诊断</h2>
+<table><thead><tr><th>失败模式</th><th>最小诊断</th><th>需要保存</th></tr></thead><tbody>
+<tr><td>model overoptimism</td><td>N/H sweep、OOD/disagreement、selected/unselected paired rollout</td><td>checkpoint、seed、candidate traces</td></tr>
+<tr><td>scorer mismatch</td><td>rank correlation、calibration、task predicate 对齐</td><td>scorer version、success predicate</td></tr>
+<tr><td>proposal collapse</td><td>elite entropy、multi-seed、mixture/diversity</td><td>proposal stats、elite ratio</td></tr>
+<tr><td>scale/temperature 错误</td><td>action/cost unit A/B、noise/temperature sweep</td><td>normalizer、cost scale、dtype</td></tr>
+<tr><td>stale action/latency</td><td>p50/p95 planning time、queue、action age、replan count</td><td>timestamped trace、controller log</td></tr>
+<tr><td>infeasible command</td><td>clipping、rate limit、collision/fallback trace</td><td>feasibility mask、safety event</td></tr>
+</tbody></table>
+<h2 id="8">8. 可审计伪代码</h2>
+<pre><code class="language-python">def plan_with_candidates(model, state, protocol):
+    # 1. Freeze checkpoint, normalizer, seed, horizon, prefix and scorer revision.
+    proposals = propose_sequences(state, protocol)
+
+    # 2. Roll every proposal through the same world/value model and constraints.
+    scored = score_trajectories(model, proposals, protocol)
+
+    # 3. Select top candidate or update CEM/MPPI proposal distribution.
+    selected, update = select_or_update(scored, protocol.optimizer)
+
+    # 4. Execute only the permitted prefix, record latency and replan metadata.
+    action = execute_prefix(selected, protocol.execution_prefix)
+    return action, scored, update</code></pre>
+<p>这段伪代码不能产生项目指标；必须额外记录 selected/unselected trajectories、real/sim episode outcome 和 latency budget。</p>
+<h2 id="9">9. 项目挂钩与真实性边界</h2>
+<ul><li>Cosmos/WAM：可连接 action/future/value slots、best-of-N、LIBERO/RoboCasa protocol 与 offline proxy；不能把公开分数或未核验 checkpoint 写成个人 planning uplift。</li><li>UWM/LIBERO：可连接 horizon、normalizer、fixed/reset protocol 与 rollout wrapper；不能把 protocol-limited result 当作通用 MPC/CEM 结论。</li><li>OpenPiVLA、OPD、Robot Harness：可挂接 action schema、scorer、timeout、episode trace 和接口审计，但不支持个人已经实现 CEM/MPPI 的 claim。</li></ul>
+<h2 id="10">10. 结论与下一步</h2>
+<p>MPC 是闭环执行范式，CEM/MPPI 是候选 proposal/optimizer，best-of-N 是 scorer-based selector；它们可以组合但不能互相替代。比较时必须冻结 N/H/K、proposal、scorer、controller、latency、reset 和分母，并用 selected-vs-unselected、sim/real paired trace 防止 model/scorer optimism。当前节点保持 <code>WARN</code>，题卡已同步并保持 <code>unseen</code>；下一步进行真实口述或补一个 planning artifact。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li><a href="../sources/vol_04_world_model_foundations_claim_to_code.html">World Model Foundations Audit A</a>。</li><li><a href="../sources/vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos Policy / WAM claim-to-code audit</a>。</li><li><a href="../sources/vol_04_wm022_mpc_cem_mppi_best_of_n_source_freeze.html">WM-022 Source Freeze</a>。</li><li><a href="../knowledge/vol_04_world_model_sim2real_wm019.html">WM-019 Metric Boundary</a>。</li></ol>
+</article></body></html>

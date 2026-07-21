@@ -1,0 +1,52 @@
+{
+  "artifact": "evidence/projects/wm019_wam_action_trace_paired_diagnostic.md",
+  "html": "evidence/projects/wm019_wam_action_trace_paired_diagnostic.html",
+  "review_date": "2026-07-18",
+  "status": "paired_diagnostic / WAM / checkpoint_unverified / WARN",
+  "verdict": "WARN",
+  "source_sha256": "913D68CB1E7BE44FD108D2A06509D33EA04462B255A153AF030B2F3C0A603FB5",
+  "covered_question_ids": ["VLA-WM-019"],
+  "inputs": {
+    "base_manifest_sha256": "63A518674F061D1C14A880805FF9C23DAC2425C9D7B34CC4C75FD3CEDBD33A86",
+    "trained_manifest_sha256": "809AE4F879C9421F954C7BFC26C70005B94387412449039F9FA8B6E479EF55CC",
+    "base_action_trace_sha256": "C6A3623B26B97F7ED88AA13AE675C8315DC509D3D867CBB6E417CAF51F88525D",
+    "trained_action_trace_sha256": "9C6A4F00DA8107EB0C1FDDDC642D1986CD510D92F7F6E3A68ADE834E8B82CF2D"
+  },
+  "diagnostics": {
+    "base_rows": 300,
+    "trained_rows": 300,
+    "policy_shape": "300x7 each",
+    "env_action_shape": "300x12 each",
+    "t_aligned": true,
+    "nonfinite_policy_values": 0,
+    "base_success_true": 0,
+    "trained_success_true": 0,
+    "base_reward_sum": 0.0,
+    "trained_reward_sum": 0.0,
+    "policy_mae": 0.3100783611,
+    "policy_rmse": 0.3906446459
+  },
+  "checks": {
+    "bounded_slice": "PASS (one same-task episode-0 action-trace comparison only)",
+    "input_identity": "PASS (base/trained manifests agree on task, episode, seed/env_seed and 300-step protocol)",
+    "trace_integrity": "PASS (300 aligned rows, 7D policy/12D env shapes, no non-finite policy values)",
+    "paired_math": "PASS (MAE/RMSE and per-dimension differences computed from aligned JSONL rows)",
+    "success_boundary": "PASS WITH WARNING (both traces have zero success flags; no denominator or benchmark claim)",
+    "checkpoint_boundary": "WARN (checkpoint fields are remote paths; local binary/hash unavailable)",
+    "metric_ladder": "PASS WITH WARNING (trace diagnostic separated from target loss, proxy and downstream success)",
+    "project_truth_boundary": "PASS (no model uplift, root cause or personal architecture claim promoted)",
+    "html_static_validation": "PASS (one H1, nine H2 including generated TOC, five tables)",
+    "local_links": "PASS (manifest, inventory, gate and source-freeze links resolve)",
+    "source_sha": "PASS (canonical Markdown SHA matches HTML meta and review JSON)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Obtain checkpoint/processor/normalizer/config hashes before interpreting trace differences causally.",
+    "Bind the alternate trained-video output root and add a full episode denominator/success predicate.",
+    "Add target-based per-offset error and action-sensitivity/controller round-trip tests.",
+    "Keep all WAM historical MSE/success/uplift numbers out of the current resume until provenance closes.",
+    "Do not create coaching_state.md or mark WM-019 practiced without a real oral answer."
+  ],
+  "next": "Complete one WAM paired metric artifact with checkpoint/protocol fields or run one VLA-WM-015..019 oral drill; keep all cards unseen."
+}

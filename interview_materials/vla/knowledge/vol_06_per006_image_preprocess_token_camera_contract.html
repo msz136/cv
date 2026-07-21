@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：Image Preprocess、Patch Token 与 Camera Identity（PER-006）</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per006_image_preprocess_token_camera_contract.md">
+<meta name="aris:source-sha256" content="fd923e666474a599e73a013fbd5f80615b708cf027a77beffb79a1d4df30be99">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>fd923e666474a599e73a013fbd5f80615b708cf027a77beffb79a1d4df30be99</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per006_image_preprocess_token_camera_contract.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1-30-tensor">1. 30 秒直觉：图像不是一个 tensor 名字</a></li><li><a href="#2-transform-chain">2. Transform chain：先画数据流，再谈模型</a></li><li><a href="#3-smart-resize-pixel-budget">3. Smart resize：pixel budget 不是固定分辨率</a></li><li><a href="#3-1">3.1 三个约束</a></li><li><a href="#3-2-min-max">3.2 为什么 min=max 也不精确</a></li><li><a href="#3-3">3.3 复杂度含义</a></li><li><a href="#4-patch-grid-image-tokens">4. Patch、grid 与 image tokens</a></li><li><a href="#4-1-grid">4.1 从处理图到 grid</a></li><li><a href="#4-2-spatial-merge-token">4.2 Spatial merge 后的 token 数</a></li><li><a href="#5-pixel-range-rescale-normalization">5. Pixel range、rescale 与 normalization</a></li><li><a href="#6-direct-resize-crop-letterbox">6. Direct resize、crop 与 letterbox 的坐标映射</a></li><li><a href="#6-1-direct-resize">6.1 Direct resize</a></li><li><a href="#6-2-letterbox">6.2 Letterbox</a></li><li><a href="#6-3-crop-resize">6.3 Crop + resize</a></li><li><a href="#7-opd-double-resize">7. OPD double-resize：如何讲风险，不讲伪因果</a></li><li><a href="#7-1">7.1 静态调用链</a></li><li><a href="#7-2-source-derived-probe">7.2 Source-derived probe</a></li><li><a href="#7-3">7.3 修复验证顺序</a></li><li><a href="#8-openpivla-image-lineage">8. OpenPiVLA：三条 image lineage 不能混</a></li><li><a href="#9-camera-identity-image-order">9. Camera identity 与 image order</a></li><li><a href="#9-1-token-camera-semantic">9.1 Token不等于camera semantic</a></li><li><a href="#9-2-per-003">9.2 与 PER-003 的边界</a></li><li><a href="#10-manifest">10. 最小可复现 manifest</a></li><li><a href="#11">11. 可执行审计伪代码</a></li><li><a href="#12-failure-taxonomy">12. Failure taxonomy</a></li><li><a href="#13">13. 方案比较与选择</a></li><li><a href="#14">14. 项目映射与真实性边界</a></li><li><a href="#15">15. 面试回答检查表</a></li><li><a href="#16">16. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：Image Preprocess、Patch Token 与 Camera Identity（PER-006）</h1>
+<div class="meta">状态：<code>drafted / VLA-PER-006 / source_synced / card_synced / WARN</code> 报告日期：2026-07-19 证据截止：2026-07-19 来源入口：<a href="../sources/vol_06_per006_image_preprocess_token_camera_contract_source_freeze.html">PER-006 Source Freeze</a>。 题卡入口：<a href="../questions/vol_06_per006.html">PER-006 Atomic Card</a>。 前置知识：<a href="vol_06_per001_grounding_coordinate.html">PER-001 Grounding / Coordinate</a>、<a href="vol_06_per003_multiview_temporal.html">PER-003 Multi-view / Temporal</a>。</div>
+<h2 id="question">问题（Question）</h2>
+<p>一张机器人相机图像进入 Qwen3-VL 之前发生了什么？面试中如何从 resize/crop/letterbox、pixel range 与 normalization，一直讲到 patch grid、image tokens、camera identity 和 point/box 坐标逆变换？为什么本地 OPD 与 OpenPiVLA 不能只用一句“都调用 AutoProcessor”概括？</p>
+<p>本页回答：</p>
+<ol><li>原图、处理图、patch grid、image token 是哪四个坐标/表示空间？</li><li>Qwen3-VL 的 <code>patch_size=16</code>、<code>merge_size=2</code> 如何决定 factor32 和 token 数？</li><li>direct resize、crop、letterbox 的坐标映射有什么不同？</li><li><code>min_pixels=max_pixels</code> 为什么仍不保证固定尺寸或固定 token 数？</li><li>camera identity、image order、frame 和 timestamp 为什么不由视觉 token 自动提供？</li><li>如何解释 OPD double-resize 与 OpenPiVLA image lineage，而不把静态风险说成性能结论？</li></ol>
+<h2 id="section-2">知识地图位置与前置依赖</h2>
+<pre><code class="language-text">raw image + camera/frame/time metadata
+  -&gt; PER-006 preprocess / pixel / patch / token contract
+  -&gt; PER-001 point/box/text inverse mapping
+  -&gt; PER-002 2D-to-3D / calibration / TF
+  -&gt; PER-003 multi-view / temporal fusion
+  -&gt; PER-007 open-vocabulary grounding pipeline</code></pre>
+<p>PER-006 不重复 VOL 01 的 Transformer 基础，也不重复 VOL 03 的 VLA action head；它负责把“图像如何成为 visual tokens”变成可复算、可逆映射、可绑定 camera identity 的工程合同。</p>
+<h2 id="1-30-tensor">1. 30 秒直觉：图像不是一个 tensor 名字</h2>
+<p>面试中最容易犯的错是从“输入一张 RGB 图”直接跳到“模型输出 point/box/action”。中间至少有四层：</p>
+<table><thead><tr><th>层</th><th>典型对象</th><th>必须知道</th></tr></thead><tbody>
+<tr><td>原图空间</td><td><code>I_raw∈R^{H×W×3}</code></td><td>camera/frame、timestamp、原始宽高、颜色/位深</td></tr>
+<tr><td>处理图空间</td><td><code>I_proc∈R^{H'×W'×3}</code></td><td>resize/crop/pad、插值、pixel range、mean/std</td></tr>
+<tr><td>patch grid</td><td><code>(T_g,H_g,W_g)</code></td><td>patch size、temporal patch、grid 顺序</td></tr>
+<tr><td>语言侧 image tokens</td><td><code>N_img</code> 个 `&lt;</td><td>image_pad</td><td>&gt;`</td><td>spatial merge、placeholder 顺序、与图像数量一致性</td></tr>
+</tbody></table>
+<p>如果只保存 <code>pixel_values</code>，却不保存 <code>original_size</code>、<code>processed_size</code>、<code>image_grid_thw</code>、camera identity 和 transform 参数，就无法回答：</p>
+<ul><li>point/box 坐标到底相对哪张图；</li><li>多个 image placeholders 分别属于哪台相机；</li><li>token 数为何随宽高比变化；</li><li>训练与评估是否真的使用同一条 processor path。</li></ul>
+<h2 id="2-transform-chain">2. Transform chain：先画数据流，再谈模型</h2>
+<p>冻结的 Qwen3-VL image-only 官方路径可抽象为：</p>
+<pre><code class="language-text">path / URL / base64 / PIL
+  -&gt; decode + RGB
+  -&gt; smart_resize
+  -&gt; rescale + normalize
+  -&gt; temporal duplicate for a static image
+  -&gt; patchify
+  -&gt; image_grid_thw
+  -&gt; spatial merge
+  -&gt; image placeholder tokens</code></pre>
+<p>Qwen frozen <code>qwen-vl-utils</code> 代码使用保持宽高比的 smart resize 并直接调用 PIL resize；没有 crop、letterbox 或 padding-offset 分支。Qwen3 官方两阶段示例在 utils 已 resize 后给 processor 传 <code>do_resize=False</code>，避免重复 resize。</p>
+<p>这不代表所有 VLM 都不使用 crop/letterbox；它只说明当前冻结的 Qwen path 不能被口述成 letterbox。工程回答必须以实际 processor/code revision 为准。</p>
+<h2 id="3-smart-resize-pixel-budget">3. Smart resize：pixel budget 不是固定分辨率</h2>
+<h3 id="3-1">3.1 三个约束</h3>
+<p>设原图为 \(H\times W\)，patch size 为 \(p\)，spatial merge 为 \(m\)，整除因子：</p>
+<div class="formula">\[
+F=p\,m.
+\]</div>
+<p>Qwen3-VL-8B 的 checkpoint contract 为 \(p=16,m=2\)，所以：</p>
+<div class="formula">\[
+F=16\times2=32.
+\]</div>
+<p>smart resize 尝试满足：</p>
+<ol><li>\(H'\bmod F=0,\;W'\bmod F=0\)；</li><li>\(H'W'\) 落在 <code>min_pixels/max_pixels</code> band；</li><li>宽高比尽量接近原图。</li></ol>
+<p>变量映射：\(H',W'\) 是 processor 实际输入尺寸；\(F\) 对应 <code>patch_size*merge_size</code>；pixel band 来自 checkpoint processor config 或调用覆盖值。</p>
+<h3 id="3-2-min-max">3.2 为什么 min=max 也不精确</h3>
+<p>算法先把高宽 round 到 factor 倍数；若像素积过大，按 \(\sqrt{HW/P_{\max}}\) 缩小并 floor；若过小，按 \(\sqrt{P_{\min}/HW}\) 放大并 ceil。离散 factor 与 ceil/floor 意味着：</p>
+<div class="formula">\[
+P_{\min}=P_{\max}=P
+\quad\not\Rightarrow\quad
+H&#x27;W&#x27;=P.
+\]</div>
+<p>直觉：对某个宽高比，可能不存在同时满足“两个维度都是32倍数、保持近似宽高比、像素积刚好等于50176”的整数解。<code>min=max</code> 是一个强 pixel-budget 请求，不是 fixed <code>H'×W'</code>。</p>
+<h3 id="3-3">3.3 复杂度含义</h3>
+<p>视觉 token 数大致随处理后像素积增长；因此 pixel budget 同时影响：</p>
+<ul><li>细粒度 grounding 信息；</li><li><code>image_grid_thw</code> 与上下文长度；</li><li>vision encoder 计算/显存；</li><li>文本可用 token budget与batch shape波动。</li></ul>
+<p>不能只说“分辨率越大越好”：还要说明目标物大小、宽高比、memory/latency 和训练评估一致性。</p>
+<h2 id="4-patch-grid-image-tokens">4. Patch、grid 与 image tokens</h2>
+<h3 id="4-1-grid">4.1 从处理图到 grid</h3>
+<p>对静态图像，Qwen processor 会为 temporal patch 做帧复制，最终通常得到 \(T_g=1\)。空间 grid 为：</p>
+<div class="formula">\[
+H_g=\frac{H&#x27;}{p},\qquad W_g=\frac{W&#x27;}{p}.
+\]</div>
+<p><code>image_grid_thw=(T_g,H_g,W_g)</code> 不是原图尺寸；它描述 patchify 后的三维 grid。代码中 <code>pixel_values</code> 以 patch rows 组织，model 根据 grid 恢复位置与分组。</p>
+<h3 id="4-2-spatial-merge-token">4.2 Spatial merge 后的 token 数</h3>
+<p>Qwen3 processor 展开语言侧 image placeholders 的公式是：</p>
+<div class="formula">\[
+N_{\mathrm{img}}
+=
+\frac{T_gH_gW_g}{m^2}.
+\]</div>
+<p>其中 \(m^2\) 表示每个 <code>m×m</code> spatial block 合并为一个语言侧 image token。对静态图、\(p=16,m=2\)：</p>
+<div class="formula">\[
+N_{\mathrm{img}}
+=
+\frac{H&#x27;W&#x27;}{16^2\cdot2^2}
+=
+\frac{H&#x27;W&#x27;}{1024}.
+\]</div>
+<p>例：\(H'=192,W'=288\)，则 \(N_{\mathrm{img}}=192\times288/1024=54\)。</p>
+<p>实现映射：</p>
+<pre><code class="language-text">image processor -&gt; pixel_values + image_grid_thw
+Qwen3VLProcessor -&gt; prod(image_grid_thw) / merge_size**2
+chat text -&gt; repeated &lt;|image_pad|&gt; placeholders
+model -&gt; checks placeholder count matches image features</code></pre>
+<p>因此“图像 token 数”不能用原始分辨率或一个固定常数猜测，必须读取实际 <code>image_grid_thw</code>。</p>
+<h2 id="5-pixel-range-rescale-normalization">5. Pixel range、rescale 与 normalization</h2>
+<p>冻结的 <code>Qwen/Qwen3-VL-8B-Instruct@0c351d...</code> processor artifact 声明：</p>
+<div class="formula">\[
+\mu=[0.5,0.5,0.5],\qquad \sigma=[0.5,0.5,0.5].
+\]</div>
+<p>若输入 \(x\in[0,255]\)，processor 先做 \(x_s=x/255\)，再：</p>
+<div class="formula">\[
+x_{\mathrm{norm}}
+=
+\frac{x_s-\mu}{\sigma}
+=
+2\frac{x}{255}-1.
+\]</div>
+<p>变量映射：<code>do_rescale</code> 控制除255，<code>do_normalize</code> 控制减 mean/除 std。若上游已输出0–1，却仍让 processor 再除255，数值会被压到约 \([0,1/255]\) 后再 normalize；这不是“小的数值差异”，而是 input contract 错误。</p>
+<p>最小检查：</p>
+<table><thead><tr><th>检查</th><th>正确问题</th></tr></thead><tbody>
+<tr><td>dtype/range</td><td>uint8 0–255，还是 float 0–1？</td></tr>
+<tr><td>processor kwargs</td><td><code>do_rescale/do_normalize/do_resize</code> 实际值是什么？</td></tr>
+<tr><td>config</td><td>mean/std、patch、merge、pixel band 来自哪个 revision？</td></tr>
+<tr><td>parity</td><td>train/eval 是否同 processor、同 kwargs、同 input range？</td></tr>
+</tbody></table>
+<h2 id="6-direct-resize-crop-letterbox">6. Direct resize、crop 与 letterbox 的坐标映射</h2>
+<p>PER-006 必须解释三种不同 transform；不能看到“输入尺寸一样”就认为坐标语义一样。</p>
+<h3 id="6-1-direct-resize">6.1 Direct resize</h3>
+<p>若原图 \((W,H)\) 直接缩放到 \((W',H')\)：</p>
+<div class="formula">\[
+x&#x27;=s_xx,\quad y&#x27;=s_yy,\qquad
+s_x=\frac{W&#x27;}{W},\quad s_y=\frac{H&#x27;}{H}.
+\]</div>
+<p>逆映射：</p>
+<div class="formula">\[
+x=\frac{x&#x27;}{s_x},\qquad y=\frac{y&#x27;}{s_y}.
+\]</div>
+<p>若 \(s_x\ne s_y\)，形状会发生各向异性变形。Qwen smart resize试图近似保持宽高比，但整数 rounding 仍可能让比例略变；因此逆映射应使用实际 \(s_x,s_y\)，不能只存一个 scale。</p>
+<h3 id="6-2-letterbox">6.2 Letterbox</h3>
+<p>若使用统一 scale \(s\) 后在左右/上下 padding \(p_x,p_y\)：</p>
+<div class="formula">\[
+x&#x27;=sx+p_x,\qquad y&#x27;=sy+p_y.
+\]</div>
+<p>逆映射：</p>
+<div class="formula">\[
+x=\frac{x&#x27;-p_x}{s},\qquad y=\frac{y&#x27;-p_y}{s}.
+\]</div>
+<p>不保存 padding offset 会让 point/box 系统性平移。当前冻结的 Qwen path没有 letterbox，因此不能人为补一个不存在的 padding inverse。</p>
+<h3 id="6-3-crop-resize">6.3 Crop + resize</h3>
+<p>若先从原图裁剪左上角 \((c_x,c_y)\)，再缩放：</p>
+<div class="formula">\[
+x&#x27;=s_x(x-c_x),\qquad y&#x27;=s_y(y-c_y).
+\]</div>
+<p>逆映射必须恢复 crop origin：</p>
+<div class="formula">\[
+x=\frac{x&#x27;}{s_x}+c_x,\qquad y=\frac{y&#x27;}{s_y}+c_y.
+\]</div>
+<p>box 应分别变换两个角点，再 clip/validate；不能只变 center 或只变 width/height。无论哪种 transform，都要记录原图尺寸、处理图尺寸、scale、crop、pad 和坐标 convention。</p>
+<h2 id="7-opd-double-resize">7. OPD double-resize：如何讲风险，不讲伪因果</h2>
+<h3 id="7-1">7.1 静态调用链</h3>
+<p>本地 OPD <code>expert_sft.py</code> 与 raw-holdout eval 的调用形态是：</p>
+<pre><code class="language-text">message image + min_pixels=max_pixels=50176
+  -&gt; qwen_vl_utils.process_vision_info(messages)
+     # omitted image_patch_size =&gt; default 14, factor 28
+  -&gt; processor(images=...)
+     # omitted do_resize=False
+     # Qwen3 artifact patch 16, merge 2 =&gt; factor 32</code></pre>
+<p>这是直接可见的 contract mismatch：第一阶段按 factor28，第二阶段按 factor32。它不自动等于“训练错了”或“指标下降”，因为还缺 matched preprocessing A/B。</p>
+<h3 id="7-2-source-derived-probe">7.2 Source-derived probe</h3>
+<table><thead><tr><th>原始 H×W</th><th>stage1 factor28</th><th>stage2 factor32</th><th>最终 tokens</th></tr></thead><tbody>
+<tr><td><code>480×640</code></td><td><code>168×252</code></td><td><code>192×288</code></td><td>54</td></tr>
+<tr><td><code>720×1280</code></td><td><code>168×280</code></td><td><code>192×320</code></td><td>60</td></tr>
+<tr><td><code>1000×1000</code></td><td><code>224×224</code></td><td><code>224×224</code></td><td>49</td></tr>
+</tbody></table>
+<p>面试安全表述：</p>
+<div class="meta">我通过冻结版本与确定性 probe 定位了 factor28→factor32 的双阶段 resize 风险，并提出 train/eval parity、grid manifest 与 coordinate round-trip gate；当前没有 matched A/B，所以不把它说成已确认的性能根因。</div>
+<h3 id="7-3">7.3 修复验证顺序</h3>
+<p>正确顺序不是“改一行直接报提升”，而是：</p>
+<ol><li>pin <code>qwen-vl-utils</code>、Transformers、model/processor config；</li><li>Qwen3 path 显式传 <code>image_patch_size=16</code>；</li><li>二选一：utils resize + processor <code>do_resize=False</code>，或只让 processor resize；</li><li>保存多个 aspect ratio 的 original/resized/grid/token；</li><li>运行 point/box sentinel round-trip；</li><li>固定训练/评估同一 policy；</li><li>最后才做 matched metric A/B。</li></ol>
+<h2 id="8-openpivla-image-lineage">8. OpenPiVLA：三条 image lineage 不能混</h2>
+<table><thead><tr><th>路径</th><th>Image behavior</th><th>能证明</th><th>不能证明</th></tr></thead><tbody>
+<tr><td>formal MindCube</td><td>原始 RGB PIL 列表交给 <code>AutoProcessor</code>；默认 <code>min=max=200704</code></td><td>VLM QA 分支存在 image processor path</td><td>DROID action 或 robot VLA 是 image-conditioned</td></tr>
+<tr><td>formal DROID action</td><td>当前 sample 返回 <code>images=[]</code>，user text含task/state/action JSON监督</td><td>action-text causal path</td><td>图像驱动 DROID action training</td></tr>
+<tr><td>public-data dry-run adapter</td><td><code>_read_image</code> 强制 <code>224×224</code>、除255、CHW；dry-run collator</td><td>smoke/dry-run tensor path</td><td>formal Qwen processor、真实 checkpoint 或 rollout lineage</td></tr>
+</tbody></table>
+<p>同一原图的 formal MindCube source-derived probe：</p>
+<table><thead><tr><th>原始 H×W</th><th>processed H×W（factor32，min=max200704）</th><th>tokens</th></tr></thead><tbody>
+<tr><td><code>480×640</code></td><td><code>384×512</code></td><td>192</td></tr>
+<tr><td><code>720×1280</code></td><td><code>320×576</code></td><td>180</td></tr>
+<tr><td><code>1000×1000</code></td><td><code>448×448</code></td><td>196</td></tr>
+</tbody></table>
+<p>这些数字只说明 pixel/token budget 不同，不能比较 OPD 与 OpenPiVLA 模型效果；dataset、任务、checkpoint、loss 与运行 lineage 不同。</p>
+<h2 id="9-camera-identity-image-order">9. Camera identity 与 image order</h2>
+<h3 id="9-1-token-camera-semantic">9.1 Token不等于camera semantic</h3>
+<p><code>&lt;|image_pad|&gt;</code> 只占据序列位置；它不会自动知道“这是wrist camera”还是“这是workspace camera”。多图输入至少要绑定：</p>
+<pre><code class="language-text">sample_id / image_id
+camera_id / frame_id
+capture_timestamp
+original_h,w / processed_h,w
+transform revision / image_grid_thw
+placeholder_index / image_index
+valid / presence / uncertainty</code></pre>
+<p>formal collator 将batch内 image list 依次 flatten；如果message placeholder顺序、flatten顺序和camera metadata没有共同 manifest，即使shape正确也可能语义错位。</p>
+<h3 id="9-2-per-003">9.2 与 PER-003 的边界</h3>
+<p>PER-003 负责多视角/时序 fusion schema；PER-006 负责单张/多张图进入 processor 时的 identity/order。两者连接点是：</p>
+<pre><code class="language-text">PER-003 per-view item
+  -&gt; PER-006 transform + grid + placeholder
+  -&gt; model tokens
+  -&gt; output tied back to the same camera/frame/time</code></pre>
+<p>若缺 <code>camera_id/frame/timestamp</code>，后续3D lift、common-frame fusion和controller mapping都无法可靠归因。</p>
+<h2 id="10-manifest">10. 最小可复现 manifest</h2>
+<table><thead><tr><th>类别</th><th>最小字段</th></tr></thead><tbody>
+<tr><td>provenance</td><td>dataset/sample/image ID、source path/hash、split、processor/model revision</td></tr>
+<tr><td>camera</td><td>camera ID、optical frame、intrinsics/extrinsics revision、timestamp</td></tr>
+<tr><td>raw image</td><td>original H/W、mode、dtype、range、orientation</td></tr>
+<tr><td>transform</td><td>resize policy、requested/actual H/W、scale x/y、crop origin、pad offsets、interpolation</td></tr>
+<tr><td>normalization</td><td>rescale flag/factor、normalize flag、mean/std</td></tr>
+<tr><td>tokenization</td><td>patch/temporal/merge、<code>image_grid_thw</code>、image token count、placeholder index</td></tr>
+<tr><td>inverse</td><td>point/box convention、processed→raw inverse、raw→camera/robot frame gate</td></tr>
+<tr><td>validity</td><td>decode/resize/finite/range/order checks、failure reason</td></tr>
+</tbody></table>
+<p>一个summary中写“image_size=224”远远不够：它没有说明是否square stretch、smart resize、crop还是letterbox，也没有说明坐标与camera。</p>
+<h2 id="11">11. 可执行审计伪代码</h2>
+<pre><code class="language-python">def audit_vlm_image(sample, processor, contract):
+    # 1. Freeze provenance and camera identity before image decoding.
+    rec = {
+        &quot;sample_id&quot;: sample.id,
+        &quot;image_id&quot;: sample.image_id,
+        &quot;camera_id&quot;: sample.camera_id,
+        &quot;frame_id&quot;: sample.frame_id,
+        &quot;timestamp&quot;: sample.timestamp,
+        &quot;processor_revision&quot;: contract.processor_revision,
+    }
+
+    # 2. Record raw image semantics; never infer them after transforms.
+    image = decode_rgb(sample.image)
+    rec[&quot;original_hw&quot;] = image.shape[:2]
+    rec[&quot;raw_dtype_range&quot;] = inspect_dtype_range(image)
+
+    # 3. Apply exactly one declared resize owner.
+    if contract.resize_owner == &quot;qwen_vl_utils&quot;:
+        image, transform = qwen_resize(
+            image,
+            patch_size=contract.patch_size,   # Qwen3: 16
+            min_pixels=contract.min_pixels,
+            max_pixels=contract.max_pixels,
+        )
+        processor_kwargs = {&quot;do_resize&quot;: False}
+    elif contract.resize_owner == &quot;processor&quot;:
+        transform = {&quot;kind&quot;: &quot;processor_owned&quot;}
+        processor_kwargs = {}
+    else:
+        raise ValueError(&quot;ambiguous resize owner&quot;)
+
+    # 4. Processor output must expose actual grid/token count.
+    batch = processor(images=[image], return_tensors=&quot;pt&quot;, **processor_kwargs)
+    grid = batch[&quot;image_grid_thw&quot;][0]
+    token_count = int(grid.prod()) // (contract.merge_size ** 2)
+    rec.update({
+        &quot;transform&quot;: transform,
+        &quot;processed_grid_thw&quot;: grid.tolist(),
+        &quot;image_token_count&quot;: token_count,
+        &quot;pixel_values_shape&quot;: list(batch[&quot;pixel_values&quot;].shape),
+    })
+
+    # 5. Round-trip a sentinel point/box and bind it to camera/frame.
+    assert roundtrip_coordinate(sample.sentinel, transform, tolerance=contract.tol)
+    assert rec[&quot;camera_id&quot;] is not None and rec[&quot;frame_id&quot;] is not None
+    return rec</code></pre>
+<p>伪代码的核心是“resize owner唯一、actual grid可见、coordinate可逆、camera identity显式”。它不是本地已实现证明；只有保存真实manifest和round-trip日志后才能升级。</p>
+<h2 id="12-failure-taxonomy">12. Failure taxonomy</h2>
+<table><thead><tr><th>失败层</th><th>症状</th><th>最小诊断</th></tr></thead><tbody>
+<tr><td>decode/color</td><td>RGB/BGR、EXIF orientation、alpha/background错误</td><td>raw hash、mode、orientation probe</td></tr>
+<tr><td>transform</td><td>double resize、square stretch、误以为letterbox</td><td>original/actual H/W、owner、scale/pad/crop</td></tr>
+<tr><td>numeric</td><td>0–1再次/255、mean/std错、dtype溢出</td><td>min/max/mean/std before/after</td></tr>
+<tr><td>grid/token</td><td>patch/merge不匹配、placeholder数错</td><td>processor class/config、grid、token count</td></tr>
+<tr><td>coordinate</td><td>point/box无法回原图、rounding偏移</td><td>sentinel round-trip、per-axis error</td></tr>
+<tr><td>camera/order</td><td>wrist/workspace互换、batch flatten错序</td><td>camera ID、placeholder/image index</td></tr>
+<tr><td>evidence</td><td>smoke path冒充formal、public机制冒充个人实现</td><td>lineage、checkpoint/config/run bundle</td></tr>
+</tbody></table>
+<h2 id="13">13. 方案比较与选择</h2>
+<table><thead><tr><th>选择</th><th>优点</th><th>风险</th><th>适用 gate</th></tr></thead><tbody>
+<tr><td>utils负责resize，processor不resize</td><td>message级pixel policy清晰、避免二次shape变化</td><td>必须传正确patch size并关闭processor resize</td><td>记录utils/processor版本与actual grid</td></tr>
+<tr><td>processor独占resize</td><td>单一owner、配置随checkpoint</td><td>message级自定义尺寸需正确传递；本地checkpoint config必须pin</td><td>hash preprocessor config、train/eval parity</td></tr>
+<tr><td>fixed square stretch</td><td>batch shape稳定、实现简单</td><td>破坏宽高比和grounding几何</td><td>只在任务接受且有matched验证时使用</td></tr>
+<tr><td>dynamic aspect-preserving</td><td>保留几何、token按内容变化</td><td>batch显存与token数波动</td><td>pixel budget、bucket、OOM与latency统计</td></tr>
+<tr><td>letterbox</td><td>保持宽高比且fixed canvas</td><td>必须保存pad/inverse，模型会看到padding</td><td>sentinel inverse + padding mask/ablation</td></tr>
+<tr><td>crop</td><td>高分辨率局部细节</td><td>目标可能被裁掉、坐标需恢复crop origin</td><td>crop coverage、target visibility、inverse</td></tr>
+</tbody></table>
+<p>没有通用最优解；面试中应根据grounding精度、目标大小、宽高比分布、memory/latency和坐标可逆性选择。</p>
+<h2 id="14">14. 项目映射与真实性边界</h2>
+<table><thead><tr><th>项目</th><th>可以安全连接</th><th>当前不能声称</th></tr></thead><tbody>
+<tr><td>OPD</td><td>Qwen3-VL processor调用、50176 pixel budget、factor28→32静态风险、point/box protocol</td><td>mismatch已修复、导致某个metric下降、修复带来uplift</td></tr>
+<tr><td>OpenPiVLA</td><td>MindCube单次processor、DROID action无图像、dry-run square224三条lineage</td><td>formal DROID是image-conditioned VLA、dry-run等于formal</td></tr>
+<tr><td>WAM/UWM</td><td>camera/schema/provenance字段可迁移到manifest设计</td><td>已使用同一Qwenprocessor或同一token contract</td></tr>
+<tr><td>Robot Harness</td><td>工具输入可引用camera/frame/time schema</td><td>已运行视觉导航或验证image token mapping</td></tr>
+</tbody></table>
+<p>安全回答遵循：</p>
+<pre><code class="language-text">public upstream contract
+  -&gt; local static code evidence
+  -&gt; deterministic probe
+  -&gt; missing runtime/roundtrip/A-B evidence
+  -&gt; bounded conclusion</code></pre>
+<h2 id="15">15. 面试回答检查表</h2>
+<p>回答 PER-006 至少覆盖：</p>
+<ol><li>先画 raw image→processed image→grid→tokens 四层；</li><li>给出 \(F=p\,m\) 与 \(N_{\mathrm{img}}=T_gH_gW_g/m^2\)；</li><li>解释pixel budget不是fixed shape，<code>min=max</code>仍受factor和rounding影响；</li><li>区分direct resize、crop、letterbox和各自inverse；</li><li>说明pixel range/rescale/normalize与train/eval parity；</li><li>说明camera ID/order不是token自动提供；</li><li>用OPD double-resize和OpenPiVLA三条lineage做项目hook；</li><li>明确静态风险不等于性能因果，补证需要manifest、round-trip和matched A/B。</li></ol>
+<h2 id="16">16. 结论与下一步</h2>
+<p>PER-006 的核心不是背“Qwen3 patch size是16”，而是把图像输入变成一条可复算合同：谁resize、实际shape、pixel范围、grid/token数、坐标inverse、camera/order和lineage都必须显式。当前source、knowledge与card已闭合，但OPD double-resize性能影响、OpenPiVLA image-conditioned DROID、camera/round-trip manifest仍未闭合，因此保持<code>WARN/unseen</code>。</p>
+<p><code>VLA-PER-007..009</code> source/knowledge/card已同步且保持<code>unseen</code>。下一bounded slice只做PER-010 metric/parser source freeze，不生成knowledge/card或修改其他mastery。</p>
+<h2 id="references">References</h2>
+<ol><li><a href="../sources/vol_06_per006_image_preprocess_token_camera_contract_source_freeze.html">PER-006 Image Preprocess / Token / Camera Source Freeze</a>。</li><li><a href="https://arxiv.org/abs/2010.11929v2">Vision Transformer v2</a>。</li><li><a href="https://github.com/QwenLM/Qwen3-VL/blob/96588727e44c78b25ba03ea03b8e12f7e64fd0da/README.md">Qwen3-VL frozen README</a> 与 <a href="https://github.com/QwenLM/Qwen3-VL/blob/96588727e44c78b25ba03ea03b8e12f7e64fd0da/qwen-vl-utils/src/qwen_vl_utils/vision_process.py">qwen-vl-utils vision_process.py</a>。</li><li><a href="https://github.com/huggingface/transformers/blob/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/models/qwen2_vl/image_processing_qwen2_vl_fast.py">Transformers 4.57.1 Qwen2VLImageProcessorFast</a> 与 <a href="https://github.com/huggingface/transformers/blob/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/models/qwen3_vl/processing_qwen3_vl.py">Qwen3VLProcessor</a>。</li><li><a href="https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct/blob/0c351dd01ed87e9c1b53cbc748cba10e6187ff3b/preprocessor_config.json">Qwen3-VL-8B preprocessor artifact</a>。</li><li><a href="vol_06_per001_grounding_coordinate.html">PER-001 Grounding / Coordinate</a> 与 <a href="vol_06_per003_multiview_temporal.html">PER-003 Multi-view / Temporal</a>。</li></ol>
+</article></body></html>

@@ -1,0 +1,59 @@
+{
+  "artifact": "sources/vol_05_eval003_success_rate_confidence_interval_source_freeze.md",
+  "html": "sources/vol_05_eval003_success_rate_confidence_interval_source_freeze.html",
+  "review_date": "2026-07-17",
+  "status": "source_frozen / VLA-EVAL-003 / knowledge_drafted / card_1_of_1_unseen / WARN",
+  "verdict": "WARN",
+  "source_sha256": "3d00ba8ac8345b1bf08e7530a0e681048fd01b64abfbadf9fab4ca60ab4d490f",
+  "coverage": {
+    "knowledge_id": "VLA-EVAL-003",
+    "topic": "success rate, Wilson/Clopper-Pearson intervals, minimum rollout planning, clustering and stopping rules",
+    "official_pages_checked": 2,
+    "primary_papers_checked": 6,
+    "local_files_checked": 5,
+    "knowledge_drafted": 1,
+    "cards_drafted": 1,
+    "practice_state": "unseen"
+  },
+  "frozen_revisions": {
+    "scipy": "v1.16.3 / 56e567e70ccad213d04ab04e7cfe7365562a71f1",
+    "statsmodels": "v0.14.6 / 40e6a84d26ac74623c6b94b718f0987ef0351c53"
+  },
+  "raw_source_sha256": {
+    "scipy_binomtest": "696EA9FAF464BF7A5207CFF49D37D3DE4340855F08A78E00DFD1043F297D5A57",
+    "statsmodels_proportion": "B039F25CF95166FCC882A9FD47F72B7AB90013BFDA9823AA7ACF3C2950978ED9"
+  },
+  "local_evidence_sha256": {
+    "uwm_inventory": "728B8326DC345072886D0909FE2B8D81DFDE3993771E7FEBED446D471BD3674D",
+    "openpivla_inventory": "A3C644F949295D72889B2ACF6456BFD050E05C147B14381BBB067504A34CE293",
+    "opd_inventory": "0A68251DE06BC8494B7D2BE5E6DC169FC860A629C2F312E623DB69ED29DB12BB",
+    "uwm_project_page": "89C9958EE0129C99D0CD77867E0E337E53FCF787BB62CC55EDCE9BB6BB93BF80",
+    "openpivla_project_page": "FF659C4A0EB7B552D818D46DD00E13534F9F16FFCE9FD4D187DABD60D27DBDA0"
+  },
+  "checks": {
+    "bounded_slice": "PASS (source freeze plus one EVAL-003 knowledge node and one unseen atomic card; later statistical nodes deferred)",
+    "bernoulli_unit": "PASS WITH WARNING (episode-level unit and validity fields defined; iid is an assumption)",
+    "wilson_interval": "PASS (SciPy v1.16.3 implementation and Wilson paper frozen)",
+    "clopper_pearson": "PASS (SciPy exact inversion and statsmodels beta method frozen)",
+    "zero_all_success": "PASS (boundary handling and example values checked)",
+    "sample_size": "PASS WITH WARNING (statsmodels normal approximation is a planning lower bound, not a universal rollout constant)",
+    "cluster_dependence": "PASS WITH WARNING (design-effect contract sourced; local cluster-robust CI remains missing)",
+    "optional_stopping": "PASS WITH WARNING (sequential-inference boundary sourced; project does not have an always-valid scorer)",
+    "project_truth_boundary": "PASS (UWM 186/250 is user-confirmed/protocol-limited; OpenPiVLA 97.4 is archive-summary-only; OPD 10k is metric-specific raw holdout)",
+    "local_numeric_smoke": "PASS (SciPy binomtest values for UWM 186/250, task 44/50 and zero/all-success examples)",
+    "canonical_sha": "PASS (normalized Markdown SHA matches HTML meta and review JSON)",
+    "html_static_validation": "PASS (source SHA, one H1, eleven H2, five tables, two code blocks, and all TOC anchors resolve)",
+    "local_links": "PASS (eight local Markdown targets resolve; no missing target)",
+    "secret_value_handling": "PASS (only public paths, identifiers, revisions and hashes recorded)",
+    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static checks do not substitute for visual QA)",
+    "card_alignment": "PASS (knowledge and one card use the same frozen statistical contract)",
+    "oral_drill": "PENDING"
+  },
+  "open_items": [
+    "Obtain UWM 250 episode records, exact init/seed manifest, checkpoint/normalizer hashes and scorer version before claiming a cluster-aware CI.",
+    "Obtain OpenPiVLA 97.4% denominator, trial/seed/init protocol, raw episodes and archive-to-checkpoint lineage before calculating any CI.",
+    "Keep OPD box/point/text metrics separate from robot rollout success; metric-specific binary intervals require their own independence and aggregation contract.",
+    "If rollout results are monitored adaptively, pre-register a stopping rule or use an always-valid sequential method; do not repeatedly inspect fixed-n CI."
+  ],
+  "next": "Run a one-question VLA-EVAL-003 oral drill or collect missing episode-level artifacts; keep the card unseen."
+}

@@ -1,0 +1,36 @@
+{
+  "artifact": "sources/vol_04_cosmos_policy_wam_full10k_run_reconciliation.md",
+  "html": "sources/vol_04_cosmos_policy_wam_full10k_run_reconciliation.html",
+  "review_date": "2026-07-21",
+  "status": "local_evidence_reconciliation / run_families_separated / WARN",
+  "verdict": "WARN",
+  "source_sha256": "2E3B1E1C4CD87CDBD2AC19E6869A91FCBB762C86EBA7B1D66C15FDCAD4FBF378",
+  "scope": {
+    "project": "Cosmos Policy / WAM",
+    "run_families": ["8-GPU 9907-step 1 epoch gate", "independent single-GPU full10k repro"],
+    "full10k_training_metric": "0.0543 at step 10000",
+    "full10k_eval_smoke": "CoffeePressButton 0/1, 1 episode",
+    "full10k_formal_eval": "24 tasks x 5 episodes; raw 2/120; local-policy trusted 0/118",
+    "full10k_action_debug": "24 files / 4066 lines / 32x7 / finite",
+    "candidate_transcript": false,
+    "mastery_changes": 0,
+    "coaching_state_created": false
+  },
+  "checks": {
+    "source_hashes": "PASS (four external Project artifacts recorded with SHA-256)",
+    "run_family_separation": "PASS (1 epoch gate and full10k run have distinct paths, dates, hardware and contracts)",
+    "full10k_checkpoint_boundary": "PASS WITH WARNING (remote saved path is recorded; local binary/hash and reload parity are missing)",
+    "eval_denominator_boundary": "PASS WITH WARNING (24x5 status/log/summary align; raw 2/120 and local-policy trusted 0/118 are preserved; complete episode JSONL and scorer version remain missing)",
+    "causal_boundary": "PASS (no loss-to-uplift or baseline join is inferred)",
+    "ownership_boundary": "PASS WITH WARNING (logs/reports do not establish candidate per-file ownership)",
+    "html_static_validation": "PASS (ARIS academic v1, one H1, balanced delimiters and local links)",
+    "browser_visual_check": "PASS (localhost 1440x1000 and 800x1000; one H1, sticky-to-static TOC, no page-wide overflow, formula-em=0, 24x5 text present)"
+  },
+  "open_items": [
+    "Obtain immutable full10k checkpoint manifest and SHA-256.",
+    "Run new-process load parity and fixed-input forward check.",
+    "Collect same-checkpoint multi-task raw episode JSONL and scorer contract.",
+    "Confirm candidate/operator/reviewer ownership in the WAM ledger."
+  ],
+  "next": "Use the reconciled two-run-family phrasing in PROJ-WAM-001 practice, then collect one real candidate answer or one immutable full10k checkpoint artifact."
+}

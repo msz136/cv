@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 06 Perception / Grounding / Navigation：PER-009 原子题卡</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="interview_materials\vla\questions\vol_06_per009.md">
+<meta name="aris:source-sha256" content="f426bb17c26ed349e13b83923b6b547eb0bbe8f6f77c27ea525a68230b0f4fad">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { display:block; overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>f426bb17c26ed349e13b83923b6b547eb0bbe8f6f77c27ea525a68230b0f4fad</code>；生成自：<code>interview_materials\vla\questions\vol_06_per009.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#grounding-matching-negative-loss-reduction">Grounding Matching、Negative 与 Loss Reduction</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
+<h1>VOL 06 Perception / Grounding / Navigation：PER-009 原子题卡</h1>
+<div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-20 覆盖范围：<code>VLA-PER-009</code> 难度：L3 1 题 优先级：P1 1 题 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_06_per009_grounding_matching_negative_loss.html">PER-009 Grounding Matching / Negative / Loss Knowledge</a>；来源边界见 <a href="../sources/vol_06_per009_grounding_matching_negative_loss_source_freeze.html">PER-009 Source Freeze</a>。</div>
+<h2 id="grounding-matching-negative-loss-reduction">Grounding Matching、Negative 与 Loss Reduction</h2>
+<details class="qa">
+<summary><span class="lv lv-l3">L3</span> <span class="freq">P1</span> <b>VLA-PER-009</b> · Grounding模型训练时，Hungarian matching、negative、focal/L1/GIoU和reduction如何配合？为什么本地OPD不能说成detector loss？</summary>
+<p><strong>面试意图</strong>：判断你能否分开matching cost与final loss，解释token-axis negative、mask和distributed reduction，并把公源detector机制与本地生成式CE/KL objective放在正确证据边界内。</p>
+<p><strong>30 秒回答</strong>：Hungarian用token、L1、GIoU cost做一对一分配；cost只定query–GT责任，梯度来自分配后的loss。unmatched query仍是分类负例，padding须mask，权重/reduction须绑定版本。本地OPD是assistant CE、top-1 CE和online KL，没有matcher或box head。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：logits为<code>[B,Q,L]</code>，类别轴是text token。matcher在<code>Q×M</code> cost上分配；matched query写phrase map并回归box，unmatched query对有效token全为0，padding由<code>text_mask</code>排除。分类loss对valid query-token求和后除跨worker平均GT数；box算L1/GIoU，aux层重匹配。paper正文与Table 8权重冲突，须冻结版本/config；cardinality只logging。本地SFT用<code>-100</code>屏蔽prompt/padding；top-1 CE与online KL按token→sample→route→batch聚合，均无query set或box head。</p>
+<p><strong>诊断 / 证据</strong>：按prediction/target schema与positive map→positive/negative/masked counts→class/L1/GIoU component costs→Hungarian assignment probe→<code>cxcywh/xyxy</code>转换→numerator/<code>num_boxes</code> denominator→aux/encoder <code>weight_dict</code>→world size与empty-target batch检查。若本地loss异常，再查有效response token、route一致性、zero-loss/dummy/retry ledger和teacher/student checkpoint。任何“质量提升”都要继续绑定immutable checkpoint、raw holdout prediction、strict parser与同protocol metric；2500行optimization trace本身不够。</p>
+<p><strong>项目挂钩</strong>：本地<code>point_sft.py</code>只直接证明assistant-token supervision及prompt/padding <code>-100</code> mask；<code>train_opd_top1_vl.py</code>是object/region teacher top-1 token CE；<code>train_opd_online_vl.py</code>是generated-response full-vocabulary KL。三条路径均未读到detector query set、Hungarian matcher、unmatched-query negatives或L1/GIoU head。归档CSV的2500行与summary可复算，只能讲loss/overlap/grad的optimization trend，不能讲checkpoint-bound holdout、teacher正确性、robot uplift或个人ownership。</p>
+<p><strong>追问树</strong>：matching cost为什么不是training loss？Hungarian assignment能否直接反向传播？unmatched query有没有梯度？padding和negative有什么区别？focal loss等于hard-negative mining吗？为何classification numerator除GT box数？aux层是否复用final matching？<code>cardinality_error</code>会不会优化？Grounding DINO权重究竟是哪组？top-1 CE与full-vocab KL怎样区分？loss下降如何补成可信grounding提升？</p>
+<p><strong>易错点</strong>：把cost matrix当total loss；把unmatched query、非目标token、padding和negative image混为一谈；认为focal自动完成hard-negative mining；默认所有loss按batch mean；看到loss dict key就认为它反向传播；忽略prompt长度、query数和world size对scale的影响；不绑定revision就背固定权重；把生成式coordinate supervision称为set-prediction detector。</p>
+<p><strong>危险答案</strong>：说“Hungarian cost就是最终loss”“padding也是negative”“未匹配query完全没有梯度”“用了focal就是做了hard-negative mining”“Grounding DINO永远固定使用某一组权重”“OPD有point/box数据所以用了Grounding DINO loss”，或“2500步loss下降证明holdout与机器人成功率提升”。</p>
+<p><strong>来源</strong>：[1][2][3][4][5][6][7][8]　<strong>练习状态</strong>：unseen</p>
+</details>
+<h2 id="section-2">参考来源</h2>
+<ol><li><a href="../knowledge/vol_06_per009_grounding_matching_negative_loss.html">PER-009 Grounding Matching / Negative / Loss Knowledge</a>：tensor schema、matching/final loss、negative、reduction、本地objective lineage与面试边界。</li><li><a href="../sources/vol_06_per009_grounding_matching_negative_loss_source_freeze.html">PER-009 Source Freeze</a>：primary/official/local revision、hash、权重冲突、metrics复算与deterministic probes。</li><li><a href="https://arxiv.org/abs/2303.05499v5">Grounding DINO v5</a>。</li><li><a href="https://arxiv.org/abs/2005.12872v3">DETR v3</a>。</li><li><a href="https://arxiv.org/abs/1708.02002v2">Focal Loss v2</a>。</li><li><a href="https://arxiv.org/abs/1902.09630v2">Generalized IoU v2</a>。</li><li><a href="https://github.com/huggingface/transformers/blob/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/loss/loss_grounding_dino.py">Transformers 4.57.1 Grounding DINO loss</a> 与 <a href="https://github.com/huggingface/transformers/blob/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/loss/loss_for_object_detection.py">object-detection loss</a>。</li><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>。</li></ol>
+</article></body></html>

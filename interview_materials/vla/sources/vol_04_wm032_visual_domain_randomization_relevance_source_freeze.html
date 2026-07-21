@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOL 04 WM-032 Source Freeze：Visual Domain Randomization 与 Relevant-support Contract</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm032_visual_domain_randomization_relevance_source_freeze.md">
+<meta name="aris:source-sha256" content="9086b6072047f3578cb731f48f08c48b509d7d38924b801728039b83d6245710">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>9086b6072047f3578cb731f48f08c48b509d7d38924b801728039b83d6245710</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_wm032_visual_domain_randomization_relevance_source_freeze.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 来源冻结</a></li><li><a href="#3-randomization">3. Randomization 训练合同</a></li><li><a href="#4-randomization">4. 四组 randomization 因子</a></li><li><a href="#5-label-preserving-equivariant-semantic-changing">5. Label-preserving、equivariant 与 semantic-changing</a></li><li><a href="#5-1-label-preserving-nuisance">5.1 Label-preserving nuisance</a></li><li><a href="#5-2-equivariant-transform">5.2 Equivariant transform</a></li><li><a href="#5-3-semantic-changing-transform">5.3 Semantic-changing transform</a></li><li><a href="#6-relevant-support-contamination-gate">6. Relevant support 与 contamination gate</a></li><li><a href="#7-range">7. Range 设计：四类处理</a></li><li><a href="#8-gate">8. 避免无关分布的八个 Gate</a></li><li><a href="#9-udr-adr-simopt">9. UDR、ADR、SimOpt 的边界</a></li><li><a href="#10-matched-ablation">10. Matched ablation 与指标</a></li><li><a href="#11">11. 可审计伪代码</a></li><li><a href="#12">12. 项目真实性边界</a></li><li><a href="#13">13. 下一入口</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 04 WM-032 Source Freeze：Visual Domain Randomization 与 Relevant-support Contract</h1>
+<div class="meta">审计日期：2026-07-18 状态：source_frozen / VLA-WM-032 / knowledge_synced / card_synced / WARN 覆盖题目：VLA-WM-032 本轮边界：冻结 visual/domain randomization 的 geometry、appearance、sensor/time、scene/task 因子，label-preserving/equivariant 约束、range 来源、irrelevant-domain rejection、matched ablation 与 distribution update；不展开 WM-033 dynamics SysID，不给个人项目虚构随机化配置或 transfer 指标。</div>
+<h2 id="1">1. 结论先行</h2>
+<ol><li><strong>随机化目标是覆盖 target nuisance，而不是让图像越怪越好。</strong>训练分布应覆盖真实 camera/appearance/sensor 变化，同时排除不可能状态、破坏任务语义的变换和无意义尾部。[S1][S3][S4]</li><li><strong>先分四组。</strong>Geometry：camera pose/intrinsics、object pose/scale；appearance：light/material/texture/background/color；sensor/time：noise、blur、compression、occlusion/dropout、timestamp/jitter；scene/task：clutter/distractor/layout，但只能改目标任务实际会变化的部分。[S1][S2][S5]</li><li><strong>每个 transform 必须有 label contract。</strong>纯 appearance nuisance 可保持 action/label；camera/object geometry 变化需重新渲染或同步变换 point/box/pose/action target；语言指令含颜色、左右或对象身份时，随机化对应语义必须同步改 prompt/label，否则是在注入错误监督。</li><li><strong>Range 应有来源。</strong>可测量变量以 calibration/real-capture statistics 为中心加 residual/margin；未知但 plausible 的变量做 bounded coverage；不应照搬论文的 camera、texture、noise 或物理范围。[S2][S3]</li><li><strong>过宽分布有成本。</strong>SimOpt 明确指出 overly wide distributions 会包含不可行场景、阻碍 policy learning 或诱导过度保守；Tan et al. 也把 dynamics randomization 描述为 robustness–optimality trade-off。[S3][S4]</li><li><strong>ADR 不是“自动找到真实分布”。</strong>Frozen ADR 从初始窄分布出发，在 boundary performance 超过/低于 threshold 时逐维扩展/收缩 uniform bounds；它生成 curriculum，但仍需要参数语义、硬边界、validity filter 和 real validation。[S5]</li><li><strong>Real replay 与闭环证据分层。</strong>Unlabeled real images/calibration 可用于 range/coverage；real replay 可测 processor/feature/action stability；只有 matched closed-loop trials 才能支持 transfer benefit。Sim-only robustness 不等于 Sim2Real。</li><li><strong>要做 matched factor ablation。</strong>固定 checkpoint initialization、train/eval budget、sim seeds、task/init/controller，对 no-DR、appearance、geometry、sensor/time、scene、combined、overwide 分组，报告 nominal/randomized/real replay/closed-loop 与 per-stratum failure。[S1][S2]</li><li><strong>当前项目证据没有 visual-DR bundle。</strong>相关 evidence 路径未发现 randomization manifest、factor/range/source、sample renders、matched ablation、real calibration/replay 或 real closed-loop ownership；只能说“能设计/审计”，不能说“已用 DR 改善项目迁移”。[S7]</li></ol>
+<h2 id="2">2. 来源冻结</h2>
+<table><thead><tr><th>ID</th><th>来源</th><th>冻结版本</th><th>可支持</th><th>不能支持</th><th>状态</th></tr></thead><tbody>
+<tr><td>S1</td><td>Tobin et al., <em>Domain Randomization</em></td><td>arXiv:1703.06907v1；ar5iv snapshot UTF-8 SHA-256 <code>faba518e98357c65a59d41f340bb723d4bb84c50eb359813597daab113dcd33a</code></td><td>camera position/orientation/FOV、lighting、object pose、texture、distractor 与 ablation</td><td>其范围/texture count 对任意 VLA 通用；precision localization 等于 policy transfer</td><td>primary / checked</td></tr>
+<tr><td>S2</td><td>OpenAI et al., <em>Learning Dexterous In-Hand Manipulation</em></td><td>arXiv:1808.00177v5；ar5iv snapshot SHA-256 <code>826fb63d545518661a10b9cac05110bf7c813e88f99698d3b9e98cb313f81e93</code></td><td>calibration-centered physics range、camera/intrinsics/light/material、correlated/un-correlated noise、randomization ablation</td><td>Shadow Hand 参数与范围可外推；广泛随机化自动安全</td><td>primary / checked</td></tr>
+<tr><td>S3</td><td>Tan et al., <em>Sim-to-Real Agile Locomotion</em></td><td>arXiv:1804.10332v2；ar5iv snapshot SHA-256 <code>c34db6210074989010a635a11705e17da4a38d4b105e471159a9cc832a120a49</code></td><td>measurement-centered ranges、uncertain/drifting parameters、robustness–optimality trade-off</td><td>locomotion range 直接用于 camera/VLA；测量即完整 target support</td><td>primary / checked</td></tr>
+<tr><td>S4</td><td>Chebotar et al., <em>SimOpt</em></td><td>arXiv:1810.05687v4；ar5iv snapshot SHA-256 <code>d655425962c13511caf54a1c669144793e0747366db9f9b48d0f0d5d58ca2391</code></td><td>overly wide distribution 的 infeasible/conservative 风险；少量 real rollout 更新 simulator distribution</td><td>可无安全代价收集 real data；trajectory matching 是 exact SysID</td><td>primary / checked</td></tr>
+<tr><td>S5</td><td>OpenAI et al., <em>Solving Rubik's Cube with a Robot Hand</em></td><td>arXiv:1910.07113v1；ar5iv snapshot SHA-256 <code>a482412afe1c54a733670ef6d5f04126eafc38b32f862b25221248d739520522</code></td><td>ADR per-dimension uniform bounds、boundary sampling、performance thresholds、逐步扩展；vision factor groups</td><td>ADR bounds 等于真实分布；自动避免所有 irrelevant factors</td><td>primary / checked</td></tr>
+<tr><td>S6</td><td>OpenCV calib3d</td><td>OpenCV 4.13.0 page；访问 2026-07-18；UTF-8 SHA-256 <code>e0a638f53a7f09287b8c502a364cfed8afa2fea3531a7dbe81bd30f4583825ce</code></td><td>intrinsics/extrinsics/distortion 与 world→camera geometry contract</td><td>某项目 calibration/range 已正确</td><td>official-doc / checked</td></tr>
+<tr><td>S7</td><td>Sim2Real Audit D + WM-031 + Evidence Manifest</td><td>Audit D SHA-256 <code>18318d37f2060a771d3074b3a2d70b7e07487091de23d9cf6a9599f4080ec200</code>；WM-031 SHA-256 <code>d25897218b4a276a0d9a981c826e8680ba21db7e64b298963eace10184877a97</code>；manifest <code>f3826289cdf2451758da11e0dddab3a7bb43d88b9a656fa340c08f71d16a21b6</code></td><td>taxonomy、range/test matrix 与个人证据缺口</td><td>本地 DR execution、real transfer benefit 或 ownership</td><td>local-audit / WARN</td></tr>
+</tbody></table>
+<p>ar5iv 只作为冻结的全文转换 snapshot；论文身份和 revision 以 arXiv 为准。所有公式化 relevance/contamination gate 是基于来源的工程综合，不是论文原定理。</p>
+<h2 id="3-randomization">3. Randomization 训练合同</h2>
+<p>令 simulator observation 为 \(o=R_{\psi}(x)\)，\(\psi\sim p_{\phi}(\psi)\) 是 randomization parameter，训练目标为：</p>
+<div class="formula">\[
+\theta^*(\phi)=\arg\min_{\theta}
+\mathbb E_{(x,y)\sim\mathcal D_{sim},\,\psi\sim p_\phi}
+\left[\ell\left(f_\theta(R_\psi(x)),\,T_\psi(y)\right)\right].
+\]</div>
+<p>变量解释：\(R_\psi\) 渲染/扰动 observation，\(T_\psi\) 是 label/action 同步变换；若 \(\psi\) 是纯 nuisance，\(T_\psi(y)=y\)；若 camera/object geometry 或 task semantics 改变，必须定义新的 target。实现映射：randomization manifest 需记录 factor、distribution、bounds/source、cadence/correlation、label transform、validity filter 和 seed。</p>
+<p>目标不是最大化 distribution entropy，而是让训练后模型在 real target distribution \(q_r\) 上表现良好：</p>
+<div class="formula">\[
+R_{real}(\phi)=
+\mathbb E_{z\sim q_r}
+\left[\ell_{task}(f_{\theta^*(\phi)}(z),y_z)\right].
+\]</div>
+<p>变量解释：真实风险通常只能从小规模 real replay/closed-loop 估计；randomized-sim validation 只是 proxy。若没有 real data，必须将 support coverage 标为假设而非已验证。</p>
+<h2 id="4-randomization">4. 四组 randomization 因子</h2>
+<table><thead><tr><th>因子组</th><th>可随机化项</th><th>Label/semantics 风险</th><th>最小范围来源</th></tr></thead><tbody>
+<tr><td>geometry</td><td>camera extrinsics/intrinsics/FOV、mount tolerance、object pose/scale、robot/camera geometry</td><td>pixel point/box/pose 要同步；任意 2D warp 未必对应真实 camera；object pose 变化需重算 expert action</td><td>calibration residual、mount tolerance、real pose histogram</td></tr>
+<tr><td>appearance</td><td>light direction/intensity/color、exposure/WB/gamma、material/texture、background、shadow/reflection</td><td>instruction 含 color/material 时不能随意改；specular/lighting 过强可遮掉 task cue</td><td>real capture histogram、lighting envelope、material catalog</td></tr>
+<tr><td>sensor/time</td><td>readout noise/bias、blur、compression、occlusion/dropout、depth holes、timestamp offset/jitter</td><td>frame/proprio/action history 要保持时间一致；occlusion 不应让任务不可解</td><td>static/dynamic capture、network/camera trace、dropout/event log</td></tr>
+<tr><td>scene/task</td><td>clutter、distractor、object instance/layout、camera count/availability</td><td>target identity、left/right、goal、success、expert action 可能改变；必须同步 prompt/label</td><td>deployment inventory、task/init manifest、object/layout split</td></tr>
+</tbody></table>
+<p>Tobin 与 ADR vision recipe提供了许多候选项，但“论文随机化过”不是本任务的 range 依据。[S1][S5]</p>
+<h2 id="5-label-preserving-equivariant-semantic-changing">5. Label-preserving、equivariant 与 semantic-changing</h2>
+<h3 id="5-1-label-preserving-nuisance">5.1 Label-preserving nuisance</h3>
+<p>若 transform 不改变世界状态与动作目标：</p>
+<div class="formula">\[
+T_\psi(y)=y.
+\]</div>
+<p>例如小范围 exposure、white balance、sensor noise、texture nuisance，前提是它们不改变语言/对象语义且不遮蔽完成任务的必要信息。</p>
+<h3 id="5-2-equivariant-transform">5.2 Equivariant transform</h3>
+<p>若 geometry 变换 \(g\) 改变 label coordinate：</p>
+<div class="formula">\[
+y&#x27;=\rho(g)y.
+\]</div>
+<p>变量解释：\(\rho(g)\) 是 label/action 的对应变换。例如水平 flip 后 pixel point/box 要 flip；camera frame action/pose 必须按 extrinsics 重算；object pose 变化需要 simulator 重新生成 observation 与 expert/action target。只改 image 不改 target 会制造冲突监督。</p>
+<h3 id="5-3-semantic-changing-transform">5.3 Semantic-changing transform</h3>
+<p>若 instruction 是“抓红色方块”，把目标随机为蓝色但保留 prompt/label 会改变任务。处理只能是：锁定该 factor、同步修改 prompt/target，或将其放入独立 task-generalization 数据，而不是称为 label-preserving DR。</p>
+<h2 id="6-relevant-support-contamination-gate">6. Relevant support 与 contamination gate</h2>
+<p>定义 task-plausible set \(\Omega_{valid}\)，概念上的 contamination 为：</p>
+<div class="formula">\[
+C(\phi)=
+\Pr_{\psi\sim p_\phi}
+\left[\psi\notin\Omega_{valid}\;\lor\;T_\psi\text{ 未定义/不一致}\right].
+\]</div>
+<p>变量解释：\(\Omega_{valid}\) 包含硬件/场景可实现、任务仍可解、传感器/标签语义一致的参数组合。它通常无法精确计算，但可用 hard constraints、sample render review、label round-trip、task solvability checks 和 rejection reasons 审计。</p>
+<p>Real-support coverage 可用有限 calibration/replay 样本做近似：</p>
+<div class="formula">\[
+\widehat G(\phi)=\frac1n
+\sum_{i=1}^{n}
+\mathbf 1\{\hat\psi_i^r\in\operatorname{supp}(p_\phi)\}.
+\]</div>
+<p>变量解释：\(\hat\psi_i^r\) 是从 real calibration/capture 估计的 factor；不可观测 factor 用 proxy discrepancy 和 <code>unknown</code> 标记。高 coverage 不保证 transfer，高 contamination 也可能被均值指标掩盖。</p>
+<h2 id="7-range">7. Range 设计：四类处理</h2>
+<table><thead><tr><th>因子</th><th>处理</th><th>例子</th><th>禁止做法</th></tr></thead><tbody>
+<tr><td>measured</td><td>nominal + residual/quantile + margin</td><td>intrinsics/extrinsics、exposure、latency、noise</td><td>照搬论文 ±x%</td></tr>
+<tr><td>uncertain but plausible</td><td>bounded prior + stress bucket</td><td>mounting vibration、lighting、object pose</td><td>无上限无限扩宽</td></tr>
+<tr><td>semantic locked</td><td>固定或同步修改 label/prompt</td><td>target color、left/right、object identity</td><td>保持旧 label 继续训练</td></tr>
+<tr><td>rare/safety</td><td>与 nominal training 分开，event/stress eval</td><td>full occlusion、packet loss、camera failure</td><td>用大量不可解样本污染 nominal batch</td></tr>
+</tbody></table>
+<p>Tan/OpenAI dexterous 的直接启发是以测量/calibration 作为中心，对更不确定或会漂移的量扩大覆盖；不是复制其数值。[S2][S3]</p>
+<h2 id="8-gate">8. 避免无关分布的八个 Gate</h2>
+<ol><li><strong>Target inventory</strong>：列 deployment camera/light/object/layout/sensor/event，不从 augmentation library 随机挑项。</li><li><strong>Factor hypothesis</strong>：每个 factor 写“它模拟哪种真实变化、影响哪条 failure trace”。</li><li><strong>Label/semantic check</strong>：声明 invariant/equivariant/semantic-changing 与 target transform。</li><li><strong>Physical/task validity</strong>：检查 camera pose/FOV、object pose、illumination、occlusion 是否可能且任务仍可解。</li><li><strong>Range evidence</strong>：绑定 calibration、real capture、manufacturing tolerance、日志或明确 prior；缺失记 <code>unverified</code>。</li><li><strong>Sample audit</strong>：保存 nominal、low/high boundary、random samples、rejection reason 和 seed。</li><li><strong>Matched factor ablation</strong>：固定 data count/compute/checkpoint init，仅替换 one group；combined 与 overwide 为独立 arm。</li><li><strong>Real gate + rollback</strong>：real replay/closed-loop 不提升或 nominal/target strata 回退时停止扩宽，恢复上个 distribution revision。</li></ol>
+<h2 id="9-udr-adr-simopt">9. UDR、ADR、SimOpt 的边界</h2>
+<table><thead><tr><th>方法</th><th>Distribution update</th><th>优点</th><th>不能自动解决</th></tr></thead><tbody>
+<tr><td>fixed/UDR</td><td>人工设定 \(p_\phi\)，训练期固定</td><td>简单、可复现</td><td>range 来源、factor relevance、real coverage</td></tr>
+<tr><td>ADR</td><td>从窄 bounds 开始，按 boundary performance thresholds 扩/缩维度</td><td>curriculum、减少人工逐维调参</td><td>target-real alignment、semantic validity、维度相关性</td></tr>
+<tr><td>SimOpt</td><td>用少量 real trajectory 与 sim behavior discrepancy 更新 distribution</td><td>直接利用 transfer-relevant real behavior</td><td>real rollout safety/cost、metric shortcut、exact SysID</td></tr>
+</tbody></table>
+<p>ADR 的 boundary performance 说明当前 policy 是否能处理该边界，不说明该边界在现实中有多大概率；仍需 hard bounds 与 real replay。SimOpt 也不应在 policy 不安全时无约束收集 real rollout。[S4][S5]</p>
+<h2 id="10-matched-ablation">10. Matched ablation 与指标</h2>
+<p>最小 arms：</p>
+<ol><li>no DR；</li><li>appearance only；</li><li>geometry only；</li><li>sensor/time only；</li><li>scene/task-relevant only；</li><li>relevant combined；</li><li>overwide/invalid stress（诊断用，不与 nominal batch 混合）。</li></ol>
+<p>固定 dataset episode/state、render count、train steps/effective batch、checkpoint init、task/init、controller、seed plan。输出：</p>
+<table><thead><tr><th>Eval stratum</th><th>指标</th><th>主要问题</th></tr></thead><tbody>
+<tr><td>nominal sim</td><td>task metric/loss</td><td>是否牺牲 nominal optimality</td></tr>
+<tr><td>randomized in-support</td><td>per-factor metric</td><td>是否学到预期 robustness</td></tr>
+<tr><td>held-out composition</td><td>unseen factor combination</td><td>是否只记住训练组合</td></tr>
+<tr><td>real replay</td><td>feature/point/box/action stability、failure strata</td><td>support 是否更接近真实 observation</td></tr>
+<tr><td>real closed-loop</td><td>success + CI、first failure、safety events</td><td>transfer 是否真正改善</td></tr>
+</tbody></table>
+<p>同时报告 factor draw/rejection counts、distribution revision、sample bytes/renders、train cost。只报 combined success 无法识别无效或负迁移 factor。</p>
+<h2 id="11">11. 可审计伪代码</h2>
+<pre><code class="language-python">def sample_visual_domain(manifest, rng, task):
+    # 1. Sample only factors registered for this deployment/task contract.
+    params = manifest.sample(rng)
+
+    # 2. Reject physically impossible, unsolvable or semantically inconsistent samples.
+    valid, reason = validate_physics_task_semantics(params, task)
+    if not valid:
+        log_rejection(params, reason)
+        return None
+
+    # 3. Render observation and transform labels/actions when geometry or semantics change.
+    obs = render(task.state, params)
+    target = transform_target(task.target, params.label_transform)
+    assert label_roundtrip_passes(obs, target, params)
+
+    # 4. Persist factor values, source, seed and distribution revision for ablation/replay.
+    log_sample(params, rng.seed, manifest.revision)
+    return obs, target</code></pre>
+<p>这是 randomization data contract，不是个人项目已存在的实现。真实 pipeline 还需 processor parity、dataset caching/versioning、camera correlation、multi-view/time consistency 与 safety-stress split。</p>
+<h2 id="12">12. 项目真实性边界</h2>
+<p>对 <code>interview_materials/vla/evidence/</code>、OpenPiVLA evidence freeze 和本地 artifact gate 的本轮检索没有发现可闭合 WM-032 的 visual-DR bundle：factor/range/source manifest、sample render ledger、label transform tests、matched arms、real calibration/replay、closed-loop result 与 ownership 未同时存在。[S7]</p>
+<p>安全表达：<strong>“我会先用 calibration/real capture 定义 relevant support，为每个 factor写 label contract 和 validity gate，再做 factorized matched ablation与 real replay/closed-loop验证；当前项目没有足够证据声称已完成这些实验。”</strong></p>
+<p>不能说：<strong>“我给图像加了增强，所以项目具备 domain randomization / Sim2Real 提升。”</strong>常规 train-time augmentation、上游配置字段、simulator camera变化或 sample render 均不等于 matched transfer evidence。</p>
+<h2 id="13">13. 下一入口</h2>
+<p>下一 bounded slice 是 <code>VLA-WM-033</code>：dynamics randomization 与 system identification 如何互补，参数范围怎样确定。本页不提前给 mass/friction/actuator range。</p>
+<h2 id="references">参考文献（References）</h2>
+<ol><li>Tobin et al., <a href="https://arxiv.org/abs/1703.06907v1">Domain Randomization</a>, 2017。</li><li>OpenAI et al., <a href="https://arxiv.org/abs/1808.00177v5">Learning Dexterous In-Hand Manipulation</a>, 2019。</li><li>Tan et al., <a href="https://arxiv.org/abs/1804.10332v2">Sim-to-Real Agile Locomotion</a>, 2018。</li><li>Chebotar et al., <a href="https://arxiv.org/abs/1810.05687v4">SimOpt</a>, 2019。</li><li>OpenAI et al., <a href="https://arxiv.org/abs/1910.07113v1">Solving Rubik's Cube with a Robot Hand</a>, 2019。</li><li><a href="https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html">OpenCV Camera Calibration and 3D Reconstruction</a>。</li><li><a href="vol_04_sim2real_claim_to_mechanism.html">VOL 04 Source Audit D：Sim2Real</a>。</li><li><a href="vol_04_wm031_reality_gap_taxonomy_source_freeze.html">WM-031 Reality-gap Taxonomy</a>。</li><li><a href="../evidence/evidence_manifest.html">VLA Project Evidence Manifest</a>。</li></ol>
+</article></body></html>
