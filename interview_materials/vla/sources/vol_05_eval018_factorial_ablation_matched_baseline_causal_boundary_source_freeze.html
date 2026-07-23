@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 05 EVAL-018 Source Freeze：Factorial Ablation、Matched Baseline 与因果边界</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_eval018_factorial_ablation_matched_baseline_causal_boundary_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eval018_factorial_ablation_matched_baseline_causal_boundary_source_freeze.md">
 <meta name="aris:source-sha256" content="3798164600cdaacf43473d55e7f8d964cbbcc781e01ef1efa37ca88e82634bfd">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>3798164600cdaacf43473d55e7f8d964cbbcc781e01ef1efa37ca88e82634bfd</code>；生成自：<code>interview_materials\vla\sources\vol_05_eval018_factorial_ablation_matched_baseline_causal_boundary_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>3798164600cdaacf43473d55e7f8d964cbbcc781e01ef1efa37ca88e82634bfd</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eval018_factorial_ablation_matched_baseline_causal_boundary_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、Revision 与边界</a></li><li><a href="#2-factor-arm-unit-outcome-estimand">2. 先冻结五个对象：Factor、Arm、Unit、Outcome、Estimand</a></li><li><a href="#3-matched-baseline">3. Matched Baseline 不是“名字相同”</a></li><li><a href="#4-2-2-factorial">4. 最小2×2 Factorial</a></li><li><a href="#5-cell-mean">5. Cell Mean、主效应与交互效应</a></li><li><a href="#6-seed-dataset-split-eval-pair-block">6. Seed、Dataset Split 与 Eval Pair 是 Block，不是装饰</a></li><li><a href="#7-estimand">7. 两个必须分开的 Estimand</a></li><li><a href="#7-1-fixed-recipe-effect">7.1 Fixed-recipe effect</a></li><li><a href="#7-2-equal-search-budget-system-effect">7.2 Equal-search-budget system effect</a></li><li><a href="#8-training-budget-data-amount-model-capacity">8. Training Budget、Data Amount 与 Model Capacity</a></li><li><a href="#9-planned-started-valid-failed-excluded">9. Planned→Started→Valid→Failed/Excluded 守恒</a></li><li><a href="#10-checkpoint-selection-test-reuse">10. Checkpoint Selection 与 Test Reuse</a></li><li><a href="#11-binary-success-scale">11. Binary Success 的 Scale 与层次结构</a></li><li><a href="#12-multiplicity-confirmatory-exploratory">12. Multiplicity 与 Confirmatory / Exploratory 分层</a></li><li><a href="#13">13. 因果识别边界</a></li><li><a href="#14-full-fractional-sequential-design">14. Full、Fractional 与 Sequential Design</a></li><li><a href="#15-artifact-bundle">15. 最小 Artifact Bundle</a></li><li><a href="#16">16. 评估伪代码</a></li><li><a href="#17-evidence-mapping">17. 五项目 Evidence Mapping</a></li><li><a href="#18-claim-ladder">18. Claim Ladder 与下一入口</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 05 EVAL-018 Source Freeze：Factorial Ablation、Matched Baseline 与因果边界</h1>
 <div class="meta">状态：<code>source_frozen / VLA-EVAL-018 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-19 证据截止：2026-07-19 本切片冻结factor/arm/estimand、2×2 factorial主效应与交互、matched baseline、seed/eval block、fixed-recipe与equal-search-budget双estimand、失败run/selection/multiplicity、因果识别边界及五项目真实性；只服务<code>VLA-EVAL-018</code>，EVAL-019后置。</div>

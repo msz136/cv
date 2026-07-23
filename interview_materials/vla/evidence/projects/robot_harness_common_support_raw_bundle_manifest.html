@@ -6,7 +6,7 @@
 <title>Robot Harness 四模型共同支持集 Raw Bundle Manifest</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\evidence\projects\robot_harness_common_support_raw_bundle_manifest.md">
-<meta name="aris:source-sha256" content="271bcbb6a9f7d074210d7d794bff31d74a54dfbdfbf3f05d1cea5106f6a355a4">
+<meta name="aris:source-sha256" content="dc7ac964b04cc429ca9ffba9e57c5e3f9e5ead0b1c63099d89a48a09efb120d1">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>271bcbb6a9f7d074210d7d794bff31d74a54dfbdfbf3f05d1cea5106f6a355a4</code>；生成自：<code>interview_materials\vla\evidence\projects\robot_harness_common_support_raw_bundle_manifest.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>dc7ac964b04cc429ca9ffba9e57c5e3f9e5ead0b1c63099d89a48a09efb120d1</code>；生成自：<code>interview_materials\vla\evidence\projects\robot_harness_common_support_raw_bundle_manifest.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. 问题（Question）</a></li><li><a href="#2">2. 结论先行</a></li><li><a href="#3-aggregate-gate">3. 对上一份 aggregate gate 的勘误</a></li><li><a href="#4">4. 冻结的工具与生成合同</a></li><li><a href="#5-40-slot-primary">5. 40-slot Primary 文件覆盖</a></li><li><a href="#6">6. 六个四模型共同支持集</a></li><li><a href="#7-28-primary">7. 28 个 Primary 文件身份</a></li><li><a href="#7-1-d-suites">7.1 D suites</a></li><li><a href="#7-2-ood-suites">7.2 OOD suites</a></li><li><a href="#8-schema-derived">8. Schema 与 Derived 文件边界</a></li><li><a href="#9-12-recovery-manifest">9. 12 个缺失文件的 Recovery Manifest</a></li><li><a href="#9-1-12-slot-metrics-run">9.1 12-slot Metrics 与 Run 身份</a></li><li><a href="#9-2">9.2 全盘候选搜索与拒绝理由</a></li><li><a href="#9-3">9.3 精确远端定位合同</a></li><li><a href="#10-raw">10. 为什么标准同步里没有 Raw 文件</a></li><li><a href="#11-fail-closed">11. Fail-closed 后续计算</a></li><li><a href="#12-ownership">12. 面试口径与 Ownership 边界</a></li><li><a href="#section-18">可以说</a></li><li><a href="#section-19">不能说</a></li><li><a href="#13">13. 下一步</a></li><li><a href="#references">参考来源（References）</a></li></ol></nav>
 <h1>Robot Harness 四模型共同支持集 Raw Bundle Manifest</h1>
 <div class="meta">状态：<code>local-raw-partial-recovered / 28-of-40 primary files / common-support-6-of-10 / recovery-search-complete / 0-eligible-replacements / checkpoint-unverified / WARN</code> 审查日期：2026-07-20 证据截止：2026-07-20 原始文件位置：<code>C:\Users\mousongzhe\agent\.codex_tmp\remote_sync_20260626_141618\extract\training_pipeline_v2_language_full</code>；本页只读审计，没有修改 <code>agent</code> 或 raw outputs。 边界：本页恢复的是 32B base、SFT、GRPO checkpoint-100/200 的部分 per-sample prediction identity 与共同 ID support；不把 proxy suite 升级为真实机器人成功，不把当前 scorer source 冒充当时 scorer binary，不把远端 checkpoint path 冒充权重 SHA。</div>
@@ -188,11 +192,11 @@ H_{\mathrm{id}}=\operatorname{SHA256}\!\left(\big\Vert_{i=1}^{n}\operatorname{u6
 <tr><td>OOD</td><td><code>quarantine_safety_probe</code></td><td>976</td><td>true</td><td>true</td><td><code>D45AE832A8CDF1180001FF4299E9419EA312FF9EA4F5619653AA65073055DF87</code></td></tr>
 <tr><td>OOD</td><td><code>robovlm_point_general_probe</code></td><td>400</td><td>true</td><td>true</td><td><code>F744D0D352036D4C3A9DA20007DAEF8BED406A760C7047DF831099A8A7DBEC61</code></td></tr>
 </tbody></table>
-<p>若未来冻结同一 scorer (g_j)，这六个 suite 已具备逐 case paired 计算的 ID 前提：</p>
+<p>若未来冻结同一 scorer \(g_j\)，这六个 suite 已具备逐 case paired 计算的 ID 前提：</p>
 <div class="formula">\[
 \Delta_{a,b}^{(j)}=\frac{1}{|C_j|}\sum_{i\in C_j}\left[g_j(y_{a,i})-g_j(y_{b,i})\right].
 \]</div>
-<p>变量解释：(C_j) 是上表冻结的共同 ID support，(y_{a,i}) 是 raw output。本轮只证明 (C_j) 的 set/order identity；<code>g_j</code> 的 code/config/backend identity 与 checkpoint binary 仍未冻结，所以本页不报告这条差值。</p>
+<p>变量解释：\(C_j\) 是上表冻结的共同 ID support，\(y_{a,i}\) 是 raw output。本轮只证明 \(C_j\) 的 set/order identity；<code>g_j</code> 的 code/config/backend identity 与 checkpoint binary 仍未冻结，所以本页不报告这条差值。</p>
 <h2 id="7-28-primary">7. 28 个 Primary 文件身份</h2>
 <h3 id="7-1-d-suites">7.1 D suites</h3>
 <table><thead><tr><th>suite</th><th>model</th><th>rows</th><th>bytes</th><th>SHA-256</th></tr></thead><tbody>

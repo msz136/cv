@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>五项目串联：从实现证据反推的 VLA 项目总述口述稿</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\practice\project_portfolio_oral_model_answer.md">
+<meta name="aris:source-sha256" content="1423ba25c37fc767c5da105d321398b0fca2fcf8b038ffebc31c3e2a05d4706c">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>1423ba25c37fc767c5da105d321398b0fca2fcf8b038ffebc31c3e2a05d4706c</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\practice\project_portfolio_oral_model_answer.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-30">1. 30 秒总述</a></li><li><a href="#2-2">2. 2 分钟主线</a></li><li><a href="#3">3. 项目选择：面试官问什么时优先讲哪一段</a></li><li><a href="#4">4. 共用的实现审计框架</a></li><li><a href="#5">5. 横向真实性边界</a></li><li><a href="#6">6. 可能的压迫式追问</a></li><li><a href="#ownership">“五个项目里哪个最能证明你有 ownership？”</a></li><li><a href="#uplift">“你做了这么多项目，为什么没有一个结果能直接证明 uplift？”</a></li><li><a href="#section-9">“如果只能留一个项目讲，你怎么选？”</a></li><li><a href="#7">7. 面试前的最小补强清单</a></li><li><a href="#8">8. 证据入口</a></li></ol></nav>
+<h1>五项目串联：从实现证据反推的 VLA 项目总述口述稿</h1>
+<div class="meta">状态：<code>implementation_derived_portfolio_model_answer / evidence_bounded / not_candidate_transcript / unseen</code> 更新日期：2026-07-22 适用场景：面试开场“介绍一下你做过的 VLA/具身项目”、项目选型、跨项目追问</div>
+<h2 id="1-30">1. 30 秒总述</h2>
+<div class="meta">我的项目经历可以按一条 VLA 工程链来讲，而不是五个互不相关的 demo。Cosmos Policy/WAM 侧重训练入口、在线文本条件和 RoboCasa 闭环评测；UWM/LIBERO 侧重数据窗口、task-specific checkpoint、normalizer 与 episode 分母；OpenPiVLA 侧重多模态 causal fine-tune、LoRA 和 action formatter 的 shape/lineage 风险；Robot Harness 侧重 robot scope、mutex、cancel、compensation 以及 schema-aware reward；OPD 侧重多 expert 数据合同、路由蒸馏和 holdout 评测。我的共同工作方式是先冻结输入输出和评测协议，再从日志、raw artifact 和 first-divergence 定位问题。现有材料能证明实现接入、运行审计和失败诊断，但不能把不同 checkpoint、scorer 或 denominator 拼成跨项目的统一提升。</div>
+<h2 id="2-2">2. 2 分钟主线</h2>
+<div class="meta">我会把这五个项目看成从 policy 到 evaluation 再到执行协议的五个切面。  第一条是 Cosmos Policy/WAM。我接入了 official trainer/model/dataset 路径和 online Reason1 conditioning，处理 placeholder 与 lazy success metadata，另外把 local DCP checkpoint loader 接回 RoboCasa 官方闭环。训练上有一条单卡 full10k run，日志到 step 10000、loss=<code>0.0543</code> 并记录了保存成功；另一条 8 卡、global batch 128、<code>9907</code>-step 的 1-epoch gate 则先遇到 <code>cycle(dataloader)</code> 引起的 CPU cgroup OOM，修复后的 5-step smoke 通过，但正式 run 又在 DeepSpeed <code>state_dict(destination=...)</code> 保存接口失败，所以我不会说 1 epoch gate 已完成。评测固定 24 个任务、每任务 5 个 episode、chunk 32、执行前 16 步；full10k 的 trusted 结果是 <code>0/118</code>，同一 harness 的 official-HF path 是 <code>84/118</code>，这只能缩小排查范围，不能写成训练 uplift。  第二条是 UWM/LIBERO。我从 HDF5 转 Zarr 的窗口、<code>process_batch</code>、DDP trainer 和 epoch-aligned queue 追到 evaluator。这里最容易讲错的是把五个任务说成一个 multi-task checkpoint；实现和日志显示它们使用 task-specific checkpoints，且 evaluator 只读取 <code>ckpt["model"]</code>，没有读取 <code>action_normalizer</code>。用户确认的 <code>186/250</code> 是 summary-level 结果，本地缺 250 条 raw episode 和 checkpoint/hash，因此我把 strict/reset、completed denominator 和 DataLoader stall 分开讲，不把 <code>232/250</code> 或 <code>186/250</code> 直接解释成模型改进。  第三条是 OpenPiVLA。当前可核验的 formal path 是 Qwen3-VL + PEFT LoRA + <code>model(**batch)</code> 的 full-chat causal cross-entropy；不是 assistant-only CE，也不是已经闭合的 flow-matching loss。代码里 <code>H=15,D=72</code> 与 formatter <code>limit=16</code> 形成 lossy representation 风险，所以我会优先讲 token/action round-trip、padding-only label mask 和 checkpoint/parser/normalizer/controller lineage，而不会把 <code>97.4%</code>、official <code>96.85%</code> 与 formal 100k runs 拼成一条因果曲线。  第四条是 Robot Harness。它解决的是高层工具调用如何绑定到 robot scope 和 request lifecycle：runtime 管 scope、mutex、cancel、timeout、compensation，训练侧把 SFT/GRPO 数据和 schema-aware reward 分开。sandbox 100% 只是结构化协议 proxy；P0 raw primary JSONL 是 <code>28/40</code>，exact common support 是 <code>6/10</code>，本地可 hash/load 的 checkpoint binary 是 <code>0/6</code>，所以 <code>37.8→95.6</code> 不能当作严格 GRPO uplift，也不能当作 physical success。  第五条是 OPD。它围绕五 expert 数据合同、image-hash split、seen/unseen/boundary/format-conflict、coldstart 到 OPD5000、route teacher 和 full-vocabulary KL 展开。实现上必须区分根目录 legacy teacher-rollout/top1-CE trainer 与 <code>point/</code> formal trainer；后者才支持 coldstart teacher rollout、OPD5000 student rollout和 \(D_{KL}(q_\beta\|p_S)\)。route metadata 不是 learned router；跨 split image-hash 交集为 0 也不等于 eval 内没有重复图片，更不等于语义泛化。缺 SFT-only、single-teacher、no-synthetic 和 raw prediction 对照时，我只把结果讲成 protocol-fixed descriptive evidence。  因此这五个项目共同体现的不是“我发明了五个模型”，而是我能把模型输入输出、数据转换、训练合同、checkpoint、controller 和 scorer 串起来，并在失败时报告 first divergence 和证据缺口。</div>
+<h2 id="3">3. 项目选择：面试官问什么时优先讲哪一段</h2>
+<table><thead><tr><th>面试官问题</th><th>首选项目</th><th>口述切入点</th><th>不要越界</th></tr></thead><tbody>
+<tr><td>训练为什么 OOM、保存为什么失败？</td><td>WAM</td><td><code>cycle(dataloader)</code>、no-cycle smoke、<code>state_dict</code> first divergence</td><td>不说 1 epoch 已完成</td></tr>
+<tr><td>action/normalizer/checkpoint 如何对齐？</td><td>UWM/LIBERO</td><td>task-specific checkpoint、<code>ckpt["model"]</code>、strict/reset、completed denominator</td><td>不把 summary 当 raw benchmark</td></tr>
+<tr><td>VLM 到 action token 的训练目标是什么？</td><td>OpenPiVLA</td><td>Qwen3-VL、LoRA、full-chat causal CE、<code>H=15,D=72</code> 对 formatter 的风险</td><td>不把 archived flow 当 formal path</td></tr>
+<tr><td>如何保证机器人工具调用可取消且不越权？</td><td>Robot Harness</td><td>scope → mutex → dispatch/poll → cancel/compensation</td><td>不把 sandbox 分数当物理安全</td></tr>
+<tr><td>多 expert 数据如何路由和蒸馏？</td><td>OPD</td><td>数据合同、route teacher、full-vocabulary KL、holdout split</td><td>不把 route metadata 叫 learned router</td></tr>
+<tr><td>你如何证明结果可信？</td><td>五项目横向</td><td>protocol tuple、raw artifact、checkpoint lineage、scorer、denominator</td><td>不跨项目拼 uplift</td></tr>
+</tbody></table>
+<h2 id="4">4. 共用的实现审计框架</h2>
+<p>我会按下面六步回答任何一个项目的“你具体怎么做的”：</p>
+<ol><li><strong>冻结输入输出</strong>：观测帧、文本/任务条件、action shape、axis/frame/unit、chunk 与执行 prefix。</li><li><strong>冻结训练合同</strong>：数据来源与 split、target、mask、normalizer、checkpoint 保存格式和 resume 语义。</li><li><strong>冻结运行身份</strong>：代码 revision、配置、模型/Tokenizer/统计量 revision、环境与 seed。</li><li><strong>冻结评测协议</strong>：task、init、episode、success predicate、invalid policy、scorer backend 和 denominator。</li><li><strong>寻找 first divergence</strong>：先判断是数据、模型 forward、保存/加载、parser/denormalizer、controller 还是 scorer 出现第一处不一致。</li><li><strong>分级结论</strong>：把事实、实现推断、候选人 ownership 和仍未验证项分开，不用一个 summary 数字替代整条证据链。</li></ol>
+<p>这套框架对应的闭环可以写成：</p>
+<div class="formula">\[
+\text{observation/text}
+\rightarrow \text{policy output}
+\rightarrow \text{parse/denormalize}
+\rightarrow \text{controller/environment}
+\rightarrow \text{episode artifact}
+\rightarrow \text{scorer + denominator}
+\]</div>
+<p>其中每个箭头都需要有可复核的 schema 或日志；只看到 loss、视频或 summary，不能自动推出后面的 closed-loop success。</p>
+<h2 id="5">5. 横向真实性边界</h2>
+<table><thead><tr><th>结论类型</th><th>当前可说</th><th>当前不能说</th></tr></thead><tbody>
+<tr><td>项目范围</td><td>“我开展了训练/评测复现、协议对齐、运行审计和失败诊断”</td><td>“五个模型都是我独立原创”</td></tr>
+<tr><td>训练结果</td><td>“某条 run 到达某 step，并留下相应日志/保存记录”</td><td>“有可加载 immutable checkpoint”——除非 binary/hash/reload 已闭合</td></tr>
+<tr><td>指标</td><td>“按某个固定 protocol 重算得到 raw/trusted 结果”</td><td>“不同 n、scorer、checkpoint 的数字构成 uplift”</td></tr>
+<tr><td>工程能力</td><td>“我能定位 first divergence 并设计下一步 gate”</td><td>“一个 smoke 通过就代表长跑、保存和闭环都成功”</td></tr>
+<tr><td>机器人能力</td><td>“完成 simulator/offline/interface/proxy 层验证”</td><td>“已完成 physical success、Sim2Real 或 real canary”</td></tr>
+<tr><td>ownership</td><td>“按 ledger 说明接入、运行、审计、定位和复核边界”</td><td>“Git author、Codex 生成或 upstream 代码自动等于个人原创”</td></tr>
+</tbody></table>
+<h2 id="6">6. 可能的压迫式追问</h2>
+<h3 id="ownership">“五个项目里哪个最能证明你有 ownership？”</h3>
+<div class="meta">我不会用一个项目的 Git author 或生成代码量回答。WAM 最能展示训练/评测协议迁移和 first-divergence 诊断，UWM 最能展示 action/checkpoint/denominator 审计，Harness 最能展示 runtime contract 和安全 proxy，OPD 最能展示数据合同与蒸馏评估。真正的 ownership 需要逐文件、逐命令、逐 artifact 说明我是亲自修改、协作实现、工具辅助、只审查还是只运行；当前若没有候选人逐项确认，我会使用“开展、接入、运行、审计、定位”这些保守动词。</div>
+<h3 id="uplift">“你做了这么多项目，为什么没有一个结果能直接证明 uplift？”</h3>
+<div class="meta">因为我把可比性当成结果的一部分。WAM 的 full10k 与 8-GPU gate 不是同一 run；UWM 的 summary 缺 raw episode 和 normalizer usage；OpenPiVLA 的 formal causal-CE 与 archived flow/benchmark 不是同一 lineage；Harness 的 scorer、n 和 checkpoint 不完全一致；OPD 缺少关键 ablation。当前最可信的能力信号是把这些断点找出来，而不是用不可比的百分比制造单一结论。下一步如果要证明 uplift，我会先冻结 matched protocol tuple、checkpoint hash、raw per-episode predictions 和 paired rerun。</div>
+<h3 id="section-9">“如果只能留一个项目讲，你怎么选？”</h3>
+<div class="meta">如果岗位偏训练与评测，我选 WAM，因为它同时覆盖训练入口、OOM、checkpoint save、RoboCasa 闭环和失败诊断；如果岗位偏数据/蒸馏，我选 OPD；如果岗位偏机器人系统和安全，我选 Harness；如果岗位偏 action representation，我选 UWM 或 OpenPiVLA。选择依据是问题与岗位的匹配，不是哪个项目的百分比更大。</div>
+<h2 id="7">7. 面试前的最小补强清单</h2>
+<ol><li>为每个项目补一个 run-specific immutable bundle：配置、代码 revision、checkpoint SHA、stats/tokenizer、eval command、raw episode JSONL 和 scorer 版本。</li><li>为每个项目确认个人 ownership：亲自修改、协作修改、工具辅助、仅审查、仅运行五类至少各有一条证据。</li><li>只为一个最重要的结论做 matched paired rerun；不要同时声称五个项目都有 uplift。</li><li>练习同一项目的 30 秒、2 分钟和 10 分钟版本；回答中始终保留“结果、失败、边界、下一步”四个位置。</li></ol>
+<h2 id="8">8. 证据入口</h2>
+<ul><li><a href="wam_oral_model_answer.html">WAM implementation-derived oral answer</a></li><li><a href="uwm_oral_model_answer.html">UWM/LIBERO implementation-derived oral answer</a></li><li><a href="openpivla_oral_model_answer.html">OpenPiVLA implementation-derived oral answer</a></li><li><a href="robot_harness_oral_model_answer.html">Robot Harness implementation-derived oral answer</a></li><li><a href="opd_oral_model_answer.html">OPD implementation-derived oral answer</a></li><li><a href="oral_drill_queue.html">首轮口述队列</a></li><li><a href="oral_drill_capture_template.html">通用口述 capture template</a></li></ul>
+<div class="meta">本页是从项目实现、日志和 evidence inventory 反推的示范口述，不是候选人真实 transcript；所有项目题卡仍保持 <code>unseen</code>，不得据此创建或更新 <code>coaching_state.md</code>。</div>
+</article></body></html>

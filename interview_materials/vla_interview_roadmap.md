@@ -1,6 +1,6 @@
 # VLA 面试准备仓库路线图
 
-> 规划日期：2026-07-16；最近同步：2026-07-21  
+> 规划日期：2026-07-16；最近同步：2026-07-22
 > 当前状态：`G01 researching / G02 drafted / G05 VOL 03 44/44 unseen / Audit A-F facts reviewed / Audit A+C+E public facts PASS WITH WARNING / G06 VOL 04 44/44 unseen / Audit A-E reviewed / G07 VOL 05 44/44 unseen / G08 sources/knowledge/cards 20/20/20 + PER-001..020 triplets synced + PER-020 independent fact review PASS WITH WARNING / G09 five inventories + five ownership ledgers + cross-project evidence reconciliation + Robot Harness 28/40 raw + 6/10 support + 12-slot locator + 17 candidates 0 eligible + project cards 37 unseen / G10 sources/knowledge/card 12/12/12 + SYS-VLA-004 triplet synced + 12 unseen / global 280 cards unseen / 387 canonical triplets / 377 WARN + 10 PASS WITH WARNING / OpenPiVLA runtime rollout, LIBERO load-serve-client, ALOHA action-eval, local file manifest and LIBERO matched-probe preflight frozen / UWM base libero_90.pt local binary manifest frozen / target fine-tune checkpoint, fresh matched rerun and ownership closure still WARN`
 > 目标方向：VLA / 具身智能算法 / 多模态机器人策略 / World Model Policy  
 > 工作原则：逐波研究、逐页交付、逐题训练、逐条绑定证据；不做一次性大批量生成。
@@ -453,7 +453,7 @@ Index
 
 ## 13. 最近进展与三个可执行增量
 
-当前 authoritative snapshot（由 `vla/tools/validate_academic_repo.py` 于 2026-07-21 重算）：387 个 canonical Markdown 均有匹配 HTML/review，SHA、H1、公式、链接与 ARIS academic template 检查全部通过；题库 280 张且 ID 唯一，全部 `unseen`，尚未创建 `coaching_state.md`。八卷当前计划覆盖为 VOL 01 `39`、VOL 02 `40`、VOL 03 `44`、VOL 04 `44`、VOL 05 `44`、VOL 06 `20`、VOL 08 `12`，VOL 07 五项目题卡合计 `37`（OpenPiVLA `12`，其中 Batch 1 `8` + Batch 2 `4`；Robot Harness `8`、OPD `9`、WAM `4`、UWM `4`）。五项目 claim-evidence inventory、ownership ledger 与 P0 bundle audit 均为 `5/5`；现有 review 分布为 `377 WARN + 10 PASS WITH WARNING`，因此“页面覆盖完成”仍不等于 reviewed/drilled/done。
+当前 authoritative snapshot（由 `vla/tools/validate_academic_repo.py` 于 2026-07-22 重算）：387 个 canonical Markdown 均有匹配 HTML/review，SHA、H1、公式、链接与 ARIS academic template 检查全部通过；题库 280 张且 ID 唯一，全部 `unseen`，尚未创建 `coaching_state.md`。八卷当前计划覆盖为 VOL 01 `39`、VOL 02 `40`、VOL 03 `44`、VOL 04 `44`、VOL 05 `44`、VOL 06 `20`、VOL 08 `12`，VOL 07 五项目题卡合计 `37`（OpenPiVLA `12`，其中 Batch 1 `8` + Batch 2 `4`；Robot Harness `8`、OPD `9`、WAM `4`、UWM `4`）。五项目 claim-evidence inventory、ownership ledger 与 P0 bundle audit 均为 `5/5`；现有 review 分布为 `377 WARN + 10 PASS WITH WARNING`，因此“页面覆盖完成”仍不等于 reviewed/drilled/done。
 
 当前只保留三个可执行入口，避免历史增量记录误导调度：
 
@@ -540,6 +540,12 @@ Index
 
 - 已生成 `PROJ-OPENPIVLA-009..012`，分别覆盖 eager/MACA、smoke/formal/raw evidence ladder、checkpoint lineage manifest 与 `H=15,D=72`/`limit=16` representation conflict。
 - 四题全部保持 `unseen`；master index 已同步到 159 题。Batch 2 的 `WARN` 只反映缺 raw checkpoint/parser/roundtrip，不影响题卡进入题库。
+
+### 当前切片：OpenPiVLA implementation-derived 口述 bundle QA（已完成，WARN）
+
+- 复核 `practice/openpivla_oral_model_answer.md/.html/.review.json`：现有示范稿已把 Qwen3-VL/LoRA、full-chat causal CE、eager 兼容性、`H=15,D=72` 与 `limit=16` loss、checkpoint lineage 和 ownership 边界绑定到本地实现，不把它当作候选人 transcript。
+- 本地 localhost 桌面 QA 通过：1280px 下单 H1、260px sticky TOC、零页面级横向溢出、公式 `<em>` 为 0、锚点无断链；仓库静态校验覆盖 900px 响应式规则和内部 overflow。当前 in-app browser 无法调整 viewport，因此 review 明确保留 `PASS WITH WARNING`，不虚构 800px 截图。
+- 下一 bounded slice 是 `PROJ-OPENPIVLA-007/008` 或 Batch 2 任一题的真实口述，或者补 immutable formal checkpoint/generation/parser bundle；在此之前 12 张 OpenPiVLA 题卡继续 `unseen`，不创建 `coaching_state.md`。
 
 ### 当前切片：Robot Harness evidence inventory（已完成，WARN）
 
@@ -1744,6 +1750,503 @@ Index
 - 三行均保持 `candidate-self-report / role-confirmation-pending`；不把 strict/reset/Table II 结果合并，不把 RoboCasa 诊断升级为 root cause、完整成功率或 checkpoint/env/scorer ownership。
 - 已同步 `uwm_libero_ownership_ledger.md/.html/.review.json`；canonical SHA 为 `8BB8E60A91111D1A15E4101A49A4E31D42750EFCC92F5BA154DFAF98D4789E2F`。浏览器 QA：桌面 `1280×1000` sticky TOC、窄屏 `800×1000` static TOC，页面级溢出为 0。
 - 全仓 validator 通过：`387/387` canonical triplets、280 张唯一题卡、SHA/单 H1/公式/链接/ARIS template 全部无 failure。下一 bounded slice 仍优先收集 `PROJ-WAM-001` 真实口述；UWM 继续保持 `WARN` 与题卡 `unseen`。
+
+### 当前切片：VOL 01 Foundations VLA-FND-030 分层回答试点收口（已完成，WARN）
+
+- `VLA-FND-030` 已补齐 30 秒回答与约 2 分钟机制展开：observation/state/proprioception/action 定义、POMDP belief、历史窗口、frame/unit/timestamp、denormalization、chunk 与 low-level controller contract。
+- 题卡明确连接 OpenPiVLA/UWM：image、instruction、proprio、action window 必须冻结 shape、frame、unit、valid mask、horizon 与控制器边界，不能只称为“预处理/输入输出”。
+- 已同步 `questions/vol_01_foundations.md/.html/.review.json`；canonical SHA 为 `33300584880D6F107E0F1EA94B87EC0DC85E7B000C206DC3CA0EFAA455A96B7D`，分层试点现覆盖 20 张卡，39 张题卡仍全部 `unseen`。
+- 全仓 validator 通过：`387/387` canonical triplets、280 张唯一题卡、SHA/单 H1/公式/链接/ARIS template 全部无 failure；桌面 `1280×1000` 与窄屏 `800×1000` 浏览器 QA 均通过。下一 bounded slice 仍优先收集 `PROJ-WAM-001` 真实口述；若继续知识试点则处理 `VLA-FND-031`。
+
+### 当前切片：VOL 01 Foundations VLA-FND-031 分层回答试点收口（已完成，WARN）
+
+- `VLA-FND-031` 已补齐 30 秒回答与约 2 分钟机制展开：齐次变换、frame 下标方向、旋转/平移组合、内参/外参、四元数/axis-angle、absolute/delta/joint action 与 round-trip 检查。
+- 题卡明确连接 OPD/OpenPiVLA/UWM：像素 box/point、末端 action 与 controller action 不在同一空间，必须在接口处固定 frame、单位、轴约定和变换链。
+- 已同步 `questions/vol_01_foundations.md/.html/.review.json`；canonical SHA 为 `A67BB61B92C0D158238EAF97AAD883D741EB3BF7542170CE142B12A380A1AA4C`，分层试点现覆盖 21 张卡，39 张题卡仍全部 `unseen`。
+- 全仓 validator 通过：`387/387` canonical triplets、280 张唯一题卡、SHA/单 H1/公式/链接/ARIS template 全部无 failure；桌面 `1280×1000` 与窄屏 `800×1000` 浏览器 QA 均通过。下一 bounded slice 回到 `PROJ-WAM-001` 真实口述；若继续知识试点，从后续未分层题卡中选择。
+
+### 当前切片：VOL 01 Foundations VLA-FND-032 分层回答试点收口（已完成，WARN）
+
+- `VLA-FND-032` 已补齐 30 秒回答与约 2 分钟机制展开：齐次坐标、SE(3)、变换逆、连乘顺序、column/row vector、主动/被动旋转、单位/四元数约定与 transform round-trip 测试。
+- 题卡明确 action contract 边界：world/base/end-effector frame 混用时，shape 检查可能仍通过，但 closed-loop 会产生系统性方向或尺度偏差。
+- 已同步 `questions/vol_01_foundations.md/.html/.review.json`；canonical SHA 为 `C416956D8F47723620817E2DB231599DEDDF2CB9BEA92C8EDEFBF5435060A0DE`，分层试点现覆盖 22 张卡，39 张题卡仍全部 `unseen`。
+- 全仓 validator 通过：`387/387` canonical triplets、280 张唯一题卡、SHA/单 H1/公式/链接/ARIS template 全部无 failure；桌面 `1280×1000` 与窄屏 `800×1000` 浏览器 QA 均通过。下一 bounded slice 回到 `PROJ-WAM-001` 真实口述；若继续知识试点，从后续未分层题卡中选择。
+
+### 当前切片：VOL 01 Foundations VLA-FND-033 分层回答试点收口（已完成，WARN）
+
+- `VLA-FND-033` 已补齐 30 秒回答与约 2 分钟机制展开：FK/IK 输入输出、冗余/无解/奇异、数值 IK 的 residual/limit/collision/continuity 检查，以及 policy action→controller→joint command 链。
+- 题卡明确项目边界：VLA 的 7D/12D action 维度不能直接等同电机 torque；末端 delta pose 仍需 frame/unit 处理、IK/impedance/controller 和安全限幅。
+- 已同步 `questions/vol_01_foundations.md/.html/.review.json`；canonical SHA 为 `259252464B5DC26CD0CC8AB6605E72D0E7DF703306B70A15D226BBE72C207F56`，分层试点现覆盖 23 张卡，39 张题卡仍全部 `unseen`。
+- 全仓 validator 通过：`387/387` canonical triplets、280 张唯一题卡、SHA/单 H1/公式/链接/ARIS template 全部无 failure；桌面 `1280×1000` 与窄屏 `800×1000` 浏览器 QA 均通过。下一 bounded slice 回到 `PROJ-WAM-001` 真实口述；若继续知识试点，从后续未分层题卡中选择。
+
+### 当前切片：VOL 01 Foundations VLA-FND-034 分层回答试点收口（已完成，WARN）
+
+- `VLA-FND-034` 已补齐 30 秒回答与约 2 分钟机制展开：\(\dot x=J(q)\dot q\)、奇异位形与最小奇异值、阻尼最小二乘、joint-limit null-space、速度/加速度/碰撞约束和 action jerk 诊断链。
+- 题卡明确项目边界：异常 action 幅度可能来自模型、frame/normalization、IK/Jacobian 放大或低层控制器；必须分别记录 raw/denormalized action、IK residual、singular values、joint velocity 与 env step。
+- 已同步 `questions/vol_01_foundations.md/.html/.review.json`；canonical SHA 为 `24561B8461C51E55726F273E43AB80F1D204A002A412253ED0883E76582FF435`，分层试点现覆盖 24 张卡，39 张题卡仍全部 `unseen`。
+- 全仓 validator 通过：`387/387` canonical triplets、280 张唯一题卡、SHA/单 H1/公式/链接/ARIS template 全部无 failure；桌面 `1280×1000` 与窄屏 `800×1000` 浏览器 QA 均通过。下一 bounded slice 回到 `PROJ-WAM-001` 真实口述；若继续知识试点，从后续未分层题卡中选择。
+
+### 当前切片：VOL 01 Foundations VLA-FND-035 分层回答试点收口（已完成，WARN）
+
+- `VLA-FND-035` 已补齐 30 秒回答与约 2 分钟机制展开：position/velocity/torque control 的层级、带宽、动力学与安全 trade-off，以及末端 delta pose→IK/impedance→joint target→low-level loop 链。
+- 题卡明确项目边界：7D/14D action 只是接口维度；只有与 controller、normalizer、gripper convention、step frequency 和 safety fallback 对齐后，才有可比的 offline/closed-loop 结果。
+- 已同步 `questions/vol_01_foundations.md/.html/.review.json`；canonical SHA 为 `3521F96EEA186F3C762FC3CDFAC7BC1B372C1823E97A08B90A3D3DA30AA567C7`，分层试点现覆盖 25 张卡，39 张题卡仍全部 `unseen`。
+- 全仓 validator 通过：`387/387` canonical triplets、280 张唯一题卡、SHA/单 H1/公式/链接/ARIS template 全部无 failure；桌面 `1280×1000` 与窄屏 `800×1000` 浏览器 QA 均通过。下一 bounded slice 回到 `PROJ-WAM-001` 真实口述；若继续知识试点，从后续未分层题卡中选择。
+
+### 当前切片：VOL 01 Foundations VLA-FND-036 分层回答试点收口（已完成，WARN）
+
+- `VLA-FND-036` 已补齐 30 秒回答与约 2 分钟机制展开：离散 PID、P/I/D 作用、measurement derivative、derivative kick、积分饱和、conditional integration、back-calculation 与 controller trace。
+- 题卡明确闭环诊断边界：抖动不一定是 policy 错误，action chunk、server latency、控制频率、normalizer、接触和 PID 参数都会改变误差序列。
+- 已同步 `questions/vol_01_foundations.md/.html/.review.json`；canonical SHA 为 `401A4D0D483C4AFDF61564CDBF7B84B43179139699D728FD946FE3E8F77A1065`，分层试点现覆盖 26 张卡，39 张题卡仍全部 `unseen`。
+- 全仓 validator 通过：`387/387` canonical triplets、280 张唯一题卡、SHA/单 H1/公式/链接/ARIS template 全部无 failure；桌面 `1280×1000` 与窄屏 `800×1000` 浏览器 QA 均通过。下一 bounded slice 回到 `PROJ-WAM-001` 真实口述；若继续知识试点，从后续未分层题卡中选择。
+
+### 当前切片：VOL 01 Foundations VLA-FND-037 分层回答试点收口（已完成，WARN）
+
+- `VLA-FND-037` 已补齐 30 秒回答与约 2 分钟机制展开：controller period、policy query period、端到端 latency、action chunk horizon、open-loop prefix 与 receding-horizon 重规划之间的稳定性 trade-off。
+- 题卡把系统路径落实为 observation buffer、inference worker、timestamped action queue、deadline、hold/zero/fallback、early termination 与 uncertainty-triggered replan，并要求同时报告 query/controller rate、latency percentile、queue depth、executed prefix、termination 与 success predicate。
+- 已同步 `questions/vol_01_foundations.md/.html/.review.json`；canonical SHA 为 `849BC837A3A77054983BB86FEC571F5B2D4B860A0317D29B39F776C4394002C6`，分层试点现覆盖 27 张卡，39 张题卡仍全部 `unseen`。
+- 全仓 validator 通过：`387/387` canonical triplets、280 张唯一题卡、SHA/单 H1/公式/链接/ARIS template 全部无 failure；桌面 `1280×1000` 与窄屏 `800×1000` 浏览器 QA 均通过。下一 bounded slice 回到 `PROJ-WAM-001` 真实口述；若继续知识试点，从后续未分层题卡中选择。
+
+### 当前切片：VOL 01 Foundations VLA-FND-038 分层回答试点收口（已完成，WARN）
+
+- `VLA-FND-038` 已补齐 30 秒回答与约 2 分钟机制展开：逐维 affine/quantile normalizer、axis/frame/unit、absolute/delta、gripper encoding、clipping saturation 与 controller-space action contract。
+- 题卡新增四段式诊断：action round-trip、逐维 one-hot/sentinel、expert action 绕过 policy 的 adapter/controller replay，以及 raw→denormalized→clipped→controller→state-delta trace；明确 clipping 只提供 safety saturation，不能修复 calibration。
+- 项目挂钩保持证据边界：OpenPiVLA inventory 仍把 axis/unit/normalizer/parser 标为 semantics-open，UWM inventory 仍缺 normalizer checksum 并把 RoboCasa action order 列为风险；因此只能讲评估前置 gate 和诊断，不把 normalizer 错配升级为已证明 root cause。
+- 已同步 `questions/vol_01_foundations.md/.html/.review.json`；canonical SHA 为 `7D4D6B389BB7F8BDBA269092BDBF9EB85CB740D8903E4832E9F1C42BD038E429`，分层试点现覆盖 28 张卡，39 张题卡仍全部 `unseen`。下一 bounded slice 仍优先收集 `PROJ-WAM-001` 真实口述；若继续知识试点则处理 `VLA-FND-039`。
+
+### 当前切片：VOL 01 Foundations VLA-FND-039 分层回答试点收口（已完成，WARN）
+
+- `VLA-FND-039` 已补齐 30 秒回答与约 2 分钟机制展开：impedance 的期望惯性/阻尼/刚度关系、有限时域 constrained MPC、learned policy/action chunk，以及三者按任务理解、约束规划、接触执行分层组合的选择逻辑。
+- 回答覆盖 force/torque sensing、frame、底层 loop、solver deadline、model/state-estimation error、terminal design、uncertainty/robust constraint、residual model 与 safety fallback，并回答动力学不准时为何仍可使用短 horizon receding-horizon MPC。
+- 项目边界保持 `WARN`：OpenPiVLA/UWM 仅支持 learned policy、world/action prediction 与 controller contract 的分析；当前没有个人项目部署 impedance/MPC 的实现和运行证据，也不能把 WAM/UWM world model 自动等同于 calibrated MPC dynamics model。
+- 已同步 `questions/vol_01_foundations.md/.html/.review.json`；canonical SHA 为 `67D706593D6A281FEA0F4BDE263FF3BFC62EE2EDAD20CA523763C7DA71D372AD`，分层试点现覆盖 29 张卡，39 张题卡仍全部 `unseen`。下一 bounded slice 回到 `PROJ-WAM-001` 真实口述；若继续 legacy 卡分层，需从尚未分层的 Foundations stable ID 中重新选择，而不是默认扩大批量。
+
+### 当前切片：VOL 01 Foundations VLA-FND-005 分层回答试点收口（已完成，WARN）
+
+- `VLA-FND-005` 已补齐 30 秒回答与约 2 分钟机制展开：期望、方差、协方差和相关系数的定义、单位与尺度差异、零相关和独立性的边界，以及零方差维度下相关系数未定义。
+- 回答给出协方差矩阵半正定的证明 `v^T Σ v = Var(v^T a) >= 0`，并把经验统计落实到 train split、action layout、valid mask、padding、episode 长度、时间相关性和 `n`/`n-1` 估计约定。
+- 项目挂钩保持 `WARN`：OpenPiVLA/UWM inventory 只支持审计 normalizer revision、action order、mask 与数据切分；当前没有证据支持声称已得到某组个人项目 action 统计，或由统计异常闭合了失败根因。
+- 已同步 `questions/vol_01_foundations.md/.html/.review.json` 与模块进度；canonical SHA 为 `8A34D71020913B4F741A8B18804489EA8CEBB0ACBBD11B077633A859E0A64DBE`，分层试点现覆盖 30 张卡，39 张题卡仍全部 `unseen`。全仓 validator 通过；桌面 `1280×1000` 为 260px sticky TOC，窄屏 `800×1000` 为 static TOC，页面级溢出和窄屏非容器越界均为 0。下一 bounded slice 仍优先收集 `PROJ-WAM-001` 真实口述；若继续 legacy 卡分层则处理 `VLA-FND-007`。
+
+### 当前切片：PROJ-WAM-001 从项目实现反推口述稿（已完成，WARN）
+
+- 用户将工作流改为“由本地实现自行总结口述”；不再等待候选人先写初稿。只读复核 `C:\Users\mousongzhe\Project` 的训练入口、RoboCasa eval wrapper、24×5 sweep、full10k log、raw/trusted summary、CoffeePressButton log/action-debug 和 8-GPU 1-epoch gate；Project 中既有 UWM recovery 改动未被触碰。
+- 训练主线落实为 official trainer/model/dataset + online Reason1 + placeholder + lazy success metadata repair；独立 single-GPU full10k 日志在 step 10000 记录 loss=`0.0543`、`iter_000010000` save path、`Done with training` 与 `EXIT:0`，但本地 binary/hash 与 fresh-process reload 仍缺。
+- 评测主线落实为 local DCP loader + upstream RoboCasa env→observation→action→env.step→video；协议固定 chunk 32、执行前 16 步、5-step action denoising、24 task × 5 episode。full10k 为 raw `2/120`、两条 length=1 artifact、trusted `0/118`；同 harness official-HF path 为 raw `86/120`、trusted `84/118`，只用于证明 harness 可产生可信成功并缩小排查范围，不做 checkpoint 因果 join 或个人 uplift。
+- 8-GPU、global batch 128、`9907`-step 1-epoch gate 与 full10k 保持分离：no-cycle 5-step smoke 通过，但正式 run 在 step 1500 的 `DiffusionModel.state_dict(destination=...)` 接口失败，不能称 1 epoch 完成或拥有可用 checkpoint。
+- 已升级 `practice/wam_oral_model_answer.md/.html/.review.json`：加入 implementation-derived 30 秒、2–3 分钟口述、15 个 full-SHA implementation anchors、Truth Boundary、VLA 岗位映射、Production Gap、34.5/50 材料就绪度和补强顺序；canonical SHA 为 `36BE961AFC3D4763CDE2771243FCCD388DB0E196D7A5283AEE51A98E393CF5FE`。同步 `oral_drill_queue` 与 `module_progress`：生成稿不是 candidate transcript，280 张题卡仍全部 `unseen`，`coaching_state.md` 继续不存在。
+- 下一 bounded slice 继续从实现反推 `PROJ-WAM-002` ownership 口述，再进入 UWM/LIBERO；只有候选人实际演练后才更新口述评分和 mastery。
+
+### 当前切片：PROJ-WAM-002 从实现与 Git 反推 ownership 口述（已完成，WARN）
+
+- 只读检查 `C:\Users\mousongzhe\Project` 的六个 WAM 关键路径：online-text training entry/launcher、RoboCasa DCP eval wrapper/launcher、24-task sweep 与 eval report generator。per-path Git history 均只命中 `c4469eb8ec4bb879bdb7d12cf9a303c8264a41ea` 的 `Initial project snapshot`，没有 pre-snapshot 或后续 incremental diff；因此 author identity 只作 lineage 线索，不升级为逐文件 authorship、远端 operator 或 reviewer 证明。
+- ownership 口述拆成四层：NVlabs upstream architecture；Project local implementation snapshot；full10k/8-GPU/eval/diagnostic run artifacts；最后才是 candidate self-report 与逐文件 role。第一人称安全动词为“开展、接入、运行、审计、定位”，禁止把 slot/mask/routing、官方 evaluator、official-HF checkpoint、Git author 或 `cv` 中 Codex 面试准备产物写成个人原创/成绩。
+- `practice/wam_oral_model_answer.md/.html/.review.json` 已扩展为 `PROJ-WAM-001/002` 共享页面：新增 ownership 30 秒、2–3 分钟、7 行 role matrix、危险/可过/强回答、Git 边界和追问树；canonical SHA 为 `3695686BE4E219401F93E176F24A14AC0E83C6F6221560E16F93FE644A0CBF40`。
+- 同步 `oral_drill_queue`、`oral_drill_readiness_audit`、`ownership_confirmation_queue` 与 `module_progress`：内容生成侧可进入 `PROJ-UWM-001`，真实训练侧仍从 `PROJ-WAM-001` 开始；`PROJ-WAM-001/002`、40 个 ownership slot 与全部 280 张题卡保持 `unseen`，不创建 `coaching_state.md`。
+- 下一 bounded slice 从 `C:\Users\mousongzhe\Project\wm\uwm_libero_official_repro` 的 scripts/config/log/summary 反推 `PROJ-UWM-001`，继续区分 strict、reset-style、checkpoint、operator 与结果分母。
+
+### 当前切片：PROJ-UWM-001..004 从 UWM-LIBERO 实现反推口述稿（已完成，WARN）
+
+- 只读核对 `uwm_libero_official_repro` 的 task map、HDF5→Zarr buffer、`process_batch`、UWM model builder、DDP trainer、epoch-aligned queue、strict/reset evaluator、8-shard aggregator 与 DataLoader stall benchmark；Project 中既有 UWM recovery 工作树修改未被触碰。
+- 新增实现约束：五个 LIBERO task 使用 task-specific checkpoints（Book-Caddy 独立 6000-step，remaining four 按 bs64/8卡换算约 2728–2814 steps），不是一个共享 multi-task binary；LIBERO evaluator 只读取 `ckpt["model"]`，没有读取 action normalizer；aggregator 以 completed episodes 作分母但没有 `completed==expected` fail-closed assertion。
+- 已升级 `practice/uwm_oral_model_answer.md/.review.json` 为 `PROJ-UWM-001..004` implementation-derived 页面：补齐 data window、模型/训练、epoch conversion、协议/分母、run ledger、三档回答、ownership matrix、P9 mapping、implementation anchors；canonical SHA 为 `56AF65AB74FE2FC655125FEC43058F6B0A4795E988DCA261F371E5E06D8B3BFE`。
+- 已同步 `questions/proj_uwm.md/.review.json`，仍为 4 张 `unseen`；PROJ-UWM-001 短答保持 180 字以内，并显式修正 task-specific checkpoint、normalizer negative evidence 与 raw denominator 缺口。
+- UWM 口述页与题卡已按 ARIS academic v1 重渲染；全库 validator 为 `387/387` canonical triplets、`280/280` 题卡 `unseen`、`coaching_state=false`、所有 failure counters 为 0；桌面 `1280×1000` 与窄屏 `800×1000` 浏览器 QA 均通过。review 仍保留 `WARN`，因为 task-specific checkpoint/hash、normalizer usage、250 条 raw episode 与个人 ownership 尚未闭合。
+- 下一 bounded slice 转入 `PROJ-UWM-001..004` 真实口述，或补一个 UWM P0 raw artifact；在候选人回答前不创建 `coaching_state.md`，不把 implementation-derived model answer 当作 transcript 或 mastery。
+
+### 当前切片：PROJ-HARNESS-001..008 implementation-derived 口述 bundle QA（已完成，WARN）
+
+- 复核 Robot Harness runtime、registry、SFT/GRPO、schema-aware reward、run/scorer 对账、P0 raw manifest 与 13-row ownership ledger；现有口述内容完整覆盖 `PROJ-HARNESS-001..008`，没有把 mutex/cancel/compensation 当低层控制，也没有把 sandbox 100% 当 physical success。
+- canonical H1 与状态已校正为 implementation-derived model answer，明确覆盖八题与 P0 Audit；Markdown SHA 更新为 `299C25EEF26BF066DB95DDA9A9199ACD295258620E9CAA5F903A580803D5EA7D`，HTML/review 已同步。
+- localhost 1280px 桌面 QA 通过：单 H1、260px sticky TOC、零页面级横向溢出、公式 `<em>` 为 0、锚点无断链；900px responsive/static overflow 由 validator 覆盖。当前浏览器连接无法调整 viewport，因此 narrow check 诚实记为 `PASS WITH WARNING`。
+- 下一 bounded slice 是候选人的真实 `PROJ-HARNESS-001` 回答，或补 checkpoint/scorer/effect-sink/ownership 中任一 P0 artifact；八张 Harness 题卡继续 `unseen`，不创建 `coaching_state.md`。
+
+### 当前切片：PROJ-OPD-001..009 implementation-derived 口述 bundle QA（已完成，WARN）
+
+- 复核 OPD 五 expert 数据配额与 relation 重采样、image-hash split、seen/unseen/boundary/format-conflict、coldstart500→OPD5000、route teacher、full-vocabulary KL、checkpoint/point protocol、因果与 ownership 边界；现有主叙事已覆盖九张项目题卡。
+- canonical 页面新增 `PROJ-OPD-001..009` 覆盖映射和 raw-holdout 重复图片追问，明确“跨 split image-hash 交集为 0”不等于 eval 内无重复，也不等于语义泛化；H1/状态已校正为 implementation-derived model answer。Markdown SHA 为 `84C2D38EB31A6238DE8CC1C40AC88D062F622F1FBD6B3FA31CD63B0B29AB3F31`，HTML/review 已同步。
+- localhost 1280px 桌面 QA 通过：单 H1、两张表、260px sticky TOC、零页面级横向溢出、公式 `<em>` 为 0、五个 local link 与锚点均无断链；900px responsive/static overflow 由 validator 覆盖，窄屏连接限制诚实记为 `PASS WITH WARNING`。
+- 至此五个项目的 evidence/ownership reconciliation、model-answer bundle 与 implementation-derived QA 均已收口，但所有 37 张项目题卡仍 `unseen`。下一阶段必须进入真实口述或补 P0 raw artifact，不能继续把页面生成当作 mastery。
+
+### 当前切片：VLA 通用单题真实口述 capture template（已完成，WARN）
+
+- 发现训练闭环缺口：原先只有 WAM 专用 capture template，其他队列题没有统一的 verbatim transcript、自评、Claim–Evidence–Ownership、五维评分与状态迁移字段。
+- 新增 `practice/oral_drill_capture_template.md/.html/.review.json`，支持 12/12 首轮队列项；它强制一次一题、先保存原始回答、再自评和反馈，未收到候选人回答时不评分、不创建 `coaching_state.md`、不迁移任何题卡。
+- `oral_drill_queue`、`oral_drill_readiness_audit`、`module_progress`、`sources/repository_completion_audit` 与 `README` 已同步；当前账本为 `388/388` canonical triplets、`378 WARN + 10 PASS WITH WARNING`、280 张题卡全部 `unseen`。
+- 通用模板桌面 `1280px` localhost QA 通过：单 H1、四张表、260px sticky TOC、零页面级溢出、8 个 local links、公式 `<em>` 为 0；窄屏连接无法调整 viewport，因此 review 保留 `PASS WITH WARNING`。
+- 下一步不再新增空白模板：直接让候选人提交 `PROJ-WAM-001` 的真实回答，复制模板保存 session-specific transcript，再按 `What I Heard → What Is Working → Gaps To Close → Priority Move → Next Step` 进入训练状态。
+
+### 当前切片：五项目 implementation-derived 串联口述总览（已完成，WARN）
+
+- 新增 `practice/project_portfolio_oral_model_answer.md/.html/.review.json`，把 WAM、UWM/LIBERO、OpenPiVLA、Robot Harness 与 OPD 放进“输入输出→训练合同→run identity→评测协议→first divergence→分级结论”的统一口述框架。
+- 页面提供 30 秒开场、2 分钟主线、按面试问题选择项目的映射表、六项横向真实性边界和三类高压追问；不新增项目指标，不把不同 checkpoint/scorer/n/denominator 拼成 uplift。
+- 已同步 Practice/VLA README 与 Completion Audit；仓库账本为 `389/389` canonical triplets、`379 WARN + 10 PASS WITH WARNING`、280 张题卡全部 `unseen`，`coaching_state.md` 仍不存在。
+- 下一 bounded slice 不再增加示范稿：候选人从该总览选择一个项目进行真实口述，优先 `PROJ-WAM-001`；若继续证据工作，则只冻结一个 run-specific immutable checkpoint + raw eval bundle。
+
+### 当前切片：OPD Training Objective Lineage Gate（已完成，WARN）
+
+- 从实现中发现并修正一处高风险 lineage 混用：`muxi/train_opd_online_vl.py`（SHA `BF9120...D8D9`）是 legacy teacher-rollout/top1 CE；formal `muxi/point/train_opd_online_vl.py`（SHA `7103E3...6336`）才支持 teacher/student rollout switch、full-vocabulary \(D_{KL}(q_\beta\|p_S)\)、veto、prefix、entropy 与 top-k diagnostics。
+- 新增 `evidence/projects/opd_training_objective_lineage_gate.md/.html/.review.json`；coldstart launcher/summary 对账为 teacher rollout、500 steps、full-vocab KL，OPD5000 对账为 student rollout、5000 steps、full-vocab KL。beta>0 时 target logits 还混入 detached student logits，beta=0 后才是纯 teacher∥student forward KL。
+- 已同步 OPD inventory、P0 audit、PROJ-OPD-004/005 题卡、OPD 口述稿、五项目总述、`VLA-FND-007` KL 方向分层答案、Evidence Manifest 与索引；root legacy trainer 不再作为 formal KL claim 的代码锚点。
+- 当前账本为 `390/390` canonical triplets、`380 WARN + 10 PASS WITH WARNING`、280 张题卡全部 `unseen`，`coaching_state.md` 不存在。下一 bounded slice 只补 OPD checkpoint/load/raw-prediction P0 bundle，或进行真实 `PROJ-OPD-004/005` 口述；不做 objective 单因果 uplift。
+
+### 当前切片：VOL 01 Foundations VLA-FND-008 分层回答收口（已完成，WARN）
+
+- `VLA-FND-008` 已补齐 30 秒回答与约 2 分钟机制展开：平方误差的 noise + squared bias + estimator variance 分解，并明确该分解依赖损失、数据生成过程和模型族，不等于“训练误差 vs 测试误差”。
+- 回答把 training/data seed、task/init、rollout/episode 与 bootstrap seed 分层；同一 checkpoint 多跑 episode 只能估 conditional episode noise，不能替代多个独立 training run。新增 Agarwal/rliable frozen source入口。
+- 项目挂钩保持证据约束：UWM `186/250` 缺多 training-seed panel 与 250 条 raw episode；WAM full10k 与 official-HF path 未做 matched checkpoint/config join，因此都不能解释为 bias–variance 分解或训练因果效果。
+- VOL 01 分层卡进度为 `32/39`，39 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-FND-009`，不批量扩写其余六张 legacy 卡。
+
+### 当前切片：VOL 01 Foundations VLA-FND-009 分层回答收口（已完成，WARN）
+
+- `VLA-FND-009` 已补齐 30 秒回答与约 2 分钟机制展开：纯仿射链可合并为单个仿射变换；GELU/SiLU 的函数、梯度、负半轴与饱和边界；并明确 Transformer 的 softmax/normalization 仍可能提供其他非线性。
+- 项目挂钩来自 `C:\Users\mousongzhe\Project` HEAD `6c524d9`：UWM→RoboCasa transfer 的 state/right-view projection 与四个 auxiliary head 使用 `nn.SiLU()`；Cosmos DeepSpeed 文件中的 SiLU 只属于注释明确的 objective-compatible proxy，不能外推完整上游 backbone 或性能因果效果。
+- 新增 GELU 与 Swish primary paper `[47][48]` 和两个本地文件的 full-SHA implementation snapshot `[49]`；39 张题卡仍全部 `unseen`，生成回答不是候选人 transcript 或 mastery。
+- VOL 01 分层卡进度为 `33/39`；下一 bounded slice 只处理 `VLA-FND-014`，不批量扩写其余 legacy 卡。
+
+### 当前切片：VOL 01 Foundations VLA-FND-014 分层回答收口（已完成，WARN）
+
+- `VLA-FND-014` 已补齐 30 秒回答与约 2 分钟机制展开：content-only self-attention 的置换等变、causal mask 边界、二维旋转矩阵、\(R_m^\top R_n=R_{n-m}\) 相对内积，以及 Q/K 与 V 的职责差异。
+- 从 `C:\Users\mousongzhe\Project` HEAD `6c524d9` 冻结两份 local RoPE compatibility implementation：一份直接消费 cos/sin，另一份消费 angle 并检查 `bshd/sbhd` layout 与 dimension；它们只支持 Cosmos smoke shim 的 application kernel，不支持频率生成、完整 Q/K call site 或性能因果结论。
+- OpenPiVLA formal code 可证明加载 Qwen3-VL，但本地证据没有 base `config.json` 的 exact RoPE/multimodal-position 参数；口述因此保留 config-open 边界，并明确 token position 不能替代 image 2D coordinate、robot timestamp 或 sensor synchronization。
+- 新增 full-SHA local implementation snapshot `[50]`；39 张题卡仍全部 `unseen`，分层进度为 `34/39`。下一 bounded slice 只处理 `VLA-FND-015`。
+
+### 当前切片：VOL 01 Foundations VLA-FND-015 分层回答收口（已完成，WARN）
+
+- `VLA-FND-015` 已补齐 30 秒回答与约 2 分钟机制展开：pre/post-norm 残差公式、\(I+J_FJ_N\) 与 \(J_N(I+J_F)\) 梯度路径、Xiong 等人的初始化/warmup 结论边界，以及 pre-norm residual stream 尺度累积与 final norm 的作用。
+- 冻结 Hugging Face Transformers `v4.57.1`/commit `8cb5963` 的 Qwen3-VL text decoder：`input_layernorm → attention → residual add`，`post_attention_layernorm → MLP → residual add`，两段均为 pre-norm；明确 `post_attention_layernorm` 的变量名不能单独证明 Post-LN。
+- 本地 OpenPiVLA formal trainer 只加载 Qwen3-VL 并向 Q/K/V/O 注入 LoRA，没有改 norm/residual placement；`muxi` pip snapshot 记录 Transformers `4.57.1`，但远端 runtime source/config hash 仍缺，因此只作 version-matched mapping。Cosmos RMSNorm shim 只证明 operator，不证明 full-block placement。
+- 新增 source `[51]`；39 张题卡仍全部 `unseen`，分层进度为 `35/39`。下一 bounded slice 只处理 `VLA-FND-017`。
+
+### 当前切片：VOL 01 Foundations VLA-FND-017 分层回答收口（已完成，WARN）
+
+- `VLA-FND-017` 已补齐 30 秒回答与约 2 分钟机制展开：\(W_0+sBA\)、参数量 \(r(d_{in}+d_{out})\)、optimizer/activation/base-weight 显存边界、低秩/target-module 容量代价、普通 LoRA 与 QLoRA 区分，以及 merge 不等于压缩。
+- 本地 OpenPiVLA formal trainer 固定 `r=16`、`alpha=32`、`dropout=0.05`、`bias=none` 和 Q/K/V/O targets，并实现 trainable/total 计数；committed report 记录 `6,422,528 / 2,133,954,560 ≈ 0.301%`，但 raw start log、adapter binary/hash 与 fresh-load smoke 仍缺，因此保持 `report-supported`。
+- 历史目标 YAML 的 `lora: False` 与未启用 `lora_r: 32` 已单列：当前 sanitized LoRA formal path 不能倒推历史原 run 使用 LoRA。LoRA 算法与 Qwen upstream architecture 也不计为个人创新，逐文件 ownership 仍 pending。
+- 新增 source `[52]`；39 张题卡仍全部 `unseen`，分层进度为 `36/39`。下一 bounded slice 只处理 `VLA-FND-018`。
+
+### 当前切片：VOL 01 Foundations VLA-FND-018 分层回答收口（已完成，WARN）
+
+- `VLA-FND-018` 已补齐 30 秒回答与约 2 分钟机制展开：逐层 K/V append 与 attention 公式、cache memory \(2LBTH_{kv}d_hb\)、prefill/decode/training 区分、GQA/MQA/quantized/offloaded/sliding-window 权衡，以及 cache 不消除自回归串行步数。
+- OpenPiVLA formal trainer 明确 `use_cache=False` 且 formal Qwen package 尚无 generation/parser/controller，因此没有可归属的 action-token latency；OPD raw-holdout eval 同时设置 config 与 `generate(..., use_cache=True)`，只能证明 cache path 被请求。
+- OPD full-vocabulary teacher/student loss forward 显式关闭 cache；当前不存在 matched cache-on/off latency、peak-memory、output-parity 或闭环控制实验，故不量化加速，也不把 KV cache 外推到并行 action head/diffusion/action chunk。
+- 新增 source `[53]`；39 张题卡仍全部 `unseen`，分层进度为 `37/39`。下一 bounded slice 只处理 `VLA-FND-019`。
+
+### 当前切片：VOL 01 Foundations VLA-FND-019 分层回答收口（已完成，WARN）
+
+- `VLA-FND-019` 已补齐 30 秒回答与约 2 分钟机制展开：Jacobian 连乘的消失/爆炸机制、unscale 后的 global/layer-wise norm、activation/weight/optimizer-state finite 检查、mask/denominator/accumulation 排查、first-bad-batch FP32 matched replay，以及 clipping 只是 containment 的边界。
+- OpenPiVLA formal trainer 在 accumulation boundary 对 trainable params 全局裁剪并记录返回 norm，但没有 layer-wise/activation trace 或显式 non-finite-gradient gate；UWM/LIBERO 与 RoboCasa 的本地 AMP 路径先 unscale 再裁剪但丢弃返回 norm，RoboCasa DeepSpeed 分支需另查当次 config。
+- formal OPD 有 non-finite loss gate、Trainer `max_grad_norm` 与日志 finite callback；这些只能支持实现合同。WAM save API failure、UWM DataLoader stall 和 closed-loop eval failure 均未被误写为梯度爆炸，当前也没有 matched bad-step artifact 可升级根因结论。
+- 新增 source `[54]`；39 张题卡仍全部 `unseen`，分层进度为 `38/39`。下一 bounded slice 只处理 `VLA-FND-020`。
+
+### 当前切片：VOL 01 Foundations VLA-FND-020 分层回答收口（已完成，WARN）
+
+- `VLA-FND-020` 已补齐 30 秒回答与约 2 分钟机制展开：shared-parameter task gradient、pairwise cosine 与一阶 Taylor 判据、zero-gradient/cosine-undefined 边界、norm imbalance、weighted-sum descent 条件、PCGrad-style projection 和 matched per-task validation。
+- WAM 已纠偏为 shared diffusion backbone 上的 latent slot、condition/loss mask 与 sample routing；local official-path entry 没有 per-role gradient probe。MetaX DeepSpeed 显式多 head/MSE 文件仅是 proxy adapter，不能外推正式 Cosmos checkpoint。
+- formal OPD 已纠偏为 route-homogeneous microbatch + 单 routed teacher 的 weighted full-vocabulary KL；五 route 跨 step 共享 student，不是五个 loss 同时反传。route counts、component loss 或不同 pool 最佳 checkpoint 分散都未被误写为 gradient conflict。
+- 新增 source `[55]`；VOL 01 的 39 张题卡现已全部完成分层内容，但仍为 `39/39 unseen`、review WARN。下一步优先收集 `PROJ-WAM-001` 或指定 Foundations 题的真实口述；候选人回答前不创建/迁移 coaching state。
+
+### 当前切片：VOL 02 VLA-RL-028 分层回答试点（已完成，WARN）
+
+- completion audit 已证明 VOL 02 的 40/40 cards 与 primary/local independent fact review 已完成；本轮没有重复做事实复核，而是修正 module-progress 状态漂移，并启动逐题机制化口述层。
+- `VLA-RL-028` 已补齐 30 秒回答与约 2 分钟机制展开：same-condition online rollout group、checker revision、group-relative advantage、old-policy ratio、clip/reference-KL、zero-variance 边界、raw trace 与独立 holdout eval。
+- 本地 `train_grpo.py` 已对账为 reference + synthetic negatives 的 offline group，训练只对 reference trajectory 做 reward-weighted token CE；`eval_grpo_tasks.py` 只检查字段/reward-family coverage。`num_generations=4`、group-relative weight 或 GRPO 文件名均未被误写成 online policy rollout。
+- 新增 VOL 02 source `[16]`；40 张题卡仍全部 `unseen`，分层进度 `1/40`。下一 bounded slice 只处理 `VLA-RL-027`，或由候选人提交 `VLA-RL-028`/`PROJ-WAM-001` 真实口述。
+
+### 当前切片：VOL 02 VLA-RL-027 分层回答试点（已完成，WARN）
+
+- `VLA-RL-027` 已补齐 30 秒回答与约 2 分钟机制展开：PPO critic/GAE advantage、GRPO same-condition group baseline、共享 old-policy ratio/clipped surrogate、sequence-to-token credit、group comparability、sampling/checker cost 与 zero-variance 边界。
+- 通过本地 `build_sft_row`/`RewardWeightedTrainer` 推出一个可复核差异：合成 group 同分时 local advantage=0、sample weight=1，reference CE 继续；canonical group-relative policy-gradient signal 则为零/跳过，至多保留实现声明的 KL/正则。
+- 当前 Harness 的 negative candidates 只改变 reference 权重，自身 log-prob 不进入 objective；`num_generations` 只改变合成组均值，不证明 current-policy exploration。项目口述继续使用 reward-shaped offline continuation 边界。
+- VOL 02 分层进度更新为 `2/40`，40 张题卡仍全部 `unseen`。下一 bounded slice 只处理 `VLA-RL-011`，或由候选人提交 `VLA-RL-027/028`/`PROJ-WAM-001` 真实口述。
+
+### 当前切片：VOL 02 VLA-RL-011 GAE 分层回答（已完成，WARN）
+
+- `VLA-RL-011` 已补齐 30 秒回答与约 2 分钟机制展开：TD residual、GAE 加权和、\(\gamma\) reward horizon 与 \(\lambda\) residual mixing、critic-bootstrap bias/trajectory variance，以及 \(\lambda\to1\) 仍受 discount、有限 rollout 和尾部 value 影响的边界。
+- 终止语义明确拆成 episode-loop reset 与 critic bootstrap mask：真正 `terminated` 后不 bootstrap，纯 time-limit `truncated` 通常仍 bootstrap；不能把 `done = terminated or truncated` 直接当 critic mask。
+- 本地实现已对账为三类相邻语义：WAM proxy 回归 batch `value_function_return`，Harness 计算合成候选组的 sample advantage，OpenPiVLA true-rollout 只用 `terminated or truncated` 控制 eval 退出并从 `info`/`terminated` 判断 success；当前五项目没有正式 GAE trainer 或可归属 GAE run。
+- 新增 source `[17]` 并冻结三个实现文件的 full SHA；VOL 02 分层进度更新为 `3/40`，40 张题卡仍全部 `unseen`。下一 bounded slice 只处理 `VLA-RL-012`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-012 PPO clipped objective 分层回答（已完成，WARN）
+
+- `VLA-RL-012` 已补齐 30 秒回答与约 2 分钟机制展开：rollout-time old log-prob、current/old importance ratio、clipped surrogate、正负 advantage 的分段行为，以及 surrogate clipping 不是硬 KL/parameter trust region 的边界。
+- 负 advantage 的 `min` 已按符号展开：降低坏动作概率是有利方向，ratio 低于 \(1-\epsilon\) 后收益封顶；反向提高坏动作概率仍由 unclipped 项继续惩罚。ratio 超区间不代表所有方向的梯度一律为零。
+- 本地实现已拆成三类 clipping：Harness 把 group-relative sample advantage 裁成 weighted-CE sample weight；OpenPiVLA true-rollout 用 `np.clip` 将数值动作裁到 `env.action_space` 并记录动作越界比例；二者都没有 PPO 的 old-logprob ratio/clipped surrogate，当前五项目没有可归属 PPO run。
+- source `[17]` 扩展到 action-bound clipping 语义且沿用已冻结 full SHA；VOL 02 分层进度更新为 `4/40`，40 张题卡仍全部 `unseen`。下一 bounded slice 只处理 `VLA-RL-013`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-013 PPO 复合 loss 分层回答（已完成，WARN）
+
+- `VLA-RL-013` 已补齐 30 秒回答与约 2 分钟机制展开：\(-L^{CLIP}+c_vL_V-c_H\mathcal H\) 的符号和角色、shared-backbone 加权梯度、raw scalar 不可直接比较，以及“先语义、后尺度、再系数”的诊断顺序。
+- 调参闭环明确绑定 return/success、approx KL、clip fraction、entropy、explained variance、有效 mask 数和 shared/head gradient norm；value MSE 大但 explained variance/return 同时上升时，不机械降低 \(c_v\)。
+- 本地 WAM proxy 已对账为默认 \(16L_{action}+L_{future\_proprio}+L_{future\_image}+L_{value}\) 的 masked multi-head MSE；Harness 只做 weighted reference token CE。前者虽有 value head，二者均无 stochastic policy log-prob、PPO surrogate 或 entropy bonus，不能包装成本地 PPO run。
+- source `[17]` 扩展到 masked multi-head objective 且沿用已冻结 full SHA；VOL 02 分层进度更新为 `5/40`，40 张题卡仍全部 `unseen`。下一 bounded slice 只处理 `VLA-RL-014`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-014 PPO 诊断指标分层回答（已完成，WARN）
+
+- `VLA-RL-014` 已补齐 30 秒回答与约 2 分钟机制展开：ratio 分布/长尾、advantage normalization 的统计域与 valid mask、PPO clip fraction、forward KL estimator，以及 mean ratio 接近 1 不推出 KL 小的边界。
+- 诊断闭环按联合模式展开：高 KL/高 clip fraction/return 震荡查更新强度与 rollout freshness；低 KL/低 clip fraction/return 不涨查 advantage、reward/GAE/mask、学习率与梯度；clip fraction 超界不等于对应样本梯度一律为零。
+- 本地 three-fraction 已对账：OpenPiVLA `clip_fraction` 是动作坐标越界率，WAM `world_model_fraction/value_fraction` 是 sample-mask 覆盖率，Harness 只有 clipped sample weight 与 weighted-CE loss/reward summary；三者均非 PPO ratio clip fraction，也没有 old-logprob/approx-KL 证据。
+- source `[17]` 扩展到 fraction numerator/denominator 语义且沿用已冻结 full SHA；VOL 02 分层进度更新为 `6/40`，40 张题卡仍全部 `unseen`。下一 bounded slice 只处理 `VLA-RL-015`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-015 rollout freshness 分层回答（已完成，WARN）
+
+- `VLA-RL-015` 已补齐 30 秒回答与约 2 分钟机制展开：ratio 分母必须对应真实 behavior checkpoint；old log-prob 只能做 sampled-action likelihood correction，不能修复旧策略 state visitation 与 current policy 的分布错位。
+- freshness contract 已展开为 policy version/checkpoint SHA、collection timestamp、behavior log-prob、env/checker revision 与 learner update index；异步链路联合看 version lag、wall-clock age、ratio/KL/clip fraction、诊断性 ESS 与 task success，并明确 PPO clipping 不补 missing support。
+- 本地 Harness 已对账为 dataset-time synthetic group + offline weighted reference CE，没有 policy version、environment trajectory 或 rollout→learner 环；OpenPiVLA true-rollout 从 JSON 消费已导出 action sequence 并执行，没有 model inference、optimizer 或 learner update。两者均不能证明已实现 PPO freshness 管理。
+- source `[17]` 扩展到 freshness 与外部 action-sequence eval 语义且沿用已冻结 full SHA；VOL 02 分层进度更新为 `7/40`，40 张题卡仍全部 `unseen`。下一 bounded slice 只处理 `VLA-RL-016`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-016 continuous-action transform 分层回答（已完成，WARN）
+
+- `VLA-RL-016` 已补齐 30 秒回答与约 2 分钟机制展开：latent Gaussian、tanh squash、逐维 action-center/half-range scale、change-of-variables log-density、Jacobian/scale 在同动作 PPO ratio 中的抵消条件，以及 near-boundary 数值稳定性。
+- env clipping 已按概率对象拆开：clipped action 不能直接代回普通 Gaussian density；若始终保存 preclip sample/log-prob，latent policy 可内部一致，但会产生边界 point mass、action aliasing 与控制效果错配，必须监控 action-bound clip fraction。该 clipping 与 PPO ratio clipping 无关。
+- 本地 UWM RoboCasa 已对账为 min/max affine normalizer、diffusion noise-MSE、`model.sample → reconstruct → aux override → adapter → env clip`；OpenPiVLA 为外部 JSON action → env clip；Cosmos wrapper 只暴露 unnormalize/config flag。三者均没有可归属的 squashed-Gaussian policy log-prob/PPO ratio。
+- 新增 source `[18]` 并冻结三份 UWM 与一份 Cosmos wrapper 的 full SHA；VOL 02 分层进度更新为 `8/40`，40 张题卡仍全部 `unseen`。下一 bounded slice 只处理 `VLA-RL-017`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-017 offline / online 数据闭环分层回答（已完成，WARN）
+
+- `VLA-RL-017` 已补齐 30 秒回答与约 2 分钟机制展开：fixed behavior dataset 与 learner-driven data refresh、offline support/OOD 风险、online interaction/safety 成本，以及 offline/online 与 on/off-policy 两条正交分类轴。
+- 命名边界已拆开：固定数据上的 BC、action MSE、diffusion noise prediction 或 token CE 属于 offline supervised/IL setting，不因出现 reward/return 字段自动成为狭义 offline RL；训练中 `env.step` 若只记录评测指标、不进入 replay/dataset/loss，也不构成 online learning。
+- 本地 WAM 已对账为 archived demo/rollout dataset → DataLoader → optimizer；UWM LIBERO 主训练用固定 loader，`train_robomimic.py` 的间歇 rollout 只写 success/video，standalone eval 只写 episode/summary；Harness/OpenPi 同样没有 collector→buffer→learner 回流。当前项目可讲 offline training + online evaluation，不能声称 online RL fine-tune。
+- 新增 source `[19]` 并冻结 WAM、UWM train、interleaved rollout monitor 与 standalone eval 四份 full SHA；VOL 02 分层进度更新为 `9/40`，40 张题卡仍全部 `unseen`。下一 bounded slice 只处理 `VLA-RL-018`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-018 extrapolation-error 诊断分层回答（已完成，WARN）
+
+- `VLA-RL-018` 已补齐 30 秒回答与约 2 分钟机制展开：dataset-only Bellman regression、OOD target/actor query、bootstrap + policy optimization 的误差放大环，以及 “低 behavior support + 高 predicted Q + 低同协议 realized return” 才是需验证的 failure signature。
+- 诊断顺序按 action contract → support → critic calibration 展开：先锁 normalizer/action dim-order/adapter/preclip/env action/controller/reset state，再看 quantile/mean-z/kNN/behavior likelihood/clip fraction，最后才做 dataset/policy/nearest-data action 的 Q、ensemble disagreement 与 return calibration。
+- 本地 Cosmos 已有 action distribution/mean-z 与 GT replay 诊断，UWM 有 preclip/env action/clip fraction；WAM 只有 return regression 的 state-value head，UWM/OpenPi 没有 action-Q critic。因此当前只能说审计 parser/support proxy，不能把 rollout failure 强归因为 critic extrapolation 或声称使用了 CQL/IQL。
+- 新增 source `[20]` 并冻结两份 Cosmos action diagnostic 的 full SHA；VOL 02 分层进度更新为 `10/40`，40 张题卡仍全部 `unseen`。下一 bounded slice 只处理 `VLA-RL-019`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-019 CQL / IQL 分层回答（已完成，WARN）
+
+- `VLA-RL-019` 已补齐 30 秒回答与约 2 分钟机制展开：CQL 的 candidate-action log-sum-exp conservative regularizer 与完整 Bellman objective 边界；IQL 的 expectile value regression、\(Q-V\) advantage-weighted BC、\(\tau/\beta\) 与权重 clipping。
+- 机制取舍已明确：CQL 直接压 OOD Q 但可能过保守、依赖连续动作 proposal；IQL 避免在 value fitting 中显式 max OOD action、通常更贴近数据 support，但仍受 reward/Q 偏差、\(\tau\)、\(\beta\) 与数据覆盖限制。
+- 本地 WAM value head 只是 `value_function_return` regression，Harness 是 group-relative sample weight + reference token CE，UWM 是 masked MSE/diffusion objective；三者都没有 CQL/IQL 的 objective 证据，不能把变量名或离线轨迹包装成这些算法。
+- VOL 02 分层进度更新为 `11/40`，40 张题卡仍全部 `unseen`。下一 bounded slice 只处理 `VLA-RL-020`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-020 support-control 取舍与实现口述（已完成，WARN）
+
+- `VLA-RL-020` 已补齐 30 秒回答与约 2 分钟机制展开：behavior constraint 直接约束 policy 偏离，AWR 在 dataset action 上做 advantage-weighted likelihood，conservative Q 修改 critic 对候选/OOD 动作的估值；三者不是同一“保守系数”。
+- 选择条件已按 coverage、behavior 质量、reward/value 可信度与交互安全预算展开；AWR 新增 temperature、weight clipping 与 effective sample size 诊断，conservative Q 要用 data/candidate Q、proposal、conservative gap 和 realized return 对账。
+- 本地实现口述来自代码数据流：WAM 的 `demonstration_sampling_prob` / `success_rollout_sampling_prob` / `p_world_model` 是 archived mixture/routing；UWM 的 contact-window、action-dimension 与 composite loss weight 作用于 diffusion noise-MSE/辅助监督；Harness 的 synthetic-group advantage 只加权 reference token CE。三者均无 behavior-policy KL、action-conditioned \(Q-V\) extraction 或 candidate-action conservative penalty。
+- source `[18]` 新增 UWM LeRobot contact-window weighting 文件的 full SHA，并明确它是 heuristic supervised emphasis，不是 AWR。VOL 02 分层进度更新为 `12/40`，40 张题卡仍全部 `unseen`。下一 bounded slice 只处理 `VLA-RL-021`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-021 reward / termination / timeout 实现口述（已完成，WARN）
+
+- `VLA-RL-021` 已补齐 30 秒回答与约 2 分钟机制展开：success predicate、training reward 与 episode end 分开；collector 用 `terminated or truncated` reset，TD target 只按 `1-terminated` 关闭 bootstrap。
+- finite-horizon 例外已按 Gymnasium 1.3.0 官方语义纠偏：若 horizon 本就是 MDP 定义且 remaining time 进入 observation，到 horizon 是 termination；只有 MDP 外部 time limit 才是 truncation。安全停机还需区分 task failure、外部中断与 invalid transition。
+- 本地实现口述来自返回值数据流：LIBERO eval 消费单一 `done` 并只保存 `info["success"]`；UWM RoboCasa `step_env` 丢弃 reward 与 termination flags，只按 success/horizon 停止；LeRobot 将 `reward>0 or done` 用作 success/contact proxy；OpenPi eval 虽接收 terminated/truncated，summary 仍折叠为 done。它们支持既定评测口径，不支持正确 critic bootstrap 的实现 claim。
+- sources `[18][19]` 沿用已验证 full SHA 并扩展 episode-end 证据边界；VOL 02 分层进度更新为 `13/40`，40 张题卡仍全部 `unseen`。下一 bounded slice 只处理 `VLA-RL-022`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-022 parser / coverage / critic 干预式归因（已完成，WARN）
+
+- `VLA-RL-022` 已补齐 30 秒回答、约 2 分钟机制展开与四行归因表；诊断顺序固定为 action contract→state/action support→action-Q calibration，每层只在锁定初态、checkpoint、normalizer、controller、seed 与 horizon 后做单变量替换。
+- parser 层新增 normalize/denorm/adapter/env 与 round-trip 公式；coverage 层新增 marginal mean-z 与 state-action kNN，并明确它们只是 proxy；critic 层要求同 state 的 dataset/policy/nearest action Q、ensemble disagreement 与 Monte-Carlo return calibration。
+- source `[20]` 新增三份 full-SHA 诊断 artifact：CoffeePressButton 5,868 个 demo 7D action 与 base/trained 各 300-step trace 的 mean-z；GT replay 源 action `102×12`、执行 80 步、success false，同时保留 initial-state mismatch caveat。数值只升级为 support/parser warning，不升级为因果 root cause。
+- 本地 WAM 只有 state-value return regression，UWM/OpenPi 无 action-Q，因此当前可讲 parser/support 审计，不能讲已证实 critic extrapolation。VOL 02 分层进度更新为 `14/40`，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-023`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-023 visual representation / value isolation（已完成，WARN）
+
+- `VLA-RL-023` 已补齐 30 秒回答与约 2 分钟机制展开：把视觉 encoder、policy/value head 和 loss 梯度链显式写出，用 pretrained/random × frozen/trainable 的 2×2 消融，再加 value stop-gradient 分支。
+- 指标分成三层：observation/action probe 与 encoder drift；锁定 termination/return 的 value calibration、explained variance、Bellman residual；同初态/同 horizon 的 held-out action 与 closed-loop success，并记录共享层 gradient norm/cosine。
+- source `[21]` 冻结 WAM proxy 的 shared `encoder→trunk→action/future/value/image heads`、UWM RoboCasa/LIBERO 的全参数 AdamW 与 `--pretrained-vision` 初始化边界；定向扫描未找到 frozen-encoder、value stop-gradient、linear-probe、encoder-drift 或 per-branch gradient-cosine artifact。
+- 因此当前项目可讲 shared multi-task implementation 和下一步消融设计，不能把 value loss 下降包装成视觉因果收益，也不能说 value head 已破坏 backbone。VOL 02 分层进度更新为 `15/40`，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-024`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-024 schema-aware SFT 监督边界（已完成，WARN）
+
+- `VLA-RL-024` 已补齐 30 秒回答与约 2 分钟机制展开：把 system/user/tool schema 作为条件上下文，把 assistant 文本或 `<tool_call>` JSON 作为 causal teacher-forcing target，并显式写出 label mask、shift 对齐和 target-token ratio。
+- target 类型按文本、tool-call JSON、离散 action token 与连续 action/action chunk 分栏；连续控制仍需 regression、diffusion 或 flow objective，不能从 Harness 的 token CE 推出 VLA 连续动作训练。
+- source `[22]` 冻结 `ToolSFTCollator` 的 generation-prompt/full-sequence 差分 mask、`labels=-100`、截断 fallback、`--freeze-vision-tower`、LoRA 与数据 manifest；300-step run 只记录 train loss `0.50627` 和格式 dry-run，尚无模型 dev/test tool-call eval。
+- 因此项目口述只支持 schema-aware SFT 的数据流与一次训练 run，不支持工具副作用、runtime memory/subagent 学习、线上机器人成功或逐文件个人 ownership。VOL 02 分层进度更新为 `16/40`，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-025`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-025 DPO preference-pair 机制与本地负证据（已完成，WARN）
+
+- `VLA-RL-025` 已补齐 30 秒回答与约 2 分钟机制展开：以同条件 chosen/rejected 的 completion log-prob margin 对比 frozen reference，解释 DPO 如何在不单独拟合 reward model 的情况下保留 latent-reward、Bradley–Terry 与 KL-regularized 假设。
+- 数据合同分成 pair 语义、shortcut、split 与 eval 四层：过滤 tie/双错/双对，监控长度/格式/拒答模板捷径，按题目/轨迹/任务族分组去重，并将 held-out pair accuracy/margin 与任务正确率、安全和格式分开验收。
+- source `[23]` 冻结优化简历与本地 `muxi/ds_test` 边界：简历只支持偏好样本整理、实验设计和错误归因；Muxi commit `756e27e16adcfb3ccbfe98c2920dda42095b127f` 只有 `beta: 0.1` 配置与通用 launcher，未发现 DPO-specific trainer、pair schema、smoke data、output 或 run log。
+- 因此项目口述不把“存在 DPO 配置/脚本”包装成跑通，不把 Muxi smoke 骨架绑定到广州皓岚实习，也不报告 pair 数、DPO uplift 或独立 ownership。VOL 02 分层进度更新为 `17/40`，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-026`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-026 reference policy / implicit KL（已完成，WARN）
+
+- `VLA-RL-026` 已补齐 30 秒回答与约 2 分钟机制展开：从 KL-regularized reward maximization 推导 reference-relative reward difference，区分 frozen reference、rejected、reward model 与 PPO old policy。
+- KL 口径分成严格 policy KL 与固定 preference dataset 上的 log-ratio/drift proxy；后者采样分布不是当前 policy，不能作为无偏 KL 或安全证明。标准 DPO 通过 reference log-ratio 吸收理论约束，不等于必须另调 `KLDivLoss`。
+- 训练合同新增 reference model/checkpoint SHA、tokenizer/template/mask、policy/ref pair log-prob、sampled KL 或明确标注的 proxy、能力保持指标、任务评测与 matched beta sweep；beta 只按理论锚定与实测漂移联合解释，不叫 learning rate。
+- source `[23]` 继续作为本地负向门禁：一行 `beta: 0.1` 不能证明 reference checkpoint、DPO-specific trainer、KL 曲线或 run。VOL 02 分层进度更新为 `18/40`，对应 `VLA-RL-011..028` 连续分层，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-029`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-029 schema / reward / holdout 三层合同（已完成，WARN）
+
+- `VLA-RL-029` 已补齐 30 秒回答与约 2 分钟机制展开：schema 管可解析性/字段/工具结构，reward/checker 管 context-dependent 组件与 hard penalty，holdout 在冻结 checkpoint/split/n/scorer 后独立验收；同名 scope 字段跨层出现也不代表职责相同。
+- 本地实现数据流已写入口述：`candidate_group` 构造 reference/empty/wrong/reversed 合成组，`score_candidate` 按 task family 计分，`build_sft_row` 把 reference 相对组均值变成 `[0.2,2.0]` sample weight，`RewardWeightedTrainer` 仍优化 weighted token CE；因此不是 current-policy online rollout。
+- evaluator 边界已拆清：`eval_grpo_tasks.py` 只检查 reward-family/user-goal/reference-trajectory coverage；`eval_sft_tool_call.py` 无 predictions 时会做 `GOLD_DRY_RUN`。两者均不能替代冻结 checkpoint 的模型 holdout。
+- source `[24]` 冻结 Harness inventory/ownership ledger 与 evaluator/run full SHA；8B/32B suite 的 n/scorer、project sandbox proxy、safety/browser weakness 和 Codex-primary engineering 继续保持 protocol/ownership WARN。VOL 02 分层进度更新为 `19/40`，对应 `VLA-RL-011..029` 连续分层，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-030`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-030 reward hacking 风险与证明边界（已完成，WARN）
+
+- `VLA-RL-030` 已补齐 30 秒回答与约 2 分钟机制展开：区分 proxy reward 与独立 true objective，并把工具调用的 schema/tool/args/no-call/multi-step shortcut 与机器人的 shaped-progress/termination/success/controller shortcut 分开。
+- 诊断口径拆成“能力不足 → proxy gap/signature → paired/adversarial trace 支持的因果证明”三档；低 success 或格式高、语义低都不能单独宣布 reward hacking。修复顺序先重构 checker/effect-sink/runtime gate，再补 adversarial holdout、scorer ensemble/人工复核与 rollback，不把继续训练当默认答案。
+- source `[25]` 冻结 `schema_aware_reward.py` 与 8B V3 safety/browser/report full SHA。safety `n=289` 中 valid JSON/tool-call 与 scope respected 为 100%，但 tool-name、required-tool coverage、semantic-argument、argument-exact 为 44.29%/49.13%/17.65%/2.77%；空参数、多步缺失、`click[description]→click[buy now]` 与 hallucinated `remove_contact` 被写成 proxy-gap bad cases，而不是已证明的主动投机。
+- ownership 口述保持 candidate 负责约束取舍、数据/reward/eval 设计与结果归因，Codex 主要实现脚本；没有真实 browser/robot effect-sink、native online GRPO 或物理成功 claim。VOL 02 分层进度更新为 `20/40`，对应 `VLA-RL-011..030` 连续分层，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-031`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-031 多目标 reward 的不可补偿约束（已完成，WARN）
+
+- `VLA-RL-031` 已补齐 30 秒回答与约 2 分钟机制展开：把 parse/allowed tool/required-critical fields/scope/forbidden side effect 放入 feasibility gate，把非关键参数语义、coverage、成本与回答质量保留为 soft component，并解释 weighted sum、乘法 gate、lexicographic 与 constrained reward 的取舍。
+- early-policy 稀疏问题不靠取消硬约束解决，而是保留 component-level dense feedback、课程式阈值、hard-reject reason 与 reward/zero-rate 监控；最终 holdout gate 和 success predicate 必须冻结。
+- source `[26]` 冻结 V2 `reward_spec.json`、`schema_aware_reward.py` 与 restraint paired-check full SHA：21 个组件、9 个 task family、7 个 hard penalty；128 条 scripted good/bad/malformed 测试为 1.0000/-5.3423/-5.3423，gap 6.3423、未惩罚数 0。
+- 现有实现边界同时写入口述：`final_reward_from_components` 仍是 task-family weighted sum 加 penalties；128 条结果只是 checker regression，不是模型 holdout。8B safety 的 format/scope 100% 与 semantic 17.65% 继续作为 effect-sink/不可补偿约束未闭环的证据。VOL 02 分层进度更新为 `21/40`，对应 `VLA-RL-011..031` 连续分层，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-032`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-032 preference / checker label noise（已完成，WARN）
+
+- `VLA-RL-032` 已补齐 30 秒回答与约 2 分钟机制展开：DPO 从同 prompt chosen/rejected 的 reference-relative margin 解释 label flip、tie、shortcut 与跨条件 pair；GRPO 从 noisy reward 的组内 mean/std normalization 解释 misrank、符号翻转与 equal-reward 零 advantage。
+- 新增六类数据质量诊断表：flip/misrank、tie、长度/格式 shortcut、duplicate/leakage、source/task skew、scorer drift；审计项覆盖 pair 有效率、agreement、长度/格式差、group 重复、reward-std-zero、rank stability 与人工/checker confusion matrix。
+- source `[27]` 冻结 V2 `train_grpo_online.py`、data manifest、GRPO report 与 final-report generator full SHA：同 prompt policy sampling、`gen=8`、component reward、组内 advantage 和 clipped loss 可回溯；8,916 条 task-family 分布为 `3735/2748/2300/120/13`，manifest `validation` 为空，equal-reward/zero-loss 被保留为诊断而非“稳定训练”。
+- 广州皓岚经历继续只按 source `[23]` 口述参与样本/偏好对整理、SFT/DPO 实验设计、错误归因与质量标准；没有 pair 数、agreement、DPO trainer/run 或 uplift。Harness 的 policy-sampled group 与实习材料不同源，Codex-primary 实现不升级为候选人独立手写。VOL 02 分层进度更新为 `22/40`，对应 `VLA-RL-011..032` 连续分层，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-033`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-033 连续动作 feedback → policy update（已完成，WARN）
+
+- `VLA-RL-033` 已补齐 30 秒回答与约 2 分钟机制展开：从冻结 success/termination 合同构造 terminal+dense+cost reward，以 potential-based shaping 限制目标漂移，再用 return/GAE 或 chunk-level Q 完成 temporal credit assignment。
+- policy update 按能力分路：可计算连续密度用 PPO/actor-critic；Diffusion/Flow chunk 仅在 density/denoising trajectory 合同明确时做 policy gradient，否则使用 AWAC/IQL-style advantage-weighted BC、Q-guided sampling 或同状态 chunk preference。动作 MSE 继续只作辅助 proxy。
+- implementation-derived 口述冻结三条未闭环边界：Cosmos/WAM 是 action/world/value supervised MSE；UWM-RoboCasa 是 diffusion-noise/dynamics/\(x_0\)/auxiliary supervised loss且 rollout 丢弃 reward/terminated/truncated；UWM-LIBERO rollout 只记录 success/video，没有 transition 回流 dataset/replay/optimizer。
+- 最小补强路径固定为 `transition ledger → frozen reward replay → return/advantage 单测 → critic calibration → 单一 policy update → matched-seed rollout`。未补做前只写 fine-tune/eval/protocol alignment，不写 RL uplift。VOL 02 分层进度更新为 `23/40`，对应 `VLA-RL-011..033` 连续分层，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-034`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-034 reward / advantage / gradient scale（已完成，WARN）
+
+- `VLA-RL-034` 已补齐 30 秒回答与约 2 分钟机制展开：推导同组正仿射 reward 变换在 `std+epsilon` normalization 下仅近似不变，拆清 reward 对 rank/tie/critic 的作用、advantage 对 policy signal 的作用，以及 loss/reduction/optimizer/clip 对最终 gradient 的作用。
+- 新增五层诊断表：per-component reward 与 group tie、raw/normalized advantage、policy/value/aux/KL loss 与 denominator、pre/post-clip gradient norm/cosine/clip fraction、held-out success/safety；调参必须沿这条链单因素推进。
+- implementation-derived 口述冻结 Harness V2 的 `reward_scale=0.5 → group mean/std+1e-4 → token-normalized clipped loss → beta=0.003 ref loss → max_grad_norm=1.0`。earlier NaN 与 successful restart 同时改变 prompt/completion、lr、reward scale、clip 和 ZeRO，继续禁止单因素因果归因。
+- WAM 的 `16×action MSE + masked world/value losses` 与 UWM 的 action/dynamics/\(x_0\)/auxiliary/sample weights 被定义为 objective scale，不自动等于共享参数的 gradient dominance；需要 per-branch/shared-layer gradient evidence。VOL 02 分层进度更新为 `24/40`，对应 `VLA-RL-011..034` 连续分层，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-035`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-035 policy loss–success gap（已完成，WARN）
+
+- `VLA-RL-035` 已补齐 30 秒回答与约 2 分钟机制展开，固定排障顺序为 eval/success contract → checkpoint lineage → raw-to-env action pipeline → feedback → optimization → data/perception support；明确 \(L_\pi\downarrow\not\Rightarrow J_{\mathrm{success}}\uparrow\)。
+- 新增六层诊断表与完整单 episode trace schema，并把 gold-action replay、current-vs-frozen checkpoint、raw→env 单步/单 chunk trace、checker replay/independent predicate 和 matched-initial-state rollout 固定为最小隔离实验。
+- implementation-derived 口述冻结三类 proxy/协议缺口：Harness safety holdout 的 JSON/scope 100% 与 semantic argument 17.65% 形成 objective gap；Cosmos GT replay 因 initial-state 可能不匹配，失败不能单独证明 parser/controller 错；UWM RoboCasa 丢弃 reward/terminated/truncated，LIBERO eval 未把 transition 回流 learner。
+- 当前证据只支持 eval/feedback/action-chain audit，不支持把 WAM/UWM 写成已完成 online policy optimization，也不支持把诊断脚本写成候选人独立实现或把任一 root cause 说成已完成因果确认。VOL 02 分层进度更新为 `25/40`，对应 `VLA-RL-011..035` 连续分层，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-036`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-036 SFT → preference → online RL stage gates（已完成，WARN）
+
+- `VLA-RL-036` 已补齐 30 秒回答与约 2 分钟机制展开，用 \(D_{\mathrm{demo}}\)、\(D_{\mathrm{pref}}\) 和 policy-sampled fresh trajectory 拆分三阶段的数据来源与监督信号；三阶段被定义为可选升级路径，不是必经流水线。
+- 新增 entry/contract/exit/stop 四列 gate 表与最小决策树：SFT 验可执行行为底座，preference 验 pair agreement/shortcut/任务非退化，online RL 验 policy/checker/env lineage、reward diversity、独立 success/OOD/safety 与 rollback；training run completion 与 release gate 明确分离。
+- implementation-derived 口述对齐四条 Harness lineage：masked target SFT；广州皓岚偏好样本/实验设计但无可核验 DPO run；旧 `train_grpo.py` 固定 reference 的 reward-weighted CE；V2 `train_grpo_online.py` 从 SFT checkpoint 做 `gen=8` policy sampling、checker group advantage、clipped token/ref loss 并完成 1007 steps。
+- V2 Harness 只可称语言 tool-call/checker 合同下的 online GRPO；safety semantic argument 约 17.65%、browser 无真实 runner、project sandbox 为协议 proxy，因此真实 effect-sink/release gate 未过。WAM/UWM 仍是监督微调/IL + online evaluation，不继承该阶段结论。VOL 02 分层进度更新为 `26/40`，对应 `VLA-RL-011..036` 连续分层，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-037`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-037 SFT / teacher / OPD / GRPO causal ablation（已完成，WARN）
+
+- `VLA-RL-037` 已补齐 30 秒回答与约 2 分钟机制展开，先定义 teacher、objective/rollout 与 GRPO 三类 estimand，再用 matched base/parent、input/common-support、effective target tokens/updates、seed、raw-holdout/scorer 和 checkpoint-selection rule 约束每个 contrast。
+- 新增 A0–A5 实验矩阵：SFT-only、single-teacher A/B、routed multi-teacher teacher-rollout、matched student-rollout OPD、同 pre-GRPO checkpoint 的 on/off；并说明 specialized teacher 必须先在 common-support subset 估纯 teacher/routing 效应，full mixture 只报告 system-level coverage。
+- 四 run 预算按问题分流：若研究 OPD×GRPO，采用 \(\{\mathrm{SFT},\mathrm{OPD}\}\times\{\mathrm{GRPO\ off},\mathrm{GRPO\ on}\}\) 2×2；若优先补 teacher lineage，则保留 SFT-only、single-teacher、matched teacher-rollout multi 与 matched student-rollout OPD，不再声称 GRPO 效应。
+- 新 source `[29]` 冻结 OPD inventory 与 objective-lineage gate：legacy teacher-rollout/top1 CE、formal full-vocab \(D_{KL}(q_\beta\|p_S)\)、coldstart-500 teacher rollout 与 OPD5000 student rollout 已拆开。现有 parent/steps/rollout 同时变化，且缺 SFT-only/single-teacher/no-synthetic/raw predictions/checkpoint binary，只能设计 matched ablation，不能给 OPD 单因素 uplift。
+- Harness V2 GRPO 属于跨 model/data/task/scorer 的 language tool-call 线，不能与 OPD grounding checkpoint 拼成同一 ablation。VOL 02 分层进度更新为 `27/40`，对应 `VLA-RL-011..037` 连续分层，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-038`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-038 auxiliary objective / gradient interference（已完成，WARN）
+
+- `VLA-RL-038` 已补齐 30 秒回答与约 2 分钟机制展开，用共享参数上的一阶 Taylor 展开定义主梯度 \(g_\pi\)、辅助梯度 \(g_k\)、cosine \(c_k\) 与加权 dominance ratio \(\rho_k\)；单 batch 负 cosine 不再被当作 harmful interference 的充分证据。
+- 新增六维证据表：target 语义、因果/时间边界、mask/coverage、representation、gradient scale 与 closed-loop outcome；只有持续方向冲突、辅助梯度占优并在 matched aux-on ablation 中降低主指标，才升级为干扰。
+- 最小实验固定为 policy-only、policy+aux、aux→shared stop-gradient、aux separate-trunk 四 arm，并在相同 batch 分别记录 encoder early/late 与 trunk 的 branch norm/cosine、pre/post-clip norm、update 和主任务 success；PCGrad/GradNorm/dynamic weighting 被放到因果隔离之后。
+- implementation-derived 口述冻结 WAM proxy 的 shared encoder/trunk + action/future-proprio/future-image/value heads、`16×action MSE` 与 masked world/value loss；UWM weighted branch 的 action-noise/dynamics/\(x_0\)/phase/control/contact/progress composite loss；Harness 的 squared log-prob reference anchor。三者均无现成 branch-gradient/stop-grad/closed-loop matched artifact，不能宣称 auxiliary 已证实有益或有害。
+- 当前 artifact 只支持 loss dataflow 与风险诊断，不支持 PCGrad run、causal auxiliary uplift 或逐文件个人 ownership。VOL 02 分层进度更新为 `28/40`，对应 `VLA-RL-011..038` 连续分层，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-039`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-039 ID held-out / OOD / online rollout evaluation（已完成，WARN）
+
+- `VLA-RL-039` 已补齐 30 秒回答与约 2 分钟机制展开，以 model/data/task/init/seed/obs-action transform/controller/horizon/success/termination/invalid-policy/scorer 构成完整 protocol tuple，并定义 task-macro success 与 single-axis OOD delta。
+- 新增三层评测表：ID held-out 必须先按 source episode/task/scene/object group split 再 window；OOD 预注册单轴与少量组合并保留 matched ID anchor；online final 锁 checkpoint/policy version/seed/init/controller/action transform/stop reason，training rollout 回流后必须改名。
+- 模型选择纪律固定为 train/ID-dev（可加 OOD-dev gate）→ locked ID-test/OOD-test → frozen online final；比较模型优先复用 task/seed/init 做 paired interval，报告 macro/micro denominator、CI、逐任务/worst-group 与失败类型。
+- 新 source `[30]` 冻结 UWM/WAM protocol evidence：UWM fixed-pruned-init `186/250=0.744` 是 user-confirmed summary、reset-style `0.928` 是诊断、Table II OOD 另需 init offset/background removal/多 seed；Cosmos official-HF 24×5 raw 为 `86/120`，本地 trusted 为 `84/118`，二者都不自动等于训练 checkpoint 成绩。
+- LIBERO eval 只落 success/policy steps/video且缺完整 stop semantics；WAM official bundle缺本地 checkpoint binary与 matched trained 24×5，因此当前只能讲协议审计和 denominator 重算，不能讲 Table II reproduction 或 causal uplift。VOL 02 分层进度更新为 `29/40`，对应 `VLA-RL-011..039` 连续分层，40 张题卡仍全部 `unseen`；下一 bounded slice 只处理 `VLA-RL-040`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-040 100 real-robot episode budget（已完成，WARN）
+
+- `VLA-RL-040` 已补齐 30 秒回答与约 2 分钟机制展开，先要求 sim/mock/gold replay、action/normalizer/controller、checker、limits 与 emergency stop 的 zero-episode preflight，再给出 `10 smoke + 40 recovery collection + 20 intermediate gate + 30 locked final = 100` 默认预算。
+- 新增 episode-budget 表与不可变记账合同：human intervention、急停、越界、timeout、通信/基础设施错误均进入 raw attempted denominator；task failure、safety termination、external truncation 与 infrastructure invalid 分栏，补跑规则预注册。
+- 30 条 final 在 success≈0.5 时普通 95% 半宽约 ±17.9pp；因此只能支持大效应/失败审计，不能宣称 3–5pp 精确 uplift。多 task 还必须报告 macro/micro、Wilson/exact interval 与 paired baseline。
+- 40 条采集按 4×10 safe-DAgger/recovery batch推进，每批最多一次预注册更新；20 条 gate 若回流 replay 即改名 training-side data，任何训练过它的 checkpoint 不得再用同一 gate 验证；final 30 永不回流。
+- implementation-derived 边界明确：WAM 24×5、UWM LIBERO 250 与 RoboCasa 8×54 均为 simulation artifact，不是真机 evidence；UWM 当前还丢失部分 reward/termination/stop semantics，所以必须先补 transition/safety/policy lineage 才能执行真机预算。VOL 02 分层进度更新为 `30/40`，对应 `VLA-RL-011..040` 连续分层，40 张题卡仍全部 `unseen`；剩余未分层为 `VLA-RL-001..010`，下一 bounded slice 只处理 `VLA-RL-001`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-001 BC / covariate shift（已完成，WARN）
+
+- `VLA-RL-001` 已补齐 30 秒回答与约 2 分钟机制展开：BC objective 只在 expert occupancy \(d_E\) 上最小化单步误差，当前策略则通过动力学诱导 \(d_\pi\)；补入 \(1-(1-\epsilon)^T\approx T\epsilon\) 与 worst-case \(O(T^2\epsilon)\) 边界，但不把平方恶化写成每个任务的经验定律。
+- 诊断顺序固定为 action contract → expert support → matched-init closed-loop drift → intervention retrain；action mean/std/mean-z 只能提示 marginal support，离线 MSE 或 0-success 都不能单独证明 policy-induced state distribution shift。
+- recovery 路径拆开了普通 augmentation、失败轨迹、policy-visited state + expert correction 与完整 DAgger；receding-horizon、uncertainty fallback 和 safety controller 只用于限制错误传播，不被写成已消除 covariate shift。
+- implementation-derived 口述冻结 WAM 的 fixed `RoboCasaDataset`/DataLoader 与 action/world/value MSE、UWM LIBERO 的 fixed train loader 和 success/video-only rollout：二者都没有 current-policy collector、buffer insertion 或 transition 回流 optimizer，只能称 supervised fine-tune/IL + online evaluation。
+- 当前 artifact 支持解释训练—部署分布错位并设计 matched recovery ablation；不支持声称已实现 DAgger、已直接测量 state occupancy shift、已因果确认当前失败根因或把上游实现写成个人原创。VOL 02 分层进度更新为 `31/40`，已分层 `VLA-RL-001` 与 `VLA-RL-011..040`，40 张题卡仍全部 `unseen`；剩余未分层为 `VLA-RL-002..010`，下一 bounded slice 只处理 `VLA-RL-002`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-002 BC / DAgger / GAIL / IRL（已完成，WARN）
+
+- `VLA-RL-002` 已补齐 30 秒回答与约 2 分钟机制展开，从“学 policy 还是 reward、是否采 current-policy state、专家给 action label 还是离线 trajectory、监督优化还是 RL”四轴区分 BC、DAgger、GAIL 与 IRL。
+- 公式层冻结 fixed-dataset BC、`rollout → expert query → aggregate → retrain` 的 DAgger 数据协议、GAIL discriminator/policy occupancy minimax 以及 IRL reward inference → planning/RL 双层目标；同时注明 GAIL discriminator 标签约定与 IRL reward ambiguity/shaping non-identifiability。
+- 决策边界固定为 BC-first；有安全 oracle 和闭环 drift 才做小批量 safe DAgger；缺在线 oracle/task reward但有 simulator/interaction budget 才考虑 GAIL；确需迁移/解释/规划用目标函数时才考虑 IRL。真实机器人 GAIL 的主要门槛是 rollout 样本、安全和 adversarial shortcut，不被简化成“效果差”。
+- implementation-derived 口述冻结 WAM 的 pre-existing `rollout_data_dir` + one-time `RoboCasaDataset`/fixed DataLoader、多头 MSE，以及 UWM LIBERO `collect_rollout → success/video` 与固定 train loader：两者都没有 current-policy expert query、versioned ingestion、discriminator/occupancy objective 或 reward inference。
+- 新增 GAIL 与经典 IRL 一手论文 source `[31][32]`；当前 artifact 支持识别学习闭环与设计 versioned safe-DAgger ledger，不支持声称已实现 DAgger/GAIL/IRL、已学出 transferable reward、已有 adversarial imitation uplift 或上游算法个人原创。VOL 02 分层进度更新为 `32/40`，已分层 `VLA-RL-001..002` 与 `VLA-RL-011..040`，40 张题卡仍全部 `unseen`；剩余未分层为 `VLA-RL-003..010`，下一 bounded slice 只处理 `VLA-RL-003`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-003 DAgger / compounding error（已完成，WARN）
+
+- `VLA-RL-003` 已补齐 30 秒回答与约 2 分钟机制展开，把 DAgger 明确定义为 `current-policy rollout → expert/oracle correction → versioned aggregation → supervised retrain`，而不是新的 loss；聚合公式直接把训练支持从 \(d_E\) 扩到 \(d_{\pi_k}\)。
+- 新增六类代价/失效表：expert 查询、真实机器人安全、交互/重训、标签一致性、触发偏差与 expert-policy/controller mismatch；每类都绑定 intervention time、policy/checkpoint SHA、dataset version、agreement、trigger recall 与 raw/env action 等证据字段。
+- 无在线 expert 的近似边界已冻结：simulator scripted oracle 或真实接管日志只有在状态来自当前/候选策略、存在 expert correction 且进入下一轮 learner 时才称 DAgger-like；失败视频、旧 rollout、action noise、图像增强或纯 holdout 只能称 recovery/coverage augmentation。
+- implementation-derived 口述冻结 Cosmos/WAM 的 archived `rollout_data_dir`、one-time `RoboCasaDataset`/DataLoader 与 `treat_success_rollouts_as_demos=False`，以及 UWM `maybe_collect_rollout → success/video`/standalone summary：两者都无 expert query、intervention state、round-wise append 或 transition→replay→optimizer 回流。
+- 最小补实验固定 policy/checkpoint、安全触发器和 intervention ledger，只允许一次预注册 aggregation，并用未回流 matched initial state 比较 first-error time、recovery/success/intervention rate。当前证据不支持已完成 DAgger round、在线专家标注、compounding-error 因果消融、真实机器人 uplift 或个人算法原创。VOL 02 分层进度更新为 `33/40`，已分层 `VLA-RL-001..003` 与 `VLA-RL-011..040`，40 张题卡仍全部 `unseen`；剩余未分层为 `VLA-RL-004..010`，下一 bounded slice 只处理 `VLA-RL-004`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-004 Action Chunking / H-K-Replan（已完成，WARN）
+
+- `VLA-RL-004` 已补齐 30 秒回答与约 2 分钟机制展开，严格区分 model action horizon \(H\)、controller execution prefix \(K\)、low-level control step \(\Delta t\) 和 replan latency；policy query 约为 \(\lceil T/K\rceil\)，但环境仍执行 \(T\) 个低层动作。
+- 收益/风险按 feedback freshness、inference/通信、action smoothness、model/dynamics error 与 safety/stop 五轴展开；同步 blocking queue 不隐藏 infer latency，只有异步预取才有约 \(K\Delta t\) latency budget，且必须处理 timestamp/staleness/expired chunk。
+- 新增 ACT 一手论文 source `[33]`，明确 action chunk、temporal ensemble 与 receding-horizon prefix execution 是不同机制；最小消融先固定 \(H\) 扫 \(K\)，再固定 \(K\) 扫 \(H\)，避免把预测难度和开环执行长度混为一个变量。
+- implementation-derived source `[34]` 冻结 OpenPiVLA LIBERO 的 synchronous `infer → chunk[:replan_steps,:7] → deque/popleft`、离线 `action_horizon=50` L1 window、70-step 0-reward/false-success 边界；Cosmos/WAM 为 `H=32,K=16`，UWM 为 `H=16` 且 `K=1/2/4/5/8` 的同 54-scenario success `2/1/0/1/1`。
+- 现有 UWM sweep 总体低且非单调，只支持把 \(K\) 视为敏感协议因子，不支持最佳 \(K\)、chunking 因果 uplift、所有实际 run 等于代码默认值或本地 temporal ensemble 已启用。VOL 02 分层进度更新为 `34/40`，已分层 `VLA-RL-001..004` 与 `VLA-RL-011..040`，40 张题卡仍全部 `unseen`；剩余未分层为 `VLA-RL-005..010`，下一 bounded slice 只处理 `VLA-RL-005`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-005 Recovery / Intervention Data Contract（已完成，WARN）
+
+- `VLA-RL-005` 已把四类对象分开：failure record（只有视频/动作/stop 或 proxy）、recovery demonstration（expert/teleop 纠正动作）、intervention dataset（current/candidate policy 触发 takeover 段）和完整 DAgger round（expert relabel + versioned aggregate + next-round retrain/eval）。
+- 新增 intervention window schema：触发前后 observation、raw/expert action、source mask、trigger reason、安全状态、dataset version；触发器覆盖停滞、偏航、接触/clip、低置信与 timeout，并要求 held-out failure/near-miss 的 recall/precision，禁止 hindsight success leakage。
+- 数据隔离固定按 episode/scene/policy checkpoint group split，normalizer 只从 train 拟合，同一 intervention 的连续窗口用 group ID 去重；混合比例、expert/learner loss mask、invalid/急停处理与未回流 matched holdout 需预注册。
+- implementation-derived 口述冻结 WAM base/trained `manifest + actions.jsonl + video + success=false`、Cosmos TurnOffMicrowave `0/1` 诊断、UWM 18×3 scenario/contact/success proxy 与公开 LeRobot reward/done 字段：可做 failure taxonomy/recovery dataset 设计，但当前没有 expert action、teleop time 或下一轮 append，因此不能称 intervention/DAgger data。
+- 最小补强为 simulator 的 learner-only/expert-takeover/scripted-oracle 三类窗口，做 action-source mask、normalizer/controller round-trip、episode split 和 `BC` vs `BC+recovery` matched holdout；当前不支持已采集接管、recovery retraining、intervention 成本或 success uplift。VOL 02 分层进度更新为 `35/40`，已分层 `VLA-RL-001..005` 与 `VLA-RL-011..040`，40 张题卡仍全部 `unseen`；剩余未分层为 `VLA-RL-006..010`，下一 bounded slice 只处理 `VLA-RL-006`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-006 Data Quality / Quantity / Diversity（已完成，WARN）
+
+- `VLA-RL-006` 已把质量、数量、多样性拆成三个可验证问题：schema/label/时间与 episode 合同是否可信；unique episode/window/initial state 的有效 support 有多大；task/scene/object/init/view/phase/failure 的 group coverage 与长尾是否覆盖部署分布。
+- 新增 coverage 与相关窗口 effective-sample 公式，并加入 schema/label、quantity、diversity、temporal leakage、closed-loop relevance 五行审计表；连续重叠窗口、success-center sampling、proxy reward/contact 和 frame-level random split 均被列为假象或风险。
+- 选择纪律固定为 clean baseline → 按缺口分层补数据；硬删除 schema 破坏/泄漏/不可回放样本，保留可恢复失败和 suboptimal-but-executable 样本并用 quality/failure/source 标签；raw、schema-cleaned、stratified quality+coverage 三臂需同 unique-group/update/token 预算比较。
+- implementation-derived 口述冻结 WAM mixture (`demonstration`/archived rollout/world-model sampling)、UWM 18 tasks/9126 episodes/133457 sequences 与 contact/reward/done proxy、Harness 8916 task-family `3735/2748/2300/120/13` 且 validation 空、OPD multi-teacher/source route 与 raw-holdout：这些支持分布审计，不支持从样本量、采样权重或 train loss 直接宣称泛化提升。
+- 最小验证固定 checkpoint、seed、协议和成本，报告 schema/action errors、duplicate/leakage、group coverage、long-tail recall、per-group offline/closed-loop metrics、invalid/stop 与数据/训练成本；当前仍不支持全量数据清洗完成、validation gap 已关或某个 sampling weight 的因果收益。VOL 02 分层进度更新为 `36/40`，已分层 `VLA-RL-001..006` 与 `VLA-RL-011..040`，40 张题卡仍全部 `unseen`；剩余未分层为 `VLA-RL-007..010`，下一 bounded slice 只处理 `VLA-RL-007`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-007 Suboptimal Action / Filter-or-Weight（已完成，WARN）
+
+- `VLA-RL-007` 已将 suboptimal action 分为 interface-corrupt、unsafe/invalid、noisy-but-valid、recovery/hard-state、label/proxy-conflict 五类；只有合同损坏、不可回放、重复泄漏等通过硬门后删除/隔离，低 return 本身不构成删除证据。
+- 新增带上下限的质量/coverage/return sample-weight 公式，明确 quality label、return proxy 和 group coverage weight 的角色；权重只能在 train 内拟合并用 held-out/closed-loop 验证，不能用 test success 反推阈值。
+- 三臂协议固定为 `all-valid`、`hard-filtered`、`quality+return-weighted`，保持 checkpoint、group split、update/token budget、normalizer 和 full/long-tail/OOD holdout 一致；同时报告 per-group、recovery、invalid/stop、保留率和成本，避免平均 loss 掩盖长尾损失。
+- implementation-derived 口述冻结 WAM `success_rollout_sampling_prob` 不是 quality label；UWM `contact_window_weight` 与 full-h4 `45/54 contact, 0/54 success` 只是 proxy 对照；OPD parser/format conflict、source route、raw-holdout dedupe 与 Harness reward components 都不能直接决定物理 action 是否应保留。
+- 当前 artifact 支持设计 action-validity/quality/failure/source 标签和过滤/加权实验，不支持全库清洗完成、某个 return threshold 最优、sampling weight 已提升闭环或个人原创数据算法。VOL 02 分层进度更新为 `37/40`，已分层 `VLA-RL-001..007` 与 `VLA-RL-011..040`，40 张题卡仍全部 `unseen`；剩余未分层为 `VLA-RL-008..010`，下一 bounded slice 只处理 `VLA-RL-008`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-008 Leakage / Overlap / Contamination（已完成，WARN）
+
+- `VLA-RL-008` 已补齐 30 秒回答与约 2 分钟机制展开，要求先冻结 same-task/new-object、unseen-task 等泛化轴，再分别审计 source/episode、frame/image near-duplicate、task/object/scene、transform/statistics、model-selection 与 protocol contamination。
+- 新增按 episode/image/scene/object/prompt/trajectory 稳定 hash 的 overlap 公式与六层审计表；exact、near-duplicate cluster 和 semantic overlap 分开，合法技能/模板共享不会被自动判作 leakage。
+- 修复纪律明确：先在 raw episode/group 层 split，再 window/augmentation；normalizer、词表、过滤阈值只用 train；dev 选 checkpoint，final 冻结一次。若信息已进入训练/选型，仅删 eval 重复不足以撤销污染，必须重算 artifacts、重训和重评。
+- implementation-derived source `[35]` 冻结 UWM `make_dataset/normalizer → random_split(window index)` 的结构风险：`val_ratio>0` 可能同 episode adjacent-window/stats contamination；已审计 30-epoch run 为 `val_ratio=0, eval_every=0`，所以结论是无 held-out validation，不是已观察到 leakage。
+- OPD 10k raw-holdout 的 source-line/fingerprint/image+prompt+answer 重复与 train-image leakage 均为 0，但 1168 duplicate image paths/2917 annotation rows 属合法多标注边界；Harness n/scorer mismatch 属 protocol mismatch，OpenPiVLA 97.4 缺 raw bundle而不可审计。当前不支持 UWM clean rerun、OpenPiVLA zero-contamination 或个人全量去重 ownership。VOL 02 分层进度更新为 `38/40`，已分层 `VLA-RL-001..008` 与 `VLA-RL-011..040`，40 张题卡仍全部 `unseen`；剩余未分层为 `VLA-RL-009..010`，下一 bounded slice 只处理 `VLA-RL-009`，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-009 REINFORCE Objective / Variance（已完成，WARN）
+
+- `VLA-RL-009` 已补齐 30 秒回答与约 2 分钟机制展开，从 expected return、score-function estimator、reward-to-go 与 state-only baseline 无偏性推导 REINFORCE，并把 policy/dynamics sampling、长 horizon、稀疏/noisy reward、相关 rollout 与 off-policy mismatch 分开。
+- 新增 Williams 1992 一手来源 `[36]`；明确 state-only baseline 和 reward-to-go 可不改期望地降方差，GAE/bootstrap 是 bias–variance 取舍，reward clipping/shaping 可能改变目标，stale/off-policy sample 未校正属于 bias/合同错误而不只是高方差。
+- implementation-derived 口述冻结 Harness V2 的 `K` completion policy sampling、组内 mean/std advantage、completion-token clipped ratio loss 与 optional reference penalty；最终 run 为 `num_generations=8`、1007 steps，late equal-reward group 产生全零 advantage/policy loss，解释为 zero learning signal 而非收敛。
+- 旧 Harness 的 fixed reference/empty/wrong-tool/reversed group 只产生离线 sample weight 再优化 weighted reference-token CE，不能称 vanilla REINFORCE；WAM/UWM 为 fixed-dataset 多头/diffusion MSE，rollout 不回流 learner，也不能称已运行 policy gradient。
+- 早期 `grad_norm=nan` 后的 safe restart 只支持数值稳定性修复，不支持单因归为 Monte Carlo variance；当前 artifact 也不支持 checker proxy=物理 return、已完成 group-size/normalization 消融、真实机器人 online RL uplift 或逐文件个人 ownership。VOL 02 分层进度更新为 `39/40`，已分层 `VLA-RL-001..009` 与 `VLA-RL-011..040`，40 张题卡仍全部 `unseen`；仅剩 `VLA-RL-010`，下一 bounded slice 只处理该题，或由候选人提交真实口述。
+
+### 当前切片：VOL 02 VLA-RL-010 Actor–Critic / TD / Chunk Target（已完成，WARN）
+
+- `VLA-RL-010` 已补齐 30 秒回答与约 2 分钟机制展开，区分 episodic Monte Carlo、one-step TD、n-step/GAE 与 critic-free group relative estimator，并明确 actor–critic 是 actor/critic two-time-scale、non-stationary optimization。
+- 新增 Konda–Tsitsiklis 1999 一手来源 `[37]`；公式层冻结 TD target/residual、stop-gradient actor loss、critic regression，以及 action chunk 执行 \(K\) 步时的 aggregated reward 与 \(\gamma^K\) bootstrap。真实 terminal、time-limit truncation 与 chunk 中途急停必须分开。
+- implementation-derived 口述冻结 WAM proxy 的 shared `encoder→trunk→action/future/value` heads、batch-supplied `value_function_return`、masked value MSE 与 `AdamW(model.parameters())`；它没有 TD residual、next-state bootstrap、policy log-prob 或 advantage→action loss，只能称 supervised auxiliary return regression。
+- Harness V2 的 completion-group mean/std advantage 没有 temporal critic；UWM 是 fixed-dataset diffusion/noise MSE 且 rollout 不回流 learner。三者都不能因 `value`/`advantage` 命名而声称已运行 actor–critic。
+- 当前 artifact 支持设计 MC/TD/GAE matched simulator test、critic calibration/explained-variance 与 shared-vs-isolated gradient诊断；不支持本地已有 actor–critic trainer、WAM value head 因果提升、diffusion policy tractable log-prob、真实机器人 online RL uplift 或逐文件个人 ownership。VOL 02 内容分层现为 `40/40`，40 张题卡仍全部 `unseen`；下一步只做真实口述或独立补证，不创建 mastery/coaching state。
+
+### 当前切片：OpenPiVLA local-only LIBERO failure video timeline（已完成，WARN）
+
+- 按用户边界停止远端操作，本切片只读取 `C:\Users\mousongzhe\Project\openpivla_deployment` 已落档的 script、summary、client/server log、两条 MP4 与 metrics PNG；没有修改项目文件、启动 server 或生成新 rollout。
+- 本地解码确认 model/dummy 两条视频均为 `71` 帧、`10 FPS`、`7.1s`；frame 0–10 overlay 都是 `[0,0,0,0,0,0,-1]` warm-up。该 reference 不是 GT demo 或七维全零，最后一维固定为 \(-1\)。
+- frame 20 以后，model 的 rounded 7D action、agent/wrist pixel MAD、action norm 与 state norm 明显偏离 dummy；抽样帧显示机械臂从初始位姿向碗区运动。P01/S01 仍记录 70 步 reward=0、success=false、done=false，画面未显示完成抓取—放置。
+- 证据只支持排除“model 全程仍执行 dummy”和“仿真完全没动”；pixel MAD 不是物体位姿或任务进度，视频两位小数 overlay 也不能替代 raw response、denormalized/env action、contact、effective argv 与独立 scorer。
+- 已更新 [LIBERO matched-failure readiness gate](vla/sources/openpivla_libero_matched_failure_probe_readiness_gate.html)、Evidence Manifest 与模块进度；`PROJ-OPENPIVLA-007/008` 和全局 280 张卡仍保持 `unseen`，不创建 coaching state。
 
 ## 14. 变更纪律
 

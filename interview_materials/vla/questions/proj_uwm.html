@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 07 UWM / LIBERO 项目原子题卡（Protocol Boundary Batch 1 + Ownership）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\questions\proj_uwm.md">
-<meta name="aris:source-sha256" content="fccaeb39cb60a23bb9d7e9a315fbbe2573cd4d952ef808e2ffdcc106f21d7852">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\questions\proj_uwm.md">
+<meta name="aris:source-sha256" content="0348cdfd78c0276bdbca4dd9d021fd85e05355e137c09a72bff217c1bc99f2c6">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>fccaeb39cb60a23bb9d7e9a315fbbe2573cd4d952ef808e2ffdcc106f21d7852</code>；生成自：<code>interview_materials\vla\questions\proj_uwm.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>0348cdfd78c0276bdbca4dd9d021fd85e05355e137c09a72bff217c1bc99f2c6</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\questions\proj_uwm.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#section-1">评估协议冲突如何安全回答</a></li><li><a href="#ownership">Ownership 与结果归属</a></li><li><a href="#section-3">数据管线停顿与证据边界</a></li><li><a href="#open-loop-closed-loop">训练拟合、Open-loop 与 Closed-loop 的断层</a></li><li><a href="#section-5">参考来源</a></li></ol></nav>
 <h1>VOL 07 UWM / LIBERO 项目原子题卡（Protocol Boundary Batch 1 + Ownership）</h1>
 <div class="meta">状态：<code>drafted / cards_4_of_4 / WARN</code> 更新日期：2026-07-21 当前题数：4 / 4 覆盖范围：<code>PROJ-UWM-001..004</code> 难度：L3 4 题 优先级：P0 4 题 练习状态：<code>unseen</code> 前置证据：<a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM / LIBERO Claim–Evidence Inventory</a>；协议来源见 <a href="../sources/vol_04_benchmark_evidence_claim_to_protocol.html">VOL 04 benchmark evidence audit</a>；RoboCasa 训练/0-success 边界见 <a href="../sources/vol_05_uwm_libero_robocasa_transfer_evidence_freeze.html">UWM/LIBERO/RoboCasa transfer evidence freeze</a>。</div>
@@ -144,12 +148,12 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <details class="qa">
 <summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>PROJ-UWM-001</b> · UWM/LIBERO 中 0.744、0.928 和论文约 0.79 三个结果如何解释，为什么不能直接比较？</summary>
 <p><strong>面试意图</strong>：判断你能否固定评估 tuple、区分本地证据与远端确认结果，并在结果冲突时避免把协议差异包装成模型 uplift 或官方复现。</p>
-<p><strong>30 秒回答</strong>：先冻结协议：186/250=0.744 是 fixed-pruned-init+5-step warmup 的用户确认结果；0.928 是 reset-style diagnostic；论文约0.79 用 OOD init、shift、背景移除和多 seed。三者不能横比，当前缺 checkpoint/episode bundle，只能讲协议敏感性。</p>
-<p><strong>机制展开（约 2 分钟）</strong>：先把 init/seed/warmup/horizon/normalizer/checkpoint、predicate、分母写入 manifest。186/250 是 fixed-pruned-init 的 5×50 结果，缺 raw JSONL/权重；0.928 用 env.seed+reset，协议更容易；论文约0.79 用 OOD init、shift、去背景、3 seeds。三者不可横比，0.928→0.744 只说明 protocol sensitivity。要归因模型，需同 checkpoint paired init、episode trace、scorer、ownership；只能讲 report/user-confirmed evidence，不称 benchmark。</p>
-<p><strong>诊断 / 证据</strong>：逐 episode 保存 task、init index、seed、warmup、horizon、camera/state/action schema、normalizer hash、checkpoint hash、success predicate、terminal reason 和 denominator。先做同 checkpoint 的 reset-style↔fixed-pruned-init paired run，再按 task/失败类型分层；若要对齐论文，还要复现 OOD initialization、object shift、背景设置与多 seed，并冻结 scorer 版本。当前本地有 launcher、task mapping、协议开关、report 和用户确认 summary，但缺 250 条 raw episode、checkpoint/normalizer immutable bundle 与 ownership ledger，保持 <code>WARN</code>。</p>
-<p><strong>项目挂钩</strong>：可讲我负责把 LIBERO-90→LIBERO-10 的 UWM finetune/rollout 路径、pruned-init、warmup、rollout 数和 success predicate 固定下来，并定位 zarr 小 chunk 导致的 DataLoader stall。RoboCasa 可讲 actionheadfix 的 partial decoder init、12D contract 与 raw sweep：一条30-epoch run的full-h4为<code>0/54</code>、robot-env contact <code>45/54</code>，其它setting也只有<code>1–2/54</code>，所以只称训练/诊断推进，不称性能修复。历史<code>27/54</code>来自未对齐run摘要，不能混用。安全口径是“我负责协议迁移、诊断和验收”，不把 UWM shared diffusion architecture、远端 checkpoint 或结果写成个人原创/严格复现。</p>
+<p><strong>30 秒回答</strong>：先冻结 tuple：0.744 是 fixed-init 用户确认 summary，0.928 是 reset-style，论文约0.79 是 OOD/shift/多seed；三者不可横比。五 task 用 task-specific checkpoint，evaluator 只读 model，raw episode 仍缺。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：先把 init/seed/warmup/horizon/normalizer presence/checkpoint、predicate、expected/completed denominator 写入 manifest。186/250 是 fixed-pruned-init 的 5×50 结果，缺 raw JSONL/权重；0.928 用 env.seed+reset，协议更容易；论文约0.79 用 OOD init、shift、去背景、3 seeds。三者不可横比，0.928→0.744 只说明 protocol sensitivity。要归因模型，需同 checkpoint paired init、episode trace、scorer、ownership；只能讲 report/user-confirmed evidence，不称 benchmark。</p>
+<p><strong>诊断 / 证据</strong>：逐 episode 保存 task、init index、seed、warmup、horizon、camera/state/action schema、normalizer presence/usage、checkpoint hash、success predicate、terminal reason 和 expected/completed denominator。先做同 checkpoint 的 reset-style↔fixed-pruned-init paired run，再按 task/失败类型分层；若要对齐论文，还要复现 OOD initialization、object shift、背景设置与多 seed，并冻结 scorer 版本。当前本地有 launcher、task mapping、协议开关、report 和用户确认 summary，但缺 250 条 raw episode、task-specific checkpoint bundle、normalizer usage manifest 与 ownership ledger，保持 <code>WARN</code>。</p>
+<p><strong>项目挂钩</strong>：可讲我负责把 LIBERO-90→LIBERO-10 的 task-specific UWM finetune/rollout 路径、pruned-init、warmup、rollout 数和 success predicate 固定下来，并定位 zarr 小 chunk 导致的 DataLoader stall。要主动说明 LIBERO evaluator 只 strict-load <code>ckpt["model"]</code>，没有把 normalizer 当作已加载证据；RoboCasa 可讲 actionheadfix 的 partial decoder init、12D contract 与 raw sweep：一条30-epoch run的full-h4为<code>0/54</code>、robot-env contact <code>45/54</code>，其它setting也只有<code>1–2/54</code>，所以只称训练/诊断推进，不称性能修复。历史<code>27/54</code>来自未对齐run摘要，不能混用。安全口径是“我负责协议迁移、诊断和验收”，不把 UWM shared diffusion architecture、远端 checkpoint 或结果写成个人原创/严格复现。</p>
 <p><strong>追问树</strong>：为什么 reset-style 更高？<code>0.744 vs 0.79</code> 能否说只差 4.6pp？如何证明 checkpoint 相同？DataLoader stall 如何定位？actionheadfix 为什么 loss 改善仍 <code>0/54</code>？teacher-forced x0 MSE 与 closed-loop success 差在哪里？strict <code>convert_action</code> 的 <code>0/6</code> 为什么不能算六条模型失败？</p>
-<p><strong>易错点</strong>：混用 strict/fixed/reset 口径；把用户确认 JSON 当本地 raw artifact；把 Table II 论文均值当同协议 baseline；忽略 normalizer、init、seed、warmup、horizon 或 success predicate；把 DataLoader smoke 写成完整训练吞吐提升。</p>
+<p><strong>易错点</strong>：混用 strict/fixed/reset 口径；把用户确认 JSON 当本地 raw artifact；把五个 task 说成一个 multi-task checkpoint；把 evaluator 未读取的 normalizer 说成已固定；把 Table II 论文均值当同协议 baseline；忽略 init、seed、warmup、horizon、success predicate 或 expected/completed denominator；把 DataLoader smoke 写成完整训练吞吐提升。</p>
 <p><strong>危险答案</strong>：说“0.928 证明模型最好”“0.744 只比官方低 4.6pp”“loss 从 95 降到 0.22 所以 actionheadfix 已成功”“strict convert_action 0/6 都是模型失败”“Git author 证明全部代码是我写的”或“RoboCasa 已完成 benchmark”。</p>
 <p><strong>来源</strong>：[1][2][3][4]　<strong>练习状态</strong>：unseen</p>
 </details>

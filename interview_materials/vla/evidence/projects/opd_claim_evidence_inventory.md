@@ -9,7 +9,7 @@
 
 ## 结论先行
 
-本轮可以把 OPD 的数据路由、五教师训练机制、OPD5000 checkpoint 曲线和 raw-holdout 去重协议从项目叙述提升到 `local-direct` 或 `report-supported`。`build_expert_mixes_seed0_v2.py` 明确了 800,000 train / 20,000 eval、image-hash split、五个 expert 和 spatial-relation 重采样；`build_opd_student_v1.py` 与 `audit_opd_student_v1.py` 明确了 999,900 条最终 train、46,599 条 eval、seen/unseen/hard、boundary/format-conflict route metadata 与硬校验；`train_opd_online_vl.py` 和 run summary 明确了五教师 `preloaded_zero3`、teacher selection、coldstart 和 student-rollout/full-vocab KL 机制。
+本轮可以把 OPD 的数据路由、五教师训练机制、OPD5000 checkpoint 曲线和 raw-holdout 去重协议从项目叙述提升到 `local-direct` 或 `report-supported`。`build_expert_mixes_seed0_v2.py` 明确了 800,000 train / 20,000 eval、image-hash split、五个 expert 和 spatial-relation 重采样；`build_opd_student_v1.py` 与 `audit_opd_student_v1.py` 明确了 999,900 条最终 train、46,599 条 eval、seen/unseen/hard、boundary/format-conflict route metadata 与硬校验；formal `point/train_opd_online_vl.py` 和 run summary 明确了五教师 `preloaded_zero3`、teacher selection、coldstart teacher-rollout/full-vocab KL 与 OPD5000 student-rollout/full-vocab KL。根目录同名脚本是 legacy teacher-rollout/top1-CE 路线，不能作为 formal KL claim 的代码锚点；详见 [Training Objective Lineage Gate](opd_training_objective_lineage_gate.html)。
 
 OPD5000 的结果必须绑定到具体 checkpoint 和子集：在 10,000 条 raw-holdout 上，checkpoint-3000 的整体 box IoU 为 0.4761，checkpoint-5000 的 Box Acc@0.5 为 0.5238、Point Hit@50/100 为 0.7493/0.8729，checkpoint-4000 的 keepalive text exact 为 0.8784。不同 pool 的最佳 checkpoint 不一致，不能把 checkpoint-5000 说成所有指标的最佳。
 
@@ -36,8 +36,8 @@ OPD5000 的结果必须绑定到具体 checkpoint 和子集：在 10,000 条 raw
 | `OPD-CL-002` | expert mix 为 800k train / 20k eval，按 image hash 做 5% candidate eval | 脚本常量与 split 函数 | `local-direct` | 可讲 image-level split 和 source/expert metadata |
 | `OPD-CL-003` | OPD student 数据按 domain/general/boundary/format-conflict 构造并记录 route | `build_opd_student_v1.py`、`report.md`、最终 summary | `local-direct` | 可讲 60/25/10/5 设计、seen 100k 边界与格式冲突；要说明最终 train 为 999,900 |
 | `OPD-CL-004` | train/eval 完成 JSON、坐标、图片、fingerprint 与 overlap 审计 | `audit_opd_student_v1.py`、`report.md` | `local-direct / report-supported` | 可报无坏 JSON、无 train/eval image/fingerprint overlap；不要把它当作模型质量证明 |
-| `OPD-CL-005` | coldstart 是五教师 teacher-rollout + full-vocab KL，约 500 steps | `coldstart500_opd_online_run_summary.json`、脚本/报告 | `local-direct / report-supported` | 可解释为什么先让 student 贴近 teacher 分布；未提供独立 coldstart ablation |
-| `OPD-CL-006` | 正式 OPD 是 student rollout、同一 response 上 teacher forward、route-based full-vocab KL，5000 steps | `train_opd_online_vl.py`、`opd5000_opd_online_run_summary.json` | `local-direct` | 可画训练链路；需绑定 max_new_tokens=64、prefix=64、skip=64,000、ZeRO-3 配置 |
+| `OPD-CL-005` | coldstart 是五教师 teacher-rollout + full-vocab KL，约 500 steps | `point/train_opd_online_vl.py`、coldstart launcher/summary、objective lineage gate | `local-direct / report-supported` | 可解释为什么先让 student 贴近 teacher 分布；未提供独立 coldstart ablation；veto beta>0 时 target 不是纯 teacher |
+| `OPD-CL-006` | 正式 OPD 是 student rollout、同一 response 上 teacher forward、route-based full-vocab \(D_{KL}(q_\beta\Vert p_S)\)，5000 steps | `point/train_opd_online_vl.py`、OPD5000 launcher/summary、objective lineage gate | `local-direct` | 可画训练链路并说明 beta=0 才是 teacher∥student；需绑定 max_new_tokens=64、prefix=64、skip=64,000、ZeRO-3 配置 |
 | `OPD-CL-007` | OPD5000 ckpt5000 在 point/box/text 上取得 0.7493/0.8729、0.5238、0.8724 | by-format table、by-pool table、run summary | `local-direct / protocol-bounded` | 绑定 10k raw-holdout、格式子集 n=1400/6100/2500；不能说所有域最佳 |
 | `OPD-CL-008` | 不同任务池的最佳 checkpoint 不一致 | by-pool table | `local-direct` | semantic-nav=ckpt2000、VG region/relation=ckpt3000、keepalive=ckpt4000、point=ckpt5000；用来说明多目标 trade-off |
 | `OPD-CL-009` | raw-holdout 10k 无训练图片泄漏、fingerprint/source-line/prompt-answer-image 重复 | `evalset_summary.json`、`dedupe_audit.json` | `local-direct` | 可讲评估集构造和 leakage gate；重复图片路径不等价于重复样本 |
@@ -52,7 +52,8 @@ OPD5000 的结果必须绑定到具体 checkpoint 和子集：在 10,000 条 raw
 | `build_expert_mixes_seed0_v2.py` | local evidence | `19D5EF9E25D8664EA983880B79373098A77D19D5DA11D5B2AD17BEE6195C2F2C` | 五 expert 配额、hash split、relation buckets、source metadata | 实际训练是否按脚本完成、个人 ownership |
 | `build_opd_student_v1.py` | local evidence | `44BCC42DE40249363DAE908314DB79BF658AAE4A5DA008732CD724389D5CD3BE` | target/candidate route、seen/unseen/hard、格式冲突 prompt、gold/fingerprint 字段 | 模型是否学会 route、最终远端文件是否与当前脚本完全同版 |
 | `audit_opd_student_v1.py` | local evidence | `B38F92C2FE681C250D3BA61C35299935501D014BA8B34965C7ED8D529A92D6BB` | JSON、长度、坐标、图片、重复与 overlap 审计逻辑 | 未执行的环境、权重或训练质量 |
-| `train_opd_online_vl.py` | local evidence | `BF9120B5D88180EA4C4725C6F4934913F35FDD36ECB4BC8E6B3B089FB964D8D9` | route-based teacher selection、preloaded_zero3、rollout、full-vocab KL、veto/prefix 参数 | 训练已成功完成的全部运行时细节、模型质量因果 |
+| `train_opd_online_vl.py`（root legacy） | local evidence | `BF9120B5D88180EA4C4725C6F4934913F35FDD36ECB4BC8E6B3B089FB964D8D9` | teacher rollout、teacher top1 hard labels、token CE、legacy mode string | coldstart/OPD5000 的 full-vocab KL 或 student-rollout formal claim |
+| `point/train_opd_online_vl.py`（formal） | local evidence | `7103E3B28068A30978F2B14AD980E51CEC2EC60A0445B2B52243342CDA286336` | route teacher、teacher/student rollout switch、full-vocab \(D_{KL}(q_\beta\Vert p_S)\)、veto/prefix/entropy/top-k diagnostics | 远端 checkpoint binary、optimizer state、raw prediction 与因果 uplift |
 | `REPORT.md`（Windows 不区分大小写时显示为 `report.md`） | committed report | `0EC1E16D1E15AEDC918B910775E7BFD7C769D9715DFBBB9127C09E23F44A4170` | 数据快照、point protocol 修正、OPD 叙事和历史 run 说明 | raw predictions、远端权重、可复算 checkpoint lineage |
 | `report/opd5000_newexperts_20260601/artifact_manifest.json` | local manifest | `035764A0461DEE5942AB25AF1BDFCD2514BD69AAC473B2DE8E43F3A7EC86021A` | synced scope、remote root、final model paths、排除项 | 本地可加载模型权重（manifest 明确排除） |
 | `report/opd5000_newexperts_20260601/model_assets_eval_table.md` | local table | `5BA42BA56EFCD586A770D258E8536390942AB249606CA4D4AD88F70FB3BEBE45` | expert 训练摘要、evaluated checkpoints、指标口径 | 五 expert 独立 raw-holdout 结果 |
@@ -97,7 +98,7 @@ OPD5000 的结果必须绑定到具体 checkpoint 和子集：在 10,000 条 raw
 
 ### 5.1 Coldstart-500
 
-冷启动 summary 记录五教师 `preloaded_zero3`、teacher rollout、full-vocab distillation、`max_new_tokens=128`、`opd_prefix_loss_tokens=64`、veto beta 从 1 到 0（100 steps）等设置，student 起点为 `/data/msz/models/8b_base`。该阶段的可解释目的，是先让 student 获得稳定的 teacher 行为与输出协议，再进入 on-policy student rollout；但本地没有 coldstart-only raw-holdout 评估，不能把其增益单独量化。
+冷启动 summary 记录五教师 `preloaded_zero3`、teacher rollout、full-vocab distillation、`max_new_tokens=128`、`opd_prefix_loss_tokens=64`、veto beta 从 1 到 0（100 steps）等设置，student 起点为 `/data/msz/models/8b_base`。formal trainer 的 target 在 beta 大于 0 时由 `teacher_logits + beta * stopgrad(student_logits)` 构造，beta=0 后才退化为纯 \(D_{KL}(p_T\|p_S)\)。该阶段的可解释目的，是先让 student 获得稳定的 teacher 行为与输出协议，再进入 on-policy student rollout；但本地没有 coldstart-only raw-holdout 评估，不能把其增益单独量化。
 
 ### 5.2 OPD5000
 
@@ -105,7 +106,7 @@ OPD5000 的结果必须绑定到具体 checkpoint 和子集：在 10,000 条 raw
 
 - student 起点为 coldstart500 输出；五教师均以 `preloaded_zero3` 常驻并按 route 选择；
 - `student` rollout 后，在同一 response 上执行 teacher forward；
-- full-vocabulary KL，`max_new_tokens=64`，prefix loss token=64；
+- full-vocabulary \(D_{KL}(q_\beta\Vert p_S)\)，`max_new_tokens=64`，prefix loss token=64；beta归零后为 \(D_{KL}(p_T\Vert p_S)\)；
 - `skip_expanded_samples=64,000`，保存 checkpoint 1000/2000/3000/4000/5000；
 - 训练 summary 的 `train_loss=0.0306129573`，`last_opd_loss=0.0215270`，`last_opd_topk_overlap=0.7466`；
 - 远端路径与 ZeRO-3 配置写入 manifest，但权重和完整 optimizer state 未同步到本地。
@@ -209,9 +210,11 @@ raw-holdout v1 为 10,000 行，pool quota 为：box 6,100、point 1,400、text 
 - `C:\Users\mousongzhe\muxi\build_expert_mixes_seed0_v2.py`
 - `C:\Users\mousongzhe\muxi\build_opd_student_v1.py`
 - `C:\Users\mousongzhe\muxi\train_opd_online_vl.py`
+- `C:\Users\mousongzhe\muxi\point\train_opd_online_vl.py`
 - `C:\Users\mousongzhe\muxi\audit_opd_student_v1.py`
 - `C:\Users\mousongzhe\muxi\REPORT.md`（Windows 下可能显示为 `report.md`）
 - `C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\opd_ownership_ledger.md`
+- `C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\opd_training_objective_lineage_gate.md`
 - `C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\artifact_manifest.json`
 - `C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\model_assets_eval_table.md`
 - `C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\opd5000_ckpt_eval_by_format_table.md`

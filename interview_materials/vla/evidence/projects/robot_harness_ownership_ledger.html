@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Robot Harness Ownership Ledger：Owner 决策、Codex 实现与结果归属</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\robot_harness_ownership_ledger.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\robot_harness_ownership_ledger.md">
 <meta name="aris:source-sha256" content="66e6a93dc1c512e0f5603355cbe910d6d7db3ad0ca64ad41b0c494339bba7bd7">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>66e6a93dc1c512e0f5603355cbe910d6d7db3ad0ca64ad41b0c494339bba7bd7</code>；生成自：<code>interview_materials\vla\evidence\projects\robot_harness_ownership_ledger.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>66e6a93dc1c512e0f5603355cbe910d6d7db3ad0ca64ad41b0c494339bba7bd7</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\robot_harness_ownership_ledger.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. 问题（Question）</a></li><li><a href="#2-role-fit-jd">2. Role Fit 与 JD 能力映射</a></li><li><a href="#3-ownership-contract">3. 双轴 Ownership Contract</a></li><li><a href="#3-1">3.1 贡献向量</a></li><li><a href="#3-2">3.2 状态词汇</a></li><li><a href="#4-git-artifact">4. Git、artifact 与测试冻结</a></li><li><a href="#4-1-git">4.1 Git 过程证据</a></li><li><a href="#4-2-worktree">4.2 当前 worktree 与定向测试</a></li><li><a href="#5-per-file-per-decision-ownership-matrix">5. Per-file / per-decision ownership matrix</a></li><li><a href="#6-claim-ownership-reconciliation">6. Claim → ownership reconciliation</a></li><li><a href="#7-production-gap">7. Production Gap</a></li><li><a href="#8-question-tree">8. Question Tree 与回答分层</a></li><li><a href="#8-1">8.1 主追问树</a></li><li><a href="#8-2-codex">8.2 高压题：Codex 写了代码，你是不是只提需求？</a></li><li><a href="#9-sp-ssp">9. SP/SSP 证据就绪度</a></li><li><a href="#10">10. 候选人确认表</a></li><li><a href="#11">11. 分阶段补强计划</a></li><li><a href="#12-output-pack">12. Output Pack</a></li><li><a href="#12-1-bullet">12.1 简历 bullet 三档</a></li><li><a href="#12-2">12.2 两分钟项目叙事</a></li><li><a href="#12-3-6">12.3 面试前 6 题</a></li><li><a href="#13-ownership">13. Ownership 审计伪代码</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>Robot Harness Ownership Ledger：Owner 决策、Codex 实现与结果归属</h1>
 <div class="meta">状态：<code>ownership_audited / role_self_attested / codex_primary_implementation / git_process_partial / WARN</code> 审查日期：2026-07-19 证据截止：2026-07-19 项目范围：<code>C:\Users\mousongzhe\agent</code>、Robot Harness 项目页、简历、SFT/GRPO/reward/eval artifacts。 结论先行：该项目已经有一条明确且可信的自述边界——候选人以 owner 方式负责问题定义、机器人约束拆解、数据分流、训练/eval 口径、结果判断与验收；Codex 主要负责 harness、schema、训练/评测脚本和字段展开。Git 提供了 initial import、sandbox eval、robot platform integration 与 remote training artifact sync 的增量记录，但 commit author 不改变上述工具辅助事实。本页把 owner/reviewer、主要实现者、运行者和结果归属分开；62,223/8,916/1,200 的数据事实可核，95.4/95.6 与 sandbox 100% 仍受 scorer、n、checkpoint、proxy 和真实闭环边界约束。</div>

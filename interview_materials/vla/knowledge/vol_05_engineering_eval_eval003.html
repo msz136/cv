@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 05 EVAL-003：Success Rate、置信区间与最小 Rollout 数</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_05_engineering_eval_eval003.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eval003.md">
 <meta name="aris:source-sha256" content="118d81562fff99e7bca1e41756783977c17e4bb5c87fa4a3a3195fa2ddeb288b">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>118d81562fff99e7bca1e41756783977c17e4bb5c87fa4a3a3195fa2ddeb288b</code>；生成自：<code>interview_materials\vla\knowledge\vol_05_engineering_eval_eval003.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>118d81562fff99e7bca1e41756783977c17e4bb5c87fa4a3a3195fa2ddeb288b</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eval003.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-30">1. 30 秒直觉：先定义“一个样本”，再算区间</a></li><li><a href="#2-bernoulli-episode-manifest">2. Bernoulli 合同与 episode manifest</a></li><li><a href="#2-1-manifest">2.1 最小 manifest 字段</a></li><li><a href="#3">3. 点估计与两种主区间</a></li><li><a href="#3-1-wilson-score-interval">3.1 Wilson score interval</a></li><li><a href="#3-2-clopper-pearson-exact-interval">3.2 Clopper–Pearson exact interval</a></li><li><a href="#3-3-zero-all-success-0-1">3.3 zero/all-success 不是“证明概率为 0/1”</a></li><li><a href="#4-rollout-margin">4. 最小 rollout 数：margin 规划不是万能常数</a></li><li><a href="#4-1">4.1 由置信度和绝对误差推导</a></li><li><a href="#4-2">4.2 三种“够不够”的目标要区分</a></li><li><a href="#5-task-seed-init-250-250">5. task/seed/init 相关性：250 次不一定是 250 个信息点</a></li><li><a href="#6">6. 停止规则与重复查看</a></li><li><a href="#7-episode-manifest">7. 实现映射：从 episode manifest 到区间</a></li><li><a href="#8">8. 本地项目映射与统计边界</a></li><li><a href="#9-trade-off-bad-case">9. Trade-off、bad case 与面试追问</a></li><li><a href="#9-1-trade-off">9.1 Trade-off</a></li><li><a href="#9-2-bad-case">9.2 高概率 bad case</a></li><li><a href="#9-3">9.3 高压追问</a></li><li><a href="#10-review">10. 结论与 review 边界</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 05 EVAL-003：Success Rate、置信区间与最小 Rollout 数</h1>
 <div class="meta">状态：<code>drafted / VLA-EVAL-003 / knowledge_25_of_44 / card_1_of_1_unseen / review_warn</code> 报告日期：2026-07-17 证据截止：2026-07-17 来源入口：<a href="../sources/vol_05_eval003_success_rate_confidence_interval_source_freeze.html">EVAL-003 Source Freeze</a>。本节点的单张原子题卡已同步生成并保持 <code>unseen</code>；真实口述状态仍未开始。</div>

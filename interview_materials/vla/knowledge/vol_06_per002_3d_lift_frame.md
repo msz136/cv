@@ -225,7 +225,7 @@ manifest 中的 camera resolution、controller、open-loop 和 action shape 可�
 
 1. 深度来源和 invalid policy；
 2. `K/distortion/image_size` 与 pixel/rectified space；
-3. (X_c,Y_c,Z_c) 反投影公式；
+3. \((X_c,Y_c,Z_c)\) 反投影公式；
 4. `T_target←camera(timestamp)` 的方向、frame ID、单位和 revision；
 5. RGB/depth/TF/robot-state 时间同步；
 6. uncertainty gate 与 planner/controller 分层；

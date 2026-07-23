@@ -104,7 +104,7 @@ robot / site / scene / episode / image identity
   -> row-level transforms inside the assigned split
 ```
 
-若 (G(x_i)) 是样本的 group key，则基本约束是：
+若 \(G(x_i)\) 是样本的 group key，则基本约束是：
 
 \[
 G(\mathcal D_{train}) \cap G(\mathcal D_{eval}) = \varnothing.
@@ -134,7 +134,7 @@ G(\mathcal D_{train}) \cap G(\mathcal D_{eval}) = \varnothing.
 T_{step} \approx \max(T_{data},T_{compute}) + T_{sync} + T_{misc}.
 \]
 
-其中 (T_{data}) 包含存储读取、decode、augmentation、collate 和 host→device；(T_{compute}) 包含 forward/backward/optimizer；(T_{sync}) 是梯度或参数通信；(T_{misc}) 包含 logging、checkpoint、eval callback。prefetch 只能隐藏可并行的数据时间，不能消除磁盘随机读、epoch boundary 或内存不足。
+其中 \(T_{data}\) 包含存储读取、decode、augmentation、collate 和 host→device；\(T_{compute}\) 包含 forward/backward/optimizer；\(T_{sync}\) 是梯度或参数通信；\(T_{misc}\) 包含 logging、checkpoint、eval callback。prefetch 只能隐藏可并行的数据时间，不能消除磁盘随机读、epoch boundary 或内存不足。
 
 ### 诊断顺序
 
@@ -162,7 +162,7 @@ DDP 的核心语义是各 rank 复制模型、对梯度同步；FSDP/ZeRO-3 在�
 
 ### 粗略显存账本
 
-设参数量为 (P)，每参数权重、梯度、optimizer state 分别占 (b_w,b_g,b_o) bytes，未分片训练状态近似：
+设参数量为 \(P\)，每参数权重、梯度、optimizer state 分别占 \((b_w,b_g,b_o)\) bytes，未分片训练状态近似：
 
 \[
 M_{state} \approx P(b_w+b_g+b_o).
@@ -174,7 +174,7 @@ M_{state} \approx P(b_w+b_g+b_o).
 
 ### Effective batch
 
-若每卡 micro batch 为 (B_mu)，梯度累积步数为 (A)，world size 为 (W)，则全局 batch 近似：
+若每卡 micro batch 为 \(B_\mu\)，梯度累积步数为 \(A\)，world size 为 \(W\)，则全局 batch 近似：
 
 \[
 B_{global}=B_\mu \times A \times W.
@@ -227,7 +227,7 @@ OpenPiVLA 的 remote path 无本地 checkpoint/load smoke、UWM 5-task final 无
 T_{loop}=T_{sense}+T_{pre}+T_{queue}+T_{infer}+T_{network}+T_{decode}+T_{control}.
 \]
 
-若每次请求输出 (H) 步、实际执行 (K\le H) 步，控制周期为 (Delta t)，策略最好满足：
+若每次请求输出 \(H\) 步、实际执行 \(K\le H\) 步，控制周期为 \(\Delta t\)，策略最好满足：
 
 \[
 T_{loop} < K\Delta t

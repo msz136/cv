@@ -275,6 +275,9 @@ table {{
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }}
+article > table {{
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}}
 thead {{ color:#fff; background:var(--primary); }}
 th,td {{ padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }}
 th {{ background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }}
@@ -299,6 +302,7 @@ details > :not(summary) {{ margin-left:14px; margin-right:14px; }}
   }}
   h1 {{ font-size:24px; }} h2 {{ font-size:20px; }}
   table {{ overflow-x:auto; }}
+  article > table {{ width:100%; max-width:100%; }}
   pre,.formula {{ overflow-x:auto; }}
 }}
 @media print {{

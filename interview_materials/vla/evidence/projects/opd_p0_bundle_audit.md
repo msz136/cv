@@ -6,7 +6,7 @@
 
 ## 1. 结论
 
-OPD 已具备可定位的数据和训练机制证据：image-hash split、五 expert 配额、route metadata、coldstart teacher rollout、student-rollout/full-vocabulary KL、OPD5000 checkpoint 曲线、10k holdout quota 和 leakage audit 均有本地脚本/表格/summary。结果可以绑定到具体 checkpoint、format/pool 子集和 protocol-limited scorer。
+OPD 已具备可定位的数据和训练机制证据：image-hash split、五 expert 配额、route metadata、coldstart teacher rollout、student-rollout/full-vocabulary KL、OPD5000 checkpoint 曲线、10k holdout quota 和 leakage audit 均有本地脚本/表格/summary。实现 lineage 已进一步拆开：根目录同名 trainer 是 legacy teacher-rollout/top1 CE，formal `point/` trainer 才支持 coldstart teacher rollout、OPD5000 student rollout 与 \(D_{KL}(q_\beta\Vert p_S)\)；详见 [Training Objective Lineage Gate](opd_training_objective_lineage_gate.html)。结果可以绑定到具体 checkpoint、format/pool 子集和 protocol-limited scorer。
 
 P0 仍未闭合：模型权重、optimizer/RNG、完整 raw predictions、统一 scorer manifest、旧版 OPD final 与新版 OPD5000 的单一 lineage、SFT-only/single-teacher/no-synthetic ablation、operator/reviewer 和逐文件 ownership 缺失。
 
@@ -24,7 +24,7 @@ forbidden = “OPD alone caused uplift”, “I own OPD5000 checkpoint”, “st
 | --- | --- | --- | --- |
 | data split / quota | 800k/20k builder、image-hash split、五 expert、10k holdout quota | `PRESENT` | 可讲数据合同与 leakage gate |
 | route metadata | target/candidate expert、seen/unseen、boundary/format-conflict | `PRESENT` | metadata route，不称 learned router |
-| teacher/student training | coldstart500、student rollout、full-vocab KL、skip=64k | `PRESENT WITH WARNING` | 可讲训练机制；coldstart-only 增益未隔离 |
+| teacher/student training | formal `point/` trainer、coldstart teacher rollout、OPD5000 student rollout、full-vocab \(D_{KL}(q_\beta\Vert p_S)\)、skip=64k | `PRESENT WITH WARNING` | 可讲训练机制；legacy root top1 CE 必须分开，coldstart-only 增益未隔离 |
 | checkpoint curve | ckpt1000–5000 by-format/by-pool tables | `PARTIAL` | 必须绑定 pool；不同指标最佳 checkpoint 不同 |
 | raw holdout | 10k manifest、dedupe/leakage audit、aggregate tables | `PARTIAL` | raw predictions/per-sample JSON 缺 |
 | scorer/protocol | original strict、protocol-fixed strict、lenient point tables | `PARTIAL` | prompt/scorer hash 和统一版本仍缺 |

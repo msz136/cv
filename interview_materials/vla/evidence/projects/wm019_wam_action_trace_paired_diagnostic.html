@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WM-019 WAM Action-Trace Paired Diagnostic（CoffeePressButton）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\wm019_wam_action_trace_paired_diagnostic.md">
-<meta name="aris:source-sha256" content="913d68cb1e7be44fd108d2a06509d33ea04462b255a153af030b2f3c0a603fb5">
+<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\wm019_wam_action_trace_paired_diagnostic.md">
+<meta name="aris:source-sha256" content="97276c418f26e3edd6f922fd3bf5a4494456eca3fca46a7b3882cc7ad71627e6">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>913d68cb1e7be44fd108d2a06509d33ea04462b255a153af030b2f3c0a603fb5</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\wm019_wam_action_trace_paired_diagnostic.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>97276c418f26e3edd6f922fd3bf5a4494456eca3fca46a7b3882cc7ad71627e6</code>；生成自：<code>interview_materials\vla\evidence\projects\wm019_wam_action_trace_paired_diagnostic.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 目的与边界</a></li><li><a href="#2-identity">2. 输入 identity</a></li><li><a href="#3-trace-integrity">3. Trace integrity</a></li><li><a href="#4-paired-difference">4. Paired difference</a></li><li><a href="#5-range-diagnostic">5. Range diagnostic</a></li><li><a href="#6-wm-019-ladder-placement">6. WM-019 ladder placement</a></li><li><a href="#7">7. 下一最小补件</a></li><li><a href="#section-8">参考来源</a></li></ol></nav>
 <h1>WM-019 WAM Action-Trace Paired Diagnostic（CoffeePressButton）</h1>
 <div class="meta">状态：<code>paired_diagnostic / local-direct-trace-math / checkpoint-unverified / WARN</code> 计算日期：2026-07-18 证据截止：2026-07-18 范围：只比较同一 CoffeePressButton episode 0、相同 seed/env_seed 和相同 300-step protocol 下的 base/trained <code>actions.jsonl</code>；不把 trace 差异解释为 checkpoint 因果、success uplift 或 benchmark 结果。</div>
@@ -162,7 +166,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </tbody></table>
 <p>shape 与有限性检查只证明 JSONL 的结构可读；不证明动作语义、controller 映射或 checkpoint 内容正确。</p>
 <h2 id="4-paired-difference">4. Paired difference</h2>
-<p>对齐同一 <code>t</code> 后，令 (a_t^{(b)}) 和 (a_t^{(t)}) 分别为 base/trained 的 7 维 <code>policy_action7</code>，计算：</p>
+<p>对齐同一 <code>t</code> 后，令 \(a_t^{(b)}\) 和 \(a_t^{(t)}\) 分别为 base/trained 的 7 维 <code>policy_action7</code>，计算：</p>
 <div class="formula">\[
 \operatorname{MAE}=\frac{1}{Td}\sum_{t=1}^{T}\sum_{j=1}^{d}|a_{t,j}^{(b)}-a_{t,j}^{(t)}|,
 \qquad

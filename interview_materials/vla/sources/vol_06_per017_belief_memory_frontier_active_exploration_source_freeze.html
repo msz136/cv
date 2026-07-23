@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 PER-017 Source Freeze：Belief、Memory、Frontier 与 Active Exploration</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per017_belief_memory_frontier_active_exploration_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per017_belief_memory_frontier_active_exploration_source_freeze.md">
 <meta name="aris:source-sha256" content="60e794bb144c14cb38f57b34267bebffd22a34fc56045317842f51f9cb4a24f3">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>60e794bb144c14cb38f57b34267bebffd22a34fc56045317842f51f9cb4a24f3</code>；生成自：<code>interview_materials\vla\sources\vol_06_per017_belief_memory_frontier_active_exploration_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>60e794bb144c14cb38f57b34267bebffd22a34fc56045317842f51f9cb4a24f3</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per017_belief_memory_frontier_active_exploration_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-paper">2. Primary Paper 冻结矩阵</a></li><li><a href="#3-official-repository">3. Official Repository 冻结矩阵</a></li><li><a href="#4">4. 节点边界与依赖</a></li><li><a href="#5-pomdp-belief-contract">5. POMDP 与 Belief Contract</a></li><li><a href="#6">6. 四类状态不能混写</a></li><li><a href="#7-memory-taxonomy">7. Memory Taxonomy 与生命周期</a></li><li><a href="#7-1-recurrent-latent">7.1 Recurrent latent</a></li><li><a href="#7-2-explicit-spatial-map">7.2 Explicit spatial map</a></li><li><a href="#7-3-episodic-history-memory">7.3 Episodic / history memory</a></li><li><a href="#7-4-invalidation">7.4 Invalidation</a></li><li><a href="#8-frontier">8. Frontier：定义、聚类与可达性</a></li><li><a href="#9-information-gain-exploration-utility">9. Information Gain 与综合 Exploration Utility</a></li><li><a href="#10-goal-directed-task-agnostic-exploration">10. Goal-directed 与 Task-agnostic Exploration</a></li><li><a href="#11-revisit-stuck-unreachable-frontier">11. Revisit、Stuck 与 Unreachable Frontier</a></li><li><a href="#12-coverage-visitation-revisit">12. Coverage、Visitation 与 Revisit 评估合同</a></li><li><a href="#13-first-divergence-failure-diagnosis">13. First-divergence Failure Diagnosis</a></li><li><a href="#14-fail-closed-exploration-pipeline">14. Fail-closed Exploration Pipeline 伪代码</a></li><li><a href="#15-deterministic-probes">15. 十个 Deterministic Probes</a></li><li><a href="#16-public-method-code-mapping">16. Public Method → Code Mapping</a></li><li><a href="#17-inventory-direct-audit">17. 本地五项目 Inventory 与 Direct Audit</a></li><li><a href="#17-1-canonical-inventory">17.1 Canonical Inventory</a></li><li><a href="#17-2-robot-harness-local-direct-exceptions">17.2 Robot Harness Local-direct Exceptions</a></li><li><a href="#18-project-truth-boundary">18. Project Truth Boundary</a></li><li><a href="#19-source-gate">19. Source Gate 与下一切片</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 PER-017 Source Freeze：Belief、Memory、Frontier 与 Active Exploration</h1>
 <div class="meta">状态：<code>source_frozen / VLA-PER-017 / primary_official_checked / belief_memory_exploration_contract / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本 source slice 只冻结 POMDP belief、recurrent latent / explicit spatial map / episodic history memory、frontier、active exploration、coverage / visitation / revisit protocol 与五项目真实性边界；下游 knowledge 与单张 card 已在各自 bounded slice 同步；card保持 <code>unseen</code>，不修改 mastery，不进入 PER-018 的 BC/DAgger/RL 训练，也不重写 PER-005 的 navigation policy architecture、PER-016 的 localization/SLAM 或 PER-019 的完整导航评估。</div>

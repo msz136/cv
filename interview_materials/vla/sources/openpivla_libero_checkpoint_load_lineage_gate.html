@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OpenPiVLA / LIBERO Checkpoint Load–Serve–Client Lineage Gate</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\openpivla_libero_checkpoint_load_lineage_gate.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\openpivla_libero_checkpoint_load_lineage_gate.md">
 <meta name="aris:source-sha256" content="02b6d0a5ecc380c992b92ebc03e7bbe6eeaf47e30b9a22020b3f7a43f8c4648a">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>02b6d0a5ecc380c992b92ebc03e7bbe6eeaf47e30b9a22020b3f7a43f8c4648a</code>；生成自：<code>interview_materials\vla\sources\openpivla_libero_checkpoint_load_lineage_gate.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>02b6d0a5ecc380c992b92ebc03e7bbe6eeaf47e30b9a22020b3f7a43f8c4648a</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\openpivla_libero_checkpoint_load_lineage_gate.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. Question 与证据目标</a></li><li><a href="#2-immutable-evidence-freeze">2. Immutable evidence freeze</a></li><li><a href="#3-server-side-checkpoint-load-chain">3. Server-side checkpoint load chain</a></li><li><a href="#4-client-rollout-contract">4. Client 与 rollout contract</a></li><li><a href="#5-same-run-binding">5. Same-run binding 强度</a></li><li><a href="#6">6. 面试安全口径</a></li><li><a href="#30">30 秒回答</a></li><li><a href="#section-8">高频追问</a></li><li><a href="#7">7. 下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>OpenPiVLA / LIBERO Checkpoint Load–Serve–Client Lineage Gate</h1>
 <div class="meta">状态：<code>local-direct / log-hash-frozen / checkpoint-load-confirmed / binary-unverified / WARN</code> 审查日期：2026-07-21 范围：<code>C:\Users\mousongzhe\project\openpivla_deployment</code> 中 <code>libero_franka_true_rollout_v1</code> 的 server/client log、rollout script 与部署记录。 结论先行：本地 <code>serve.log</code> 直接证明 <strong>Orbax 从官方 <code>pi05_libero/params</code> 路径恢复了约 6.2 GiB 参数、从 checkpoint assets 加载 normalization stats、启动 WebSocket server 并接受 localhost client 连接</strong>；同目录 <code>client.log</code> 与 <code>summary.json</code> 记录了随后完成的 LIBERO task-0 70-step model/no-op rollout。该证据关闭了“是否真的 load 并 serve 官方 checkpoint”的主要疑问，但仍没有 checkpoint 文件级 manifest/SHA、精确启动命令、processor/tokenizer revision、run UUID 或私有 LoRA checkpoint，因此不能升级为 fine-tune lineage、完整可重复 benchmark 或个人 ownership。</div>

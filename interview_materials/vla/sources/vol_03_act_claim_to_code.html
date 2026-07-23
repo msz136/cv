@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 03 Source Audit C：ACT CVAE、Action Chunk 与 Temporal Ensemble Claim-to-Code</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_03_act_claim_to_code.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_03_act_claim_to_code.md">
 <meta name="aris:source-sha256" content="6c3c40330d13b1bb186b09ea744006667630cd4bd6ae1651ec1fdc38e8dc5a2a">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>6c3c40330d13b1bb186b09ea744006667630cd4bd6ae1651ec1fdc38e8dc5a2a</code>；生成自：<code>interview_materials\vla\sources\vol_03_act_claim_to_code.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>6c3c40330d13b1bb186b09ea744006667630cd4bd6ae1651ec1fdc38e8dc5a2a</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_03_act_claim_to_code.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 证据层级、冻结对象与适用边界</a></li><li><a href="#3-i-o">3. 任务 I/O 与数据构造</a></li><li><a href="#3-1-real-robot-contract">3.1 论文中的 real-robot contract</a></li><li><a href="#3-2">3.2 一条训练样本怎样产生</a></li><li><a href="#3-3-normalization">3.3 normalization 与执行前反归一化</a></li><li><a href="#4-cvae-encoder-style-latent">4. CVAE encoder：style latent 如何训练、如何消失</a></li><li><a href="#4-1-posterior-observation">4.1 posterior 输入不是完整 observation</a></li><li><a href="#4-2-z-0">4.2 推理为什么固定 $z=0$</a></li><li><a href="#5-cvae-decoder-qpos-latent-action-queries">5. CVAE decoder：相机、qpos、latent 和 action queries 怎样汇合</a></li><li><a href="#5-1-observation-encoder">5.1 observation encoder</a></li><li><a href="#5-2-h-query-slot">5.2 $H$ 个 query slot 是并行输出槽</a></li><li><a href="#5-3-is-pad-head">5.3 `is_pad_head` 不能被讲成已训练终止头</a></li><li><a href="#6-padding-mask-paper-code">6. 训练目标、padding mask 与 paper/code 差异</a></li><li><a href="#6-1-frozen-code-reconstruction-loss">6.1 frozen code 的 reconstruction loss</a></li><li><a href="#6-2-kl-loss">6.2 KL 与总 loss</a></li><li><a href="#6-3-algorithm-1-mse">6.3 论文 Algorithm 1 的 MSE 不等于实际代码</a></li><li><a href="#7-horizon-replan-temporal-ensemble">7. Horizon、执行窗口、replan 与 temporal ensemble</a></li><li><a href="#7-1">7.1 四个容易混淆的量</a></li><li><a href="#7-2-a">7.2 模式 A：整段执行</a></li><li><a href="#7-3-b-overlapping-chunk-ensemble">7.3 模式 B：每步查询 + overlapping-chunk ensemble</a></li><li><a href="#7-4-rollout">7.4 rollout 伪代码</a></li><li><a href="#8-chunk-trade-off">8. Chunk 长短、闭环性、延迟与吞吐的 trade-off</a></li><li><a href="#8-1-h">8.1 $H$ 太短</a></li><li><a href="#8-2-h">8.2 $H$ 太长</a></li><li><a href="#8-3-temporal-ensemble">8.3 temporal ensemble 的额外取舍</a></li><li><a href="#9-act-token-diffusion-flow">9. ACT 与 token、Diffusion / Flow 路线的归纳偏置</a></li><li><a href="#10-claim-to-code">10. Claim-to-code 总表</a></li><li><a href="#11-vla-act-011-017">11. 对 `VLA-ACT-011..017` 的支持状态</a></li><li><a href="#12">12. 与个人项目的真实性边界</a></li><li><a href="#13">13. 面试安全口径与危险答案</a></li><li><a href="#13-1-30">13.1 30 秒安全骨架</a></li><li><a href="#13-2">13.2 高危说法</a></li><li><a href="#14">14. 风险、未决项与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 03 Source Audit C：ACT CVAE、Action Chunk 与 Temporal Ensemble Claim-to-Code</h1>
 <div class="meta">审计日期：2026-07-19 状态：<code>independent_fact_reviewed / cvae_loss_mask_query_ensemble_checked / local_runtime_pending / WARN</code> 论文版本：<em>Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware</em>，arXiv <code>2304.13705v1</code> 官方仓库：<code>tonyzhaozh/act</code> frozen commit <code>742c753c0d4a5d87076c8f69e5628c79a8cc5488</code> License：MIT 对应题目：<code>VLA-ACT-011..017</code> 本页问题：ACT 到底如何用 CVAE-Transformer 一次预测 action chunk？训练期 latent、padding 和 loss 如何实现？不使用 / 使用 temporal ensemble 时，prediction horizon、执行窗口、查询频率和闭环性分别是什么？</div>

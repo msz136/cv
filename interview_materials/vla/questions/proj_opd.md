@@ -81,9 +81,9 @@
 
 **面试意图**：检查你是否分清 teacher rollout、student rollout、KL 监督和训练起点。
 
-**30 秒回答**：coldstart 从 8B base 出发，用五个 teacher rollout 做 500 steps 的 full-vocab KL；OPD5000 从该输出继续，让 student rollout，再让 route 对应 teacher 在同一 response 上 forward，完成 5000 steps 在线 KL。
+**30 秒回答**：coldstart 从 8B base 用 teacher rollout 做 500 步 full-vocab KL；OPD5000 从它继续，改为 student rollout 做 5000 步。formal `point/` trainer 计算 \(D_{KL}(q_\beta\|p_S)\)；根目录同名脚本是 legacy top1 CE。
 
-**机制展开（约 2 分钟）**：coldstart 是 `teacher` rollout，`max_new_tokens=128`、prefix=64，veto beta 在 100 steps 内退火；正式 OPD 是 `student` rollout，`max_new_tokens=64`、prefix=64、skip 64,000，保存 1000–5000 checkpoints。五 teacher 以 `preloaded_zero3` 常驻并按 route 选择，做 full-vocab distillation。coldstart 先处理分布与格式启动，online 阶段再覆盖 student 实际 response；缺 coldstart-only raw-holdout 对照，不能量化各阶段贡献。
+**机制展开（约 2 分钟）**：formal trainer 支持 teacher/student rollout。coldstart 取 teacher response，prefix64，beta 百步退火；OPD5000 取 student response，prefix64、skip64k、每千步保存。两者让 route teacher 在同一 response 上 forward；target logits=`teacher_logits+beta*stopgrad(student_logits)`，beta=0 才是 \(D_{KL}(p_T\|p_S)\)。前者启动分布和格式，后者覆盖 student 实际 response；缺 matched raw eval，不能量化阶段贡献。
 
 **诊断 / 证据**：检查两个 run summary 的 student path、rollout source、teacher load counts、route counts、loss/entropy/top-k overlap，并保留每阶段 checkpoint 与 raw eval。当前 summaries 与 checkpoint table 有，完整权重/raw log 没有。
 
@@ -93,7 +93,7 @@
 
 **危险答案**：把 coldstart 的 teacher rollout 说成正式 student on-policy，或说 5000 steps 自动证明收敛。
 
-**来源**：[1][7][8]　**练习状态**：unseen
+**来源**：[1][7][8][17]　**练习状态**：unseen
 
 </details>
 
@@ -102,9 +102,9 @@
 
 **面试意图**：检查你能否把实现事实、训练目标和未验证假设分层。
 
-**30 秒回答**：当前 teacher selection 是样本 metadata 的 target route，不是单独训练的 learned router。full-vocabulary KL 在 student 实际 response 的每个 prefix 上约束完整分布，比只蒸馏 top-k 保留更多 teacher 的不确定性与格式偏好，但成本更高。
+**30 秒回答**：teacher selection 来自样本 metadata，不是 learned router。formal 代码计算 \(D_{KL}(q_\beta\|p_S)\)，beta=0 时是 teacher∥student 的完整词表 KL；它比 legacy top1 CE 保留更多分布信息，但成本更高，也会复制 teacher 错误。
 
-**机制展开（约 2 分钟）**：脚本把 `target_expert/candidate_experts` 转成 route；`route_policy=target` 时每行只激活 target teacher。五 teacher 以 ZeRO-3 预加载。student rollout 后，teacher 对同一 token sequence forward，计算 full-vocab KL，并记录双方 entropy、top-k overlap、OPD loss 和 route counts。route metadata 是监督来源，不等于部署时模型会识别任务；learned router 还需要额外模型、routing loss 和同协议 ablation。
+**机制展开（约 2 分钟）**：formal trainer 把 target/candidate expert 映射成 route；每行只激活一个 teacher，ZeRO-3 下各 rank 同步 route。student rollout 后，teacher 对同一 sequence forward，计算 \(\sum_v q_\beta(v)[\log q_\beta(v)-\log p_S(v)]\)，按 response token 数归一，并记录 entropy、overlap、loss 与 route count。route metadata 只是监督来源；learned router 还需模型、routing objective、部署输入和 matched ablation。
 
 **诊断 / 证据**：做 target vs candidate route、single-teacher、random route、top-k vs full-vocab 的对照，并按格式/池统计错误。当前代码和 summary 支持实现路径，消融与 learned router 证据缺失。
 
@@ -114,7 +114,7 @@
 
 **危险答案**：说“route id 就是 learned gating”，或说 full-vocab KL 一定比 top-k 更好且没有显存代价。
 
-**来源**：[1][7][8]　**练习状态**：unseen
+**来源**：[1][7][8][17]　**练习状态**：unseen
 
 </details>
 
@@ -215,7 +215,7 @@
 5. `C:\Users\mousongzhe\muxi\report.md`：数据构造、严格审计、point protocol 修正与历史 OPD 说明。
 6. `C:\Users\mousongzhe\muxi\audit_opd_student_v1.py`：JSON、长度、坐标、图片、重复与 overlap 审计逻辑。
 7. `C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\remote_model_summaries\coldstart500_opd_online_run_summary.json`：coldstart rollout 与 full-vocab KL summary。
-8. `C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\remote_model_summaries\opd5000_opd_online_run_summary.json` 与 `train_opd_online_vl.py`：student rollout、route、skip、checkpoint 和 full-vocab KL。
+8. `C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\remote_model_summaries\opd5000_opd_online_run_summary.json` 与 `C:\Users\mousongzhe\muxi\point\train_opd_online_vl.py`：student rollout、route、skip、checkpoint 和 full-vocab KL；根目录同名脚本为 legacy top1 CE。
 9. `C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\opd5000_ckpt_eval_by_format_table.md`：ckpt1000–5000 的 format-level metrics。
 10. `C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\opd5000_ckpt_eval_by_pool_table.md`：八个 eval pool 的 checkpoint selection。
 11. `C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\evalset_summary.json`：10k holdout quota、blocklist 和格式分布。
@@ -224,3 +224,4 @@
 14. `C:\Users\mousongzhe\muxi\report\openai_base64_point_protocol_qwen122_qwen35_20260603\comparison_summary_table.md`：protocol-fixed Qwen-122B/Qwen3-35B-VL point 结果。
 15. [OPD Ownership Ledger](../evidence/projects/opd_ownership_ledger.html)：Git identity、point/root trainer 差异、13 行 ownership matrix 与 C3 gate。
 16. `C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\artifact_manifest.json`：OPD5000 本地同步范围与明确排除的权重、optimizer、raw predictions。
+17. [OPD Training Objective Lineage Gate](../evidence/projects/opd_training_objective_lineage_gate.html)：legacy/formal trainer、rollout source、KL 方向、veto target 与 run-summary lineage。

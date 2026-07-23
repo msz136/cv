@@ -14,8 +14,8 @@
 1. 全局题库有 **280 个唯一 stable ID**，没有重复 ID；状态分布为 `unseen=280`、其余为 0。
 2. VOL 01–05 已达到各自当前计划内的知识/题卡覆盖；VOL 06 已冻结20节点合同，source/knowledge/card为20/20/20，PER-001..020三联件同步且unseen；VOL 07完成五项目inventory/ownership、37张项目卡与Robot Harness aggregate + partial-raw gate；VOL 08已冻结12节点合同，sources/knowledge/card为12/12/12，`SYS-VLA-004` 三联件已同步但尚未口述。因此“八卷都有产物”不等于“八卷达到退出条件”。
 3. 五项目 Claim–Evidence Inventory 为 5/5，Ownership Ledger 为 5/5；候选人角色确认、checkpoint/benchmark lineage 和若干 raw bundle 仍是 `PENDING/WARN`。
-4. 创建本报告前的审计快照共有286份非README、非question-list的Markdown，其中283份有三联件；后续registry/source/knowledge/card/review切片持续闭合生命周期，VOL 07 五项目 evidence reconciliation、口述队列、五项目 model answers、readiness audit、P0 artifact intake contract、ownership confirmation queue、五项目 P0 bundle audit、Cosmos 1 epoch evidence freeze、WAM full10k run reconciliation、official-HF RoboCasa baseline P0 audit、Cosmos full10k trained 24×5 P0 audit、TurnOffMicrowave trained-failure P0 audit、Checkpoint save-load gate P0 audit、UWM/LIBERO/RoboCasa transfer evidence freeze、UWM RoboCasa ActionHeadFix 30-epoch P0 audit、OpenPiVLA Runtime Rollout Artifact Gate、LIBERO Checkpoint Load–Serve–Client Lineage Gate、ALOHA Action-Level Eval Load Gate、Official Checkpoint Immutable Manifest Gate、LIBERO Matched Failure Probe Readiness Gate 与 UWM `libero_90.pt` 本地 Immutable Checkpoint Manifest Gate 加入后，当前为 **387份canonical、387份三联件**。所有当前canonical均有HTML与review。
-5. 当前387份review JSON均可解析；verdict分布为`WARN=377`、`PASS WITH WARNING=10`、`PASS=0`。十份`PASS WITH WARNING`只表示相应独立事实复核切片通过且仍有warning，不代表整卷完成。
+4. 创建本报告前的审计快照共有286份非README、非question-list的Markdown，其中283份有三联件；后续registry/source/knowledge/card/review切片持续闭合生命周期，五项目 evidence/ownership/model-answer bundle、各项目 P0 audit、OpenPiVLA/UWM/WAM runtime gates、五项目串联口述总览与 OPD Training Objective Lineage Gate 加入后，当前为 **390份canonical、390份三联件**。所有当前canonical均有HTML与review；OpenPiVLA local-only LIBERO video timeline 更新的是既有 source gate，不增加 canonical 计数。
+5. 当前390份review JSON均可解析；verdict分布为`WARN=380`、`PASS WITH WARNING=10`、`PASS=0`。十份`PASS WITH WARNING`只表示相应独立事实复核切片通过且仍有warning，不代表整卷完成。
 6. `coaching_state.md` 不存在。没有候选人真实回答前，本仓库不得改变 mastery，也不得从 `unseen` 推导出 `pass/strong`。
 
 ## 2. 审计口径
@@ -63,7 +63,7 @@ canonical Markdown
 
 | 项目 | Inventory | Ownership Ledger | 项目题卡 | 当前能安全证明 | 仍不能升级的主张 |
 | --- | --- | --- | ---: | --- | --- |
-| OpenPiVLA | 有 | 有 | 12 | local JSON/causal-CE route、`H=15,D=72` 与 formatter `limit=16` contract 风险；官方 `pi05_libero` load/connect 与 `pi0_aloha_sim` load + 4×50×14 offline action L1 已冻结 | private formal checkpoint、immutable binary manifest、97.4 lineage、FAST 实际调用、matched controller/scorer 与个人 ownership |
+| OpenPiVLA | 有 | 有 | 12 | local JSON/causal-CE route、`H=15,D=72` 与 formatter `limit=16` contract 风险；官方 `pi05_libero` load/connect、`pi0_aloha_sim` load + 4×50×14 offline action L1，以及 LIBERO 71-frame model/dummy timeline 已冻结；可排除“全程 dummy/仿真未动” | private formal checkpoint、immutable binary manifest、97.4 lineage、FAST 实际调用、raw response/env-action、matched controller/scorer、失败单因与个人 ownership |
 | Robot Harness | 有 | 有 | 8 | local trainer/eval/config；13/13 mean、60/60 metrics；28/40 primary、6/10 exact support；12-slot remote locator与17-candidate rejection audit | 剩余12 raw、统一scorer/backend、122B/35B输入、checkpoint binary、真实物理成功或未经确认的全面主导 |
 | OPD | 有 | 有 | 9 | point/box/text、coldstart、已有 report/run 边界 | 缺 weights/raw predictions/严格 ablation 时的强效果 claim |
 | WAM | 有 | 有 | 4 | 已登记 artifact 与 paired diagnostics；full10k trained 24×5 raw/trusted eval、official-HF 24×5 raw/trusted eval、TurnOffMicrowave local 1k first-divergence 和 DeepSpeed save/load gate 均已独立冻结 | 本地 checkpoint binary/hash、fresh-process reload、matched 5-frame fix→rerun、multi-episode scorer/version、完整 episode JSONL、因果 uplift、候选人角色确认 |
@@ -77,10 +77,10 @@ Git author、上游论文/仓库、官方 example、路径或 smoke report 都�
 | --- | ---: | ---: | ---: | ---: |
 | `knowledge/` | 98 | 98 | 98 | 98 |
 | `questions/` | 104 | 104 | 104 | 104 |
-| `sources/` | 141 | 141 | 141 | 141 |
-| `evidence/` | 30 | 30 | 30 | 30 |
-| `practice/` | 9 | 9 | 9 | 9 |
-| 合计 | 387 | 387 | 387 | 387 |
+| `sources/` | 146 | 146 | 146 | 146 |
+| `evidence/` | 31 | 31 | 31 | 31 |
+| `practice/` | 11 | 11 | 11 | 11 |
+| 合计 | 390 | 390 | 390 | 390 |
 
 VOL 02/03/04 的早期 source-plan registry 均已 reconciliation 并生成 HTML/review；当前不存在 registry-only 或缺三联件例外。生命周期闭合只说明 canonical、render 和 review 同步，不代表事实门、local evidence、visual QA 或口述门完成。
 
@@ -90,7 +90,7 @@ VOL 02/03/04 的早期 source-plan registry 均已 reconciliation 并生成 HTML
 
 | 状态 | 数量 | 含义 |
 | --- | ---: | --- |
-| `WARN` | 377 | 页面可用，但仍有事实、runtime、ownership、visual QA 或口述门未闭合 |
+| `WARN` | 380 | 页面可用，但仍有事实、runtime、ownership、visual QA 或口述门未闭合 |
 | `PASS WITH WARNING` | 10 | 十份独立事实复核切片通过；warning 仍保留 |
 | `PASS` | 0 | 没有任何 artifact 可被解释为全门完成 |
 | `unseen` 题卡 | 280 | 候选人尚未提供真实口述回答 |
@@ -107,7 +107,7 @@ VOL 02/03/04 的早期 source-plan registry 均已 reconciliation 并生成 HTML
 1. **推荐：只做一题真实口述或独立 fact review**。PER-001..020 三联件已完成；本轮不修改 mastery、不创建 coaching state，先把页面覆盖与真实训练分开。
 2. Robot Harness已恢复28/40 primary、闭合6/10 exact support，并证明本地17个同名候选均不能填12个缺口；若远端文件可达，只按12条locator恢复，不用同名候选凑数。
 3. 真实口述仍是独立优先队列；得到候选人回答后，才创建/更新 coaching state。
-4. OpenPiVLA 的 LIBERO load/connect、ALOHA action-level load/L1、本地文件 manifest 与 LIBERO matched-probe preflight 已由 [LIBERO Lineage Gate](openpivla_libero_checkpoint_load_lineage_gate.md)、[ALOHA Action Eval Gate](openpivla_aloha_action_eval_load_gate.md)、[Official Checkpoint Immutable Manifest Gate](openpivla_official_checkpoint_immutable_manifest_gate.md) 和 [Matched Failure Probe Readiness Gate](openpivla_libero_matched_failure_probe_readiness_gate.md) 冻结，并已映射到 `PROJ-OPENPIVLA-007`；远端 checkpoint/norm-stats 逐文件 SHA、effective argv、raw trace、独立 scorer 与 shared run identity 仍缺，下一步可做远端只读 manifest 或 fresh matched probe。
+4. OpenPiVLA 的 LIBERO load/connect、ALOHA action-level load/L1、本地文件 manifest 与 local-only 71-frame model/dummy timeline 已由 [LIBERO Lineage Gate](openpivla_libero_checkpoint_load_lineage_gate.md)、[ALOHA Action Eval Gate](openpivla_aloha_action_eval_load_gate.md)、[Official Checkpoint Immutable Manifest Gate](openpivla_official_checkpoint_immutable_manifest_gate.md) 和 [Matched Failure Probe Readiness Gate](openpivla_libero_matched_failure_probe_readiness_gate.md) 冻结，并已映射到 `PROJ-OPENPIVLA-007`。按用户要求后续不访问远端；effective argv、raw response/env-action、独立 scorer 与 shared run identity 仍缺，只有未来本地落档自带这些字段时才重新评估 root cause。
 5. UWM `libero_90.pt` base binary 已由 [本地 Immutable Checkpoint Gate](uwm_libero90_checkpoint_immutable_manifest_gate.md) 冻结；这不关闭 target fine-tune binary、normalizer、fresh reload、scorer 或 ownership。
 6. 五项目 P0 intake contract：[`../evidence/p0_artifact_intake_contract.md`](../evidence/p0_artifact_intake_contract.md)，用于 checkpoint、protocol、raw output、scorer 与 ownership 的统一收口。
 

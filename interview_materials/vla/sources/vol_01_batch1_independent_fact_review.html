@@ -6,7 +6,7 @@
 <title>VOL 01 Foundations Batch 1：独立事实复核与公式边界</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\sources\vol_01_batch1_independent_fact_review.md">
-<meta name="aris:source-sha256" content="3f794643d663a86688fd06de8bc3754470bdb0c1f9f28260f64a34727fb50091">
+<meta name="aris:source-sha256" content="fe2934579e5cb23a59926da49b63cbe6f761cb96467abac62c57d512b6f0838c">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>3f794643d663a86688fd06de8bc3754470bdb0c1f9f28260f64a34727fb50091</code>；生成自：<code>interview_materials\vla\sources\vol_01_batch1_independent_fact_review.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>fe2934579e5cb23a59926da49b63cbe6f761cb96467abac62c57d512b6f0838c</code>；生成自：<code>interview_materials\vla\sources\vol_01_batch1_independent_fact_review.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 冻结来源</a></li><li><a href="#2-claim-to-source">2. Claim-to-source 复核</a></li><li><a href="#3">3. 本次修复</a></li><li><a href="#4">4. 复核边界</a></li><li><a href="#5">5. 下一步</a></li><li><a href="#section-6">参考文献</a></li></ol></nav>
 <h1>VOL 01 Foundations Batch 1：独立事实复核与公式边界</h1>
 <div class="meta">状态：<code>independent_fact_review / batch1 / WARN</code> 审查日期：2026-07-19 范围：VOL 01 knowledge 中表示、attention、归一化、损失与基础机器人几何的高频入口；不宣称整卷 39 张题卡已审查或已口述。 结论先行：核心机制与 primary sources 一致，但 canonical knowledge 曾出现 <code>\theta</code>、<code>\mid</code>、<code>\in</code>、<code>\tilde</code> 被写成控制字符/缺失反斜杠的问题；已回写修复。Qwen3-VL/本地 LoRA、OpenPiVLA 轴序和 UWM normalizer 仍保持未核实边界。</div>
@@ -151,10 +157,10 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </tbody></table>
 <h2 id="2-claim-to-source">2. Claim-to-source 复核</h2>
 <table><thead><tr><th>Claim</th><th>Verdict</th><th>保留边界</th></tr></thead><tbody>
-<tr><td>attention 使用 (QK^\top/\sqrt{d_k})</td><td><code>PASS / primary-verified</code></td><td>除法是尺度控制；mask 语义取决于 bool/additive API</td></tr>
+<tr><td>attention 使用 \(QK^\top/\sqrt{d_k}\)</td><td><code>PASS / primary-verified</code></td><td>除法是尺度控制；mask 语义取决于 bool/additive API</td></tr>
 <tr><td>LayerNorm 减均值，RMSNorm 不减均值</td><td><code>PASS / primary-verified</code></td><td>具体 backbone 的 norm 选择不能由基础原理推出</td></tr>
 <tr><td>MSE/Huber/CrossEntropy 监督对象不同</td><td><code>PASS / official-docs</code></td><td>reduction、mask、ignore index 和 dtype 仍是实现合同</td></tr>
-<tr><td>齐次变换可组合旋转和平移</td><td><code>PASS / primary-verified</code></td><td>必须声明 (T^A_B) 方向、列向量约定、单位与时间戳</td></tr>
+<tr><td>齐次变换可组合旋转和平移</td><td><code>PASS / primary-verified</code></td><td>必须声明 \(T^A_B\) 方向、列向量约定、单位与时间戳</td></tr>
 <tr><td>LoRA 是低秩更新</td><td><code>PASS / method-level</code></td><td>本地 rank、注入层、alpha 和 ownership 未核实</td></tr>
 <tr><td>OpenVLA/openpi 的具体 action 轴序</td><td><code>UNVERIFIED</code></td><td>需要 frozen commit、配置和本地 artifact，不能从基础页推出</td></tr>
 </tbody></table>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 Perception / Grounding / Navigation：Pseudo-label、Teacher Noise、Confidence Calibration、Leakage 与 Curriculum（PER-011）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per011_pseudo_label_teacher_noise_calibration_leakage.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per011_pseudo_label_teacher_noise_calibration_leakage.md">
 <meta name="aris:source-sha256" content="7f0512c52bf9b0528679150fb19994211eb60afbc2d894500aed2b2488c44777">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>7f0512c52bf9b0528679150fb19994211eb60afbc2d894500aed2b2488c44777</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per011_pseudo_label_teacher_noise_calibration_leakage.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>7f0512c52bf9b0528679150fb19994211eb60afbc2d894500aed2b2488c44777</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per011_pseudo_label_teacher_noise_calibration_leakage.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与边界</a></li><li><a href="#1-30-pseudo-label-label">1. 30秒直觉：Pseudo-label是一条有血缘的记录，不是一列Label</a></li><li><a href="#2-typed-pseudo-label-record">2. Typed Pseudo-label Record：可重放是可靠性的前提</a></li><li><a href="#2-1-schema">2.1 最小Schema</a></li><li><a href="#2-2">2.2 三个不可混淆的轴</a></li><li><a href="#3-teacher-target-noise-taxonomy">3. Teacher Target 与Noise Taxonomy</a></li><li><a href="#4-hard-soft-teacher-forced-free-generation">4. Hard、Soft、Teacher-forced 与Free-generation怎样选</a></li><li><a href="#5-fixmatch-confidence-gate-threshold">5. FixMatch式Confidence Gate：Threshold只定义选择</a></li><li><a href="#5-1-hard-pseudo-label-mask">5.1 Hard Pseudo-label与Mask</a></li><li><a href="#5-2-masked-loss-reduction-trap">5.2 Masked Loss与Reduction Trap</a></li><li><a href="#6-quality-contract-coverage-accepted-error-risk-coverage">6. Quality Contract：Coverage、Accepted Error与Risk–Coverage</a></li><li><a href="#6-1">6.1 两个最小量</a></li><li><a href="#6-2-threshold">6.2 为什么高Threshold仍可能错</a></li><li><a href="#7-confidence-calibration-score">7. Confidence Calibration：Score怎样变成可解释概率</a></li><li><a href="#7-1-temperature-scaling">7.1 Temperature Scaling</a></li><li><a href="#7-2-ece">7.2 ECE有完整协议</a></li><li><a href="#7-3-calibration-set">7.3 Calibration Set不能被回收进训练</a></li><li><a href="#8-selection-bias-route-class-balance">8. Selection Bias与Route/Class Balance</a></li><li><a href="#9-noisy-student-filter-balance-iteration">9. Noisy Student：Filter、Balance与Iteration都是协议</a></li><li><a href="#10-curriculum-schedule">10. Curriculum：不是所有Schedule都叫课程学习</a></li><li><a href="#11-leakage-taxonomy-row-teacher">11. Leakage Taxonomy：从同一Row到Teacher上游数据</a></li><li><a href="#11-1">11.1 十层检查</a></li><li><a href="#11-2-alias-path">11.2 Alias-path反例</a></li><li><a href="#11-3-fail-closed">11.3 Fail-closed原则</a></li><li><a href="#12-fail-closed-pipeline">12. Fail-closed Pipeline与伪代码</a></li><li><a href="#13-opd">13. 本地OPD：四条链必须分开口述</a></li><li><a href="#13-1-mix-builder-route-confidence-gate">13.1 Mix Builder：人工Route，不是Confidence Gate</a></li><li><a href="#13-2-top-1-cache-teacher-forced-token-distillation">13.2 Top-1 Cache：Teacher-forced Token Distillation</a></li><li><a href="#13-3-top-1-trainer-route">13.3 Top-1 Trainer：固定Route权重</a></li><li><a href="#13-4-online-kl-veto-logging-quality-gate">13.4 Online KL / Veto：Logging不是Quality Gate</a></li><li><a href="#14-raw-holdout">14. 本地Raw Holdout：强证据与剩余未知</a></li><li><a href="#15-playbook-student">15. 诊断Playbook：Student没提升时先查哪里</a></li><li><a href="#16">16. 面试回答模板、追问与危险答案</a></li><li><a href="#16-1">16.1 两分钟结构化回答</a></li><li><a href="#16-2">16.2 高频追问</a></li><li><a href="#16-3">16.3 危险答案与修正</a></li><li><a href="#17-project-truth-boundary-hook">17. Project Truth Boundary与项目Hook</a></li><li><a href="#17-1-opd-hook">17.1 OPD Hook</a></li><li><a href="#17-2-robot-harness-hook">17.2 Robot Harness Hook</a></li><li><a href="#18-checklist">18. 白板Checklist与练习标准</a></li><li><a href="#19">19. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 Perception / Grounding / Navigation：Pseudo-label、Teacher Noise、Confidence Calibration、Leakage 与 Curriculum（PER-011）</h1>
 <div class="meta">状态：<code>drafted / VLA-PER-011 / source_synced / card_synced / WARN</code> 更新日期：2026-07-20 前置：<code>VLA-PER-009</code> matching/loss、<code>VLA-PER-010</code> metric/parser、VOL 02 imitation learning；后续：<code>VLA-PER-012</code> grounding methods、<code>VLA-PER-015</code> perception→action gate。 来源入口：<a href="../sources/vol_06_per011_pseudo_label_teacher_noise_calibration_leakage_source_freeze.html">PER-011 Pseudo-label / Teacher Noise / Calibration / Leakage Source Freeze</a>。本页只做冻结证据的教学转译；atomic card已在独立切片同步并保持<code>unseen</code>，真实口述状态仍未开始。</div>

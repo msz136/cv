@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cosmos / WAM Claim–Evidence Inventory（WAM-01）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\wam_claim_evidence_inventory.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\wam_claim_evidence_inventory.md">
 <meta name="aris:source-sha256" content="ae34d4453524037bcd55a892c5ba2bf49dccd581d859ea6776ac7690f82a07a2">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>ae34d4453524037bcd55a892c5ba2bf49dccd581d859ea6776ac7690f82a07a2</code>；生成自：<code>interview_materials\vla\evidence\projects\wam_claim_evidence_inventory.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>ae34d4453524037bcd55a892c5ba2bf49dccd581d859ea6776ac7690f82a07a2</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\wam_claim_evidence_inventory.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 范围、标签与判定规则</a></li><li><a href="#1-1-evidence-labels">1.1 Evidence labels</a></li><li><a href="#1-2-claim-levels">1.2 Claim levels</a></li><li><a href="#2-role-fit">2. Role Fit 与岗位能力映射</a></li><li><a href="#3-frozen-inputs">3. Frozen inputs 与当前工作区检索</a></li><li><a href="#4-claim-reconciliation-matrix">4. Claim reconciliation matrix</a></li><li><a href="#5">5. 三个关键冲突</a></li><li><a href="#5-1-0-90-0-95-0-75-local-0-success">5.1 `0.90–0.95 / 0.75` 与 local 0-success</a></li><li><a href="#5-2-full10k-eval-c500-final-checkpoint">5.2 full10k eval 与 C500 final checkpoint 缺失</a></li><li><a href="#5-3-head-upstream-slot-mask-contract">5.3 “三个 head”与 upstream slot/mask contract</a></li><li><a href="#6-truth-boundary">6. Truth boundary 与安全口径</a></li><li><a href="#section-13">当前仍不能升级成强结果项目的原因</a></li><li><a href="#section-14">当前保守表达</a></li><li><a href="#7-p0-artifact-manifest">7. P0 artifact manifest</a></li><li><a href="#evidence-promotion-pseudocode">Evidence promotion pseudocode</a></li><li><a href="#8">8. 必须回答的六个问题</a></li><li><a href="#9-preliminary-sp-ssp-project-scorecard">9. Preliminary SP/SSP project scorecard</a></li><li><a href="#9-5-artifact-discovery-addendum-2026-07-18">9.5 Artifact Discovery Addendum（2026-07-18）</a></li><li><a href="#10">10. 分阶段补强计划</a></li><li><a href="#11">11. 下一切片</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>Cosmos / WAM Claim–Evidence Inventory（WAM-01）</h1>
 <div class="meta">状态：<code>drafted / local_claim_audit / WARN / resume_safe_downgraded / diagnostic_artifacts_partial / ownership_ledger_added</code> 审查日期：2026-07-21 证据截止：2026-07-21 项目范围：Cosmos Policy / WAM 多目标后训练、RoboCasa official-checkpoint eval 与本地 0-success 诊断 目标岗位：VLA / World Model / Robot Learning 算法与训练评估方向 结论先行：上游 Cosmos Policy 的 action/future/value slot、routing、loss mask 与 RoboCasa protocol 已有 frozen paper/repo 支持；2026-07-17 对 <code>cv</code> 工作区的扫描未找到 WAM 训练/评测 raw bundle，因此历史本地数字先保持 <code>local-claim-only</code>。2026-07-18 在外部 <code>C:\Users\mousongzhe\Project\wm\outputs</code> 发现一组 CoffeePressButton diagnostic artifact；2026-07-21 又冻结了 8 卡 1 epoch gate 的运行合同与失败链、独立 full10k trained <code>iter_000010000</code> 的 RoboCasa 24×5 remote-artifact bundle（raw <code>2/120</code>、当前本地 policy trusted <code>0/118</code>，两个 CoffeeServeMug length=1 artifact success 被排除）、official-HF RoboCasa baseline 的 24×5 remote-artifact bundle（raw <code>86/120</code>、trusted <code>84/118</code>）、TurnOffMicrowave local 1k checkpoint 的 fixed-batch→closed-loop→same-input first-divergence 审计，以及 DeepSpeed base-load/short-smoke/formal-save gate 审计。新证据支持“trained-run 与 official-HF 评测链路、一个本地 0/1 失败链和 save/load first-divergence 可审计”，但不支持本地 checkpoint binary/hash、训练 uplift、官方 scorer 等价、唯一 root cause 或 ownership。2026-07-17 已完成安全降级：optimized resume 的 WAM 段不再包含 MSE、task success、official-HF reproduction 或 local 0-success 数字；投递 PDF 已从新 HTML 重建并完成 A4 单页视觉/文本检查。投递 release blocker 已关闭，但项目证据仍为 WARN，不能升级为 verified/reviewed。</div>

@@ -6,7 +6,7 @@
 <title>VOL 03 VLA / Action：来源计划</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\sources\vol_03_vla_action_sources.md">
-<meta name="aris:source-sha256" content="554ee931d9b6180032036d235d2b3aaa10da88c76ea1e6941adf5ef26bb72300">
+<meta name="aris:source-sha256" content="4c89e5cef978c8e7f841ea946d93222f2419a10d69333f0a3f5eec178e24e4dd">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>554ee931d9b6180032036d235d2b3aaa10da88c76ea1e6941adf5ef26bb72300</code>；生成自：<code>interview_materials\vla\sources\vol_03_vla_action_sources.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>4c89e5cef978c8e7f841ea946d93222f2419a10d69333f0a3f5eec178e24e4dd</code>；生成自：<code>interview_materials\vla\sources\vol_03_vla_action_sources.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-primary-papers-technical-reports">1. Primary papers / technical reports</a></li><li><a href="#2-official-repositories-frozen-at-2026-07-16">2. Official repositories frozen at 2026-07-16</a></li><li><a href="#3">3. 逐源阅读与实现映射队列</a></li><li><a href="#batch-a-openvla-public-facts-independently-reviewed">Batch A：OpenVLA（public facts independently reviewed）</a></li><li><a href="#batch-b-0-0-5-openpi-fast-public-facts-independently-reviewed">Batch B：π0 / π0.5 / openpi + FAST（public facts independently reviewed）</a></li><li><a href="#batch-c-act-public-facts-independently-reviewed">Batch C：ACT（public facts independently reviewed）</a></li><li><a href="#batch-d-diffusion-policy-public-facts-independently-reviewed">Batch D：Diffusion Policy（public facts independently reviewed）</a></li><li><a href="#batch-e-flow-matching-0-public-facts-independently-reviewed">Batch E：Flow Matching / π0（public facts independently reviewed）</a></li><li><a href="#batch-f-vla-public-facts-independently-reviewed">Batch F：VLA 架构与动作执行（public facts independently reviewed）</a></li><li><a href="#4-openpivla">4. OpenPiVLA 本地证据待核对表</a></li><li><a href="#5">5. 来源质量门</a></li><li><a href="#6-registry-reconciliation">6. Registry reconciliation 与下一批工作</a></li><li><a href="#7-registry">7. 本 registry 能证明与不能证明什么</a></li></ol></nav>
 <h1>VOL 03 VLA / Action：来源计划</h1>
 <div class="meta">调研日期：2026-07-16；registry reconciliation：2026-07-19 状态：<code>source_registry_reconciled / audits_A_F_public_facts_reviewed / local_gates_warn</code> 目标：为 VLA 架构、action token、FAST、ACT、Diffusion Policy、Flow Matching 和 openpi action expert 建立 primary-source ledger。 边界：Audit A–F 的 public paper/code facts 已分别完成 claim-to-code 与 independent review；这不证明本地 OpenPiVLA checkpoint、action parser/controller、97.4 lineage、个人 ownership 或口述 mastery。</div>
@@ -195,7 +199,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <h2 id="5">5. 来源质量门</h2>
 <ol><li>论文支持方法定义；官方 repo 支持实现和接口；本地 artifact 才支持个人项目事实。</li><li>每个显示公式必须写变量 shape、目标张量、mask 和 train/infer 映射。</li><li>同名术语先核实现：action horizon、chunk、window、replan、control step 不默认同义。</li><li>对比表只在 checkpoint、数据、任务、trial、controller 和 success protocol 可比时讨论指标。</li><li>若源码路径或项目 artifact 缺失，标为 <code>未核实</code>，不以“通常实现”补齐本地事实。</li></ol>
 <h2 id="6-registry-reconciliation">6. Registry reconciliation 与下一批工作</h2>
-<ol><li>Audit A–F 的 public paper/code independent review 均已完成；A/C/D/F 为 PASS WITH WARNING，B/E 的 claim-to-code registry 仍保留 WARN（其独立事实切片已单独记录），local/runtime/oral warning 不因此消失。</li><li><code>VLA-ARCH-001..012</code> 与 <code>VLA-ACT-001..032</code> 的 knowledge/cards 44/44 已完成；44 张题卡全部 <code>unseen</code>。</li><li>OpenPiVLA local gates 已新增 formatter、full-sequence CE、72→16 lossy serialization、parser absence 与 official/Qwen parallel-lineage 证据；checkpoint、normalizer、controller、97.4 lineage 与 ownership 仍开放。</li><li>下一 bounded slice 优先做候选人 ownership confirmation，或补 immutable formal checkpoint/generation bundle；无候选人回答时继续关闭 VOL 02 source registry 生命周期。</li></ol>
+<ol><li>Audit A–F 的 public paper/code independent review 均已完成；A/C/D/F 为 PASS WITH WARNING，B/E 的 claim-to-code registry 仍保留 WARN（其独立事实切片已单独记录），local/runtime/oral warning 不因此消失。</li><li><code>VLA-ARCH-001..012</code> 与 <code>VLA-ACT-001..032</code> 的 knowledge/cards 44/44 已完成；44 张题卡全部 <code>unseen</code>。</li><li>OpenPiVLA local gates 已新增 formatter、full-sequence CE、72→16 lossy serialization、parser absence 与 official/Qwen parallel-lineage 证据；checkpoint、normalizer、controller、97.4 lineage 与 ownership 仍开放。</li><li>下一 bounded slice 优先做候选人 ownership confirmation，或补 immutable formal checkpoint/generation bundle；无候选人回答时继续关闭 VOL 03 source registry 生命周期。</li></ol>
 <h2 id="7-registry">7. 本 registry 能证明与不能证明什么</h2>
 <table><thead><tr><th>结论</th><th>状态</th></tr></thead><tbody>
 <tr><td>九篇核心 paper/technical report 与七个 official repo 的用途和冻结版本已登记</td><td><code>checked</code></td></tr>

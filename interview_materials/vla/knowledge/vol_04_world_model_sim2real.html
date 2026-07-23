@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 04 World Model / Sim2Real：Foundations、评估与证据（Batches 1–2）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_04_world_model_sim2real.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real.md">
 <meta name="aris:source-sha256" content="900f3d6eb22bbb3924a6427cf889b322ee47efbb19a528598f95eaa98f074f9e">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>900f3d6eb22bbb3924a6427cf889b322ee47efbb19a528598f95eaa98f074f9e</code>；生成自：<code>interview_materials\vla\knowledge\vol_04_world_model_sim2real.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>900f3d6eb22bbb3924a6427cf889b322ee47efbb19a528598f95eaa98f074f9e</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#batch-2-world-model-foundations">Batch 2：World Model Foundations（本增量）</a></li><li><a href="#batch-1">Batch 1：评估、证据与失败归因（已完成知识与题卡）</a></li><li><a href="#section-4">一句话总口径</a></li><li><a href="#section-5">知识地图位置与当前批次边界</a></li><li><a href="#section-6">前置知识</a></li><li><a href="#section-7">当前两个批次做什么</a></li><li><a href="#section-8">当前仍不做什么</a></li><li><a href="#vla-wm-001-world-model-policy-value">VLA-WM-001：World Model 不是 Policy、Value 或环境本体</a></li><li><a href="#section-10">先讲直觉</a></li><li><a href="#section-11">概率合同</a></li><li><a href="#section-12">项目与答题边界</a></li><li><a href="#vla-wm-002-observation-state-latent-reward-termination">VLA-WM-002：选择 Observation、State、Latent、Reward 与 Termination</a></li><li><a href="#pomdp">POMDP 视角</a></li><li><a href="#section-15">变量取舍表</a></li><li><a href="#i-o">最小 I/O 合同</a></li><li><a href="#vla-wm-003-deterministic-probabilistic-dynamics">VLA-WM-003：Deterministic 与 Probabilistic Dynamics</a></li><li><a href="#section-18">两种合同</a></li><li><a href="#section-19">能表达什么，不能表达什么</a></li><li><a href="#vla-wm-004-latent-world-model-rssm">VLA-WM-004：Latent World Model 与 RSSM 的完整数据流</a></li><li><a href="#encoder-posterior-prior-heads">Encoder、Posterior、Prior 与 Heads</a></li><li><a href="#vla-wm-005-one-step-multi-step">VLA-WM-005：One-Step 好不代表 Multi-Step 可靠</a></li><li><a href="#teacher-forced-autoregressive">Teacher-Forced 与 Autoregressive 的输入分布不同</a></li><li><a href="#section-24">常见断点</a></li><li><a href="#vla-wm-006-teacher-forcing-open-loop-scheduled-sampling">VLA-WM-006：Teacher Forcing、Open-Loop 与 Scheduled Sampling</a></li><li><a href="#section-26">三种训练/评估分布</a></li><li><a href="#vla-wm-007-aleatoric-epistemic-uncertainty">VLA-WM-007：Aleatoric 与 Epistemic Uncertainty</a></li><li><a href="#section-28">两类不确定性的来源</a></li><li><a href="#planning">Planning 中怎样使用</a></li><li><a href="#vla-wm-008-video-generator-actionable-world-model">VLA-WM-008：Video Generator 何时是 Actionable World Model</a></li><li><a href="#section-31">必须通过的四道门</a></li><li><a href="#vla-wm-009-auxiliary-representation-queryable-simulator">VLA-WM-009：Auxiliary Representation 与 Queryable Simulator</a></li><li><a href="#section-33">两种使用方式</a></li><li><a href="#vla-wm-010-model-bias-compounding">VLA-WM-010：Model Bias、Compounding 与“想象成功”</a></li><li><a href="#planner">三层误差会被 Planner 放大</a></li><li><a href="#section-36">最小防守口径</a></li><li><a href="#foundations-rollout-pipeline">Foundations：从定义到可诊断 Rollout 的最小 Pipeline</a></li><li><a href="#vla-wm-039-strict-protocol">VLA-WM-039：Strict Protocol 是可重放合同</a></li><li><a href="#section-39">先讲直觉</a></li><li><a href="#12-field-protocol-tuple">12-field protocol tuple</a></li><li><a href="#paired-effect">成功率与 paired effect</a></li><li><a href="#uwm">UWM 三协议不能混名</a></li><li><a href="#run-episode-manifest">Run 与 episode manifest</a></li><li><a href="#vla-wm-040-metric-ladder">VLA-WM-040：Metric Ladder 不允许跨层替代</a></li><li><a href="#section-45">五层证据阶梯</a></li><li><a href="#one-step-long-rollout">one-step 好为何不能外推 long rollout</a></li><li><a href="#proxy-success">如何验证 proxy 与真实 success 的关系</a></li><li><a href="#section-48">不夸大的三档结论</a></li><li><a href="#vla-wm-041-offline-online">VLA-WM-041：Offline 下降但 Online 不变时怎样消融</a></li><li><a href="#section-50">先把“多目标有效”拆成四个训练臂</a></li><li><a href="#factorial-effect">Factorial effect</a></li><li><a href="#offline-online">Offline→online 断点矩阵</a></li><li><a href="#section-53">必须同时报告的四类结果</a></li><li><a href="#vla-wm-042-hallucination">VLA-WM-042：检测 Hallucination 与物理/因果不一致</a></li><li><a href="#section-55">四个概念先分开</a></li><li><a href="#action-sensitivity-action-correctness">Action sensitivity 不是 action correctness</a></li><li><a href="#causal-alignment-simulator-intervention">Causal alignment 需要真实或 simulator intervention</a></li><li><a href="#physical-violation-horizon-curve">Physical violation 与 horizon curve</a></li><li><a href="#consistency-suite">最小 consistency suite</a></li><li><a href="#vla-wm-043-failure-trace">VLA-WM-043：Failure Trace 要定位第一处断点</a></li><li><a href="#success-0-backbone">不从 success=0 直接猜 backbone</a></li><li><a href="#failure-taxonomy">Failure taxonomy 与证据</a></li><li><a href="#section-63">回写不是把所有失败都加回训练集</a></li><li><a href="#vla-wm-044-paper-ownership-evidence-audit">VLA-WM-044：从 Paper 到 Ownership 的 Evidence Audit</a></li><li><a href="#section-65">五层链条</a></li><li><a href="#evidence-labels">Evidence labels</a></li><li><a href="#claim-ledger">Claim ledger</a></li><li><a href="#section-68">一个典型的错误升级</a></li><li><a href="#pipeline">跨六题的最小执行 Pipeline</a></li><li><a href="#uwm-wam">UWM / WAM 项目挂钩与真实性边界</a></li><li><a href="#section-71">当前可以安全讲什么</a></li><li><a href="#section-72">当前不能说什么</a></li><li><a href="#90">90 秒项目防守稿</a></li><li><a href="#section-74">十六题覆盖矩阵</a></li><li><a href="#bad-case">Bad Case 与最小检查清单</a></li><li><a href="#section-76">后续工作</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 04 World Model / Sim2Real：Foundations、评估与证据（Batches 1–2）</h1>
 <div class="meta">状态：<code>drafted / aggregate_knowledge_44_of_44 / cards_44_of_44_unseen / review_warn</code> 报告日期：2026-07-19 证据截止：2026-07-16 基础页覆盖：<code>VLA-WM-001..010</code>、<code>VLA-WM-039..044</code>，16/44 个知识节点；独立原子知识页 <code>VLA-WM-011..038</code>，28/44 个节点 VOL 04 aggregate：44/44 个知识节点，所有题卡仍 <code>unseen</code> 当前目标：先建立 world-model 定义/I-O、概率 dynamics、RSSM、rollout/uncertainty/actionability 基础，再把 strict protocol、metric ladder、消融、失败回写和 evidence audit 连成诊断闭环。 项目边界：UWM 74.4%/92.8%、WAM 84/118 与离线 MSE 目前只是本地材料中的 claim queue；本页不把它们升级为已核验个人结果。</div>

@@ -13,7 +13,7 @@
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>CODE-VLA-002</b> · 请手写 scaled dot-product attention，并说明多头 shape、causal/padding mask、dropout 和测试。</summary>
 
-**面试意图**：判断你能否把 Q/K/V shape、(1/\sqrt{d_k})、mask 方向、不同 query/key 长度、dtype、dropout 和 VLA loss 边界落到可运行实现。
+**面试意图**：判断你能否把 Q/K/V shape、\(1/\sqrt{d_k}\)、mask 方向、不同 query/key 长度、dtype、dropout 和 VLA loss 边界落到可运行实现。
 
 **30 秒回答**：先统一 Q/K/V 为 [B,H,L,D]，算 scores=QKᵀ/√D，沿 Lk 做 softmax；mask 在 softmax 前应用，causal 只屏蔽未来，训练才 dropout。测试 Lq≠Lk、padding、fp16 和梯度 parity。
 

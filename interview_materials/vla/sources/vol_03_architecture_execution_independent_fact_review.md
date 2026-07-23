@@ -34,7 +34,7 @@
 | RT-2 | 6-DoF/夹爪/终止等维度 uniform 256 bins → token | VLM next-token + robot/web co-fine-tune；动作 token 受限采样 | §3.2 明确 256 bins、PaLI-X 与 PaLM-E 使用不同 token 复用方式 | 本地 tokenizer、controller、单机 latency |
 | OpenVLA | 每个 scalar 使用尾部 action token | action label 的 causal CE；decoder unnorm 依 dataset stats | 见 Audit A；旗舰路径与 LoRA 脚本需分开 | 本地 Qwen route 或个人改造 |
 | Octo | learned readout → continuous diffusion action head | transformer 一次 forward，multi-step denoise 在小 head 内完成；默认 pretrain config `H=4,D=7` | 论文与 frozen config/readout/head 直接支持 | Octo 指标可跨协议比较、任意 embodiment 都是 7D |
-| π0/openpi | continuous (H\times D) action expert 或 FAST tokens | VLM prefix + flow/FAST；输出 transform 与 broker 在模型外 | `Policy`/transforms/broker/DROID example 直接支持 | 本地 checkpoint/H/K/axis/unit |
+| π0/openpi | continuous \(H\times D\) action expert 或 FAST tokens | VLM prefix + flow/FAST；输出 transform 与 broker 在模型外 | `Policy`/transforms/broker/DROID example 直接支持 | 本地 checkpoint/H/K/axis/unit |
 
 RT-2 论文的 55B 1–3 Hz、5B 约 5 Hz 是其 cloud-serving protocol 的历史测量；它们不是 OpenVLA/π0 或本地 OpenPiVLA 的 hardware benchmark。Octo 的 27M/93M、800k OXE 和 20 diffusion steps 属于公开方法/recipe边界，不代表本地训练配置。
 

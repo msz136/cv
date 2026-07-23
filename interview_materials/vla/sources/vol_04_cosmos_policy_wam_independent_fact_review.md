@@ -17,7 +17,7 @@
 3. 本地 CoffeePressButton base/trained 两侧均为 `success=false` 的单 episode diagnostic；checkpoint 仍只是远端路径，不能证明 binary identity、模型 uplift、完整 0-success benchmark 或历史成功率。
 4. 候选人的逐文件设计、编写、运行、验收角色仍未确认；上游 latent layout、routing、planning 与官方指标不得写成个人原创或个人结果。
 
-另有两项边界被本轮补强：base `Cosmos-Predict2-2B-Video2World` 固定 revision 的模型卡明确是 NVIDIA Open Model License，而两份 policy model card 是 NSCLv1；官方 LIBERO/RoboCasa shape 下 latent volume (12544) 恰好分别被 (16\times7=112) 和 (32\times7=224) 整除，因此这两种 shape 没有不完整 action tail，通用实现仍需保留整除/尾部测试。
+另有两项边界被本轮补强：base `Cosmos-Predict2-2B-Video2World` 固定 revision 的模型卡明确是 NVIDIA Open Model License，而两份 policy model card 是 NSCLv1；官方 LIBERO/RoboCasa shape 下 latent volume \(12544\) 恰好分别被 \(16\times7=112\) 和 \(32\times7=224\) 整除，因此这两种 shape 没有不完整 action tail，通用实现仍需保留整除/尾部测试。
 
 ## 2. 独立来源冻结
 
@@ -54,7 +54,7 @@
 
 config 与 eval source 分别明确记录：LIBERO `state_t=9`，顺序为 blank/current proprio/wrist/primary/action/future proprio/future wrist/future primary/value；RoboCasa `state_t=11`，额外包含左右两路 third-person view。两份固定 model config 又分别记录 action `16×7` 与 `32×7`，proprio 均为 9D。[2][3][4]
 
-令 action chunk 为 (A\in[-1,1]^{K\times D_a})，单个 latent frame 的元素数为 (M=C'H'W'=16\times28\times28=12544)，action 元素数为 (L=KD_a)。注入实现为：
+令 action chunk 为 \(A\in[-1,1]^{K\times D_a}\)，单个 latent frame 的元素数为 \(M=C'H'W'=16\times28\times28=12544\)，action 元素数为 \(L=KD_a\)。注入实现为：
 
 \[
 z_a=operatorname{reshape}\left(
@@ -94,7 +94,7 @@ P(\text{value})=0.5\times0.5=0.25.
 
 `get_data_and_condition` 对 world sample 把 action slot 设为 clean condition；对 value sample 先把全部 frames 设为 clean，再把 value slot 置为需生成。V/Q variant 分别 mask current/action 或 future state。这里 `condition_video_input_mask=1` 表示 clean condition，不能当成 attention mask 或 loss mask。[2]
 
-主训练路径先注入 action、proprio、future proprio 与 value，采样 (x_t)，denoiser 输出 (hat x_0)，再形成 noise-level weighted latent MSE：
+主训练路径先注入 action、proprio、future proprio 与 value，采样 \(x_t\)，denoiser 输出 \(\hat x_0\)，再形成 noise-level weighted latent MSE：
 
 \[
 \mathcal L_{\mathrm{EDM}}=
@@ -104,7 +104,7 @@ m_{b,t}\,w(\sigma_{b,t})
 \left(x_{0,bcthw}-\hat x_{0,bcthw}\right)^2.
 \]
 
-变量解释：(m_{b,t}) 是按 latent frame 广播的 target mask/multiplier，(w(\sigma)) 是 noise-level weight。实现先构造 per-element `edm_loss_B_C_T_H_W`，再按条件乘 `final_mask_B_T`；action/future/value L1/MSE 是 component diagnostics，不等于主反向目标。
+变量解释：\(m_{b,t}\) 是按 latent frame 广播的 target mask/multiplier，\(w(\sigma)\) 是 noise-level weight。实现先构造 per-element `edm_loss_B_C_T_H_W`，再按条件乘 `final_mask_B_T`；action/future/value L1/MSE 是 component diagnostics，不等于主反向目标。
 
 ### 4.3 已确认的 flag 风险
 
@@ -200,7 +200,7 @@ ETag 是固定 revision 下的远端对象 identity，不等于本轮已本地�
 | --- | --- |
 | LIBERO 16×7 action inject→extract | PASS；112完整copies、tail0 |
 | RoboCasa 32×7 action inject→extract | PASS；56完整copies、tail0 |
-| value frame mean + ([-1,1]\to[0,1]) | PASS；`[-0.8,0.2,1.0]→[0.1,0.6,1.0]` |
+| value frame mean + \([-1,1]\to[0,1]\) | PASS；`[-0.8,0.2,1.0]→[0.1,0.6,1.0]` |
 | base recipe role algebra | PASS；`0.5/0.25/0.25` |
 | RoboCasa statistics normalize→denormalize | PASS；max error约 `1.11e-16` |
 | RoboCasa 7D→12D controller append | PASS；尾部 `[0,0,0,0,-1]` |

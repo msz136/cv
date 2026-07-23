@@ -48,7 +48,7 @@ schema、reward checker、holdout eval 如何各司其职？
 
 ### Behavior Cloning 与 covariate shift
 
-BC 把专家轨迹中的 ((o_t,a_t^*)) 当监督样本，最小化：
+BC 把专家轨迹中的 \((o_t,a_t^*)\) 当监督样本，最小化：
 
 \[
 \mathcal L_{BC}(\theta)
@@ -56,7 +56,7 @@ BC 把专家轨迹中的 ((o_t,a_t^*)) 当监督样本，最小化：
 \left[\ell\left(\pi_\theta(o),a^*\right)\right].
 \]
 
-(D_E) 是专家数据分布，(ell) 可以是连续 action 的 MSE/Huber 或 token action 的 cross-entropy。直觉是策略在“专家访问过的状态”上学得像；一旦自己的小误差把系统带到 (D_E) 之外，后续状态会越来越陌生，误差会复利累积。实现上要记录 observation history、action window、padding/mask 和 train/eval split，不能只说“拿轨迹训练”。
+\(D_E\) 是专家数据分布，\(\ell\) 可以是连续 action 的 MSE/Huber 或 token action 的 cross-entropy。直觉是策略在“专家访问过的状态”上学得像；一旦自己的小误差把系统带到 \(D_E\) 之外，后续状态会越来越陌生，误差会复利累积。实现上要记录 observation history、action window、padding/mask 和 train/eval split，不能只说“拿轨迹训练”。
 
 ### DAgger：让策略访问它会犯错的状态
 
@@ -75,7 +75,7 @@ for iteration k:
 
 ### Action chunking 与误差累积
 
-若每步动作误差期望为 (epsilon)，长时序 rollout 可能出现随时间增长的累积误差。action chunking 一次预测 (H) 步、只执行 (Kle H) 步后重新观测，可把策略查询次数从 (T) 降到约 (T/K)，同时保留纠偏机会。(H) 决定预测视野，(K) 决定开环执行长度；二者不是同一个参数。VOL 03 会专门讨论 action representation，VOL 05 会讨论延迟和评估协议。
+若每步动作误差期望为 \(\epsilon\)，长时序 rollout 可能出现随时间增长的累积误差。action chunking 一次预测 \(H\) 步、只执行 \(K\le H\) 步后重新观测，可把策略查询次数从 \(T\) 降到约 \(T/K\)，同时保留纠偏机会。\(H\) 决定预测视野，\(K\) 决定开环执行长度；二者不是同一个参数。VOL 03 会专门讨论 action representation，VOL 05 会讨论延迟和评估协议。
 
 ### 数据质量、覆盖与 suboptimal demo
 
@@ -100,7 +100,7 @@ for iteration k:
 \left[\sum_t \nabla_\theta\log\pi_\theta(a_t\mid s_t)\,G_t\right],
 \]
 
-其中 (G_t) 是从 (t) 开始的 return。直接使用 return 方差很大；减去只依赖状态的 baseline (b(s_t)) 不改变期望梯度，却能减少方差。用 (A_t=G_t-b(s_t)) 后，baseline 通常由 value network 估计。机器人场景还要面对 reward 稀疏、长 horizon 和昂贵 rollout。
+其中 \(G_t\) 是从 \(t\) 开始的 return。直接使用 return 方差很大；减去只依赖状态的 baseline \(b(s_t)\) 不改变期望梯度，却能减少方差。用 \(A_t=G_t-b(s_t)\) 后，baseline 通常由 value network 估计。机器人场景还要面对 reward 稀疏、长 horizon 和昂贵 rollout。
 
 ### GAE：在 TD 与 Monte Carlo 之间插值
 
@@ -113,7 +113,7 @@ GAE 用 TD residual 的折扣和估计 advantage：
 \delta_t=r_t+\gamma(1-d_t^{term})V(s_{t+1})-V(s_t).
 \]
 
-(gamma) 控制长期回报折扣，(lambda) 在低方差/高 bias 的 TD 和高方差/低 bias 的 Monte Carlo 之间插值，(d_t^{term}) 只表示真实终止。时间上限截断 `truncated` 通常仍允许 bootstrap，不能把它和 `terminated` 无条件合成一个 `done`。实现时要检查 episode boundary、timeout、value bootstrap 和 advantage normalization；GAE 不是 PPO 专属，但常与 PPO 配套。
+\(\gamma\) 控制长期回报折扣，\(\lambda\) 在低方差/高 bias 的 TD 和高方差/低 bias 的 Monte Carlo 之间插值，\(d_t^{term}\) 只表示真实终止。时间上限截断 `truncated` 通常仍允许 bootstrap，不能把它和 `terminated` 无条件合成一个 `done`。实现时要检查 episode boundary、timeout、value bootstrap 和 advantage normalization；GAE 不是 PPO 专属，但常与 PPO 配套。
 
 ### PPO clipped objective
 
@@ -191,11 +191,11 @@ SFT 对目标 token 序列做 masked cross-entropy：
 \sum_t m_t\log\pi_\theta(y_t\mid x,y_{<t}),
 \]
 
-(x) 是图像/文本/状态等条件，(y_t) 是目标 token，(m_t) 决定哪些位置计入 loss。工具调用中，(m_t) 可只覆盖 assistant/tool JSON；VLA 中则要明确 action token 是否与文本共同训练。SFT 学的是数据中给出的行为，不会自动学会未覆盖的失败恢复。
+\(x\) 是图像/文本/状态等条件，\(y_t\) 是目标 token，\(m_t\) 决定哪些位置计入 loss。工具调用中，\(m_t\) 可只覆盖 assistant/tool JSON；VLA 中则要明确 action token 是否与文本共同训练。SFT 学的是数据中给出的行为，不会自动学会未覆盖的失败恢复。
 
 ### DPO：用 preference pair 隐式吸收 reward
 
-DPO 对 chosen (y_w) 与 rejected (y_l) 的相对 log-ratio 优化：
+DPO 对 chosen \(y_w\) 与 rejected \(y_l\) 的相对 log-ratio 优化：
 
 \[
 \mathcal L_{DPO}
@@ -236,7 +236,7 @@ GRPO 对同一 prompt 采样一组回答/轨迹，用组内 reward 归一化形�
 R=\sum_j w_jR_j,
 \]
 
-其中 (R_j) 是不同约束项，(w_j) 是权重。这个公式只表达 reward decomposition 的通用机制；你现有 Robot Harness 页面支持“schema-aware reward”这一项目方向，但具体权重和 checker 字段仍需以本地数据/代码证据为准。
+其中 \(R_j\) 是不同约束项，\(w_j\) 是权重。这个公式只表达 reward decomposition 的通用机制；你现有 Robot Harness 页面支持“schema-aware reward”这一项目方向，但具体权重和 checker 字段仍需以本地数据/代码证据为准。
 
 ## Pipeline 与伪代码
 

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 04 World Model / Sim2Real：Failure Diagnostics（WM-020）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm020_failure_diagnostics.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm020_failure_diagnostics.md">
 <meta name="aris:source-sha256" content="4b95c450d2c4c0603a205e45c4fd20616e4cb9769064e98d09b8cd5e2d123578">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>4b95c450d2c4c0603a205e45c4fd20616e4cb9769064e98d09b8cd5e2d123578</code>；生成自：<code>interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm020_failure_diagnostics.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>4b95c450d2c4c0603a205e45c4fd20616e4cb9769064e98d09b8cd5e2d123578</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_04_world_model_sim2real_wm020_failure_diagnostics.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-failure">1. 四类 failure 的共同框架</a></li><li><a href="#2-posterior-collapse-latent">2. Posterior collapse：latent 被绕过</a></li><li><a href="#2-1">2.1 直觉与形式</a></li><li><a href="#2-2">2.2 最小诊断</a></li><li><a href="#3-action-ignoring">3. Action ignoring：条件存在但不可干预</a></li><li><a href="#3-1-action-conditioned">3.1 从“action-conditioned”到“可干预”</a></li><li><a href="#3-2">3.2 诊断矩阵</a></li><li><a href="#4-future-leakage">4. Future leakage：模型看到了不该看的信息</a></li><li><a href="#4-1">4.1 时间合同</a></li><li><a href="#4-2">4.2 常见泄漏点</a></li><li><a href="#5-background-shortcut">5. Background shortcut：学到采集条件而不是任务因果</a></li><li><a href="#6-failure">6. 四类 failure 的对照表</a></li><li><a href="#7-pipeline">7. 可审计诊断 pipeline</a></li><li><a href="#8">8. 项目挂钩与真实性边界</a></li><li><a href="#9">9. 结论与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 04 World Model / Sim2Real：Failure Diagnostics（WM-020）</h1>
 <div class="meta">状态：<code>drafted / VLA-WM-020 / knowledge_22_of_44 / card_synced / WARN</code> 报告日期：2026-07-18 证据截止：2026-07-18 当前节点：<code>VLA-WM-020</code>；本页先冻结四类 failure mode 与诊断矩阵，不把未运行 probe 写成项目结果。 前置：<a href="vol_04_world_model_sim2real_wm019.html">WM-019 Metric Boundary</a>、<a href="../sources/vol_04_wm020_failure_diagnostics_source_freeze.html">WM-020 Source Freeze</a>。</div>

@@ -1,19 +1,19 @@
 # VLA 模块进度（内容状态，不等于口述成绩）
 
-> 更新：2026-07-21  
+> 更新：2026-07-22
 > 说明：本文件只跟踪仓库内容和待练题；真实口述评分需要候选人回答后，才写入 `coaching_state.md`。
 
 ## 当前模块
 
 | 模块 | 内容状态 | 题卡 | 口述状态 | 下一步 |
 | --- | --- | ---: | --- | --- |
-| VOL 01 Foundations | drafted / review WARN / 分层试点 19 张 | 39 | 39 unseen | 事实复核已收口；下一步只收集 `PROJ-WAM-001` 真实口述，或继续后续未分层题卡，不把示范答案当作 mastery |
-| VOL 02 IL / RL / Post-training | drafted / review WARN | 40 / 40 drafted | 40 unseen | 独立事实复核；后续安排逐题口述 |
+| VOL 01 Foundations | drafted / review WARN / 分层覆盖 39/39 | 39 | 39 unseen | `VLA-FND-020` 已补齐 gradient-cosine/Pareto 诊断与 WAM/OPD routing 纠偏；内容分层已收口，下一步只做真实口述或独立补证，不把生成稿当 mastery |
+| VOL 02 IL / RL / Post-training | fact-reviewed / review WARN / 分层覆盖 40/40 | 40 / 40 drafted | 40 unseen | `VLA-RL-010` 已冻结 MC/TD/GAE、two-time-scale critic、chunk-level \(\gamma^K\) target 与终止 mask，并从 WAM auxiliary value head、Harness critic-free advantage、UWM supervised dataflow 总结实现口述；40 张已全部分层，下一步只做真实口述或独立补证，不把生成稿当 mastery |
 | VOL 03 VLA / Action | complete volume drafted / WARN / 44 of 44 covered | 44 drafted / 44 planned | 44 unseen | 独立事实复核与真实口述 |
 | VOL 04 World Model / Sim2Real | knowledge/cards 44/44 / Audit A–E + UWM Audit B / WM-011..014 与 WM-030..038 source frozen / WARN | 44 / 44 cards drafted | 44 unseen | 页面覆盖已收口；下一步做真实口述或补 project/action-effect artifacts，不把 drafted 当 mastered |
 | VOL 05 Engineering / Evaluation | Phase 0 44 planned / knowledge+cards 44/44 / completion audited / WARN | 44 / 44 cards drafted | 44 unseen | 页面覆盖已收口；下一步做真实口述或补 project/runtime artifacts，不把 drafted 当 mastered |
 | VOL 06 Perception / Grounding / Nav | PER-001..020 source+knowledge+card；PER-020 independent fact review 通过但仍 WARN/PASS WITH WARNING | 20 / 20 cards drafted | 20 unseen | 下一切片做真实口述；真实回答前不创建 coaching state |
-| VOL 07 Project Deep Dives | 五项目 evidence/ownership reconciliation 已完成；inventories 5/5、ownership ledgers 5/5、Robot Harness 28/40 raw + 6/10 support / WARN | 37 drafted / 37 unseen | not started | 下一切片逐题口述一个项目，或补一个 P0 immutable artifact；不因页面生成升级掌握状态 |
+| VOL 07 Project Deep Dives | 五项目 evidence/ownership reconciliation、model-answer bundles 与 implementation-derived QA 已全部收口；OpenPiVLA local LIBERO failure timeline 已补、inventories 5/5、ownership ledgers 5/5、Robot Harness 28/40 raw + 6/10 support / WARN | 37 drafted / 37 unseen | not started | 当前队首仍为 `PROJ-WAM-001`；OpenPiVLA 本地视频已排除“全程 dummy/仿真未动”但不支持 root cause，后续只使用本地落档；不因页面生成升级掌握状态 |
 | VOL 08 Coding / System Design | SYS-VLA-001..004 + CODE-VLA-001..008 三联件 / WARN | 12 drafted / 12 unseen | not started | 下一步进行 `SYS-VLA-004` 系统设计真实口述；CODE-VLA-003/007/008 仍可单独白板练习 |
 
 VOL 07 项目题卡明细：OpenPiVLA `12`（Batch 1 `8` + Batch 2 `4`）、Robot Harness `8`、OPD `9`、WAM `4`、UWM/LIBERO `4`，合计 `37`。这里的 `12` 是题卡数量，不等于题卡内的追问数或训练轮次。
@@ -49,11 +49,13 @@ VOL 07 项目题卡明细：OpenPiVLA `12`（Batch 1 `8` + Batch 2 `4`）、Robo
 
 ## 训练记录入口
 
-- 首轮逐题口述队列：[`oral_drill_queue.html`](oral_drill_queue.html)（当前队首：`PROJ-WAM-001`；可填写 [`WAM capture template`](wam_oral_capture_template.html)，回答后再参考 [`model answer`](wam_oral_model_answer.html)；尚无候选人回答，不创建 `coaching_state.md`）
+- 首轮逐题口述队列：[`oral_drill_queue.html`](oral_drill_queue.html)（当前队首：`PROJ-WAM-001`；[`implementation-derived WAM-001/002 model answer`](wam_oral_model_answer.html) 已覆盖项目主线与 ownership，再提交实际口述到 [`WAM capture template`](wam_oral_capture_template.html)；生成稿不是 transcript，不创建 `coaching_state.md`）
+- 通用单题真实口述模板：[`oral_drill_capture_template.html`](oral_drill_capture_template.html)（支持 12/12 队列题；先保存 verbatim transcript 与候选人自评，再做 Claim–Evidence–Ownership 核验和五维评分；空白模板不触发状态迁移）
 - OpenPiVLA formal trainer 示范回答：[`openpivla_oral_model_answer.html`](openpivla_oral_model_answer.html)（覆盖 `PROJ-OPENPIVLA-001` 与 Batch 2 的 `009..012`；包含 eager/证据阶梯/`H=15,D=72` shape 冲突/lineage；仅作回答后对照，题卡仍 unseen）
 - Robot Harness runtime/data/reward 示范回答：[`robot_harness_oral_model_answer.html`](robot_harness_oral_model_answer.html)（对应 `PROJ-HARNESS-001`；仅作回答后对照，题卡仍 unseen）
-- OPD 数据路由/蒸馏/评估示范回答：[`opd_oral_model_answer.html`](opd_oral_model_answer.html)（对应 `PROJ-OPD-001`；仅作回答后对照，题卡仍 unseen）
-- UWM/LIBERO 协议与 ownership 示范回答：[`uwm_oral_model_answer.html`](uwm_oral_model_answer.html)（对应 `PROJ-UWM-001`；仅作回答后对照，题卡仍 unseen）
+- OPD 数据路由/蒸馏/评估 implementation-derived 示范回答：[`opd_oral_model_answer.html`](opd_oral_model_answer.html)（覆盖 `PROJ-OPD-001..009`；仅作回答后对照，题卡仍 unseen）
+- OPD Training Objective Lineage Gate：[`../evidence/projects/opd_training_objective_lineage_gate.html`](../evidence/projects/opd_training_objective_lineage_gate.html)（root legacy top1 CE 与 `point/` formal \(D_{KL}(q_\beta\|p_S)\) 已拆分；coldstart teacher rollout 与 OPD5000 student rollout 已按 launcher/summary 对账）
+- UWM/LIBERO implementation-derived 示范回答：[`uwm_oral_model_answer.html`](uwm_oral_model_answer.html)（覆盖 `PROJ-UWM-001..004`；仅作回答后对照，题卡仍 unseen）
 - 首轮队列 Readiness Audit：[`oral_drill_readiness_audit.html`](oral_drill_readiness_audit.html)（12/12 题卡与证据入口已对账；真实口述仍为 0/12）
 
 - 题卡总索引：[`../questions/00_master_question_index.html`](../questions/00_master_question_index.html)
@@ -158,7 +160,7 @@ VOL 07 项目题卡明细：OpenPiVLA `12`（Batch 1 `8` + Batch 2 `4`）、Robo
 - WAM Batch 1 题卡：[`../questions/proj_wam.html`](../questions/proj_wam.html)（2 张 unseen；状态：[`review`](../questions/proj_wam.review.json)；包含 diagnostic 与 ownership 两题）
 - Cosmos Policy TurnOffMicrowave Trained-Failure P0 Audit：[`../evidence/projects/cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.html`](../evidence/projects/cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.html)（canonical：[`Markdown`](../evidence/projects/cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.md)，状态：[`review`](../evidence/projects/cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.review.json)；fixed batch可负向、closed-loop `0/1`、same-input/5-frame transfer gap已冻结；PROJ-WAM题卡仍全部unseen）
 - Cosmos Policy WAM Checkpoint Save-Load Gate P0 Audit：[`../evidence/projects/cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.html`](../evidence/projects/cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.html)（canonical：[`Markdown`](../evidence/projects/cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.md)，状态：[`review`](../evidence/projects/cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.review.json)；base-load、short-smoke、formal save2k/save1500 first divergence与0 checkpoint-like binary已冻结；PROJ-WAM题卡仍全部unseen）
-- UWM / LIBERO Batch 1 + Ownership 题卡：[`../questions/proj_uwm.html`](../questions/proj_uwm.html)（2 张 unseen；状态：[`review`](../questions/proj_uwm.review.json)；checkpoint/episodes/ownership 仍 WARN）
+- UWM / LIBERO Batch 1 + Ownership 题卡：[`../questions/proj_uwm.html`](../questions/proj_uwm.html)（4 张 unseen；状态：[`review`](../questions/proj_uwm.review.json)；task-specific checkpoint/episodes/normalizer-usage/ownership 仍 WARN）
 - VOL 08 SYS-VLA-001 Source Freeze：[`../sources/vol_08_sys001_vla_training_eval_platform_source_freeze.html`](../sources/vol_08_sys001_vla_training_eval_platform_source_freeze.html)（source frozen；知识与题卡已同步；状态：[`review`](../sources/vol_08_sys001_vla_training_eval_platform_source_freeze.review.json)）
 - VOL 08 SYS-VLA-001 知识页：[`../knowledge/vol_08_sys001_vla_training_eval_platform.html`](../knowledge/vol_08_sys001_vla_training_eval_platform.html)（1 node；题卡已同步；状态：[`review`](../knowledge/vol_08_sys001_vla_training_eval_platform.review.json)）
 - VOL 08 SYS-VLA-001 题卡：[`../questions/vol_08_sys001.html`](../questions/vol_08_sys001.html)（1 张 unseen；状态：[`review`](../questions/vol_08_sys001.review.json)）

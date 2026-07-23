@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PROJ-UWM-001 证据约束下的示范回答</title>
+<title>PROJ-UWM-001..004 从项目实现反推的证据约束口述稿</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\practice\uwm_oral_model_answer.md">
-<meta name="aris:source-sha256" content="bd2ad4314df7f337809eedc347979ad36f6e80e29d43fbfba86a64ce70355706">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\practice\uwm_oral_model_answer.md">
+<meta name="aris:source-sha256" content="56af65ab74fe2fc655125fec43058f6b0a4795e988dca261f371e5e06d8b3bfe">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,62 +140,211 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>bd2ad4314df7f337809eedc347979ad36f6e80e29d43fbfba86a64ce70355706</code>；生成自：<code>interview_materials\vla\practice\uwm_oral_model_answer.md</code></div>
-<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 项目定位</a></li><li><a href="#2-30">2. 30 秒版本</a></li><li><a href="#3-2">3. 2 分钟版本</a></li><li><a href="#4-robocasa-actionheadfix-90">4. RoboCasa actionheadfix：90 秒专项版本</a></li><li><a href="#5-evidence-contract">5. Evidence Contract</a></li><li><a href="#6">6. 关键问题三档回答</a></li><li><a href="#0-54">“训练指标都改善了，为什么还是 0/54？”</a></li><li><a href="#actionheadfix">“actionheadfix 算修复成功吗？”</a></li><li><a href="#0-744">“0.744 能写进简历吗？”</a></li><li><a href="#7">7. 高频追问答法</a></li><li><a href="#0-928">“0.928 不是更高，所以模型更好吗？”</a></li><li><a href="#0-744-0-79-4-6pp">“0.744 比 0.79 低 4.6pp，能说接近官方吗？”</a></li><li><a href="#dataloader-stall">“DataLoader stall 是不是已经定位根因？”</a></li><li><a href="#convert-action-0-6">“convert_action 的 0/6 怎么解释？”</a></li><li><a href="#section-15">“哪些是你做的？”</a></li><li><a href="#8">8. 练习边界</a></li><li><a href="#references">References</a></li></ol></nav>
-<h1>PROJ-UWM-001 证据约束下的示范回答</h1>
-<div class="meta">状态：<code>model_answer / evidence_bounded / not_candidate_transcript / unseen</code> 更新日期：2026-07-21 题目：如何介绍 UWM/LIBERO 项目，并解释协议冲突、RoboCasa actionheadfix 与闭环 0-success？</div>
-<h2 id="1">1. 项目定位</h2>
-<p>这不是“我提出了 UWM 新架构”的故事。最可信的定位是：围绕 UWM 从 LIBERO finetune 到闭环 rollout 的协议迁移、数据管线诊断，以及跨到 RoboCasa 时 action/state/normalizer/execution contract 的失败分析。</p>
-<p>回答结构固定为：目标与职责 → 可核验链路 → 一个最有价值的 bad case → 结果证据层级 → 未闭合项。不要先报 <code>0.744</code>，也不要把 RoboCasa 的训练 loss 下降说成性能提升。</p>
+<div class="meta">Canonical Markdown SHA-256：<code>56af65ab74fe2fc655125fec43058f6b0a4795e988dca261f371e5e06d8b3bfe</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\practice\uwm_oral_model_answer.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 项目定位：讲协议工程，不讲架构原创</a></li><li><a href="#2-30">2. 30 秒版本</a></li><li><a href="#3-2-3">3. 2–3 分钟主叙事</a></li><li><a href="#4-libero-only-90">4. LIBERO-only 90 秒版本</a></li><li><a href="#5">5. 从实现讲清数据、训练与评估</a></li><li><a href="#5-1-window">5.1 数据 window 如何形成</a></li><li><a href="#5-2">5.2 模型与训练入口</a></li><li><a href="#5-3-20k-steps">5.3 为什么本地不是简单跑 20k steps</a></li><li><a href="#5-4-rollout-protocol">5.4 两套 rollout protocol</a></li><li><a href="#5-5">5.5 结果分母与聚合风险</a></li><li><a href="#6-robocasa-actionheadfix-90">6. RoboCasa actionheadfix：90 秒专项版本</a></li><li><a href="#7-run-ledger">7. Run ledger：哪些结果能放在同一张表</a></li><li><a href="#8-evidence-contract">8. Evidence Contract</a></li><li><a href="#9">9. 关键问题三档回答</a></li><li><a href="#9-1-0-744-uwm">9.1 “0.744 能写成我复现了官方 UWM 吗？”</a></li><li><a href="#9-2-0-928">9.2 “0.928 更高，为什么不报它？”</a></li><li><a href="#9-3-normalizer">9.3 “你到底有没有用 normalizer？”</a></li><li><a href="#9-4-multi-task-checkpoint">9.4 “五个任务是不是一个 multi-task checkpoint？”</a></li><li><a href="#9-5-186-250">9.5 “186/250 的分母可靠吗？”</a></li><li><a href="#9-6-dataloader-stall">9.6 “DataLoader stall 已经解决了吗？”</a></li><li><a href="#10-proj-uwm-002">10. PROJ-UWM-002：哪些部分能说是我做的</a></li><li><a href="#10-1-30-ownership">10.1 30 秒 ownership 版本</a></li><li><a href="#10-2-role-matrix">10.2 Role matrix</a></li><li><a href="#10-3-ownership">10.3 Ownership 追问树</a></li><li><a href="#11-p9">11. P9 面试就绪度</a></li><li><a href="#11-1-role-fit-jd-mapping">11.1 Role Fit 与 JD Mapping</a></li><li><a href="#11-2-truth-boundary">11.2 Truth Boundary</a></li><li><a href="#11-3-production-gap">11.3 Production Gap</a></li><li><a href="#11-4-sp-ssp">11.4 SP/SSP 证据就绪度</a></li><li><a href="#11-5">11.5 补强计划与简历三档</a></li><li><a href="#12">12. 练习边界</a></li><li><a href="#13-implementation-anchors-references">13. Implementation Anchors 与 References</a></li><li><a href="#13-1-anchors">13.1 现场可解释的 anchors</a></li><li><a href="#13-2-references">13.2 References</a></li></ol></nav>
+<h1>PROJ-UWM-001..004 从项目实现反推的证据约束口述稿</h1>
+<div class="meta">状态：<code>implementation_derived_model_answer / evidence_bounded / not_candidate_transcript / unseen</code> 更新日期：2026-07-22 题目：如何介绍 UWM/LIBERO 项目，并解释训练适配、strict/reset 协议、DataLoader stall、ownership 与 RoboCasa 闭环失败？</div>
+<h2 id="1">1. 项目定位：讲协议工程，不讲架构原创</h2>
+<p>这个项目最可信的定位不是“我提出了 UWM 新架构”，而是：在 C500/MACA 环境中开展 UWM 的 LIBERO-90→LIBERO-10 task-specific fine-tune 与闭环评估，对齐数据、训练和 rollout 协议；再把这些合同迁到 RoboCasa，定位 action/state/prompt/normalizer/execution 不一致导致的 train-to-closed-loop 断层。</p>
+<p>回答顺序固定为：目标与职责 → 数据/模型/训练链路 → 评估 tuple → 一个 bad case → 结果证据等级 → ownership 与未闭合项。不要先报 <code>0.744</code>，也不要把低训练 loss 说成闭环性能提升。</p>
 <h2 id="2-30">2. 30 秒版本</h2>
-<div class="meta">我主要做 UWM 从训练到闭环评估的协议工程：在 C500/MACA 上迁移 LIBERO-90 到多个 LIBERO-10 task 的 finetune/rollout，固定 checkpoint、normalizer、init、horizon、rollout 数和 success predicate，并用 DataLoader-only A/B 定位 zarr 随机读取的周期性等待。LIBERO <code>186/250</code> 仍是用户确认summary；RoboCasa则有一条可重算的actionheadfix 30-epoch run：8卡完成3930 steps，同checkpoint的八组54-scenario rollout都无env error，但只有0–2 success，full-h4为<code>0/54</code>。所以我讲train-to-closed-loop failure，不称benchmark完成。</div>
-<h2 id="3-2">3. 2 分钟版本</h2>
-<div class="meta">项目最初是把 UWM 官方 <code>libero_90.pt</code> 迁到 RoboCasa，后来因为 action order、state/prompt、normalizer 和 eval harness 都没有闭合，先回到 UWM/LIBERO 官方路线建立训练—评估基线。我的工作重心是把结果绑定到 <code>(checkpoint, normalizer, init, seed, warmup, horizon, rollout count, success predicate, scorer, denominator)</code>，而不是只看一个 success rate。  在 LIBERO 路线，本地脚本支持五个 LIBERO-10 task、<code>pruned_init</code>、5-step zero-action warmup、50 rollout/task 和 8-shard 聚合。<code>186/250=0.744</code> 是用户确认的远端 fixed-init summary，本地没有对应 checkpoint、normalizer hash 和 250 条 episode JSONL；<code>232/250=0.928</code> 是 <code>env.seed+reset</code> 的另一套协议。论文 Table II 还使用 OOD initialization、object shift、背景移除和三个 finetune seeds，所以这三个数字不能直接横比。DataLoader-only A/B 中，preload+infinite sampler 把 p95 wait 从约 <code>13.86s</code> 降到约 <code>0.19s</code>，它支持数据等待诊断，但还不是 full GPU throughput 提升。  RoboCasa 方向我保留了 run-specific 失败链。actionheadfix 从 <code>libero_90.pt</code> partial load：478个target keys中446 matched，7D→12D action encoder/decoder的8个key重置，并加入task/prompt/16D-state/right-view条件。该30-epoch run的打印action loss从<code>2.4300</code>降到<code>0.07689</code>，但<code>val_ratio=0</code>；八份raw rollout JSON共享同一18 task×3 scenario、checkpoint和normalizer，full h1/h2/h4/h5/h8只有<code>2/1/0/1/1</code> success，h4虽有<code>45/54</code> robot-env contact仍是<code>0/54</code>。因此结论不是“修复成功”，而是训练fit没有转化为稳定闭环；下一步要沿同一failure case追 expert→x0→sampled→converted→executed action，而不是继续只压训练loss。</div>
-<h2 id="4-robocasa-actionheadfix-90">4. RoboCasa actionheadfix：90 秒专项版本</h2>
-<div class="meta">旧路线的问题是 RoboCasa official12 与 <code>libero_90.pt</code> 的7D action head、state和多视角条件不一致。新run用shape-compatible partial load保留446个key，重置8个action encoder/decoder key，训练12D reordered action，并加入task、prompt、16D state和right view；同一个models.pt/normalizer随后进入五组horizon和三组input ablation。  <code>train.out</code> 可直接重算41个打印点：step0→3929的total/action/raw-action loss为<code>3.3257→0.25385</code>、<code>2.4300→0.07689</code>、<code>0.9986→0.03043</code>，8个rank正常退出。但没有validation。八个setting都使用相同54 scenario且env errors为0，full h1/h2/h4/h5/h8为<code>2/1/0/1/1</code>，no-prompt/no-right/no-state h5为<code>2/2/1</code>；成功只集中在Kettle或Microwave。训练稳定只是必要条件，1个episode差异也不能支持ablation因果。  我还把 execution 错误与策略失败分开：native direct 是 <code>0/6</code>、env errors 0，属于有效但失败的 rollout；strict OpenPI-style <code>convert_action</code> 是 <code>0/6</code>、env errors 6，全部在 step 0 因 <code>expected 12, got 5</code> 失败，不能算模型 0-success。GT dict-to-native bridge 的最大绝对差为 0，只说明桥接数值一致，不证明模型动作正确。安全结论是“接口错误已定位，策略闭环仍未解决”。</div>
-<h2 id="5-evidence-contract">5. Evidence Contract</h2>
-<table><thead><tr><th>Claim</th><th>证据</th><th>等级</th><th>当前能否强说</th></tr></thead><tbody>
-<tr><td>fixed-pruned-init、warmup、rollout、success tuple</td><td><a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM Inventory</a> 与本地 evaluator/launcher</td><td><code>local-direct / C1-C2</code></td><td>可讲协议迁移与设计取舍</td></tr>
-<tr><td><code>186/250=0.744</code></td><td>user-confirmed remote final summary</td><td><code>user-confirmed / raw-missing</code></td><td>只能带 provenance 报告</td></tr>
-<tr><td><code>232/250=0.928</code></td><td>reset-style report context</td><td><code>protocol-diagnostic</code></td><td>不能讲模型 uplift</td></tr>
-<tr><td>Table II 约 0.79</td><td><a href="../sources/vol_04_benchmark_evidence_claim_to_protocol.html">Benchmark Audit</a></td><td><code>upstream-verified / non-comparable</code></td><td>不能说严格只差 4.6pp</td></tr>
-<tr><td>actionheadfix partial init/x0/group metrics</td><td><a href="../sources/vol_05_uwm_libero_robocasa_transfer_evidence_freeze.html">Transfer Evidence Freeze</a></td><td><code>local-report / C1-C2</code></td><td>可讲训练与诊断机制</td></tr>
-<tr><td>30-epoch 8×54 raw sweep；h4 <code>0/54</code>、contact <code>45/54</code></td><td><a href="../evidence/projects/uwm_robocasa_actionheadfix_30epoch_train_eval_p0_audit.html">ActionHeadFix P0 Audit</a></td><td><code>remote-snapshot-raw / checkpoint-unverified</code></td><td>可讲run-specific失败链，不称benchmark完成</td></tr>
-<tr><td>DataLoader p95 <code>13.86s→0.19s</code></td><td>DataLoader-only benchmark/report</td><td><code>smoke-bounded / C2</code></td><td>可讲 wait first-divergence，不报 GPU uplift</td></tr>
-<tr><td>个人 ownership</td><td><a href="../evidence/projects/uwm_libero_ownership_ledger.html">UWM Ownership Ledger</a></td><td><code>candidate-confirmation-pending</code></td><td>只能按已确认文件/角色回答</td></tr>
+<div class="meta">我做的是 UWM 从 fine-tune 到闭环评估的协议工程。在 LIBERO 路线，我把五个 LIBERO-10 task 分别接入两路 RGB、7D action、16-step chunk 的训练与 rollout，区分 <code>env.seed+reset</code> 和 fixed <code>pruned_init</code> 两套评估，并用 DataLoader-only A/B 定位 Zarr 随机读取等待。用户确认的 fixed-init 结果是 <code>186/250</code>，但本地没有对应五个 checkpoint 和 250 条 episode raw bundle；RoboCasa actionheadfix 则是训练完成但闭环只有 <code>0–2/54</code> 的失败链。所以我讲协议对齐、工程诊断和结果边界，不称 UWM 架构原创或 benchmark 完成。</div>
+<h2 id="3-2-3">3. 2–3 分钟主叙事</h2>
+<div class="meta">项目最初是把 UWM 的 <code>libero_90.pt</code> 迁到 RoboCasa，但 action order、state/prompt、normalizer 和 eval harness 没有形成闭环，所以我先回到 UWM/LIBERO 路线建立可解释的训练—评估基线。  数据侧，项目把五个 LIBERO-10 HDF5 task 各自转成 compressed Zarr buffer。每个训练 window 长 19：前 2 帧作为当前两路 RGB 观测，中间对齐 16 个 7D action，最后 2 帧作为 future observation target。LIBERO adapter 明确关闭 low-dim 和 language 输入；这些是当前 route 的接口，不代表 UWM 在所有数据上都只有这两种输入。  训练侧，从 <code>libero_90.pt</code> strict-load task-specific 模型，8 卡 DDP 训练；image encoder 使用 base learning rate 的 <code>0.05</code> 倍，其余参数使用 base learning rate。这里不是一个共享五任务 checkpoint：Book-Caddy 指向单独的 6000-step run，其余四个 task 指向 bs64 epoch-aligned run。所谓 aligned 是把官方 <code>20k steps × 36 × 2 GPUs</code> 换算为本地 <code>64 × 8 GPUs</code> 下相近的 nominal epoch 数，得到约 <code>2728–2814</code> 个 optimizer steps，不是证明优化轨迹与官方一致。  评估侧，<code>uwm_reset</code> 用 <code>env.seed(e)+env.reset()</code>；<code>libero_fixed_init</code> 按 <code>.pruned_init</code> index reset，并先执行 5 个 zero-action warmup。每个 task 50 条 episode，被拆成 8 个 shard；每条记录保存 seed、init index、success 和 policy-action count，task/global summary 用 completed episodes 作分母。用户确认的 fixed-init summary 是 <code>44/50、40/50、38/50、33/50、31/50</code>，合计 <code>186/250=0.744</code>；旧 reset-style 是 <code>232/250=0.928</code>。两者只能说明 protocol sensitivity，论文 Table II 还有 OOD init、object shift、背景和多 seed 差异，不能横比。  实现复核还有三个边界。第一，LIBERO evaluator 只读取 <code>ckpt["model"]</code>，没有读取 action normalizer；base checkpoint 中 normalizer 也是 <code>None</code>，因此不能说这条路径“加载并固定了 target normalizer”。第二，五个 task 使用 task-specific checkpoint，不能讲成一次 multi-task fine-tune。第三，聚合器虽然记录 expected=50，却没有 assert completed=50；当前 <code>186/250</code> 依赖用户确认的五个 50-rollout summary，本地 raw episode 不在。  工程 bad case 是周期性 DataLoader wait。finite sampler 的 p95 约 <code>13.862s</code>，只换 infinite sampler 仍约 <code>13.183s</code>，preload+infinite 后约 <code>0.194s</code>。这支持随机 Zarr 读取是主要等待来源，但还不是 GPU 训练吞吐提升。RoboCasa 侧也保持失败结论：actionheadfix 30-epoch run 的 action loss 从 <code>2.4300</code> 降到 <code>0.07689</code>，而 full-h4 仍 <code>0/54</code>、<code>45/54</code> 仅发生 robot-env contact。我的结论是训练拟合没有转化为任务成功，下一步要追 expert→x0→sampled→converted→executed action 的 first divergence。</div>
+<h2 id="4-libero-only-90">4. LIBERO-only 90 秒版本</h2>
+<div class="meta">LIBERO 这条线不是训练一个五任务统一策略，而是把五个 LIBERO-10 task 分别从 <code>libero_90.pt</code> 继续训练。数据是两路 <code>128×128</code> RGB 和 7D action；window 长 19，模型用 2 帧历史、预测 16-step action chunk 和 2 帧未来观测。模型配置是 ResNet observation encoder、768 hidden、12 层、12 heads、24 registers、100-step diffusion training schedule 和 10-step inference schedule；这是上游 UWM 架构在本地 adapter 中的实例化，不是我的原创。  训练适配的关键不是直接照搬 20k optimizer steps。官方口径是 per-device batch 36、2 卡；本地是 64、8 卡，所以脚本按每个 task 的 sequence 数换算 nominal epochs，remaining four 得到约 2.7k–2.8k steps；Book-Caddy 仍来自独立 6000-step run。评估再区分 reset-style 和 fixed-pruned-init：后者 5-step zero-action warmup、50 rollouts/task、8 shard。用户确认 fixed-init 为 <code>186/250</code>，但 checkpoint/hash/250 episodes 没同步，因此只作为 user-confirmed summary。实现上 evaluator 只 strict-load model weights，没有加载 normalizer；聚合器也没有强制 completed 等于 expected。这两点是我面试中会主动说明的证据边界。</div>
+<h2 id="5">5. 从实现讲清数据、训练与评估</h2>
+<h3 id="5-1-window">5.1 数据 window 如何形成</h3>
+<p><code>libero_official_common.py</code> 固定五个 task、两路 RGB <code>agentview_rgb</code> / <code>eye_in_hand_rgb</code> 与 7D action。<code>prepare_libero_buffers.py</code> 检查每个 task 50 个 episode，将 HDF5 写入 compressed Zarr，并在该 route 中设置 <code>flip_rgb=True</code>。</p>
+<p><code>process_batch</code> 对长度 19 的 window 做以下切分：</p>
+<pre><code class="language-python"># obs_horizon=2, action_horizon=16, seq_len=19
+action_start = 1
+action_end = 17
+curr_obs = obs[:, :2]       # 两帧当前观测
+actions = action[:, 1:17]   # 16×7 action chunk
+next_obs = obs[:, 17:]      # 两帧 future observation target</code></pre>
+<p>口述时要强调：该 LIBERO route 的 <code>use_low_dim=False</code>、<code>use_language=False</code>；RoboCasa route 的 state/prompt/right-view 是另一套输入合同，不能倒灌进 LIBERO 结果解释。</p>
+<h3 id="5-2">5.2 模型与训练入口</h3>
+<p>本地 evaluator 实例化的接口为：2-frame observation、<code>action_len=16</code>、<code>action_dim=7</code>、ResNet encoder、768 embedding、latent patch <code>[2,4,4]</code>、12 layers/12 heads、24 registers、100 diffusion train steps 和 10 inference steps。训练 <code>train_one_step</code> 同时把 <code>curr_obs</code>、<code>next_obs</code> 和 action chunk 送入 UWM；shared action/video diffusion 机制属于上游。</p>
+<p><code>train_robomimic.py</code> 在 pretrain load 后把 image encoder 参数单独分组为 <code>0.05×base_lr</code>，其余 trainable 参数使用 base lr，再包 DDP。<code>save_every=999999</code> 不代表不保存：<code>maybe_save_checkpoint</code> 仍在 final step 写 <code>models.pt</code>。</p>
+<h3 id="5-3-20k-steps">5.3 为什么本地不是简单跑 20k steps</h3>
+<p>脚本先计算每个 task 在官方与本地 world-size/batch 下的 steps per epoch，再按 nominal epoch 数换算：</p>
+<div class="formula">\[
+N_t^{\mathrm{local}}
+=\left\lceil
+N^{\mathrm{official}}
+\frac{S_t^{\mathrm{local}}}{S_t^{\mathrm{official}}}
+\right\rceil,
+\qquad N^{\mathrm{official}}=20000.
+\]</div>
+<p>变量解释：<code>S</code> 是脚本用 per-rank sample 数和 per-device batch 计算的 steps per epoch；<code>t</code> 表示 task。直觉上，这保留的是近似训练 epoch 数，不是 optimizer update 数、样本顺序或数值轨迹。实现映射是 <code>remote_muxi_libero_remaining4_bs64_aligned_queue.sh::steps_per_epoch/task_steps</code>。</p>
+<table><thead><tr><th>Task</th><th>train sequences</th><th>official steps/epoch</th><th>local steps/epoch</th><th>aligned optimizer steps</th><th>实际 checkpoint route</th></tr></thead><tbody>
+<tr><td>Book-Caddy</td><td>8243</td><td>114</td><td>16</td><td>2808（公式值）</td><td>严格评估 launcher 实际指向独立 6000-step run</td></tr>
+<tr><td>Soup-Cheese</td><td>12102</td><td>168</td><td>23</td><td>2739</td><td>remaining4 bs64 aligned run</td></tr>
+<tr><td>Bowl-Drawer</td><td>11104</td><td>154</td><td>21</td><td>2728</td><td>remaining4 bs64 aligned run</td></tr>
+<tr><td>Moka-Moka</td><td>18957</td><td>263</td><td>37</td><td>2814</td><td>remaining4 bs64 aligned run</td></tr>
+<tr><td>Mug-Mug</td><td>11542</td><td>160</td><td>22</td><td>2750</td><td>remaining4 bs64 aligned run</td></tr>
 </tbody></table>
-<h2 id="6">6. 关键问题三档回答</h2>
-<h3 id="0-54">“训练指标都改善了，为什么还是 0/54？”</h3>
-<p><strong>危险回答</strong>：loss 已经很低，应该只是 RoboCasa 环境太难或者算力数值误差。</p>
-<p><strong>可过回答</strong>：teacher-forced 指标和闭环成功率不等价，模型可能有 distribution shift 或 contact 问题。</p>
+<p>因此安全表达是“按 task sequence 数做 epoch-aligned step conversion，并使用 task-specific checkpoints”，不是“完全复现官方 20k-step training”。</p>
+<h3 id="5-4-rollout-protocol">5.4 两套 rollout protocol</h3>
+<table><thead><tr><th>字段</th><th><code>uwm_reset</code></th><th><code>libero_fixed_init</code></th></tr></thead><tbody>
+<tr><td>reset</td><td><code>env.seed(seed); env.reset()</code></td><td><code>reset_to_state(pruned_init[index])</code></td></tr>
+<tr><td>init index</td><td>无</td><td><code>(init_start+episode) % len(init_states)</code></td></tr>
+<tr><td>warmup</td><td>0</td><td>5 个 shape <code>(1,7)</code> zero actions</td></tr>
+<tr><td>rollout horizon</td><td>必须看 launcher；evaluator default 1000</td><td>strict launcher 显式传 600，并将 warmup 加到 env max length</td></tr>
+<tr><td>success</td><td>episode 终止时 <code>bool(info.get("success", False))</code></td><td>同左</td></tr>
+<tr><td>artifact</td><td>shard <code>episodes.jsonl/summary.json</code></td><td>同左，另有 init path/count</td></tr>
+</tbody></table>
+<p>8 shard 对 50 条 episode 的分配是 <code>7,7,6,6,6,6,6,6</code>；seed 与 init-start 用相同 offset，目标是覆盖 0–49 且不重叠。并行发生在同一 task 的 shard 内，五个 task 仍按 launcher 顺序处理。</p>
+<h3 id="5-5">5.5 结果分母与聚合风险</h3>
+<p>代码中的 task/global success rate 都按实际写入的 episode 数计算：</p>
+<div class="formula">\[
+\widehat{p}
+=\frac{\sum_{i=1}^{N_{\mathrm{completed}}}\mathbf{1}[s_i=1]}
+{N_{\mathrm{completed}}}.
+\]</div>
+<p>变量解释：<code>s_i</code> 是 episode 最终 <code>info["success"]</code>；分母是 <code>num_rollouts_completed</code>，不是配置的 <code>num_rollouts_expected</code>。直觉上，如果一个 shard 没写出 episode，聚合结果仍可能生成但分母变小。实现映射是 5-task parallel launcher 的 per-task/global Python aggregator；当前缺少 <code>completed==expected</code> 的 fail-closed assertion。</p>
+<p>用户确认的 fixed-init per-task summary为：</p>
+<table><thead><tr><th>Task</th><th>Successes / assumed 50</th><th>Rate</th></tr></thead><tbody>
+<tr><td>Book-Caddy</td><td>44/50</td><td>0.88</td></tr>
+<tr><td>Soup-Cheese</td><td>40/50</td><td>0.80</td></tr>
+<tr><td>Bowl-Drawer</td><td>38/50</td><td>0.76</td></tr>
+<tr><td>Moka-Moka</td><td>33/50</td><td>0.66</td></tr>
+<tr><td>Mug-Mug</td><td>31/50</td><td>0.62</td></tr>
+<tr><td>合计</td><td>186/250</td><td>0.744</td></tr>
+</tbody></table>
+<p>这是 <code>user-confirmed-remote-final</code>，不是本地由 250 行 JSONL 复算出的 C3 artifact。</p>
+<h2 id="6-robocasa-actionheadfix-90">6. RoboCasa actionheadfix：90 秒专项版本</h2>
+<div class="meta">RoboCasa 的接口与 LIBERO 不同：旧 base 是 7D action、两路视觉且无 state/language；target route 使用 reordered 12D action，并加入 task、prompt、16D state 和 right-view。actionheadfix 用 shape-compatible partial load：478 个 target keys 中 446 matched，7D→12D action encoder/decoder 的 8 个 key 重置，其余新增条件模块按 missing-init 处理。  30-epoch run 在 8 卡上完成 3930 steps，打印 total/action/raw-action loss 从 <code>3.3257/2.4300/0.9986</code> 降到 <code>0.25385/0.07689/0.03043</code>，但 <code>val_ratio=0</code>。同 checkpoint 和 normalizer 的八组 54-scenario rollout 都没有 env error，full h1/h2/h4/h5/h8 只有 <code>2/1/0/1/1</code> success，no-prompt/no-right/no-state h5 为 <code>2/2/1</code>；成功只集中在 Kettle 或 Microwave。h4 虽有 <code>45/54</code> robot-env contact，仍是 <code>0/54</code> task success。  我把 execution error 与策略失败分开：native direct <code>0/6</code>、env errors 0，是有效但失败的 rollout；strict OpenPI-style <code>convert_action</code> <code>0/6</code>、env errors 6，全部在 step 0 因 <code>expected 12, got 5</code> 退出，不能计成六条模型失败。安全结论是“接口错误被定位，训练 fit 到闭环成功仍未闭合”，不是“actionheadfix 修复成功”。</div>
+<h2 id="7-run-ledger">7. Run ledger：哪些结果能放在同一张表</h2>
+<table><thead><tr><th>Run / 阶段</th><th>Checkpoint / schedule</th><th>Protocol</th><th>Denominator</th><th>结果</th><th>可说什么</th></tr></thead><tbody>
+<tr><td>Book-Caddy early</td><td>task-specific 6000-step <code>models.pt</code></td><td>reset-style parallel rollout</td><td>report 50</td><td><code>42/50=0.84</code></td><td>单任务 report-supported；不等于五任务结果</td></tr>
+<tr><td>Five-task reset-style</td><td>Book 6000 + remaining4 aligned task checkpoints</td><td><code>env.seed+reset</code></td><td>user-confirmed 250</td><td><code>232/250=0.928</code></td><td>protocol diagnostic，不是 uplift</td></tr>
+<tr><td>Five-task fixed-init</td><td>同一 launcher 的 task-specific checkpoint mapping</td><td><code>pruned_init</code> + 5 warmup + horizon 600</td><td>user-confirmed assumed 50/task</td><td><code>186/250=0.744</code></td><td>项目 fixed-init summary；raw bundle缺</td></tr>
+<tr><td>Paper Table II</td><td>upstream recipe / 3 seeds</td><td>OOD init + object shift + background changes</td><td>paper protocol</td><td>约 <code>0.79</code></td><td>只作上游上下文，不与本地直接减法归因</td></tr>
+<tr><td>RoboCasa actionheadfix</td><td>remote 30-epoch / 3930-step run</td><td>18 tasks×3 scenarios，multiple horizons/inputs</td><td>raw 54 per setting</td><td><code>0–2/54</code></td><td>train→closed-loop failure，不称 benchmark success</td></tr>
+</tbody></table>
+<h2 id="8-evidence-contract">8. Evidence Contract</h2>
+<table><thead><tr><th>Claim</th><th>证据</th><th>等级</th><th>当前能否强说</th></tr></thead><tbody>
+<tr><td>五 task、两路 RGB、7D action</td><td><code>libero_official_common.py</code></td><td><code>local-direct / C1</code></td><td>可讲 adapter contract</td></tr>
+<tr><td>2 obs +16 actions +2 future obs</td><td>dataset <code>seq_len=19</code> + <code>process_batch</code></td><td><code>local-direct / C2</code></td><td>可现场解释 tensor slicing</td></tr>
+<tr><td>ResNet/768/12-layer/24-register/16×7/10-step inference</td><td>evaluator <code>build_model</code></td><td><code>local-direct / upstream-instance</code></td><td>可讲实例化，不说个人架构原创</td></tr>
+<tr><td>image encoder <code>0.05×lr</code>、DDP、final save</td><td>trainer patch</td><td><code>snapshot-local / C1-C2</code></td><td>可讲代码路径；个人函数 ownership待确认</td></tr>
+<tr><td>task-specific/mixed schedule checkpoints</td><td>5-task launcher checkpoint mapping</td><td><code>local-direct / C2</code></td><td>必须纠正 multi-task checkpoint 说法</td></tr>
+<tr><td>epoch-aligned约2728–2814 steps</td><td>bs64 aligned queue arithmetic</td><td><code>local-direct / C2</code></td><td>可讲 nominal epoch conversion，不说同优化轨迹</td></tr>
+<tr><td>fixed-init/warmup/8-shard/50 rollout</td><td>evaluator + parallel launcher</td><td><code>local-direct / C2</code></td><td>可讲协议与设计取舍</td></tr>
+<tr><td>evaluator不加载normalizer</td><td><code>build_model</code> 只读取 <code>ckpt["model"]</code></td><td><code>local-direct / negative code evidence</code></td><td>应主动说明；不能说 target normalizer 被固定</td></tr>
+<tr><td><code>186/250=0.744</code></td><td>user-confirmed remote JSON</td><td><code>user-confirmed / raw-missing</code></td><td>只能带 provenance</td></tr>
+<tr><td><code>232/250=0.928</code></td><td>reset-style report context</td><td><code>protocol-diagnostic</code></td><td>不能讲模型 uplift</td></tr>
+<tr><td>DataLoader p95 <code>13.862→0.194s</code></td><td>DataLoader-only benchmark/report</td><td><code>smoke-bounded / C2</code></td><td>可讲 wait first-divergence，不报 GPU uplift</td></tr>
+<tr><td>Actionheadfix h4 <code>0/54</code>、contact <code>45/54</code></td><td>ActionHeadFix P0 Audit</td><td><code>remote-snapshot-raw / checkpoint-unverified</code></td><td>可讲 run-specific failure，不称 benchmark完成</td></tr>
+<tr><td>个人 ownership</td><td>UWM Ownership Ledger + 用户范围自述</td><td><code>self-report / role-confirmation-pending</code></td><td>可说做了 fine-tune/eval/protocol alignment；逐函数仍保守</td></tr>
+</tbody></table>
+<h2 id="9">9. 关键问题三档回答</h2>
+<h3 id="9-1-0-744-uwm">9.1 “0.744 能写成我复现了官方 UWM 吗？”</h3>
+<p><strong>危险回答</strong>：可以，我严格复现了官方 UWM，成功率 74.4%，只比官方低 4.6pp。</p>
+<p><strong>可过回答</strong>：这是远端 fixed-init 结果，但与论文还有一些设置差异。</p>
 <p><strong>强回答</strong>：</p>
-<div class="meta">我先固定一条run。训练层，8卡3930 steps正常完成，打印action loss从<code>2.4300</code>降到<code>0.07689</code>，但没有validation；closed-loop层，同checkpoint和normalizer的八组raw JSON都是54个相同scenario、env errors为0，却只有0–2 success，h4 <code>0/54</code>且<code>45/54</code>有robot-env contact。接触不等于任务谓词完成，说明first divergence在训练fit到闭环执行之间。下一步沿同一h4 failure比较expert、model x0、sampled 12D、converted/executed action和env state，而不是继续只堆epoch。</div>
-<p>需要补的证据：produced checkpoint binary/hash和fresh-load、完整train JSONL、env/scorer revision、failure video，以及跨checkpoint seed的同54-scenario paired rerun。</p>
-<h3 id="actionheadfix">“actionheadfix 算修复成功吗？”</h3>
-<p><strong>危险回答</strong>：成功，loss 从 95 降到了 0.22。</p>
-<p><strong>可过回答</strong>：训练侧修复成功，但闭环还没成功。</p>
+<div class="meta">我不会写成严格复现。<code>186/250</code> 是用户确认的项目 fixed-pruned-init summary，本地缺五个 target checkpoint、250 条 episode、scorer 和完整 manifest；论文 Table II 使用 OOD init、object shift、背景调整和多个 finetune seeds。它可以证明我做过协议对齐和结果 reconciliation，但当前不是与论文完全同口径的 C3 benchmark。</div>
+<h3 id="9-2-0-928">9.2 “0.928 更高，为什么不报它？”</h3>
+<p><strong>危险回答</strong>：因为我们的模型比官方更强，超过了 13.8pp。</p>
+<p><strong>可过回答</strong>：reset-style 更容易，所以不作为正式结果。</p>
 <p><strong>强回答</strong>：</p>
-<div class="meta">我只把它称为“训练侧假设被部分验证”。checkpoint partial init、x0 loss 和 teacher-forced 指标证明 12D head 不再完全从坏初始化开始，且模型能拟合一部分 action 分布；但闭环 success 没改善，所以不能写性能修复。这个区分能避免把优化器收敛、open-loop action fit 和 environment success 混成一个指标。</div>
-<p>需要补的证据：同 protocol 的 before/after checkpoint、teacher-forced、single-task closed-loop 与 54-scenario paired summary。</p>
-<h3 id="0-744">“0.744 能写进简历吗？”</h3>
-<p><strong>危险回答</strong>：可以，我复现了官方 UWM，成功率 74.4%。</p>
-<p><strong>可过回答</strong>：可以写，但需要说明是远端结果。</p>
+<div class="meta"><code>0.928</code> 和 <code>0.744</code> 的模型权重映射大体来自同一 task-specific run family，但 init distribution 明确不同，旧 run 的 exact horizon/raw manifest 也没有完整同步。它首先是 protocol sensitivity diagnostic。只有同 checkpoint、同 horizon、同 seed/init mapping、同 scorer 的 paired episodes，才能把差异归因到 reset protocol；更不能用它和论文 0.79 做模型 uplift。</div>
+<h3 id="9-3-normalizer">9.3 “你到底有没有用 normalizer？”</h3>
+<p><strong>危险回答</strong>：用了，所有 checkpoint 都绑定了 action normalizer。</p>
+<p><strong>可过回答</strong>：checkpoint里可能有，但现在缺 hash。</p>
 <p><strong>强回答</strong>：</p>
-<div class="meta">目前更适合在面试中带 provenance 讲，不建议作为无条件 C3 bullet。它是用户确认的远端 fixed-init summary，本地缺 checkpoint、normalizer 和 250 episode bundle；同时与 Table II 协议不可比。若写简历，保守表达应是“搭建并对齐 5-task fixed-init rollout 协议，记录用户确认的 186/250 summary，并识别 reset-style 与论文 OOD 协议差异”，而不是“复现官方 74.4%”。</div>
-<p>需要补的证据：immutable run bundle、operator/reviewer、same-protocol baseline 和候选人 ownership。</p>
-<h2 id="7">7. 高频追问答法</h2>
-<h3 id="0-928">“0.928 不是更高，所以模型更好吗？”</h3>
-<p>不一定。reset-style 改变了初始状态分布，可能更容易；它首先说明 protocol sensitivity，而不是模型能力 uplift。要比较模型，必须固定 checkpoint、init distribution、seed、warmup、scorer 和 denominator。</p>
-<h3 id="0-744-0-79-4-6pp">“0.744 比 0.79 低 4.6pp，能说接近官方吗？”</h3>
-<p>不能。论文使用 OOD init、object shift、背景设置和多 seed，项目使用 fixed-pruned-init 与另一条 warmup/评测协议；差值没有严格比较意义。</p>
-<h3 id="dataloader-stall">“DataLoader stall 是不是已经定位根因？”</h3>
-<p>可以说定位了 DataLoader wait 的 first divergence：preload+infinite 在 DataLoader-only smoke 中把 p95 wait 从约 13.86s 降到约 0.19s。不能说完整训练已提速，需要 matched GPU throughput/memory A/B。</p>
-<h3 id="convert-action-0-6">“convert_action 的 0/6 怎么解释？”</h3>
-<p>必须先看 invalid policy。strict path 6 条都在 step 0 因维度错误退出，不是六条有效模型失败；native direct 的 <code>0/6</code> 才是有效但不成功的 rollout。两者不能混算 success rate。</p>
-<h3 id="section-15">“哪些是你做的？”</h3>
-<p>按 ledger 区分训练迁移、评估协议、数据管线、action adapter、诊断、远端运行、协作和工具辅助。UWM architecture 属于 upstream，Git author 和 report path 都不能替代逐文件角色确认。</p>
-<h2 id="8">8. 练习边界</h2>
-<ul><li>这是 model answer，不是候选人的真实 transcript。</li><li>使用时必须把“我做了什么”替换为本人可确认的 launcher、函数、patch、命令或验收 artifact。</li><li><code>0.744</code> 继续标记 <code>user-confirmed-remote-final</code>；actionheadfix <code>0/54</code> 标记为 <code>remote-snapshot-raw / checkpoint-unverified</code>。</li><li>真实口述前保持 <code>PROJ-UWM-001</code> 为 <code>unseen</code>，不创建 <code>coaching_state.md</code>。</li></ul>
-<h2 id="references">References</h2>
-<ol><li><a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO Claim–Evidence Inventory</a>。</li><li><a href="../evidence/projects/uwm_libero_p0_bundle_audit.html">UWM/LIBERO P0 Bundle Audit</a>。</li><li><a href="../sources/vol_05_uwm_libero_robocasa_transfer_evidence_freeze.html">UWM/LIBERO/RoboCasa Transfer Evidence Freeze</a>。</li><li><a href="../evidence/projects/uwm_libero_ownership_ledger.html">UWM Ownership Ledger</a>。</li><li><a href="../sources/vol_04_benchmark_evidence_claim_to_protocol.html">VOL 04 Benchmark Evidence Audit</a>。</li><li><a href="../sources/vol_04_uwm_video_action_claim_to_code.html">UWM Video/Action Source Audit</a>。</li><li><a href="../questions/proj_uwm.html">PROJ-UWM-001..004 Atomic Cards</a>。</li><li><a href="../evidence/projects/uwm_robocasa_actionheadfix_30epoch_train_eval_p0_audit.html">UWM RoboCasa ActionHeadFix 30-Epoch Train-to-Closed-Loop P0 Audit</a>。</li></ol>
+<div class="meta">对 LIBERO 这条 evaluator，我从代码只能确认 <code>torch.load</code> 后 strict-load <code>ckpt["model"]</code>，没有读取 <code>action_normalizer</code>；本地 base <code>libero_90.pt</code> 的 normalizer 字段也是 <code>None</code>。因此我会把“normalizer presence/usage”登记为协议字段，但不会说这条 rollout 加载了 target normalizer。RoboCasa route 有独立 normalizer 证据，不能和 LIBERO 混用。</div>
+<h3 id="9-4-multi-task-checkpoint">9.4 “五个任务是不是一个 multi-task checkpoint？”</h3>
+<p><strong>危险回答</strong>：是，我训练了一个覆盖五任务的 UWM 模型。</p>
+<p><strong>可过回答</strong>：五个任务分别训练，但一起评估。</p>
+<p><strong>强回答</strong>：</p>
+<div class="meta">是 task-specific fine-tune。launcher 对 Book-Caddy 映射独立 6000-step checkpoint，对其余四个任务映射各自的 bs64 epoch-aligned checkpoint。五任务只在结果聚合层汇总，模型权重不是一个共享 multi-task binary。</div>
+<h3 id="9-5-186-250">9.5 “186/250 的分母可靠吗？”</h3>
+<p><strong>危险回答</strong>：脚本配置50条，所以一定是250条。</p>
+<p><strong>可过回答</strong>：用户确认每个任务50条，但本地没有raw。</p>
+<p><strong>强回答</strong>：</p>
+<div class="meta">当前数字依赖用户确认的五个 50-rollout summary。代码层 aggregate 用 <code>num_rollouts_completed</code> 作分母，虽然保存 expected=50，但没有 fail-closed assert；如果 shard 缺失，仍可能生成缩小分母的 summary。所以升级到 C3 前必须拿到五个 task summary、250 行 episode JSONL，并校验 seed/init 0–49 无重缺。</div>
+<h3 id="9-6-dataloader-stall">9.6 “DataLoader stall 已经解决了吗？”</h3>
+<p><strong>危险回答</strong>：解决了，训练速度提升了七十多倍。</p>
+<p><strong>可过回答</strong>：DataLoader-only wait 明显下降，但完整训练还需验证。</p>
+<p><strong>强回答</strong>：</p>
+<div class="meta">我定位了 DataLoader wait 的 first divergence：finite 和 infinite-only 的 p95 都在约 13 秒，preload+infinite 降到 0.194 秒，说明主要矛盾是 Zarr 随机读取而不是单纯 epoch iterator 重建。但没有 matched GPU samples/s、显存、loss parity 和长期稳定性，因此只能说数据等待 smoke 改善，不能报端到端训练 uplift。</div>
+<h2 id="10-proj-uwm-002">10. PROJ-UWM-002：哪些部分能说是我做的</h2>
+<h3 id="10-1-30-ownership">10.1 30 秒 ownership 版本</h3>
+<div class="meta">用户范围自述已经确认我做过 UWM/LIBERO fine-tune、eval，以及 UWM/RoboCasa 的协议对齐和训练评估。因此我可以说“我开展、运行、对齐、审计并定位了这些链路”。但 <code>0341c50</code> 是一次性 recovery snapshot，Git author 不能证明每个函数独立编写；UWM shared diffusion 属于 upstream，<code>186/250</code> 仍是 user-confirmed summary。现场我会落到一个具体 launcher/evaluator 解释输入、协议分支、artifact 和限制，不把整仓库认领为原创。</div>
+<h3 id="10-2-role-matrix">10.2 Role matrix</h3>
+<table><thead><tr><th>层</th><th>当前可核事实</th><th>安全第一人称</th><th>禁止自动升级</th></tr></thead><tbody>
+<tr><td>UWM architecture</td><td>upstream shared action/video diffusion</td><td>“我基于 UWM 做适配”</td><td>“我设计了 UWM”</td></tr>
+<tr><td>LIBERO fine-tune</td><td>用户自述 + local launcher/patch</td><td>“我开展/运行了 task-specific fine-tune”</td><td>“所有 trainer 函数由我独立编写”</td></tr>
+<tr><td>eval protocol</td><td>用户自述 + reset/fixed code</td><td>“我对齐并审计了评估协议”</td><td>“0.744 是本地 raw verified benchmark”</td></tr>
+<tr><td>DataLoader</td><td>local benchmark/patch</td><td>“我定位了 data-wait first divergence”</td><td>“我证明了完整训练吞吐提升”</td></tr>
+<tr><td>RoboCasa</td><td>用户自述 + raw run audit</td><td>“我尝试迁移并做失败诊断”</td><td>“RoboCasa benchmark 已完成”</td></tr>
+<tr><td>result operation</td><td>remote path + user-confirmed JSON</td><td>“我记录并核对了结果边界”</td><td>“我拥有 checkpoint/operator/reviewer 全链路”</td></tr>
+<tr><td>Codex/interview pages</td><td>当前 <code>cv</code> 仓库产物</td><td>“我用材料复盘口述”</td><td>把生成页算作原项目工程贡献</td></tr>
+</tbody></table>
+<h3 id="10-3-ownership">10.3 Ownership 追问树</h3>
+<pre><code class="language-text">你具体做了什么？
+  ├─ 训练：指出一个 launcher/config override，解释输入、checkpoint 和输出。
+  ├─ 评估：解释 reset_to_state、warmup、8-shard、success 与 denominator。
+  ├─ 数据：解释 seq_len=19、preload/infinite A/B 和验证范围。
+  ├─ 结果：区分 user-confirmed、local-direct、remote-snapshot-raw。
+  └─ 边界：说明 upstream、协作/工具、远端 operator 和个人动作。</code></pre>
+<p>最小表达合同：先说“我做过的范围”，再说“实现里能证明的机制”，最后说“不能从快照证明的 ownership”。</p>
+<h2 id="11-p9">11. P9 面试就绪度</h2>
+<h3 id="11-1-role-fit-jd-mapping">11.1 Role Fit 与 JD Mapping</h3>
+<table><thead><tr><th>VLA 岗能力</th><th>项目证据</th><th>强度</th><th>面试策略</th></tr></thead><tbody>
+<tr><td>多模态/action接口</td><td>两路RGB、2-frame obs、16×7 action、future obs</td><td>强</td><td>现场画 tensor timeline</td></tr>
+<tr><td>分布式训练迁移</td><td>8卡DDP、lr分组、epoch-aligned steps、final checkpoint</td><td>中强</td><td>解释为何不能照搬20k steps</td></tr>
+<tr><td>Closed-loop eval</td><td>reset/fixed init、warmup、shard、success predicate</td><td>强</td><td>先报协议tuple再报数字</td></tr>
+<tr><td>数据工程</td><td>HDF5→Zarr、preload/infinite benchmark</td><td>中强</td><td>只报DataLoader-only范围</td></tr>
+<tr><td>跨benchmark迁移</td><td>LIBERO 7D→RoboCasa 12D/state/prompt/view</td><td>中</td><td>以失败链展示诊断能力</td></tr>
+<tr><td>Ownership/结果可信度</td><td>self-report+snapshot+user-confirmed/raw audit</td><td>中弱</td><td>主动降级强结果，绑定证据等级</td></tr>
+</tbody></table>
+<h3 id="11-2-truth-boundary">11.2 Truth Boundary</h3>
+<ul><li><strong>做过范围</strong>：UWM/LIBERO fine-tune 与 eval；UWM/RoboCasa 尝试；协议对齐与训练评估。</li><li><strong>本地实现直接支持</strong>：task/data/model interface、trainer/evaluator/launcher、stall smoke、RoboCasa raw sweep。</li><li><strong>只能 user-confirmed</strong>：LIBERO fixed-init <code>186/250</code> 及每任务结果。</li><li><strong>不能写</strong>：UWM architecture 个人原创、一个共享五任务 checkpoint、LIBERO evaluator 已加载 normalizer、Table II 严格复现、RoboCasa 性能修复完成。</li></ul>
+<h3 id="11-3-production-gap">11.3 Production Gap</h3>
+<table><thead><tr><th>缺口</th><th>面试官会问</th><th>最小补件</th></tr></thead><tbody>
+<tr><td>Target checkpoints</td><td>五个 <code>models.pt</code> 是什么hash？</td><td>task→checkpoint SHA、step、fresh-load</td></tr>
+<tr><td>Denominator</td><td>真有250条吗？</td><td>merged JSONL + expected/completed assertion</td></tr>
+<tr><td>Protocol parity</td><td>reset/fixed是否只差init？</td><td>same-checkpoint paired run + exact horizon/env revision</td></tr>
+<tr><td>Normalizer</td><td>哪条路径用了哪个统计？</td><td>presence/absence manifest；不得假设</td></tr>
+<tr><td>GPU throughput</td><td>preload是否端到端有效？</td><td>30–100 step matched GPU A/B</td></tr>
+<tr><td>Failure taxonomy</td><td>soup/mug为何低？</td><td>video/action/state/terminal trace</td></tr>
+<tr><td>Ownership</td><td>谁写、谁跑、谁review？</td><td>per-file role + shell/run/review record</td></tr>
+</tbody></table>
+<h3 id="11-4-sp-ssp">11.4 SP/SSP 证据就绪度</h3>
+<p>当前材料就绪度为 <code>20.6/30</code>：岗位相关性 <code>4.5</code>、机制深度 <code>4.4</code>、工程闭环 <code>3.8</code>、指标可信度 <code>2.6</code>、ownership <code>2.1</code>、抗追问 <code>3.2</code>。这不是候选人能力分；提升来自实现合同更清晰，checkpoint/raw/operator 缺口仍是一票否决项。</p>
+<h3 id="11-5">11.5 补强计划与简历三档</h3>
+<table><thead><tr><th>时间</th><th>动作</th><th>状态</th></tr></thead><tbody>
+<tr><td>半天</td><td>口述一个 task 的 data→train→eval；确认具体亲手/协作/工具角色</td><td><code>可补做</code></td></tr>
+<tr><td>1天</td><td>为 aggregator 加 completed==expected、seed/init uniqueness gate；整理现有 raw</td><td><code>可补做</code></td></tr>
+<tr><td>3天</td><td>同 checkpoint paired reset/fixed eval；冻结env/scorer/horizon</td><td><code>可补做</code></td></tr>
+<tr><td>1周</td><td>获取五checkpoint与250 episodes；做GPU stall matched A/B和failure taxonomy</td><td><code>可补做</code></td></tr>
+</tbody></table>
+<ul><li><strong>当前保守版</strong>：开展 UWM/LIBERO task-specific fine-tune 与闭环评估，对齐 fixed-init/reset 协议，定位 Zarr/DataLoader wait，并分析 RoboCasa 跨接口训练—闭环失败。</li><li><strong>补 ownership 后标准版</strong>：负责指定 launcher/evaluator/loader 适配与协议验收，以文件、命令和 artifact 说明个人边界。</li><li><strong>C3 后偏强版</strong>：只有补齐 checkpoint、episode、scorer、paired eval 与 GPU A/B 后，才能写可复算结果和端到端工程收益。</li></ul>
+<h2 id="12">12. 练习边界</h2>
+<ul><li>这是从实现反推的 model answer，不是候选人的真实 transcript。</li><li><code>PROJ-UWM-001..004</code> 继续保持 <code>unseen</code>；不创建 <code>coaching_state.md</code>。</li><li>真实口述时先答一题，不把本页四题自动计为已练习。</li><li><code>0.744</code> 标记 <code>user-confirmed-remote-final</code>；RoboCasa actionheadfix 标记 <code>remote-snapshot-raw / checkpoint-unverified</code>。</li><li>任何“我修改了某函数”的表述仍需本人按 ownership ledger 确认。</li></ul>
+<h2 id="13-implementation-anchors-references">13. Implementation Anchors 与 References</h2>
+<h3 id="13-1-anchors">13.1 现场可解释的 anchors</h3>
+<table><thead><tr><th>Anchor</th><th>Locator</th><th>能证明</th><th>不能证明</th></tr></thead><tbody>
+<tr><td>A1</td><td><code>scripts/libero_official_common.py:17-47</code></td><td>五task与HDF5映射</td><td>选择者个人ownership</td></tr>
+<tr><td>A2</td><td><code>scripts/libero_official_common.py:41-48</code></td><td>两路RGB与7D action</td><td>所有UWM数据schema</td></tr>
+<tr><td>A3</td><td><code>scripts/prepare_libero_buffers.py:61-99</code></td><td>50 episode检查、seq_len19、flip_rgb、Zarr</td><td>训练实际完成</td></tr>
+<tr><td>A4</td><td><code>repo_patch/experiments/uwm/train.py:20-31</code></td><td>2 obs/16 action/2 future切分</td><td>上游模型原创</td></tr>
+<tr><td>A5</td><td><code>scripts/uwm_libero_rollout_eval.py:35-70</code></td><td>模型接口与diffusion实例化</td><td>本地设计了UWM architecture</td></tr>
+<tr><td>A6</td><td><code>repo_patch/experiments/uwm/train_robomimic.py:102-141</code></td><td>pretrain strict-load与0.05×encoder lr</td><td>远端effective config完整一致</td></tr>
+<tr><td>A7</td><td><code>scripts/remote_muxi_libero_remaining4_bs64_aligned_queue.sh:46-99</code></td><td>epoch-aligned换算</td><td>完全等价官方优化轨迹</td></tr>
+<tr><td>A8</td><td><code>scripts/remote_muxi_libero_rollout_eval_5tasks_parallel.sh:10-17</code></td><td>mixed task-specific checkpoint与strict defaults</td><td>checkpoint binary存在于本地</td></tr>
+<tr><td>A9</td><td><code>scripts/uwm_libero_rollout_eval.py:113-150</code></td><td>reset/fixed分支、warmup、sample、success</td><td>论文Table II同协议</td></tr>
+<tr><td>A10</td><td><code>scripts/uwm_libero_rollout_eval.py:169-195</code></td><td>checkpoint/data prefix与episode summary</td><td>250条raw已同步</td></tr>
+<tr><td>A11</td><td><code>scripts/remote_muxi_libero_rollout_eval_5tasks_parallel.sh:139-165</code></td><td>8-shard episode分配</td><td>shard全部成功</td></tr>
+<tr><td>A12</td><td><code>scripts/remote_muxi_libero_rollout_eval_5tasks_parallel.sh:217-262</code></td><td>completed denominator与global aggregation</td><td>expected==completed fail-closed</td></tr>
+<tr><td>A13</td><td><code>repo_patch/datasets/robomimic/dataset.py:153-172</code></td><td>optional Zarr preload</td><td>GPU吞吐提升</td></tr>
+<tr><td>A14</td><td><code>repo_patch/datasets/utils/loader.py:23-62</code></td><td>infinite distributed sampler</td><td>唯一root cause</td></tr>
+<tr><td>A15</td><td><code>scripts/benchmark_libero_dataloader_stall.py:64-139</code></td><td>DataLoader-only timing schema</td><td>full training parity</td></tr>
+</tbody></table>
+<h3 id="13-2-references">13.2 References</h3>
+<ol><li><a href="../evidence/projects/uwm_libero_claim_evidence_inventory.html">UWM/LIBERO Claim–Evidence Inventory</a>。</li><li><a href="../evidence/projects/uwm_libero_p0_bundle_audit.html">UWM/LIBERO P0 Bundle Audit</a>。</li><li><a href="../evidence/projects/uwm_libero_ownership_ledger.html">UWM Ownership Ledger</a>。</li><li><a href="../sources/uwm_libero90_checkpoint_immutable_manifest_gate.html">UWM Base Checkpoint Immutable Gate</a>。</li><li><a href="../sources/vol_04_benchmark_evidence_claim_to_protocol.html">VOL 04 Benchmark Evidence Audit</a>。</li><li><a href="../sources/vol_04_uwm_video_action_claim_to_code.html">UWM Video/Action Source Audit</a>。</li><li><a href="../sources/vol_05_uwm_libero_robocasa_transfer_evidence_freeze.html">UWM/LIBERO/RoboCasa Transfer Evidence Freeze</a>。</li><li><a href="../evidence/projects/uwm_robocasa_actionheadfix_30epoch_train_eval_p0_audit.html">UWM RoboCasa ActionHeadFix 30-Epoch P0 Audit</a>。</li><li><a href="../questions/proj_uwm.html">PROJ-UWM-001..004 Atomic Cards</a>。</li></ol>
 </article></body></html>

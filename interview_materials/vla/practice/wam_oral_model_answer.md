@@ -1,26 +1,98 @@
-# PROJ-WAM-001 证据约束下的示范回答
+# PROJ-WAM-001/002 从项目实现反推的证据约束口述稿
 
-> 状态：`model_answer / evidence_bounded / not_candidate_transcript / unseen`  
-> 更新日期：2026-07-21  
-> 题目：如何介绍 Cosmos Policy / WAM 项目，并解释 1 epoch gate、两类训练系统失败与 CoffeePressButton 诊断证据？
+> 状态：`implementation_derived_model_answer / PROJ-WAM-001+002 / candidate_self_report_bounded / not_candidate_transcript / unseen`
+> 更新日期：2026-07-22
+> 题目：如何介绍 Cosmos Policy / WAM 项目，并解释 1 epoch gate、两类训练系统失败、CoffeePressButton 诊断证据与个人 ownership？
 
 ## 1. 项目定位
 
-这不是把所有 Cosmos/WAM 日志拼成“一个 1 epoch 结果”的故事。当前需要明确区分两个 run family：第一条是按 Predict2 + T5 + RoboCasa 合同搭建的 8 卡、global batch 128、`9907` steps 单 epoch gate；它先暴露 dataloader 导致的 CPU cgroup OOM，修复后又在 `state_dict(destination=...)` 保存接口处失败。第二条是独立的单卡 GPU7 full10k repro：日志记录 step `10000` loss=`0.0543`、远端 checkpoint 保存成功、`EXIT:0`，随后 CoffeePressButton 1-episode RoboCasa smoke 为 `0/1`。前者不能称完成的 1 epoch checkpoint，后者可以称独立 full10k 训练与最小 eval smoke，但仍不是完整 benchmark 或本地 hash 已核验的最终结果。
+这不是把所有 Cosmos/WAM 日志拼成“一个 1 epoch 结果”的故事。当前需要明确区分两个 run family：第一条是按 Predict2 + T5 + RoboCasa 合同搭建的 8 卡、global batch 128、`9907` steps 单 epoch gate；它先暴露 dataloader 导致的 CPU cgroup OOM，修复后又在 `state_dict(destination=...)` 保存接口处失败。第二条是独立的单卡 GPU7 full10k repro：日志记录 step `10000` loss=`0.0543`、远端 checkpoint 保存成功、`EXIT:0`，随后进入 24 task × 5 episode 的 RoboCasa eval。前者不能称完成的 1 epoch checkpoint，后者可以称独立 full10k 训练与评测链路，但 checkpoint binary/hash、fresh-process reload 与训练带来的 uplift 仍未闭合。
 
-回答结构固定为：先拆 run family → 1 epoch gate 的故障链 → full10k 的训练/最小 eval 证据 → 两者的 P0 缺口。CoffeePressButton 的 paired manifest、trace、失败视频和离线 visual proxy 仍是诊断层，不能与单 episode `0/1` 拼成 benchmark uplift。
+**项目分型**：VLA/WAM 训练复现 + RoboCasa 闭环评测适配 + 失败诊断。**目标岗位**：VLA / embodied-AI 算法与训练评测工程。**当前最强信号**：能把模型训练、checkpoint、normalizer、controller、episode scorer 与 raw artifact 连成协议链；**当前短板**：逐文件 ownership、immutable checkpoint 与修复后 paired rerun 尚未闭合。回答结构固定为：实现链路 → 评测合同 → bad case → 验证与边界，而不是从 paper architecture 开始背诵。
 
 ## 2. 30 秒版本
 
-> 我把两条运行分开讲：8 卡、global batch 128 的 `9907`-step 单 epoch gate 在 step 1903 暴露 `cycle(dataloader)` 的 CPU cgroup OOM，no-cycle 5-step smoke 通过，但正式 run 在 step 1500 的 `state_dict` 签名兼容性处保存失败；另一个独立的单卡 full10k repro 跑到 step 10000，loss 是 `0.0543`，日志有远端 checkpoint saved 和 `EXIT:0`，随后 CoffeePressButton 1-episode smoke 是 `0/1`。所以我能认领两条训练/评测链路与故障边界，但不把它们合成一个 1 epoch benchmark 结果。
+> 我做的是 Cosmos Policy 在 RoboCasa 上的训练与评测复现：训练侧接入 online Reason1 并完成一条单卡 10k-step run，日志记录 loss=`0.0543`、checkpoint saved 和 `EXIT:0`；评测侧把 local DCP 接回官方闭环，固定 chunk 32、执行前 16 步和 5-step denoising。24×5 eval 的 raw 是 `2/120`，但两条都是 length=1 artifact，trusted 为 `0/118`；同一 harness 的 official-HF path 为 `84/118`。所以我强调协议对齐和失败诊断，不宣称 uplift；另一条 8 卡 1-epoch gate 在 OOM 与保存接口处失败，也不和 full10k 合并。
 
-## 3. 2 分钟版本
+## 3. 2–3 分钟版本
 
-> 我的目标不是跑出一个孤立 loss，而是把 Cosmos Policy 的训练和评估拆成可验收的 run family。8-GPU gate 的合同是每卡 batch 16、global batch 128、`max_steps=9907`，RoboCasa 数据运行时统计为 1,199 个 demo episodes、1,291 个 rollout episodes、343,635 个 rollout steps 和 242 条 command；只有达到 `9907` steps、checkpoint 能保存并重新加载、再进入同协议 eval，才算这条 1 epoch gate 完成。独立的 `cosmos_policy_wam_repro_full10k_20260619` 则是单卡 GPU7、`BATCH_SIZE=1` 的另一条 run，原始日志和 report 记录了 step 10000 loss=`0.0543`、`iter_000010000` 远端保存、`Done with training` 和 `EXIT:0`。
+> 这个项目的目标是把 Cosmos Policy 的 WAM 训练从“能启动”推进到“训练、保存、加载、闭环评测都能按协议验收”。我先保留官方 experiment、trainer、model 和 RoboCasa dataset 路径，在训练入口里启用 online Reason1 文本编码；由于在线编码不需要巨大的预计算 embedding 字典，我放了只在模型重算前被消费的 placeholder，同时补齐 lazy success-rollout-as-demo 路径里缺失的 `success=True` metadata。单卡 full10k recipe 使用 batch 1、chunk 32、demo/rollout 各 0.5、`p_world_model=0.5`，原始日志在 step 10000 记录 loss=`0.0543`、保存 `iter_000010000`、`Done with training` 和 `EXIT:0`。
 >
-> 第一条 save-2k run 在 step 1903 后退出，launcher 是 `EXIT=247`、一个 rank 是 `-9`，没有 GPU OOM 栈，也没有 step-2000 checkpoint；结合 cgroup 记录和内存增长，定位到 `itertools.cycle(dataloader)` 会缓存迭代过的 batch，长跑时持续占用 CPU 内存。修复方式是使用普通 iterator，在 `StopIteration` 时显式重建。8 卡、5 steps、关闭保存的 smoke 返回 `EXIT=0`，这只验证了迭代器修复，不代表完整训练成功。
+> 评测时我没有重写 RoboCasa 主循环，而是只替换 local DCP model loader，并给 action/future/value inference 加 BF16 autocast。链路仍是官方的 create env→prepare observation→get action→env.step→save rollout video；同时旁路记录每次 `32×7` action chunk 的 min/max/mean/std 和 first row，日志故障不影响 eval。协议固定为 24 个任务、每任务 5 个 episode、chunk 32、每次执行前 16 步、action denoising 5 步、固定 seed。full10k summary 的 raw 是 `2/120`，但两个 success 都发生在 length=1，按预注册的同一 invalid policy 排除后是 `0/118`；同一 harness 下 official-HF path 是 raw `86/120`、trusted `84/118`。这说明环境、controller、success predicate 和 rollout 保存链不是天然全坏，但不能据此断言唯一根因；排查优先级转向 checkpoint/config、Reason1 embedding、dataset statistics、action unnormalization 与训练退化。
 >
-> 修复后的 1 epoch 正式 run 到 step 1500 保存点时又退出：DeepSpeed 按 PyTorch 标准调用 `state_dict(destination=..., prefix=..., keep_vars=...)`，而 Cosmos `DiffusionModel.state_dict()` 不接受这些参数。虽然出现了 `step_001500` 目录，但没有可用权重，不能叫这条 gate 的 checkpoint。与此同时，full10k report 记录 CoffeePressButton、1 episode、`max_steps_override=120` 的 smoke 为 `0/1`，并回传了 eval log 和视频；这证明独立 full10k 的最小闭环链路可运行，但不证明完整 suite，也没有本地 checkpoint binary/hash 或新进程 load parity。我的结论是：1 epoch gate 的 dataloader 与保存接口 first divergence 已定位，独立 full10k 训练与单 episode smoke 已有证据，但两条 run 不能合并成一个最终 uplift。
+> 我还单独搭了 8-GPU、每卡 batch 16、global batch 128、`9907` steps 的 1-epoch gate。它先在 step 1903 以后出现 rank `-9`/`EXIT=247`，结合 cgroup 记录定位 `itertools.cycle(dataloader)` 缓存 batch 的 CPU 内存增长；改成普通 iterator 并在 `StopIteration` 重建后，8 卡 5-step smoke `EXIT=0`。但正式 run 到 step 1500 保存时，DeepSpeed 调用标准 `state_dict(destination, prefix, keep_vars)`，Cosmos override 不兼容并以 `EXIT=1` 结束，所以这条 gate 没有可用 checkpoint。面试中我会把个人价值讲成训练/评测协议迁移、可观测性和 first-divergence 诊断；不会把 upstream architecture 说成原创，也不会把 full10k 与失败的 1-epoch gate 拼成一个成功结果。
+
+### 3.1 从实现读出的训练与评测链路
+
+```text
+RoboCasa demos / rollout episodes / command
+  -> official Cosmos dataset + online Reason1 conditioning
+  -> action/world sample routing + masked training_step
+  -> full10k DCP checkpoint path
+  -> local DCP loader + official RoboCasa eval loop
+  -> 32x7 action chunk -> execute first 16 -> controller/env step
+  -> per-episode success/video + action-debug JSONL
+  -> raw/trusted recount + bad-case diagnosis
+```
+
+训练适配中真正改变的是文本条件与 lazy-data 边界，不是 Cosmos Policy 的 backbone：`enable_official_online_text_encoder()` 把 `compute_online` 打开，`OnlineTextEmbeddingPlaceholder` 避免强依赖预计算 embedding，`repair_success_rollout_demo_metadata()` 修补 success rollout 被当作 demo 时缺失的 metadata。评测适配中真正改变的是 checkpoint loader、process compatibility、BF16 autocast 与旁路 action logging；环境创建、observation preparation、官方 `get_action`、controller step、success predicate 和视频保存仍走 upstream eval loop。
+
+### 3.2 Implementation anchors：文件、SHA 与能证明的内容
+
+| Project 相对路径 | SHA-256 | 能证明 | 不能证明 |
+| --- | --- | --- | --- |
+| `wm/launch_cosmos_policy_online_text_formal.sh` | `8C67A97288341A1875FC46C95AB3AD77F05516F7DEA273BA823CE1B5FB093806` | single-GPU、10k、batch 1、dataset mix、base/tokenizer 与保存配置 | 实际运行成功或个人独立编写 |
+| `wm/cosmos_policy_train_with_consolidated_online_text.py` | `FBE879A3AD6E3E77B258AE971480338CF41D6EC3378E29C9DE05209CF9D38DF8` | online Reason1、placeholder、lazy success metadata repair 与 official trainer path | 每个函数的个人 authorship |
+| `report/cosmos_wam_repro/cosmos_policy_wam_repro_full10k_20260619.log` | `403604E8A1C2F77041E5E1ED43B80AE0BDD2630911D8DB1645B6FB6D0F0443EC` | step 10000 loss=`0.0543`、checkpoint path、`Done with training`、`EXIT:0` | 本地 checkpoint binary/hash 与 reload parity |
+| `report/cosmos_wam_repro/loss_breakdown_full10k.jsonl` | `B6CEB4459C8CB5A00AADF3AE7F00F440DC359111B143FE44D5AF21CCB639BDDE` | full10k 逐步训练诊断记录存在 | held-out performance 或 closed-loop uplift |
+| `wm/cosmos_policy_robocasa_official_eval_wrapper.py` | `45CB2D44A547C645D15AE890DCFF023569CF126FC20E85A88B7160AED2CF5E42` | local DCP loader、official loop、BF16 autocast、action-debug schema | official scorer 等价或个人模型效果 |
+| `wm/launch_cosmos_policy_robocasa_eval_20260620.sh` | `AFD68C7405EA1465D6E1D2B2AFDB387D6FF9085FDD3C75B729AF3E9FDB054DB0` | checkpoint/stats/embedding/task/seed/open-loop/denoise 命令合同 | episode 结果本身 |
+| `wm/run_cosmos_policy_robocasa_eval_5ep_tasks_20260620.sh` | `C94DB66F67920CBABA0B3FBBE492967F85DE5080F7F25C774A8D579967B77DEC` | 24 task × 5 episode sweep 与 per-task status | 24 个任务都由同一 immutable checkpoint 内容运行 |
+| `report/cosmos_policy_eval/remote_artifacts/eval_summary_conservative.json` | `C9538A2E418BCBEDD88B8DCFB308F0E1AF428DBA2912A959DEA946872A3247BE` | full10k raw `2/120`、artifact=2、trusted `0/118` | benchmark uplift、唯一 root cause |
+| `report/cosmos_policy_eval/baseline_remote_artifacts/eval_summary_officialhf_baseline.json` | `7B211B9D6F20BC95986A77C3CC901814AB6A705065016D7F68B67548BA6CACE9` | official-HF path raw `86/120`、artifact=2、trusted `84/118` 的本地重算材料 | official checkpoint ownership 或与 full10k 的严格 matched causal comparison |
+| `report/cosmos_policy_eval/.../CoffeePressButton...smoke-1x1.log` | `B5FF9DB2129EBC0B41CA2D0C11911C94753B5400A8BBACFFBAB1F3109CB2938F` | 1 episode、`success=false`、`0/1`、`EXIT:0`、视频保存 | 多 episode success 或 checkpoint uplift |
+| `report/cosmos_policy_eval/.../CoffeePressButton...smoke-1x1.jsonl` | `6357CD83CB4A40B184B42721110A7FADD4693DED75E68685FD6C2B6949557018` | 19 次 query、每次 `32×7` action chunk、有限值与 checkpoint path | action-label loss、7D→12D controller roundtrip |
+| `report/cosmos_policy_eval/muxi_deepspeed_1epoch_20260623/run_contract.json` | `9CAAC2937AC14AAA69DF2EBFD3C7603CB92B34254879BD1CD599C9FE73749D7A` | 8 卡、per-GPU 16、global batch 128、`9907` steps、5-frame condition | 1 epoch 已完成 |
+| `.../nocycle_fix_20260624/...no_cycle_20260624.py` | `FD5F96C4C9004A5FBFE35B80504C034B83FEDEC0431C47EAD91D958A379DE07D` | iterator 修复实现快照 | matched long-run 内存因果已完全闭合 |
+| `.../nocycle_fix_20260624/smoke5_launch.log` | `76378669F19CCC87E9418241A7EB17AFD0854BE704362CA30EFF5491BE66D94E` | 8 卡 no-cycle 5-step smoke，exit 0 | 长跑、save/load 或 eval 成功 |
+| `.../ds_8gpu_bs16_1epoch_nocycle_save1500.../launch.log` | `8FEC262805242AFC3FCD7846A3DDB1043860E17BF5DEB008369D7CD9F67061C3` | step 1500 `state_dict(destination=...)` TypeError、exit 1 | checkpoint 已生成 |
+
+`...` 只为表格可读性缩短公共前缀，所有原文件均位于 `C:\Users\mousongzhe\Project`；本页没有修改该 Project 工作树。
+
+### 3.3 Truth Boundary 与 ownership 用词
+
+| 口述内容 | 当前证据等级 | 推荐第一人称 | 禁止升级 |
+| --- | --- | --- | --- |
+| Cosmos fine-tune 与 eval 项目范围 | 候选人已 self-report；代码与日志部分支持 | “我开展了训练/评测复现并按协议验收” | “所有代码均由我独立编写” |
+| online Reason1、metadata repair、DCP eval wrapper | implementation-local；逐函数角色仍未确认 | “这条实现中我采用/接入了……” | 未确认前不说“我原创设计” |
+| full10k 训练终点 | log-backed / checkpoint-path-only | “该独立 run 到 10k 并记录保存成功” | “本地 immutable checkpoint 已验证” |
+| 8-GPU 1-epoch gate | run-contract + failure-log-backed | “我搭建并排查了 1-epoch gate” | “我完成了 1 epoch” |
+| full10k `0/118` 与 official-HF `84/118` | remote-artifact-backed / checkpoint-unverified | “我按同一 invalid policy 重算并用于诊断” | “训练导致下降 71.19 个百分点” |
+| Cosmos slot/mask/routing architecture | upstream-verified | “我按 upstream contract 对齐” | “我设计了 WAM architecture” |
+
+### 3.4 面向 VLA 岗位的能力映射
+
+| 岗位能力 | 当前实现证据 | 强度 | 面试策略 |
+| --- | --- | --- | --- |
+| 多模态训练理解 | online Reason1、demo/rollout mix、world-policy routing 与 loss diagnostics | 强 | 讲输入、mask、route 与训练 target，不背抽象名词 |
+| 大模型训练工程 | single-GPU full10k、8-GPU gate、cgroup OOM、DeepSpeed save first divergence | 中强 | 重点讲 gate 与验证覆盖面 |
+| 机器人闭环评测 | official RoboCasa loop、chunk/replan、controller、raw/trusted recount | 强 | 讲协议 tuple 与 invalid rule |
+| 数据与 action contract | dataset statistics、normalizer、7D action、32→16 execution | 中强 | 主动承认 7D→12D roundtrip 仍缺 bundle |
+| 结果可信度 | 有 raw logs/summary/action trace，但 checkpoint identity 与 paired rerun 未闭合 | 中 | 不用 loss 或单 episode替代 success |
+
+### 3.5 Production Gap、补强状态与 SP/SSP 材料就绪度
+
+| Gap | 大厂追问 | 当前状态 | 下一证据 |
+| --- | --- | --- | --- |
+| checkpoint lineage | 跑 eval 的 binary 到底是哪一个？ | `可补做` | remote content hash、local manifest、fresh-process reload parity |
+| matched comparison | official-HF 与 full10k 是否只差权重？ | `可补做` | config/stats/T5/scorer/seed 全字段 join key |
+| action semantics | `32×7` 如何变成 controller `12D`？ | `部分已做` | normalizer roundtrip、7D→12D adapter trace、executed prefix |
+| root cause | 0-success 是 conditioning、stats 还是退化？ | `部分已做` | 同 checkpoint、同 init 的 patch→paired rerun |
+| ownership | 哪些函数是本人/协作/工具？ | `待确认` | per-file role ledger 与 review/operator 记录 |
+
+当前分数是**材料就绪度**，不是候选人 mastery：业务真实性 `2/5`、贡献边界 `2.5/5`、技术深度 `4/5`、数据理解 `3.5/5`、评估可信度 `4/5`、工程闭环 `3/5`、生产差距认知 `4.5/5`、抗追问材料 `4/5`、VLA 岗位匹配 `4.5/5`、ownership `2.5/5`，合计 **34.5/50，强可投材料档**。SP 阻断项是 checkpoint lineage、逐文件 ownership 和修复后 paired rerun；在真实口述前不把这一分数记入 coaching state。
+
+补强顺序：`半天` 完成 per-file role ledger 与三遍口述计时（`可补做`）；`1 天` 完成 save→destroy→fresh-load manifest（`可补做`）；`3 天` 冻结 full10k/official-HF 的 matched protocol tuple（`部分已做`）；`1 周` 完成至少一个候选根因的同 init paired rerun（`可补做`）。当前简历安全表达是“开展 Cosmos Policy / RoboCasa 训练与评测复现，完成协议对齐、运行审计与失败诊断”；只有前三个 gate 闭合后才可升级为“负责实现/优化”，只有 paired result bundle 到位后才可写具体效果。
 
 ## 4. CoffeePressButton：另一层诊断证据
 
@@ -182,9 +254,82 @@ rank `-9` 表示该子进程被 SIGKILL，常见于外部 OOM killer；顶层 `2
 
 用真实 DeepSpeed 配置和最小 batch 跑 1 step，在计划保存路径写 checkpoint；进程完全退出后从空的新进程加载，核对文件清单与 hash、参数 key/shape、global step、optimizer/scheduler state，并在固定随机种子和固定输入上比较 reload 前后输出。多卡时还要检查所有 rank barrier 与 shard completeness。
 
-## 9. 练习边界
+## 9. PROJ-WAM-002：哪些部分能说是我做的？
 
-- 这是 model answer，不是候选人的真实 transcript；题卡继续保持 `unseen`。
+### 9.1 30 秒 ownership 版本
+
+> 我能认领的是 Cosmos Policy / RoboCasa 的训练评测复现、协议对齐和失败诊断：我能沿 full10k、8-GPU gate、DCP eval、action trace 与 raw/trusted summary 解释验收链。latent slot、mask、routing 属于 upstream，不是我的原创；六个关键 WAM 文件只保留 `c4469eb` initial snapshot，没有增量 diff，因此我不凭 Git author 声称所有函数独立编写。面试中我用“开展、接入、运行、审计、定位”，并明确协作、工具和 operator/reviewer 边界仍待逐项确认。
+
+### 9.2 2–3 分钟 ownership 版本
+
+> 我会把贡献拆成四层。第一层是 upstream：Cosmos Policy 在统一 latent sequence 里组织 action、future、value，并通过 condition/loss mask 和 sample routing 切换训练角色；这些机制来自 NVlabs paper/repo，我只按合同理解和对齐，不说是我设计的。
+>
+> 第二层是本地训练与评测实现。项目里的训练入口启用了 online Reason1，处理 placeholder embedding 和 lazy success-rollout metadata；评测 wrapper 把 local DCP checkpoint 接回官方 RoboCasa loop，固定 chunk 32、执行前 16 步、5-step action denoising，并旁路写 action-debug。根据我已明确的项目范围，我可以说自己开展了 Cosmos fine-tune、eval 和协议对齐；但六个关键 WAM 文件在 Git 中都只来自 `c4469eb` initial snapshot，没有 pre-snapshot commit 或 before/after diff，因此更安全的说法是“我的项目实现采用/接入了这些路径，我负责把它们运行、核对并用于诊断”，而不是“每个函数都由我从零独立编写”。
+>
+> 第三层是运行与故障闭环。我能讲清 full10k 日志到 step 10000、8-GPU `9907`-step gate 的 cgroup OOM/no-cycle smoke、step 1500 `state_dict(destination=...)` first divergence，以及 24×5 eval 的 raw/trusted 重算。这里也要把 role 拆开：代码存在不等于我就是原作者，远端 path 存在不等于我就是 operator，报告存在不等于我就是 reviewer；当前缺 shell history、review record 和逐文件工具/协作者说明，所以我认领的是项目级训练评测与证据审计，不认领尚未闭合的逐文件 authorship。
+>
+> 第四层是结果归属。full10k 的 `0/118`、official-HF path 的 `84/118`、CoffeePressButton 失败 trace 和 offline proxy 都可以作为诊断材料，但 official checkpoint 不是我训练的，8-GPU gate 也没有完成，历史 MSE/uplift 更没有完整 provenance。我的强项是把实现、运行、metric 和 unknown 分开，并给出下一步 save/load、matched protocol、7D→12D roundtrip 和 paired rerun；我的边界是暂不宣称 architecture 原创、完整 1 epoch、benchmark uplift 或唯一 root cause。
+
+### 9.3 从实现与 Git 能得到的 role matrix
+
+| 层级 | 当前证据 | 能说的第一人称 | 不能说 |
+| --- | --- | --- | --- |
+| Upstream architecture | frozen paper/repo：latent slots、mask、routing、sampler | “我按 upstream contract 理解并对齐” | “我设计了 WAM architecture” |
+| 项目范围 | 候选人 self-report：Cosmos 1-epoch fine-tune、eval、协议对齐 | “我开展了训练、评测与协议核对” | self-report 自动证明逐文件 authorship |
+| WAM 训练入口 | `c4469eb` snapshot + current full-SHA code | “项目实现接入 online Reason1、placeholder 与 metadata repair；我能解释并运行这条链” | “我从零独立编写全部函数” |
+| RoboCasa eval wrapper | `c4469eb` snapshot + DCP loader/action-debug/eval logs | “我把 local checkpoint 接到官方闭环并审计 action/episode artifact” | “官方 evaluator、controller 或 scorer 是我实现的” |
+| full10k / 8-GPU runs | run contract、launch log、summary、failure stack | “我搭建/运行/排查这些 run family”是项目级 self-report 口径 | 没有 operator record 时声称每次远端命令均由本人执行 |
+| raw/trusted recount | 两份 summary 与 audit code/artifact | “我按相同 invalid policy 复核并用于诊断” | 把 official `84/118` 写成本人模型成绩 |
+| `cv` evidence pages | 当前面试仓库的 Codex/工具辅助审查产物 | “我用这些材料准备和复核口述” | 把面试准备文档当成原项目个人贡献 |
+
+Git 的可核验事实是：`wm/cosmos_policy_train_with_consolidated_online_text.py`、训练 launcher、RoboCasa eval wrapper、eval launcher、24-task sweep 和报告生成器均只显示 `c4469eb8ec4bb879bdb7d12cf9a303c8264a41ea`（`Initial project snapshot`，author identity 为 `mousongzhe`）；当前 HEAD 对这些路径没有后续增量 history。author identity 是 lineage 线索，不是 authorship、operator 或 reviewer 的充分证据。
+
+### 9.4 危险 / 可过 / 强回答
+
+**危险回答**：
+
+> Cosmos Policy 的 action/world/value architecture 是我设计的，代码都是我写的；我完成了 1 epoch，并用自己的模型跑到了 `84/118`。
+
+问题：同时混淆 upstream architecture、snapshot author、失败的 8-GPU gate、official checkpoint 和本地 full10k。
+
+**可过回答**：
+
+> 我主要做 Cosmos Policy 的训练和 RoboCasa 评测复现，architecture 是上游的。我做了训练适配、跑实验并分析失败，但部分代码和运行角色需要再核对。
+
+优点：没有抢占 upstream；缺点：没有文件、函数、run 与验收证据，仍像泛泛“参与”。
+
+**强回答**：
+
+> 我能确认的项目边界是训练评测复现与协议诊断，不是 architecture 原创。训练侧我沿 `launch_cosmos_policy_online_text_formal.sh` 和 online-text entry 解释 Reason1、dataset mix 与 full10k；评测侧我沿 local DCP loader、24-task sweep、action-debug 和 raw/trusted summary 解释 checkpoint→action→controller→episode 链。8-GPU gate 的 no-cycle smoke 与 `state_dict` failure 也能用日志复核。个人逐文件 ownership 仍有一个诚实缺口：这些 WAM 文件只保留 initial snapshot，缺 before/after diff，operator/reviewer/tool 记录也不完整。因此我说“我开展、接入、运行并审计了这条复现链”，不说“所有函数独立编写”；官方 `84/118` 只作为同 harness 诊断对照，也不写成我的模型结果。
+
+需要补的证据：per-file role ledger、pre-snapshot diff 或设计记录、远端 command/operator record、review/验收记录，以及工具/协作者边界。
+
+### 9.5 Ownership 追问树与最小表达合同
+
+```text
+“哪些是你做的？”
+  -> 先报项目级职责：训练 / 评测 / 协议 / 诊断
+  -> 再给一个训练文件 + 一个评测文件 + 一个运行 artifact
+  -> 每个 claim 说明 action、evidence、verification、boundary
+
+“这个函数是你写的吗？”
+  -> 有 pre-snapshot diff / review：按真实角色回答
+  -> 只有 initial snapshot：说实现路径与自己如何使用，authorship 保持 pending
+
+“远端 8 卡是谁跑的？”
+  -> 有 shell history/operator record：报 operator 与 reviewer
+  -> 没有：只说项目 run artifact 可复核，不推断执行者
+
+“84/118 是你的成绩吗？”
+  -> 明确是 official-HF checkpoint path 的 eval 对照
+  -> 个人贡献是 harness 运行/审计与 denominator 重算，不是权重训练
+```
+
+口述时每个 ownership claim 应满足：`我做的动作 + 文件/函数/命令 + 如何验收 + upstream/协作/工具边界`。缺任一项就降级为“项目实现包含 / 我参与使用或审查”，而不是用 Git author 或目录位置补齐。
+
+## 10. 练习边界
+
+- 这是 `PROJ-WAM-001/002` 的 model answer，不是候选人的真实 transcript；两张题卡继续保持 `unseen`。
 - “我搭建/定位/修改/运行”必须替换为候选人可确认的文件、函数、命令、operator/reviewer 和验收 artifact。
 - 上游 Predict2/WAM 机制、官方 HF baseline、远端路径与 Git author 不能自动升级为个人 ownership。
 - 新增 checkpoint 或 eval 证据时，先更新 evidence freeze、inventory 与 ownership ledger，再升级回答。

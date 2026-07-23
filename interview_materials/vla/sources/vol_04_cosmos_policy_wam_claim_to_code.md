@@ -11,7 +11,7 @@
 2. **“同一模型有三种角色”由 conditioning 与 loss routing 决定。**base training 的示范/rollout sample 约按 50% policy、25% world model、25% value function 分流；policy、world、value 分别对不同 latent prefix 条件化并预测不同 target slot，而不是仅靠三个 loss 名称。[1][2]
 3. **direct policy 与 planning 是两个不同推理合同。**direct eval 一次并行生成 action/future/value，但只执行 action；planning 先采样 action，再条件生成 future state，再评分 value，best-of-N 选择最高分候选。[1][2]
 4. **可用 planning 需要 rollout distribution 与独立 planning checkpoint。**论文明确 base demonstration-only model 的 world/value 对失败分布覆盖不足；其 ALOHA planning 实验使用 rollout 数据细化 world/value，并 dual-deploy 原 policy checkpoint 与 refined planning checkpoint。[1]
-5. **latent injection 不是“语义 token”。**action (K\times D_a) 被 flatten/repeat 到 (16\times 28\times 28) latent volume；解码时把可整除的完整 action copies reshape 后求均值。value 则把整个 value frame 求均值，再从 ([-1,1]) 映射到 ([0,1])。[1][2]
+5. **latent injection 不是“语义 token”。**action \(K\times D_a\) 被 flatten/repeat 到 \(16\times 28\times 28\) latent volume；解码时把可整除的完整 action copies reshape 后求均值。value 则把整个 value frame 求均值，再从 \([-1,1]\) 映射到 \([0,1]\)。[1][2]
 6. **LIBERO 与 RoboCasa 的执行合同不同。**LIBERO 是 16×7 action chunk 并默认全 16 步 open-loop；RoboCasa 是 32×7 chunk、默认执行前 16 步，再在环境侧拼接 5 维 inactive mobile-base action 形成 12D controller action。[2][3][4][5]
 7. **官方 direct-policy 分数不能写成本地 WAM 结果。**论文/模型卡报告 LIBERO 98.5% 和 RoboCasa 67.1%，它们绑定官方 checkpoint、task set、50 trials、三 seeds 与指定 runtime；任何本地 45%、71.19%、0-success 或 offline MSE 必须由本地 artifact 单独证明。[1][6][7]
 8. **论文、代码与权重许可证不同。**arXiv v1 是 CC BY 4.0，frozen GitHub tree 是 Apache-2.0，而两个 HF policy model card 声明 NVIDIA One-Way Noncommercial License；不能用 repo license 推断 checkpoint 可商用。[1][2][6][7]
@@ -34,7 +34,7 @@
 
 ## 3. 概率合同：policy、world model 与 value
 
-令 (s_t=(o_t,p_t,c)) 表示当前多视角 observation (o_t)、proprio (p_t) 与任务文本 (c)，(a_{t:t+K-1}in\mathbb R^{K\times D_a}) 是 action chunk，(s'\approx s_{t+K}) 是未来 observation proxy，(G_{t+K}) 是 Monte Carlo return。论文把三种训练角色写成：[1]
+令 \(s_t=(o_t,p_t,c)\) 表示当前多视角 observation \(o_t\)、proprio \(p_t\) 与任务文本 \(c\)，\(a_{t:t+K-1}\in\mathbb R^{K\times D_a}\) 是 action chunk，\(s'\approx s_{t+K}\) 是未来 observation proxy，\(G_{t+K}\) 是 Monte Carlo return。论文把三种训练角色写成：[1]
 
 \[
 \begin{aligned}
@@ -44,7 +44,7 @@
 \end{aligned}
 \]
 
-变量解释：这里的 (s') 实际只包含 (t+K) 时刻的 proprio 与 camera observations，并非可直接访问的完整 simulator state；(G) 是终局稀疏奖励按 (gamma^{H-t}) 折扣后的 empirical return。实现映射：同一 latent sequence 保持固定布局，`num_conditional_frames`、input mask 与 sample mask 改变哪部分是 clean condition、哪部分参与 denoising target。[1][2]
+变量解释：这里的 \(s'\) 实际只包含 \(t+K\) 时刻的 proprio 与 camera observations，并非可直接访问的完整 simulator state；\(G\) 是终局稀疏奖励按 \(\gamma^{H-t}\) 折扣后的 empirical return。实现映射：同一 latent sequence 保持固定布局，`num_conditional_frames`、input mask 与 sample mask 改变哪部分是 clean condition、哪部分参与 denoising target。[1][2]
 
 这三条合同不能合并成“一个 joint loss 自动学会 planning”。base policy 可以并行生成三个 output，但只有在 world/value 对候选 action 的 OOD future 可靠且 value 已校准时，才可用于 action selection。论文自己也把 demonstration-only direct policy 与 rollout-refined planning model 分开。[1]
 
@@ -57,11 +57,11 @@
 | LIBERO | blank, current proprio, wrist, primary, action, future proprio, future wrist, future primary, value | 9 | action 16×7；proprio 9D |
 | RoboCasa | blank, current proprio, wrist, left primary, right primary, action, future proprio, future wrist, future left, future right, value | 11 | action 32×7；proprio 9D |
 
-每个语义 frame 对应 (C'\times H'\times W'=16\times28\times28) latent volume。Wan2.1 tokenizer 的 temporal compression factor 是 4，所以 config 以一张首 blank 加每个 semantic frame 的四张重复 image 组织 33-frame LIBERO input 或 41-frame RoboCasa input。[1][2]
+每个语义 frame 对应 \(C'\times H'\times W'=16\times28\times28\) latent volume。Wan2.1 tokenizer 的 temporal compression factor 是 4，所以 config 以一张首 blank 加每个 semantic frame 的四张重复 image 组织 33-frame LIBERO input 或 41-frame RoboCasa input。[1][2]
 
 ### 4.2 Action latent injection
 
-令归一化 action chunk 为 (A\in[-1,1]^{K\times D_a})，latent volume 元素数为 (M=C'H'W')，action 元素数为 (L=KD_a)。frozen code 的注入可写为：
+令归一化 action chunk 为 \(A\in[-1,1]^{K\times D_a}\)，latent volume 元素数为 \(M=C'H'W'\)，action 元素数为 \(L=KD_a\)。frozen code 的注入可写为：
 
 \[
 z_a=\operatorname{reshape}\left(
@@ -71,17 +71,17 @@ z_a=\operatorname{reshape}\left(
 
 变量解释：`replace_latent_with_action_chunk` 先 flatten (A)，按 ceiling repeat 填满 latent，再覆写 action latent index。它没有 action-specific learned encoder；学习发生在共享 diffusion transformer 中。[2]
 
-提取时，`extract_action_chunk_from_latent_sequence` 只取可组成完整 action copies 的前 (qL) 个元素，其中 (q=\lfloor M/L\rfloor)，reshape 成 (q\times K\times D_a) 后平均：
+提取时，`extract_action_chunk_from_latent_sequence` 只取可组成完整 action copies 的前 \(qL\) 个元素，其中 \(q=\lfloor M/L\rfloor\)，reshape 成 \(q\times K\times D_a\) 后平均：
 
 \[
 \hat A=\frac{1}{q}\sum_{j=1}^{q}\operatorname{reshape}(z_a^{(j)},K,D_a).
 \]
 
-实现含义：注入时可能存在最后一个不完整重复片段，提取时它被丢弃；这应在极端 (K,D_a) 组合与换机器人时单测。输出随后按 dataset `actions_min/actions_max` 反归一化，不能跳过 checkpoint 对应的 statistics 文件。[2]
+实现含义：注入时可能存在最后一个不完整重复片段，提取时它被丢弃；这应在极端 \((K,D_a)\) 组合与换机器人时单测。输出随后按 dataset `actions_min/actions_max` 反归一化，不能跳过 checkpoint 对应的 statistics 文件。[2]
 
 ### 4.3 Value 与 future image
 
-value scalar 被扩展到整个 value frame；采样后对该 frame 的全部元素求均值，并计算 (hat V=\operatorname{clip}((\bar z_v+1)/2,0,1))。future images 需要先把 blank/proprio/action 注入位置换回 VAE 编码前的 clean placeholder latent，再用 tokenizer decode；因此“保存了 future image”不代表执行时这些 latent 会送入 controller。[1][2]
+value scalar 被扩展到整个 value frame；采样后对该 frame 的全部元素求均值，并计算 \(\hat V=\operatorname{clip}((\bar z_v+1)/2,0,1)\)。future images 需要先把 blank/proprio/action 注入位置换回 VAE 编码前的 clean placeholder latent，再用 tokenizer decode；因此“保存了 future image”不代表执行时这些 latent 会送入 controller。[1][2]
 
 ## 5. 训练 routing、conditioning 与 loss
 
@@ -105,7 +105,7 @@ future index 固定为 (t+K)，episode 尾部 clamp 到最后一帧；action chu
 
 ### 5.3 EDM loss 与 target mask
 
-frozen training 先把 action/proprio/value 写入 clean latent (x_0)，按 HybridEDMSDE 产生 noisy (x_t)，denoiser 输出 (hat x_0)。主项可抽象为：
+frozen training 先把 action/proprio/value 写入 clean latent \(x_0\)，按 HybridEDMSDE 产生 noisy \(x_t\)，denoiser 输出 \(\hat x_0\)。主项可抽象为：
 
 \[
 \mathcal L_{EDM}=
@@ -115,7 +115,7 @@ m_{b,t}\,w(\sigma_{b,t})
 \left(x_{0,bcthw}-\hat x_{0,bcthw}\right)^2.
 \]
 
-变量解释：(m_{b,t}) 是 latent-frame loss mask，(w(\sigma)) 是 noise-level weight。`mask_loss_for_action_future_state_prediction=True` 时 demo 仅保留 action slot、world sample 仅保留 future state slots、value sample 仅保留 value slot；默认 config 未在本轮确认该 flag 被主实验打开，因此不能把可选分支写成所有 checkpoint 的既定 loss。[2]
+变量解释：\(m_{b,t}\) 是 latent-frame loss mask，\(w(\sigma)\) 是 noise-level weight。`mask_loss_for_action_future_state_prediction=True` 时 demo 仅保留 action slot、world sample 仅保留 future state slots、value sample 仅保留 value slot；默认 config 未在本轮确认该 flag 被主实验打开，因此不能把可选分支写成所有 checkpoint 的既定 loss。[2]
 
 代码还可对 action slot 乘 `action_loss_multiplier`。各 action/future/value L1/MSE 同时被记录用于诊断，但主反向 loss 是 noise-weighted latent MSE，而不是日志里的 unweighted component L1。README 的“训练到 action L1 约 0.010/0.015”是经验阈值，不等于 closed-loop early stopping 充分条件。[2][3][4]
 
@@ -127,7 +127,7 @@ m_{b,t}\,w(\sigma_{b,t})
 
 `CosmosPolicySampler` 在 `sample_clean=True` 且请求 steps (>1) 时，将 ODE solver 的 timestamp 数减一，最后再做一次 clean denoise；请求 1 step 时直接在首 sigma 上调用 denoiser。因此 CLI 的 `num_denoising_steps_action=5` 表示总 denoiser schedule contract，不应简单解读为“solver loop 五次”。[2]
 
-LIBERO/RoboCasa inference config 将 SDE range 覆盖为 (sigma_{min}=4,sigma_{max}=80)，默认 direct policy 用 5 denoising steps。论文报告 H100 上 5-step action/future/value parallel generation 约 0.61 s/chunk、1-step 约 0.16 s/chunk；这些是指定硬件 wall-clock，不是本机 latency 事实。[1][2]
+LIBERO/RoboCasa inference config 将 SDE range 覆盖为 \(\sigma_{min}=4,\sigma_{max}=80\)，默认 direct policy 用 5 denoising steps。论文报告 H100 上 5-step action/future/value parallel generation 约 0.61 s/chunk、1-step 约 0.16 s/chunk；这些是指定硬件 wall-clock，不是本机 latency 事实。[1][2]
 
 ### 6.2 Direct policy
 
@@ -230,7 +230,7 @@ WAM 项目数字必须留在 VOL 07 evidence layer：held-out MSE 需要 split�
 | direct policy可用、planning失败 | policy/planning checkpoint manifest | planning model distribution shift | original vs refined world/value blind eval |
 | LIBERO高、RoboCasa低 | suite I/O/controller/protocol | camera/action/chunk/contact difference | per-layer contract diff，而非只比平均分 |
 | 换硬件/torch 后掉点 | env lockfile、determinism log | numeric sampling sensitivity | three-seed paired rerun |
-| chunk 前半好、后半漂 | per-step action error/success | open-loop horizon过长 | (K_{exec}\in\{1,4,8,16\}) paired sweep |
+| chunk 前半好、后半漂 | per-step action error/success | open-loop horizon过长 | \(K_{exec}\in\{1,4,8,16\}\) paired sweep |
 
 还应加入四个 deterministic unit tests：action latent injection→extraction round trip；value frame→scalar round trip；normalization→denormalization round trip；LIBERO 7D / RoboCasa 7→12D controller mapping。它们只验证接口，不替代 closed-loop rollout。
 
@@ -238,7 +238,7 @@ WAM 项目数字必须留在 VOL 07 evidence layer：held-out MSE 需要 split�
 
 ### 12.1 30 秒回答
 
-“Cosmos Policy 的关键不是给视频模型加三个 head，而是把 proprio、action chunk、future observation 和 value 都编码成同一 latent video sequence 的 frame。通过 condition mask 和 sample routing，同一 diffusion backbone 可以学 (p(a,s',V\mid s))、(p(s',V\mid s,a)) 和 (p(V\mid s,a,s'))。direct policy 一次并行生成三者但只执行 action；planning 则用原 policy 采样 N 个 action，再用 rollout-refined planning checkpoint 自回归预测 future/value，选最高 value。工程审计重点是 latent slot、loss mask、action stats、chunk/replan、checkpoint revision、init/warmup/controller 与 value calibration。论文官方分数不是我的本地项目结果。”
+“Cosmos Policy 的关键不是给视频模型加三个 head，而是把 proprio、action chunk、future observation 和 value 都编码成同一 latent video sequence 的 frame。通过 condition mask 和 sample routing，同一 diffusion backbone 可以学 \(p(a,s',V\mid s)\)、\(p(s',V\mid s,a)\) 和 \(p(V\mid s,a,s')\)。direct policy 一次并行生成三者但只执行 action；planning 则用原 policy 采样 N 个 action，再用 rollout-refined planning checkpoint 自回归预测 future/value，选最高 value。工程审计重点是 latent slot、loss mask、action stats、chunk/replan、checkpoint revision、init/warmup/controller 与 value calibration。论文官方分数不是我的本地项目结果。”
 
 ### 12.2 尚未核实
 

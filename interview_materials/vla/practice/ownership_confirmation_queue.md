@@ -91,7 +91,7 @@ confidence: High | Medium | Low
 
 ## 5. 当前入口
 
-队首是 `OWN-WAM-001`。下一轮只问这一题；若候选人希望先练项目主叙事，也可先回答 `PROJ-WAM-001`，但不能同时提交两题。
+队首仍是 `OWN-WAM-001`。准备时先阅读 [WAM implementation-derived model answer](wam_oral_model_answer.html) 的 `PROJ-WAM-002` ownership section，再实际回答这一题；model answer 不迁移状态。若候选人先练项目主叙事，也只提交 `PROJ-WAM-001`，不能同时提交两题。
 
 ## References
 

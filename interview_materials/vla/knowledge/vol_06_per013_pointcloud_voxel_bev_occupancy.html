@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 Perception / Grounding / Navigation：Point Cloud、Voxel、BEV、Occupancy 与 Sampling（PER-013）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per013_pointcloud_voxel_bev_occupancy.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per013_pointcloud_voxel_bev_occupancy.md">
 <meta name="aris:source-sha256" content="e8097eaa42ea9eabb34bd5b0b730c1aa0241a8e8da0ab974bffe92e110168a79">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>e8097eaa42ea9eabb34bd5b0b730c1aa0241a8e8da0ab974bffe92e110168a79</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per013_pointcloud_voxel_bev_occupancy.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>e8097eaa42ea9eabb34bd5b0b730c1aa0241a8e8da0ab974bffe92e110168a79</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per013_pointcloud_voxel_bev_occupancy.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与边界</a></li><li><a href="#1-30">1. 30秒直觉：表示不是形状，而是物理合同</a></li><li><a href="#2-typed-3d-representation-manifest">2. Typed 3D Representation Manifest</a></li><li><a href="#2-1-schema">2.1 最小 Schema</a></li><li><a href="#2-2-manifest">2.2 为什么 Manifest 属于模型身份</a></li><li><a href="#3-representation">3. Representation 选择总览</a></li><li><a href="#4-point-set-permutation-invariance-pipeline-invariance">4. Point Set：Permutation Invariance 不等于 Pipeline Invariance</a></li><li><a href="#5-pointnet-set-abstraction">5. PointNet++ Set Abstraction</a></li><li><a href="#6-sampling-coverage-density-bias">6. Sampling：Coverage、Density 与 Bias</a></li><li><a href="#6-1-fps">6.1 FPS</a></li><li><a href="#6-2-ball-query-knn">6.2 Ball Query 与 kNN</a></li><li><a href="#6-3">6.3 必报诊断</a></li><li><a href="#7-voxelization">7. Voxelization：规则邻域来自离散量化</a></li><li><a href="#7-1">7.1 四个常见边界</a></li><li><a href="#8-aggregation-meanvfe-learned-vfe">8. Aggregation：MeanVFE 与 Learned VFE 不等价</a></li><li><a href="#9-sparse-tensor-sparse-convolution">9. Sparse Tensor 与 Sparse Convolution</a></li><li><a href="#9-1">9.1 三类算子不可合并</a></li><li><a href="#9-2-sparse">9.2 “Sparse 一定更快”为什么错</a></li><li><a href="#10-pillar-z-spatial-bin-z-feature">10. Pillar：折叠 z 的 Spatial Bin，不必删除 z Feature</a></li><li><a href="#11-height-compression-bev">11. Height Compression 与 BEV</a></li><li><a href="#12-bevfusion">12. BEVFusion：共享平面不是自动对齐</a></li><li><a href="#13-occupancy">13. Occupancy：至少三种不同合同</a></li><li><a href="#14-octomap-observed-free-unknown">14. OctoMap：Observed Free 与 Unknown 必须分开</a></li><li><a href="#15-occupancy-networks-query-surface-threshold">15. Occupancy Networks：连续 Query 与 Surface Threshold</a></li><li><a href="#16-memory-compute-scaling">16. Memory 与 Compute Scaling</a></li><li><a href="#17-conversion-loss-downstream-sufficiency">17. Conversion Loss 与 Downstream Sufficiency</a></li><li><a href="#17-1-metric">17.1 Metric 边界</a></li><li><a href="#18-deterministic-probes">18. Deterministic Probes：先验证合同，再跑大模型</a></li><li><a href="#19-failure-taxonomy">19. Failure Taxonomy 与诊断顺序</a></li><li><a href="#20-fail-closed-pseudocode">20. Fail-closed Pseudocode</a></li><li><a href="#21-robot-harness">21. Robot Harness：直接证据映射</a></li><li><a href="#22-project-truth-boundary">22. 五项目 Project Truth Boundary</a></li><li><a href="#23">23. 面试回答模板、追问与危险答案</a></li><li><a href="#23-1">23.1 两分钟结构化回答</a></li><li><a href="#23-2">23.2 高频追问</a></li><li><a href="#23-3">23.3 危险答案与修正</a></li><li><a href="#24-checklist">24. 白板 Checklist 与练习标准</a></li><li><a href="#25">25. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 Perception / Grounding / Navigation：Point Cloud、Voxel、BEV、Occupancy 与 Sampling（PER-013）</h1>
 <div class="meta">状态：<code>drafted / VLA-PER-013 / source_synced / card_synced / WARN</code> 更新日期：2026-07-20 前置：<code>VLA-PER-002</code> 2D→3D lift、<code>VLA-PER-003</code> multi-view/time、<code>VLA-PER-012</code> dense perception；后续：<code>VLA-PER-014</code> 3D semantic grounding、<code>VLA-PER-015</code> perception→action gate。 来源入口：<a href="../sources/vol_06_per013_pointcloud_voxel_bev_occupancy_source_freeze.html">PER-013 Point Cloud / Voxel / BEV / Occupancy Source Freeze</a>；对应自测：<a href="../questions/vol_06_per013.html">PER-013 Atomic Card</a>。本页只把冻结证据转成可教学知识；题卡已生成并保持<code>unseen</code>，不创建训练状态，也不改变任何 mastery。</div>

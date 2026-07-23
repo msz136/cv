@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 04 Cosmos Policy / WAM：1 epoch gate 与 full10k 运行族对账</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_04_cosmos_policy_wam_full10k_run_reconciliation.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_cosmos_policy_wam_full10k_run_reconciliation.md">
 <meta name="aris:source-sha256" content="2e3b1e1c4cd87cdbd2ac19e6869a91fcbb762c86eba7b1d66c15fdcad4fbf378">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>2e3b1e1c4cd87cdbd2ac19e6869a91fcbb762c86eba7b1d66c15fdcad4fbf378</code>；生成自：<code>interview_materials\vla\sources\vol_04_cosmos_policy_wam_full10k_run_reconciliation.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>2e3b1e1c4cd87cdbd2ac19e6869a91fcbb762c86eba7b1d66c15fdcad4fbf378</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_cosmos_policy_wam_full10k_run_reconciliation.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2-run-family">2. Run-family 对账表</a></li><li><a href="#3-full10k">3. Full10k 证据冻结</a></li><li><a href="#3-1-sha-256">3.1 原始文件与 SHA-256</a></li><li><a href="#3-2">3.2 可复核的训练指标</a></li><li><a href="#4-full10k-eval-1-1-smoke-24-5-formal-audit">4. Full10k eval：从 1×1 smoke 到 24×5 formal audit</a></li><li><a href="#5-1-epoch-gate">5. 与 1 epoch gate 的关系</a></li><li><a href="#6-p0">6. 仍未闭合的 P0 字段</a></li><li><a href="#7">7. 结论与禁止升级</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 04 Cosmos Policy / WAM：1 epoch gate 与 full10k 运行族对账</h1>
 <div class="meta">状态：<code>local_evidence_reconciliation / run_families_separated / WARN</code> 复核日期：2026-07-21 范围：只对账本地 <code>Project/report/cosmos_wam_repro</code> 中的独立 full10k WAM 复现与 <code>cosmos_policy_eval</code> 下的 1 epoch gate；不把两个 run family 合并成单一因果结果，也不改变题卡 <code>unseen</code> 或 ownership。</div>

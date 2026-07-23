@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cosmos Policy TurnOffMicrowave 本地训练失败：P0 First-Divergence 审计</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.md">
 <meta name="aris:source-sha256" content="80789c958cbdbbef9fededba13d6bafbecab64fae1a45e5aff0c3470fff57cab">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>80789c958cbdbbef9fededba13d6bafbecab64fae1a45e5aff0c3470fff57cab</code>；生成自：<code>interview_materials\vla\evidence\projects\cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>80789c958cbdbbef9fededba13d6bafbecab64fae1a45e5aff0c3470fff57cab</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\cosmos_policy_turnoffmicrowave_trained_failure_p0_audit.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2-question">2. 问题（Question）</a></li><li><a href="#3-p0-promotion">3. P0 promotion 结论</a></li><li><a href="#4-frozen-inputs-sha-256">4. Frozen inputs 与 SHA-256</a></li><li><a href="#5-run-delta">5. Run 总账与相邻 Delta</a></li><li><a href="#6">6. 动作、采样与评测合同</a></li><li><a href="#7-online-rollout-first-divergence">7. Online Rollout 与 First-Divergence 定位</a></li><li><a href="#7-1-closed-loop">7.1 Closed-loop 症状</a></li><li><a href="#7-2-same-input-official-vs-local-probe">7.2 Same-input official-vs-local probe</a></li><li><a href="#8-5-frame-exact-observation-transfer">8. 负样本、5-frame 与 Exact-Observation Transfer</a></li><li><a href="#8-1">8.1 不是简单的“没有负样本”</a></li><li><a href="#8-2-debug-sampler-conditioning">8.2 历史 debug sampler 漏了关键 conditioning 字段</a></li><li><a href="#8-3-corrected-overfit-transfer-gap">8.3 Corrected overfit 揭示 transfer gap</a></li><li><a href="#9-0-success">9. 0-Success 假设审计</a></li><li><a href="#10">10. 面试可用口径</a></li><li><a href="#30">30 秒版本</a></li><li><a href="#2">2 分钟版本</a></li><li><a href="#section-18">高压追问：所以是因为训练集负样本太少吗？</a></li><li><a href="#root-cause">高压追问：你定位并修复了 root cause 吗？</a></li><li><a href="#11-ownership">11. 公源、本地证据与 Ownership 边界</a></li><li><a href="#12-p0">12. 关闭 P0 的最小动作</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>Cosmos Policy TurnOffMicrowave 本地训练失败：P0 First-Divergence 审计</h1>
 <div class="meta">状态：<code>p0_audited / local-artifact-backed / checkpoint-remote-referenced / root-cause-partial / ownership-pending / WARN</code> 审计日期：2026-07-21 证据截止：2026-06-23 范围：只审计 local negative-only 1k checkpoint 在 TurnOffMicrowave 上的 fixed-batch gate、<code>0/1</code> closed-loop、同输入 official-vs-local query probe、5-frame conditioning 对照、eval-state mining 与 corrected single-batch overfit；不把该 checkpoint 与 8-GPU 1-epoch gate、独立 full10k run 或 official-HF <code>84/118</code> 合并。</div>

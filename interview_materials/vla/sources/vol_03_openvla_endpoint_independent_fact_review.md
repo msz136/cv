@@ -33,7 +33,7 @@ b=\operatorname{digitize}(\tilde a,e)\in\{1,\ldots,256\},
 \qquad t=V-b.
 \]
 
-(V) 是 tokenizer vocabulary size，所以 (t\in\{V-256,\ldots,V-1\})，确实使用末尾 256 个 token IDs。decode 做：
+\(V\) 是 tokenizer vocabulary size，所以 \(t\in\{V-256,\ldots,V-1\}\)，确实使用末尾 256 个 token IDs。decode 做：
 
 \[
 j=\operatorname{clip}(V-t-1,0,254),\qquad \hat a=c_j.

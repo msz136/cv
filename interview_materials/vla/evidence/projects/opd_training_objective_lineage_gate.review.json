@@ -1,0 +1,36 @@
+{
+  "artifact": "evidence/projects/opd_training_objective_lineage_gate.md",
+  "html": "evidence/projects/opd_training_objective_lineage_gate.html",
+  "review_date": "2026-07-22",
+  "status": "local_code_reconciled / run_summary_bounded / checkpoint_unverified / WARN",
+  "verdict": "WARN",
+  "source_sha256": "5B9498966531981C21FF89980978BF16AA40D6FBD6D3F9C820FF2C70BFF7D1F4",
+  "question_ids": ["VLA-FND-007", "PROJ-OPD-003", "PROJ-OPD-004", "PROJ-OPD-005"],
+  "scope": {
+    "trainer_variants": 2,
+    "launchers": 2,
+    "run_summaries": 2,
+    "objective_formulas": 4,
+    "checkpoint_binaries": 0,
+    "raw_prediction_bundles": 0,
+    "mastery_changes": 0
+  },
+  "checks": {
+    "bounded_slice": "PASS (one OPD objective-lineage gate plus synchronized corrections; no new question card or mastery state)",
+    "legacy_formal_separation": "PASS (root trainer SHA maps to teacher-rollout top1 CE; point trainer SHA maps to configurable rollout and full-vocabulary KL)",
+    "kl_direction": "PASS (code computes target_probs * [target_log_probs - student_log_probs], hence D_KL(q_beta || p_student); beta=0 reduces to teacher || student)",
+    "rollout_lineage": "PASS WITH WARNING (coldstart launcher/summary agree on teacher rollout; OPD5000 launcher/summary agree on student rollout; remote binary and full raw log are absent)",
+    "veto_boundary": "PASS (beta-positive target is teacher logits plus detached student logits; pure teacher target only after beta reaches zero)",
+    "artifact_boundary": "PASS WITH WARNING (artifact manifest explicitly excludes model weights, optimizer state, raw holdout JSONL and predictions JSONL)",
+    "html_static_validation": "PASS (ARIS academic v1, one H1, valid hierarchy, balanced MathJax, formula-em=0 and local links rendered)",
+    "browser_visual_check": "PASS (localhost 1280x1000: one H1, 260px sticky TOC, three tables, one code block, four formula blocks, 19 MathJax containers, zero raw delimiters, zero formula-em and zero page overflow; 800x1000: static TOC, zero raw delimiters and zero page overflow)",
+    "practice_state": "PASS (VLA-FND-007 and OPD project cards remain unseen; coaching_state.md is absent)"
+  },
+  "open_items": [
+    "Freeze remote formal trainer/launcher/config and checkpoint content hashes under a shared run ID.",
+    "Run fresh-process load and fixed-prompt loss/entropy/top-k parity for coldstart and OPD5000 checkpoints.",
+    "Collect paired per-sample raw predictions for SFT-only, legacy top1, coldstart and OPD5000 before objective-level causal claims.",
+    "Confirm per-file candidate ownership for the legacy and formal trainer paths."
+  ],
+  "next": "Use the corrected formal point trainer in OPD oral answers and VLA-FND-007; next P0 gate is checkpoint/load/raw-prediction lineage or an actual candidate drill."
+}

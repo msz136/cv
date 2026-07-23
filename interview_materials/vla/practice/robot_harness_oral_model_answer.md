@@ -1,7 +1,7 @@
-# PROJ-HARNESS-001 + P0 Audit 证据约束下的示范回答
+# PROJ-HARNESS-001..008 从项目实现与 P0 Audit 反推的证据约束口述稿
 
-> 状态：`model_answer / evidence_bounded / not_candidate_transcript / unseen`  
-> 更新日期：2026-07-21  
+> 状态：`implementation_derived_model_answer / evidence_bounded / not_candidate_transcript / unseen`
+> 更新日期：2026-07-22
 > 题目：Robot Harness 解决的核心问题是什么，如何解释 partial raw、proxy 指标、测试漂移与 Codex ownership？
 
 ## 1. 30 秒版本

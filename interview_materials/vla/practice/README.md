@@ -16,9 +16,11 @@ OpenPiVLA 对照材料：[`openpivla_oral_model_answer.html`](openpivla_oral_mod
 
 Robot Harness 对照材料：[`robot_harness_oral_model_answer.html`](robot_harness_oral_model_answer.html) / [`canonical Markdown`](robot_harness_oral_model_answer.md) / [`review`](robot_harness_oral_model_answer.review.json)。覆盖 runtime scope/mutex/cancel/compensation、SFT/GRPO/restraint 数据合同、schema-aware reward、P0 partial-raw（28/40 primary、6/10 exact）、scorer/checkpoint/effect-sink 边界、11 passed/1 config-drift test residual 与 Codex ownership 三轴口径；仍不是候选人 transcript。
 
-OPD 对照材料：[`opd_oral_model_answer.html`](opd_oral_model_answer.html) / [`canonical Markdown`](opd_oral_model_answer.md) / [`review`](opd_oral_model_answer.review.json)。覆盖五 expert 数据路由、coldstart/online OPD、full-vocabulary KL、point protocol、checkpoint selection 与因果/ownership 边界。
+OPD 对照材料：[`opd_oral_model_answer.html`](opd_oral_model_answer.html) / [`canonical Markdown`](opd_oral_model_answer.md) / [`review`](opd_oral_model_answer.review.json)。覆盖五 expert 数据路由、coldstart/online OPD、point protocol、checkpoint selection 与因果/ownership 边界；并依据 [objective lineage gate](../evidence/projects/opd_training_objective_lineage_gate.html) 拆开 root legacy top1 CE 与 `point/` formal full-vocabulary KL。
 
 UWM/LIBERO 对照材料：[`uwm_oral_model_answer.html`](uwm_oral_model_answer.html) / [`canonical Markdown`](uwm_oral_model_answer.md) / [`review`](uwm_oral_model_answer.review.json)。覆盖 strict/reset/paper protocol、normalizer、remote-final、DataLoader stall，以及 RoboCasa actionheadfix、teacher-forced/open-loop/closed-loop 分层、h4 `0/54` 和 convert_action invalid-policy 防线；仍不是候选人 transcript。
+
+五项目串联口述总览：[`project_portfolio_oral_model_answer.html`](project_portfolio_oral_model_answer.html) / [`canonical Markdown`](project_portfolio_oral_model_answer.md) / [`review`](project_portfolio_oral_model_answer.review.json)。提供 30 秒开场、2 分钟主线、项目选型、共用审计框架和跨项目真实性边界；仅为 implementation-derived 示范稿，不是候选人 transcript。
 
 首轮队列对账：[Readiness Audit](oral_drill_readiness_audit.html) / [canonical Markdown](oral_drill_readiness_audit.md) / [review](oral_drill_readiness_audit.review.json)。它只证明材料入口齐全，不代表任何题已 drilled。
 

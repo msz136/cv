@@ -6,7 +6,7 @@
 <title>VOL 08 SYS-003：Robot Fleet 与 Multi-tenant GPU Scheduling</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_08_sys003_robot_fleet_multitenant_gpu_scheduling.md">
-<meta name="aris:source-sha256" content="ccf73b74022399bfc2fef80b344e596b6c1931690ef87ef545144f35c4ecbef5">
+<meta name="aris:source-sha256" content="bd682f803f3ced854c7b4dd9c5205a244a52110f21b78f0933df927d4a60649e">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>ccf73b74022399bfc2fef80b344e596b6c1931690ef87ef545144f35c4ecbef5</code>；生成自：<code>interview_materials\vla\knowledge\vol_08_sys003_robot_fleet_multitenant_gpu_scheduling.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>bd682f803f3ced854c7b4dd9c5205a244a52110f21b78f0933df927d4a60649e</code>；生成自：<code>interview_materials\vla\knowledge\vol_08_sys003_robot_fleet_multitenant_gpu_scheduling.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 直觉与专业定义</a></li><li><a href="#1-1-fleet-scheduler">1.1 Fleet scheduler</a></li><li><a href="#1-2-multi-tenancy-capacity-fairness-priority-freshness">1.2 Multi-tenancy、capacity、fairness、priority、freshness</a></li><li><a href="#1-3-logical-resource-physical-resource">1.3 Logical resource 与 physical resource</a></li><li><a href="#2-fleet-identity">2. Fleet identity 与状态所有权</a></li><li><a href="#2-1-identity-schema">2.1 最小 identity/schema 合同</a></li><li><a href="#2-2-state-ownership">2.2 State ownership 表</a></li><li><a href="#3-capacity-placement">3. Capacity 与 placement 数学</a></li><li><a href="#3-1-resource-vector-admission">3.1 Resource vector admission</a></li><li><a href="#3-2">3.2 多目标调度代价</a></li><li><a href="#4-queue-fairness-preemption">4. Queue、Fairness 与 Preemption</a></li><li><a href="#4-1-queue">4.1 Queue 层级</a></li><li><a href="#4-2-freshness-fairness">4.2 Freshness 不是 fairness</a></li><li><a href="#4-3">4.3 抢占与降级</a></li><li><a href="#5-heterogeneous-gpu-replica-cache">5. Heterogeneous GPU、Replica 与 Cache</a></li><li><a href="#5-1-gpu-placement">5.1 GPU placement</a></li><li><a href="#5-2-replica-named-resource">5.2 Replica 与 named resource</a></li><li><a href="#6-robot-lease-lifecycle-fencing">6. Robot Lease、Lifecycle 与 Fencing</a></li><li><a href="#7-rollout-canary-cost">7. Rollout、Canary、Cost 与观测</a></li><li><a href="#7-1">7.1 正常路径</a></li><li><a href="#7-2-canary-gate">7.2 Canary gate</a></li><li><a href="#7-3-cost-slo">7.3 Cost 与 SLO</a></li><li><a href="#8">8. 面试级伪代码</a></li><li><a href="#9">9. 实现映射与项目真实性边界</a></li><li><a href="#10-60">10. 60 秒回答与禁说清单</a></li><li><a href="#10-1-60">10.1 60 秒回答模板</a></li><li><a href="#10-2-claim">10.2 不能说的强 claim</a></li><li><a href="#11">11. 结论与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 08 SYS-003：Robot Fleet 与 Multi-tenant GPU Scheduling</h1>
 <div class="meta">状态：<code>drafted / SYS-VLA-003 / knowledge_9_of_phase / card_1_of_1_unseen / WARN</code> 报告日期：2026-07-20 证据截止：2026-07-20 来源入口：<a href="../sources/vol_08_sys003_robot_fleet_multitenant_gpu_scheduling_source_freeze.html">SYS-003 Source Freeze</a>。</div>
@@ -185,7 +189,7 @@ R_{\mathrm{req}}\preceq C_{\mathrm{node}},
 <div class="formula">\[
 J=\alpha W_q+\beta L_{tail}+\gamma A_{action}+\delta M_{deadline}+\eta F_{fair}+\lambda C_{run}.
 \]</div>
-<p>(W_q) 是 queue wait，(L_{tail}) 是 inference tail latency，(A_{action}) 是 action age，(M_{deadline}) 是 deadline miss rate，(F_{fair}) 是 tenant share 偏差，(C_{run}) 是运行成本。权重不是上游默认值，必须由 task criticality、tenant SLA 和安全边界决定；应在固定 workload matrix 上做 matched A/B，而不是凭单次 utilization 报公平或性能提升。</p>
+<p>\(W_q\) 是 queue wait，\(L_{tail}\) 是 inference tail latency，\(A_{action}\) 是 action age，\(M_{deadline}\) 是 deadline miss rate，\(F_{fair}\) 是 tenant share 偏差，\(C_{run}\) 是运行成本。权重不是上游默认值，必须由 task criticality、tenant SLA 和安全边界决定；应在固定 workload matrix 上做 matched A/B，而不是凭单次 utilization 报公平或性能提升。</p>
 <h2 id="4-queue-fairness-preemption">4. Queue、Fairness 与 Preemption</h2>
 <h3 id="4-1-queue">4.1 Queue 层级</h3>
 <p>Kubernetes ResourceQuota 限制 namespace 的 aggregate resource/object consumption；PriorityClass/Preemption 允许高优先级 Pod 驱逐低优先级 Pod；Volcano queue 机制可表达 weight、capacity、guarantee、deserved 和 reclaim。面试回答应说明四个层级的组合：</p>

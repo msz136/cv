@@ -6,7 +6,7 @@
 <title>Robot Harness Claim–Evidence Inventory（RH-01）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\evidence\projects\robot_harness_claim_evidence_inventory.md">
-<meta name="aris:source-sha256" content="71c3b62f52204574c1b854b554258dabc1856f5d9044eb9628280a32500a797f">
+<meta name="aris:source-sha256" content="b2bd65b223a000cd19a036acad40b8fb0498bf6ef77e753afea9a41d71022aef">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>71c3b62f52204574c1b854b554258dabc1856f5d9044eb9628280a32500a797f</code>；生成自：<code>interview_materials\vla\evidence\projects\robot_harness_claim_evidence_inventory.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>b2bd65b223a000cd19a036acad40b8fb0498bf6ef77e753afea9a41d71022aef</code>；生成自：<code>interview_materials\vla\evidence\projects\robot_harness_claim_evidence_inventory.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#section-1">结论先行</a></li><li><a href="#1">1. 证据标签与判定规则</a></li><li><a href="#2-resume-claim-reconciliation">2. Resume / 项目页 claim reconciliation</a></li><li><a href="#3-source-inventory">3. Source inventory（冻结输入）</a></li><li><a href="#4-harness-runtime-boundary">4. Harness runtime boundary</a></li><li><a href="#4-1-agent">4.1 请求到 Agent 的信息流</a></li><li><a href="#4-2">4.2 面试可画的最小链路</a></li><li><a href="#5-sft">5. SFT 数据路由证据</a></li><li><a href="#6-grpo-reward-tool-restraint">6. GRPO、reward 与 tool-restraint</a></li><li><a href="#6-1-canonical-grpo">6.1 canonical GRPO</a></li><li><a href="#6-2-reward">6.2 reward 组成</a></li><li><a href="#6-3-tool-restraint-mix">6.3 tool-restraint mix</a></li><li><a href="#7-run-eval-lineage">7. Run / eval lineage 与指标协议</a></li><li><a href="#7-1-8b-full-pipeline">7.1 8B full pipeline（独立基线）</a></li><li><a href="#7-2-32b-base-sft-grpo-ladder">7.2 32B base、SFT、GRPO ladder</a></li><li><a href="#8">8. 失败模式与真实能力边界</a></li><li><a href="#9-ownership-boundary">9. Ownership boundary</a></li><li><a href="#10-2">10. 面试安全表述（约 2 分钟）</a></li><li><a href="#11">11. 高压追问与回答钩子</a></li><li><a href="#12-p0">12. P0 缺口与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>Robot Harness Claim–Evidence Inventory（RH-01）</h1>
 <div class="meta">状态：<code>drafted / local_direct_audit / ownership_ledger_drafted / WARN</code> 审查日期：2026-07-17 证据截止：2026-07-17 项目范围：AceAgent robot harness、PydanticAI runtime、SFT/GRPO 数据路由、schema-aware reward、8B/32B native-tools 评测 证据仓库：<code>C:\Users\mousongzhe\agent</code>（只读审计；该仓库原有 dirty worktree 未清理）</div>
@@ -204,7 +210,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <div class="formula">\[
 R=\sum_i w_i c_i+\sum_j p_j\,\mathbf{1}[h_j\text{ 被触发}],
 \]</div>
-<p>其中 (c_i) 是 tool name/order、required coverage、argument semantic、scope、clarification、state success、cancellation compensation 等组件，(w_i) 随 task family 变化；(p_j&lt;0) 是 forbidden tool、缺失澄清仍执行、scope 忽略、取消不补偿等 hard penalty。该式是对 <code>reward_spec()</code> 的结构化解释，不是新的训练实现。</p>
+<p>其中 \(c_i\) 是 tool name/order、required coverage、argument semantic、scope、clarification、state success、cancellation compensation 等组件，\(w_i\) 随 task family 变化；\(p_j&lt;0\) 是 forbidden tool、缺失澄清仍执行、scope 忽略、取消不补偿等 hard penalty。该式是对 <code>reward_spec()</code> 的结构化解释，不是新的训练实现。</p>
 <h3 id="6-3-tool-restraint-mix">6.3 tool-restraint mix</h3>
 <p><code>build_grpo_tool_restraint_mix.py</code> 从有工具池但无 reference trajectory、且文本证据支持 no-action/clarification/refusal 的候选生成 1,200 条；最终 mixed train=8,052+1,200=9,252。每条样本把“工具可见但不能调用”写入 policy constraint，success criteria 要求不调用工具并澄清或拒绝。AppWorld 空轨迹被排除，因为空轨迹可能表示 runner 缺失，不等于 no-call 标签。</p>
 <h2 id="7-run-eval-lineage">7. Run / eval lineage 与指标协议</h2>

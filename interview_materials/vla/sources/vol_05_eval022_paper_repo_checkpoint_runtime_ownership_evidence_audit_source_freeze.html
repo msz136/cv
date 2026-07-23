@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 05 EVAL-022 Source Freeze：Paper→Repo→Checkpoint→Runtime→Ownership Evidence Audit</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_eval022_paper_repo_checkpoint_runtime_ownership_evidence_audit_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eval022_paper_repo_checkpoint_runtime_ownership_evidence_audit_source_freeze.md">
 <meta name="aris:source-sha256" content="eb0547563c5e16d1a8380fffa1558b392443ca0e8d391caeadf00e0e9ed02f91">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>eb0547563c5e16d1a8380fffa1558b392443ca0e8d391caeadf00e0e9ed02f91</code>；生成自：<code>interview_materials\vla\sources\vol_05_eval022_paper_repo_checkpoint_runtime_ownership_evidence_audit_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>eb0547563c5e16d1a8380fffa1558b392443ca0e8d391caeadf00e0e9ed02f91</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eval022_paper_repo_checkpoint_runtime_ownership_evidence_audit_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、Revision 与边界</a></li><li><a href="#2-claim">2. 先把一句强 Claim 拆成原子命题</a></li><li><a href="#3-evidence-chain">3. 九级 Evidence Chain</a></li><li><a href="#4">4. 四个问题必须正交</a></li><li><a href="#5-paper-model-card-datasheet-gate">5. Paper / Model Card / Datasheet Gate</a></li><li><a href="#paper-gate">Paper gate</a></li><li><a href="#model-card-gate">Model card gate</a></li><li><a href="#datasheet-gate">Datasheet gate</a></li><li><a href="#6-official-repo-source-revision-gate">6. Official Repo 与 Source Revision Gate</a></li><li><a href="#7-data-config-run-gate">7. Data / Config / Run Gate</a></li><li><a href="#8-checkpoint-gate">8. Checkpoint Gate：路径不是权重</a></li><li><a href="#9-runtime-gate">9. Runtime Gate：代码存在不等于走到该分支</a></li><li><a href="#10-raw-eval-metric-gate">10. Raw Eval / Metric Gate</a></li><li><a href="#11-evidence-graph-claim-and-gate">11. Evidence Graph：强 Claim 是 AND Gate</a></li><li><a href="#12-hash-attestation">12. Hash / Attestation 能证明什么</a></li><li><a href="#13-slsa-ml-run-provenance">13. SLSA 到 ML Run Provenance 的映射</a></li><li><a href="#14-git-author-committer-signature">14. Git Author、Committer 与 Signature 边界</a></li><li><a href="#15-contribution-ownership-ledger">15. Contribution / Ownership Ledger</a></li><li><a href="#16-license">16. License 也是逐层证据</a></li><li><a href="#17-contradiction-negative-evidence">17. Contradiction 与 Negative Evidence</a></li><li><a href="#18-artifact-bundle">18. 最小 Artifact Bundle</a></li><li><a href="#19">19. 审计伪代码</a></li><li><a href="#20-evidence-mapping">20. 五项目 Evidence Mapping</a></li><li><a href="#21">21. 面试三档表达</a></li><li><a href="#22-claim-ladder">22. Claim Ladder 与下一入口</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 05 EVAL-022 Source Freeze：Paper→Repo→Checkpoint→Runtime→Ownership Evidence Audit</h1>
 <div class="meta">状态：<code>source_frozen / VLA-EVAL-022 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-19 证据截止：2026-07-19 本切片冻结claim atomization、paper/model/data documentation、source/build provenance、repo/config/data/run/checkpoint/runtime/raw-eval证据边、identity/integrity/semantic-validity/ownership正交边界、contribution-role ledger、license分层与五项目真实性；只服务<code>VLA-EVAL-022</code>，不在本切片扩张新知识节点或口述状态。</div>

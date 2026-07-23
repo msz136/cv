@@ -21,13 +21,13 @@
 
 ### 2.1 Impedance control
 
-令 (e=x-x_d)，一种目标阻抗关系可写为：
+令 \(e=x-x_d\)，一种目标阻抗关系可写为：
 
 \[
 M_d\ddot e+D_d\dot e+K_de=F_{ext}.
 \]
 
-(M_d,D_d,K_d) 是期望惯性、阻尼和刚度，(F_{ext}) 是外部交互力。直觉是系统不只追踪位置，还规定“受力后应该有多硬、多软、多阻尼”。这不等于天然安全：离散时间、延迟、力传感噪声、饱和、接触模型与底层 torque/position loop 都会影响稳定性。
+\(M_d,D_d,K_d\) 是期望惯性、阻尼和刚度，\(F_{ext}\) 是外部交互力。直觉是系统不只追踪位置，还规定“受力后应该有多硬、多软、多阻尼”。这不等于天然安全：离散时间、延迟、力传感噪声、饱和、接触模型与底层 torque/position loop 都会影响稳定性。
 
 ### 2.2 Model Predictive Control
 
@@ -44,7 +44,7 @@ x_{k+1}=f(x_k,u_k),
 
 ### 2.3 Learned policy / VLA
 
-learned policy 直接学习 (pi_\theta(a_t\mid o_{\le t},c)) 或 action chunk，擅长把高维视觉和语言条件压到动作分布。它仍需要 action normalization、frame/unit、controller rate、safety limit、replan 和 success predicate。模型输出可作为末端目标、subgoal、MPC reference、residual 或直接 action；这些接口不是同一语义。
+learned policy 直接学习 \(\pi_\theta(a_t\mid o_{\le t},c)\) 或 action chunk，擅长把高维视觉和语言条件压到动作分布。它仍需要 action normalization、frame/unit、controller rate、safety limit、replan 和 success predicate。模型输出可作为末端目标、subgoal、MPC reference、residual 或直接 action；这些接口不是同一语义。
 
 ## 3. 选择与组合
 

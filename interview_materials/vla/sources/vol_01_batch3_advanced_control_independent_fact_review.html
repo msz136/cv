@@ -6,7 +6,7 @@
 <title>VOL 01 Foundations Batch 3：Impedance / MPC / Learned Policy 独立事实复核</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\sources\vol_01_batch3_advanced_control_independent_fact_review.md">
-<meta name="aris:source-sha256" content="30e050d972973b893a38863cb229ed2bd27c384acaea94551622209d10874d0b">
+<meta name="aris:source-sha256" content="53e9f12e8ebcfc9c4a627271f83a75e7eb0a7e7f18daeba412576e693c31ef54">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>30e050d972973b893a38863cb229ed2bd27c384acaea94551622209d10874d0b</code>；生成自：<code>interview_materials\vla\sources\vol_01_batch3_advanced_control_independent_fact_review.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>53e9f12e8ebcfc9c4a627271f83a75e7eb0a7e7f18daeba412576e693c31ef54</code>；生成自：<code>interview_materials\vla\sources\vol_01_batch3_advanced_control_independent_fact_review.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 冻结来源</a></li><li><a href="#2">2. 方法边界</a></li><li><a href="#2-1-impedance-control">2.1 Impedance control</a></li><li><a href="#2-2-model-predictive-control">2.2 Model Predictive Control</a></li><li><a href="#2-3-learned-policy-vla">2.3 Learned policy / VLA</a></li><li><a href="#3">3. 选择与组合</a></li><li><a href="#4">4. 项目与真实性边界</a></li><li><a href="#5">5. 下一步</a></li><li><a href="#section-9">参考文献</a></li></ol></nav>
 <h1>VOL 01 Foundations Batch 3：Impedance / MPC / Learned Policy 独立事实复核</h1>
 <div class="meta">状态：<code>independent_fact_review / batch3 / WARN</code> 审查日期：2026-07-19 范围：VOL 01 knowledge 的 advanced-control 入口与 <code>VLA-FND-039</code>；目标是建立控制方法选择边界，不把通用方法反向写成个人项目实现。 结论先行：impedance control、MPC 与 learned policy 解决的层级不同，常见系统是组合而不是互斥选择。只有在 action/controller contract、动力学模型、replan 频率、约束与本地 runtime artifact 齐全时，才能声称项目实际实现了某种组合。</div>
@@ -150,11 +156,11 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </tbody></table>
 <h2 id="2">2. 方法边界</h2>
 <h3 id="2-1-impedance-control">2.1 Impedance control</h3>
-<p>令 (e=x-x_d)，一种目标阻抗关系可写为：</p>
+<p>令 \(e=x-x_d\)，一种目标阻抗关系可写为：</p>
 <div class="formula">\[
 M_d\ddot e+D_d\dot e+K_de=F_{ext}.
 \]</div>
-<p>(M_d,D_d,K_d) 是期望惯性、阻尼和刚度，(F_{ext}) 是外部交互力。直觉是系统不只追踪位置，还规定“受力后应该有多硬、多软、多阻尼”。这不等于天然安全：离散时间、延迟、力传感噪声、饱和、接触模型与底层 torque/position loop 都会影响稳定性。</p>
+<p>\(M_d,D_d,K_d\) 是期望惯性、阻尼和刚度，\(F_{ext}\) 是外部交互力。直觉是系统不只追踪位置，还规定“受力后应该有多硬、多软、多阻尼”。这不等于天然安全：离散时间、延迟、力传感噪声、饱和、接触模型与底层 torque/position loop 都会影响稳定性。</p>
 <h3 id="2-2-model-predictive-control">2.2 Model Predictive Control</h3>
 <p>标准 finite-horizon MPC 可抽象为：</p>
 <div class="formula">\[
@@ -165,7 +171,7 @@ x_{k+1}=f(x_k,u_k),
 \]</div>
 <p>每次根据当前观测/状态解长度 (H) 的受约束优化，只执行第一步或短前缀，再重新估计和求解。优势是约束显式、代价可解释；风险是模型失配、状态估计误差、求解延迟与 horizon/terminal design。</p>
 <h3 id="2-3-learned-policy-vla">2.3 Learned policy / VLA</h3>
-<p>learned policy 直接学习 (pi_\theta(a_t\mid o_{\le t},c)) 或 action chunk，擅长把高维视觉和语言条件压到动作分布。它仍需要 action normalization、frame/unit、controller rate、safety limit、replan 和 success predicate。模型输出可作为末端目标、subgoal、MPC reference、residual 或直接 action；这些接口不是同一语义。</p>
+<p>learned policy 直接学习 \(\pi_\theta(a_t\mid o_{\le t},c)\) 或 action chunk，擅长把高维视觉和语言条件压到动作分布。它仍需要 action normalization、frame/unit、controller rate、safety limit、replan 和 success predicate。模型输出可作为末端目标、subgoal、MPC reference、residual 或直接 action；这些接口不是同一语义。</p>
 <h2 id="3">3. 选择与组合</h2>
 <table><thead><tr><th>场景</th><th>首要方法</th><th>组合建议</th><th>主要 gate</th></tr></thead><tbody>
 <tr><td>接触、插入、表面跟随</td><td>impedance/admittance</td><td>learned policy 给目标，低层控制力—位移关系</td><td>force sensing、stiffness/damping、delay</td></tr>

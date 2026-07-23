@@ -6,7 +6,7 @@
 <title>VOL 02 IL / RL / Post-training：从示范数据到可验证反馈</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_02_il_rl_posttraining.md">
-<meta name="aris:source-sha256" content="90e70dbe1494b313ad4e7141160cfe47ea89836a108313baa52c63d400429460">
+<meta name="aris:source-sha256" content="b60889e43234cb48c26ae768bf773ba1ae1bc7345e694811588537bc52f85d7d">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>90e70dbe1494b313ad4e7141160cfe47ea89836a108313baa52c63d400429460</code>；生成自：<code>interview_materials\vla\knowledge\vol_02_il_rl_posttraining.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>b60889e43234cb48c26ae768bf773ba1ae1bc7345e694811588537bc52f85d7d</code>；生成自：<code>interview_materials\vla\knowledge\vol_02_il_rl_posttraining.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">一句话口径</a></li><li><a href="#section-3">背景与动机</a></li><li><a href="#section-4">模仿学习与数据分布</a></li><li><a href="#behavior-cloning-covariate-shift">Behavior Cloning 与 covariate shift</a></li><li><a href="#dagger">DAgger：让策略访问它会犯错的状态</a></li><li><a href="#action-chunking">Action chunking 与误差累积</a></li><li><a href="#suboptimal-demo">数据质量、覆盖与 suboptimal demo</a></li><li><a href="#policy-gradient-gae-ppo">Policy Gradient、GAE 与 PPO</a></li><li><a href="#reinforce-baseline">REINFORCE 与 baseline</a></li><li><a href="#gae-td-monte-carlo">GAE：在 TD 与 Monte Carlo 之间插值</a></li><li><a href="#ppo-clipped-objective">PPO clipped objective</a></li><li><a href="#ppo">PPO 训练诊断</a></li><li><a href="#offline-rl">Offline RL：保守性与行为约束</a></li><li><a href="#section-15">为什么离线数据外的动作危险</a></li><li><a href="#cql-ood-q">CQL：惩罚 OOD Q 过估</a></li><li><a href="#iql">IQL：不显式查询数据外动作</a></li><li><a href="#offline-rl-2">Offline RL 的诊断分层</a></li><li><a href="#sft-dpo-grpo-schema-aware-reward">SFT、DPO、GRPO 与 schema-aware reward</a></li><li><a href="#sft-teacher-forcing">SFT：对已确定的目标序列做 teacher forcing</a></li><li><a href="#dpo-preference-pair-reward">DPO：用 preference pair 隐式吸收 reward</a></li><li><a href="#grpo">GRPO：组内相对反馈</a></li><li><a href="#schema-reward-holdout-eval">Schema、reward、holdout eval 三层分工</a></li><li><a href="#pipeline">Pipeline 与伪代码</a></li><li><a href="#sft-preference-online-feedback">SFT → preference/online feedback 的训练路径</a></li><li><a href="#grpo-2">一轮 GRPO 风格更新的抽象</a></li><li><a href="#section-27">实现映射与项目挂钩</a></li><li><a href="#section-28">公源/本地设计边界</a></li><li><a href="#section-29">公有设计 / 上游公开流程</a></li><li><a href="#section-30">本地证据</a></li><li><a href="#section-31">本地推断</a></li><li><a href="#section-32">当前仍未核实</a></li><li><a href="#section-33">方法对比与选择建议</a></li><li><a href="#section-34">风险与后续建议</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 02 IL / RL / Post-training：从示范数据到可验证反馈</h1>
 <div class="meta">状态：<code>fact_reviewed_candidate / WARN</code> 报告日期：2026-07-19 证据截止：2026-07-16 适用岗位：VLA / 具身智能算法 / 大模型后训练 / 机器人策略学习 本卷边界：解释 imitation learning、policy gradient、offline RL、SFT/DPO/GRPO 和 schema-aware reward 的通用机制；个人项目的具体 run、指标和贡献边界仍以 VOL 07 与现有项目页为准。</div>
@@ -159,13 +165,13 @@ schema、reward checker、holdout eval 如何各司其职？
 <ol><li><strong>数据从哪里来</strong>：expert demo、旧 policy rollout、人工 preference、规则 checker 还是环境 reward。</li><li><strong>更新什么对象</strong>：连续 action、离散 token、value、reward model 还是 adapter。</li><li><strong>反馈覆盖什么范围</strong>：只判断格式/工具合法性，还是能判断任务成功、接触质量和长期回报。</li><li><strong>在哪里验收</strong>：in-domain、OOD、closed-loop、真机，还是仅离线 proxy。</li></ol>
 <h2 id="section-4">模仿学习与数据分布</h2>
 <h3 id="behavior-cloning-covariate-shift">Behavior Cloning 与 covariate shift</h3>
-<p>BC 把专家轨迹中的 ((o_t,a_t^*)) 当监督样本，最小化：</p>
+<p>BC 把专家轨迹中的 \((o_t,a_t^*)\) 当监督样本，最小化：</p>
 <div class="formula">\[
 \mathcal L_{BC}(\theta)
 =\mathbb E_{(o,a^*)\sim D_E}
 \left[\ell\left(\pi_\theta(o),a^*\right)\right].
 \]</div>
-<p>(D_E) 是专家数据分布，(ell) 可以是连续 action 的 MSE/Huber 或 token action 的 cross-entropy。直觉是策略在“专家访问过的状态”上学得像；一旦自己的小误差把系统带到 (D_E) 之外，后续状态会越来越陌生，误差会复利累积。实现上要记录 observation history、action window、padding/mask 和 train/eval split，不能只说“拿轨迹训练”。</p>
+<p>\(D_E\) 是专家数据分布，\(\ell\) 可以是连续 action 的 MSE/Huber 或 token action 的 cross-entropy。直觉是策略在“专家访问过的状态”上学得像；一旦自己的小误差把系统带到 \(D_E\) 之外，后续状态会越来越陌生，误差会复利累积。实现上要记录 observation history、action window、padding/mask 和 train/eval split，不能只说“拿轨迹训练”。</p>
 <h3 id="dagger">DAgger：让策略访问它会犯错的状态</h3>
 <p>DAgger 让当前策略执行，收集它实际访问的状态，再由专家标注动作并加入数据集：</p>
 <pre><code class="language-text">D_0 = expert demonstrations
@@ -176,7 +182,7 @@ for iteration k:
     D_k = D_{k-1} ∪ newly labeled data</code></pre>
 <p>它的核心不是某个 optimizer trick，而是改变训练分布，使策略访问的状态被纳入监督。代价是需要在线专家、人工或高质量 oracle，真实机器人上的标注成本和安全风险都很高。VLA 项目中，recovery/intervention 数据、失败轨迹和 synthetic perturbation 可以起到部分相似作用，但不能不加证据地称为 DAgger。</p>
 <h3 id="action-chunking">Action chunking 与误差累积</h3>
-<p>若每步动作误差期望为 (epsilon)，长时序 rollout 可能出现随时间增长的累积误差。action chunking 一次预测 (H) 步、只执行 (Kle H) 步后重新观测，可把策略查询次数从 (T) 降到约 (T/K)，同时保留纠偏机会。(H) 决定预测视野，(K) 决定开环执行长度；二者不是同一个参数。VOL 03 会专门讨论 action representation，VOL 05 会讨论延迟和评估协议。</p>
+<p>若每步动作误差期望为 \(\epsilon\)，长时序 rollout 可能出现随时间增长的累积误差。action chunking 一次预测 \(H\) 步、只执行 \(K\le H\) 步后重新观测，可把策略查询次数从 \(T\) 降到约 \(T/K\)，同时保留纠偏机会。\(H\) 决定预测视野，\(K\) 决定开环执行长度；二者不是同一个参数。VOL 03 会专门讨论 action representation，VOL 05 会讨论延迟和评估协议。</p>
 <h3 id="suboptimal-demo">数据质量、覆盖与 suboptimal demo</h3>
 <p>“更多 demo”不是无条件答案。需要分别检查：</p>
 <ul><li><strong>覆盖</strong>：任务、对象、视角、初始状态、失败恢复是否出现；</li><li><strong>一致性</strong>：action 轴顺序、单位、时间同步和语言条件是否统一；</li><li><strong>质量</strong>：轨迹是否含卡顿、错误 gripper、异常 reset 或 label leakage；</li><li><strong>目标</strong>：suboptimal demo 是噪声、可学习的次优策略，还是需要保留的 recovery 经验。</li></ul>
@@ -189,7 +195,7 @@ for iteration k:
 =\mathbb E_{\tau\sim\pi_\theta}
 \left[\sum_t \nabla_\theta\log\pi_\theta(a_t\mid s_t)\,G_t\right],
 \]</div>
-<p>其中 (G_t) 是从 (t) 开始的 return。直接使用 return 方差很大；减去只依赖状态的 baseline (b(s_t)) 不改变期望梯度，却能减少方差。用 (A_t=G_t-b(s_t)) 后，baseline 通常由 value network 估计。机器人场景还要面对 reward 稀疏、长 horizon 和昂贵 rollout。</p>
+<p>其中 \(G_t\) 是从 \(t\) 开始的 return。直接使用 return 方差很大；减去只依赖状态的 baseline \(b(s_t)\) 不改变期望梯度，却能减少方差。用 \(A_t=G_t-b(s_t)\) 后，baseline 通常由 value network 估计。机器人场景还要面对 reward 稀疏、长 horizon 和昂贵 rollout。</p>
 <h3 id="gae-td-monte-carlo">GAE：在 TD 与 Monte Carlo 之间插值</h3>
 <p>GAE 用 TD residual 的折扣和估计 advantage：</p>
 <div class="formula">\[
@@ -198,7 +204,7 @@ for iteration k:
 \qquad
 \delta_t=r_t+\gamma(1-d_t^{term})V(s_{t+1})-V(s_t).
 \]</div>
-<p>(gamma) 控制长期回报折扣，(lambda) 在低方差/高 bias 的 TD 和高方差/低 bias 的 Monte Carlo 之间插值，(d_t^{term}) 只表示真实终止。时间上限截断 <code>truncated</code> 通常仍允许 bootstrap，不能把它和 <code>terminated</code> 无条件合成一个 <code>done</code>。实现时要检查 episode boundary、timeout、value bootstrap 和 advantage normalization；GAE 不是 PPO 专属，但常与 PPO 配套。</p>
+<p>\(\gamma\) 控制长期回报折扣，\(\lambda\) 在低方差/高 bias 的 TD 和高方差/低 bias 的 Monte Carlo 之间插值，\(d_t^{term}\) 只表示真实终止。时间上限截断 <code>truncated</code> 通常仍允许 bootstrap，不能把它和 <code>terminated</code> 无条件合成一个 <code>done</code>。实现时要检查 episode boundary、timeout、value bootstrap 和 advantage normalization；GAE 不是 PPO 专属，但常与 PPO 配套。</p>
 <h3 id="ppo-clipped-objective">PPO clipped objective</h3>
 <p>PPO 用旧策略与新策略的概率比：</p>
 <div class="formula">\[
@@ -243,9 +249,9 @@ r_t(\theta)=
 =-\frac{1}{\sum_t m_t}
 \sum_t m_t\log\pi_\theta(y_t\mid x,y_{&lt;t}),
 \]</div>
-<p>(x) 是图像/文本/状态等条件，(y_t) 是目标 token，(m_t) 决定哪些位置计入 loss。工具调用中，(m_t) 可只覆盖 assistant/tool JSON；VLA 中则要明确 action token 是否与文本共同训练。SFT 学的是数据中给出的行为，不会自动学会未覆盖的失败恢复。</p>
+<p>\(x\) 是图像/文本/状态等条件，\(y_t\) 是目标 token，\(m_t\) 决定哪些位置计入 loss。工具调用中，\(m_t\) 可只覆盖 assistant/tool JSON；VLA 中则要明确 action token 是否与文本共同训练。SFT 学的是数据中给出的行为，不会自动学会未覆盖的失败恢复。</p>
 <h3 id="dpo-preference-pair-reward">DPO：用 preference pair 隐式吸收 reward</h3>
-<p>DPO 对 chosen (y_w) 与 rejected (y_l) 的相对 log-ratio 优化：</p>
+<p>DPO 对 chosen \(y_w\) 与 rejected \(y_l\) 的相对 log-ratio 优化：</p>
 <div class="formula">\[
 \mathcal L_{DPO}
 =-\mathbb E\log\sigma\left(
@@ -274,7 +280,7 @@ r_t(\theta)=
 <div class="formula">\[
 R=\sum_j w_jR_j,
 \]</div>
-<p>其中 (R_j) 是不同约束项，(w_j) 是权重。这个公式只表达 reward decomposition 的通用机制；你现有 Robot Harness 页面支持“schema-aware reward”这一项目方向，但具体权重和 checker 字段仍需以本地数据/代码证据为准。</p>
+<p>其中 \(R_j\) 是不同约束项，\(w_j\) 是权重。这个公式只表达 reward decomposition 的通用机制；你现有 Robot Harness 页面支持“schema-aware reward”这一项目方向，但具体权重和 checker 字段仍需以本地数据/代码证据为准。</p>
 <h2 id="pipeline">Pipeline 与伪代码</h2>
 <h3 id="sft-preference-online-feedback">SFT → preference/online feedback 的训练路径</h3>
 <pre><code class="language-python">def post_training_pipeline(dataset, base_policy, checker, evaluator):

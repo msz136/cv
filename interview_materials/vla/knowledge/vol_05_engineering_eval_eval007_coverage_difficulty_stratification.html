@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 05 EVAL-007：Init / Seed / Task Coverage 与难度分层</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_05_engineering_eval_eval007_coverage_difficulty_stratification.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eval007_coverage_difficulty_stratification.md">
 <meta name="aris:source-sha256" content="54900bbd7d5d8890f88d2eb920cd788879a174060e68ab0a63ed9fceac6cff7f">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>54900bbd7d5d8890f88d2eb920cd788879a174060e68ab0a63ed9fceac6cff7f</code>；生成自：<code>interview_materials\vla\knowledge\vol_05_engineering_eval_eval007_coverage_difficulty_stratification.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>54900bbd7d5d8890f88d2eb920cd788879a174060e68ab0a63ed9fceac6cff7f</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eval007_coverage_difficulty_stratification.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-250-250">1. 直觉：250次不等于250种情况</a></li><li><a href="#2-coverage-cube">2. Coverage Cube</a></li><li><a href="#3-coverage-score">3. Coverage Score 只测覆盖，不测成功</a></li><li><a href="#4-seed-coverage">4. 四类Seed Coverage</a></li><li><a href="#5-task-coverage">5. Task Coverage 三层</a></li><li><a href="#6-init-coverage">6. Init Coverage</a></li><li><a href="#7-difficulty-schema">7. Difficulty Schema</a></li><li><a href="#7-1">7.1 候选模型无关特征</a></li><li><a href="#7-2-baseline-pilot-difficulty">7.2 Baseline/Pilot difficulty</a></li><li><a href="#8-sampling-allocation">8. Sampling Allocation</a></li><li><a href="#8-1-proportional">8.1 Proportional</a></li><li><a href="#8-2-equal-minimum">8.2 Equal / Minimum</a></li><li><a href="#8-3-neyman">8.3 Neyman</a></li><li><a href="#8-4-hybrid">8.4 Hybrid</a></li><li><a href="#9-train-pilot-validation-final">9. Train / Pilot / Validation / Final</a></li><li><a href="#10-uncertainty-slice-audit">10. Uncertainty 与 Slice Audit</a></li><li><a href="#11">11. 五项目映射</a></li><li><a href="#uwm">UWM</a></li><li><a href="#wam">WAM</a></li><li><a href="#openpivla">OpenPiVLA</a></li><li><a href="#opd">OPD</a></li><li><a href="#robot-harness">Robot Harness</a></li><li><a href="#12-coverage-planner">12. Coverage Planner</a></li><li><a href="#13">13. 高频追问</a></li><li><a href="#14-review-checklist">14. Review Checklist 与下一入口</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 05 EVAL-007：Init / Seed / Task Coverage 与难度分层</h1>
 <div class="meta">状态：<code>drafted / VLA-EVAL-007 / knowledge_29_of_44 / card_1_of_1_unseen / review_warn</code> 更新日期：2026-07-18 前置：<a href="vol_05_engineering_eval_eval004_paired_init_seed_significance.html">EVAL-004 Paired</a>、<a href="vol_05_engineering_eval_eval005_macro_micro_weighted_aggregation.html">EVAL-005 Aggregation</a>、<a href="vol_05_engineering_eval_eval006_versioned_evaluation_manifest.html">EVAL-006 Versioning</a> 来源冻结：<a href="../sources/vol_05_eval007_init_seed_task_coverage_difficulty_source_freeze.html">EVAL-007 Source Freeze</a> 项目边界：五项目均未闭合完整task×init×difficulty×training-seed raw cube，本页不升级coverage或robustness claim。</div>

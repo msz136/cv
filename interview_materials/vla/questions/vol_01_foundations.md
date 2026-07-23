@@ -30,7 +30,7 @@
 
 **30 秒回答**：点积同时受方向和模长影响，常用于 attention logits；余弦相似度先归一化、主要比较方向，适合语义 embedding；欧氏距离衡量绝对空间距离，适合坐标或已统一尺度的特征。选择前要确认归一化、模长意义和量纲是否一致。
 
-**机制展开（约 2 分钟）**：若 (x,y) 未归一化，点积 (x^\top y=\|x\|\|y\|\cos\theta) 会把方向和模长混在一起；这正是 attention 中 logits 既受相似方向又受 feature scale 影响的原因。余弦相似度显式除以两个范数，适合比较语义方向，但会丢掉幅值信息；欧氏距离对坐标偏移敏感，必须先确认 frame、单位和 normalization。机器人 state/action 的不同维度若量纲不统一，直接用欧氏距离会让大尺度轴支配结果；OPD 的 box/point 几何误差应使用几何合同，而不是拿语义余弦替代。
+**机制展开（约 2 分钟）**：若 \(x,y\) 未归一化，点积 \(x^\top y=\|x\|\|y\|\cos\theta\) 会把方向和模长混在一起；这正是 attention 中 logits 既受相似方向又受 feature scale 影响的原因。余弦相似度显式除以两个范数，适合比较语义方向，但会丢掉幅值信息；欧氏距离对坐标偏移敏感，必须先确认 frame、单位和 normalization。机器人 state/action 的不同维度若量纲不统一，直接用欧氏距离会让大尺度轴支配结果；OPD 的 box/point 几何误差应使用几何合同，而不是拿语义余弦替代。
 
 **项目挂钩**：OPD 的 box/point 几何误差不能直接用语义余弦相似度代替。
 
@@ -306,7 +306,9 @@
 <details class="qa">
 <summary><span class="lv lv-l1">L1</span> <span class="freq">P0</span> <b>VLA-FND-030</b> · observation、state、proprioception、action 如何区分？</summary>
 
-**答**：observation 是传感器实际读到的信息；state 是决定未来转移的系统状态；proprioception 是关节角、速度、末端位姿等本体感知，通常只是 observation/state 的一部分；action 是策略发给控制器的命令。四者要说明时间戳、单位、坐标系和维度。
+**30 秒回答**：observation 是传感器实际读到的量，可能有噪声且不完全；state 是在 Markov 假设下足以决定下一步转移分布的系统状态；proprioception 是关节角、速度、末端位姿、夹爪等本体感知，通常只是 observation/state 的一部分；action 是策略发给控制器的命令。回答时必须补时间戳、单位、坐标系、维度和控制频率。
+
+**机制展开（约 2 分钟）**：环境可写成 \(s_{t+1}\sim P(\cdot\mid s_t,a_t)\)，传感器再由 \(o_t\sim O(\cdot\mid s_t)\) 产生 observation。真实机器人常只得到多视角图像、深度和 proprio，因此单帧 \(o_t\) 未必满足 Markov 性；可用历史窗口、recurrent memory、state estimator 或 belief \(b_t(s)=p(s_t\mid o_{\le t},a_{<t})\) 补偿。proprio 的“末端位姿”还要说明是在 base/world/camera frame，下游是否已做 normalization。action 可能是关节位置/速度/力矩、末端位姿 delta、夹爪指令或 action chunk；策略输出通常还要经过 denormalization、限幅、坐标变换和 low-level controller，才真正影响动力学。OpenPiVLA/UWM 的 image、instruction、proprio、action window 不能笼统叫输入输出：要冻结 shape、frame、unit、timestamp、valid mask、chunk/horizon 与 controller contract，否则 offline loss、server response 和 closed-loop rollout 无法对齐。
 
 **项目挂钩**：OpenPiVLA 的 observation/state normalization 不能只叫“预处理”。
 
@@ -321,7 +323,9 @@
 <details class="qa">
 <summary><span class="lv lv-l1">L1</span> <span class="freq">P0</span> <b>VLA-FND-031</b> · 世界、相机、base、末端和关节坐标为什么必须区分？</summary>
 
-**答**：同一个点或动作在不同 frame 下数值不同。视觉通常在相机 frame，导航可能在 world/base frame，操作 action 可能是末端增量或关节量；转换需要明确从哪个 frame 到哪个 frame、旋转和平移顺序、单位和轴约定。否则模型输出看似正常，执行方向仍可能整体错误。
+**30 秒回答**：同一个点或动作在不同 frame 下数值不同：视觉观测通常在 camera frame，机器人控制常在 base/world、末端 frame 或 joint space。必须明确变换方向、旋转和平移顺序、单位、轴约定和时间戳；否则数值看似合理，执行方向仍可能整体反掉。相机内参负责像素与相机射线，外参负责 camera 与机器人/world frame 的关系。
+
+**机制展开（约 2 分钟）**：齐次变换可写成 \(T^A_B=\begin{bmatrix}R^A_B&t^A_B\\0&1\end{bmatrix}\)，若点在 frame \(B\) 中表示为 \(\tilde p_B=[p_B,1]^\top\)，则 \(\tilde p_A=T^A_B\tilde p_B\)，组合时必须按实际链路顺序相乘，例如 \(T^W_C=T^W_B T^B_E T^E_C\) 只在每个下标方向定义一致时成立。旋转可用矩阵、四元数或 axis-angle 表示，但要固定左/右乘、主动/被动旋转、角度单位和 quaternion 排列。相机内参 \(K\) 描述焦距、主点和像素尺度；外参 \(T^B_C\) 描述相机相对 base 的位姿，二者不能互换。操作 action 还要区分绝对 pose、delta pose、joint command 与 controller 输入，保证 transform、normalizer 和 gripper convention 一致。OPD 的 box/point 像素坐标、OpenPiVLA 的末端 action、UWM 的 controller action 不是同一空间，必须在接口处显式记录 frame contract 和 round-trip 检查。
 
 **项目挂钩**：OPD 的图像坐标与 OpenPiVLA 的机器人 action 坐标不是同一个空间。
 
@@ -336,7 +340,9 @@
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-FND-032</b> · 齐次变换矩阵为什么能同时表示旋转和平移？</summary>
 
-**答**：把三维点扩成 \([x,y,z,1]^\top\)，就能用 \(T=[R\ p;0\ 1]\) 的一次矩阵乘法完成旋转和平移。多个 frame 通过矩阵连乘组合，但顺序不可交换。它统一了位姿链和计算接口，也方便求逆；实现中仍要检查 column/row vector 约定。
+**30 秒回答**：把三维点扩成齐次坐标 \([x,y,z,1]^\top\)，就能用 \(T=\begin{bmatrix}R&p\\0&1\end{bmatrix}\) 的一次矩阵乘法同时完成旋转和平移。多个 frame 通过矩阵连乘组合，但顺序不可交换；实现前还要固定 column/row vector、主动/被动旋转和下标方向。
+
+**机制展开（约 2 分钟）**：在 column-vector 约定下，\(\tilde p_A=T^A_B\tilde p_B\)，其中 \(R\in SO(3)\) 满足正交和单位行列式，\(p\) 是平移；这让刚体位姿落在 \(SE(3)\) 的统一接口中。若 \(T=\begin{bmatrix}R&p\\0&1\end{bmatrix}\)，则 \(T^{-1}=\begin{bmatrix}R^\top&-R^\top p\\0&1\end{bmatrix}\)，不能只把平移取负而忽略旋转。组合链例如 \(T^W_C=T^W_B T^B_E T^E_C\) 必须从右到左作用在点上；row-vector 实现或右乘约定会改变写法。工程中还要处理单位（m/mm、rad/deg）、axis order、quaternion 排列、时间同步和数值正交化。VLA action contract 如果把 world/base/end-effector frame 混用，offline parser 可能仍能通过 shape 检查，但 closed-loop 会出现系统性方向或尺度偏差，因此应加入 transform round-trip、identity 和 inverse consistency 测试。
 
 **项目挂钩**：action contract 若混淆 world/base/end-effector frame，会出现系统性偏差。
 
@@ -351,7 +357,9 @@
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-FND-033</b> · FK 与 IK 的输入输出和难点是什么？</summary>
 
-**答**：FK 给定关节配置，计算末端位姿，通常是确定的链式变换；IK 给定目标末端位姿，求关节配置，可能多解、无解或接近奇异。数值 IK 还受初值、关节限位和碰撞约束影响。VLA 若输出末端增量，仍需 IK/controller 才能变成关节命令。
+**30 秒回答**：FK 输入关节位置/姿态 \(q\)，沿机器人链计算末端 pose，通常是确定映射；IK 反过来给定目标末端 pose，求满足 \(f(q)=T^*\) 的关节配置，可能多解、无解或处于奇异附近。数值 IK 还受初值、关节限位、碰撞和连续性约束影响。VLA 输出 7D 末端 action 仍需 IK/controller 才能变成关节命令，不能直接说成电机 torque。
+
+**机制展开（约 2 分钟）**：FK 可写成 \(T^W_E(q)=T^W_{B}\prod_i T_i(q_i)\)，输入是关节配置和固定 link/工具外参，输出是某个 frame 下的末端位姿。IK 则求解 \(q^*=\arg\min_q\,d(T^W_E(q),T^*)\)，其中距离可同时包含位置、旋转、平滑、关节限位和碰撞 penalty；冗余机械臂自由度多于任务约束时会有多解，目标超出 workspace 或违反 limit 时无解。数值方法常用 Jacobian transpose、伪逆或阻尼最小二乘，且必须检查 residual、limit、collision 和 step continuity；找到一个 IK 解不代表整条轨迹动态可行。对于策略输出的末端 delta pose，要先按 frame 和 unit 累积/变换，再交给 IK、impedance 或其他 low-level controller；控制频率、插值、夹爪通道和安全限幅也会改变实际执行。面试时要把“policy action → controller input → joint command → simulator/robot step”接口说完整，不能把 7D/12D action 维度直接等同于执行器物理量。
 
 **项目挂钩**：不要把 policy 输出的 7D action 直接说成电机 torque。
 
@@ -366,7 +374,9 @@
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-FND-034</b> · Jacobian 如何连接关节速度和末端速度？奇异位形有什么影响？</summary>
 
-**答**：局部关系是 \(\dot x=J(q)\dot q\)。Jacobian 每列描述一个关节运动对末端 twist 的贡献。接近奇异位形时 rank 降低或条件数变差，某些末端方向无法产生，伪逆会放大关节速度和噪声；常用阻尼伪逆、限速或改变姿态缓解。
+**30 秒回答**：局部关系是 \(\dot x=J(q)\dot q\)，其中 Jacobian 把关节速度映射为末端 linear/angular velocity（twist），每一列对应一个关节的局部贡献。接近奇异位形时 rank 降低或条件数变差，某些末端方向不可控，伪逆会放大关节速度和噪声；可用阻尼伪逆、限速或改变姿态缓解。
+
+**机制展开（约 2 分钟）**：对末端 pose 映射 \(x=f(q)\)，Jacobian 是 \(J(q)=\partial x/\partial q\)，速度控制常求 \(\dot q=J^\#\dot x^*\)。普通伪逆在最小二乘意义下追踪目标，但当最小奇异值接近 0 时，\(J^\#\) 会把观测噪声、量化误差或 policy jerk 放大到关节速度；这不是单纯数值 bug，而是机构在该姿态的可控方向退化。阻尼最小二乘可写成 \(\dot q=J^\top(JJ^\top+\lambda^2I)^{-1}\dot x^*\)，通过 \(\lambda\) 换取少量 tracking bias 来降低速度爆炸；实际还要加入 joint-limit null-space、velocity/acceleration limit、碰撞约束和 controller rate。VLA action 的异常幅度可能来自模型，也可能来自 frame/normalization 错误、IK/Jacobian 放大或低层控制器，因此诊断要分别记录 raw action、denormalized action、IK residual、singular values、joint velocity 与最终 env step，不能只看 policy 输出。
 
 **项目挂钩**：action jerk 或异常幅度可能来自模型，也可能来自 IK/Jacobian 放大。
 
@@ -381,7 +391,9 @@
 <details class="qa">
 <summary><span class="lv lv-l1">L1</span> <span class="freq">P0</span> <b>VLA-FND-035</b> · position、velocity、torque control 有什么区别？</summary>
 
-**答**：position control 指定目标位置/角度，由底层回路产生控制量；velocity control 指定速度；torque control 直接控制力矩，表达力强但对动力学、安全和频率要求更高。VLA action 的 7D/14D 只是接口维度，必须说明它最终对应哪种 controller 语义。
+**30 秒回答**：position control 给目标位置/角度，由底层回路产生速度或力矩；velocity control 给目标速度；torque control 直接给关节力矩，表达力强但对动力学模型、实时频率、接触稳定和安全限幅要求更高。VLA action 的 7D/14D 只是接口维度，必须说明最终 controller 语义和单位。
+
+**机制展开（约 2 分钟）**：三者主要区别在控制层级、闭环带宽和对模型/安全的依赖：position/velocity 往往由成熟 servo 或 impedance loop 负责稳定性，policy 只需输出较高层 reference；torque control 让策略直接影响动力学，但噪声、延迟、负载变化和接触冲击会更直接地传到机器人。末端 delta pose 通常先在指定 frame 中反归一化，再经 IK/Jacobian 或 impedance controller 转成 joint target，最后由 position/velocity/torque loop 执行；同样的 7D 向量如果被解释为 pose delta、joint velocity 或 torque，系统行为完全不同。选型要看任务接触性、控制频率、动力学可信度、action horizon、sim2real gap 和 safety fallback；面试时应说明 saturate、rate limit、workspace/torque limit、E-stop 与 termination。OpenPiVLA 的 action contract 只有在与 LIBERO/ALOHA 的 controller、normalizer、gripper convention 和 step frequency 对齐后，才有可比的 offline/closed-loop 结果。
 
 **项目挂钩**：OpenPiVLA 的 action contract 要与 LIBERO/ALOHA controller 匹配。
 
@@ -396,7 +408,9 @@
 <details class="qa">
 <summary><span class="lv lv-l1">L1</span> <span class="freq">P0</span> <b>VLA-FND-036</b> · PID 的 P/I/D 各解决什么问题？</summary>
 
-**答**：P 按当前误差响应，增大后更快但可能振荡；I 累积历史误差以消除稳态偏差，但会积分饱和；D 根据误差变化率增加阻尼，但会放大高频噪声。实现还要处理采样周期、输出限幅、anti-windup 和导数滤波。
+**30 秒回答**：P 对当前误差响应，增大通常更快但可能振荡；I 累积历史误差以消除稳态偏差，但会积分饱和；D 看误差变化趋势、提供阻尼，却容易放大测量噪声。实现必须同时处理采样周期、输出限幅、anti-windup、导数滤波和延迟。
+
+**机制展开（约 2 分钟）**：离散 PID 可写成 \(u_t=K_pe_t+K_i\sum_{k\le t}e_k\Delta t+K_d(e_t-e_{t-1})/\Delta t\)，其中 \(e_t=r_t-y_t\)。P 主要决定局部刚度/响应速度；I 抵消持续偏差，但当输出饱和时继续累积会产生 windup，解除饱和后出现大 overshoot；D 提前感知变化、增加阻尼，但对高频 measurement noise 和 \(1/\Delta t\) 敏感，工程上常对 measurement 求导并加低通滤波，避免 setpoint jump 造成 derivative kick。anti-windup 可用 conditional integration（饱和且误差继续推向饱和时暂停积分）或 back-calculation，把 \(u_{sat}-u_{raw}\) 反馈到积分状态；还要记录积分限幅、输出 rate limit、单位、采样时间和 reset/termination 时的状态清理。闭环抖动不能只归因于 policy：action chunk、server latency、控制频率、normalizer、接触和 PID 参数都会改变误差序列，因此应分别记录 raw/commanded action、controller output、saturation、tracking error 与 timestamp。
 
 **项目挂钩**：闭环轨迹抖动不一定是模型错误，也可能是 controller 参数和延迟问题。
 
@@ -411,7 +425,9 @@
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-FND-037</b> · 控制频率、推理延迟和 action chunk 如何共同影响稳定性？</summary>
 
-**答**：控制频率决定动作更新周期，推理延迟让策略使用过时 observation；chunk 可减少模型查询次数，但执行越长越接近开环。短 replan 能及时纠偏但计算和通信更贵，长 chunk 更平滑高效却容易积累误差。要同时报告 policy query rate、controller rate、horizon 和实际执行前缀。
+**30 秒回答**：控制频率决定动作多久更新一次，推理/通信延迟会让策略基于过时 observation；action chunk 减少模型查询但执行越长越接近 open loop。短 replan 纠偏及时却更耗算力和带宽，长 chunk 更高效但误差积累更大。评估必须同时报告 policy query rate、controller rate、端到端 latency、预测 horizon 和实际执行前缀。
+
+**机制展开（约 2 分钟）**：设 controller period 为 \(\Delta t_c\)，policy query period 为 \(\Delta t_p\)，端到端延迟为 \(\tau\)，则 observation 到 action 生效期间系统可能已经执行了约 \(\tau/\Delta t_c\) 个旧动作；chunk 长度 \(H\) 还决定了两次 replan 之间的最大 open-loop 步数。若 \(\tau\) 接近或超过控制周期，直接同步调用会阻塞控制 loop；常见设计是 observation buffer + inference worker + timestamped action queue，控制线程按 deadline 取最新可用前缀，过期或缺失时触发 hold/zero/fallback，而不是无限等待。chunk 执行可以用 early termination、receding-horizon overlap 或 uncertainty-triggered replan 折中；但 action overlap、队列丢弃、server retry、clock drift 和 reset/termination 语义必须记录。模型预测 horizon 不等于 controller 实际执行步数，尤其在 OpenPiVLA/UWM 的 action window、warmup、denormalization 和 controller slicing 之间。面试时要把 query rate、controller rate、latency percentiles、queue depth、executed prefix、termination 与 success predicate 放在同一 closed-loop protocol 中比较。
 
 **项目挂钩**：OpenPiVLA 的 action window 与 UWM warmup/rollout protocol 都属于闭环合同。
 
@@ -426,9 +442,11 @@
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-FND-038</b> · denormalization、clipping 和 gripper 维度为什么会造成系统性失败？</summary>
 
-**答**：模型输出通常在标准化空间，推理必须用同一版本的 per-dimension 统计量恢复单位；均值/方差、轴顺序或 gripper 开闭符号错，会让每一步都产生同方向偏差。clipping 能防越界但也可能掩盖尺度错误。应做 round-trip、范围、单位和 checksum 检查。
+**30 秒回答**：policy 输出通常仍在模型的 normalized space；执行前必须用训练时完全相同的方法、逐维统计量和维度顺序恢复 controller unit。normalizer 版本、axis/frame/unit 或 gripper 开闭编码错，会在每一步制造同方向的 scale/bias；clipping 虽能把数值压回合法范围，却可能让大量维度饱和并掩盖合同错误。诊断要做 action round-trip、逐维 sentinel、normalizer checksum，并同时记录 clipping rate 与最终 controller command。
 
-**项目挂钩**：OpenPiVLA/UWM 的 normalizer 和 action contract 是评估前置条件。
+**机制展开（约 2 分钟）**：对逐维 affine normalizer，可写成 \(z_i=(a_i-c_i)/s_i\)、\(a_i=s_i z_i+c_i\)；这里 \(z_i\) 是模型空间 action，\(a_i\) 是物理/控制器空间 action，\(c_i,s_i\) 可以来自 mean/std、quantile range 或其他训练时冻结的统计协议。公式可逆不代表实现一定正确：checkpoint 必须绑定 normalizer method/revision、dimension layout、absolute/delta 语义、frame、unit、valid dims 与 gripper convention。若 x/y 轴互换、角度 rad/deg 混用、不同数据集统计量复用，或者把 gripper 的 `[-1,1]`、`[0,1]`、开合宽度、binary open/close 符号混写，shape 检查仍可能通过，但闭环会出现稳定的方向、尺度或夹爪状态错误。随后 \(a'_i=\operatorname{clip}(a_i,l_i,u_i)\) 只能提供 safety saturation，不能修复 calibration；高 saturation ratio、长期贴边或 clipping 前后差值很大反而是 normalizer/schema 错配信号。定位时先对数据集 action 做 `denormalize(normalize(a))` round-trip，再让每个维度依次通过 one-hot/sentinel，核对 axis、sign、unit 与 gripper；然后用记录的 expert action 绕过 policy 走同一 adapter/controller，最后比较 raw model action、denormalized action、clipped action、controller command 和实际 state delta。这样才能区分模型预测错误、action adapter bug 与 controller/environment 问题。现有 OpenPiVLA inventory 仍把 axis/unit/normalizer/parser 标为 semantics-open，UWM inventory 也把 normalizer checksum 和 RoboCasa action order 列为缺口，因此可以把它们讲成评估前置 gate 和诊断风险，不能直接宣称已经证明某次失败的唯一根因。
+
+**项目挂钩**：OpenPiVLA/UWM 的 normalizer、action order 与 gripper contract 是评估前置条件；当前证据只支持合同审计和风险定位，不支持把 normalizer 错配写成已闭合 root cause。
 
 **追问**：怎样区分模型失败与 denormalization bug？
 
@@ -443,150 +461,330 @@
 <details class="qa">
 <summary><span class="lv lv-l1">L1</span> <span class="freq">P0</span> <b>VLA-FND-005</b> · 期望、方差、协方差和相关系数有什么区别？</summary>
 
-**答**：期望描述平均位置，方差描述单变量波动，协方差描述两个变量是否一起变化，相关系数是归一化后的协方差，范围通常为 \([-1,1]\)。action 统计中要看每个维度的量纲和相关性；方差大不一定代表重要，相关性也不等于因果。
+**30 秒回答**：期望 \(\mathbb E[X]\) 描述随机变量的平均位置；方差 \(\operatorname{Var}(X)\) 描述单变量围绕均值的平方波动；协方差 \(\operatorname{Cov}(X,Y)\) 描述两个变量的线性共同变化，但受量纲影响；相关系数 \(\rho_{XY}\) 再除以两边标准差，通常落在 \([-1,1]\)。在机器人 action 统计里必须逐维保留单位、valid mask 和数据切分；零相关不等于独立，相关也不代表因果。
 
-**项目挂钩**：action normalization 需要按维度统计，不能把位置、旋转和 gripper 混成一个均值方差。
+**机制展开（约 2 分钟）**：令 \(\mu_X=\mathbb E[X]\)，则 \(\operatorname{Var}(X)=\mathbb E[(X-\mu_X)^2]=\mathbb E[X^2]-\mu_X^2\)，\(\operatorname{Cov}(X,Y)=\mathbb E[(X-\mu_X)(Y-\mu_Y)]\)，而 \(\rho_{XY}=\operatorname{Cov}(X,Y)/(\sigma_X\sigma_Y)\)。方差有平方量纲，协方差的量纲是两变量单位之积，所以位置、旋转和 gripper 维度不能靠原始数值大小直接比较；相关系数消除了尺度，却只刻画线性关系，而且当某一维 \(\sigma=0\) 时没有定义。对随机向量 \(a\)，协方差矩阵 \(\Sigma=\mathbb E[(a-\mu)(a-\mu)^\top]\) 必须半正定，因为任意向量 \(v\) 都满足 \(v^\top\Sigma v=\operatorname{Var}(v^\top a)\ge 0\)。工程上要说明统计量来自 train split，按 action layout 与任务/机器人域计算，并正确处理 padding、invalid dimensions、episode 长度和时间相关性；样本方差采用 \(n\) 还是 \(n-1\) 也要与实现一致。逐维 normalizer 通常只使用边缘均值/尺度，不会自动消除维度间相关性；若混入不同 frame、unit、absolute/delta 语义或 gripper 编码，得到的均值和协方差即使数值稳定也没有统一物理含义。OpenPiVLA/UWM 当前 inventory 只支持把 normalizer revision、action order、valid mask 和 train/eval split 当作审计项，尚无证据支持声称已得到某组个人项目 action 统计或由它闭合了失败根因。
+
+**项目挂钩**：OpenPiVLA/UWM 的 action normalization 应按维度绑定 layout、unit、mask 与统计版本；当前证据只支持合同审计，不支持把某个统计异常写成已验证 root cause。
 
 **追问**：为什么协方差矩阵必须半正定？
 
 **易错**：相关系数接近 0 只说明线性相关弱，不代表完全独立。
 
-**来源**：[27]　**练习状态**：unseen
+**来源**：[27][41][43]　**练习状态**：unseen
 
 </details>
 
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-FND-007</b> · KL divergence 的方向为什么重要？</summary>
 
-**答**：\(D_{KL}(P\|Q)\) 用 P 作期望、惩罚 Q 在 P 高概率处估计不足，常有 mode-covering 倾向；\(D_{KL}(Q\|P)\) 更容易集中到 P 的某些 mode，可能 mode-seeking。它不对称，不能当普通距离。实现时还要明确 input/target 的 log-prob 和 reduction。
+**30 秒回答**：\(D_{KL}(P\|Q)=\mathbb E_{x\sim P}[\log P(x)-\log Q(x)]\) 由 P 决定期望区域；Q 若漏掉 P 有质量的 mode 会被强罚，所以近似优化常更偏 mode-covering。反向 \(D_{KL}(Q\|P)\) 只在 Q 自己覆盖的区域取期望，更可能选中 P 的一个 mode。它不对称、没有三角不等式，不是普通距离；代码里必须说明谁是 target、谁是 student、输入是 logits/log-prob/prob、mask 和 reduction。
 
-**项目挂钩**：DPO、蒸馏或 policy regularization 中，KL 方向会改变策略偏离 reference 的方式。
+**机制展开（约 2 分钟）**：KL 的定义是 \(D_{KL}(P\|Q)=\sum_x P(x)\log\frac{P(x)}{Q(x)}\ge 0\)，等号只在几乎处处 \(P=Q\) 时成立。方向重要的根源是权重分布不同：forward KL 用 P 加权，若 \(P(x)>0\) 而 \(Q(x)\to0\)，代价趋于无穷；reverse KL 用 Q 加权，Q 没覆盖的 P mode 几乎不进入期望，但 Q 若把质量放到 \(P(x)=0\) 的区域同样会发散。“mode-covering/mode-seeking”是多峰近似族受限时的常见行为，不是无条件定理；若模型族足以精确表示 P，两种方向的最优解都可为 P。实现层面要先对齐同一 token/动作 support：teacher logits \(z_T\)、student logits \(z_S\) 经 log-softmax 得到 \(\log p_T,\log p_S\)，teacher-to-student 蒸馏常计算 \(\sum_v p_T(v)(\log p_T(v)-\log p_S(v))\)。PyTorch `KLDivLoss` 默认把 `input` 解释为 log-prob、`target` 解释为 probability；`log_target=True` 时 target 才是 log-prob，且 `batchmean` 才与“按 batch 求和再除 batch size”的 KL 定义对齐。token mask、temperature、vocab revision、padding 和 denominator 任一不一致，都可能让“方向正确”的公式落到错误实现。
 
-**追问**：为什么 KL 不满足对称性和三角不等式？
+**项目挂钩**：OPD formal `point/train_opd_online_vl.py` 计算 \(D_{KL}(q_\beta\|p_S)\)：veto beta=0 时为 teacher∥student，beta>0 时 target logits 还加入 detached student logits；根目录同名 legacy trainer 则是 teacher top1 hard-label CE。两份实现必须按完整路径和 run summary 分开，详见 [OPD Training Objective Lineage Gate](../evidence/projects/opd_training_objective_lineage_gate.html)。
 
-**易错**：把 forward/reverse KL 名称记反，或把 KL 当作 metric。
+**追问**：为什么 KL 不满足对称性和三角不等式？`KLDivLoss(mean)` 与 `batchmean` 有什么差别？为什么 mode-covering/mode-seeking 只能作为近似族受限时的经验描述？
 
-**来源**：[14][31]　**练习状态**：unseen
+**易错**：把 forward/reverse 名称记反；把 logits 直接传给 `KLDivLoss`；忽略 target 是否为 log；把 mode-covering/mode-seeking 说成无条件定理；把 KL 当作 metric。
+
+**来源**：[14][31][44]　**练习状态**：unseen
 
 </details>
 
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-FND-008</b> · bias-variance trade-off 如何影响策略学习和评估？</summary>
 
-**答**：bias 是系统性偏差，variance 是对数据/采样扰动的敏感度。模型过简单可能高 bias，过复杂或数据少可能高 variance；正则、更多覆盖和集成可调节两者。机器人评估中单个 seed 的高 success 可能是高方差，不应替代多 seed、逐任务和失败类型分析。
+**30 秒回答**：bias 是学习器平均预测相对真实目标的系统性误差，variance 是训练数据、初始化或优化随机性变化时模型输出的波动。更大模型通常能降低近似 bias，但不保证只降低 bias，也可能放大估计方差和优化不稳定。机器人评估还要把 training-seed variance、task/init 差异和固定 policy 的 episode 二项噪声分开；多跑同一 checkpoint 只能估计后者，不能替代多个独立训练 run。
 
-**项目挂钩**：UWM strict 结果和 WAM offline proxy 都要说明评估样本数与协议，而不是只报一个百分比。
+**机制展开（约 2 分钟）**：在平方误差和固定输入 \(x\) 下，若训练集为随机变量 \(\mathcal D\)，经典分解为
 
-**追问**：增加模型规模通常只会降低 bias 吗？
+\[
+\mathbb E_{\mathcal D,\epsilon}\!\left[(y-\hat f_{\mathcal D}(x))^2\right]
+=\sigma_\epsilon^2
++\left(\mathbb E_{\mathcal D}[\hat f_{\mathcal D}(x)]-f(x)\right)^2
++\operatorname{Var}_{\mathcal D}[\hat f_{\mathcal D}(x)].
+\]
 
-**易错**：bias-variance 不是“训练误差 vs 测试误差”的同义词。
+第一项是不可约噪声，第二项是 squared bias，第三项是 estimator variance。它依赖损失、数据生成过程和模型族，不能把训练误差直接叫 bias、测试误差直接叫 variance。正则、更强先验、数据增强或早停常以增加部分 bias 换取更低 variance；更多独立覆盖通常降低估计方差；增大模型容量可能降低 approximation bias，但有限数据下的方差、优化路径和分布外行为未必单调。对 VLA policy，还要把 action-supervision bias、dataset coverage、closed-loop compounding error 和 evaluator noise 分层。固定 checkpoint、task/init protocol 下，二元 success 的条件方差约为 \(p(1-p)/n\)；它只描述 episode sampling，不包含换训练 seed 后 policy 本身的变化。可信比较应保存 training/data/env/rollout/bootstrap seed，先在同 task/init 上做 paired episode 比较，再把独立 training run 作为顶层 replicate，报告逐任务分布和区间，而不是把同一 checkpoint 的几百个 episode 当成几百个训练样本。
 
-**来源**：[4][27][42][43]　**练习状态**：unseen
+**项目挂钩**：UWM 的 `186/250` 是用户确认的 fixed-pruned-init summary，五个 task 使用 task-specific checkpoints，本地缺多 training-seed panel 和 250 条 raw episode，因此既不能估 training variance，也不能把它与论文三 seed/OOD protocol直接比较。WAM full10k 与 official-HF path 的 checkpoint/config lineage也未做 matched join，`0/118` 与 `84/118` 不能解释为 bias–variance 分解或训练因果效果。
+
+**追问**：增加模型规模通常只会降低 bias 吗？同一 checkpoint 跑 250 个 episode 为什么不能估计 training-seed variance？paired init 能消除哪些方差、不能消除哪些？
+
+**易错**：bias–variance 不是“训练误差 vs 测试误差”的同义词；episode 数不等于独立 training runs；不同协议的百分比不能拿来估计方差或 bias。
+
+**来源**：[4][27][42][43][46]　**练习状态**：unseen
 
 </details>
 
 <details class="qa">
 <summary><span class="lv lv-l1">L1</span> <span class="freq">P0</span> <b>VLA-FND-009</b> · 为什么深度网络需要非线性激活？GELU 和 SiLU 有何特点？</summary>
 
-**答**：没有非线性时，多层线性层仍可合并成一个线性变换，无法表达复杂决策边界。GELU 用输入的平滑概率门控，Transformer 中常见；SiLU 为 \(x\sigma(x)\)，也平滑且允许小的负值。选择要结合 backbone 和已验证配置，不把激活函数单独包装成性能保证。
+**30 秒回答**：连续仿射层之间若没有非线性，任意深度都可合并为一个仿射变换，深度不会增加这部分网络的函数表达力。GELU 是 \(x\Phi(x)\) 的高斯 CDF 自门控，SiLU 是 \(x\sigma(x)\) 的 sigmoid 自门控；二者都平滑、保留小负值，但不存在脱离架构与训练协议的必然优劣，微调预训练模型时应服从原 checkpoint/config。
 
-**项目挂钩**：Qwen3-VL 等 backbone 的激活配置属于上游事实，面试时应查 config。
+**机制展开（约 2 分钟）**：若每层只有 \(h_{k+1}=W_kh_k+b_k\)，则多层复合仍满足
 
-**追问**：ReLU 的 dying neuron 问题如何出现？
+\[
+h_L=W_{\mathrm{eff}}x+b_{\mathrm{eff}},
+\]
 
-**易错**：GELU/SiLU 的平滑不等于一定收敛更快。
+其中 \(W_{\mathrm{eff}}\) 是各层权重的连乘，偏置也能合并。逐元素非线性 \(\phi\) 把下一层变成 \(h_{k+1}=\phi(W_kh_k+b_k)\)，从而产生随输入变化的门控和曲率，网络才可组合出复杂分段或平滑决策边界。这里要限定口径：Transformer 即使拿掉 MLP 激活，attention softmax 和 normalization 仍可能提供非线性；“退化为单层”说的是纯仿射链，不是所有现代网络的完整计算图。
 
-**来源**：[15][16][27]　**练习状态**：unseen
+两种平滑激活及其梯度可写为
+
+\[
+\begin{aligned}
+\operatorname{GELU}(x)&=x\Phi(x), &
+\operatorname{GELU}'(x)&=\Phi(x)+x\varphi(x), \\
+\operatorname{SiLU}(x)&=x\sigma(x), &
+\operatorname{SiLU}'(x)&=\sigma(x)+x\sigma(x)(1-\sigma(x)).
+\end{aligned}
+\]
+
+这里 \(\Phi\) 和 \(\varphi\) 分别是标准高斯 CDF 与 PDF，\(\sigma\) 是 logistic sigmoid。GELU 常用 exact 或 tanh approximation；SiLU 也称 Swish（无可学习缩放的常用形式）。二者在负半轴允许有限负输出，零点附近梯度连续，不像 ReLU 在全部负输入上梯度恒为 0；但它们在很负的区域梯度仍会趋近 0，所以“平滑”不等于消除梯度消失。SwiGLU 则是带两路线性投影和乘法门的 MLP 结构，不能与单个 SiLU 激活混为一谈。
+
+**项目挂钩**：本地 `Project` 快照中，`uwm_robocasa_transfer/uwm_robocasa_train.py` 在 state/right-view residual projection 和 phase/control/contact/progress auxiliary heads 使用 `nn.SiLU()`；`cosmos_policy_deepspeed_train.py` 也使用 `nn.SiLU()`，但类注释明确它只是 objective-compatible DeepSpeed proxy，不是完整 Cosmos Policy。面试时可说“我从实现核对了新增模块/代理模型的激活与 checkpoint compatibility”，不能说完整上游 backbone 都采用 SiLU，也不能把某次训练或闭环结果因果归因于它。[49]
+
+**追问**：ReLU 的 dying neuron 如何出现？为什么不能在加载预训练权重后随意把 GELU 换成 SiLU？
+
+**易错**：GELU/SiLU 平滑不等于一定收敛更快或永不饱和；SiLU 与 SwiGLU 不是同一层级的概念；不要由局部 adapter/proxy 实现外推完整 backbone。
+
+**来源**：[15][16][27][47][48][49]　**练习状态**：unseen
 
 </details>
 
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-FND-014</b> · 位置编码解决什么问题？RoPE 如何提供相对位置信息？</summary>
 
-**答**：attention 本身对 token 排列近似置换不变，需要位置编码告诉模型顺序。RoPE 将 query/key 的二维子空间按位置旋转，使二者内积自然包含相对位置差；它不是把绝对位置向量简单相加。长上下文外推还受频率、缩放和训练长度影响。
+**30 秒回答**：不含位置相关 mask/encoding 的 content-only self-attention 对 token 置换是等变的，能看内容关系却不知道顺序和距离。RoPE 按位置把 query/key 的每个二维通道对旋转；因为 \(R_m^\top R_n=R_{n-m}\)，旋转后的 QK 内积自然依赖相对位移 \(n-m\)。它不是简单相加绝对位置，也不自动保证长上下文外推。
 
-**项目挂钩**：图像 patch、语言指令和 action 序列的顺序会影响多模态策略的时序解释。
+**机制展开（约 2 分钟）**：对没有位置相关 mask 的 self-attention，若 \(P\) 是 token 维的置换矩阵，则
 
-**追问**：为什么 RoPE 只旋转 Q/K，不直接旋转 V？
+\[
+\operatorname{SA}(PX)=P\operatorname{SA}(X).
+\]
 
-**易错**：位置编码不是时间同步本身，不能代替传感器 timestamp 对齐。
+这表示输入 token 怎样重排，输出只会跟着同样重排；模型没有单独的“第几个 token”信号。causal mask 本身会引入前后可见性的偏序，但仍不等于给出了可泛化的相对距离表示。位置编码的作用，是把序号、二维 patch 坐标或其他位置结构注入 attention 计算。
 
-**来源**：[17]　**练习状态**：unseen
+RoPE 对 head dimension 中第 \(j\) 个二维通道对使用位置 \(m\) 与频率 \(\theta_j\) 形成旋转：
+
+\[
+R(m\theta_j)=
+\begin{bmatrix}
+\cos(m\theta_j) & -\sin(m\theta_j) \\
+\sin(m\theta_j) & \cos(m\theta_j)
+\end{bmatrix},\qquad
+\widetilde q_m^{(j)}=R(m\theta_j)q_m^{(j)},\quad
+\widetilde k_n^{(j)}=R(n\theta_j)k_n^{(j)}.
+\]
+
+其中 \(m,n\) 是 position id，\(\theta_j\) 是第 \(j\) 个频率。旋转不改变 Q/K tensor shape；关键是正交旋转满足
+
+\[
+\left(\widetilde q_m^{(j)}\right)^\top\widetilde k_n^{(j)}
+=\left(q_m^{(j)}\right)^\top R\!\left((n-m)\theta_j\right)k_n^{(j)},
+\]
+
+所以 attention logit 同时保留内容相似度并显式依赖相对位移。标准 RoPE 旋转 Q/K，是因为它们决定 attention routing；V 是按这些权重聚合的内容。旋转 V 并非数学上绝对禁止，但会把内容放进位置相关坐标系，需要额外一致性设计，不能当作标准 RoPE 的默认做法。
+
+实现时还要核对 `position_ids`、padding/packing 重置规则、head dimension、频率表、最大训练长度与 scaling recipe。长上下文失败可能来自未见过的相位组合、频率分布或 scaling 不匹配；RoPE 的相对内积形式不等于无限外推保证。对 VLA，多模态 token 序列中的 image patch、instruction 和 action token 都有序，但 token position 不是机器人 timestamp、控制频率或传感器同步；二维/时间位置还需要模型自己的映射规则。
+
+**项目挂钩**：本地 `Project` HEAD `6c524d9` 的 Cosmos/WAM Transformer Engine shim 用 `_rotate_half` 和 `tensor * cos + rotate_half(tensor) * sin` 应用预计算 RoPE，并处理 `bshd/sbhd` layout 与维度检查；这能支持“我核对了旋转 kernel 的 tensor contract”。但 shim 不生成频率，也未证明完整模型的 Q/K call site、长上下文能力或指标效果。OpenPiVLA formal path 只确认加载 Qwen3-VL，本地没有冻结 base `config.json` 的 RoPE 参数，因此不能宣称 exact multimodal RoPE 配置。[41][42][50]
+
+**追问**：为什么标准 RoPE 主要旋转 Q/K 而不直接旋转 V？packed sequence 的 `position_ids` 若不重置会发生什么？一维 token position 为什么不能替代图像二维坐标或机器人 timestamp？
+
+**易错**：self-attention 是置换等变而非简单“置换不变”；相对位置进入 QK 内积不代表模型只含相对信息；RoPE 不等于无限长外推，也不能完成传感器时间对齐。
+
+**来源**：[1][17][41][42][50]　**练习状态**：unseen
 
 </details>
 
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-FND-015</b> · pre-norm 和 post-norm 的训练差异是什么？</summary>
 
-**答**：pre-norm 通常把归一化放在 attention/FFN 子层之前，残差提供更直接的梯度路径；post-norm 放在残差相加后，原始 Transformer 采用这种布局但深层训练可能更敏感。不能脱离初始化、学习率、深度和实现说某一种绝对更好。
+**30 秒回答**：pre-norm 写成 \(x_{l+1}=x_l+F_l(N(x_l))\)，归一化在子层前，残差主干保留显式 identity path，深层优化通常更稳；post-norm 是 \(x_{l+1}=N(x_l+F_l(x_l))\)，每层输出被重新归一化，但反向梯度必须经过 norm Jacobian，对初始化、学习率和 warmup 往往更敏感。它讨论的是 norm 相对子层/残差的位置，不是 LayerNorm 与 RMSNorm 的区别。
 
-**项目挂钩**：迁移 Qwen3-VL 或 OpenPI 时，norm 位置属于 backbone contract，不应随意改成“训练 trick”。
+**机制展开（约 2 分钟）**：令 \(F_l\) 表示 attention 或 MLP 子层，\(N\) 表示 LayerNorm/RMSNorm 一类归一化，则两种残差块可抽象为
 
-**追问**：为什么 pre-norm 可能造成表示尺度漂移？
+\[
+\begin{aligned}
+x_{l+1}^{\mathrm{pre}} &= x_l+F_l\!\left(N(x_l)\right), \\
+x_{l+1}^{\mathrm{post}} &= N\!\left(x_l+F_l(x_l)\right).
+\end{aligned}
+\]
 
-**易错**：pre/post 指的是子层相对 LayerNorm 的位置，不是输入/输出层。
+对应的局部 Jacobian 结构是
 
-**来源**：[1][2][3][32]　**练习状态**：unseen
+\[
+\frac{\partial x_{l+1}^{\mathrm{pre}}}{\partial x_l}
+=I+J_{F_l}J_N,
+\qquad
+\frac{\partial x_{l+1}^{\mathrm{post}}}{\partial x_l}
+=J_N\!\left(I+J_{F_l}\right).
+\]
+
+pre-norm 中的 \(I\) 给残差流提供不经过 norm 的直接梯度项；post-norm 则在每个 block 输出端乘上 \(J_N\)，深层连乘更依赖初始化和优化 recipe。Xiong 等人的理论与实验结论是在其假设和设置下：Post-LN 初始化时靠近输出层的期望梯度可能较大，warmup 有助于稳定；Pre-LN 梯度更平衡，并可在相应设置下减少 warmup 依赖。面试时不能把它升级成“Pre-LN 永远不需要 warmup”。[32]
+
+代价也要讲清：pre-norm 的 raw residual stream 不在每个 block 末端重新归一化，\(x_l\) 会累加各层增量，尺度可能随深度增长，因此通常还要 final norm、合理初始化或 residual scaling；这不等于必然发散。post-norm 每层输出尺度受控，但优化可能更敏感。最终收敛质量还取决于深度、初始化、残差缩放、optimizer、学习率、warmup、精度和数据，不能只靠 norm 位置排序。
+
+**项目挂钩**：OpenPiVLA formal trainer 直接 `from_pretrained` 加载 `Qwen3VLForConditionalGeneration`，LoRA 默认只命中 `q_proj,k_proj,v_proj,o_proj`，没有重写 decoder norm/residual 顺序。与本地环境记录的 Transformers `4.57.1` 对应的官方 Qwen3-VL 代码中，`input_layernorm → self_attn → residual add`，再 `post_attention_layernorm → MLP → residual add`，所以两个子层都是 pre-norm；变量名 `post_attention_layernorm` 只是“位于 attention 之后”，因为它在 MLP 之前，不能误判为 Post-LN。当前缺远端 runtime source hash 与 base config snapshot，因此这是 version-matched official-code mapping，不是运行时 binary 证明，也不能把上游结构说成个人设计。[41][51]
+
+Cosmos/WAM 本地 `RMSNorm` compatibility shim 只实现均方根归一化算子，没有 frozen full-block call site；它能证明 norm operator contract，不能证明完整 Cosmos block 是 pre-norm 还是 post-norm，更不能解释训练指标。[42][51]
+
+**追问**：为什么 `post_attention_layernorm` 仍可属于 pre-norm？pre-norm residual stream 的尺度为什么可能增长？能否把预训练 Post-LN checkpoint 直接改成 Pre-LN 后继续加载？
+
+**易错**：pre/post 说的是 norm 相对子层与 residual add 的位置；不要与 LayerNorm/RMSNorm 类型混淆，也不要把“通常更稳”说成“必然更优或无需 warmup”。
+
+**来源**：[1][2][3][32][41][42][51]　**练习状态**：unseen
 
 </details>
 
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-FND-017</b> · LoRA 为什么能减少可训练参数？低秩假设的代价是什么？</summary>
 
-**答**：LoRA 冻结原权重 \(W\)，只学习低秩更新 \(\Delta W=BA\)，参数量从 \(d'd\) 降到约 \(r(d+d')\)。它节省显存并便于多任务 adapter，但若任务更新不接近低秩子空间，较小 rank 会限制表达；注入层、rank、alpha、dtype 和合并方式都会影响结果。
+**30 秒回答**：LoRA 冻结 \(W_0\in\mathbb R^{d_{out}\times d_{in}}\)，只学习 \(BA\) 的 rank-\(r\) 更新，使可训练参数从 \(d_{out}d_{in}\) 降到 \(r(d_{in}+d_{out})\)。它主要节省参数梯度和 optimizer states，不会让 base weights 或 activation 自动消失。代价是更新被限制在低秩子空间；rank、target modules、alpha、dropout 和数据若不匹配，会欠拟合或漏掉关键适配方向。
 
-**项目挂钩**：OpenPiVLA 的 Qwen3-VL + LoRA 可以讲训练路径，但不能把 LoRA 本身说成动作建模创新。
+**机制展开（约 2 分钟）**：标准 LoRA 线性层可写成
 
-**追问**：为什么只在 attention projection 注入 LoRA 可能不够？
+\[
+\begin{aligned}
+y &= W_0x+sBAx,\qquad s=\frac{\alpha}{r}, \\
+A&\in\mathbb R^{r\times d_{in}},\qquad
+B\in\mathbb R^{d_{out}\times r},\qquad r\ll\min(d_{in},d_{out}), \\
+N_{\mathrm{LoRA}}&=r(d_{in}+d_{out})\ll d_{out}d_{in}.
+\end{aligned}
+\]
 
-**易错**：可训练参数少不等于总推理参数少，除非做合并或特殊 serving。
+这里 \(W_0\) 冻结，\(A,B\) 和允许训练的其他参数进入 optimizer；\(\alpha/r\) 是常见 scaling，具体实现还要检查是否启用 rsLoRA 等变体。LoRA 的效率来自“不为整块 \(W_0\) 保存 weight gradient 和 Adam 一、二阶状态”，不是不经过 base network：前向仍需要 base weights，反向仍要穿过冻结层计算 adapter 梯度，activation memory 也受 batch、sequence、checkpointing 和精度影响。QLoRA 的 base quantization 是另一项机制，不能与普通 LoRA 混为一谈。
 
-**来源**：[18][41]　**练习状态**：unseen
+低秩假设是“任务所需的有效权重增量近似落在低维子空间”。若真实更新的有效 rank 大于 \(r\)，或者只把 adapter 放进 Q/K/V/O 而任务主要需要 MLP、vision encoder、cross-modal connector 或 action head 改变，LoRA 会形成容量瓶颈。提高 rank 或扩大 target modules 能增强表达，但会增加 trainable params、optimizer memory、adapter storage 和过拟合风险；\(\alpha\) 改变更新尺度，dropout 改变训练时支路，不能只报一个 rank 就说 recipe 相同。
+
+推理侧也要分清：未 merge 时需要额外计算 \(BAx\)，可能有 kernel/serving 开销；merge 后用 \(W'=W_0+sBA\) 可消除额外支路，但 dense weight 的形状、基础参数规模与主要 dense FLOPs 没变。LoRA 的优势是训练和多 adapter 存储/切换，不是天然模型压缩。
+
+**项目挂钩**：当前 OpenPiVLA formal trainer 使用 PEFT `LoraConfig(r=16, alpha=32, dropout=0.05, bias="none")`，默认 target 为 `q_proj,k_proj,v_proj,o_proj`；代码按 `requires_grad` 统计并打印 trainable/total params。committed report 记录 `6,422,528 / 2,133,954,560 ≈ 0.301%`，但 raw start log、adapter binary/hash 与 fresh-load smoke 未同步，所以该数字只能说 `report-supported`，不能说本地已由 checkpoint 复算。更关键的是归档目标 YAML 为 `lora: False`，其中 `lora_r: 32` 只是未启用字段；当前 sanitized LoRA formal path 不能倒推成历史原 run 也使用 LoRA。[41][52]
+
+面试 ownership 只能说“核对/接入了 Qwen3-VL + PEFT LoRA formal path、target modules 和参数账本”，不能把 LoRA 算法或 Qwen upstream architecture 说成个人创新，也不能把 6.42M 参数直接等同于 benchmark 效果。[41][52]
+
+**追问**：为什么 LoRA 明显减少 optimizer memory，却不按相同比例减少总训练显存？只在 attention projection 注入可能漏掉什么？merge 后为什么不等于模型被压缩？如何证明一个 adapter checkpoint 可独立加载？
+
+**易错**：可训练参数少不等于 base parameters、activation、推理 FLOPs 同比例下降；配置中出现 `lora_r` 不等于 LoRA 已启用；不要把当前 adapter recipe 归属于 lineage 未闭合的历史 run。
+
+**来源**：[18][41][51][52]　**练习状态**：unseen
 
 </details>
 
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>VLA-FND-018</b> · KV cache 为什么能加速自回归推理？</summary>
 
-**答**：生成第 \(t\) 个 token 时，历史 token 的 key/value 不变，可以缓存并复用；新步只计算当前 query 与缓存的 K/V，避免重复计算整段序列。代价是显存随上下文长度增长，batch、并发、量化和 cache eviction 都要考虑。对 action token 串行解码，cache 只减少重复计算，不消除每个 token 的步数。
+**30 秒回答**：自回归第 \(t\) 步只新增一个 token，历史 token 在各层的 K/V 不再变化；KV cache 保存它们，新步只算当前 token 的 Q/K/V，再让 \(q_t\) 关注缓存前缀，避免每一步重跑整个 prefix。它主要加速 decode，不消除串行 token 数；代价是 cache 显存随 layer、batch、KV heads、上下文长度和 dtype 线性增长，长上下文/高并发时可能由 compute-bound 变成 memory-bound。
 
-**项目挂钩**：离散 action token 的推理延迟分析要区分 KV cache、并行 action head 和 chunk 长度。
+**机制展开（约 2 分钟）**：对 decoder 第 \(l\) 层的第 \(t\) 个 token，cache 更新和 attention 可写为
 
-**追问**：为什么 KV cache 对 encoder-only 模型不以同样方式使用？
+\[
+\begin{aligned}
+K_{1:t}^{(l)}&=\operatorname{concat}\!\left(K_{1:t-1,\mathrm{cache}}^{(l)},k_t^{(l)}\right), \\
+V_{1:t}^{(l)}&=\operatorname{concat}\!\left(V_{1:t-1,\mathrm{cache}}^{(l)},v_t^{(l)}\right), \\
+o_t^{(l)}&=\operatorname{softmax}\!\left(\frac{q_t^{(l)}K_{1:t}^{(l)\top}}{\sqrt{d_h}}+M_t\right)V_{1:t}^{(l)}.
+\end{aligned}
+\]
 
-**易错**：cache 加速的是历史 attention 计算，不是把模型变成并行生成。
+这里 \(M_t\) 是 causal/padding mask，\(d_h\) 是 head dimension。没有 cache 时，每个 decode step 会再次计算历史 token 的 layer states 和 K/V projection；有 cache 时历史 K/V 直接复用。但当前 query 仍要与长度 \(t\) 的 K 做 attention，所以单步 attention 成本仍随上下文增长；生成 \(T\) 个 token 仍有 \(T\) 次串行 forward，KV cache 不会把 autoregressive decoding 变成一次并行 action head。
 
-**来源**：[19]　**练习状态**：unseen
+常规 dense cache 的近似字节数为
+
+\[
+M_{\mathrm{KV}}\approx 2LBT H_{\mathrm{kv}}d_h\,b,
+\]
+
+其中系数 2 对应 K 和 V，\(L\) 是 decoder layers，\(B\) 是含 beam/并发展开后的 batch，\(T\) 是已缓存序列长度，\(H_{\mathrm{kv}}\) 是 KV heads，\(b\) 是每元素字节数。GQA/MQA 通过减少 \(H_{\mathrm{kv}}\) 降低 cache；quantized/offloaded/sliding-window cache 则以精度、带宽或有效上下文换显存。cache 必须和相同模型权重、prefix、position ids、mask 与 batch reorder 对齐，否则复用会产生错误结果。
+
+prefill 与 decode 也要分开：prefill 仍要并行处理完整 prompt 并建立首份 cache；cache 的主要收益出现在后续逐 token decode。teacher-forcing 训练一次并行计算整段 labels，没有跨 decode step 的前缀复用，保留 cache 反而增加状态/显存并常与 gradient checkpointing 冲突，所以训练代码通常关闭 `use_cache`。encoder-only 一次处理完整输入，也没有同样的 decoder self-attention 逐步追加场景；encoder-decoder 可以另行缓存 encoder/cross-attention K/V，概念相近但生命周期不同。
+
+**项目挂钩**：OpenPiVLA formal trainer 在加载 Qwen3-VL 后显式 `model.config.use_cache=False`，这属于 full-chat causal-CE 训练合同；formal package 又缺 generation/parser/controller，所以当前没有 formal action-token decode latency 可以声称。OPD raw-holdout eval 则显式设置 `model.config.use_cache=True`，并调用 `generate(..., use_cache=True)`；这能证明 eval generation 请求了 cache，但没有 cache-on/off matched benchmark、peak-memory trace 或机器人控制延迟，因此不能量化加速。OPD full-vocab teacher/student loss forward 仍显式 `use_cache=False`。[41][44][53]
+
+对 VLA 还要先判断 action 输出范式：离散 action text/token 的逐 token generation 可受益于 KV cache；一次并行连续 action head、diffusion denoising 或已生成的 action chunk 不会因为“有 KV cache”就减少自身 denoising/控制步数。[41][42][43]
+
+**追问**：为什么 KV cache 降低重复计算却可能让 decode 更 memory-bound？GQA/MQA 如何改变 cache 大小？training 为什么通常关闭 cache？encoder-decoder 的 cross-attention cache 与 decoder self-attention cache 有何不同？
+
+**易错**：cache 不是把生成并行化，也不消除当前 token 对全部历史 K/V 的读取；`use_cache=True` 只能证明请求了功能，不能替代 on/off latency、显存和输出一致性实验。
+
+**来源**：[19][41][42][43][44][51][53]　**练习状态**：unseen
 
 </details>
 
 <details class="qa">
 <summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>VLA-FND-019</b> · 梯度消失/爆炸如何定位？</summary>
 
-**答**：先看 loss 和 gradient norm 是否同步异常，再检查 activation/weight 分布、norm 层、初始化、学习率、混合精度 scaler、数据 outlier 和 mask 是否全零/全一。梯度爆炸可用 clipping、较小学习率或稳定 loss；消失则检查深度、激活、残差和归一化。不能只凭最终 loss 猜原因。
+**30 秒回答**：我不会从最终 loss 直接猜“梯度爆炸”。先冻结代码、checkpoint、数据顺序、精度和第一个异常 step，用同一 batch 重放；在 optimizer step 前，FP16 要先 unscale，再同时看 loss、scaler 是否跳步、全局及逐层 grad norm、参数/梯度非有限值。爆炸表现为 norm 突增或 NaN/Inf，消失表现为早层长期接近零，但还要排除空 mask、错误分母、detach、学习率/调度器、累积与 `zero_grad` 顺序。最后用 FP32/小 batch 重放定位；clipping 只能止血，不能代替根因修复。
 
-**项目挂钩**：跨硬件训练迁移时要区分数值库差异、数据 contract 和真正的优化不稳定。
+**机制展开（约 2 分钟）**：深层网络的反向传播是 Jacobian 连乘。若 \(h_{k+1}=f_k(h_k)\)，则
 
-**追问**：gradient norm 正常但 loss 不降，还要查什么？
+\[
+\frac{\partial \mathcal L}{\partial h_l}
+=
+\left(\prod_{k=l}^{L-1}J_k^{\top}\right)
+\frac{\partial \mathcal L}{\partial h_L},
+\qquad
+J_k=\frac{\partial h_{k+1}}{\partial h_k}.
+\]
 
-**易错**：gradient clipping 能止血，但不能证明根因已修复。
+这里 \(J_k\) 是第 \(k\) 层局部 Jacobian；连乘的有效奇异值长期小于 1 会让早层梯度衰减，长期大于 1 会放大梯度。残差路径、归一化、激活饱和、初始化和序列长度都会改变这条链，所以“模型很深”只是风险因素，不是根因证据。
 
-**来源**：[1][2][33][34]　**练习状态**：unseen
+我的定位顺序是：第一，固定 run identity，并找到 first bad step，而不是只比较两个 run 的最终 loss。第二，在 backward 后、optimizer step 前记录未裁剪的 global norm；混合精度若用了 `GradScaler`，必须先 `unscale_(optimizer)`，否则看到的是放大后的梯度。第三，把统计下钻到 trainable parameter group/layer：记录 grad L2、max、p99、零梯度比例，并配对看 activation、weight、optimizer state 是否 finite；global norm 正常也可能掩盖某个早层长期接近零。第四，检查 loss contract 和数据：有效 token/action mask 分母是否为零、label 是否全 ignore、异常图像/动作是否进入 batch、loss reduction 是否随序列长度突变，以及梯度累积时是否过早 `zero_grad`、少除或多除 accumulation steps。第五，保存首个坏 batch，用 FP32、batch=1、关闭可选 head/AMP 的 matched replay 二分定位；若 FP32 正常而低精度失败，才把精度路径升级为强嫌疑。
+
+全局范数裁剪可写为
+
+\[
+g\leftarrow g\,\min\!\left(1,\frac{\tau}{\lVert g\rVert_2+\epsilon}\right),
+\]
+
+其中 \(g\) 是所有待更新参数梯度拼接后的向量，\(\tau\) 是阈值。它保留方向并限制范数；PyTorch `clip_grad_norm_` 的返回值是裁剪前 total norm，因此适合记录，但要注明统计时点。持续触发 clipping 说明优化仍在撞阈值，后续应通过 matched rerun 检查学习率/warmup、loss 尺度、数据 outlier、残差/归一化或初始化，而不能把“训练没 NaN”写成根因已解决。[27][32][33][34]
+
+**项目挂钩**：OpenPiVLA formal trainer 对 `requires_grad` 参数在 accumulation 边界调用 `clip_grad_norm_`，随后记录其返回的 `grad_norm`，再 `optimizer.step()` 与 `zero_grad()`；默认阈值是 1.0，但代码没有逐层 activation/grad trace，也没有显式 non-finite gradient gate，所以只能证明“有全局止血与稀疏日志”，不能证明某次 run 没有梯度异常。UWM/LIBERO 与 UWM/RoboCasa 的本地非 DeepSpeed AMP 路径都先 `scaler.unscale_` 再裁剪，符合统计/裁剪顺序，但返回 norm 被丢弃；RoboCasa 的 DeepSpeed 分支绕过这段本地 clip，实际行为还要对账当次 DeepSpeed config。formal OPD 明确拒绝 non-finite loss，TrainingArguments 传入 `max_grad_norm`，回调检查已记录的 loss/grad_norm/lr；这仍不等于 layer-wise 根因定位。当前没有可复算的 matched bad-step bundle，因此 WAM step-1500 save API failure、UWM DataLoader stall 或闭环 eval 失败都不能反推为梯度爆炸。[41][43][44][54]
+
+**追问**：`clip_grad_norm_` 返回的是裁剪前还是裁剪后 norm？为什么 FP16 要先 unscale 再裁剪？global norm 正常但 loss 不降，还要查哪些 trainable-parameter、mask/target、optimizer/scheduler 和数据问题？如何构造 first-bad-batch 的 matched replay？
+
+**易错**：clipping 是 containment，不是 diagnosis；loss spike、OOM、DataLoader stall、checkpoint 保存异常或 online success 低都不能单独证明梯度爆炸。只有日志里出现 `grad_norm` 字段，也不等于已经记录了逐层、未裁剪、正确 unscale 时点的梯度证据。
+
+**来源**：[27][32][33][34][41][43][44][54]　**练习状态**：unseen
 
 </details>
 
 <details class="qa">
 <summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>VLA-FND-020</b> · 多任务共享 backbone 时如何判断梯度冲突？</summary>
 
-**答**：对同一参数分别计算任务梯度，观察余弦相似度；负值说明更新方向冲突，接近零说明近似正交。可尝试 loss reweight、gradient surgery、任务分支或 stop-gradient，但要同时看各任务指标，不能只追求总 loss。mask/routing 解决样本和目标归属，不自动消除共享层的梯度冲突。
+**30 秒回答**：我会在同一个参数快照上，把每个任务对共享参数的梯度单独算出来，再看 pairwise cosine、梯度范数比例和各任务验证指标。余弦为负表示一阶局部冲突：沿任务 \(i\) 的下降方向会抬高任务 \(j\)；但零梯度时 cosine 无定义，正余弦也可能被数量级失衡掩盖。mask、route 或独立 head 只隔离样本/输出路径；只要 backbone 仍被多个任务更新，就要用 matched task batches 实测，不能从 loss 大小或指标涨跌直接下结论。
 
-**项目挂钩**：WAM 的 action/world/value 和 OPD 的多任务输出都需要区分 mask、routing 与真正的 gradient interaction。
+**机制展开（约 2 分钟）**：只在真正共享的参数 \(\theta_s\) 上定义任务梯度 \(g_i=\nabla_{\theta_s}\mathcal L_i\)。同一参数快照、同一 train/eval mode 和固定随机性下，pairwise 诊断为
 
-**追问**：为什么简单调 loss 权重不能保证 Pareto 改善？
+\[
+c_{ij}=\frac{g_i^{\top}g_j}{\lVert g_i\rVert_2\lVert g_j\rVert_2},
+\qquad
+\mathcal L_j(\theta_s-\eta g_i)
+\approx \mathcal L_j(\theta_s)-\eta g_j^{\top}g_i.
+\]
 
-**易错**：任务 loss 数值大小不同不等于梯度影响大小不同。
+这里 \(c_{ij}<0\) 表示当前点附近的 first-order conflict；\(c_{ij}>0\) 是局部对齐，不保证长期 joint training 更好。若任一 \(\lVert g_i\rVert\) 接近零，应报告“cosine undefined/低信号”，而不是解释成正交。工程上我会在 optimizer step 前，对每个 active task/route 分别调用 `autograd.grad(loss_i, shared_params)`，不让梯度先累积；同时记录 active mask/token/sample 分母、global 与 layer-wise norm、cosine 分布、负余弦频率和 norm ratio。大模型算不起全参数时可固定一组共享 block 或 LoRA 参数做 probe，但必须写清采样参数集合，不能把局部 probe 冒充全模型结论。
 
-**来源**：[20][42][44]　**练习状态**：unseen
+若训练实际使用 \(g=\sum_i w_i g_i\)，任务 \(i\) 的一阶变化和 PCGrad-style 投影可写成
+
+\[
+\Delta\mathcal L_i\approx-\eta g_i^{\top}\!\left(\sum_jw_jg_j\right),
+\qquad
+\tilde g_i
+=g_i-\frac{\min(0,g_i^{\top}g_j)}{\lVert g_j\rVert_2^2+\epsilon}g_j.
+\]
+
+第一式说明调 loss weight 只会重标梯度，不能保证所有 \(g_i^{\top}g>0\)；所以总 loss 下降不等于每个任务改善。第二式在 pairwise dot product 为负时去掉冲突分量，但会改变优化问题，也不保证有限步、非凸训练中的 Pareto 改善。是否采用 reweight、gradient surgery、任务 adapter/branch 或 stop-gradient，必须用固定数据比例、相同训练预算和每任务指标做 matched ablation，而不是只比较 aggregate loss。[20]
+
+**项目挂钩**：WAM 正式合同是共享 diffusion backbone 上的 action/future/value latent slots、condition/loss mask 与 policy/world/value sample routing，并非三个独立 head；本地 online-text 入口继续调用 official trainer/model/dataloader，没有 per-role `autograd.grad` 或 gradient-cosine 记录。另一个 MetaX DeepSpeed 文件确实用共享 proxy trunk、四个显式 head 和加权 MSE，但文件自述为兼容 adapter/proxy，不能反推正式 Cosmos checkpoint 的优化行为。要验证 WAM 冲突，应在同一 checkpoint 上各取 policy/world/value matched routed batch，对相同 diffusion blocks 分别求梯度。formal OPD 则强制一个 microbatch 内 route 一致，只计算该 routed teacher 的 full-vocabulary KL，再乘 sample weight；五条 route 是跨 step 共享 student 的多域训练，不是五个 loss 同时反传。应在同一 student snapshot 上各取一个 matched route batch 测共享参数梯度；route count、loss weight、不同 pool 的最佳 checkpoint 分散都不是 gradient conflict 的直接证据。[42][44][55]
+
+**追问**：为什么 loss 数值更大不一定梯度更大？为什么 \(c_{ij}<0\) 只是局部一阶证据？route-homogeneous microbatch 如何做跨 route matched gradient probe？简单调权重为什么不能保证 Pareto 改善？PCGrad 可能牺牲什么？
+
+**易错**：loss 曲线相反、不同任务最佳 checkpoint 不同、mask 非重叠或 route 分开都不能单独证明共享参数梯度冲突；head-specific 参数没有跨 head 冲突，但 shared backbone 仍可能有。计算 cosine 前要对齐同一参数快照、未混合的任务梯度、有效 mask 分母和参数集合。
+
+**来源**：[20][42][44][55]　**练习状态**：unseen
 
 </details>
 
@@ -644,9 +842,11 @@
 <details class="qa">
 <summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>VLA-FND-039</b> · 什么时候使用 impedance control、MPC 或 learned policy？</summary>
 
-**答**：接触/插入任务常让 impedance 规定期望刚度与阻尼；动力学和约束可信、solver 能按 deadline 完成时用 MPC 滚动优化；高维视觉语言和任务变化大时 learned policy 更合适。三者常分层组合：VLA 给 subgoal/reference/chunk，MPC 或 impedance/controller 处理约束和执行。选择要看模型误差、接触、延迟、数据覆盖和安全 fallback。
+**30 秒回答**：impedance control 适合接触、插入和表面跟随，因为它规定机器人受外力后的期望刚度、阻尼和惯性；MPC 适合动力学、状态估计和约束较可信，且 solver 能在控制 deadline 内完成的场景；learned policy/VLA 更擅长从图像、语言和历史观测处理多任务变化，但依赖数据覆盖且本身不提供稳定性保证。三者通常分层组合：VLA 给 subgoal/reference/chunk，MPC 处理有限时域约束，impedance/servo 负责接触执行和安全边界。
 
-**项目挂钩**：OpenPiVLA/UWM 只支持 learned policy 与 controller 的接口讨论；当前证据不支持声称个人项目已接入 impedance 或 MPC。
+**机制展开（约 2 分钟）**：impedance 的典型目标关系可写成 \(M_d\ddot e+D_d\dot e+K_de=F_{ext}\)，其中 \(e=x-x_d\)，\(M_d,D_d,K_d\) 分别是期望惯性、阻尼和刚度；它不是直接预测任务动作，而是塑造末端受力后的动态响应。实际使用必须说明 force/torque sensing、frame、采样周期、滤波、saturation，以及底层是 torque loop、position-based impedance 还是 admittance；“有 compliance”不等于天然安全。MPC 则在每个时刻求解 \(\min_{u_{0:H-1}}\sum_{k=0}^{H-1}\ell(x_k,u_k)+\ell_f(x_H)\)，满足 \(x_{k+1}=f(x_k,u_k)\)、\(x_k\in\mathcal X\)、\(u_k\in\mathcal U\)，通常只执行第一步或短前缀再重估。它能显式纳入 workspace、velocity、collision 或 force constraint，但受 model mismatch、state-estimation error、terminal design 和 solver deadline 约束。learned policy 可写成 \(\pi_\theta(a_t\mid o_{\le t},c)\) 或 action-chunk distribution，擅长视觉语言条件和复杂数据分布，却仍要经过 normalizer、frame/unit conversion、controller、rate limit 和 failure fallback。工程上应按风险分层：接触任务可用 policy 给目标、impedance/admittance 执行；约束可信时由 policy/world-model 给 reference，MPC 做 receding-horizon control；模型不准时缩短 horizon、提高 replan、加入 uncertainty/robust constraint 或 residual model，并保留可验证的安全控制器。不能因为 WAM/UWM 名为 world model 就直接把它当作可用于 MPC 的 calibrated dynamics model；还需要 state/action rollout contract、closed-loop error、uncertainty、constraint interface 和 deadline 证据。当前 OpenPiVLA/UWM 材料只证明 learned-policy 与 controller/action contract 的讨论，未发现个人项目接入 impedance/MPC 的实现和运行证据。
+
+**项目挂钩**：OpenPiVLA/UWM 只支持 learned policy、world/action prediction 与 controller contract 的分析；当前证据不支持声称个人项目已部署 impedance/MPC，也不能把 WAM/UWM world model 自动等同于 MPC dynamics model。
 
 **追问**：如果动力学模型不准，MPC 还值得用吗？
 
@@ -703,3 +903,13 @@
 43. [UWM/LIBERO Claim–Evidence Inventory](../evidence/projects/uwm_libero_claim_evidence_inventory.html).
 44. [OPD Claim–Evidence Inventory](../evidence/projects/opd_claim_evidence_inventory.html).
 45. [Robot Harness Claim–Evidence Inventory](../evidence/projects/robot_harness_claim_evidence_inventory.html).
+46. Agarwal et al., [*Deep RL at the Edge of the Statistical Precipice*](https://arxiv.org/abs/2108.13264), 2021；实现参考 [`google-research/rliable@3ccd9f4`](https://github.com/google-research/rliable/tree/3ccd9f4dea577a04d3d2b557f259aac08badbd81)。
+47. Hendrycks and Gimpel, [*Gaussian Error Linear Units (GELUs)*](https://arxiv.org/abs/1606.08415), 2016。
+48. Ramachandran, Zoph, Le, [*Searching for Activation Functions*](https://arxiv.org/abs/1710.05941), 2017。
+49. 本地实现快照，`C:\Users\mousongzhe\Project` HEAD `6c524d9c6c6226075f100cdac395fef2fdc37671`：`wm/uwm_robocasa_transfer/uwm_robocasa_train.py`（SHA-256 `EFC53BB652302183F56B6F1BB9ACEB7ABDE31D01D953720EA1C05BB605A91FFE`）与 `wm/cosmos_policy_deepspeed_train.py`（SHA-256 `2A95D52DE64A5B46BC7C72C30B20BEC07C715FBF4FB590BF5DEA239CBA858680`）；仅支持局部 transfer/proxy 模块事实，不支持完整 upstream backbone 或性能因果归因。
+50. 本地 RoPE implementation snapshot，`C:\Users\mousongzhe\Project` HEAD `6c524d9c6c6226075f100cdac395fef2fdc37671`：`wm/compat_transformer_engine/transformer_engine/pytorch/attention/__init__.py`（SHA-256 `375A646579C12E9D69EDAB96B4B01D583022407E826BDE241B6AA3C7C413AF63`）与 `scripts/muxi_write_te_torch_compat.py`（SHA-256 `7DC7994532D4EFEF72524932684756779034380E3889D72CBFCBF74A0ACCE66A`）；支持 Cosmos smoke compatibility shim 的 rotate-half、cos/sin application、layout/dimension contract，不支持完整模型频率生成、Q/K call site、Qwen3-VL exact config 或性能归因。
+51. Qwen3-VL norm/residual implementation lineage：Hugging Face Transformers [`v4.57.1`（commit `8cb5963`）](https://github.com/huggingface/transformers/blob/8cb5963cc22174954e7dca2c0a3320b7dc2f4edc/src/transformers/models/qwen3_vl/modeling_qwen3_vl.py#L476-L519)，该文件下载内容 SHA-256 `DD63ED3B124232735B3DCA1BFA28F9D6B0D3F7182AFCB75DDE8F3E724B2B22DA`；本地 `muxi/metax_pkgs/pip-list.json`（SHA-256 `2A73054308392E14531544E471C790E8B500E449DB9442EB80C865B9197A170C`）记录 Transformers `4.57.1`，OpenPiVLA `formal_train.py`（SHA-256 `51B67D3E04496E68076BF6461506141EBCDDF9A82E6C30AF1FDC0F1F2CCC6F94`）加载该模型类并只向 Q/K/V/O 注入 LoRA；Cosmos `RMSNorm` shim（SHA-256 `1D2CB070B7C9FE21438C35ED059E99C081744105482847061AEB9F2CE1F539FA`）只支持算子语义。上述证据不替代远端 runtime source/config hash，也不证明完整 Cosmos block placement 或指标因果。
+52. OpenPiVLA LoRA run-contract snapshot：`formal_train.py`（SHA-256 `51B67D3E04496E68076BF6461506141EBCDDF9A82E6C30AF1FDC0F1F2CCC6F94`）定义 `r=16`、`alpha=32`、`dropout=0.05`、`bias=none`、Q/K/V/O targets，并打印 `requires_grad` 参数账本；committed formal report（SHA-256 `D74126A3896F68AD44B75C7A88F1B7B9A90CB55DF0C6C6BEB90A5748E9E8E074`）记录 `trainable_params=6422528`、`total_params_seen=2133954560`（约 `0.301%`），同时说明历史目标 YAML 的 `lora: False`。该证据支持 local trainer contract/report summary，不支持 raw log 复算、adapter binary/load smoke、历史 run lineage、个人 authorship 或性能因果。
+53. KV-cache official/local contract：Hugging Face Transformers [`v4.57.1` cache documentation](https://huggingface.co/docs/transformers/v4.57.1/en/kv_cache)（2026-07-22 抓取内容 SHA-256 `FCB47131204FBF721CB59014CF3E5CF1307471F1F3E2DB13579820B38436014A`）；OpenPiVLA `formal_train.py`（SHA-256 `51B67D3E04496E68076BF6461506141EBCDDF9A82E6C30AF1FDC0F1F2CCC6F94`）设置训练 `use_cache=False`；OPD `point/eval_qwen_vl_raw_holdout.py`（SHA-256 `29574ADCE53B254BC33ED39C370642707F570000F7F3FB8F037DBD1F5E0D206B`）在 eval generation 同时设置 config 与 call-site `use_cache=True`；formal OPD trainer（SHA-256 `7103E3B28068A30978F2B14AD980E51CEC2EC60A0445B2B52243342CDA286336`）对 teacher/student full-vocab loss forward 使用 `use_cache=False`。这些证据支持代码路径区分，不支持 cache on/off 加速比、peak memory、输出 parity 或机器人闭环延迟。
+54. 本地梯度稳定性实现快照：`C:\Users\mousongzhe\Project` HEAD `6c524d9c6c6226075f100cdac395fef2fdc37671` 下，OpenPiVLA `formal_train.py`（SHA-256 `51B67D3E04496E68076BF6461506141EBCDDF9A82E6C30AF1FDC0F1F2CCC6F94`）实现 accumulation-boundary global clipping 与 `grad_norm` 日志；UWM/LIBERO `experiments/uwm/train.py`（SHA-256 `CFB4010A1DCA274C904295A7A937D2E1C5C3B08101A036D738F9C2B1560B4879`）和 UWM/RoboCasa `uwm_robocasa_train.py`（SHA-256 `EFC53BB652302183F56B6F1BB9ACEB7ABDE31D01D953720EA1C05BB605A91FFE`）在本地 AMP 路径先 unscale 再 clip；`C:\Users\mousongzhe\muxi` HEAD `756e27e16adcfb3ccbfe98c2920dda42095b127f` 下，formal OPD trainer（SHA-256 `7103E3B28068A30978F2B14AD980E51CEC2EC60A0445B2B52243342CDA286336`）检查 non-finite loss，`expert_sft.py`（SHA-256 `2A1D37F5912C91B952C529B3B80C8609D7E3105DC57BBDB2D906EA288B58EA98`）向 TrainingArguments 传入 `max_grad_norm` 并对已记录的 loss/grad_norm/lr 做 finite callback。上述证据只支持实现合同，不支持实际 run 的逐层梯度/激活轨迹、爆炸根因、跨硬件数值因果或个人逐文件 ownership。
+55. 本地多目标/routing 实现边界快照：`C:\Users\mousongzhe\Project` HEAD `6c524d9c6c6226075f100cdac395fef2fdc37671` 下，official-path `wm/cosmos_policy_train_with_consolidated_online_text.py`（SHA-256 `FBE879A3AD6E3E77B258AE971480338CF41D6EC3378E29C9DE05209CF9D38DF8`）保留 official trainer/model/dataloader 并启用 online Reason1；`wm/cosmos_policy_deepspeed_train.py`（SHA-256 `2A95D52DE64A5B46BC7C72C30B20BEC07C715FBF4FB590BF5DEA239CBA858680`）自述为 MetaX-safe adapter，使用 proxy trunk/heads、sample masks 与显式加权 MSE，不能替代正式 Cosmos diffusion loss。`C:\Users\mousongzhe\muxi` HEAD `756e27e16adcfb3ccbfe98c2920dda42095b127f` 下，formal OPD `point/train_opd_online_vl.py`（SHA-256 `7103E3B28068A30978F2B14AD980E51CEC2EC60A0445B2B52243342CDA286336`）强制 route-homogeneous microbatch、选择单个 routed teacher，并对 weighted full-vocabulary KL 反传。上述文件与定向源码扫描未发现 per-task/route `autograd.grad`、gradient cosine 或 PCGrad 记录；该证据支持“当前未实现直接冲突测量”的代码边界，不支持实际 run 存在/不存在冲突、Pareto 改善、性能因果或个人逐文件 ownership。

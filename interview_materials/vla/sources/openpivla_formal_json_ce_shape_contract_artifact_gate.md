@@ -42,7 +42,7 @@ y_{1:L}
 \mathcal L_{\mathrm{CE}}(y).
 \]
 
-变量与边界：(H=15) 是 recipe 的窗口长度；`16` 是当前 formatter 的每行上限；(L) 是 JSON/token 文本长度，不等于 (H\times D)。`action_dim=72` 出现在 recipe/smoke batch contract，但当前 `formal_train.py` 的 assistant serializer 没有把 72 维 row 原样写入 JSON。除非存在 decoder/parser/axis mapping 证据，不能把 `(15,72)` 直接当作 controller-ready action。
+变量与边界：\(H=15\) 是 recipe 的窗口长度；`16` 是当前 formatter 的每行上限；\(L\) 是 JSON/token 文本长度，不等于 \(H\times D\)。`action_dim=72` 出现在 recipe/smoke batch contract，但当前 `formal_train.py` 的 assistant serializer 没有把 72 维 row 原样写入 JSON。除非存在 decoder/parser/axis mapping 证据，不能把 `(15,72)` 直接当作 controller-ready action。
 
 ## 3. 直接代码证据与 formatter probe
 

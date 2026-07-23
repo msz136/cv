@@ -11,7 +11,7 @@ VLA action batch 常含不同 horizon、action dimension、padding 与缺失维�
 
 ## 1. MSE 与 Huber
 
-令误差 (e_i=\hat a_i-a_i)。MSE：
+令误差 \(e_i=\hat a_i-a_i\)。MSE：
 
 \[
 \ell_i=e_i^2.

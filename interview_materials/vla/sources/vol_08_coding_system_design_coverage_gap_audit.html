@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 08 Coding / System Design：Coverage-Gap Audit</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_08_coding_system_design_coverage_gap_audit.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_08_coding_system_design_coverage_gap_audit.md">
 <meta name="aris:source-sha256" content="e39aa5bad3e2e4847984be2a156b779982db82671f180a8c1d35f1f32eeab61f">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>e39aa5bad3e2e4847984be2a156b779982db82671f180a8c1d35f1f32eeab61f</code>；生成自：<code>interview_materials\vla\sources\vol_08_coding_system_design_coverage_gap_audit.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>e39aa5bad3e2e4847984be2a156b779982db82671f180a8c1d35f1f32eeab61f</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_08_coding_system_design_coverage_gap_audit.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 本次审计依据</a></li><li><a href="#3">3. 当前资产盘点</a></li><li><a href="#4-stable-id">4. 整卷 Stable-ID 合同</a></li><li><a href="#5">5. 依赖主链与学习簇</a></li><li><a href="#6-vol-01-vol-05">6. 与 VOL 01 / VOL 05 的去重边界</a></li><li><a href="#6-1-vol-01-foundations-code">6.1 VOL 01 Foundations 与 CODE 题</a></li><li><a href="#6-2-vol-05-engineering-evaluation-sys">6.2 VOL 05 Engineering / Evaluation 与 SYS 题</a></li><li><a href="#7-source-queue">7. 后续 Source Queue</a></li><li><a href="#8">8. 项目挂钩与真实性边界</a></li><li><a href="#9-vol-08">9. VOL 08 退出条件</a></li><li><a href="#9-1-coverage-complete">9.1 Coverage complete</a></li><li><a href="#9-2-reviewed">9.2 Reviewed</a></li><li><a href="#9-3-drilled">9.3 Drilled</a></li><li><a href="#9-4-project-truth">9.4 Project truth</a></li><li><a href="#10">10. 缺口优先级与下一切片</a></li><li><a href="#references">参考入口（References）</a></li></ol></nav>
 <h1>VOL 08 Coding / System Design：Coverage-Gap Audit</h1>
 <div class="meta">审计日期：2026-07-20 状态：<code>coverage_contract_frozen / planned_12 / sources_12 / knowledge_12 / cards_12 / missing_sources_0 / missing_knowledge_0 / missing_cards_0 / WARN</code> 审计对象：VOL 08 已有 source/knowledge/card、早期手撕题 registry、全局 Knowledge Map、Repository Completion Audit、GitHub skeleton guidance、VOL 05 工程/评估卷与五项目 evidence inventory。 核心边界：本报告冻结整卷范围、去重边界和退出条件；<code>SYS-VLA-002..003</code> 三联件已同步但未练习，不把 VOL 05 组件知识重复包装成系统设计答案，不把公开系统方案写成个人项目成果。</div>

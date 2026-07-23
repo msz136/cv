@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PROJ-HARNESS-001 + P0 Audit 证据约束下的示范回答</title>
+<title>PROJ-HARNESS-001..008 从项目实现与 P0 Audit 反推的证据约束口述稿</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\practice\robot_harness_oral_model_answer.md">
-<meta name="aris:source-sha256" content="0b0d680850d97352ef689d3f44ebad9bd04885748ea34e0a9bcf419ab9c3fc3b">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\practice\robot_harness_oral_model_answer.md">
+<meta name="aris:source-sha256" content="299c25eef26bf066db95dda9a9199acd295258620e9caa5f903a580803d5ea7d">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,10 +140,10 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>0b0d680850d97352ef689d3f44ebad9bd04885748ea34e0a9bcf419ab9c3fc3b</code>；生成自：<code>interview_materials\vla\practice\robot_harness_oral_model_answer.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>299c25eef26bf066db95dda9a9199acd295258620e9caa5f903a580803d5ea7d</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\practice\robot_harness_oral_model_answer.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-30">1. 30 秒版本</a></li><li><a href="#2-2">2. 2 分钟版本</a></li><li><a href="#3">3. 证据映射</a></li><li><a href="#4">4. 高频追问答法</a></li><li><a href="#mutex-cancel-compensation">“为什么 mutex、cancel 和 compensation 必须一起？”</a></li><li><a href="#sft-grpo">“SFT 和 GRPO 数据为什么不能全部混用？”</a></li><li><a href="#sandbox-100-100">“sandbox 100% 是不是机器人成功 100%？”</a></li><li><a href="#95-6-grpo-base">“95.6% 是否证明 GRPO 比 base 提升？”</a></li><li><a href="#section-9">“哪些代码是你写的？”</a></li><li><a href="#5-p0-audit">5. P0 Audit：如何把工程结果讲到可核验边界</a></li><li><a href="#5-1-30">5.1 30 秒版本</a></li><li><a href="#5-2-2">5.2 2 分钟版本</a></li><li><a href="#5-3-p0-evidence-contract">5.3 P0 Evidence Contract</a></li><li><a href="#5-4">5.4 高压追问的三档回答</a></li><li><a href="#37-8-95-6-grpo">“37.8% 到 95.6% 是不是 GRPO 提升？”</a></li><li><a href="#sandbox-tool-scope-100-100">“sandbox tool/scope 100% 是不是机器人成功 100%？”</a></li><li><a href="#p0-raw-28-40-benchmark">“P0 说 raw 有 28/40，能否算完整 benchmark？”</a></li><li><a href="#codex">“Codex 主要实现，你到底贡献了什么？”</a></li><li><a href="#11-passed-1-failed-runtime">“测试 11 passed、1 failed，runtime 能说稳定吗？”</a></li><li><a href="#5-5-p0">5.5 P0 追问树</a></li><li><a href="#6">6. 练习边界</a></li><li><a href="#references">References</a></li></ol></nav>
-<h1>PROJ-HARNESS-001 + P0 Audit 证据约束下的示范回答</h1>
-<div class="meta">状态：<code>model_answer / evidence_bounded / not_candidate_transcript / unseen</code> 更新日期：2026-07-21 题目：Robot Harness 解决的核心问题是什么，如何解释 partial raw、proxy 指标、测试漂移与 Codex ownership？</div>
+<h1>PROJ-HARNESS-001..008 从项目实现与 P0 Audit 反推的证据约束口述稿</h1>
+<div class="meta">状态：<code>implementation_derived_model_answer / evidence_bounded / not_candidate_transcript / unseen</code> 更新日期：2026-07-22 题目：Robot Harness 解决的核心问题是什么，如何解释 partial raw、proxy 指标、测试漂移与 Codex ownership？</div>
 <h2 id="1-30">1. 30 秒版本</h2>
 <div class="meta">Robot Harness 解决的不是“模型能不能调用函数”，而是高层工具调用如何在具体机器人、scope 和请求生命周期内安全执行。runtime 需要处理 robot 互斥、取消、超时、补偿和结构化错误；训练侧再把 allowed/forbidden tools、reference trajectory、success criteria 和约束转成 SFT/GRPO-style 数据与 reward。当前证据能支持 schema、runtime、数据和评测合同，但 project sandbox 100% 仍只是结构化协议分数，不能直接等同真实机器人成功率。个人贡献必须按问题定义、约束取舍、数据/reward/eval 设计和逐文件 ownership 分开说明。</div>
 <h2 id="2-2">2. 2 分钟版本</h2>

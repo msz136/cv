@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 08 SYS-004 Source Freeze：Fault Recovery、Safety 与 Observability</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_08_sys004_fault_recovery_safety_observability_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_08_sys004_fault_recovery_safety_observability_source_freeze.md">
 <meta name="aris:source-sha256" content="2ba63d3f2f05ce74c9c508f0aec88a232158a94cef53db0df641f4f85654d6e2">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>2ba63d3f2f05ce74c9c508f0aec88a232158a94cef53db0df641f4f85654d6e2</code>；生成自：<code>interview_materials\vla\sources\vol_08_sys004_fault_recovery_safety_observability_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>2ba63d3f2f05ce74c9c508f0aec88a232158a94cef53db0df641f4f85654d6e2</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_08_sys004_fault_recovery_safety_observability_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-source-gate">1. Source gate 结论先行</a></li><li><a href="#2-revision-claim-boundary">2. 冻结来源、revision、许可与 claim boundary</a></li><li><a href="#3-claim-registry-inference">3. Claim registry：可写、需标 inference、必须拒绝</a></li><li><a href="#4-fault-identity">4. Fault identity、状态所有权与事件合同</a></li><li><a href="#4-1-incident-event-schema">4.1 最小 incident/event schema（设计推断）</a></li><li><a href="#4-2-owner">4.2 状态机与 owner</a></li><li><a href="#4-3-safety-boundary">4.3 Safety boundary</a></li><li><a href="#5-failure-degradation-rollback-replay">5. Failure、degradation、rollback 与 replay 合同</a></li><li><a href="#6">6. 正常与恢复数据流（设计合同）</a></li><li><a href="#7">7. 五项目真实性边界</a></li><li><a href="#8-deterministic-source-probes">8. Deterministic source probes</a></li><li><a href="#9-source-gate">9. Source gate 结论与下一切片</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 08 SYS-004 Source Freeze：Fault Recovery、Safety 与 Observability</h1>
 <div class="meta">状态：<code>source_frozen / SYS-VLA-004 / knowledge_pending / card_pending / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本页只冻结故障分层、first-divergence、健康探针、生命周期降级、取消/停止边界、rollback/replay 与可观测性合同；不把公开机制、上游 API 或五项目局部 hook 写成候选人已经实现了生产安全系统。 前置：<a href="vol_08_coding_system_design_coverage_gap_audit.html">VOL 08 Coverage-Gap Audit</a>、<a href="vol_08_sys001_vla_training_eval_platform_source_freeze.html">SYS-VLA-001 source</a>、<a href="vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.html">SYS-VLA-002 source</a>、<a href="vol_05_eval008_perception_action_controller_recovery_failure_taxonomy_source_freeze.html">VOL 05 EVAL-008</a>。</div>

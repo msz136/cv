@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 03 VLA / Action：核心面试题卡（完整卷）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\questions\vol_03_vla_action.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_03_vla_action.md">
 <meta name="aris:source-sha256" content="ee42df0ea7c34a12a2173e95b4c0c446cf23139266818c3e6e8cbbfde5955c9e">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>ee42df0ea7c34a12a2173e95b4c0c446cf23139266818c3e6e8cbbfde5955c9e</code>；生成自：<code>interview_materials\vla\questions\vol_03_vla_action.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>ee42df0ea7c34a12a2173e95b4c0c446cf23139266818c3e6e8cbbfde5955c9e</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_03_vla_action.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#a-vla">A. VLA 架构与输入输出合同</a></li><li><a href="#b-action-representation-tokenization-fast">B. Action representation、tokenization 与 FAST</a></li><li><a href="#c-act-action-chunking-temporal-ensemble">C. ACT、Action Chunking 与 Temporal Ensemble</a></li><li><a href="#d-diffusion-policy-receding-horizon">D. Diffusion Policy 与 Receding-Horizon</a></li><li><a href="#e-flow-matching-0-action-debug">E. Flow Matching、π0 与生成式 Action Debug</a></li><li><a href="#section-6">参考来源</a></li></ol></nav>
 <h1>VOL 03 VLA / Action：核心面试题卡（完整卷）</h1>
 <div class="meta">状态：<code>completion_reconciled_candidate / source_audits_warn / 44 unseen / WARN</code> 当前题数：44 / 44 覆盖范围：<code>VLA-ARCH-001..012</code>、<code>VLA-ACT-001..032</code> 难度：L1 2 题 / L2 18 题 / L3 24 题 优先级：P0 26 题 / P1 17 题 / P2 1 题 练习状态：全部 <code>unseen</code> 使用方式：先闭卷说 30 秒版本，再展开机制；未真实口述前不得改为 pass/strong。 深度来源：<a href="../knowledge/vol_03_vla_action.html">VOL 03 完整知识卷</a>；Source Audit A–F 的 public paper/code facts 均已完成独立切片，但本页不替代项目 raw artifacts 或真实口述。 项目证据总门：<a href="../evidence/projects/openpivla_claim_evidence_inventory.html">OpenPiVLA Claim–Evidence Inventory</a> / <a href="../evidence/projects/openpivla_ownership_ledger.html">Ownership Ledger</a>；下列所有项目挂钩均受其 checkpoint、schema、eval 与 ownership 缺口约束。</div>

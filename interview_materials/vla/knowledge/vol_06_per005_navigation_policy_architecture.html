@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 Perception / Grounding / Navigation：Navigation Policy Architecture（PER-005）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per005_navigation_policy_architecture.md">
-<meta name="aris:source-sha256" content="740582cee818f25420c6a3af44b1df847b6b938ad4d291480c01586d3cc824a1">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per005_navigation_policy_architecture.md">
+<meta name="aris:source-sha256" content="aa5e724e690e750c2d42dc8b094488f82a2ca1bb9aee06e60f386ed9b921bbbb">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>740582cee818f25420c6a3af44b1df847b6b938ad4d291480c01586d3cc824a1</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per005_navigation_policy_architecture.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>aa5e724e690e750c2d42dc8b094488f82a2ca1bb9aee06e60f386ed9b921bbbb</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per005_navigation_policy_architecture.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1-30">1. 30 秒直觉：记忆在哪里，动作在哪里落地</a></li><li><a href="#2-taxonomy">2. 架构 taxonomy</a></li><li><a href="#3-map-free-policy">3. Map-free policy：简单不等于没有记忆</a></li><li><a href="#3-1-partial-observability">3.1 状态与 partial observability</a></li><li><a href="#3-2-failure">3.2 常见 failure</a></li><li><a href="#4-semantic-map-based-exploration">4. Semantic map-based exploration</a></li><li><a href="#4-1">4.1 最小闭环</a></li><li><a href="#4-2-category-prior">4.2 Category prior 与探索边界</a></li><li><a href="#4-3-map-based-failure">4.3 Map-based failure</a></li><li><a href="#5-waypoint-subgoal-interface">5. Waypoint / subgoal interface</a></li><li><a href="#5-1-schema">5.1 中间目标 schema</a></li><li><a href="#5-2-waypoint-controller">5.2 Waypoint 与 controller 的边界</a></li><li><a href="#6-planner-controller-stop-replan">6. Planner、controller 与 stop/replan</a></li><li><a href="#6-1">6.1 重新规划触发</a></li><li><a href="#6-2-stop">6.2 Stop 是独立协议</a></li><li><a href="#7-latency-ledger-fps">7. Latency ledger：平均 FPS 不够</a></li><li><a href="#8-policy-loop">8. 可审计的 policy loop 伪代码</a></li><li><a href="#9-evidence-ladder">9. 实验与 evidence ladder</a></li><li><a href="#9-1">9.1 必须固定的比较因素</a></li><li><a href="#9-2-ablation">9.2 最小 ablation</a></li><li><a href="#9-3">9.3 证据阶梯</a></li><li><a href="#10">10. 项目映射与真实性边界</a></li><li><a href="#11">11. 面试回答检查表</a></li><li><a href="#12">12. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 Perception / Grounding / Navigation：Navigation Policy Architecture（PER-005）</h1>
 <div class="meta">状态：<code>drafted / VLA-PER-005 / knowledge_1_of_phase / card_synced / WARN</code> 报告日期：2026-07-18 证据截止：2026-07-18 来源入口：<a href="../sources/vol_06_per005_navigation_policy_architecture_source_freeze.html">PER-005 Navigation Policy Architecture Source Freeze</a>。 前置知识：<a href="vol_06_per003_multiview_temporal.html">PER-003 Multi-view / Temporal</a>、<a href="vol_06_per004_vln_objectnav.html">PER-004 VLN / ObjectNav</a>。</div>
@@ -177,7 +181,7 @@ closed-loop evaluation / sim2real / VOL 07 project claims</code></pre>
 <div class="formula">\[
  a_t = \pi_\theta(o_{t-k:t},\; l,\; s_t),
 \]</div>
-<p>其中 (o) 是视觉/传感器 observation，(l) 是 instruction/goal，(s_t) 可以是 pose/proprio/history state。即使没有显式 map，Transformer cache、RNN hidden state 或 stacked frames 仍是记忆；需要冻结 history length、stride、mask、timestamp 和 reset 行为。</p>
+<p>其中 \(o\) 是视觉/传感器 observation，\(l\) 是 instruction/goal，\(s_t\) 可以是 pose/proprio/history state。即使没有显式 map，Transformer cache、RNN hidden state 或 stacked frames 仍是记忆；需要冻结 history length、stride、mask、timestamp 和 reset 行为。</p>
 <h3 id="3-2-failure">3.2 常见 failure</h3>
 <ul><li>目标暂时不可见时，policy 没有探索先验，容易原地抖动或重复路径；</li><li>long horizon 中 hidden state 与实际 pose 漂移，局部动作仍合法但全局方向错误；</li><li>inference latency 或 action repeat 变化，使训练时的 action age 与部署时不一致；</li><li>只看 imitation/action loss，未记录 stop、replan、collision 和 episode success。</li></ul>
 <p>map-free 并不自动意味着低延迟：视觉 encoder、语言 cross-attention、policy server queue 和 controller 仍要计入 latency ledger。</p>
@@ -242,7 +246,7 @@ replan_policy / horizon / controller_budget</code></pre>
 <p>一个闭环周期至少拆分：</p>
 <pre><code class="language-text">T_capture + T_transfer + T_encode/ground + T_map/planner
   + T_policy + T_controller + T_actuation</code></pre>
-<p>若 observation 在 (t_o) 捕获、action 在 (t_a) 生成，则：</p>
+<p>若 observation 在 \(t_o\) 捕获、action 在 \(t_a\) 生成，则：</p>
 <div class="formula">\[
 age_{action}=t_a-t_o+T_{queue}+T_{communication}+T_{execution\ delay}.
 \]</div>

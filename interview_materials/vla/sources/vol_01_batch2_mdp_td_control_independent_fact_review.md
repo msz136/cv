@@ -22,7 +22,7 @@
 
 | Claim | Verdict | 必须保留的边界 |
 | --- | --- | --- |
-| (V^\pi,Q^\pi,A^\pi) 的定义与 Bellman expectation relation | `PASS / primary-verified` | 即时 reward 与期望 reward 的记号需说明；Bellman relation 不是单一网络 loss |
+| \(V^\pi,Q^\pi,A^\pi\) 的定义与 Bellman expectation relation | `PASS / primary-verified` | 即时 reward 与期望 reward 的记号需说明；Bellman relation 不是单一网络 loss |
 | on-policy 与 off-policy 的差异 | `PASS / primary-verified` | off-policy 不等于 offline RL；数据复用需要分布修正/保守性边界 |
 | TD terminal mask | `FIX_REQUIRED` | true termination 通常停止 bootstrap；time-limit truncation 通常仍 bootstrap |
 | Jacobian singularity | `PASS WITH WORDING FIX` | rank/condition 问题主要在 inverse mapping 中放大 joint velocity/noise |
@@ -34,7 +34,7 @@
 
 ## 3. 回写动作
 
-1. TD residual 改用 (d_t^{term})，并明确 time-limit truncation 的 bootstrap 语义。
+1. TD residual 改用 \(d_t^{term}\)，并明确 time-limit truncation 的 bootstrap 语义。
 2. 闭环伪代码改为显式处理 `terminated`、`truncated` 与 `success`，避免一个无语义 `done` 混合训练和评估边界。
 3. Jacobian 文字改为 inverse/伪逆的速度与噪声放大，不把 singularity 误写成 forward kinematics 的普遍误差放大。
 4. `VLA-FND-024/026` 的 Harness 项目挂钩改为 canonical online GRPO 与本地 offline GRPO-style 的对照。

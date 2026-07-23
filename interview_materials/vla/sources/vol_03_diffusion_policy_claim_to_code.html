@@ -4,485 +4,200 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 03 Source Audit D：Diffusion Policy 条件扩散、Horizon 与 Receding-Horizon Claim-to-Code</title>
-
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_03_diffusion_policy_claim_to_code.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_03_diffusion_policy_claim_to_code.md">
 <meta name="aris:source-sha256" content="2db632245846a102b3895cd8ee38ec53d22f90eaad0ab88d45c1bd9bbc66450d">
-<meta name="aris:generated-at" content="2026-07-16 10:40 UTC">
-
-<!-- MathJax 3 -->
+<meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
-  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
   options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
 };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
-
-<!-- highlight.js -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
-
-
 <style>
 :root {
-  --bg: #fdfcf7;
-  --bg-soft: #f4f1ea;
-  --bg-code: #f8f5ec;
-  --ink: #1a1a1a;
-  --ink-soft: #4a4a4a;
-  --ink-muted: #6b6b6b;
-  --primary: #1a4a8c;
-  --primary-soft: #2d6cb8;
-  --accent: #b8390e;
-  --warn: #b45309;
-  --warn-bg: #fef3c7;
-  --info-bg: #dbeafe;
-  --good-bg: #d1fae5;
-  --good: #065f46;
-  --bad-bg: #fee2e2;
-  --bad: #991b1b;
-  --border: #d6d0c0;
-  --border-soft: #e8e3d5;
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
 }
-
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
 body {
-  font-family: "Source Serif Pro", "Source Serif 4", "Crimson Pro", "Georgia", "Songti SC", "STSong", serif;
-  line-height: 1.65;
-  color: var(--ink);
-  background: var(--bg);
-  margin: 0;
-  padding: 0;
-  font-size: 16px;
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
-
-.layout {
-  max-width: 1280px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 48px;
-  padding: 40px 32px;
-}
-
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
 nav.toc {
-  position: sticky;
-  top: 24px;
-  align-self: start;
-  font-size: 13px;
-  max-height: calc(100vh - 48px);
-  overflow-y: auto;
-  border-right: 1px solid var(--border-soft);
-  padding-right: 16px;
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
 }
-nav.toc h3 {
-  margin: 0 0 12px;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ink-muted);
-  font-weight: 600;
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
 }
-nav.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
-nav.toc ol li { margin: 5px 0; counter-increment: toc; }
-nav.toc ol li::before { content: counter(toc) ". "; color: var(--ink-muted); margin-right: 4px; }
-nav.toc a {
-  color: var(--ink-soft);
-  text-decoration: none;
-  border-bottom: 1px dotted transparent;
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
 }
-nav.toc a:hover { color: var(--primary); border-bottom-color: var(--primary); }
-nav.toc ul { list-style: none; padding-left: 14px; margin: 3px 0; font-size: 12px; }
-nav.toc ul li::before { content: "→ "; color: var(--border); }
-nav.toc a.back-home {
-  display: inline-block;
-  margin-bottom: 18px;
-  padding: 5px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--primary);
-  background: var(--bg-soft);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  text-decoration: none;
-  letter-spacing: 0.02em;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
 }
-nav.toc a.back-home:hover {
-  background: var(--primary);
-  color: #ffffff;
-  border-color: var(--primary);
-}
-
-main { min-width: 0; }
-
-header.hero {
-  border-bottom: 3px double var(--primary);
-  padding-bottom: 24px;
-  margin-bottom: 32px;
-}
-header.hero .eyebrow {
-  color: var(--accent);
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-header.hero h1 {
-  font-size: 32px;
-  line-height: 1.2;
-  margin: 0 0 12px;
-  color: var(--ink);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-header.hero .subtitle {
-  font-size: 16px;
-  color: var(--ink-soft);
-  margin: 0 0 8px;
-  font-style: italic;
-}
-header.hero .byline {
-  font-size: 14px;
-  color: var(--ink-soft);
-  margin: 0 0 20px;
-}
-header.hero .byline strong {
-  color: var(--ink);
-  font-weight: 600;
-}
-header.hero .meta {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  font-size: 12px;
-  color: var(--ink-muted);
-  border-top: 1px solid var(--border-soft);
-  padding-top: 14px;
-}
-header.hero .meta span strong { color: var(--ink-soft); }
-header.hero .meta code {
-  font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
-  font-size: 11px;
-  background: var(--bg-soft);
-  padding: 1px 5px;
-  border-radius: 3px;
-  border: 1px solid var(--border-soft);
-}
-
 h2 {
-  font-size: 24px;
-  margin: 44px 0 14px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-  color: var(--ink);
-  font-weight: 700;
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
 }
-h2 .num { color: var(--primary); font-weight: 600; margin-right: 8px; }
-h3 { font-size: 19px; margin: 28px 0 10px; color: var(--primary); font-weight: 600; }
-h4 { font-size: 16px; margin: 20px 0 8px; color: var(--ink); font-weight: 600; }
-
-p { margin: 10px 0; }
-ul, ol { padding-left: 22px; margin: 10px 0; }
-ul li, ol li { margin: 4px 0; }
-ul li::marker { color: var(--primary); }
-
-strong { color: var(--accent); font-weight: 600; }
-em { color: var(--ink-soft); }
-
-a { color: var(--primary); }
-a:hover { color: var(--accent); }
-
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
 code:not(.hljs) {
-  font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
-  font-size: 0.86em;
-  background: var(--bg-code);
-  padding: 1px 5px;
-  border-radius: 3px;
-  border: 1px solid var(--border-soft);
-  color: var(--accent);
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
-
 pre {
-  background: #fafaf6;
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--primary);
-  padding: 0;
-  overflow-x: auto;
-  border-radius: 4px;
-  margin: 14px 0;
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
 }
 pre code, pre code.hljs {
-  background: transparent !important;
-  display: block;
-  padding: 14px 18px !important;
-  font-size: 13px;
-  line-height: 1.55;
-  font-family: "JetBrains Mono", "SF Mono", "Menlo", monospace;
-  color: var(--ink);
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
 }
-pre.diagram {
-  background: #f9f6ed;
-  border-left: 4px solid var(--accent);
-  font-size: 12.5px;
-  line-height: 1.4;
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
 }
-
-.callout {
-  margin: 16px 0;
-  padding: 12px 16px;
-  border-radius: 4px;
-  border-left: 4px solid;
-  font-size: 15px;
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
-.callout-title {
-  font-weight: 600;
-  margin-bottom: 6px;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.callout-info { background: var(--info-bg); border-left-color: var(--primary); }
-.callout-info .callout-title { color: var(--primary); }
-.callout-warn { background: var(--warn-bg); border-left-color: var(--warn); }
-.callout-warn .callout-title { color: var(--warn); }
-.callout-good { background: var(--good-bg); border-left-color: var(--good); }
-.callout-good .callout-title { color: var(--good); }
-.callout-bad { background: var(--bad-bg); border-left-color: var(--bad); }
-.callout-bad .callout-title { color: var(--bad); }
-
 table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 16px 0;
-  font-size: 14px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  overflow: hidden;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
-thead { background: var(--primary); color: white; }
-th, td {
-  text-align: left;
-  padding: 9px 12px;
-  border-bottom: 1px solid var(--border-soft);
-  vertical-align: top;
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
-th { font-weight: 600; font-size: 13px; letter-spacing: 0.02em; }
-tr:last-child td { border-bottom: none; }
-tbody tr:nth-child(even) { background: var(--bg-soft); }
-
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
 details.qa, details {
-  background: white;
-  border: 1px solid var(--border-soft);
-  border-radius: 6px;
-  margin: 10px 0;
-  padding: 0;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
 }
-details.qa { margin: 8px 0; }
-details.qa:hover { border-color: var(--primary-soft); box-shadow: 0 1px 4px rgba(26,74,140,0.06); }
-details summary {
-  cursor: pointer;
-  padding: 11px 14px;
-  font-weight: 600;
-  font-size: 14.5px;
-  line-height: 1.5;
-  color: var(--ink);
-  list-style: none;
-  user-select: none;
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
 }
-details.qa summary { color: var(--ink); }
-details summary::-webkit-details-marker { display: none; }
-details summary::before {
-  content: "▸ ";
-  margin-right: 4px;
-  display: inline-block;
-  transition: transform 0.15s;
-  color: var(--primary);
-}
-details[open] summary::before { transform: rotate(90deg); }
-details[open] summary { border-bottom: 1px solid var(--border-soft); }
-details[open].qa { background: #fdfcf7; }
-details > :not(summary) { padding: 10px 16px; }
-details p:first-of-type { margin-top: 8px; }
-details p:last-of-type { margin-bottom: 10px; }
-
-/* difficulty pills: L1 green / L2 yellow / L3 red */
-.lv {
-  display: inline-block;
-  padding: 1px 7px;
-  margin-right: 6px;
-  border-radius: 3px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  font-family: "JetBrains Mono", "SF Mono", "Menlo", monospace;
-  vertical-align: 1px;
-  line-height: 1.5;
-}
-.lv-l1 { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
-.lv-l2 { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
-.lv-l3 { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-
-/* frequency badge: 🔥×N */
-.freq {
-  display: inline-block;
-  padding: 1px 7px;
-  margin-right: 6px;
-  border-radius: 3px;
-  font-size: 11px;
-  font-weight: 600;
-  background: var(--bg-soft);
-  color: var(--ink-soft);
-  border: 1px solid var(--border-soft);
-  font-family: "JetBrains Mono", "SF Mono", "Menlo", monospace;
-  vertical-align: 1px;
-  line-height: 1.5;
-}
-.freq-hot { background: #fff1e6; color: #b8390e; border-color: #fcd9c0; }
-
-mjx-container[display="true"] { margin: 12px 0 !important; }
-
-footer.aris-footer {
-  margin-top: 60px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-  font-size: 12px;
-  color: var(--ink-muted);
-}
-footer.aris-footer a { color: var(--ink-muted); border-bottom: 1px dotted var(--border); }
-
-@media (max-width: 900px) {
-  .layout { grid-template-columns: 1fr; gap: 20px; padding: 20px 16px; }
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
-    position: static;
-    max-height: none;
-    border-right: none;
-    border-bottom: 1px solid var(--border-soft);
-    padding-right: 0;
-    padding-bottom: 14px;
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
-  header.hero h1 { font-size: 24px; }
-  h2 { font-size: 20px; }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
+  pre,.formula { overflow-x:auto; }
 }
 @media print {
-  nav.toc { display: none; }
-  .layout { grid-template-columns: 1fr; padding: 0; }
-  body { background: white; }
-  header.hero { border-bottom-color: var(--ink); }
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
 }
 </style>
 </head>
-<body>
-<div class="layout">
-
-<nav class="toc">
-  <a class="back-home" href="../index.html">← 返回主册</a>
-  <h3>Contents</h3>
-  <ol>
-<li><a href="#1-结论先行">1. 结论先行</a>
-</li>
-<li><a href="#2-证据层级冻结对象与适用边界">2. 证据层级、冻结对象与适用边界</a>
-</li>
-<li><a href="#3-论文符号与三个-horizon">3. 论文符号与三个 horizon</a>
-</li>
-<li><a href="#4-conditional-ddpm训练目标与前向加噪">4. Conditional DDPM：训练目标与前向加噪</a>
-<ul>
-<li><a href="#41-论文-objective">4.1 论文 objective</a></li>
-<li><a href="#42-frozen-training-path">4.2 Frozen training path</a></li>
-<li><a href="#43-predictiontype-与-mask">4.3 `prediction_type` 与 mask</a></li>
-<li><a href="#44-为什么-sequence-diffusion-能表达多模态">4.4 为什么 sequence diffusion 能表达多模态</a></li>
-</ul>
-</li>
-<li><a href="#5-observation-conditioning-与网络实现">5. Observation conditioning 与网络实现</a>
-<ul>
-<li><a href="#51-cnn--unet-hybrid">5.1 CNN / UNet hybrid</a></li>
-<li><a href="#52-time-series-diffusion-transformer">5.2 Time-series diffusion transformer</a></li>
-</ul>
-</li>
-<li><a href="#6-inference随机初始化denoising-loop-与-action-slice">6. Inference：随机初始化、denoising loop 与 action slice</a>
-<ul>
-<li><a href="#61-global-conditioned-inference">6.1 Global-conditioned inference</a></li>
-<li><a href="#62-paper-warm-start-与-code-random-restart">6.2 Paper warm-start 与 code random restart</a></li>
-<li><a href="#63-ddpmddim去噪步数">6.3 DDPM、DDIM、去噪步数</a></li>
-</ul>
-</li>
-<li><a href="#7-normalizationpadding-与数据切片">7. Normalization、padding 与数据切片</a>
-<ul>
-<li><a href="#71-默认--11-normalizer">7.1 默认 \([-1,1]\) normalizer</a></li>
-<li><a href="#72-boundary-padding-不是-valid-loss-mask">7.2 Boundary padding 不是 valid loss mask</a></li>
-<li><a href="#73-normalizer-数据范围">7.3 Normalizer 数据范围</a></li>
-</ul>
-</li>
-<li><a href="#8-receding-horizon-rolloutsimulation-与-real-robot">8. Receding-horizon rollout：simulation 与 real robot</a>
-<ul>
-<li><a href="#81-simulation">8.1 Simulation</a></li>
-<li><a href="#82-real-robot">8.2 Real robot</a></li>
-</ul>
-</li>
-<li><a href="#9-horizon去噪步数与-latency-trade-off">9. Horizon、去噪步数与 latency trade-off</a>
-<ul>
-<li><a href="#91-tpta-太短">9.1 \(T_p/T_a\) 太短</a></li>
-<li><a href="#92-tpta-太长">9.2 \(T_p/T_a\) 太长</a></li>
-<li><a href="#93-k-太少或太多">9.3 \(K\) 太少或太多</a></li>
-<li><a href="#94-warm-start-取舍">9.4 warm-start 取舍</a></li>
-</ul>
-</li>
-<li><a href="#10-与-acttokenflow-路线的归纳偏置">10. 与 ACT、token、flow 路线的归纳偏置</a>
-</li>
-<li><a href="#11-claim-to-code-总表">11. Claim-to-code 总表</a>
-</li>
-<li><a href="#12-对-vla-act-018022-的支持状态">12. 对 `VLA-ACT-018..022` 的支持状态</a>
-</li>
-<li><a href="#13-与个人项目的真实性边界">13. 与个人项目的真实性边界</a>
-</li>
-<li><a href="#14-面试安全口径与危险答案">14. 面试安全口径与危险答案</a>
-<ul>
-<li><a href="#141-30-秒安全骨架">14.1 30 秒安全骨架</a></li>
-<li><a href="#142-高危说法">14.2 高危说法</a></li>
-</ul>
-</li>
-<li><a href="#15-风险未决项与下一步">15. 风险、未决项与下一步</a>
-</li>
-<li><a href="#参考文献references">参考文献（References）</a>
-</li>
-</ol>
-</nav>
-
-<main>
-<div class="eyebrow">VLA Interview Repository · Source Audit D</div>
-<p class="subtitle">论文 v5 × frozen official code × scheduler / horizon / rollout 边界</p>
-
-
-<h1 id="vol-03-source-audit-ddiffusion-policy-条件扩散horizon-与-receding-horizon-claim-to-code">VOL 03 Source Audit D：Diffusion Policy 条件扩散、Horizon 与 Receding-Horizon Claim-to-Code</h1>
-<blockquote><p>审计日期：2026-07-16 状态：<code>drafted / upstream_paper_and_code_reviewed / independent_review_pending</code> 论文版本：<em>Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</em>，arXiv <code>2303.04137v5</code> 官方仓库：<code>real-stanford/diffusion_policy</code> frozen commit <code>5ba07ac6661db573af695b419a7947ecb704690f</code> License：MIT；关键依赖：Hugging Face <code>diffusers=0.11.1</code> 对应题目：<code>VLA-ACT-018..022</code>；<code>VLA-ACT-017</code> 的 diffusion 对照 本页问题：Diffusion Policy 为什么能表示多模态连续动作？训练时 noisy action、noise target、condition 与 mask 如何组织？observation / prediction / execution horizon 如何进入代码？receding-horizon、DDIM、去噪步数和 warm-start 在论文与 frozen repo 中是否一致？</p></blockquote>
-<h2 id="1-结论先行">1. 结论先行</h2>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>2db632245846a102b3895cd8ee38ec53d22f90eaad0ab88d45c1bd9bbc66450d</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_03_diffusion_policy_claim_to_code.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 证据层级、冻结对象与适用边界</a></li><li><a href="#3-horizon">3. 论文符号与三个 horizon</a></li><li><a href="#4-conditional-ddpm">4. Conditional DDPM：训练目标与前向加噪</a></li><li><a href="#4-1-objective">4.1 论文 objective</a></li><li><a href="#4-2-frozen-training-path">4.2 Frozen training path</a></li><li><a href="#4-3-prediction-type-mask">4.3 `prediction_type` 与 mask</a></li><li><a href="#4-4-sequence-diffusion">4.4 为什么 sequence diffusion 能表达多模态</a></li><li><a href="#5-observation-conditioning">5. Observation conditioning 与网络实现</a></li><li><a href="#5-1-cnn-unet-hybrid">5.1 CNN / UNet hybrid</a></li><li><a href="#5-2-time-series-diffusion-transformer">5.2 Time-series diffusion transformer</a></li><li><a href="#6-inference-denoising-loop-action-slice">6. Inference：随机初始化、denoising loop 与 action slice</a></li><li><a href="#6-1-global-conditioned-inference">6.1 Global-conditioned inference</a></li><li><a href="#6-2-paper-warm-start-code-random-restart">6.2 Paper warm-start 与 code random restart</a></li><li><a href="#6-3-ddpm-ddim">6.3 DDPM、DDIM、去噪步数</a></li><li><a href="#7-normalization-padding">7. Normalization、padding 与数据切片</a></li><li><a href="#7-1-1-1-normalizer">7.1 默认 \([-1,1]\) normalizer</a></li><li><a href="#7-2-boundary-padding-valid-loss-mask">7.2 Boundary padding 不是 valid loss mask</a></li><li><a href="#7-3-normalizer">7.3 Normalizer 数据范围</a></li><li><a href="#8-receding-horizon-rollout-simulation-real-robot">8. Receding-horizon rollout：simulation 与 real robot</a></li><li><a href="#8-1-simulation">8.1 Simulation</a></li><li><a href="#8-2-real-robot">8.2 Real robot</a></li><li><a href="#9-horizon-latency-trade-off">9. Horizon、去噪步数与 latency trade-off</a></li><li><a href="#9-1-t-p-t-a">9.1 \(T_p/T_a\) 太短</a></li><li><a href="#9-2-t-p-t-a">9.2 \(T_p/T_a\) 太长</a></li><li><a href="#9-3-k">9.3 \(K\) 太少或太多</a></li><li><a href="#9-4-warm-start">9.4 warm-start 取舍</a></li><li><a href="#10-act-token-flow">10. 与 ACT、token、flow 路线的归纳偏置</a></li><li><a href="#11-claim-to-code">11. Claim-to-code 总表</a></li><li><a href="#12-vla-act-018-022">12. 对 `VLA-ACT-018..022` 的支持状态</a></li><li><a href="#13">13. 与个人项目的真实性边界</a></li><li><a href="#14">14. 面试安全口径与危险答案</a></li><li><a href="#14-1-30">14.1 30 秒安全骨架</a></li><li><a href="#14-2">14.2 高危说法</a></li><li><a href="#15">15. 风险、未决项与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
+<h1>VOL 03 Source Audit D：Diffusion Policy 条件扩散、Horizon 与 Receding-Horizon Claim-to-Code</h1>
+<div class="meta">审计日期：2026-07-16 状态：<code>drafted / upstream_paper_and_code_reviewed / independent_review_pending</code> 论文版本：<em>Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</em>，arXiv <code>2303.04137v5</code> 官方仓库：<code>real-stanford/diffusion_policy</code> frozen commit <code>5ba07ac6661db573af695b419a7947ecb704690f</code> License：MIT；关键依赖：Hugging Face <code>diffusers=0.11.1</code> 对应题目：<code>VLA-ACT-018..022</code>；<code>VLA-ACT-017</code> 的 diffusion 对照 本页问题：Diffusion Policy 为什么能表示多模态连续动作？训练时 noisy action、noise target、condition 与 mask 如何组织？observation / prediction / execution horizon 如何进入代码？receding-horizon、DDIM、去噪步数和 warm-start 在论文与 frozen repo 中是否一致？</div>
+<h2 id="1">1. 结论先行</h2>
 <ol><li><strong>Diffusion Policy 把 visuomotor policy 写成条件 action-sequence diffusion，而不是逐维 token 分类。</strong>时刻 \(t\) 接收最近 \(T_o\) 步 observation，建模未来 action sequence 的条件分布 \(p_\theta(A_t\mid O_t)\)；论文记作 \(T_p\)，官方代码叫 <code>horizon</code>。[1][2]</li><li><strong>训练目标是随机 timestep 的 noise/sample MSE。</strong>代码对标准化 trajectory 加 scheduler noise；<code>prediction_type=epsilon</code> 时 target 是同形状 Gaussian noise，<code>sample</code> 时 target 是 clean trajectory。该 policy 代码只显式支持 epsilon/sample，不自动处理 <code>v_prediction</code>。[2][3]</li><li><strong>默认 image hybrid 路径是 global conditioning。</strong>前 \(T_o\) 帧经视觉 encoder 成为扁平 <code>global_cond</code>，diffusion trajectory 只保留 action channels，初始采样为 \([B,T_p,D_a]\) 的 Gaussian noise；默认 global path 的 action condition mask 全 False。[2]</li><li><strong>模型 horizon、返回 action 数和真正 replanning interval 必须分开。</strong><code>horizon=T_p</code>；<code>n_action_steps=T_a</code> 决定 <code>predict_action</code> 返回多少步；simulation 的 <code>MultiStepWrapper</code> 一次执行 \(T_a\) 步后再 query，real eval 可提交更长 action slice、每 <code>steps_per_inference</code> 步重算。[2]</li><li><strong>官方 action slice 从最后一帧 observation 对齐。</strong><code>start=n_obs_steps-1</code>，<code>end=start+n_action_steps</code>；例如 \(T_p=16,T_o=2,T_a=8\) 时，完整 trajectory 有 16 步，返回 index 1 到 8 的 8 步。[2]</li><li><strong>paper 说 receding-horizon 可以 warm-start 下一次 inference；该 frozen commit 没实现。</strong>主要 policy 都从 <code>torch.randn</code> 重新开始，并在入口拒绝 <code>past_action</code>。所以“论文支持 warm-start”不能讲成“这个 commit 默认用上一段 action 初始化”。[1][2]</li><li><strong>论文正文、论文表格和 code 的 inference step 数不是统一常数。</strong>论文正文给 DDIM 100 train / 10 eval 的 real-world 例子；v5 表格的 real rows 为 16 eval；frozen real configs 为 8，<code>eval_real_robot.py</code> 又运行时设为 16。[1][2]</li><li><strong>多模态来自 sequence-level stochastic generation，而非每个时间点独立采样。</strong>随机 Gaussian 初值和 DDPM/DDIM transition 提供多样性；一次对整段 \(T_p\times D_a\) trajectory 去噪，使相邻动作共享同一生成过程。[1]</li></ol>
-<h2 id="2-证据层级冻结对象与适用边界">2. 证据层级、冻结对象与适用边界</h2>
-<table><thead><tr><th>层级</th><th>本页使用方式</th><th>能支持</th><th>不能支持</th></tr></thead><tbody><tr><td>arXiv v5</td><td>formulation、horizons、network/noise schedule、DDIM 与 ablation</td><td>方法定义、论文符号、公开实验和 warm-start 设计意图</td><td>frozen repo 的实际 default 与个人项目事实</td></tr><tr><td>frozen official repo</td><td>policy、dataset、sampler、runner、real eval、YAML</td><td>tensor shape、mask、normalization、action slice、执行/重规划路径</td><td>个人 OpenPiVLA 是否采用该实现</td></tr><tr><td>frozen dependency</td><td>diffusers 0.11.1 DDPMScheduler/DDIMScheduler</td><td><code>add_noise</code>、prediction type、<code>set_timesteps</code>、<code>step</code> 语义</td><td>不能替代 policy 自己的 loss/mask</td></tr><tr><td>同源推断</td><td>paper/code 联合推导 \(T_o/T_p/T_a\)、latency 与 stochasticity</td><td>面试解释的 interface contract</td><td>未运行的 latency/success</td></tr></tbody></table>
+<h2 id="2">2. 证据层级、冻结对象与适用边界</h2>
+<table><thead><tr><th>层级</th><th>本页使用方式</th><th>能支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td>arXiv v5</td><td>formulation、horizons、network/noise schedule、DDIM 与 ablation</td><td>方法定义、论文符号、公开实验和 warm-start 设计意图</td><td>frozen repo 的实际 default 与个人项目事实</td></tr>
+<tr><td>frozen official repo</td><td>policy、dataset、sampler、runner、real eval、YAML</td><td>tensor shape、mask、normalization、action slice、执行/重规划路径</td><td>个人 OpenPiVLA 是否采用该实现</td></tr>
+<tr><td>frozen dependency</td><td>diffusers 0.11.1 DDPMScheduler/DDIMScheduler</td><td><code>add_noise</code>、prediction type、<code>set_timesteps</code>、<code>step</code> 语义</td><td>不能替代 policy 自己的 loss/mask</td></tr>
+<tr><td>同源推断</td><td>paper/code 联合推导 \(T_o/T_p/T_a\)、latency 与 stochasticity</td><td>面试解释的 interface contract</td><td>未运行的 latency/success</td></tr>
+</tbody></table>
 <p>冻结信息：</p>
 <ul><li>arXiv API 的唯一 latest entry 是 <code>2303.04137v5</code>，更新时间 2024-03-14；v5 是 extended journal version。[1]</li><li>官方 repo HEAD 为 <code>5ba07ac6661db573af695b419a7947ecb704690f</code>，commit message 为 <code>Done adapting mujoco image dataset</code>；根目录 LICENSE 为 MIT。[2]</li><li>repo <code>conda_environment.yaml</code> 固定 <code>diffusers=0.11.1</code>、PyTorch 1.12.1、Hydra 1.2.0。[2]</li><li>代表实现为 <code>DiffusionUnetHybridImagePolicy</code> 与 <code>DiffusionTransformerHybridImagePolicy</code>；lowdim policy 共享 scheduler、loss、horizon 和 inference contract。</li></ul>
-<h2 id="3-论文符号与三个-horizon">3. 论文符号与三个 horizon</h2>
+<h2 id="3-horizon">3. 论文符号与三个 horizon</h2>
 <p>论文定义：</p>
-<p>$$ O_t=(o_{t-T_o+1},\ldots,o_t),\qquad A_t=(a_t,\ldots,a_{t+T_p-1}), $$</p>
+<div class="formula">$$
+O_t=(o_{t-T_o+1},\ldots,o_t),\qquad
+A_t=(a_t,\ldots,a_{t+T_p-1}),
+$$</div>
 <p>其中 \(T_o\) 是 observation horizon，\(T_p\) 是 action prediction horizon，\(T_a\) 是 action execution horizon。policy 用 \(O_t\) 预测 \(T_p\) 步，只执行 \(T_a\) 步，随后重新观察并规划。[1]</p>
 <p>变量与直觉：\(T_o\) 决定历史长度，\(T_p\) 决定一次 diffusion 生成多长 trajectory，\(T_a\) 决定多久才吸收新 observation。实现映射：<code>n_obs_steps</code>、<code>horizon</code>、<code>n_action_steps</code> 在 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/config/train_diffusion_unet_hybrid_workspace.yaml#L12-L20"><code>train_diffusion_unet_hybrid_workspace.yaml#L12-L20</code></a> 与 policy constructor <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/policy/diffusion_unet_hybrid_image_policy.py#L22-L40"><code>diffusion_unet_hybrid_image_policy.py#L22-L40</code></a> 对应。</p>
-<table><thead><tr><th>概念</th><th>frozen field</th><th>作用</th><th>不能混同</th></tr></thead><tbody><tr><td>observation horizon \(T_o\)</td><td><code>n_obs_steps</code></td><td>encoder 使用 <code>obs[:,:To]</code></td><td>不等于全部 episode history</td></tr><tr><td>prediction horizon \(T_p\)</td><td><code>horizon</code></td><td>diffusion trajectory 时间维</td><td>不等于返回 action 数</td></tr><tr><td>execution window \(T_a\)</td><td><code>n_action_steps</code></td><td>action slice 长度</td><td>不自动等于 real query interval</td></tr><tr><td>replan interval \(R\)</td><td>simulation 的 action batch；real CLI <code>steps_per_inference</code></td><td>多少控制步后再次 inference</td><td>不由 <code>horizon</code> 单独决定</td></tr><tr><td>diffusion steps \(K\)</td><td><code>num_inference_steps</code></td><td>一次 query 内的 denoising iterations</td><td>不是机器人控制步数</td></tr></tbody></table>
-<h2 id="4-conditional-ddpm训练目标与前向加噪">4. Conditional DDPM：训练目标与前向加噪</h2>
-<h3 id="41-论文-objective">4.1 论文 objective</h3>
+<table><thead><tr><th>概念</th><th>frozen field</th><th>作用</th><th>不能混同</th></tr></thead><tbody>
+<tr><td>observation horizon \(T_o\)</td><td><code>n_obs_steps</code></td><td>encoder 使用 <code>obs[:,:To]</code></td><td>不等于全部 episode history</td></tr>
+<tr><td>prediction horizon \(T_p\)</td><td><code>horizon</code></td><td>diffusion trajectory 时间维</td><td>不等于返回 action 数</td></tr>
+<tr><td>execution window \(T_a\)</td><td><code>n_action_steps</code></td><td>action slice 长度</td><td>不自动等于 real query interval</td></tr>
+<tr><td>replan interval \(R\)</td><td>simulation 的 action batch；real CLI <code>steps_per_inference</code></td><td>多少控制步后再次 inference</td><td>不由 <code>horizon</code> 单独决定</td></tr>
+<tr><td>diffusion steps \(K\)</td><td><code>num_inference_steps</code></td><td>一次 query 内的 denoising iterations</td><td>不是机器人控制步数</td></tr>
+</tbody></table>
+<h2 id="4-conditional-ddpm">4. Conditional DDPM：训练目标与前向加噪</h2>
+<h3 id="4-1-objective">4.1 论文 objective</h3>
 <p>论文以 clean action sequence \(A_t^0\) 为样本，随机选 diffusion timestep \(k\)，采样 \(\epsilon\)，让网络根据 observation、noisy action 和 \(k\) 预测噪声：</p>
-<p>$$ A_t^k =\sqrt{\bar\alpha_k}\,A_t^0  +\sqrt{1-\bar\alpha_k}\,\epsilon, \qquad \epsilon\sim\mathcal N(0,I), $$</p>
-<p>$$ \mathcal L_\epsilon =\mathbb E_{A_t^0,O_t,k,\epsilon} \left[ \left\|\epsilon-\epsilon_\theta(O_t,A_t^k,k)\right\|_2^2 \right]. $$</p>
+<div class="formula">$$
+A_t^k
+=\sqrt{\bar\alpha_k}\,A_t^0
+ +\sqrt{1-\bar\alpha_k}\,\epsilon,
+\qquad
+\epsilon\sim\mathcal N(0,I),
+$$</div>
+<div class="formula">$$
+\mathcal L_\epsilon
+=\mathbb E_{A_t^0,O_t,k,\epsilon}
+\left[
+\left\|\epsilon-\epsilon_\theta(O_t,A_t^k,k)\right\|_2^2
+\right].
+$$</div>
 <p>变量与直觉：\(\bar\alpha_k\) 由 beta/noise schedule 决定；较小 \(k\) 保留更多 action signal，较大 \(k\) 更接近 Gaussian。网络学习去噪方向而不是直接回归 clean action。论文 Section DDPM/DDPM Training 见 <a href="https://arxiv.org/html/2303.04137v5#S2">HTML</a>；repo 的 <code>add_noise</code> 映射到 diffusers v0.11.1 <a href="https://github.com/huggingface/diffusers/blob/v0.11.1/src/diffusers/schedulers/scheduling_ddpm.py#L329-L350"><code>scheduling_ddpm.py#L329-L350</code></a>。</p>
 <p>论文把反向 transition 写成：</p>
-<p>$$ A_t^{k-1} =\alpha_k\left( A_t^k-\gamma_k\epsilon_\theta(O_t,A_t^k,k) +\mathcal N(0,\sigma_k^2I) \right). $$</p>
+<div class="formula">$$
+A_t^{k-1}
+=\alpha_k\left(
+A_t^k-\gamma_k\epsilon_\theta(O_t,A_t^k,k)
++\mathcal N(0,\sigma_k^2I)
+\right).
+$$</div>
 <p>这表示网络输出与 scheduler 共同定义 reverse update；不能把 \(\epsilon_\theta\) 单独当最终 action。系数、variance 和 clipping 由 DDPM/DDIM scheduler 完成。[1][2]</p>
-<h3 id="42-frozen-training-path">4.2 Frozen training path</h3>
+<h3 id="4-2-frozen-training-path">4.2 Frozen training path</h3>
 <pre><code class="language-python">def training_step(batch, policy):
     # Normalize observations and the action trajectory.
     nobs = policy.normalizer.normalize(batch[&quot;obs&quot;])
@@ -510,15 +225,25 @@ footer.aris-footer a { color: var(--ink-muted); border-bottom: 1px dotted var(--
     loss = ((pred - target) ** 2 * (~condition_mask)).mean()
     return loss</code></pre>
 <p>直接代码证据：normalization/trajectory 在 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/policy/diffusion_unet_hybrid_image_policy.py#L284-L314"><code>diffusion_unet_hybrid_image_policy.py#L284-L314</code></a>，noise/timestep/add_noise 在 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/policy/diffusion_unet_hybrid_image_policy.py#L316-L337"><code>#L316-L337</code></a>，target 与 MSE 在 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/policy/diffusion_unet_hybrid_image_policy.py#L339-L351"><code>#L339-L351</code></a>。</p>
-<h3 id="43-predictiontype-与-mask">4.3 <code>prediction_type</code> 与 mask</h3>
-<p>$$ y_\theta= \begin{cases} \epsilon,&amp;\texttt{prediction\_type}=\texttt{epsilon},\\ A_t^0,&amp;\texttt{prediction\_type}=\texttt{sample}. \end{cases} $$</p>
+<h3 id="4-3-prediction-type-mask">4.3 <code>prediction_type</code> 与 mask</h3>
+<div class="formula">$$
+y_\theta=
+\begin{cases}
+\epsilon,&amp;\texttt{prediction\_type}=\texttt{epsilon},\\
+A_t^0,&amp;\texttt{prediction\_type}=\texttt{sample}.
+\end{cases}
+$$</div>
 <p>变量与实现：policy 只处理 epsilon/sample，其他字符串直接 <code>ValueError</code>。diffusers scheduler 虽有 <code>v_prediction</code> 分支，policy 的 <code>compute_loss</code> 没实现对应 velocity target；依赖库能力不等于当前 policy 能力。证据为 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/policy/diffusion_unet_hybrid_image_policy.py#L339-L345"><code>diffusion_unet_hybrid_image_policy.py#L339-L345</code></a> 与 <a href="https://github.com/huggingface/diffusers/blob/v0.11.1/src/diffusers/schedulers/scheduling_ddpm.py#L278-L289"><code>scheduling_ddpm.py#L278-L289</code></a>。</p>
 <p><code>loss_mask = ~condition_mask</code> 后用完整 tensor mean；conditioned dimensions 的 numerator 被置零，但 denominator 仍是 trajectory 总元素数。policy 还 assert batch 不带 <code>valid_mask</code>。默认 <code>obs_as_global_cond=True</code> 时 <code>obs_dim=0</code>、<code>action_visible=False</code>，action channels 全部参与 MSE；non-global/inpainting path 才把前 \(T_o\) observation-feature dimensions 固定并排除。[2]</p>
-<h3 id="44-为什么-sequence-diffusion-能表达多模态">4.4 为什么 sequence diffusion 能表达多模态</h3>
-<p>$$ p_\theta(A_t\mid O_t) \neq \prod_{h=0}^{T_p-1}p_\theta(a_{t+h}\mid O_t). $$</p>
+<h3 id="4-4-sequence-diffusion">4.4 为什么 sequence diffusion 能表达多模态</h3>
+<div class="formula">$$
+p_\theta(A_t\mid O_t)
+\neq
+\prod_{h=0}^{T_p-1}p_\theta(a_{t+h}\mid O_t).
+$$</div>
 <p>一次去噪对象是整段联合 trajectory，不是每个时间点独立的 categorical/Gaussian head。同一噪声初值和 temporal network 让“向左绕/向右绕”等 mode 形成连贯 sequence；这是论文设计解释，不是 repo 显式计算的概率分解。[1]</p>
-<h2 id="5-observation-conditioning-与网络实现">5. Observation conditioning 与网络实现</h2>
-<h3 id="51-cnn--unet-hybrid">5.1 CNN / UNet hybrid</h3>
+<h2 id="5-observation-conditioning">5. Observation conditioning 与网络实现</h2>
+<h3 id="5-1-cnn-unet-hybrid">5.1 CNN / UNet hybrid</h3>
 <p>论文 CNN policy 用视觉 encoder 生成 \(O_t\) latent，通过 FiLM 将 observation feature 和 diffusion timestep 注入 1D temporal U-Net。repo 的 <code>ConditionalUnet1D</code> 将 timestep embedding 与 global visual condition 拼接，并在 residual blocks 生成 per-channel scale/bias：</p>
 <pre><code class="language-text">image sequence [B, To, C, H, W] + lowdim obs
              |
@@ -537,17 +262,26 @@ ConditionalUnet1D + timestep FiLM
 predicted epsilon/sample [B, Tp, Da]</code></pre>
 <p><code>obs_as_global_cond=True</code> 时 <code>input_dim=action_dim</code>、<code>global_cond_dim=obs_feature_dim*n_obs_steps</code>，见 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/policy/diffusion_unet_hybrid_image_policy.py#L129-L146"><code>diffusion_unet_hybrid_image_policy.py#L129-L146</code></a>。FiLM scale/bias 在 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/model/diffusion/conditional_unet1d.py#L14-L66"><code>conditional_unet1d.py#L14-L66</code></a>，global feature concat 在 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/model/diffusion/conditional_unet1d.py#L173-L201"><code>#L173-L201</code></a>。</p>
 <p>论文 visual encoder 为每个 camera 使用 separate ResNet-18、空间 softmax 和 GroupNorm；代码由 robomimic config 建立 encoder，并可用 <code>obs_encoder_group_norm=True</code>、<code>eval_fixed_crop=True</code> 替换 BN/随机 crop。camera 数、action dimensions、absolute/velocity semantics 由 task <code>shape_meta</code> 决定。</p>
-<h3 id="52-time-series-diffusion-transformer">5.2 Time-series diffusion transformer</h3>
+<h3 id="5-2-time-series-diffusion-transformer">5.2 Time-series diffusion transformer</h3>
 <p>Transformer variant 将 noisy action sequence 作为 \(T_p\) 个 token，扩散 timestep embedding 作为 condition；视觉 observation sequence 变为 condition embedding，decoder cross-attend 到 condition memory，输出每个 action token 的 residual。<code>TransformerForDiffusion.forward</code> 的 contract 是 input <code>[B,T,input_dim]</code>、cond <code>[B,T_o,cond_dim]</code>、output <code>[B,T,input_dim]</code>，见 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/model/diffusion/transformer_for_diffusion.py#L270-L344"><code>transformer_for_diffusion.py#L270-L344</code></a>。</p>
 <p>默认 transformer hybrid config 是 \(T_p=10,T_o=2,T_a=8\)、causal attention、8 layers、256 embedding、DDPM 100 train / 100 inference；real hybrid 改为 \(T_p=16,T_o=2,T_a=8\)、DDIM 8 inference。[2] 论文建议先用 CNN；action sequence 变化快时再试 transformer，但 transformer 对超参更敏感。[1]</p>
-<h2 id="6-inference随机初始化denoising-loop-与-action-slice">6. Inference：随机初始化、denoising loop 与 action slice</h2>
-<h3 id="61-global-conditioned-inference">6.1 Global-conditioned inference</h3>
+<h2 id="6-inference-denoising-loop-action-slice">6. Inference：随机初始化、denoising loop 与 action slice</h2>
+<h3 id="6-1-global-conditioned-inference">6.1 Global-conditioned inference</h3>
 <p><code>predict_action</code> 的顺序：</p>
 <ol><li>normalize observation；</li><li>只取 <code>obs[:, :To]</code> 过 vision encoder；</li><li>建立全零 <code>cond_data</code>，形状 <code>[B,Tp,Da]</code>，<code>cond_mask</code> 全 False；</li><li>以同形状 Gaussian noise 初始化 trajectory；</li><li><code>scheduler.set_timesteps(num_inference_steps)</code>，依次执行 <code>scheduler.step(...).prev_sample</code>；</li><li>从 <code>nsample[...,:Da]</code> unnormalize，再从 <code>start=To-1</code> 切出 <code>Ta</code> 步。</li></ol>
-<p>$$ X^{(K)}\sim\mathcal N(0,I),\qquad X^{(k-1)}=\operatorname{SchedulerStep} \left(X^{(k)},f_\theta(X^{(k)},k,O_t)\right), $$</p>
-<p>$$ \hat A_t= \operatorname{Unnormalize}\!\left( X^{(0)}_{:,\;To-1:To-1+T_a,\;:D_a} \right). $$</p>
+<div class="formula">$$
+X^{(K)}\sim\mathcal N(0,I),\qquad
+X^{(k-1)}=\operatorname{SchedulerStep}
+\left(X^{(k)},f_\theta(X^{(k)},k,O_t)\right),
+$$</div>
+<div class="formula">$$
+\hat A_t=
+\operatorname{Unnormalize}\!\left(
+X^{(0)}_{:,\;To-1:To-1+T_a,\;:D_a}
+\right).
+$$</div>
 <p>变量与实现：\(K\) 是 diffusion steps，\(T_p\) 是 trajectory time，\(T_a\) 是返回 action 数。UNet hybrid random init/scheduler loop 在 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/policy/diffusion_unet_hybrid_image_policy.py#L175-L212"><code>#L175-L212</code></a>，condition/action slice 在 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/policy/diffusion_unet_hybrid_image_policy.py#L215-L278"><code>#L215-L278</code></a>。Transformer hybrid 同构路径见 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/policy/diffusion_transformer_hybrid_image_policy.py#L183-L219"><code>#L183-L219</code></a> 与 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/policy/diffusion_transformer_hybrid_image_policy.py#L222-L290"><code>#L222-L290</code></a>。</p>
-<h3 id="62-paper-warm-start-与-code-random-restart">6.2 Paper warm-start 与 code random restart</h3>
+<h3 id="6-2-paper-warm-start-code-random-restart">6.2 Paper warm-start 与 code random restart</h3>
 <p>论文称 receding-horizon formulation 可以用上一段 action prediction warm-start 下一轮 inference。[1] frozen repo 的主要 policy paths 都是：</p>
 <pre><code class="language-python">def conditional_sample(condition_data, condition_mask):
     # Every query in this commit starts from fresh Gaussian noise.
@@ -562,22 +296,40 @@ predicted epsilon/sample [B, Tp, Da]</code></pre>
         trajectory = scheduler.step(model_output, t, trajectory).prev_sample
     return trajectory</code></pre>
 <p><code>predict_action</code> 还 assert <code>past_action</code> 不在 observation dict，因此没有 previous <code>action_pred</code> 初值或 warm-start buffer。[2]</p>
-<table><thead><tr><th>说法</th><th>判定</th></tr></thead><tbody><tr><td>论文提出 warm-start 作为 receding-horizon 可用选项</td><td>direct paper claim</td></tr><tr><td>frozen repo 默认 eval 使用 warm-start</td><td>rejected</td></tr><tr><td>code stochasticity 只来自 scheduler step</td><td>rejected；还有 initial <code>torch.randn</code></td></tr><tr><td>固定 generator/seed 可复现同一输入</td><td>同源推断，需目标设备/版本实测</td></tr></tbody></table>
-<h3 id="63-ddpmddim去噪步数">6.3 DDPM、DDIM、去噪步数</h3>
-<table><thead><tr><th>路径</th><th>scheduler</th><th style="text-align:right">train timesteps</th><th style="text-align:right">config inference steps</th><th>备注</th></tr></thead><tbody><tr><td>UNet hybrid</td><td>DDPMScheduler</td><td style="text-align:right">100</td><td style="text-align:right">100</td><td>squared-cosine、epsilon、fixed_small</td></tr><tr><td>UNet DDIM hybrid</td><td>DDIMScheduler</td><td style="text-align:right">100</td><td style="text-align:right">8</td><td>inference grid 抽稀</td></tr><tr><td>real UNet hybrid</td><td>DDIMScheduler</td><td style="text-align:right">100</td><td style="text-align:right">8</td><td>frozen real config</td></tr><tr><td><code>eval_real_robot.py</code> diffusion branch</td><td>loaded scheduler</td><td style="text-align:right">checkpoint-dependent</td><td style="text-align:right">强制 16</td><td>runtime override</td></tr><tr><td>paper main text example</td><td>DDIM</td><td style="text-align:right">100</td><td style="text-align:right">10</td><td>3080 / 0.1s 叙述</td></tr><tr><td>paper v5 real table rows</td><td>task rows</td><td style="text-align:right">100</td><td style="text-align:right">16</td><td>与 main text 不完全一致</td></tr></tbody></table>
+<table><thead><tr><th>说法</th><th>判定</th></tr></thead><tbody>
+<tr><td>论文提出 warm-start 作为 receding-horizon 可用选项</td><td>direct paper claim</td></tr>
+<tr><td>frozen repo 默认 eval 使用 warm-start</td><td>rejected</td></tr>
+<tr><td>code stochasticity 只来自 scheduler step</td><td>rejected；还有 initial <code>torch.randn</code></td></tr>
+<tr><td>固定 generator/seed 可复现同一输入</td><td>同源推断，需目标设备/版本实测</td></tr>
+</tbody></table>
+<h3 id="6-3-ddpm-ddim">6.3 DDPM、DDIM、去噪步数</h3>
+<table><thead><tr><th>路径</th><th>scheduler</th><th>train timesteps</th><th>config inference steps</th><th>备注</th></tr></thead><tbody>
+<tr><td>UNet hybrid</td><td>DDPMScheduler</td><td>100</td><td>100</td><td>squared-cosine、epsilon、fixed_small</td></tr>
+<tr><td>UNet DDIM hybrid</td><td>DDIMScheduler</td><td>100</td><td>8</td><td>inference grid 抽稀</td></tr>
+<tr><td>real UNet hybrid</td><td>DDIMScheduler</td><td>100</td><td>8</td><td>frozen real config</td></tr>
+<tr><td><code>eval_real_robot.py</code> diffusion branch</td><td>loaded scheduler</td><td>checkpoint-dependent</td><td>强制 16</td><td>runtime override</td></tr>
+<tr><td>paper main text example</td><td>DDIM</td><td>100</td><td>10</td><td>3080 / 0.1s 叙述</td></tr>
+<tr><td>paper v5 real table rows</td><td>task rows</td><td>100</td><td>16</td><td>与 main text 不完全一致</td></tr>
+</tbody></table>
 <p>DDIM 将 train grid 与 inference steps 解耦；减少 \(K\) 降低 query compute，但改变 reverse approximation。<code>DDIMScheduler.set_timesteps</code>/<code>step</code> 见 <a href="https://github.com/huggingface/diffusers/blob/v0.11.1/src/diffusers/schedulers/scheduling_ddim.py#L196-L214"><code>scheduling_ddim.py#L196-L214</code></a> 与 <a href="https://github.com/huggingface/diffusers/blob/v0.11.1/src/diffusers/schedulers/scheduling_ddim.py#L249-L334"><code>#L249-L334</code></a>。</p>
-<h2 id="7-normalizationpadding-与数据切片">7. Normalization、padding 与数据切片</h2>
-<h3 id="71-默认--11-normalizer">7.1 默认 \([-1,1]\) normalizer</h3>
-<p>PushT image dataset 对 action 与 agent position 统计 min/max，<code>LinearNormalizer.fit(..., mode=&#x27;limits&#x27;)</code> 将每维映射到 \([-1,1]\)；图像先除以 255，再做 \(x\mapsto2x-1\)。[2]</p>
-<p>$$ \tilde x_i =\frac{2(x_i-x_i^{\min})}{x_i^{\max}-x_i^{\min}}-1, \qquad x_i= \frac{\tilde x_i+1}{2}(x_i^{\max}-x_i^{\min})+x_i^{\min}. $$</p>
+<h2 id="7-normalization-padding">7. Normalization、padding 与数据切片</h2>
+<h3 id="7-1-1-1-normalizer">7.1 默认 \([-1,1]\) normalizer</h3>
+<p>PushT image dataset 对 action 与 agent position 统计 min/max，<code>LinearNormalizer.fit(..., mode='limits')</code> 将每维映射到 \([-1,1]\)；图像先除以 255，再做 \(x\mapsto2x-1\)。[2]</p>
+<div class="formula">$$
+\tilde x_i
+=\frac{2(x_i-x_i^{\min})}{x_i^{\max}-x_i^{\min}}-1,
+\qquad
+x_i=
+\frac{\tilde x_i+1}{2}(x_i^{\max}-x_i^{\min})+x_i^{\min}.
+$$</div>
 <p>变量与直觉：每个 axis 独立 scale；near-constant dimension 特殊处理避免除零。实现见 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/dataset/pusht_image_dataset.py#L60-L68"><code>pusht_image_dataset.py#L60-L68</code></a>、<a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/common/normalize_util.py#L6-L35"><code>normalize_util.py#L6-L35</code></a> 与 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/model/common/normalizer.py#L182-L261"><code>normalizer.py#L182-L261</code></a>。<code>clip_sample=True</code> 又会在 scheduler 侧限制 clean prediction，因此 stats 与 clipping 是联合 contract。</p>
-<h3 id="72-boundary-padding-不是-valid-loss-mask">7.2 Boundary padding 不是 valid loss mask</h3>
+<h3 id="7-2-boundary-padding-valid-loss-mask">7.2 Boundary padding 不是 valid loss mask</h3>
 <p>PushT dataset 以 <code>sequence_length=horizon</code> 建 SequenceSampler，用 <code>pad_before=To-1</code>、<code>pad_after=Ta-1</code> 让 episode 边界也能采样。[2] sampler 在边界重复第一/最后一个真实 frame/action，见 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/common/sampler.py#L121-L153"><code>sampler.py#L121-L153</code></a>。</p>
 <p>因此 default boundary padding 是 repeated values，不是 NaN 或显式 valid mask；policy 又要求 batch 不带 <code>valid_mask</code>，这些 repeated targets 会按普通 actions 进入 MSE。不能见到 <code>pad_after</code> 就说 padded positions 不监督。</p>
-<h3 id="73-normalizer-数据范围">7.3 Normalizer 数据范围</h3>
+<h3 id="7-3-normalizer">7.3 Normalizer 数据范围</h3>
 <p><code>PushTImageDataset.get_normalizer</code> 从完整 replay buffer 的 action/state 拟合；sampler 的 train/validation episode mask 不会自动限制 stats。[2] 这是该 dataset implementation 的复现边界，不等于所有 dataset 都有 validation leakage；要先报具体 dataset class。</p>
-<h2 id="8-receding-horizon-rolloutsimulation-与-real-robot">8. Receding-horizon rollout：simulation 与 real robot</h2>
-<h3 id="81-simulation">8.1 Simulation</h3>
+<h2 id="8-receding-horizon-rollout-simulation-real-robot">8. Receding-horizon rollout：simulation 与 real robot</h2>
+<h3 id="8-1-simulation">8.1 Simulation</h3>
 <p><code>PushTImageRunner</code> 每次 query 得到 <code>[B,T_a,D_a]</code>，再把整段 action 传给 <code>MultiStepWrapper.step</code>；wrapper 内部逐 action 调 env，执行 \(T_a\) 步后返回最近 \(T_o\) 个 observation。[2]</p>
 <pre><code class="language-python">def simulation_rollout(env_wrapper, policy):
     # Reset and receive the latest To observations.
@@ -589,51 +341,71 @@ predicted epsilon/sample [B, Tp, Da]</code></pre>
         # Wrapper executes Ta actions before returning a new observation stack.
         obs, reward, done, info = env_wrapper.step(action_chunk)</code></pre>
 <p>证据：query/step 在 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/env_runner/pusht_image_runner.py#L176-L214"><code>pusht_image_runner.py#L176-L214</code></a>，wrapper action loop 在 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/diffusion_policy/gym_util/multistep_wrapper.py#L101-L124"><code>multistep_wrapper.py#L101-L124</code></a>。</p>
-<h3 id="82-real-robot">8.2 Real robot</h3>
+<h3 id="8-2-real-robot">8.2 Real robot</h3>
 <p><code>eval_real_robot.py</code> diffusion branch 将 <code>num_inference_steps</code> 设为 16，并把 <code>n_action_steps</code> 改成 <code>horizon-n_obs_steps+1</code>，尽量返回从最后 observation 对齐后的整段 action。[2] 外层 <code>steps_per_inference</code> 是 CLI 参数，默认 6；它决定多久再读 real observation。action 带 timestamp 提交给 controller，超时则只提交最后一项。[2]</p>
 <p>所以有三个长度：</p>
 <ol><li>diffusion trajectory \(T_p\)，例如 16；</li><li><code>predict_action</code> slice，可能是 \(T_p-T_o+1=15\)；</li><li>外层 query interval，默认 6，还受 observation/inference/controller latency 影响。</li></ol>
 <p>“每次执行 15 步后才重规划”是错误的；script 可能提交 15 个未来 targets，但下一次 query 由 6-step schedule 和实时预算决定。证据：<a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/eval_real_robot.py#L90-L118"><code>eval_real_robot.py#L90-L118</code></a> 与 <a href="https://github.com/real-stanford/diffusion_policy/blob/5ba07ac6661db573af695b419a7947ecb704690f/eval_real_robot.py#L294-L345"><code>#L294-L345</code></a>。</p>
-<h2 id="9-horizon去噪步数与-latency-trade-off">9. Horizon、去噪步数与 latency trade-off</h2>
-<h3 id="91-tpta-太短">9.1 \(T_p/T_a\) 太短</h3>
+<h2 id="9-horizon-latency-trade-off">9. Horizon、去噪步数与 latency trade-off</h2>
+<h3 id="9-1-t-p-t-a">9.1 \(T_p/T_a\) 太短</h3>
 <p>sequence-level consistency 变弱；若 \(T_a\) 同步变短，query 次数增加、inference overhead 上升；但 observation 刷新更快，对扰动更 responsive。</p>
-<h3 id="92-tpta-太长">9.2 \(T_p/T_a\) 太长</h3>
+<h3 id="9-2-t-p-t-a">9.2 \(T_p/T_a\) 太长</h3>
 <p>long trajectory 提供更强 sequence modeling buffer；若 \(T_a\) 也变长，replan 变稀疏，stale action 和 latency 风险上升。U-Net/Transformer 时间维与每次 denoising 计算共同影响显存和吞吐。</p>
 <p>论文把 action horizon 说成 temporal consistency 与 responsiveness 的 trade-off，并把 latency 定义为“最后一帧 observation 到第一条可执行 action 之间的 step 数”。[1] 该延迟不只由 <code>num_inference_steps</code> 决定。</p>
-<h3 id="93-k-太少或太多">9.3 \(K\) 太少或太多</h3>
+<h3 id="9-3-k">9.3 \(K\) 太少或太多</h3>
 <p>\(K\) 小会降低 query latency，但 reverse approximation 误差可能变大；\(K\) 大给更多 denoising compute，却延长闭环周期。\(K\) 与 \(T_p/T_a\) 正交；scheduler、prediction type、clip_sample 和 beta schedule 必须一起报。</p>
-<h3 id="94-warm-start-取舍">9.4 warm-start 取舍</h3>
+<h3 id="9-4-warm-start">9.4 warm-start 取舍</h3>
 <p>若实现 warm-start，可把上一轮 trajectory 时间平移后作为下一轮初值，理论上减少随机重采样；但要处理已执行 prefix、时间对齐与新 observation 冲突。本页不把它写成 frozen repo 行为。</p>
-<h2 id="10-与-acttokenflow-路线的归纳偏置">10. 与 ACT、token、flow 路线的归纳偏置</h2>
-<table><thead><tr><th>方法</th><th>训练 target</th><th>一次生成</th><th>stochasticity</th><th>closed-loop 接口</th></tr></thead><tbody><tr><td>ACT</td><td>continuous chunk masked L1 + CVAE KL</td><td>一次 forward，test \(z=0\)</td><td>默认 deterministic</td><td>chunk boundary / temporal ensemble</td></tr><tr><td>OpenVLA</td><td>scalar token CE</td><td>autoregressive token</td><td>token decoding</td><td>原始单步 action</td></tr><tr><td>FAST</td><td>frequency-space token CE</td><td>autoregressive FAST tokens</td><td>token decoding</td><td>window/replan 由 config</td></tr><tr><td>Diffusion Policy</td><td>epsilon/sample MSE</td><td>\(K\) 次 scheduler step</td><td>Gaussian init + scheduler</td><td>\(T_o,T_p,T_a\) + controller</td></tr><tr><td>π0 flow</td><td>velocity MSE</td><td>ODE/flow solver</td><td>noise init / solver</td><td>openpi H/K contract</td></tr></tbody></table>
+<h2 id="10-act-token-flow">10. 与 ACT、token、flow 路线的归纳偏置</h2>
+<table><thead><tr><th>方法</th><th>训练 target</th><th>一次生成</th><th>stochasticity</th><th>closed-loop 接口</th></tr></thead><tbody>
+<tr><td>ACT</td><td>continuous chunk masked L1 + CVAE KL</td><td>一次 forward，test \(z=0\)</td><td>默认 deterministic</td><td>chunk boundary / temporal ensemble</td></tr>
+<tr><td>OpenVLA</td><td>scalar token CE</td><td>autoregressive token</td><td>token decoding</td><td>原始单步 action</td></tr>
+<tr><td>FAST</td><td>frequency-space token CE</td><td>autoregressive FAST tokens</td><td>token decoding</td><td>window/replan 由 config</td></tr>
+<tr><td>Diffusion Policy</td><td>epsilon/sample MSE</td><td>\(K\) 次 scheduler step</td><td>Gaussian init + scheduler</td><td>\(T_o,T_p,T_a\) + controller</td></tr>
+<tr><td>π0 flow</td><td>velocity MSE</td><td>ODE/flow solver</td><td>noise init / solver</td><td>openpi H/K contract</td></tr>
+</tbody></table>
 <p>“能表示多模态”不等于部署必须随机；是否固定 generator、如何 smoothing、如何选择 \(T_a\)，仍是 evaluation/controller contract。</p>
-<h2 id="11-claim-to-code-总表">11. Claim-to-code 总表</h2>
-<table><thead><tr><th>Claim</th><th>paper</th><th>frozen code</th><th>判定</th><th>安全口径</th></tr></thead><tbody><tr><td>默认直接回归 clean action</td><td>noise MSE</td><td>target 按 prediction type</td><td>rejected</td><td>默认 epsilon；sample 可选</td></tr><tr><td>每时刻独立 diffusion</td><td>action trajectory</td><td><code>[B,Tp,Da]</code></td><td>rejected</td><td>联合 sequence</td></tr><tr><td>horizon 就是执行步数</td><td>区分 \(T_p,T_a\)</td><td>slice/runner 分开</td><td>rejected</td><td>四条时间轴分开</td></tr><tr><td>global cond 拼进 action channel</td><td>visual condition</td><td>flattened global cond</td><td>rejected</td><td>trajectory action-only</td></tr><tr><td>所有路径都 inpainting</td><td>有 global/non-global</td><td>default global</td><td>rejected</td><td>先报 cond path</td></tr><tr><td>policy 已支持 v_prediction</td><td>dependency 有</td><td>policy 无 target</td><td>rejected</td><td>依赖能力不等于 policy</td></tr><tr><td>padding 自动不进 loss</td><td>无统一 claim</td><td>repeat + no valid_mask</td><td>rejected</td><td>dataset-specific</td></tr><tr><td>random noise 只在训练</td><td>inference 也 random</td><td><code>conditional_sample</code></td><td>rejected</td><td>两端都有</td></tr><tr><td>warm-start 是默认</td><td>paper says can</td><td>code rejects past_action</td><td>rejected</td><td>design option only</td></tr><tr><td>DDIM 固定 10 steps</td><td>paper example</td><td>config 8/runtime 16</td><td>rejected</td><td>报版本/config</td></tr><tr><td>\(T_a=1\) 才闭环</td><td>fixed horizon allowed</td><td>batch execute</td><td>rejected</td><td>consistency/responsiveness trade-off</td></tr><tr><td>46.9% 可迁移本地</td><td>specific benchmarks</td><td>no local artifact</td><td>rejected</td><td>不证明个人指标</td></tr></tbody></table>
-<h2 id="12-对-vla-act-018022-的支持状态">12. 对 <code>VLA-ACT-018..022</code> 的支持状态</h2>
-<table><thead><tr><th>ID</th><th>覆盖</th><th>状态</th><th>仍缺</th></tr></thead><tbody><tr><td>VLA-ACT-018</td><td>conditional diffusion、多模态、temporal consistency</td><td>source-ready</td><td>independent review</td></tr><tr><td>VLA-ACT-019</td><td>noisy action、target、condition/mask、MSE</td><td>source-ready</td><td>手算 scheduler</td></tr><tr><td>VLA-ACT-020</td><td>schedule、prediction type、\(T_p\)、\(K\)</td><td>source-ready with warning</td><td>v-pred extension</td></tr><tr><td>VLA-ACT-021</td><td>\(T_o/T_p/T_a\)、sim/real replan</td><td>source-ready</td><td>本地 controller</td></tr><tr><td>VLA-ACT-022</td><td>DDPM/DDIM、latency、warm-start gap</td><td>source-ready with warning</td><td>hardware telemetry</td></tr></tbody></table>
+<h2 id="11-claim-to-code">11. Claim-to-code 总表</h2>
+<table><thead><tr><th>Claim</th><th>paper</th><th>frozen code</th><th>判定</th><th>安全口径</th></tr></thead><tbody>
+<tr><td>默认直接回归 clean action</td><td>noise MSE</td><td>target 按 prediction type</td><td>rejected</td><td>默认 epsilon；sample 可选</td></tr>
+<tr><td>每时刻独立 diffusion</td><td>action trajectory</td><td><code>[B,Tp,Da]</code></td><td>rejected</td><td>联合 sequence</td></tr>
+<tr><td>horizon 就是执行步数</td><td>区分 \(T_p,T_a\)</td><td>slice/runner 分开</td><td>rejected</td><td>四条时间轴分开</td></tr>
+<tr><td>global cond 拼进 action channel</td><td>visual condition</td><td>flattened global cond</td><td>rejected</td><td>trajectory action-only</td></tr>
+<tr><td>所有路径都 inpainting</td><td>有 global/non-global</td><td>default global</td><td>rejected</td><td>先报 cond path</td></tr>
+<tr><td>policy 已支持 v_prediction</td><td>dependency 有</td><td>policy 无 target</td><td>rejected</td><td>依赖能力不等于 policy</td></tr>
+<tr><td>padding 自动不进 loss</td><td>无统一 claim</td><td>repeat + no valid_mask</td><td>rejected</td><td>dataset-specific</td></tr>
+<tr><td>random noise 只在训练</td><td>inference 也 random</td><td><code>conditional_sample</code></td><td>rejected</td><td>两端都有</td></tr>
+<tr><td>warm-start 是默认</td><td>paper says can</td><td>code rejects past_action</td><td>rejected</td><td>design option only</td></tr>
+<tr><td>DDIM 固定 10 steps</td><td>paper example</td><td>config 8/runtime 16</td><td>rejected</td><td>报版本/config</td></tr>
+<tr><td>\(T_a=1\) 才闭环</td><td>fixed horizon allowed</td><td>batch execute</td><td>rejected</td><td>consistency/responsiveness trade-off</td></tr>
+<tr><td>46.9% 可迁移本地</td><td>specific benchmarks</td><td>no local artifact</td><td>rejected</td><td>不证明个人指标</td></tr>
+</tbody></table>
+<h2 id="12-vla-act-018-022">12. 对 <code>VLA-ACT-018..022</code> 的支持状态</h2>
+<table><thead><tr><th>ID</th><th>覆盖</th><th>状态</th><th>仍缺</th></tr></thead><tbody>
+<tr><td>VLA-ACT-018</td><td>conditional diffusion、多模态、temporal consistency</td><td>source-ready</td><td>independent review</td></tr>
+<tr><td>VLA-ACT-019</td><td>noisy action、target、condition/mask、MSE</td><td>source-ready</td><td>手算 scheduler</td></tr>
+<tr><td>VLA-ACT-020</td><td>schedule、prediction type、\(T_p\)、\(K\)</td><td>source-ready with warning</td><td>v-pred extension</td></tr>
+<tr><td>VLA-ACT-021</td><td>\(T_o/T_p/T_a\)、sim/real replan</td><td>source-ready</td><td>本地 controller</td></tr>
+<tr><td>VLA-ACT-022</td><td>DDPM/DDIM、latency、warm-start gap</td><td>source-ready with warning</td><td>hardware telemetry</td></tr>
+</tbody></table>
 <p>source-ready 不等于 candidate-ready；题卡不在本页生成，练习状态不改变。</p>
-<h2 id="13-与个人项目的真实性边界">13. 与个人项目的真实性边界</h2>
-<table><thead><tr><th>上游事实</th><th>可用于提醒</th><th>不可迁移</th></tr></thead><tbody><tr><td>\(T_o,T_p,T_a\)</td><td>拆本地 H/K/replan</td><td>不证明本地数值</td></tr><tr><td>normalizer + clipping</td><td>stats/scheduler/controller 一致</td><td>不替代本地 asset</td></tr><tr><td>global condition</td><td>encoder/denoise loop 对照</td><td>不证明本地 Qwen path</td></tr><tr><td>random restart</td><td>paper/code 差异案例</td><td>不证明本地行为</td></tr><tr><td>public latency</td><td>recipe 语境</td><td>不证明本地 GPU</td></tr><tr><td>timestamp scheduling</td><td>action slice/queue 分开</td><td>不替代本地 client</td></tr></tbody></table>
+<h2 id="13">13. 与个人项目的真实性边界</h2>
+<table><thead><tr><th>上游事实</th><th>可用于提醒</th><th>不可迁移</th></tr></thead><tbody>
+<tr><td>\(T_o,T_p,T_a\)</td><td>拆本地 H/K/replan</td><td>不证明本地数值</td></tr>
+<tr><td>normalizer + clipping</td><td>stats/scheduler/controller 一致</td><td>不替代本地 asset</td></tr>
+<tr><td>global condition</td><td>encoder/denoise loop 对照</td><td>不证明本地 Qwen path</td></tr>
+<tr><td>random restart</td><td>paper/code 差异案例</td><td>不证明本地行为</td></tr>
+<tr><td>public latency</td><td>recipe 语境</td><td>不证明本地 GPU</td></tr>
+<tr><td>timestamp scheduling</td><td>action slice/queue 分开</td><td>不替代本地 client</td></tr>
+</tbody></table>
 <p>进入 OpenPiVLA 强回答前仍需：policy class、checkpoint、scheduler/prediction type、normalizer、action axes、model horizon、executed prefix、replan trigger、controller frequency、latency、task/trial/seed/protocol 和 success summary。</p>
-<h2 id="14-面试安全口径与危险答案">14. 面试安全口径与危险答案</h2>
-<h3 id="141-30-秒安全骨架">14.1 30 秒安全骨架</h3>
+<h2 id="14">14. 面试安全口径与危险答案</h2>
+<h3 id="14-1-30">14.1 30 秒安全骨架</h3>
 <p>“Diffusion Policy 把未来 action chunk 当作联合连续变量，用 conditional DDPM 学 noisy action 的噪声残差。训练时随机选 diffusion timestep，把标准化 trajectory 加 Gaussian noise，condition 是最近 \(T_o\) 步 image/state；默认 epsilon prediction 用 noise MSE。推理从 Gaussian trajectory 开始，运行 \(K\) 次 scheduler step 得到 \(T_p\) 步，再只返回/执行 \(T_a\) 步并重观测。horizon、action slice、replan interval 和 diffusion iterations 是不同时间轴；论文提 warm-start，但 frozen repo 每次从 random noise 重启。”</p>
-<h3 id="142-高危说法">14.2 高危说法</h3>
+<h3 id="14-2">14.2 高危说法</h3>
 <ul><li>“MSE 直接回归 clean action。”——默认 target 是 epsilon。</li><li>“每步只生成一个 action。”——生成整个 \(T_p\times D_a\) sequence。</li><li>“horizon=16 就执行 16 步。”——config 可能返回 8，real eval 还异步重规划。</li><li>“100 inference steps 是机器人控制步。”——是 denoising iterations。</li><li>“代码 warm-start 上一段 action。”——当前 commit random init。</li><li>“mask 去掉所有 padding。”——sampler 可能重复边界值。</li><li>“DDIM 把训练也改成 8 steps。”——通常只抽稀 inference。</li><li>“46.9% 说明本地一定更好。”——protocol 不可偷换。</li></ul>
-<h2 id="15-风险未决项与下一步">15. 风险、未决项与下一步</h2>
+<h2 id="15">15. 风险、未决项与下一步</h2>
 <ol><li><strong>独立审查未完成</strong>：本页由同一 agent 完成 freeze，review 保持 WARN。</li><li><strong>版本差异必须保留</strong>：warm-start vs random restart；10/16/8 steps；paper symbols vs real scheduling。</li><li><strong>padding 需合成 test</strong>：确认各 dataset repeated targets 是否进 loss。</li><li><strong>scheduler 要锁版本</strong>：记录 diffusers、scheduler、prediction type、clip_sample、runtime steps。</li><li><strong>尚未进入题卡</strong>：<code>VLA-ACT-018..022</code> 先 source-ready。</li><li><strong>下一主交付物</strong>：基础 Flow Matching → π0，核对 probability path、velocity target、ODE solver 与 openpi 时间方向。</li><li><strong>本地仍待取证</strong>：upstream 只作方法对照，不进入个人指标/贡献。</li></ol>
-<h2 id="参考文献references">参考文献（References）</h2>
+<h2 id="references">参考文献（References）</h2>
 <ol><li>Chi et al., <a href="https://arxiv.org/html/2303.04137v5">Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</a>, arXiv <code>2303.04137v5</code>, 2024；<a href="https://arxiv.org/abs/2303.04137v5">arXiv abs/API</a>。</li><li><a href="https://github.com/real-stanford/diffusion_policy/tree/5ba07ac6661db573af695b419a7947ecb704690f">real-stanford/diffusion_policy</a>, frozen commit <code>5ba07ac6661db573af695b419a7947ecb704690f</code>, MIT；核心路径为 policy、dataset、sampler、runner 与 <code>eval_real_robot.py</code>。</li><li><a href="https://github.com/huggingface/diffusers/tree/v0.11.1/src/diffusers/schedulers">Hugging Face diffusers v0.11.1 schedulers</a>，supporting dependency。</li><li><a href="vol_03_act_claim_to_code.html">ACT Claim-to-Code</a>，本仓库 Source Audit C。</li><li><a href="vol_03_openvla_claim_to_code.html">OpenVLA Claim-to-Code</a>，本仓库 Source Audit A。</li><li><a href="vol_03_pi0_fast_openpi_claim_to_code.html">π0 / FAST / openpi Claim-to-Code</a>，本仓库 Source Audit B。</li></ol>
-
-<footer class="aris-footer">
-  Generated by <a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/blob/main/skills/render-html/SKILL.md">ARIS <code>/render-html</code></a> ·
-  source path <code>interview_materials\vla\sources\vol_03_diffusion_policy_claim_to_code.md</code> ·
-  SHA256 <code>2db632245846</code> ·
-  generated at 2026-07-16 10:40 UTC.
-  This is a generated view — edit the source Markdown, then re-render.
-</footer>
-</main>
-
-</div>
-</body>
-</html>
+</article></body></html>

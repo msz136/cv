@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 Perception / Grounding / Navigation：PER-004 原子题卡</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_06_per004.md">
-<meta name="aris:source-sha256" content="8b3803714c9d21fe3942a18ab0e0bb506145f94c8b14cf6bd146a67c9a5255da">
+<meta name="aris:source-path" content="interview_materials\vla\questions\vol_06_per004.md">
+<meta name="aris:source-sha256" content="5ef81d434993d048ff00f4f7ab2c676d52c73a2911111ba0307786bcefaaa856">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>8b3803714c9d21fe3942a18ab0e0bb506145f94c8b14cf6bd146a67c9a5255da</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_06_per004.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>5ef81d434993d048ff00f4f7ab2c676d52c73a2911111ba0307786bcefaaa856</code>；生成自：<code>interview_materials\vla\questions\vol_06_per004.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#vln-objectnav">如何设计可复现的 VLN / ObjectNav 评估协议</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
 <h1>VOL 06 Perception / Grounding / Navigation：PER-004 原子题卡</h1>
 <div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-18 覆盖范围：<code>VLA-PER-004</code> 难度：L3 1 题 优先级：P0 1 题 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_06_per004_vln_objectnav.html">PER-004 VLN / ObjectNav Knowledge</a>；来源边界见 <a href="../sources/vol_06_per004_vln_objectnav_source_freeze.html">PER-004 Source Freeze</a>。本题不把现有项目证据升级为导航结果。</div>
@@ -148,7 +152,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <p><strong>机制展开（约 2 分钟）</strong>：先冻结 episode 的 scene、起点、goal/instruction、split 和分母；observation 记录 RGB-D、pose、timestamp/valid，action 记录类型与 repeat。Habitat-Lab 的 <code>stop</code> 设置 <code>is_stop_called</code>，success 要按 POINT/VIEW_POINTS 距离和 predicate 判断。SR 是 episode success 平均；SPL 还用 shortest path 与轨迹长度。保留 TL/NE/OS 和 failure trace，才能区分 grounding、规划、controller。不同 action space、scene 或版本不能横比；不能写成导航结果。</p>
 <p><strong>诊断 / 证据</strong>：建立逐 episode manifest，保存 scene/dataset/navmesh revision、start pose、goal/view-point、language/object parser、sensor/action config、stop reason、pose/action trace、success predicate、shortest path、actual path、seed 和 denominator。用固定 protocol 做 reset/seed replay；对 POINT↔VIEW_POINTS、action repeat、controller latency、navmesh 和 stop threshold 做 matched sensitivity；输出 SR/SPL/TL/NE/OS 与失败分类。若只有论文表格、单个 rollout 或 simulator summary，没有 episode trace 和分母，就保持 <code>WARN</code>。</p>
 <p><strong>项目挂钩</strong>：OPD 可连接 point/box/text grounding、坐标和 scorer，Robot Harness 可连接导航工具的 timeout/cancel/compensation；OpenPiVLA 可连接 observation/action packaging 与 chunk/replan；WAM/UWM 可连接 simulator provenance 和 metric ladder。安全表达是“我能把 grounding、导航接口和评估证据拆层”，不把这些项目写成已有 VLN/ObjectNav benchmark 或真机闭环。</p>
-<p><strong>追问树</strong>：ObjectGoal 的 view-point 与目标点有什么区别？为什么经过目标但没 stop 可能仍失败？SPL 的 (L_i) 和 (P_i) 怎么得到？OS 高而 SR 低说明什么？如何防 reference path 泄漏？navmesh 改变会影响哪些指标？R2R 图导航和 VLN-CE 连续动作能否直接比较？</p>
+<p><strong>追问树</strong>：ObjectGoal 的 view-point 与目标点有什么区别？为什么经过目标但没 stop 可能仍失败？SPL 的 \(L_i\) 和 \(P_i\) 怎么得到？OS 高而 SR 低说明什么？如何防 reference path 泄漏？navmesh 改变会影响哪些指标？R2R 图导航和 VLN-CE 连续动作能否直接比较？</p>
 <p><strong>易错点</strong>：混淆类别与实例；把 REVERIE grounding 当 ObjectNav success；把 shortest path 当实际轨迹；忽略 stop、timeout、repeat、latency、scene revision 或 denominator；跨 protocol 平均 SR/SPL；把 simulator/offline proxy 写成真机结果。</p>
 <p><strong>危险答案</strong>：说“所有导航只要 final distance 小就成功”“SPL 高就说明真机可靠”“ObjectNav、VLN、REVERIE 可以用同一 success”“论文 baseline 就是我的实验”或“OPD/WAM 已证明导航闭环提升”。</p>
 <p><strong>来源</strong>：[1][2][3][4][5]　<strong>练习状态</strong>：unseen</p>

@@ -6,7 +6,7 @@
 <title>VOL 03 Source Audit A：OpenVLA Endpoint / Token / Mask 独立事实复核</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\sources\vol_03_openvla_endpoint_independent_fact_review.md">
-<meta name="aris:source-sha256" content="393f7263ebc771f542ef551e364c83f1250bec50d5f1705e88ccde25193bdd37">
+<meta name="aris:source-sha256" content="71ad60a297ff77a0a3191d49eb6a96b26d08b24eeced16ecb5581fbd63ebd873">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>393f7263ebc771f542ef551e364c83f1250bec50d5f1705e88ccde25193bdd37</code>；生成自：<code>interview_materials\vla\sources\vol_03_openvla_endpoint_independent_fact_review.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>71ad60a297ff77a0a3191d49eb6a96b26d08b24eeced16ecb5581fbd63ebd873</code>；生成自：<code>interview_materials\vla\sources\vol_03_openvla_endpoint_independent_fact_review.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 直接复核来源</a></li><li><a href="#2-256-token-ids-255-centers">2. 256 token IDs / 255 centers 的精确推导</a></li><li><a href="#3-label-mask-metric-mask">3. Label mask 与 metric mask</a></li><li><a href="#4">4. 回写结论</a></li><li><a href="#5">5. 不能推出的项目事实</a></li><li><a href="#6">6. 下一步</a></li><li><a href="#section-7">参考入口</a></li></ol></nav>
 <h1>VOL 03 Source Audit A：OpenVLA Endpoint / Token / Mask 独立事实复核</h1>
 <div class="meta">状态：<code>independent_fact_reviewed / audit_a / endpoint_mask_checked / PASS WITH WARNING</code> 审查日期：2026-07-19 冻结版本：OpenVLA paper arXiv <code>2406.09246v3</code>；official repo commit <code>c8f03f48af692657d3060c19588038c7220e9af9</code>。 结论先行：论文明确写“每维 256 bins、整数 0..255、覆盖 Llama 末尾 256 tokens”；frozen code 则构造 256 个 threshold values 与 255 个 centers，encode 仍会产生 256 个 token IDs，但 decode 只有 255 个不同 center，最高两个编码索引都重建为最后 center。训练 CE 的 label mask 与 action accuracy/L1 metric mask 也不是同一掩码。</div>
@@ -161,7 +165,7 @@ c_j=\frac{e_j+e_{j+1}}2,\quad j=0,\ldots,254.
 b=\operatorname{digitize}(\tilde a,e)\in\{1,\ldots,256\},
 \qquad t=V-b.
 \]</div>
-<p>(V) 是 tokenizer vocabulary size，所以 (t\in\{V-256,\ldots,V-1\})，确实使用末尾 256 个 token IDs。decode 做：</p>
+<p>\(V\) 是 tokenizer vocabulary size，所以 \(t\in\{V-256,\ldots,V-1\}\)，确实使用末尾 256 个 token IDs。decode 做：</p>
 <div class="formula">\[
 j=\operatorname{clip}(V-t-1,0,254),\qquad \hat a=c_j.
 \]</div>

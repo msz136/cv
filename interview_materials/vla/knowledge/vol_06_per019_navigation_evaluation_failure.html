@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 PER-019：Navigation Evaluation、Failure Taxonomy 与 Fail-Closed Protocol</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per019_navigation_evaluation_failure.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per019_navigation_evaluation_failure.md">
 <meta name="aris:source-sha256" content="8b6c39320986eb16a63882fadad8aadc1e76800164a7a7c795c86f92051a4cea">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>8b6c39320986eb16a63882fadad8aadc1e76800164a7a7c795c86f92051a4cea</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per019_navigation_evaluation_failure.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>8b6c39320986eb16a63882fadad8aadc1e76800164a7a7c795c86f92051a4cea</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per019_navigation_evaluation_failure.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 学习出口</a></li><li><a href="#2">2. 一分钟心智模型</a></li><li><a href="#3-success">3. Success：位置接近不等于协议成功</a></li><li><a href="#4-distance-point-view-points-geodesic-contract">4. Distance：POINT、VIEW_POINTS 与 geodesic contract</a></li><li><a href="#4-1-goal">4.1 两种 goal 解释</a></li><li><a href="#4-2-action-count">4.2 轨迹长度不是 action count</a></li><li><a href="#5-spl-softspl-metric-namespace">5. SPL、SoftSPL 与 metric namespace</a></li><li><a href="#5-1-spl">5.1 SPL</a></li><li><a href="#5-2-softspl-binary-sr">5.2 SoftSPL：连续软成功，不是另一种 binary SR</a></li><li><a href="#5-3-ne-os-tl">5.3 NE、OS、TL：名称相同也要绑定协议</a></li><li><a href="#6-split-denominator">6. Split、denominator 与统计报告</a></li><li><a href="#6-1">6.1 评估对象是一个集合，不是一个平均数</a></li><li><a href="#6-2-success-rate">6.2 Success rate 的不确定性</a></li><li><a href="#7-typed-navigation-evaluation-manifest">7. Typed Navigation Evaluation Manifest</a></li><li><a href="#8-failure-taxonomy-symptom-first-divergence">8. Failure Taxonomy：从 symptom 到 first divergence</a></li><li><a href="#9-fail-closed">9. Fail-Closed 评估伪代码</a></li><li><a href="#10-deterministic-probes-source">10. Deterministic Probes：把 source 语义变成面试检查</a></li><li><a href="#11">11. 方法比较：面试一张表讲清楚</a></li><li><a href="#12">12. 五项目真实性边界</a></li><li><a href="#13">13. 两档面试回答</a></li><li><a href="#13-1-30">13.1 约 30 秒回答</a></li><li><a href="#13-2-2">13.2 约 2 分钟机制回答</a></li><li><a href="#14">14. 高频追问与答题抓手</a></li><li><a href="#15">15. 本页证据边界与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 PER-019：Navigation Evaluation、Failure Taxonomy 与 Fail-Closed Protocol</h1>
 <div class="meta">状态：<code>knowledge_drafted / VLA-PER-019 / source_frozen / project_truth_bounded / card_pending / WARN</code> 更新日期：2026-07-21 权威来源：<a href="../sources/vol_06_per019_navigation_evaluation_failure_source_freeze.html">PER-019 Navigation Evaluation / Failure Source Freeze</a> 学习边界：本页把 <code>Success</code>、<code>DistanceToGoal</code>、SPL、SoftSPL、NE、OS、TL、split、episode denominator、统计报告与 failure taxonomy 转成可面试、可审计的知识；不生成题卡，不修改 274 张题卡的 mastery，不创建 <code>coaching_state.md</code>。</div>

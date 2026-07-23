@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 05 Engineering / Evaluation：数据、训练、部署与闭环诊断（Batch 1）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval.md">
-<meta name="aris:source-sha256" content="19965c8d0620255e794b6ffa2b6fb791a80bf36f61e9c7cb699972b8a9ebc547">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_05_engineering_eval.md">
+<meta name="aris:source-sha256" content="ca3156014a30fdc4b6a20e538ca077c783252a73ad1dc980e5830ed72cda417a">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>19965c8d0620255e794b6ffa2b6fb791a80bf36f61e9c7cb699972b8a9ebc547</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>ca3156014a30fdc4b6a20e538ca077c783252a73ad1dc980e5830ed72cda417a</code>；生成自：<code>interview_materials\vla\knowledge\vol_05_engineering_eval.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与边界</a></li><li><a href="#section-3">前置知识</a></li><li><a href="#section-4">当前批次不做什么</a></li><li><a href="#vla-eng-001-schema">VLA-ENG-001：先冻结数据 Schema，再谈训练</a></li><li><a href="#section-6">最小样本合同</a></li><li><a href="#section-7">实现前置检查</a></li><li><a href="#vla-eng-002-split-dedupe-leakage">VLA-ENG-002：Split、Dedupe 与 Leakage 是分层问题</a></li><li><a href="#section-9">为什么随机按行切分不够</a></li><li><a href="#audit">Audit 输出</a></li><li><a href="#vla-eng-003">VLA-ENG-003：吞吐是流水线最慢阶段的函数</a></li><li><a href="#step">Step 时间分解</a></li><li><a href="#section-13">诊断顺序</a></li><li><a href="#vla-eng-004-ddp-fsdp-zero">VLA-ENG-004：DDP、FSDP 与 ZeRO 切分的对象不同</a></li><li><a href="#section-15">粗略显存账本</a></li><li><a href="#vla-eng-005-mixed-precision-accumulation-clipping">VLA-ENG-005：Mixed Precision、Accumulation 与 Clipping</a></li><li><a href="#effective-batch">Effective batch</a></li><li><a href="#section-18">精度与稳定性合同</a></li><li><a href="#vla-eng-006-checkpoint-models-pt">VLA-ENG-006：Checkpoint 不是一个 `models.pt` 路径</a></li><li><a href="#bundle">可恢复 bundle</a></li><li><a href="#resume">Resume 验收</a></li><li><a href="#vla-eng-007-policy-server-latency-budget">VLA-ENG-007：Policy Server 的 Latency Budget</a></li><li><a href="#section-23">端到端延迟</a></li><li><a href="#section-24">服务端必须记录</a></li><li><a href="#vla-eng-008-action-controller-deployment-contract">VLA-ENG-008：Action → Controller Deployment Contract</a></li><li><a href="#roundtrip">Roundtrip 测试</a></li><li><a href="#vla-eval-001-closed-loop-protocol-tuple">VLA-EVAL-001：Closed-Loop Protocol 是可重放 Tuple</a></li><li><a href="#run-episode-manifest">Run / Episode manifest</a></li><li><a href="#vla-eval-002-metric-ladder-first-failure-debugging">VLA-EVAL-002：Metric Ladder 与 First-Failure Debugging</a></li><li><a href="#section-30">指标层级</a></li><li><a href="#first-failure-trace">First-failure trace</a></li><li><a href="#section-32">最小诊断矩阵</a></li><li><a href="#batch-1">Batch 1 复习表</a></li><li><a href="#section-34">证据与真实性边界</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 05 Engineering / Evaluation：数据、训练、部署与闭环诊断（Batch 1）</h1>
 <div class="meta">状态：<code>drafted / knowledge_10_of_44 / cards_10_of_44_unseen / review_warn</code> 报告日期：2026-07-17 证据截止：2026-07-17 当前覆盖：<code>VLA-ENG-001..008</code>、<code>VLA-EVAL-001..002</code>，10/44 个知识节点 当前目标：把数据合同、分布式训练、checkpoint lineage、policy serving、closed-loop protocol 和 first-failure debugging 连成可恢复的工程闭环。 项目边界：本文只使用五项目 inventory 中已冻结的机制与风险；项目数字不会因为进入知识页而升级证据等级。</div>
@@ -191,7 +195,7 @@ x_i = \left(o_{t-h+1:t},\; g,\; s_t,\; a_{t:t+H-1},\; m,\; \tau,\; \mu,\; \sigma
   -&gt; group key
   -&gt; train / validation / test assignment
   -&gt; row-level transforms inside the assigned split</code></pre>
-<p>若 (G(x_i)) 是样本的 group key，则基本约束是：</p>
+<p>若 \(G(x_i)\) 是样本的 group key，则基本约束是：</p>
 <div class="formula">\[
 G(\mathcal D_{train}) \cap G(\mathcal D_{eval}) = \varnothing.
 \]</div>
@@ -211,7 +215,7 @@ G(\mathcal D_{train}) \cap G(\mathcal D_{eval}) = \varnothing.
 <div class="formula">\[
 T_{step} \approx \max(T_{data},T_{compute}) + T_{sync} + T_{misc}.
 \]</div>
-<p>其中 (T_{data}) 包含存储读取、decode、augmentation、collate 和 host→device；(T_{compute}) 包含 forward/backward/optimizer；(T_{sync}) 是梯度或参数通信；(T_{misc}) 包含 logging、checkpoint、eval callback。prefetch 只能隐藏可并行的数据时间，不能消除磁盘随机读、epoch boundary 或内存不足。</p>
+<p>其中 \(T_{data}\) 包含存储读取、decode、augmentation、collate 和 host→device；\(T_{compute}\) 包含 forward/backward/optimizer；\(T_{sync}\) 是梯度或参数通信；\(T_{misc}\) 包含 logging、checkpoint、eval callback。prefetch 只能隐藏可并行的数据时间，不能消除磁盘随机读、epoch boundary 或内存不足。</p>
 <h3 id="section-13">诊断顺序</h3>
 <ol><li>DataLoader-only benchmark：不建模型，测 <code>next(loader)</code> wait 分布。</li><li>单卡 no-sync GPU smoke：区分 compute 与数据。</li><li>多卡 step timing：记录 data_wait、forward/backward、all-reduce、optimizer、checkpoint。</li><li>改一个变量做 A/B：workers、prefetch、persistent、pin、preload、chunk size、sampler。</li><li>同时报告冷启动时间、CPU 内存、GPU 利用率与稳态吞吐。</li></ol>
 <p>UWM/LIBERO 的 DataLoader-only A/B 中，finite/infinite 的 p95 wait 都约 13s，preload+infinite 后约 0.19s；这支持 zarr 小 chunk 随机读的诊断，但不能直接宣称 full GPU training 已同比加速。[10]</p>
@@ -226,14 +230,14 @@ T_{step} \approx \max(T_{data},T_{compute}) + T_{sync} + T_{misc}.
 <p>DDP 的核心语义是各 rank 复制模型、对梯度同步；FSDP/ZeRO-3 在执行层附近聚合分片参数。不能只按“哪个更省显存”选择，还要冻结：world size、shard/wrap policy、precision、activation checkpointing、offload、通信 bucket、save/load state dict 与 resume test。[1][2][4]</p>
 <div class="meta">复核注：DDP 文档直接保证 replica、gradient all-reduce 与输入不自动 shard；“optimizer state 重复”是每进程 optimizer 的常见实现推论，不是 DDP 通信 API 单独保证的对象。详见 <a href="../sources/vol_05_batch1_independent_fact_review.html">VOL 05 Batch 1 独立官方文档复核</a>。</div>
 <h3 id="section-15">粗略显存账本</h3>
-<p>设参数量为 (P)，每参数权重、梯度、optimizer state 分别占 (b_w,b_g,b_o) bytes，未分片训练状态近似：</p>
+<p>设参数量为 \(P\)，每参数权重、梯度、optimizer state 分别占 \((b_w,b_g,b_o)\) bytes，未分片训练状态近似：</p>
 <div class="formula">\[
 M_{state} \approx P(b_w+b_g+b_o).
 \]</div>
 <p>实际显存还包括 activation、temporary buffer、KV/cache、teacher models、fragmentation 和 framework overhead；因此参数账本不能替代实测峰值。OPD 五 teacher <code>preloaded_zero3</code> 是“多个教师共存+分片”的项目例子，但不证明 ZeRO-3 对所有 VLA workload 最优。[7]</p>
 <h2 id="vla-eng-005-mixed-precision-accumulation-clipping">VLA-ENG-005：Mixed Precision、Accumulation 与 Clipping</h2>
 <h3 id="effective-batch">Effective batch</h3>
-<p>若每卡 micro batch 为 (B_mu)，梯度累积步数为 (A)，world size 为 (W)，则全局 batch 近似：</p>
+<p>若每卡 micro batch 为 \(B_\mu\)，梯度累积步数为 \(A\)，world size 为 \(W\)，则全局 batch 近似：</p>
 <div class="formula">\[
 B_{global}=B_\mu \times A \times W.
 \]</div>
@@ -260,7 +264,7 @@ B_{global}=B_\mu \times A \times W.
 <div class="formula">\[
 T_{loop}=T_{sense}+T_{pre}+T_{queue}+T_{infer}+T_{network}+T_{decode}+T_{control}.
 \]</div>
-<p>若每次请求输出 (H) 步、实际执行 (K\le H) 步，控制周期为 (Delta t)，策略最好满足：</p>
+<p>若每次请求输出 \(H\) 步、实际执行 \(K\le H\) 步，控制周期为 \(\Delta t\)，策略最好满足：</p>
 <div class="formula">\[
 T_{loop} &lt; K\Delta t
 \]</div>

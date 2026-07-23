@@ -1,10 +1,10 @@
 {
   "artifact": "practice/openpivla_oral_model_answer.md",
   "html": "practice/openpivla_oral_model_answer.html",
-  "review_date": "2026-07-21",
-  "status": "model_answer / PROJ-OPENPIVLA-001 + BATCH2 / evidence_bounded / not_candidate_transcript / WARN",
+  "review_date": "2026-07-22",
+  "status": "implementation_derived_model_answer / PROJ-OPENPIVLA-001 + BATCH2 / evidence_bounded / not_candidate_transcript / WARN",
   "verdict": "WARN",
-  "source_sha256": "D78378EB3105B0965B1A4A9BBE1A4E9C574F4331681EEE81FC7BA2705DE2D169",
+  "source_sha256": "9A238E196843A505DCC28F09D96DA5794144B215594946DE5A67E53E5697453D",
   "question_ids": ["PROJ-OPENPIVLA-001", "PROJ-OPENPIVLA-009", "PROJ-OPENPIVLA-010", "PROJ-OPENPIVLA-011", "PROJ-OPENPIVLA-012"],
   "scope": {
     "answer_versions": 4,
@@ -15,7 +15,7 @@
     "coaching_state_created": false
   },
   "checks": {
-    "bounded_slice": "PASS (one existing OpenPiVLA model-answer page was expanded with Batch 2 evidence; no stable question ID or candidate transcript was added)",
+    "bounded_slice": "PASS (one implementation-derived OpenPiVLA model-answer page covers PROJ-OPENPIVLA-001 and Batch 2 evidence; no stable question ID or candidate transcript was added)",
     "model_parameter_loss_contract": "PASS WITH WARNING (Qwen3-VL, PEFT LoRA, model(**batch), outputs.loss and padding-only mask remain aligned to local code; exact trainable modules/checkpoint load remain artifact-bound)",
     "full_chat_ce_boundary": "PASS (prompt, wrapper and assistant non-padding tokens remain distinct from assistant-only CE)",
     "flow_fast_boundary": "PASS (archived flow_matching_loss metadata, current causal CE and upstream FAST DCT/BPE are explicitly separated)",
@@ -23,7 +23,7 @@
     "shape_lineage_boundary": "PASS WITH WARNING (H=15,D=72 target shape is separated from limit=16 lossy formatter, missing parser/controller and unverified checkpoint lineage)",
     "benchmark_boundary": "PASS WITH WARNING (97.4%, official 96.85 and report complete rows do not become verified current-model uplift claims)",
     "html_static_validation": "PASS (ARIS academic v1; one H1, valid hierarchy, balanced delimiters, formula-em=0 and resolving local references)",
-    "browser_visual_check": "PENDING (desktop and narrow QA follows the current render)",
+    "browser_visual_check": "PASS WITH WARNING (desktop localhost QA at 1280px: one H1, 260px sticky TOC, zero page-wide overflow, formula-em=0 and no broken anchors; narrow 900px responsive/static overflow rules pass repository validation, but the current in-app browser connector could not resize its viewport for a second screenshot)",
     "practice_state": "PASS (model answer is not a transcript; all referenced OpenPiVLA cards remain unseen and coaching_state.md is absent)",
     "oral_drill": "PENDING"
   },
@@ -33,5 +33,5 @@
     "The H=15,D=72 semantic contract, axis/unit/normalizer and limit=16 representation conflict remain unresolved.",
     "Candidate must answer before any score or mastery migration."
   ],
-  "next": "Run desktop/narrow browser QA and the repository validator; then collect a real OpenPiVLA answer or freeze an immutable formal checkpoint/generation bundle."
+  "next": "Use this page only as post-answer comparison material; next collect a real OpenPiVLA answer or freeze an immutable formal checkpoint/generation bundle."
 }

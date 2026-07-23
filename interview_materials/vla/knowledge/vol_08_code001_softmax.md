@@ -11,7 +11,7 @@
 
 ## 1. 直觉：先把最大值搬到零
 
-直接计算 (e^{1000}) 会溢出，直接计算 (e^{-1000}) 可能下溢。因为 softmax 对整体平移不敏感，可以令 (m=\max(z))，先计算 (z-m)：最大项变成 0，指数最多为 1。
+直接计算 \(e^{1000}\) 会溢出，直接计算 \(e^{-1000}\) 可能下溢。因为 softmax 对整体平移不敏感，可以令 \(m=\max(z)\)，先计算 \(z-m\)：最大项变成 0，指数最多为 1。
 
 ## 2. 数学与实现映射
 
@@ -53,7 +53,7 @@ def stable_log_softmax(x, dim=-1):
 
 ### 3.1 Attention mask
 
-对不允许读取的位置，常见做法是将 logits 加上 (-\infty) 或使用 bool mask。它改变信息流：被 mask 的位置不应获得 attention probability。
+对不允许读取的位置，常见做法是将 logits 加上 \(-\infty\) 或使用 bool mask。它改变信息流：被 mask 的位置不应获得 attention probability。
 
 ### 3.2 Loss mask
 
@@ -71,7 +71,7 @@ def stable_log_softmax(x, dim=-1):
 \frac{\partial p_i}{\partial z_j}=p_i(\delta_{ij}-p_j).
 \]
 
-这说明概率越尖，非主类梯度越小；过大的 logits 会使 softmax 饱和。沿长度 (L) 的 dense softmax 通常是 (O(L)) 的归一化，但 attention 的 (QK^\top) 仍可能是 (O(L^2))；不要把 softmax 稳定性误说成 attention 复杂度优化。
+这说明概率越尖，非主类梯度越小；过大的 logits 会使 softmax 饱和。沿长度 \(L\) 的 dense softmax 通常是 \(O(L)\) 的归一化，但 attention 的 \(QK^\top\) 仍可能是 \(O(L^2)\)；不要把 softmax 稳定性误说成 attention 复杂度优化。
 
 ## 5. 测试矩阵
 
@@ -89,7 +89,7 @@ def stable_log_softmax(x, dim=-1):
 
 ## 6. VLA 映射与边界
 
-- **Attention**：对 (QK^\top/\sqrt{d_k}) 做 mask+softmax，决定 token 信息流；scale、mask 和 softmax 是不同合同。
+- **Attention**：对 \(QK^\top/\sqrt{d_k}\) 做 mask+softmax，决定 token 信息流；scale、mask 和 softmax 是不同合同。
 - **Action token CE**：使用 `log_softmax`/交叉熵，prompt/image label 可能由 `loss_mask` 排除。
 - **Continuous action**：MSE、Huber、diffusion/flow vector field 不需要 softmax；动作维度不能因为“概率和为 1”而被错误归一化。
 - **Routing**：softmax 权重可表示 mixture/router probability，但还需说明 temperature、capacity、load balance 和 auxiliary loss。

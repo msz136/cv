@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Robot Harness 五/八模型 × 十套件聚合证据门</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\robot_harness_10suite_aggregate_bundle_gate.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\robot_harness_10suite_aggregate_bundle_gate.md">
 <meta name="aris:source-sha256" content="3dfe3c413d9da4465fb42c6a6f7fbb93428f63b6a34d616703b7a8b9ae61c4e6">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>3dfe3c413d9da4465fb42c6a6f7fbb93428f63b6a34d616703b7a8b9ae61c4e6</code>；生成自：<code>interview_materials\vla\evidence\projects\robot_harness_10suite_aggregate_bundle_gate.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>3dfe3c413d9da4465fb42c6a6f7fbb93428f63b6a34d616703b7a8b9ae61c4e6</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\robot_harness_10suite_aggregate_bundle_gate.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. 问题（Question）</a></li><li><a href="#2">2. 结论先行</a></li><li><a href="#3">3. 冻结输入与身份</a></li><li><a href="#4-builder">4. Builder 的真实计算合同</a></li><li><a href="#4-1-metric">4.1 十套件 metric 映射</a></li><li><a href="#4-2-high-is-better">4.2 为什么“每列都 high-is-better”仍不够</a></li><li><a href="#5-common-support">5. 样本数与 common-support 门</a></li><li><a href="#6-32b">6. 三条 32B 结果的协议核对</a></li><li><a href="#7-artifact-census">7. 本地 artifact census</a></li><li><a href="#7-1">7.1 已闭合</a></li><li><a href="#7-2">7.2 未闭合</a></li><li><a href="#8-overview">8. 八模型 overview 的安全解读</a></li><li><a href="#9-fail-closed">9. Fail-closed 校验伪代码</a></li><li><a href="#10-ownership">10. 项目真实性与 ownership 边界</a></li><li><a href="#section-15">可以说</a></li><li><a href="#section-16">不能说</a></li><li><a href="#11">11. 最小升级路径</a></li><li><a href="#references">参考来源（References）</a></li></ol></nav>
 <h1>Robot Harness 五/八模型 × 十套件聚合证据门</h1>
 <div class="meta">状态：<code>local-aggregate-frozen / arithmetic-reproduced / common-support-partial-6-of-10 / checkpoint-unverified / WARN</code> 审查日期：2026-07-20 证据截止：2026-07-20 外部仓库：<code>C:\Users\mousongzhe\agent\</code>，审计时 HEAD <code>3f4c8b3a11ff9512bc18ec4a331ae5ea01555f49</code>；本页只读审计，没有修改该仓库。 范围：冻结 2026-07-07 的五模型与八 checkpoint 十套件 overview、builder、可定位的旧输入和本地 metrics；2026-07-20 勘误补充隐藏 remote-sync extraction 中恢复的 28/40 primary predictions 与 6/10 common-support suite。不把跨 metric 算术平均冒充统一 benchmark，不把 partial raw bundle 冒充十套件完整恢复，不把远端 checkpoint path 冒充权重 SHA。</div>

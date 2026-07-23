@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OPD Training Objective Lineage Gate：top1 CE、Full-Vocabulary KL 与 Rollout Source</title>
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\opd_training_objective_lineage_gate.md">
+<meta name="aris:source-sha256" content="5b9498966531981c21ff89980978bf16aa40d6fbd6d3f9c820ff2c70bff7d1f4">
+<meta name="aris:generated-at" content="2026-07-16">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+<style>
+:root {
+  --bg:#fdfcf7; --bg-soft:#f4f1ea; --bg-code:#f8f5ec;
+  --ink:#1a1a1a; --ink-soft:#4a4a4a; --ink-muted:#6b6b6b;
+  --primary:#1a4a8c; --primary-soft:#2d6cb8; --accent:#b8390e;
+  --border:#d6d0c0; --border-soft:#e8e3d5;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0; padding:0; color:var(--ink); background:var(--bg);
+  font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
+}
+article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
+article > .meta:first-child { display:none; }
+nav.toc {
+  position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
+  overflow-y:auto; padding:0 16px 14px 0; border-right:1px solid var(--border-soft);
+  background:transparent; font-size:13px;
+}
+nav.toc h2 {
+  margin:0 0 12px; padding:0; border:0; background:none; color:var(--ink-muted);
+  font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
+}
+nav.toc h2::after { content:" / Contents"; }
+nav.toc ol { columns:1; list-style:none; margin:0; padding:0; counter-reset:toc; }
+nav.toc li { margin:5px 0; line-height:1.45; counter-increment:toc; }
+nav.toc li::before { content:counter(toc) ". "; color:var(--ink-muted); margin-right:4px; }
+nav.toc a { color:var(--ink-soft); text-decoration:none; border-bottom:1px dotted transparent; }
+nav.toc a:hover { color:var(--primary); border-bottom-color:var(--primary); }
+h1 {
+  margin:0 0 32px; padding:0 0 24px; border-bottom:3px double var(--primary);
+  color:var(--ink); font-size:32px; line-height:1.2; font-weight:700; letter-spacing:-.01em;
+}
+h1::before {
+  content:"VLA Interview · Evidence-First Notes"; display:block; margin:0 0 8px;
+  color:var(--accent); font-size:13px; line-height:1.4; font-weight:600;
+  text-transform:uppercase; letter-spacing:.12em;
+}
+h2 {
+  margin:44px 0 14px; padding:0 0 8px; border:0; border-bottom:1px solid var(--border);
+  background:none; color:var(--ink); font-size:24px; font-weight:700;
+}
+h3 { margin:28px 0 10px; color:var(--primary); font-size:19px; font-weight:600; }
+h4 { margin:20px 0 8px; color:var(--ink); font-size:16px; font-weight:600; }
+p { margin:10px 0; }
+ul,ol { margin:10px 0; padding-left:22px; }
+li { margin:4px 0; }
+ul li::marker { color:var(--primary); }
+strong { color:var(--accent); font-weight:600; }
+em { color:var(--ink-soft); }
+a { color:var(--primary); overflow-wrap:anywhere; }
+a:hover { color:var(--accent); }
+code:not(.hljs) {
+  padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
+  color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
+  font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
+}
+pre {
+  margin:14px 0; padding:0; overflow-x:auto; max-width:100%; background:#fafaf6;
+  border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+pre code, pre code.hljs {
+  display:block; padding:14px 18px !important; background:transparent !important;
+  color:var(--ink); font:13px/1.55 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+.formula {
+  margin:14px 0; padding:12px 18px; overflow-x:auto; max-width:100%; white-space:pre-wrap;
+  background:#fafaf6; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:4px;
+}
+.formula em { font-style:normal; color:inherit; }
+mjx-container[display="true"] { margin:12px 0 !important; }
+.meta {
+  margin:16px 0; padding:12px 16px; color:var(--ink-soft); background:#dbeafe;
+  border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
+}
+table {
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
+  border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
+thead { color:#fff; background:var(--primary); }
+th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
+th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
+tbody tr:nth-child(even) { background:var(--bg-soft); }
+tbody tr:last-child td { border-bottom:0; }
+details.qa, details {
+  margin:10px 0; padding:0; background:#fff; border:1px solid var(--border-soft); border-radius:6px;
+}
+details summary { padding:11px 14px; cursor:pointer; color:var(--ink); font-size:14.5px; font-weight:600; }
+details > :not(summary) { margin-left:14px; margin-right:14px; }
+.lv,.freq {
+  display:inline-block; margin-right:6px; padding:1px 7px; border:1px solid var(--border-soft);
+  border-radius:3px; background:var(--bg-soft); color:var(--ink-soft);
+  font:600 11px/1.5 "JetBrains Mono","SF Mono","Menlo",monospace;
+}
+@media (max-width:900px) {
+  article { display:block; padding:20px 16px; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
+  nav.toc {
+    position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
+    padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
+  }
+  h1 { font-size:24px; } h2 { font-size:20px; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
+  pre,.formula { overflow-x:auto; }
+}
+@media print {
+  nav.toc, article > .meta:first-child { display:none; }
+  article { display:block; max-width:none; padding:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
+  body { background:#fff; }
+}
+</style>
+</head>
+<body><article>
+<div class="meta">Canonical Markdown SHA-256：<code>5b9498966531981c21ff89980978bf16aa40d6fbd6d3f9c820ff2c70bff7d1f4</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\opd_training_objective_lineage_gate.md</code></div>
+<nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2-trainer">2. 两份 trainer 的实现差异</a></li><li><a href="#2-1-legacy-top1-ce">2.1 Legacy top1 CE</a></li><li><a href="#2-2-formal-full-vocabulary-kl">2.2 Formal full-vocabulary KL</a></li><li><a href="#3-coldstart-500-opd5000-lineage">3. Coldstart-500 与 OPD5000 的 lineage</a></li><li><a href="#4-implementation-anchors">4. Implementation anchors</a></li><li><a href="#5">5. 面试口述修正</a></li><li><a href="#30">30 秒版本</a></li><li><a href="#kl">“为什么 KL 方向重要？”</a></li><li><a href="#coldstart-opd">“coldstart 和正式 OPD 的区别是什么？”</a></li><li><a href="#6">6. 必须保留的边界</a></li><li><a href="#7">7. 下一证据门</a></li><li><a href="#8-references">8. References</a></li></ol></nav>
+<h1>OPD Training Objective Lineage Gate：top1 CE、Full-Vocabulary KL 与 Rollout Source</h1>
+<div class="meta">状态：<code>local_code_reconciled / run_summary_bounded / checkpoint_unverified / WARN</code> 审计日期：2026-07-22 审计对象：OPD legacy 根目录 trainer、formal <code>point/</code> trainer、coldstart-500 与 OPD5000 launcher/run summary 核心问题：当前口述中的“student rollout + full-vocabulary KL”究竟由哪份实现支持？KL 的方向、veto target、token mask 和 run lineage是什么？</div>
+<h2 id="1">1. 结论先行</h2>
+<p>本地存在两份同名但目标不同的 trainer，不能用路径末尾的 <code>train_opd_online_vl.py</code> 把它们合并：</p>
+<ol><li><code>C:\Users\mousongzhe\muxi\train_opd_online_vl.py</code> 是 <strong>legacy teacher rollout + teacher top1 hard-label CE</strong>。teacher 先生成 response，再在该 response 上 forward，取 <code>argmax</code> 作为 token label，student 用逐 token NLL/CE 学习；run summary 的 <code>opd_mode</code> 固定写成 <code>five_expert_online_teacher_rollout_top1</code>。</li><li><code>C:\Users\mousongzhe\muxi\point\train_opd_online_vl.py</code> 才是当前 formal <strong>configurable teacher/student rollout + full-vocabulary forward KL</strong> 实现。<code>--opd-rollout-source</code> 默认 <code>student</code>，也支持 <code>teacher</code>；teacher 在同一 response 上 forward，loss 使用完整词表分布。</li><li>coldstart-500 launcher 显式传 <code>--opd-rollout-source teacher</code>，run summary 记录 <code>teacher rollout + full_vocab KL + veto/prefix</code>；OPD5000 launcher 显式传 <code>student</code>，summary 记录 <code>student rollout + full_vocab KL + veto/prefix</code>。因此 coldstart 不是 student rollout，OPD5000 也不是 legacy top1 CE。</li><li>当 <code>veto_beta=0</code> 时，formal loss 是 \(D_{KL}(p_T\|p_S)\)，即 teacher/target 分布对 student 分布的 forward KL；veto 期内 target 不是纯 teacher，而是由 <code>teacher_logits + beta * stopgrad(student_logits)</code> 构造的分布。口述不能把整个 500-step warmup 都简写成纯 teacher-to-student KL。</li><li>artifact manifest 明确本地同步范围排除了 model weights、optimizer <code>.pt</code>、raw holdout JSONL 和 predictions JSONL；因此本页能闭合 <strong>objective/code/run-summary lineage</strong>，不能闭合 checkpoint binary、训练完成的独立重放或因果 uplift。</li></ol>
+<h2 id="2-trainer">2. 两份 trainer 的实现差异</h2>
+<table><thead><tr><th>维度</th><th>Legacy root trainer</th><th>Formal <code>point/</code> trainer</th></tr></thead><tbody>
+<tr><td>路径</td><td><code>muxi/train_opd_online_vl.py</code></td><td><code>muxi/point/train_opd_online_vl.py</code></td></tr>
+<tr><td>SHA-256</td><td><code>BF9120B5D88180EA4C4725C6F4934913F35FDD36ECB4BC8E6B3B089FB964D8D9</code></td><td><code>7103E3B28068A30978F2B14AD980E51CEC2EC60A0445B2B52243342CDA286336</code></td></tr>
+<tr><td>rollout source</td><td>teacher 固定</td><td><code>student</code> / <code>teacher</code> 参数化，默认 student</td></tr>
+<tr><td>teacher target</td><td><code>argmax</code> token ID</td><td>response token 位置的完整 vocab logits</td></tr>
+<tr><td>student loss</td><td><code>F.nll_loss(log_softmax(student_logits), teacher_top1)</code></td><td>target distribution 与 student distribution 的 full-vocabulary KL</td></tr>
+<tr><td>token support</td><td>teacher top1 label</td><td>完整词表；run summary 记录 <code>opd_distill_support=full_vocab</code></td></tr>
+<tr><td>prefix</td><td>response 全段</td><td><code>opd_prefix_loss_tokens</code> 可截断 loss response</td></tr>
+<tr><td>veto</td><td>无</td><td><code>target_logits = teacher_logits + beta * stopgrad(student_logits)</code></td></tr>
+<tr><td>summary mode</td><td><code>five_expert_online_teacher_rollout_top1</code></td><td><code>five_expert_online_{rollout_source}_rollout_teacher_full_vocab_kl_veto_prefix</code></td></tr>
+<tr><td>可映射 run</td><td>早期 off-policy/top1 路线</td><td>coldstart-500 与 OPD5000 new-experts 路线</td></tr>
+</tbody></table>
+<h3 id="2-1-legacy-top1-ce">2.1 Legacy top1 CE</h3>
+<p>legacy 实现先执行：</p>
+<pre><code class="language-text">teacher.generate(prompt)
+  -&gt; teacher(response) logits
+  -&gt; argmax over vocabulary at every response position
+  -&gt; hard token labels
+  -&gt; student(response) logits
+  -&gt; token NLL / CE</code></pre>
+<p>它只要求 student 提高 teacher top1 token 的概率，没有直接约束 teacher 对其余词表 token 的相对置信度。该路线可以称为 online teacher rollout + top1 distillation，不应称为 full-vocabulary KL，也不应称为 student rollout。</p>
+<h3 id="2-2-formal-full-vocabulary-kl">2.2 Formal full-vocabulary KL</h3>
+<p>formal trainer 根据 <code>opd_rollout_source</code> 由 teacher 或 student 生成 response；之后 teacher 与 student 都在同一截断 response 上 forward。令 response token 位置 \(t\) 的 student logits 为 \(z^S_t\)，teacher logits 为 \(z^T_t\)，veto 系数为 \(\beta\)：</p>
+<div class="formula">\[
+\log p_S(v\mid x,y_{&lt;t})=\operatorname{logsoftmax}(z^S_t)_v
+\]</div>
+<div class="formula">\[
+\log q_{\beta}(v\mid x,y_{&lt;t})=
+\operatorname{logsoftmax}\!\left(z^T_t+\beta\,\operatorname{stopgrad}(z^S_t)\right)_v
+\]</div>
+<div class="formula">\[
+\mathcal L_t
+=D_{KL}(q_{\beta,t}\|p_{S,t})
+=\sum_v q_{\beta,t}(v)\left[\log q_{\beta,t}(v)-\log p_{S,t}(v)\right]
+\]</div>
+<p>当 \(\beta=0\) 时，\(q_{\beta}=p_T\)，得到 \(D_{KL}(p_T\|p_S)\)。这个方向以 teacher/target 分布作期望：teacher 赋予非零概率的 token 都会进入 loss，student 若在 teacher 高概率区域分配不足会受罚。它不是 \(D_{KL}(p_S\|p_T)\)，也不是 Jensen–Shannon divergence。</p>
+<p>代码按每个 sample 的有效 response token 数归一化：</p>
+<div class="formula">\[
+\mathcal L_i=
+\frac{\sum_t m_{i,t}\,D_{KL}(q_{\beta,i,t}\|p_{S,i,t})}
+{\max\!\left(1,\sum_t m_{i,t}\right)},
+\qquad
+\mathcal L=\frac{1}{B}\sum_i w_i\mathcal L_i
+\]</div>
+<p>其中 \(m_{i,t}\) 是 response/prefix token mask，\(w_i\) 是 <code>_opd_loss_weight</code>。当前实现为已截断 response 构造全 1 mask；padding/prompt 不进入该 token KL。run summary 还记录 student/teacher entropy、top-k overlap、loss token 数与 vocab size，便于区分“loss 下降”和“输出分布结构一致”。</p>
+<h2 id="3-coldstart-500-opd5000-lineage">3. Coldstart-500 与 OPD5000 的 lineage</h2>
+<table><thead><tr><th>Run</th><th>Student parent</th><th>Rollout</th><th>Objective</th><th>Prefix / veto</th><th>Steps / save</th><th>本地证据</th></tr></thead><tbody>
+<tr><td>coldstart-500</td><td><code>/data/msz/models/8b_base</code></td><td>teacher</td><td>full-vocab `KL(target</td><td></td><td>student)`</td><td>max new 128；loss prefix 64；beta 1→0 / 100 steps</td><td>500；final only</td><td>launcher + coldstart summary</td></tr>
+<tr><td>OPD5000</td><td>coldstart-500 output</td><td>student</td><td>full-vocab `KL(target</td><td></td><td>student)`</td><td>max new 64；loss prefix 64；beta 1→0 / 500 steps</td><td>5000；save every 1000</td><td>launcher + OPD5000 summary</td></tr>
+</tbody></table>
+<p>coldstart summary 的关键字段为：<code>opd_rollout_source=teacher</code>、<code>opd_distill_support=full_vocab</code>、<code>opd_mode=five_expert_online_teacher_rollout_teacher_full_vocab_kl_veto_prefix</code>。OPD5000 summary 对应为 <code>student</code>、<code>full_vocab</code> 和 <code>five_expert_online_student_rollout_teacher_full_vocab_kl_veto_prefix</code>。</p>
+<p>两条 run 的 route teacher 都由 sample metadata 选择；<code>route-block-shuffle</code> 保证 ZeRO-3 下每个 microstep 的 rank 进入同一 teacher。该设计证明的是 deterministic metadata routing，不是训练出了 learned router。</p>
+<h2 id="4-implementation-anchors">4. Implementation anchors</h2>
+<table><thead><tr><th>Source</th><th>SHA-256</th><th>能支持</th><th>不能支持</th></tr></thead><tbody>
+<tr><td><code>muxi/train_opd_online_vl.py</code></td><td><code>BF9120B5D88180EA4C4725C6F4934913F35FDD36ECB4BC8E6B3B089FB964D8D9</code></td><td>legacy teacher rollout、teacher top1 label、token CE、legacy mode string</td><td>coldstart/OPD5000 full-vocab KL</td></tr>
+<tr><td><code>muxi/point/train_opd_online_vl.py</code></td><td><code>7103E3B28068A30978F2B14AD980E51CEC2EC60A0445B2B52243342CDA286336</code></td><td>rollout-source switch、full-vocab KL 方向、veto、prefix、entropy/top-k diagnostics</td><td>远端实际执行内容与本地文件逐字一致之外的结果</td></tr>
+<tr><td>coldstart launcher</td><td><code>06F349A4631D30F9533746CE7B8F852C14FC49A02FC04796839A7F3C3BADCE10</code></td><td>teacher rollout、base parent、500 steps、prefix/veto/ZeRO-3 参数</td><td>完成状态、权重内容</td></tr>
+<tr><td>OPD5000 launcher</td><td><code>DEEB0F93336C99AA54BC4D34F95315C5A2D60E0F9968293B20D9F3A961491BAF</code></td><td>student rollout、coldstart parent、skip64k、5000 steps、save cadence</td><td>checkpoint binary 与 eval uplift</td></tr>
+<tr><td>coldstart run summary</td><td><code>90FD5A0A5983FEB5673D44CA087F597F0EBCACFD63DF1305C37C297F213D5FC0</code></td><td>run parameters、last loss/entropy/overlap、mode</td><td>raw log、weights、独立复算</td></tr>
+<tr><td>OPD5000 run summary</td><td><code>2D670DE0707CD2C6A9D1D4C7EC109C86F0A3F8F87EDE5D6959367017231547CE</code></td><td>run parameters、route counts、last loss/entropy/overlap、mode</td><td>checkpoint binary、optimizer、raw predictions</td></tr>
+<tr><td>OPD5000 artifact manifest</td><td><code>035764A0461DEE5942AB25AF1BDFCD2514BD69AAC473B2DE8E43F3A7EC86021A</code></td><td>remote root、formal code path、launchers、final model path、sync exclusion</td><td>binary/hash/load parity</td></tr>
+</tbody></table>
+<h2 id="5">5. 面试口述修正</h2>
+<h3 id="30">30 秒版本</h3>
+<div class="meta">OPD 有两代同名 trainer，不能混讲。根目录 legacy 版是 teacher rollout 后取 teacher top1 token，用 hard-label CE 蒸馏；正式 new-experts 路线在 <code>point/train_opd_online_vl.py</code>，coldstart 用 teacher rollout、OPD5000 用 student rollout，两者都让 route 对应 teacher 在同一 response 上 forward，并做完整词表的 \(D_{KL}(q_\beta\|p_S)\)。veto 期的 target 还混入 stop-gradient student logits，beta 归零后才是纯 \(D_{KL}(p_T\|p_S)\)。本地缺权重和 raw predictions，所以我能证明目标实现和 summary lineage，不能把它直接升级成因果 uplift。</div>
+<h3 id="kl">“为什么 KL 方向重要？”</h3>
+<div class="meta">这里代码的 expectation 在 teacher/target 分布一侧，是 \(D_{KL}(q_\beta\|p_S)\)，beta=0 时就是 teacher-to-student forward KL。这样 teacher 认为有概率的完整词表区域都会约束 student；如果反过来做 \(D_{KL}(p_S\|p_T)\)，优化压力和 mode behavior 会不同。工程上还必须说清 logits 的 token 对齐、response prefix、mask、vocab revision 和 reduction，否则只说“用了 KL”没有可复核意义。</div>
+<h3 id="coldstart-opd">“coldstart 和正式 OPD 的区别是什么？”</h3>
+<div class="meta">两者使用同一 formal full-vocab KL trainer，但 rollout distribution 不同。coldstart 从 8B base 出发，用 teacher 生成 response，降低 student 初始分布太差带来的 on-policy风险；OPD5000 从 coldstart 输出继续，用 student 自己生成 response，再让 route teacher 在该 response 上给完整词表分布。它们不是两种 KL 方向，也不是一个 top1 CE、一个 KL。</div>
+<h2 id="6">6. 必须保留的边界</h2>
+<ul><li>不再用 root <code>train_opd_online_vl.py</code> 支持 formal full-vocabulary KL claim；该文件只能支持 legacy top1 CE。</li><li>不把 coldstart 说成 student rollout；summary 和 launcher均明确为 teacher rollout。</li><li>不把 OPD5000 说成 teacher rollout；它显式为 student rollout。</li><li>veto beta 大于 0 时，target 是 teacher/student detached logit mixture，不是纯 teacher distribution。</li><li>full-vocabulary 表示 loss support，不代表所有 vocabulary token 在每个位置都有较大概率，也不等于生成时没有 top-p/temperature 配置。</li><li>现有 summary/manifest 不包含 model weights、optimizer、raw predictions；训练完成、checkpoint 可加载和 uplift 仍需 P0 bundle。</li></ul>
+<h2 id="7">7. 下一证据门</h2>
+<ol><li>从远端回传 formal <code>point/train_opd_online_vl.py</code>、launchers、DeepSpeed config 与每个 checkpoint 的 content hash，建立 run-specific manifest。</li><li>新进程加载 coldstart final 与 checkpoint-1000..5000，固定 prompt/tokenizer/vocab revision 做 loss/entropy/top-k parity smoke。</li><li>同一 raw-holdout、同 scorer 保留 per-sample predictions，比较 SFT-only、legacy top1、coldstart、OPD5000；没有 paired raw 前不做 objective 单因果归因。</li><li>对 <code>veto_beta=0</code> 与 schedule 做 matched ablation，区分 stabilization 与最终分布拟合贡献。</li></ol>
+<h2 id="8-references">8. References</h2>
+<ul><li><a href="opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a></li><li><a href="opd_p0_bundle_audit.html">OPD P0 Bundle Audit</a></li><li><a href="../../practice/opd_oral_model_answer.html">OPD implementation-derived oral answer</a></li><li><a href="../../questions/vol_01_foundations.html">VLA-FND-007 KL direction card</a></li><li><code>C:\Users\mousongzhe\muxi\train_opd_online_vl.py</code></li><li><code>C:\Users\mousongzhe\muxi\point\train_opd_online_vl.py</code></li><li><code>C:\Users\mousongzhe\muxi\point\run_opd_offpolicy_coldstart500_p0p1_zero3_mb16_accum1_newexperts.sh</code></li><li><code>C:\Users\mousongzhe\muxi\point\run_opd_p0p1_studentrollout_full5000_skip64000_save1000_zero3_mb16_accum1_from_coldstart500_newexperts.sh</code></li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\artifact_manifest.json</code></li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\remote_model_summaries\coldstart500_opd_online_run_summary.json</code></li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\remote_model_summaries\opd5000_opd_online_run_summary.json</code></li></ul>
+</article></body></html>

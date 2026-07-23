@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 PER-020 Source Freeze：Robustness、Safety、Fallback 与风险门</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per020_robustness_safety_fallback_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per020_robustness_safety_fallback_source_freeze.md">
 <meta name="aris:source-sha256" content="d9988ad30f3c64f6501d9ac375d74325e21b4d76bbd5688e2f25cb2997952076">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>d9988ad30f3c64f6501d9ac375d74325e21b4d76bbd5688e2f25cb2997952076</code>；生成自：<code>interview_materials\vla\sources\vol_06_per020_robustness_safety_fallback_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>d9988ad30f3c64f6501d9ac375d74325e21b4d76bbd5688e2f25cb2997952076</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per020_robustness_safety_fallback_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-official-source-matrix">2. Primary / official source matrix</a></li><li><a href="#3-official-implementation-probes">3. Official implementation probes</a></li><li><a href="#4-robustness-protocol-contract">4. Robustness protocol contract</a></li><li><a href="#4-1-corruption-shift-identity">4.1 Corruption 与 shift identity</a></li><li><a href="#4-2-calibration-risk-coverage">4.2 Calibration 与 risk–coverage</a></li><li><a href="#5-safety-fallback-recovery-contract">5. Safety、fallback 与 recovery contract</a></li><li><a href="#6-failure-taxonomy">6. Failure taxonomy 与诊断顺序</a></li><li><a href="#7">7. 五项目真实性边界</a></li><li><a href="#8">8. 退出条件与下一步</a></li><li><a href="#section-12">参考来源</a></li></ol></nav>
 <h1>VOL 06 PER-020 Source Freeze：Robustness、Safety、Fallback 与风险门</h1>
 <div class="meta">状态：<code>source_frozen / VLA-PER-020 / primary_official_checked / robustness_safety_contract / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-21 证据截止：2026-07-21 本 source slice 只冻结视觉/传感器扰动、dataset shift、不确定性、风险门、fallback、recovery 与急停的公开机制；knowledge/card 已在独立下游切片同步，仍不修改 mastery、不创建 <code>coaching_state.md</code>，不把公开 benchmark、Safety Gym 或上游随机化机制写成个人项目安全结果。</div>

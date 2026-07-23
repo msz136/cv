@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 05 EVAL-012 Source Freeze：OOD、扰动、遮挡、视角与鲁棒性矩阵</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_eval012_ood_perturbation_occlusion_viewpoint_robustness_matrix_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eval012_ood_perturbation_occlusion_viewpoint_robustness_matrix_source_freeze.md">
 <meta name="aris:source-sha256" content="7360b1ae5eadef08620f91c510df9b98a958f0992a153c59c49de0577f821478">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>7360b1ae5eadef08620f91c510df9b98a958f0992a153c59c49de0577f821478</code>；生成自：<code>interview_materials\vla\sources\vol_05_eval012_ood_perturbation_occlusion_viewpoint_robustness_matrix_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>7360b1ae5eadef08620f91c510df9b98a958f0992a153c59c49de0577f821478</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eval012_ood_perturbation_occlusion_viewpoint_robustness_matrix_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、Revision 与边界</a></li><li><a href="#2-robustness-estimand">2. 先定义 Robustness Estimand</a></li><li><a href="#2-1">2.1 三种边界必须分开</a></li><li><a href="#3-perturbation-taxonomy">3. Perturbation Taxonomy</a></li><li><a href="#4-matrix-cell-schema">4. 每个 Matrix Cell 的最小 Schema</a></li><li><a href="#5-clean-perturbed">5. Clean–Perturbed 配对</a></li><li><a href="#6-severity-1-5">6. Severity 不是随便编号 1–5</a></li><li><a href="#7-occlusion-solvability-gate">7. Occlusion 与 Solvability Gate</a></li><li><a href="#8-retention-worst-cell">8. 指标：曲线、Retention 与 Worst Cell</a></li><li><a href="#9-one-factor-composed-stress">9. One-factor 与 Composed Stress</a></li><li><a href="#10-release-gate">10. 统计与 Release Gate</a></li><li><a href="#11-simpler-imagenet-c">11. SIMPLER 与 ImageNet-C 如何正确使用</a></li><li><a href="#12-evidence-mapping">12. 五项目 Evidence Mapping</a></li><li><a href="#13-artifact-bundle">13. 最小 Artifact Bundle</a></li><li><a href="#14">14. 评估伪代码</a></li><li><a href="#15-source-gate">15. Source Gate 结论与下一入口</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 05 EVAL-012 Source Freeze：OOD、扰动、遮挡、视角与鲁棒性矩阵</h1>
 <div class="meta">状态：<code>source_frozen / VLA-EVAL-012 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-19 证据截止：2026-07-19 本切片冻结 perturbation taxonomy、target-envelope / stress-only 边界、clean–perturbed 配对、severity、visibility / solvability gate、分格指标与可复算 artifact；只生成一张 <code>VLA-EVAL-012</code> 原子题卡，VOL 05 同步为 knowledge/cards 34/44。</div>

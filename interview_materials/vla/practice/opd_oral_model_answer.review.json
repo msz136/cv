@@ -1,29 +1,39 @@
 {
   "artifact": "practice/opd_oral_model_answer.md",
   "html": "practice/opd_oral_model_answer.html",
-  "review_date": "2026-07-21",
-  "status": "model_answer / PROJ-OPD-001 / evidence_bounded / not_candidate_transcript / WARN",
+  "review_date": "2026-07-22",
+  "status": "implementation_derived_model_answer / PROJ-OPD-001..009 / data_route_distillation_eval_ownership / evidence_bounded / not_candidate_transcript / WARN",
   "verdict": "WARN",
-  "source_sha256": "524411142b98507d63d729250d85151fe491518c672f8694f25c2df60e423e8d",
-  "question_ids": ["PROJ-OPD-001"],
+  "source_sha256": "12DF35D19EFBDE6039E300DCF6B234191093251BDCB524408269125E9E7C43A7",
+  "question_ids": [
+    "PROJ-OPD-001",
+    "PROJ-OPD-002",
+    "PROJ-OPD-003",
+    "PROJ-OPD-004",
+    "PROJ-OPD-005",
+    "PROJ-OPD-006",
+    "PROJ-OPD-007",
+    "PROJ-OPD-008",
+    "PROJ-OPD-009"
+  ],
   "scope": {
     "answer_versions": 2,
-    "evidence_mappings": 6,
-    "follow_up_answers": 5,
+    "evidence_mappings": 15,
+    "follow_up_answers": 7,
     "candidate_transcripts": 0,
     "mastery_changes": 0,
     "coaching_state_created": false
   },
   "checks": {
-    "bounded_slice": "PASS (one OPD model-answer page; no candidate transcript or score was fabricated)",
+    "bounded_slice": "PASS (one implementation-derived OPD model-answer page now explicitly maps PROJ-OPD-001..009; no candidate transcript or score was fabricated)",
     "data_route_boundary": "PASS (five expert roles, route metadata, seen/unseen/boundary/format-conflict and image-hash split are separated from learned routing claims)",
-    "training_lineage": "PASS WITH WARNING (coldstart, student rollout, route teacher and full-vocab KL are represented; raw weights/logs and stage ablations remain missing)",
+    "training_lineage": "PASS WITH WARNING (root legacy teacher-rollout/top1 CE is separated from the formal point trainer; coldstart teacher rollout, OPD5000 student rollout, D_KL(q_beta||p_student) direction and veto target are explicit; weights/raw logs and stage ablations remain missing)",
     "metric_protocol_boundary": "PASS (checkpoint/pool/scorer/denominator and old OPD final vs OPD5000 lineage warnings are explicit)",
     "point_protocol_boundary": "PASS (original strict, protocol-fixed strict and lenient geometry are kept distinct)",
     "ownership_boundary": "PASS WITH WARNING (Git/scaffold/remote/tool boundaries remain candidate-confirmation-pending)",
     "html_static_validation": "PASS (ARIS academic v1; one H1, valid hierarchy, formula-em=0 and five resolving local links)",
-    "browser_visual_check": "PASS WITH WARNING (static palette/serif/sticky-TOC/900px/overflow checks passed; browser connector unavailable for screenshots)",
-    "practice_state": "PASS (model answer is not a transcript; PROJ-OPD-001 remains unseen and coaching_state.md is absent)",
+    "browser_visual_check": "PASS WITH WARNING (desktop localhost QA at 1280px: one H1, two tables, 260px sticky TOC, zero page-wide overflow, formula-em=0, five local links and no broken anchors; narrow 900px responsive/static overflow rules pass repository validation, but the current in-app browser connector could not resize its viewport for a second screenshot)",
+    "practice_state": "PASS (model answer is not a transcript; PROJ-OPD-001..009 remain unseen and coaching_state.md is absent)",
     "oral_drill": "PENDING"
   },
   "open_items": [
@@ -31,5 +41,5 @@
     "SFT-only/single-teacher/no-synthetic ablations and raw predictions remain missing for causal claims.",
     "Candidate must answer before any score or mastery migration."
   ],
-  "next": "Use this page only as post-answer comparison material after the real oral queue begins."
+  "next": "Use this page only as post-answer comparison material; next collect a real OPD answer or freeze one lineage/ablation/raw-prediction artifact."
 }

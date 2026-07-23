@@ -22,10 +22,10 @@
 
 | Claim | Verdict | 保留边界 |
 | --- | --- | --- |
-| attention 使用 (QK^\top/\sqrt{d_k}) | `PASS / primary-verified` | 除法是尺度控制；mask 语义取决于 bool/additive API |
+| attention 使用 \(QK^\top/\sqrt{d_k}\) | `PASS / primary-verified` | 除法是尺度控制；mask 语义取决于 bool/additive API |
 | LayerNorm 减均值，RMSNorm 不减均值 | `PASS / primary-verified` | 具体 backbone 的 norm 选择不能由基础原理推出 |
 | MSE/Huber/CrossEntropy 监督对象不同 | `PASS / official-docs` | reduction、mask、ignore index 和 dtype 仍是实现合同 |
-| 齐次变换可组合旋转和平移 | `PASS / primary-verified` | 必须声明 (T^A_B) 方向、列向量约定、单位与时间戳 |
+| 齐次变换可组合旋转和平移 | `PASS / primary-verified` | 必须声明 \(T^A_B\) 方向、列向量约定、单位与时间戳 |
 | LoRA 是低秩更新 | `PASS / method-level` | 本地 rank、注入层、alpha 和 ownership 未核实 |
 | OpenVLA/openpi 的具体 action 轴序 | `UNVERIFIED` | 需要 frozen commit、配置和本地 artifact，不能从基础页推出 |
 

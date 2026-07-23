@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 05 EVAL-011 Source Freeze：Offline Metric 与 Online Success 的相关性分析</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_eval011_offline_metric_online_success_correlation_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eval011_offline_metric_online_success_correlation_source_freeze.md">
 <meta name="aris:source-sha256" content="c4a085e96e8ae6ed4d22660b49d26d8faad0b338e8990b132ae3288ee28eb0dd">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>c4a085e96e8ae6ed4d22660b49d26d8faad0b338e8990b132ae3288ee28eb0dd</code>；生成自：<code>interview_materials\vla\sources\vol_05_eval011_offline_metric_online_success_correlation_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>c4a085e96e8ae6ed4d22660b49d26d8faad0b338e8990b132ae3288ee28eb0dd</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_eval011_offline_metric_online_success_correlation_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-revision">1. 冻结来源、Revision 与边界</a></li><li><a href="#2">2. 先定义“相关性的一个点”</a></li><li><a href="#2-1-panel">2.1 正确 panel</a></li><li><a href="#2-2">2.2 三种错误“扩样本”</a></li><li><a href="#3">3. 四个问题不是一个“相关系数”</a></li><li><a href="#4-pearson">4. Pearson：线性一致性与范围限制</a></li><li><a href="#5-spearman-kendall-mmrv">5. Spearman / Kendall 与 MMRV</a></li><li><a href="#6-online-success">6. Online Success 有测量误差</a></li><li><a href="#7-task-policy-hierarchy-simpson">7. Task / Policy Hierarchy 与 Simpson 风险</a></li><li><a href="#8-uncertainty">8. Uncertainty：在正确层级重采样</a></li><li><a href="#9-discovery-validation-prospective-gate">9. Discovery、Validation 与 Prospective Gate</a></li><li><a href="#10-correlation-causation">10. Correlation 不等于 Causation</a></li><li><a href="#11-evidence-mapping">11. 五项目 Evidence Mapping</a></li><li><a href="#12-artifact-bundle">12. 最小 Artifact Bundle</a></li><li><a href="#13">13. 分析伪代码</a></li><li><a href="#14-source-gate">14. Source Gate 结论与下一入口</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 05 EVAL-011 Source Freeze：Offline Metric 与 Online Success 的相关性分析</h1>
 <div class="meta">状态：<code>source_frozen / VLA-EVAL-011 / knowledge_drafted / card_1_of_1_unseen / WARN</code> 冻结日期：2026-07-18 证据截止：2026-07-18 本切片冻结matched policy-task panel、Pearson/Spearman/MMRV、层次二项映射、cluster uncertainty、held-out validation、proxy selection与因果边界；只生成一张<code>VLA-EVAL-011</code>原子题卡，VOL 05同步为knowledge/cards 33/44。</div>

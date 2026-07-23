@@ -6,7 +6,7 @@
 <title>VOL 01 Foundations Batch 2：MDP / TD / 机器人控制独立事实复核</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\sources\vol_01_batch2_mdp_td_control_independent_fact_review.md">
-<meta name="aris:source-sha256" content="ceb7cdc9d6d35c204d74011d679d8931b8c5976724e4b82e1bd8b88a8551786f">
+<meta name="aris:source-sha256" content="c7e75c811db1acc88a478235c40bb79b3897da0ceb37749f828ed2a4109ea4ce">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>ceb7cdc9d6d35c204d74011d679d8931b8c5976724e4b82e1bd8b88a8551786f</code>；生成自：<code>interview_materials\vla\sources\vol_01_batch2_mdp_td_control_independent_fact_review.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>c7e75c811db1acc88a478235c40bb79b3897da0ceb37749f828ed2a4109ea4ce</code>；生成自：<code>interview_materials\vla\sources\vol_01_batch2_mdp_td_control_independent_fact_review.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 冻结来源</a></li><li><a href="#2-claim-to-source">2. Claim-to-source 复核</a></li><li><a href="#3">3. 回写动作</a></li><li><a href="#4">4. 边界与下一步</a></li><li><a href="#section-5">参考文献</a></li></ol></nav>
 <h1>VOL 01 Foundations Batch 2：MDP / TD / 机器人控制独立事实复核</h1>
 <div class="meta">状态：<code>independent_fact_review / batch2 / WARN</code> 审查日期：2026-07-19 范围：VOL 01 knowledge 与 <code>VLA-FND-021..039</code> 中的 MDP、Bellman、TD、on/off-policy、termination/truncation、Jacobian、PID、控制频率和闭环执行边界。 结论先行：MDP/Bellman/on-off-policy 的核心定义可保留；TD 与 rollout 必须把 <code>terminated</code> 和 <code>truncated</code> 分开；Jacobian 奇异性的风险应表述为 inverse/伪逆放大关节速度与噪声，而不是笼统说“小关节误差导致末端不稳定”。Robot Harness 只能绑定本地 offline GRPO-style continuation，WAM/UWM 指标只能按 evidence gate 降级表述。</div>
@@ -151,7 +157,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </tbody></table>
 <h2 id="2-claim-to-source">2. Claim-to-source 复核</h2>
 <table><thead><tr><th>Claim</th><th>Verdict</th><th>必须保留的边界</th></tr></thead><tbody>
-<tr><td>(V^\pi,Q^\pi,A^\pi) 的定义与 Bellman expectation relation</td><td><code>PASS / primary-verified</code></td><td>即时 reward 与期望 reward 的记号需说明；Bellman relation 不是单一网络 loss</td></tr>
+<tr><td>\(V^\pi,Q^\pi,A^\pi\) 的定义与 Bellman expectation relation</td><td><code>PASS / primary-verified</code></td><td>即时 reward 与期望 reward 的记号需说明；Bellman relation 不是单一网络 loss</td></tr>
 <tr><td>on-policy 与 off-policy 的差异</td><td><code>PASS / primary-verified</code></td><td>off-policy 不等于 offline RL；数据复用需要分布修正/保守性边界</td></tr>
 <tr><td>TD terminal mask</td><td><code>FIX_REQUIRED</code></td><td>true termination 通常停止 bootstrap；time-limit truncation 通常仍 bootstrap</td></tr>
 <tr><td>Jacobian singularity</td><td><code>PASS WITH WORDING FIX</code></td><td>rank/condition 问题主要在 inverse mapping 中放大 joint velocity/noise</td></tr>
@@ -162,7 +168,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <tr><td>UWM 0.744 / 74.4%</td><td><code>WARN / user-confirmed remote</code></td><td>不是本地 raw bundle 验证的 benchmark；必须带协议和来源标签</td></tr>
 </tbody></table>
 <h2 id="3">3. 回写动作</h2>
-<ol><li>TD residual 改用 (d_t^{term})，并明确 time-limit truncation 的 bootstrap 语义。</li><li>闭环伪代码改为显式处理 <code>terminated</code>、<code>truncated</code> 与 <code>success</code>，避免一个无语义 <code>done</code> 混合训练和评估边界。</li><li>Jacobian 文字改为 inverse/伪逆的速度与噪声放大，不把 singularity 误写成 forward kinematics 的普遍误差放大。</li><li><code>VLA-FND-024/026</code> 的 Harness 项目挂钩改为 canonical online GRPO 与本地 offline GRPO-style 的对照。</li><li><code>VLA-FND-029</code> 的 WAM 历史比例降级为“离线 proxy 趋势需同协议 artifact 复核”；<code>VLA-FND-028</code> 的 UWM 根因改为诊断假设。</li></ol>
+<ol><li>TD residual 改用 \(d_t^{term}\)，并明确 time-limit truncation 的 bootstrap 语义。</li><li>闭环伪代码改为显式处理 <code>terminated</code>、<code>truncated</code> 与 <code>success</code>，避免一个无语义 <code>done</code> 混合训练和评估边界。</li><li>Jacobian 文字改为 inverse/伪逆的速度与噪声放大，不把 singularity 误写成 forward kinematics 的普遍误差放大。</li><li><code>VLA-FND-024/026</code> 的 Harness 项目挂钩改为 canonical online GRPO 与本地 offline GRPO-style 的对照。</li><li><code>VLA-FND-029</code> 的 WAM 历史比例降级为“离线 proxy 趋势需同协议 artifact 复核”；<code>VLA-FND-028</code> 的 UWM 根因改为诊断假设。</li></ol>
 <h2 id="4">4. 边界与下一步</h2>
 <ul><li>本批完成后，VOL 01 knowledge 的两批高频基础事实可进入 candidate 状态，但整卷 39 卡仍未逐卡独立审查，也没有真实口述。</li><li><code>VLA-FND-039</code> 的 impedance/MPC/learned-policy 选择仍需单独控制方法 batch；本页只保留分层组合的工程直觉。</li><li>所有卡保持 <code>unseen</code>；不创建 <code>coaching_state.md</code>，不把静态审查当 mastery。</li><li>浏览器 <code>file://</code> 视觉 QA 保持 <code>BLOCKED</code>；完成后仍需 SHA、单 H1、公式和本地链接静态校验。</li></ul>
 <h2 id="section-5">参考文献</h2>

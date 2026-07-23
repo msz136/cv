@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cosmos / WAM Ownership Ledger：多目标训练、RoboCasa 评测与诊断边界</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\wam_ownership_ledger.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\wam_ownership_ledger.md">
 <meta name="aris:source-sha256" content="931a7fae9c6d224eac292d63eeffdfa374504318f8181e6f610f15d25f7c0d07">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>931a7fae9c6d224eac292d63eeffdfa374504318f8181e6f610f15d25f7c0d07</code>；生成自：<code>interview_materials\vla\evidence\projects\wam_ownership_ledger.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>931a7fae9c6d224eac292d63eeffdfa374504318f8181e6f610f15d25f7c0d07</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\wam_ownership_ledger.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#0-self-report-artifact-ownership">0. 候选人项目范围自述（self-report，不等于 artifact/ownership 证明）</a></li><li><a href="#1-ownership">1. Ownership 证据合同</a></li><li><a href="#2-git">2. Git、上游与工作树冻结事实</a></li><li><a href="#3-per-file-per-decision-ownership-matrix">3. Per-file / per-decision ownership matrix</a></li><li><a href="#4-claim-ownership-reconciliation">4. Claim → ownership reconciliation</a></li><li><a href="#5-production-gap">5. Production gap 与最小补证据</a></li><li><a href="#6">6. 候选人确认表</a></li><li><a href="#7">7. 两分钟叙事骨架（当前安全版）</a></li><li><a href="#8-6">8. 面试前 6 题</a></li><li><a href="#references">参考文献（References）</a></li><li><a href="#9-ownership">9. Ownership 审计伪代码</a></li></ol></nav>
 <h1>Cosmos / WAM Ownership Ledger：多目标训练、RoboCasa 评测与诊断边界</h1>
 <div class="meta">状态：<code>ownership_audited / diagnostic_artifacts_partial / candidate_confirmation_pending / WARN</code> 审查日期：2026-07-19 证据截止：2026-07-19 项目范围：<code>C:\Users\mousongzhe\Project</code> 中的 Cosmos Policy / WAM 训练适配、RoboCasa rollout、Cosmos/WAM diagnostics 与当前 CoffeePressButton paired artifact。 结论先行：Cosmos Policy 的 latent slot、condition/loss mask、policy/world/value routing、32→16 action queue 和 RoboCasa controller 合同由 frozen upstream source 支持；本地 Project snapshot、训练脚本、报告和一组 CoffeePressButton base/trained action trace 可直接读取，但 checkpoint binary、metric denominator、完整 episode suite、local diff 与候选人逐项角色仍未闭合。当前可以讲“训练/评测协议迁移与失败诊断”，不能把 WAM architecture、历史 MSE/成功率或单 episode trace 说成个人原创、benchmark uplift 或已验证 checkpoint 结果。</div>

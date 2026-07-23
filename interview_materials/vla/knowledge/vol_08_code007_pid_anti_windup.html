@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 08 CODE-007：PID Update with Anti-windup</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_08_code007_pid_anti_windup.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_08_code007_pid_anti_windup.md">
 <meta name="aris:source-sha256" content="478ee605d2624bd75e42fa7ff2979f32b1f0d35cdffe996bad3e4ae4bba7b407">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>478ee605d2624bd75e42fa7ff2979f32b1f0d35cdffe996bad3e4ae4bba7b407</code>；生成自：<code>interview_materials\vla\knowledge\vol_08_code007_pid_anti_windup.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>478ee605d2624bd75e42fa7ff2979f32b1f0d35cdffe996bad3e4ae4bba7b407</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_08_code007_pid_anti_windup.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1-wind-up">1. 直觉：为什么会 wind-up？</a></li><li><a href="#2">2. 冻结接口与状态</a></li><li><a href="#3-pid">3. 离散 PID 主体</a></li><li><a href="#4-conditional-integration">4. Conditional integration</a></li><li><a href="#5-back-calculation">5. Back-calculation</a></li><li><a href="#6-clamp-izone-reset">6. Clamp、IZone、reset 的边界</a></li><li><a href="#7">7. 参考实现（带边界注释）</a></li><li><a href="#8-first-divergence">8. 测试与 first-divergence 诊断</a></li><li><a href="#9-vla">9. VLA 映射与项目边界</a></li><li><a href="#10-30">10. 30 秒回答与高压追问</a></li><li><a href="#11">11. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 08 CODE-007：PID Update with Anti-windup</h1>
 <div class="meta">状态：<code>drafted / CODE-VLA-007 / knowledge_10_of_phase / card_pending / WARN</code> 报告日期：2026-07-20 证据截止：2026-07-20 来源入口：<a href="../sources/vol_08_code007_pid_anti_windup_source_freeze.html">CODE-007 Source Freeze</a>。</div>

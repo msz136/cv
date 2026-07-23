@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OpenPiVLA 本地 Runtime Rollout Artifact Gate：ALOHA 与 LIBERO</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\openpivla_runtime_rollout_artifact_gate.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\openpivla_runtime_rollout_artifact_gate.md">
 <meta name="aris:source-sha256" content="a383592eb99f0332529c572ab20de12c9d03aefd29cb3aa16fc74cc5a7e5ab57">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>a383592eb99f0332529c572ab20de12c9d03aefd29cb3aa16fc74cc5a7e5ab57</code>；生成自：<code>interview_materials\vla\sources\openpivla_runtime_rollout_artifact_gate.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>a383592eb99f0332529c572ab20de12c9d03aefd29cb3aa16fc74cc5a7e5ab57</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\openpivla_runtime_rollout_artifact_gate.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-evidence-freeze">1. Evidence freeze</a></li><li><a href="#2-aloha-mujoco-policy-inference">2. ALOHA：真实 MuJoCo policy inference</a></li><li><a href="#2-1-rollout">2.1 三回合基础 rollout</a></li><li><a href="#2-2-rollout">2.2 多视角 rollout</a></li><li><a href="#3-libero-rollout">3. LIBERO：任务级物理 rollout 的失败样本</a></li><li><a href="#4-claim">4. 证据边界与 claim 回写</a></li><li><a href="#5">5. 面试回答模板与追问</a></li><li><a href="#30">30 秒回答</a></li><li><a href="#section-9">高频追问</a></li><li><a href="#6">6. 下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>OpenPiVLA 本地 Runtime Rollout Artifact Gate：ALOHA 与 LIBERO</h1>
 <div class="meta">状态：<code>local-direct / immutable-summary-read / true-physics-rollout / WARN</code> 审查日期：2026-07-21 范围：<code>C:\Users\mousongzhe\project\openpivla_deployment</code> 的部署记录与已落档 rollout summary；本页只冻结运行时证据，不把上游 checkpoint 结果改写成个人训练成果。 结论先行：本地 artifact 直接支持 <strong>官方 OpenPI checkpoint 在 ALOHA MuJoCo 与 LIBERO/robosuite 物理环境中完成了可审计的 policy inference 与视频/轨迹落档</strong>。ALOHA transfer-cube 三回合为 <code>2/3</code>，多视角两回合为 <code>1/2</code>；LIBERO spatial task 0 的 <code>pi05_libero</code> model-policy smoke 为 <code>0/1</code>，同时记录了 no-op reference。当前仍不能据此声称 OpenPiVLA 私有微调、个人 ownership、泛化 benchmark 或 archived <code>97.4%</code> lineage 已闭合。</div>

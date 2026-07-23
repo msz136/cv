@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 PER-018：Navigation BC、DAgger、RL 与 Exposure Bias</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per018_navigation_bc_dagger_rl_exposure_bias.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per018_navigation_bc_dagger_rl_exposure_bias.md">
 <meta name="aris:source-sha256" content="28c489b8aa79c7c19b8c6709b8af394c909dc620dc1cf144f5193d75ad1c45e1">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>28c489b8aa79c7c19b8c6709b8af394c909dc620dc1cf144f5193d75ad1c45e1</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per018_navigation_bc_dagger_rl_exposure_bias.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>28c489b8aa79c7c19b8c6709b8af394c909dc620dc1cf144f5193d75ad1c45e1</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per018_navigation_bc_dagger_rl_exposure_bias.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 学习出口</a></li><li><a href="#2">2. 一分钟心智模型</a></li><li><a href="#3-bc-teacher-forcing-expert">3. BC 与 Teacher Forcing：在 expert 分布上学动作</a></li><li><a href="#3-1-teacher-forcing-covariate-shift">3.1 Teacher forcing 与 covariate shift</a></li><li><a href="#4-exposure-bias-student-forcing-scheduled-sampling">4. Exposure Bias、Student Forcing 与 Scheduled Sampling</a></li><li><a href="#5-dagger">5. DAgger：四道身份门</a></li><li><a href="#6-gae-ppo-dd-ppo-action-label-return">6. GAE、PPO 与 DD-PPO：从 action label 转向 return</a></li><li><a href="#7-navigation-training-manifest">7. Navigation Training Manifest：把身份写进数据</a></li><li><a href="#8-training-evaluation-protocol">8. Training ↔ Evaluation Protocol</a></li><li><a href="#9">9. 方法比较：面试一张表讲清楚</a></li><li><a href="#10-first-divergence-diagnosis">10. First-Divergence Diagnosis</a></li><li><a href="#11-fail-closed-navigation-training-pseudocode">11. Fail-Closed Navigation Training Pseudocode</a></li><li><a href="#12-deterministic-probes">12. 十个 Deterministic Probes</a></li><li><a href="#13-public-method-code-mapping">13. Public Method → Code Mapping</a></li><li><a href="#14-truth-boundary">14. 五个项目的 Truth Boundary</a></li><li><a href="#15">15. 两档面试回答</a></li><li><a href="#15-1-30">15.1 约 30 秒回答</a></li><li><a href="#15-2-2">15.2 约 2 分钟机制回答</a></li><li><a href="#16">16. 高频追问与答题抓手</a></li><li><a href="#17">17. 常见错误</a></li><li><a href="#18">18. 本页证据边界与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 PER-018：Navigation BC、DAgger、RL 与 Exposure Bias</h1>
 <div class="meta">状态：<code>knowledge_drafted / VLA-PER-018 / source_frozen / independent_fact_reviewed / project_truth_bounded / card_synced / WARN</code> 更新日期：2026-07-20 权威来源：<a href="../sources/vol_06_per018_navigation_bc_dagger_rl_exposure_bias_source_freeze.html">PER-018 Source Freeze</a> 学习边界：本页把已冻结的 navigation behavior cloning、teacher/student forcing、scheduled sampling、DAgger、GAE/PPO/DD-PPO 与 train/eval identity 转成面试讲义；本轮不生成题卡、不改变 268 张题卡的 mastery、不创建 coaching state。</div>

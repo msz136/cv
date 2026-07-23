@@ -64,7 +64,7 @@ OpenVLA 的架构、全量微调与 code endpoint 已在 [Source Audit A](vol_03
 
 代码块说明：三者都使用 transformer，但 action 的“位置”分别是 LM label、readout latent 和 continuous suffix latent。把它们都叫 action token 会掩盖监督目标与 attention 方向。
 
-对自回归 token 路线，令 (y_i) 为第 (i) 个 token，(m_i\in\{0,1\}) 为 label mask，则：
+对自回归 token 路线，令 \(y_i\) 为第 \(i\) 个 token，\(m_i\in\{0,1\}\) 为 label mask，则：
 
 \[
 \mathcal L_{\mathrm{AR}}
@@ -72,7 +72,7 @@ OpenVLA 的架构、全量微调与 code endpoint 已在 [Source Audit A](vol_03
 {\sum_i m_i+\epsilon}.
 \]
 
-变量与实现：(c) 是图像/任务条件；causal attention 决定 (y_i) 可读取哪些前缀，(m_i) 决定哪些位置产生 CE 梯度。OpenVLA `RLDSBatchTransform` 把 prompt prefix 设为 `IGNORE_INDEX=-100`，默认保留 action tokens 与 stop token；插入的 image patches 也补 `IGNORE_INDEX`。[2] 因此 attention-visible 不等于 loss-visible。
+变量与实现：\(c\) 是图像/任务条件；causal attention 决定 \(y_i\) 可读取哪些前缀，\(m_i\) 决定哪些位置产生 CE 梯度。OpenVLA `RLDSBatchTransform` 把 prompt prefix 设为 `IGNORE_INDEX=-100`，默认保留 action tokens 与 stop token；插入的 image patches 也补 `IGNORE_INDEX`。[2] 因此 attention-visible 不等于 loss-visible。
 
 Octo 的 frozen `octo_module.py` 将 task 作为 prefix；同 timestep 的 observation groups 互相注意并看历史；readout 可读取 task/observation/自身 readout，却不被 observation 写回。其源码注释甚至记录 v1.5 修复过 attention mask 的 off-by-one bug，说明 mask 不是展示性元数据。[5]
 
@@ -101,7 +101,7 @@ M_{b,w,h,d}=T_{b,w}\land A_{b,w,h,d},
 | LoRA / adapter | 对选定线性层学习低秩增量 | 训练参数和 optimizer state 小，checkpoint 易管理 | rank/target module 可能限制容量；base revision 与 adapter 必须配对 | OpenVLA all-linear LoRA；openpi VLM + action-expert LoRA |
 | independent action expert | 保留大 VLM context，另训较小 continuous expert | robot action 的宽度/目标与 VLM 解耦；多步 flow 的单步计算较小 | context bottleneck、expert 与 backbone 联调复杂 | π0 2B VLM + 300M expert |
 
-LoRA 对冻结权重 (W\in\mathbb R^{o\times i}) 学习低秩增量：
+LoRA 对冻结权重 \(W\in\mathbb R^{o\times i}\) 学习低秩增量：
 
 \[
 W'=W+\frac{\alpha}{r}BA,
@@ -109,7 +109,7 @@ W'=W+\frac{\alpha}{r}BA,
 A\in\mathbb R^{r\times i},\;B\in\mathbb R^{o\times r}.
 \]
 
-变量与实现：(r\ll\min(i,o)) 是 rank，(alpha) 是 scale。OpenVLA official finetune 用 PEFT `target_modules="all-linear"`；openpi LIBERO low-memory 配置把 PaliGemma 与 action expert 都换成 LoRA variant，并用匹配 config 的 `get_freeze_filter()` 冻结非 LoRA 权重。[2][7] 这证明“支持怎样适配”，不证明某个本地 checkpoint 实际采用该路线。
+变量与实现：\(r\ll\min(i,o)\) 是 rank，\(\alpha\) 是 scale。OpenVLA official finetune 用 PEFT `target_modules="all-linear"`；openpi LIBERO low-memory 配置把 PaliGemma 与 action expert 都换成 LoRA variant，并用匹配 config 的 `get_freeze_filter()` 冻结非 LoRA 权重。[2][7] 这证明“支持怎样适配”，不证明某个本地 checkpoint 实际采用该路线。
 
 ### 5.2 面试决策顺序
 
@@ -121,7 +121,7 @@ A\in\mathbb R^{r\times i},\;B\in\mathbb R^{o\times r}.
 
 ## 6. `VLA-ARCH-010`：跨 embodiment action 统一与 padding loss
 
-设 robot (e) 的真实动作 (a^{(e)}\in\mathbb R^{d_e})，模型统一宽度为 (D\ge d_e)。用 embedding matrix (P_e\in\{0,1\}^{D\times d_e}) 写入统一空间，用 selection matrix (S_e=P_e^\top) 取回：
+设 robot \(e\) 的真实动作 \(a^{(e)}\in\mathbb R^{d_e}\)，模型统一宽度为 \(D\ge d_e\)。用 embedding matrix \(P_e\in\{0,1\}^{D\times d_e}\) 写入统一空间，用 selection matrix \(S_e=P_e^\top\) 取回：
 
 \[
 \bar a^{(e)}=P_ea^{(e)},
@@ -131,7 +131,7 @@ A\in\mathbb R^{r\times i},\;B\in\mathbb R^{o\times r}.
 m^{(e)}_j=\mathbb 1[j\in\operatorname{Im}(P_e)].
 \]
 
-变量与实现：(P_e) 只能表示“维度放到哪里”，不能自动统一 axis、unit、absolute/delta、rotation 或 gripper semantics；这些还需要 schema transform。openpi `PadStatesAndActions` 只做 zero-pad，不能据此假设 loss mask 存在。[7]
+变量与实现：\(P_e\) 只能表示“维度放到哪里”，不能自动统一 axis、unit、absolute/delta、rotation 或 gripper semantics；这些还需要 schema transform。openpi `PadStatesAndActions` 只做 zero-pad，不能据此假设 loss mask 存在。[7]
 
 正确的 masked continuous objective 应明确 normalization 和有效维：
 
@@ -141,7 +141,7 @@ m^{(e)}_j=\mathbb 1[j\in\operatorname{Im}(P_e)].
 {\sum_{b,h,j}m_{b,h,j}+\epsilon}.
 \]
 
-变量与实现：(m) 同时排除 padding timestep 与 padding dimension；Octo 的 `action_pad_mask` 是直接正例。[6] 若对全部 D 维 mean，zero padded axes 也会产生“逼近 0”的监督，并随 (d_e/D) 改变有效维梯度占比。此前 frozen π0 审计只看到 all-D mean，因此本地若声称避免 padding loss，必须提供自己的 mask path。
+变量与实现：\(m\) 同时排除 padding timestep 与 padding dimension；Octo 的 `action_pad_mask` 是直接正例。[6] 若对全部 D 维 mean，zero padded axes 也会产生“逼近 0”的监督，并随 \(d_e/D\) 改变有效维梯度占比。此前 frozen π0 审计只看到 all-D mean，因此本地若声称避免 padding loss，必须提供自己的 mask path。
 
 ### 6.1 schema 统一检查表
 
@@ -245,7 +245,7 @@ a^{\mathrm{ctrl}}
 \right).
 \]
 
-变量与实现：(mathcal A_e) 是 robot/controller 允许的动作集合。函数顺序不能随意交换：例如在 normalized space clip 与在物理 velocity space clip 的含义不同；delta action 必须在正确 state/frame 上恢复。openpi 的 `Policy.infer` 明确在 model sampling 后执行 output transform，`policy_config` 把 `model_transforms.outputs`、`Unnormalize`、dataset outputs 和 repack outputs 依次组合。[7]
+变量与实现：\(\mathcal A_e\) 是 robot/controller 允许的动作集合。函数顺序不能随意交换：例如在 normalized space clip 与在物理 velocity space clip 的含义不同；delta action 必须在正确 state/frame 上恢复。openpi 的 `Policy.infer` 明确在 model sampling 后执行 output transform，`policy_config` 把 `model_transforms.outputs`、`Unnormalize`、dataset outputs 和 repack outputs 依次组合。[7]
 
 具体公开实现边界：
 
@@ -256,7 +256,7 @@ a^{\mathrm{ctrl}}
 
 ### 9.2 axis/unit 映射必须显式
 
-若 dataset delta (a^{\mathrm{data}}) 与 controller action 的轴序/单位关系为矩阵 (R_e) 和 scale (s_e)，且部分维为 absolute 恢复，则可写：
+若 dataset delta \(a^{\mathrm{data}}\) 与 controller action 的轴序/单位关系为矩阵 \(R_e\) 和 scale \(s_e\)，且部分维为 absolute 恢复，则可写：
 
 \[
 a^{\mathrm{abs}}_{t:t+H-1}
@@ -265,7 +265,7 @@ a^{\mathrm{abs}}_{t:t+H-1}
 a^{\mathrm{ctrl}}=s_e\odot R_e a^{\mathrm{abs}}.
 \]
 
-变量与实现：(m_\Delta) 只在 delta dimensions 为 1，(q_t) 是当前 state；真实 rotation 可能需要群上的 composition，不能总用向量加法。openpi `AbsoluteActions` 只对 mask 覆盖的前 dims 加 state，是可核代码例；本地 axis matrix、unit scale 与 rotation semantics 仍需 controller wrapper 证明。[7]
+变量与实现：\(m_\Delta\) 只在 delta dimensions 为 1，\(q_t\) 是当前 state；真实 rotation 可能需要群上的 composition，不能总用向量加法。openpi `AbsoluteActions` 只对 mask 覆盖的前 dims 加 state，是可核代码例；本地 axis matrix、unit scale 与 rotation semantics 仍需 controller wrapper 证明。[7]
 
 ## 10. `VLA-ACT-032`：parser、queue、replan 与 safety 的最小闭环测试
 

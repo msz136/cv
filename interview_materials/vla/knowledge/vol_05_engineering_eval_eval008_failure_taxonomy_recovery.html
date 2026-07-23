@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 05 EVAL-008：Perception / Action / Controller / Recovery Failure Taxonomy</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_05_engineering_eval_eval008_failure_taxonomy_recovery.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eval008_failure_taxonomy_recovery.md">
 <meta name="aris:source-sha256" content="51b7c92bdebd3ffd2942f05bc436e77a14b3b08e1341879be7e5829d0eb8fb71">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>51b7c92bdebd3ffd2942f05bc436e77a14b3b08e1341879be7e5829d0eb8fb71</code>；生成自：<code>interview_materials\vla\knowledge\vol_05_engineering_eval_eval008_failure_taxonomy_recovery.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>51b7c92bdebd3ffd2942f05bc436e77a14b3b08e1341879be7e5829d0eb8fb71</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eval008_failure_taxonomy_recovery.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 一条失败链，不是一张失败截图</a></li><li><a href="#2">2. 四个名词必须分开</a></li><li><a href="#3-first-verified-divergence">3. First Verified Divergence</a></li><li><a href="#4-perception-state-estimation-failure">4. Perception / State Estimation Failure</a></li><li><a href="#4-1-failure-modes">4.1 Failure modes</a></li><li><a href="#4-2">4.2 证据</a></li><li><a href="#5-policy-action-action-interface-failure">5. Policy / Action 与 Action Interface Failure</a></li><li><a href="#5-1-policy-action">5.1 Policy/action</a></li><li><a href="#5-2-action-interface">5.2 Action interface</a></li><li><a href="#6-controller-execution-failure">6. Controller / Execution Failure</a></li><li><a href="#7-recovery-supervision-failure">7. Recovery / Supervision Failure</a></li><li><a href="#8-cross-cutting-protocol-reset-scorer">8. Cross-cutting：Protocol / Reset / Scorer</a></li><li><a href="#9">9. 归因矩阵</a></li><li><a href="#10-detection-recovery-metrics">10. Detection / Recovery Metrics</a></li><li><a href="#11-failure-ledger">11. Failure Ledger</a></li><li><a href="#12">12. 五项目映射</a></li><li><a href="#wam">WAM</a></li><li><a href="#openpivla">OpenPiVLA</a></li><li><a href="#opd">OPD</a></li><li><a href="#robot-harness">Robot Harness</a></li><li><a href="#uwm">UWM</a></li><li><a href="#13">13. 高频追问</a></li><li><a href="#14-review-checklist">14. Review Checklist 与下一入口</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 05 EVAL-008：Perception / Action / Controller / Recovery Failure Taxonomy</h1>
 <div class="meta">状态：<code>drafted / VLA-EVAL-008 / knowledge_30_of_44 / card_1_of_1_unseen / review_warn</code> 更新日期：2026-07-18 前置：<a href="vol_05_engineering_eval_eval006_versioned_evaluation_manifest.html">EVAL-006 Versioning</a>、<a href="vol_05_engineering_eval_eval007_coverage_difficulty_stratification.html">EVAL-007 Coverage</a>、<a href="vol_04_world_model_sim2real_wm020_failure_diagnostics.html">WM-020 Diagnostics</a> 来源冻结：<a href="../sources/vol_05_eval008_perception_action_controller_recovery_failure_taxonomy_source_freeze.html">EVAL-008 Source Freeze</a> 项目边界：五项目均未闭合layer-aligned trace、matched intervention与fix/rerun，本页不升级root-cause或recovery claim。</div>

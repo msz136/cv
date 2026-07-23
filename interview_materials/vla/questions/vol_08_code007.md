@@ -15,9 +15,9 @@
 
 **面试意图**：判断你能否冻结 `dt`、error sign、内部 state、output/i limits 与 anti-windup 分支，并写出可诊断的更新，而不是只把 `P+I+D` 相加。
 
-**30 秒回答**：固定 e、dt、state 和 limits，算 u_unsat=P+I+D，再 clip 得 u_sat。conditional integration 在饱和且误差继续推向 rail 时冻结、反向时放行；back-calculation 用 (u_sat−u_unsat)/Tt 回拉积分。记录 trace，测 dt、饱和、reset、replay。
+**30 秒回答**：固定 \(e\)、\(dt\)、state 和 limits，算 \(u_{unsat}=P+I+D\)，再 clip 得 \(u_{sat}\)。conditional integration 在饱和且误差继续推向 rail 时冻结、反向时放行；back-calculation 用 \((u_{sat}-u_{unsat})/T_t\) 回拉积分。记录 trace，测 \(dt\)、饱和、reset、replay。
 
-**机制展开（约 2 分钟）**：令 i_state 为积分输出贡献，u_unsat=Kp·e+i_state+Kd·Δe/dt，u_sat=clip(u_unsat)。conditional integration 按饱和方向决定是否累加 Ki·dt·e；back-calculation 用 dt·(Ki·e+(u_sat−u_unsat)/Tt) 回拉。u_clamp、i_clamp、IZone、reset 不等价，reset 绑定 episode/lease epoch。返回 action、state、trace，检查 dt、broadcast、NaN 和 limits。VLA 先绑定 action schema/norm/unit；没有 PID 或 tuning artifact，不能声称真机闭环。
+**机制展开（约 2 分钟）**：令 \(i_{state}\) 为积分输出贡献，\(u_{unsat}=K_p e+i_{state}+K_d\Delta e/dt\)，\(u_{sat}=\operatorname{clip}(u_{unsat})\)。conditional integration 按饱和方向决定是否累加 \(K_i dt e\)；back-calculation 用 \(dt\,[K_i e+(u_{sat}-u_{unsat})/T_t]\) 回拉。`u_clamp`、`i_clamp`、IZone、reset 不等价，reset 绑定 episode/lease epoch。返回 action、state、trace，检查 \(dt\)、broadcast、NaN 和 limits。VLA 先绑定 action schema/norm/unit；没有 PID 或 tuning artifact，不能声称真机闭环。
 
 **诊断 / 证据**：按 `dt/finite → error sign → state/reset → u_unsat → clamp → anti-windup branch → dtype/device → controller ack` 定位。做 `K_i/K_d=0`、上/下饱和、误差反向、`u_min=u_max`、reset、continuous input、fixed replay 八类 probe；记录 `e/p/i/d/u_unsat/u_sat/branch/dt/reset_reason`。白板答案应说明 `Tt` 与单位；runtime 还需 matched step/reversal、noise/jitter、episode epoch 与 action-limit artifact。现有项目只能作为接口 hook，不能升级为 PID ownership 或 robot success。
 

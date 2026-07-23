@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PROJ-OPENPIVLA-001 + Batch 2 证据约束下的示范回答</title>
+<title>PROJ-OPENPIVLA-001 + Batch 2 从项目实现反推的证据约束口述稿</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\practice\openpivla_oral_model_answer.md">
-<meta name="aris:source-sha256" content="d78378eb3105b0965b1a4a9bbe1a4e9c574f4331681eee81fc7ba2705de2d169">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\practice\openpivla_oral_model_answer.md">
+<meta name="aris:source-sha256" content="9a238e196843a505dcc28f09d96da5794144b215594946de5a67e53e5697453d">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,10 +140,10 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>d78378eb3105b0965b1a4a9bbe1a4e9c574f4331681eee81fc7ba2705de2d169</code>；生成自：<code>interview_materials\vla\practice\openpivla_oral_model_answer.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>9a238e196843a505dcc28f09d96da5794144b215594946de5a67e53e5697453d</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\practice\openpivla_oral_model_answer.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-30">1. 30 秒版本</a></li><li><a href="#2-2">2. 2 分钟版本</a></li><li><a href="#3">3. 证据映射</a></li><li><a href="#4">4. 高频追问答法</a></li><li><a href="#assistant-only-ce">“为什么不是 assistant-only CE？”</a></li><li><a href="#lora-checkpoint">“LoRA checkpoint 如何证明可加载？”</a></li><li><a href="#flow-matching">“为什么这不等于 flow matching？”</a></li><li><a href="#recipe-fast-tokenizer-fast">“recipe 里有 `fast_tokenizer`，是不是已经使用 FAST？”</a></li><li><a href="#trainer-97-4">“代码里有 trainer，能否说 97.4% 已复现？”</a></li><li><a href="#5-batch-2">5. Batch 2：稳定性、证据阶梯与动作合同</a></li><li><a href="#5-1-30">5.1 30 秒项目版本</a></li><li><a href="#5-2-2">5.2 2 分钟版本</a></li><li><a href="#5-3-batch-2-evidence-contract">5.3 Batch 2 Evidence Contract</a></li><li><a href="#5-4-batch-2">5.4 四个 Batch 2 高压追问</a></li><li><a href="#eager-flash">“eager 是不是比 flash 更好？”</a></li><li><a href="#smoke-report">“smoke 和 report 都说完成，为什么还不能说有最终模型？”</a></li><li><a href="#h-15-d-72-recipe">“`H=15,D=72` 不是已经写在 recipe 里了吗？”</a></li><li><a href="#flow-matching-loss-current-trainer-flow-matching">“历史日志有 flow matching loss，能否说 current trainer 做了 flow matching？”</a></li><li><a href="#5-5-batch-2-lineage">5.5 Batch 2 追问树与 lineage 最小合同</a></li><li><a href="#6">6. 练习边界</a></li><li><a href="#references">References</a></li></ol></nav>
-<h1>PROJ-OPENPIVLA-001 + Batch 2 证据约束下的示范回答</h1>
-<div class="meta">状态：<code>model_answer / evidence_bounded / not_candidate_transcript / unseen</code> 更新日期：2026-07-21 题目：从代码证据看，formal trainer 的模型、参数更新、稳定性选择、shape contract 与 checkpoint lineage 是什么？</div>
+<h1>PROJ-OPENPIVLA-001 + Batch 2 从项目实现反推的证据约束口述稿</h1>
+<div class="meta">状态：<code>implementation_derived_model_answer / evidence_bounded / not_candidate_transcript / unseen</code> 更新日期：2026-07-22 题目：从代码证据看，formal trainer 的模型、参数更新、稳定性选择、shape contract 与 checkpoint lineage 是什么？</div>
 <h2 id="1-30">1. 30 秒版本</h2>
 <div class="meta">这条 formal path 使用 Qwen3-VL 做条件生成模型，通过 PEFT LoRA 只更新 adapter 参数。训练循环把 batch 送进 <code>model(**batch)</code>，用 <code>outputs.loss</code> 做反向传播和梯度累积；collator 复制 <code>input_ids</code> 作为 labels，只把 padding 位置设为 <code>-100</code>。所以当前代码证明的是 full-chat causal CE trainer，包括 prompt、wrapper 和 assistant content 的非 padding token，不是 assistant-only CE，也不是原始 π0 的连续 flow-matching loss。代码和 report 能证明 trainer path，不能单独证明 checkpoint 效果或 benchmark 结果。</div>
 <p>这段话只描述当前可读代码；“我实现/我修改”必须由候选人用 ownership ledger 逐文件确认。</p>

@@ -6,7 +6,7 @@
 <title>OPD / VLM Grounding Claim–Evidence Inventory（OPD-01）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\evidence\projects\opd_claim_evidence_inventory.md">
-<meta name="aris:source-sha256" content="c002b2275eb1f747e1e6f383cb271539f081ae8ccee0c8d11afc92ebabe99afa">
+<meta name="aris:source-sha256" content="7fa495742b78c9fa4d56cdd9b46c9fb41fb4ab07b5e17a1202b8e860693920c8">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,30 +121,31 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>c002b2275eb1f747e1e6f383cb271539f081ae8ccee0c8d11afc92ebabe99afa</code>；生成自：<code>interview_materials\vla\evidence\projects\opd_claim_evidence_inventory.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>7fa495742b78c9fa4d56cdd9b46c9fb41fb4ab07b5e17a1202b8e860693920c8</code>；生成自：<code>interview_materials\vla\evidence\projects\opd_claim_evidence_inventory.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#section-1">结论先行</a></li><li><a href="#1">1. 证据标签与面试门槛</a></li><li><a href="#2-claim-reconciliation">2. Claim reconciliation</a></li><li><a href="#3-source-inventory">3. Source inventory（输入冻结）</a></li><li><a href="#4-expert">4. 五 expert 数据与路由设计</a></li><li><a href="#4-1-expert-mix">4.1 Expert mix</a></li><li><a href="#4-2-student-route-metadata">4.2 Student route metadata</a></li><li><a href="#5-coldstart-opd-lineage">5. Coldstart 与正式 OPD lineage</a></li><li><a href="#5-1-coldstart-500">5.1 Coldstart-500</a></li><li><a href="#5-2-opd5000">5.2 OPD5000</a></li><li><a href="#6-raw-holdout">6. Raw-holdout 协议与结果</a></li><li><a href="#6-1-gate">6.1 评估集 gate</a></li><li><a href="#6-2-opd5000-checkpoint">6.2 OPD5000 checkpoint 曲线</a></li><li><a href="#6-3-opd-final-opd5000">6.3 旧版 OPD final 与新版 OPD5000 分离</a></li><li><a href="#7-point-protocol-reconciliation">7. Point protocol reconciliation</a></li><li><a href="#8">8. 结果边界与失败域</a></li><li><a href="#9-ablation-lineage-ownership">9. Ablation、lineage 与 ownership 队列</a></li><li><a href="#p0">P0</a></li><li><a href="#p1">P1</a></li><li><a href="#10">10. 面试安全表述</a></li><li><a href="#11-references">11. References</a></li></ol></nav>
 <h1>OPD / VLM Grounding Claim–Evidence Inventory（OPD-01）</h1>
 <div class="meta">状态：<code>drafted / local_direct_audit / ownership_audited / WARN</code> 审查日期：2026-07-19 证据截止：2026-07-19 项目范围：五 expert 数据混合、OPD student route metadata、coldstart、online student-rollout OPD、raw-holdout box/point/text 评估 证据仓库：<code>C:\Users\mousongzhe\muxi</code>（只读审计；本轮未修改该仓库） 仓库 HEAD：<code>756e27e16adcfb3ccbfe98c2920dda42095b127f</code></div>
 <h2 id="section-1">结论先行</h2>
-<p>本轮可以把 OPD 的数据路由、五教师训练机制、OPD5000 checkpoint 曲线和 raw-holdout 去重协议从项目叙述提升到 <code>local-direct</code> 或 <code>report-supported</code>。<code>build_expert_mixes_seed0_v2.py</code> 明确了 800,000 train / 20,000 eval、image-hash split、五个 expert 和 spatial-relation 重采样；<code>build_opd_student_v1.py</code> 与 <code>audit_opd_student_v1.py</code> 明确了 999,900 条最终 train、46,599 条 eval、seen/unseen/hard、boundary/format-conflict route metadata 与硬校验；<code>train_opd_online_vl.py</code> 和 run summary 明确了五教师 <code>preloaded_zero3</code>、teacher selection、coldstart 和 student-rollout/full-vocab KL 机制。</p>
+<p>本轮可以把 OPD 的数据路由、五教师训练机制、OPD5000 checkpoint 曲线和 raw-holdout 去重协议从项目叙述提升到 <code>local-direct</code> 或 <code>report-supported</code>。<code>build_expert_mixes_seed0_v2.py</code> 明确了 800,000 train / 20,000 eval、image-hash split、五个 expert 和 spatial-relation 重采样；<code>build_opd_student_v1.py</code> 与 <code>audit_opd_student_v1.py</code> 明确了 999,900 条最终 train、46,599 条 eval、seen/unseen/hard、boundary/format-conflict route metadata 与硬校验；formal <code>point/train_opd_online_vl.py</code> 和 run summary 明确了五教师 <code>preloaded_zero3</code>、teacher selection、coldstart teacher-rollout/full-vocab KL 与 OPD5000 student-rollout/full-vocab KL。根目录同名脚本是 legacy teacher-rollout/top1-CE 路线，不能作为 formal KL claim 的代码锚点；详见 <a href="opd_training_objective_lineage_gate.html">Training Objective Lineage Gate</a>。</p>
 <p>OPD5000 的结果必须绑定到具体 checkpoint 和子集：在 10,000 条 raw-holdout 上，checkpoint-3000 的整体 box IoU 为 0.4761，checkpoint-5000 的 Box Acc@0.5 为 0.5238、Point Hit@50/100 为 0.7493/0.8729，checkpoint-4000 的 keepalive text exact 为 0.8784。不同 pool 的最佳 checkpoint 不一致，不能把 checkpoint-5000 说成所有指标的最佳。</p>
 <p>当前 verdict 保持 <code>WARN</code>。本地没有模型权重、optimizer state、完整 raw predictions 或可复算的远端 checkpoint bundle；<code>OPD final</code>（旧版 8-model 主评估）与 <code>OPD5000 checkpoint-5000</code>（新版 new-experts 曲线）不是同一条 run 记录；没有 SFT-only、single-teacher、no-synthetic 或 synthetic-ratio ablation。因此可以讲“组合路线及结果”，不能把提升单因果归因于 OPD，也不能把 Git author 自动等同于个人独立 ownership。逐文件 ownership 已在 <a href="opd_ownership_ledger.html">OPD Ownership Ledger</a> 建立，但 <code>msz136</code> 初始 scaffold、<code>mousongzhe</code> 后续提交、远端运行者、工具/协作边界仍需候选人确认。</p>
 <h2 id="1">1. 证据标签与面试门槛</h2>
@@ -158,8 +164,8 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <tr><td><code>OPD-CL-002</code></td><td>expert mix 为 800k train / 20k eval，按 image hash 做 5% candidate eval</td><td>脚本常量与 split 函数</td><td><code>local-direct</code></td><td>可讲 image-level split 和 source/expert metadata</td></tr>
 <tr><td><code>OPD-CL-003</code></td><td>OPD student 数据按 domain/general/boundary/format-conflict 构造并记录 route</td><td><code>build_opd_student_v1.py</code>、<code>report.md</code>、最终 summary</td><td><code>local-direct</code></td><td>可讲 60/25/10/5 设计、seen 100k 边界与格式冲突；要说明最终 train 为 999,900</td></tr>
 <tr><td><code>OPD-CL-004</code></td><td>train/eval 完成 JSON、坐标、图片、fingerprint 与 overlap 审计</td><td><code>audit_opd_student_v1.py</code>、<code>report.md</code></td><td><code>local-direct / report-supported</code></td><td>可报无坏 JSON、无 train/eval image/fingerprint overlap；不要把它当作模型质量证明</td></tr>
-<tr><td><code>OPD-CL-005</code></td><td>coldstart 是五教师 teacher-rollout + full-vocab KL，约 500 steps</td><td><code>coldstart500_opd_online_run_summary.json</code>、脚本/报告</td><td><code>local-direct / report-supported</code></td><td>可解释为什么先让 student 贴近 teacher 分布；未提供独立 coldstart ablation</td></tr>
-<tr><td><code>OPD-CL-006</code></td><td>正式 OPD 是 student rollout、同一 response 上 teacher forward、route-based full-vocab KL，5000 steps</td><td><code>train_opd_online_vl.py</code>、<code>opd5000_opd_online_run_summary.json</code></td><td><code>local-direct</code></td><td>可画训练链路；需绑定 max_new_tokens=64、prefix=64、skip=64,000、ZeRO-3 配置</td></tr>
+<tr><td><code>OPD-CL-005</code></td><td>coldstart 是五教师 teacher-rollout + full-vocab KL，约 500 steps</td><td><code>point/train_opd_online_vl.py</code>、coldstart launcher/summary、objective lineage gate</td><td><code>local-direct / report-supported</code></td><td>可解释为什么先让 student 贴近 teacher 分布；未提供独立 coldstart ablation；veto beta&gt;0 时 target 不是纯 teacher</td></tr>
+<tr><td><code>OPD-CL-006</code></td><td>正式 OPD 是 student rollout、同一 response 上 teacher forward、route-based full-vocab \(D_{KL}(q_\beta\Vert p_S)\)，5000 steps</td><td><code>point/train_opd_online_vl.py</code>、OPD5000 launcher/summary、objective lineage gate</td><td><code>local-direct</code></td><td>可画训练链路并说明 beta=0 才是 teacher∥student；需绑定 max_new_tokens=64、prefix=64、skip=64,000、ZeRO-3 配置</td></tr>
 <tr><td><code>OPD-CL-007</code></td><td>OPD5000 ckpt5000 在 point/box/text 上取得 0.7493/0.8729、0.5238、0.8724</td><td>by-format table、by-pool table、run summary</td><td><code>local-direct / protocol-bounded</code></td><td>绑定 10k raw-holdout、格式子集 n=1400/6100/2500；不能说所有域最佳</td></tr>
 <tr><td><code>OPD-CL-008</code></td><td>不同任务池的最佳 checkpoint 不一致</td><td>by-pool table</td><td><code>local-direct</code></td><td>semantic-nav=ckpt2000、VG region/relation=ckpt3000、keepalive=ckpt4000、point=ckpt5000；用来说明多目标 trade-off</td></tr>
 <tr><td><code>OPD-CL-009</code></td><td>raw-holdout 10k 无训练图片泄漏、fingerprint/source-line/prompt-answer-image 重复</td><td><code>evalset_summary.json</code>、<code>dedupe_audit.json</code></td><td><code>local-direct</code></td><td>可讲评估集构造和 leakage gate；重复图片路径不等价于重复样本</td></tr>
@@ -172,7 +178,8 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <tr><td><code>build_expert_mixes_seed0_v2.py</code></td><td>local evidence</td><td><code>19D5EF9E25D8664EA983880B79373098A77D19D5DA11D5B2AD17BEE6195C2F2C</code></td><td>五 expert 配额、hash split、relation buckets、source metadata</td><td>实际训练是否按脚本完成、个人 ownership</td></tr>
 <tr><td><code>build_opd_student_v1.py</code></td><td>local evidence</td><td><code>44BCC42DE40249363DAE908314DB79BF658AAE4A5DA008732CD724389D5CD3BE</code></td><td>target/candidate route、seen/unseen/hard、格式冲突 prompt、gold/fingerprint 字段</td><td>模型是否学会 route、最终远端文件是否与当前脚本完全同版</td></tr>
 <tr><td><code>audit_opd_student_v1.py</code></td><td>local evidence</td><td><code>B38F92C2FE681C250D3BA61C35299935501D014BA8B34965C7ED8D529A92D6BB</code></td><td>JSON、长度、坐标、图片、重复与 overlap 审计逻辑</td><td>未执行的环境、权重或训练质量</td></tr>
-<tr><td><code>train_opd_online_vl.py</code></td><td>local evidence</td><td><code>BF9120B5D88180EA4C4725C6F4934913F35FDD36ECB4BC8E6B3B089FB964D8D9</code></td><td>route-based teacher selection、preloaded_zero3、rollout、full-vocab KL、veto/prefix 参数</td><td>训练已成功完成的全部运行时细节、模型质量因果</td></tr>
+<tr><td><code>train_opd_online_vl.py</code>（root legacy）</td><td>local evidence</td><td><code>BF9120B5D88180EA4C4725C6F4934913F35FDD36ECB4BC8E6B3B089FB964D8D9</code></td><td>teacher rollout、teacher top1 hard labels、token CE、legacy mode string</td><td>coldstart/OPD5000 的 full-vocab KL 或 student-rollout formal claim</td></tr>
+<tr><td><code>point/train_opd_online_vl.py</code>（formal）</td><td>local evidence</td><td><code>7103E3B28068A30978F2B14AD980E51CEC2EC60A0445B2B52243342CDA286336</code></td><td>route teacher、teacher/student rollout switch、full-vocab \(D_{KL}(q_\beta\Vert p_S)\)、veto/prefix/entropy/top-k diagnostics</td><td>远端 checkpoint binary、optimizer state、raw prediction 与因果 uplift</td></tr>
 <tr><td><code>REPORT.md</code>（Windows 不区分大小写时显示为 <code>report.md</code>）</td><td>committed report</td><td><code>0EC1E16D1E15AEDC918B910775E7BFD7C769D9715DFBBB9127C09E23F44A4170</code></td><td>数据快照、point protocol 修正、OPD 叙事和历史 run 说明</td><td>raw predictions、远端权重、可复算 checkpoint lineage</td></tr>
 <tr><td><code>report/opd5000_newexperts_20260601/artifact_manifest.json</code></td><td>local manifest</td><td><code>035764A0461DEE5942AB25AF1BDFCD2514BD69AAC473B2DE8E43F3A7EC86021A</code></td><td>synced scope、remote root、final model paths、排除项</td><td>本地可加载模型权重（manifest 明确排除）</td></tr>
 <tr><td><code>report/opd5000_newexperts_20260601/model_assets_eval_table.md</code></td><td>local table</td><td><code>5BA42BA56EFCD586A770D258E8536390942AB249606CA4D4AD88F70FB3BEBE45</code></td><td>expert 训练摘要、evaluated checkpoints、指标口径</td><td>五 expert 独立 raw-holdout 结果</td></tr>
@@ -202,10 +209,10 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <p>这套 metadata 证明了“路由监督被写入数据”，不证明 student 在推理时必然选择正确 expert，也不证明 60/25/10/5 是全局最优比例。</p>
 <h2 id="5-coldstart-opd-lineage">5. Coldstart 与正式 OPD lineage</h2>
 <h3 id="5-1-coldstart-500">5.1 Coldstart-500</h3>
-<p>冷启动 summary 记录五教师 <code>preloaded_zero3</code>、teacher rollout、full-vocab distillation、<code>max_new_tokens=128</code>、<code>opd_prefix_loss_tokens=64</code>、veto beta 从 1 到 0（100 steps）等设置，student 起点为 <code>/data/msz/models/8b_base</code>。该阶段的可解释目的，是先让 student 获得稳定的 teacher 行为与输出协议，再进入 on-policy student rollout；但本地没有 coldstart-only raw-holdout 评估，不能把其增益单独量化。</p>
+<p>冷启动 summary 记录五教师 <code>preloaded_zero3</code>、teacher rollout、full-vocab distillation、<code>max_new_tokens=128</code>、<code>opd_prefix_loss_tokens=64</code>、veto beta 从 1 到 0（100 steps）等设置，student 起点为 <code>/data/msz/models/8b_base</code>。formal trainer 的 target 在 beta 大于 0 时由 <code>teacher_logits + beta * stopgrad(student_logits)</code> 构造，beta=0 后才退化为纯 \(D_{KL}(p_T\|p_S)\)。该阶段的可解释目的，是先让 student 获得稳定的 teacher 行为与输出协议，再进入 on-policy student rollout；但本地没有 coldstart-only raw-holdout 评估，不能把其增益单独量化。</p>
 <h3 id="5-2-opd5000">5.2 OPD5000</h3>
 <p>正式 summary 记录：</p>
-<ul><li>student 起点为 coldstart500 输出；五教师均以 <code>preloaded_zero3</code> 常驻并按 route 选择；</li><li><code>student</code> rollout 后，在同一 response 上执行 teacher forward；</li><li>full-vocabulary KL，<code>max_new_tokens=64</code>，prefix loss token=64；</li><li><code>skip_expanded_samples=64,000</code>，保存 checkpoint 1000/2000/3000/4000/5000；</li><li>训练 summary 的 <code>train_loss=0.0306129573</code>，<code>last_opd_loss=0.0215270</code>，<code>last_opd_topk_overlap=0.7466</code>；</li><li>远端路径与 ZeRO-3 配置写入 manifest，但权重和完整 optimizer state 未同步到本地。</li></ul>
+<ul><li>student 起点为 coldstart500 输出；五教师均以 <code>preloaded_zero3</code> 常驻并按 route 选择；</li><li><code>student</code> rollout 后，在同一 response 上执行 teacher forward；</li><li>full-vocabulary \(D_{KL}(q_\beta\Vert p_S)\)，<code>max_new_tokens=64</code>，prefix loss token=64；beta归零后为 \(D_{KL}(p_T\Vert p_S)\)；</li><li><code>skip_expanded_samples=64,000</code>，保存 checkpoint 1000/2000/3000/4000/5000；</li><li>训练 summary 的 <code>train_loss=0.0306129573</code>，<code>last_opd_loss=0.0215270</code>，<code>last_opd_topk_overlap=0.7466</code>；</li><li>远端路径与 ZeRO-3 配置写入 manifest，但权重和完整 optimizer state 未同步到本地。</li></ul>
 <p>可用的面试链路：</p>
 <pre><code class="language-text">clean pools
   -&gt; five expert mixes (image-hash split)
@@ -255,5 +262,5 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <p>高压追问的诚实回答：</p>
 <ul><li>“为什么不说 OPD 带来 11.5 个点提升？”——因为 base、数据、expert、coldstart、route 和 scorer/协议同时变化，当前没有同 suite 的单因素对照。</li><li>“point strict=0 是不是模型不会？”——不是；早期 prompt 示例和 strict parser 不一致，protocol-fixed 后 Qwen-122B 达到 Hit@100=0.8200，OPD ckpt5000 原 strict 为 0.8729。</li><li>“5000 是不是最佳 checkpoint？”——它是 point 和 Box Acc@0.5 的最佳点，但 box IoU、VG region/relation、keepalive text 的最佳点分散在 3000/2000/4000。</li><li>“这些代码是不是你一个人写的？”——Git author 只能证明提交署名；我会按 ownership ledger 区分自己的设计、实现、协作和工具辅助范围。</li></ul>
 <h2 id="11-references">11. References</h2>
-<ul><li><code>C:\Users\mousongzhe\muxi\build_expert_mixes_seed0_v2.py</code></li><li><code>C:\Users\mousongzhe\muxi\build_opd_student_v1.py</code></li><li><code>C:\Users\mousongzhe\muxi\train_opd_online_vl.py</code></li><li><code>C:\Users\mousongzhe\muxi\audit_opd_student_v1.py</code></li><li><code>C:\Users\mousongzhe\muxi\REPORT.md</code>（Windows 下可能显示为 <code>report.md</code>）</li><li><code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\opd_ownership_ledger.md</code></li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\artifact_manifest.json</code></li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\model_assets_eval_table.md</code></li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\opd5000_ckpt_eval_by_format_table.md</code></li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\opd5000_ckpt_eval_by_pool_table.md</code></li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\evalset_summary.json</code></li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\dedupe_audit.json</code></li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\raw_holdout_eval_8models_report.md</code></li></ul>
+<ul><li><code>C:\Users\mousongzhe\muxi\build_expert_mixes_seed0_v2.py</code></li><li><code>C:\Users\mousongzhe\muxi\build_opd_student_v1.py</code></li><li><code>C:\Users\mousongzhe\muxi\train_opd_online_vl.py</code></li><li><code>C:\Users\mousongzhe\muxi\point\train_opd_online_vl.py</code></li><li><code>C:\Users\mousongzhe\muxi\audit_opd_student_v1.py</code></li><li><code>C:\Users\mousongzhe\muxi\REPORT.md</code>（Windows 下可能显示为 <code>report.md</code>）</li><li><code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\opd_ownership_ledger.md</code></li><li><code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\opd_training_objective_lineage_gate.md</code></li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\artifact_manifest.json</code></li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\model_assets_eval_table.md</code></li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\opd5000_ckpt_eval_by_format_table.md</code></li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\opd5000_ckpt_eval_by_pool_table.md</code></li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\evalset_summary.json</code></li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\dedupe_audit.json</code></li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\raw_holdout_eval_8models_report.md</code></li></ul>
 </article></body></html>

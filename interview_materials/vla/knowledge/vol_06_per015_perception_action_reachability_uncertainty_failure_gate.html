@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 Perception / Grounding / Navigation：Perception→Action、Reachability、Uncertainty 与 Failure Gate（PER-015）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per015_perception_action_reachability_uncertainty_failure_gate.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per015_perception_action_reachability_uncertainty_failure_gate.md">
 <meta name="aris:source-sha256" content="2682ab3eb045ee47e2900babea7985b8f8498257c8bbb0185a39f43ed99222e0">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>2682ab3eb045ee47e2900babea7985b8f8498257c8bbb0185a39f43ed99222e0</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per015_perception_action_reachability_uncertainty_failure_gate.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>2682ab3eb045ee47e2900babea7985b8f8498257c8bbb0185a39f43ed99222e0</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per015_perception_action_reachability_uncertainty_failure_gate.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与边界</a></li><li><a href="#1-30">1. 30秒直觉：目标不是动作，通过不是成功</a></li><li><a href="#2-typed-perception-action-manifest">2. Typed Perception→Action Manifest</a></li><li><a href="#2-1-schema">2.1 最小 Schema</a></li><li><a href="#2-2-manifest">2.2 为什么Manifest属于结果身份</a></li><li><a href="#3-fail-closed-gate">3. 九层Fail-closed Gate</a></li><li><a href="#4-semantic-target-action-target">4. Semantic Target → Action Target</a></li><li><a href="#5-workspace-cheap-reject">5. Workspace：Cheap Reject，不是最终证明</a></li><li><a href="#5-1">5.1 二连杆可达环</a></li><li><a href="#5-2-reachability">5.2 四级Reachability</a></li><li><a href="#6-ik-residual">6. IK：返回值之后还要验证Residual</a></li><li><a href="#6-1-se-3-pose-error">6.1 SE(3) Pose Error</a></li><li><a href="#6-2-newton-raphson-pseudoinverse">6.2 Newton–Raphson 与Pseudoinverse</a></li><li><a href="#7-joint-limit-trac-ik">7. Joint Limit 与TRAC-IK</a></li><li><a href="#8-singularity-conditioning-manipulability">8. Singularity、Conditioning 与Manipulability</a></li><li><a href="#9-collision-state-validity-motion-validity">9. Collision：State Validity 与Motion Validity</a></li><li><a href="#9-1-goal-state">9.1 Goal State无碰撞仍不够</a></li><li><a href="#9-2-moveit-planningscene">9.2 MoveIt PlanningScene</a></li><li><a href="#9-3-discrete-motion-validation">9.3 Discrete Motion Validation</a></li><li><a href="#10-clearance-uncertainty-inflation">10. Clearance 与Uncertainty Inflation</a></li><li><a href="#11-planning-rrt-connect">11. Planning 与RRT-Connect</a></li><li><a href="#12-trajectory-geometry-continuity-time">12. Trajectory：Geometry、Continuity 与Time</a></li><li><a href="#13-controller-contract-shape">13. Controller Contract：Shape相同仍可能语义错</a></li><li><a href="#14-action-chunk-staleness">14. Action Chunk 与Staleness</a></li><li><a href="#15-uncertainty-confidence">15. 三类Uncertainty不能混成一个Confidence</a></li><li><a href="#16-knowno-conformal-prediction">16. KnowNo 与Conformal Prediction</a></li><li><a href="#16-1-calibration">16.1 Calibration</a></li><li><a href="#16-2">16.2 保证边界</a></li><li><a href="#17-abstention-fallback-recovery">17. Abstention、Fallback 与Recovery状态机</a></li><li><a href="#18-deterministic-probes">18. 十个Deterministic Probes</a></li><li><a href="#19-first-divergence-failure-diagnosis">19. First-divergence Failure Diagnosis</a></li><li><a href="#20-fail-closed-pseudocode">20. Fail-closed Pseudocode</a></li><li><a href="#21-public-method-code-mapping">21. Public Method → Code Mapping</a></li><li><a href="#22-opd-robot-harness-hook">22. OPD 与Robot Harness：最容易被过度包装的两类Hook</a></li><li><a href="#22-1-opd">22.1 OPD</a></li><li><a href="#22-2-robot-harness">22.2 Robot Harness</a></li><li><a href="#23-openpivla-wam-uwm-action-interface">23. OpenPiVLA、WAM、UWM 的Action Interface边界</a></li><li><a href="#23-1-openpivla">23.1 OpenPiVLA</a></li><li><a href="#23-2-wam">23.2 WAM</a></li><li><a href="#23-3-uwm">23.3 UWM</a></li><li><a href="#24-project-truth-boundary">24. 五项目 Project Truth Boundary</a></li><li><a href="#25">25. 两分钟结构化回答</a></li><li><a href="#26">26. 高频追问</a></li><li><a href="#27">27. 危险答案与修正</a></li><li><a href="#28-checklist">28. 白板 Checklist 与练习标准</a></li><li><a href="#29">29. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 Perception / Grounding / Navigation：Perception→Action、Reachability、Uncertainty 与 Failure Gate（PER-015）</h1>
 <div class="meta">状态：<code>drafted / VLA-PER-015 / source_synced / card_synced / WARN</code> 更新日期：2026-07-20 前置：<code>VLA-PER-014</code> 3D semantic target、<code>VLA-PER-002</code> frame/lift、VOL 03 action/controller contract；后续：<code>VLA-PER-016</code> localization/SLAM drift、<code>VLA-PER-019</code> navigation evaluation/failure。 来源入口：<a href="../sources/vol_06_per015_perception_action_reachability_uncertainty_failure_gate_source_freeze.html">PER-015 Perception→Action / Reachability / Uncertainty / Failure Gate Source Freeze</a>。本页只把已冻结证据转成可教学、可诊断、可面试回答的知识；对应一张原子题卡已在独立bounded slice同步并保持<code>unseen</code>，不创建训练状态，也不改变任何mastery。</div>

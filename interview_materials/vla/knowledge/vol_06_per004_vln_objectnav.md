@@ -126,7 +126,7 @@ PER-003 的 camera identity、timestamp、presence mask 在这里成为导航输
 
 ### 4.2 连续环境中的时间合同
 
-对每个动作 (a_t)，应保留：
+对每个动作 \(a_t\)，应保留：
 
 ```text
 observation_timestamp
@@ -174,7 +174,7 @@ stop_called, terminal, failure_reason
 
 ### 6.1 Success predicate 与 SR
 
-先为每个 episode 定义 (S_i\in\{0,1\})。一个 Habitat 风格的导航例子是：
+先为每个 episode 定义 \(S_i\in\{0,1\}\)。一个 Habitat 风格的导航例子是：
 
 ```text
 S_i = 1{stop_called_i == true
@@ -191,16 +191,16 @@ SR=\frac{1}{N}\sum_{i=1}^{N}S_i.
 
 ### 6.2 SPL
 
-在 shortest path (L_i)、实际轨迹长度 (P_i) 和 success predicate 都冻结时：
+在 shortest path \(L_i\)、实际轨迹长度 \(P_i\) 和 success predicate 都冻结时：
 
 \[
 SPL=\frac{1}{N}\sum_{i=1}^{N}S_i\frac{L_i}{\max(P_i,L_i)}.
 \]
 
-解释：成功但绕路，(L_i/P_i) 变小；失败 episode 的 (S_i=0)。实现仍需注明：
+解释：成功但绕路，\(L_i/P_i\) 变小；失败 episode 的 \(S_i=0\)。实现仍需注明：
 
-- (L_i) 是 navmesh geodesic、graph path、view-point 集合最小值还是其他参考；
-- (P_i) 是否包含 stop 前最后一步、controller 微步和重复 action；
+- \(L_i\) 是 navmesh geodesic、graph path、view-point 集合最小值还是其他参考；
+- \(P_i\) 是否包含 stop 前最后一步、controller 微步和重复 action；
 - 是否按 episode、任务、seed 或 scene 聚合；
 - success threshold、episode filtering、终止/超时规则。
 

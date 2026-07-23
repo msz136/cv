@@ -6,7 +6,7 @@
 <title>VOL 08 SYS-004：Fault Recovery、Safety 与 Observability</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_08_sys004_fault_recovery_safety_observability.md">
-<meta name="aris:source-sha256" content="826841a78556379ef2e2b6730203dcdf776c592ffb1373080e1ac9ac4b22c3be">
+<meta name="aris:source-sha256" content="03c062336eb705b4940b4f8579d2873f96b4c70ea007a480bc39fa75eff0074f">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>826841a78556379ef2e2b6730203dcdf776c592ffb1373080e1ac9ac4b22c3be</code>；生成自：<code>interview_materials\vla\knowledge\vol_08_sys004_fault_recovery_safety_observability.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>03c062336eb705b4940b4f8579d2873f96b4c70ea007a480bc39fa75eff0074f</code>；生成自：<code>interview_materials\vla\knowledge\vol_08_sys004_fault_recovery_safety_observability.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 直觉与专业定义</a></li><li><a href="#1-1">1.1 先保护副作用，再解释原因</a></li><li><a href="#1-2-first-verified-divergence-root-cause">1.2 First verified divergence 不等于 root cause</a></li><li><a href="#2-fault-state-machine-owner">2. Fault state machine 与 owner</a></li><li><a href="#2-1">2.1 状态定义</a></li><li><a href="#2-2">2.2 状态转换的负面边界</a></li><li><a href="#3-liveness-readiness-startup">3. Liveness、Readiness、Startup 与通信信号</a></li><li><a href="#3-1-probe">3.1 三类 probe 不可混用</a></li><li><a href="#3-2-deadline-action-age">3.2 Deadline 与 action age</a></li><li><a href="#4-incident-identity">4. Incident identity 与可观测性</a></li><li><a href="#4-1-schema">4.1 最小事件 schema</a></li><li><a href="#4-2-traces-metrics-logs">4.2 Traces、metrics、logs 的分工</a></li><li><a href="#5-safety-boundary-stale-action-fencing">5. Safety boundary 与 stale-action fencing</a></li><li><a href="#5-1-safe-apply">5.1 Safe apply 条件</a></li><li><a href="#5-2-cancel-hold-stop-e-stop">5.2 Cancel、hold、stop、e-stop</a></li><li><a href="#6-degradation-rollback-replay">6. Degradation、rollback 与 replay</a></li><li><a href="#6-1-fail-closed">6.1 Fail-closed 顺序</a></li><li><a href="#6-2-rollback-compatibility-matrix">6.2 Rollback compatibility matrix</a></li><li><a href="#6-3-replay-evidence">6.3 Replay evidence</a></li><li><a href="#7">7. 参考伪代码（带关键边界注释）</a></li><li><a href="#8-first-divergence">8. First-divergence 诊断矩阵</a></li><li><a href="#9">9. 五项目真实性边界</a></li><li><a href="#10">10. 面试回答模板与高压追问</a></li><li><a href="#10-1-60">10.1 60 秒回答</a></li><li><a href="#10-2">10.2 高压追问</a></li><li><a href="#11">11. 结论与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 08 SYS-004：Fault Recovery、Safety 与 Observability</h1>
 <div class="meta">状态：<code>drafted / SYS-VLA-004 / knowledge_12_of_phase / card_pending / WARN</code> 报告日期：2026-07-20 证据截止：2026-07-20 来源入口：<a href="../sources/vol_08_sys004_fault_recovery_safety_observability_source_freeze.html">SYS-004 Source Freeze</a>。</div>
@@ -178,7 +182,10 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <p>Kubernetes probes 是 orchestration 机制，ROS 2 QoS 是通信语义；两者都要通过 <code>request_id</code>、时间戳和 revision 进入 incident event，才能和 VLA 的 capture→infer→parse→apply 链接起来。</p>
 <h3 id="3-2-deadline-action-age">3.2 Deadline 与 action age</h3>
 <p>对一条 action chunk，至少记录：</p>
-<p>[ A_{mathrm{age}}=t_{mathrm{apply}}-t_{mathrm{capture}},qquad mathrm{fresh}(a)=mathbf{1}!left[A_{mathrm{age}}leq D_{mathrm{valid}} ight]. ]</p>
+<div class="formula">\[
+A_{\mathrm{age}}=t_{\mathrm{apply}}-t_{\mathrm{capture}},\qquad
+\mathrm{fresh}(a)=\mathbf{1}\!\left[A_{\mathrm{age}}\leq D_{\mathrm{valid}}\right].
+\]</div>
 <p><code>A_age</code> 是观测捕获到动作 apply 的年龄，<code>D_valid</code> 是动作协议允许的有效窗口。它映射到 capture/apply timestamp、chunk cursor 和 controller apply log；缺任一时间点时只能标记 unknown，不能把 timeout 直接解释为 MDP terminal 或任务失败。</p>
 <h2 id="4-incident-identity">4. Incident identity 与可观测性</h2>
 <h3 id="4-1-schema">4.1 最小事件 schema</h3>
@@ -199,7 +206,14 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <p>OpenTelemetry 的 signals 规定载体和关联方式；将其组合为 robot-safety evidence 是设计工作，不是 telemetry SDK 自动完成的功能。</p>
 <h2 id="5-safety-boundary-stale-action-fencing">5. Safety boundary 与 stale-action fencing</h2>
 <h3 id="5-1-safe-apply">5.1 Safe apply 条件</h3>
-<p>[ \mathrm{safe\_apply}(a_t)=1 \Longleftrightarrow \mathrm{fresh}(a_t)land \mathrm{compatible}(r,m,s,n)land \mathrm{lease\_valid}\land \mathrm{controller\_ready}. ]</p>
+<div class="formula">\[
+\mathrm{safe\_apply}(a_t)=1
+\Longleftrightarrow
+\mathrm{fresh}(a_t)\land
+\mathrm{compatible}(r,m,s,n)\land
+\mathrm{lease\_valid}\land
+\mathrm{controller\_ready}.
+\]</div>
 <p>其中 <code>r</code> 是 robot identity，<code>m</code> 是 model revision，<code>s</code> 是 action schema，<code>n</code> 是 normalizer revision。<code>fresh</code> 检查 action age/sequence，<code>compatible</code> 检查 shape、unit、parser 和 controller contract，<code>lease_valid</code> 检查 epoch/fencing，<code>controller_ready</code> 只代表 controller 明确允许接收。它是 SYS‑004 的系统设计推断，不是任一上游 API 的默认保证。</p>
 <h3 id="5-2-cancel-hold-stop-e-stop">5.2 Cancel、hold、stop、e-stop</h3>
 <table><thead><tr><th>层</th><th>能安全声称</th><th>还需要什么才能升级</th></tr></thead><tbody>

@@ -6,7 +6,7 @@
 <title>VOL 08 SYS-002：Policy Serving 与 Real-time Control Loop</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_08_sys002_policy_serving_realtime_control_loop.md">
-<meta name="aris:source-sha256" content="5f8002ede0fd9d2ae7122552dd538b4257832912ad35c4002a60c0991edfa803">
+<meta name="aris:source-sha256" content="6ec2068a01051eab334b2c87d63524baadfc8b23759a7ca1f78fa197147afd48">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>5f8002ede0fd9d2ae7122552dd538b4257832912ad35c4002a60c0991edfa803</code>；生成自：<code>interview_materials\vla\knowledge\vol_08_sys002_policy_serving_realtime_control_loop.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>6ec2068a01051eab334b2c87d63524baadfc8b23759a7ca1f78fa197147afd48</code>；生成自：<code>interview_materials\vla\knowledge\vol_08_sys002_policy_serving_realtime_control_loop.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 直觉与专业定义</a></li><li><a href="#1-1-policy-serving">1.1 Policy serving</a></li><li><a href="#1-2-observation-action-schema">1.2 Observation/action schema</a></li><li><a href="#1-3-action-chunk-replan">1.3 Action chunk 与 replan</a></li><li><a href="#1-4-deadline-action-age-backpressure">1.4 Deadline、action age 与 backpressure</a></li><li><a href="#1-5-soft-real-time-hard-real-time-controller-boundary">1.5 Soft real-time、hard real-time 与 controller boundary</a></li><li><a href="#2">2. 三层架构与接口合同</a></li><li><a href="#2-1-server-client-broker-controller">2.1 Server、client/broker、controller 的状态所有权</a></li><li><a href="#2-2-request-envelope">2.2 建议的 request envelope（设计推断）</a></li><li><a href="#3-timing-server-local-controller-apply">3. Timing 数学：从 server-local 到 controller apply</a></li><li><a href="#3-1-critical-path">3.1 端到端 critical path</a></li><li><a href="#3-2-action-age">3.2 Action age</a></li><li><a href="#3-3-deadline-budget">3.3 剩余 deadline budget</a></li><li><a href="#4-pipeline">4. Pipeline 与有注释伪代码</a></li><li><a href="#4-1">4.1 推荐的控制路径</a></li><li><a href="#4-2">4.2 面试级伪代码</a></li><li><a href="#5-admission-backpressure-batching">5. Admission、Backpressure 与 Batching</a></li><li><a href="#5-1-bounded-admission">5.1 Bounded admission</a></li><li><a href="#5-2-dynamic-batching">5.2 Dynamic batching 的兼容条件</a></li><li><a href="#5-3-fresh-observation-side-effect-action">5.3 Fresh observation 与 side-effect action</a></li><li><a href="#6-failure">6. Failure、降级与实时边界</a></li><li><a href="#6-1-cancel-compute-physical-stop">6.1 Cancel compute 不等于 physical stop</a></li><li><a href="#6-2-soft-real-time">6.2 Soft real-time 的验证门</a></li><li><a href="#7">7. 实现证据与代码映射</a></li><li><a href="#8">8. 五个项目的真实性边界</a></li><li><a href="#9">9. 面试回答模板与禁说清单</a></li><li><a href="#9-1-60">9.1 60 秒回答模板</a></li><li><a href="#9-2-claim">9.2 不能说的强 claim</a></li><li><a href="#10">10. 结论与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 08 SYS-002：Policy Serving 与 Real-time Control Loop</h1>
 <div class="meta">状态：<code>drafted / SYS-VLA-002 / knowledge_8_of_phase / card_1_of_1_unseen / WARN</code> 报告日期：2026-07-20 证据截止：2026-07-20 来源入口：<a href="../sources/vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.html">SYS-VLA-002 Source Freeze</a>。</div>
@@ -176,18 +180,18 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <p>回答时要把“字段建议”和“代码已存在字段”分开：OpenPI metadata 可以承载 identity，但 source freeze 没有证明上述字段已经齐全。</p>
 <h2 id="3-timing-server-local-controller-apply">3. Timing 数学：从 server-local 到 controller apply</h2>
 <h3 id="3-1-critical-path">3.1 端到端 critical path</h3>
-<p>令 (t_c) 为 observation capture，(t_e) 为 enqueue，(t_i) 为 inference start，(t_r) 为 client response receive，(t_p) 为 postprocess 完成，(t_a) 为 controller apply。首个动作的端到端延迟可写成：</p>
+<p>令 \(t_c\) 为 observation capture，\(t_e\) 为 enqueue，\(t_i\) 为 inference start，\(t_r\) 为 client response receive，\(t_p\) 为 postprocess 完成，\(t_a\) 为 controller apply。首个动作的端到端延迟可写成：</p>
 <div class="formula">\[
 T_{\mathrm{e2e}}
 =(t_e-t_c)+(t_i-t_e)+(t_r-t_i)+(t_p-t_r)+(t_a-t_p).
 \]</div>
 <p>变量解释：五项分别对应 capture/serialize、queue 或 batch wait、网络与 infer、parse/denorm/safety、controller handoff。实现映射：OpenPI 直接给出的是 server-local <code>infer_ms</code> 与 <code>prev_total_ms</code>；完整分解需要在 envelope 和 controller trace 中增加 timestamp，因此这是基于 EVAL-013 与 source freeze 的 design instrumentation，而非现成 OpenPI 指标。</p>
 <h3 id="3-2-action-age">3.2 Action age</h3>
-<p>若一次请求在 (t_c) 捕获观测并返回 (H) 行 chunk，第 (k) 行在 (t_{\mathrm{apply},k}) 被执行，则：</p>
+<p>若一次请求在 \(t_c\) 捕获观测并返回 \(H\) 行 chunk，第 \(k\) 行在 \(t_{\mathrm{apply},k}\) 被执行，则：</p>
 <div class="formula">\[
 A_k=t_{\mathrm{apply},k}-t_c,\qquad k=0,\ldots,K-1.
 \]</div>
-<p>(H) 是模型输出 horizon，(K\le H) 是下一次 query 前执行的行数。它说明“首行延迟低”不代表后续行仍新鲜；实现上要记录 capture/apply timestamp，并在 <code>valid_until</code> 或 age threshold 超过时触发 replan/fallback。S5/S6/S7 只证明 client cursor 和 example cadence，不替你选择 freshness 阈值。</p>
+<p>\(H\) 是模型输出 horizon，\(K\le H\) 是下一次 query 前执行的行数。它说明“首行延迟低”不代表后续行仍新鲜；实现上要记录 capture/apply timestamp，并在 <code>valid_until</code> 或 age threshold 超过时触发 replan/fallback。S5/S6/S7 只证明 client cursor 和 example cadence，不替你选择 freshness 阈值。</p>
 <h3 id="3-3-deadline-budget">3.3 剩余 deadline budget</h3>
 <p>设调用方给出的绝对 deadline 为 (D)，任一层当前时刻为 (t)，则剩余预算为：</p>
 <div class="formula">\[

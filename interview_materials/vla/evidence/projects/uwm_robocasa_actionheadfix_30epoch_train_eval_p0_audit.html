@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UWM RoboCasa ActionHeadFix 30 Epoch：Train-to-Closed-Loop P0 证据审计</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\uwm_robocasa_actionheadfix_30epoch_train_eval_p0_audit.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\uwm_robocasa_actionheadfix_30epoch_train_eval_p0_audit.md">
 <meta name="aris:source-sha256" content="41b9cdddb95163a369719e007ea11ad3a7776e79f0901f80dcacd34faa83f117">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>41b9cdddb95163a369719e007ea11ad3a7776e79f0901f80dcacd34faa83f117</code>；生成自：<code>interview_materials\vla\evidence\projects\uwm_robocasa_actionheadfix_30epoch_train_eval_p0_audit.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>41b9cdddb95163a369719e007ea11ad3a7776e79f0901f80dcacd34faa83f117</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\uwm_robocasa_actionheadfix_30epoch_train_eval_p0_audit.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. 问题（Question）</a></li><li><a href="#2">2. 结论先行</a></li><li><a href="#3-p0-promotion">3. P0 promotion 结论</a></li><li><a href="#4-frozen-inputs-sha-256">4. Frozen inputs 与 SHA-256</a></li><li><a href="#4-1-run-preflight-aggregate-files">4.1 Run、preflight 与 aggregate files</a></li><li><a href="#4-2-raw-rollout-files">4.2 Raw rollout files</a></li><li><a href="#5-preflight">5. Preflight 与训练合同</a></li><li><a href="#5-1-base-load-reset-head-contract">5.1 Base-load / reset-head contract</a></li><li><a href="#5-2-dataset-observation-action-contract">5.2 Dataset / observation / action contract</a></li><li><a href="#6-metric">6. 训练完成与 metric 边界</a></li><li><a href="#7-closed-loop-protocol-tuple">7. Closed-loop protocol tuple</a></li><li><a href="#8-raw-rollout">8. 八组 raw rollout 独立重算</a></li><li><a href="#8-1-ablation">8.1 为什么不能声称 ablation 结论</a></li><li><a href="#8-2-contact-success">8.2 为什么 contact 不是 success</a></li><li><a href="#9-train-closed-loop-first-divergence">9. Train → Closed-loop first divergence</a></li><li><a href="#10-run-family-ownership">10. Run-family 与 ownership 边界</a></li><li><a href="#11">11. 面试可用口径</a></li><li><a href="#30">30 秒版本</a></li><li><a href="#loss-rollout-0">高压追问：训练 loss 降这么多，为什么 rollout 还是几乎 0？</a></li><li><a href="#no-prompt-full-h5-prompt">高压追问：no-prompt 比 full-h5 高，是不是 prompt 有害？</a></li><li><a href="#section-21">禁用表述</a></li><li><a href="#12-p0">12. 关闭 P0 的最小动作</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>UWM RoboCasa ActionHeadFix 30 Epoch：Train-to-Closed-Loop P0 证据审计</h1>
 <div class="meta">状态：<code>p0_audited / remote-snapshot-raw-rollouts / checkpoint-path-only / protocol-bounded / ownership-pending / WARN</code> 审计日期：2026-07-21 范围：只审计 <code>target_atomic_seen_official12_task_30epoch_muxi_20260628_openpi_state_3view_phase_30ep</code> 这一条 30-epoch run、对应的八组 54-scenario rollout 与同阶段 preflight；不把 Human300、100-epoch resume、其它 taskcondfix/state-weighted run、LIBERO <code>186/250</code> 或不同 action bridge 合并进主结果。</div>

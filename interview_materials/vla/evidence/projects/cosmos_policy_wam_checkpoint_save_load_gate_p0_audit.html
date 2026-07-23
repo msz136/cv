@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cosmos Policy / WAM Checkpoint Save-Load Gate：P0 证据审计</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.md">
 <meta name="aris:source-sha256" content="d5a4db639c3c0c152d55f3f9c6f6bedd8e18408f306036a28da5154bab3d9aac">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>d5a4db639c3c0c152d55f3f9c6f6bedd8e18408f306036a28da5154bab3d9aac</code>；生成自：<code>interview_materials\vla\evidence\projects\cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>d5a4db639c3c0c152d55f3f9c6f6bedd8e18408f306036a28da5154bab3d9aac</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\cosmos_policy_wam_checkpoint_save_load_gate_p0_audit.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2-question">2. 问题（Question）</a></li><li><a href="#3-p0-promotion">3. P0 promotion 结论</a></li><li><a href="#4-frozen-inputs-sha-256">4. Frozen inputs 与 SHA-256</a></li><li><a href="#5">5. 官方与本地训练合同</a></li><li><a href="#6">6. 模型输入输出与保存边界</a></li><li><a href="#7-run">7. Run 总账</a></li><li><a href="#8-loss">8. 训练 Loss 曲线与可比性</a></li><li><a href="#9">9. 保存失败与资源失败的因果分析</a></li><li><a href="#9-1-save2k-kill">9.1 save2k：长跑/外部 kill 线</a></li><li><a href="#9-2-no-cycle-save1500-api-first-divergence">9.2 no-cycle save1500：保存 API first divergence</a></li><li><a href="#9-3-failure">9.3 为什么两个 failure 不能合并</a></li><li><a href="#10">10. 假设—证据—修复审计</a></li><li><a href="#11-save-load-smoke">11. 恢复所需的最小 save/load smoke</a></li><li><a href="#12-ownership">12. 公源、本地证据与 Ownership 边界</a></li><li><a href="#13">13. 面试可用口径</a></li><li><a href="#30">30 秒版本</a></li><li><a href="#step-001500-checkpoint">高压追问：目录里有 `step_001500`，为什么不是 checkpoint？</a></li><li><a href="#5-step-smoke">高压追问：为什么 5-step smoke 通过还不够？</a></li><li><a href="#14">14. 下一步与关闭条件</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>Cosmos Policy / WAM Checkpoint Save-Load Gate：P0 证据审计</h1>
 <div class="meta">状态：<code>p0_audited / base-load-backed / train-save-gate-failed / checkpoint-binary-missing / ownership-pending / WARN</code> 审计日期：2026-07-21 证据截止：2026-06-25 范围：只审计 <code>muxi_deepspeed_1epoch_20260623</code> 归档中的 base-model load、1-step/5-step smoke、9907-step save2k gate 与 no-cycle save1500 gate；不把 smoke 的成功、base-load 的完整 key 对齐或空的 output directory写成“训练完成”或“checkpoint 可加载”。</div>

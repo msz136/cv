@@ -6,7 +6,7 @@
 <title>VOL 05 UWM / LIBERO / RoboCasa Transfer：证据冻结</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_uwm_libero_robocasa_transfer_evidence_freeze.md">
-<meta name="aris:source-sha256" content="f18e07202ff4fef205c85c5315355946eee6ebb19289c616b70e8a2b364dd45b">
+<meta name="aris:source-sha256" content="6fa38801e0205bf9f55abe81f0c9ca267f6e33c0cdd088cd825daa8760cc1627">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>f18e07202ff4fef205c85c5315355946eee6ebb19289c616b70e8a2b364dd45b</code>；生成自：<code>interview_materials\vla\sources\vol_05_uwm_libero_robocasa_transfer_evidence_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>6fa38801e0205bf9f55abe81f0c9ca267f6e33c0cdd088cd825daa8760cc1627</code>；生成自：<code>interview_materials\vla\sources\vol_05_uwm_libero_robocasa_transfer_evidence_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2-provenance">2. 证据等级与 provenance</a></li><li><a href="#3-baseline-uwm-libero">3. 官方 Baseline 与 UWM/LIBERO 结果对照</a></li><li><a href="#3-1-uwm-libero">3.1 UWM/LIBERO 任务与协议</a></li><li><a href="#3-2-reconciliation">3.2 结果 reconciliation</a></li><li><a href="#4-uwm-base-i-o-libero-route">4. UWM Base I/O 与 LIBERO route</a></li><li><a href="#5-robocasa-action-space-head">5. RoboCasa action-space 与 head 改造</a></li><li><a href="#6-robocasa-fine-tune-eval-run-ledger">6. RoboCasa Fine-tune 与 Eval Run Ledger</a></li><li><a href="#6-1-teacher-forced">6.1 Teacher-forced 诊断</a></li><li><a href="#7-online-rollout-0-success">7. Online Rollout 与 0-success 诊断</a></li><li><a href="#7-1-convert-action-a-b">7.1 convert_action A/B</a></li><li><a href="#8-dataloader-stall">8. DataLoader Stall 诊断</a></li><li><a href="#9">9. 公有设计、本地证据与个人边界</a></li><li><a href="#10-p0">10. 待补 P0 与恢复清单</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 05 UWM / LIBERO / RoboCasa Transfer：证据冻结</h1>
 <div class="meta">状态：<code>local_protocol_audited / user_confirmed_remote_final / robocasa_debugging / WARN</code> 复核日期：2026-07-21 证据来源：<code>C:\Users\mousongzhe\Project\wm</code> 与 <code>C:\Users\mousongzhe\Project\report\uwm_libero_strict_eval_recovery_20260702</code>（外部工作区只读审计） Bounded slice：本页冻结 UWM 官方 LIBERO reproduction、RoboCasa-native transfer/actionheadfix 训练与闭环评估的协议、指标、修复和 provenance；不把用户确认远端摘要升级为本地 raw benchmark，不改变题卡 mastery 或 ownership。</div>
@@ -206,7 +210,7 @@ LIBERO-10 HDF5 -&gt; compressed Zarr buffer -&gt; UWM robomimic trainer
 <div class="formula">\[
 a^{\mathrm{env}}=\operatorname{concat}\left(a^{\mathrm{eef}}_{7},a^{\mathrm{base}}_{4},a^{\mathrm{control}}_{1}\right),
 \]</div>
-<p>其中 (a^{\mathrm{eef}}_7) 是模型的连续末端动作，(a^{\mathrm{base}}_4) 和 (a^{\mathrm{control}}_1) 来自额外 head 或统计初始化。实现证据位于 <code>uwm_robocasa_train.py</code>、<code>uwm_robocasa_rollout.py</code> 与 <code>NativeRoboCasaDictActionWrapper</code>；它证明了接口设计和 trace 字段，不证明闭环成功。</p>
+<p>其中 \(a^{\mathrm{eef}}_7\) 是模型的连续末端动作，\(a^{\mathrm{base}}_4\) 和 \(a^{\mathrm{control}}_1\) 来自额外 head 或统计初始化。实现证据位于 <code>uwm_robocasa_train.py</code>、<code>uwm_robocasa_rollout.py</code> 与 <code>NativeRoboCasaDictActionWrapper</code>；它证明了接口设计和 trace 字段，不证明闭环成功。</p>
 <p>actionheadfix 的训练侧改动：</p>
 <table><thead><tr><th>改动</th><th>证据</th><th>作用</th><th>边界</th></tr></thead><tbody>
 <tr><td>partial decoder init</td><td>commit <code>a37a386</code>；<code>checkpoint_load_report</code></td><td>从 <code>libero_90.pt</code> 复制 shape-compatible decoder，避免 12D head 全部从零学</td><td>不是完整 checkpoint identity</td></tr>

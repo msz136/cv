@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 PER-015 Source Freeze：Perception→Action、Reachability、Uncertainty 与 Failure Gate</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per015_perception_action_reachability_uncertainty_failure_gate_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per015_perception_action_reachability_uncertainty_failure_gate_source_freeze.md">
 <meta name="aris:source-sha256" content="2ef2e0a8b99bb0c2dc3fd91a7f2019f594487c3689785bbcb1838289e2ce8f99">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>2ef2e0a8b99bb0c2dc3fd91a7f2019f594487c3689785bbcb1838289e2ce8f99</code>；生成自：<code>interview_materials\vla\sources\vol_06_per015_perception_action_reachability_uncertainty_failure_gate_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>2ef2e0a8b99bb0c2dc3fd91a7f2019f594487c3689785bbcb1838289e2ce8f99</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per015_perception_action_reachability_uncertainty_failure_gate_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-paper-book">2. Primary Paper / Book 冻结矩阵</a></li><li><a href="#3-official-repository">3. Official Repository 冻结矩阵</a></li><li><a href="#4">4. 节点边界与主链</a></li><li><a href="#5-typed-perception-action-manifest">5. Typed Perception→Action Manifest</a></li><li><a href="#6-gate-decomposition-reason-taxonomy">6. Gate Decomposition 与Reason Taxonomy</a></li><li><a href="#7-semantic-target-action-target">7. Semantic Target → Action Target</a></li><li><a href="#8-workspace-reachability">8. Workspace 与Reachability</a></li><li><a href="#9-ik-residual-joint-limit-singularity">9. IK Residual、Joint Limit 与Singularity</a></li><li><a href="#10-collision-clearance-motion-validation">10. Collision、Clearance 与Motion Validation</a></li><li><a href="#11-trajectory-time-parameterization-controller-gate">11. Trajectory、Time Parameterization 与Controller Gate</a></li><li><a href="#12-uncertainty-abstention-risk-coverage">12. Uncertainty、Abstention 与Risk–Coverage</a></li><li><a href="#13-fallback-fail-closed-semantics">13. Fallback 与Fail-closed Semantics</a></li><li><a href="#14-public-method-code-mapping">14. Public Method → Code Mapping</a></li><li><a href="#15-deterministic-probes">15. Deterministic Probes</a></li><li><a href="#16-canonical-inventory-audit">16. 本地五项目 Canonical Inventory Audit</a></li><li><a href="#17-direct-audit-negative-evidence">17. 五项目 Direct Audit 与Negative Evidence</a></li><li><a href="#18-project-truth-boundary">18. Project Truth Boundary</a></li><li><a href="#19-fail-closed-pipeline">19. Fail-closed Pipeline 伪代码</a></li><li><a href="#20-source-gate">20. Source Gate 与下一切片</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 PER-015 Source Freeze：Perception→Action、Reachability、Uncertainty 与 Failure Gate</h1>
 <div class="meta">状态：<code>source_frozen / VLA-PER-015 / primary_official_checked / fail_closed_gate / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本source freeze只冻结semantic target到controller-ready candidate之间的schema、workspace/reachability、IK residual、joint limit、Jacobian singularity、self/environment collision、clearance、trajectory/controller约束、uncertainty/abstention/fallback与rejection reason；对应knowledge与一张atomic card已在后续独立bounded slices同步，题卡保持<code>unseen</code>。不重讲PER-014的3D grounding，不训练VOL 03 action head，不把静态可行性写成robot success，也不进入PER-016的SLAM/map drift。</div>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 03 Source Audit A：OpenVLA Action Token 与 I/O Claim-to-Code</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_03_openvla_claim_to_code.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_03_openvla_claim_to_code.md">
 <meta name="aris:source-sha256" content="8a66ce90e10bf60e015ee46cc78d9b1756048f386a38df679607b0cabd17974f">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>8a66ce90e10bf60e015ee46cc78d9b1756048f386a38df679607b0cabd17974f</code>；生成自：<code>interview_materials\vla\sources\vol_03_openvla_claim_to_code.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>8a66ce90e10bf60e015ee46cc78d9b1756048f386a38df679607b0cabd17974f</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_03_openvla_claim_to_code.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 证据层级与审计范围</a></li><li><a href="#3">3. 架构与输入输出合同</a></li><li><a href="#3-1">3.1 旗舰架构</a></li><li><a href="#3-2-i-o">3.2 训练样本 I/O</a></li><li><a href="#3-3-i-o">3.3 推理 I/O</a></li><li><a href="#4-action-normalization-tokenizer">4. Action normalization 与 tokenizer 的精确数学</a></li><li><a href="#4-1-q01-q99">4.1 q01/q99 归一化</a></li><li><a href="#4-2-normalized-scalar-token-id">4.2 normalized scalar → token ID</a></li><li><a href="#4-3-token-id-normalized-scalar">4.3 token ID → normalized scalar</a></li><li><a href="#4-4">4.4 反归一化</a></li><li><a href="#5-labels">5. 训练目标、labels 与监控指标</a></li><li><a href="#6-action-chunk">6. 全量微调、单图限制与 action chunk 边界</a></li><li><a href="#6-1">6.1 旗舰训练是全量微调</a></li><li><a href="#6-2-base-openvla-chunk-policy">6.2 base OpenVLA 不是 chunk policy</a></li><li><a href="#7-claim-to-code">7. Claim-to-code 总表</a></li><li><a href="#8-openpivla-fast">8. 与 OpenPiVLA / FAST 的真实性边界</a></li><li><a href="#9-phase-0">9. 对 Phase 0 题目的支持状态</a></li><li><a href="#10">10. 风险与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 03 Source Audit A：OpenVLA Action Token 与 I/O Claim-to-Code</h1>
 <div class="meta">审计日期：2026-07-16 状态：<code>independent_fact_reviewed / endpoint_mask_checked / project_boundary_pending / WARN</code> 论文版本：OpenVLA arXiv <code>2406.09246v3</code> 官方仓库：<code>openvla/openvla</code> frozen commit <code>c8f03f48af692657d3060c19588038c7220e9af9</code> 对应题目：<code>VLA-ARCH-001..005</code>、<code>VLA-ACT-002..004</code> 本页问题：OpenVLA 到底接收什么、训练什么、生成什么、怎样把 token 还原为机器人动作？哪些事实不能迁移到 OpenPiVLA / FAST？</div>

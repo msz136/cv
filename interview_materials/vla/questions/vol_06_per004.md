@@ -23,7 +23,7 @@
 
 **项目挂钩**：OPD 可连接 point/box/text grounding、坐标和 scorer，Robot Harness 可连接导航工具的 timeout/cancel/compensation；OpenPiVLA 可连接 observation/action packaging 与 chunk/replan；WAM/UWM 可连接 simulator provenance 和 metric ladder。安全表达是“我能把 grounding、导航接口和评估证据拆层”，不把这些项目写成已有 VLN/ObjectNav benchmark 或真机闭环。
 
-**追问树**：ObjectGoal 的 view-point 与目标点有什么区别？为什么经过目标但没 stop 可能仍失败？SPL 的 (L_i) 和 (P_i) 怎么得到？OS 高而 SR 低说明什么？如何防 reference path 泄漏？navmesh 改变会影响哪些指标？R2R 图导航和 VLN-CE 连续动作能否直接比较？
+**追问树**：ObjectGoal 的 view-point 与目标点有什么区别？为什么经过目标但没 stop 可能仍失败？SPL 的 \(L_i\) 和 \(P_i\) 怎么得到？OS 高而 SR 低说明什么？如何防 reference path 泄漏？navmesh 改变会影响哪些指标？R2R 图导航和 VLN-CE 连续动作能否直接比较？
 
 **易错点**：混淆类别与实例；把 REVERIE grounding 当 ObjectNav success；把 shortest path 当实际轨迹；忽略 stop、timeout、repeat、latency、scene revision 或 denominator；跨 protocol 平均 SR/SPL；把 simulator/offline proxy 写成真机结果。
 

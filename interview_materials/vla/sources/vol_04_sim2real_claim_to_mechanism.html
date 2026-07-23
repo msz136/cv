@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 04 Source Audit D：Sim2Real Claim-to-Mechanism</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_04_sim2real_claim_to_mechanism.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_sim2real_claim_to_mechanism.md">
 <meta name="aris:source-sha256" content="5144cbcd871d8f2aab3d2f5a604f84f7e902f80021da0dafb21e0c053ddaca60">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>5144cbcd871d8f2aab3d2f5a604f84f7e902f80021da0dafb21e0c053ddaca60</code>；生成自：<code>interview_materials\vla\sources\vol_04_sim2real_claim_to_mechanism.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>5144cbcd871d8f2aab3d2f5a604f84f7e902f80021da0dafb21e0c053ddaca60</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_sim2real_claim_to_mechanism.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 来源与证据边界</a></li><li><a href="#3-reality-gap">3. Reality gap 六层合同</a></li><li><a href="#4-visual-domain-randomization-camera-contract">4. Visual domain randomization 与 camera contract</a></li><li><a href="#4-1">4.1 视觉随机化目标</a></li><li><a href="#4-2-camera-geometry-appearance-augmentation">4.2 Camera geometry 不能被 appearance augmentation 替代</a></li><li><a href="#4-3-camera-randomization">4.3 可审计的 camera randomization</a></li><li><a href="#5-dynamics-randomization-system-id-simopt">5. Dynamics randomization、System ID 与 SimOpt</a></li><li><a href="#5-1-dynamics-objective">5.1 分布式 dynamics objective</a></li><li><a href="#5-2-range">5.2 量测优先的 range 设计</a></li><li><a href="#5-3-simopt-real-trajectory-distribution">5.3 SimOpt：用 real trajectory 更新 distribution</a></li><li><a href="#6-control-frequency-latency-actuator">6. Control frequency、latency 与 actuator</a></li><li><a href="#6-1">6.1 多时钟合同</a></li><li><a href="#6-2-latency">6.2 为什么 latency 会放大</a></li><li><a href="#6-3-paired-sweep">6.3 最小 paired sweep</a></li><li><a href="#7-contact-friction-compliance-gripper-semantics">7. Contact、friction、compliance 与 gripper semantics</a></li><li><a href="#7-1-soft-contact">7.1 Soft-contact 参数不是装饰配置</a></li><li><a href="#7-2-manipulation">7.2 Manipulation 高风险点</a></li><li><a href="#8-adaptation">8. Adaptation 方法选择</a></li><li><a href="#9-uncertainty-aware-planning-recovery">9. Uncertainty-aware planning、安全与 recovery</a></li><li><a href="#9-1-chance-constraint">9.1 Chance constraint</a></li><li><a href="#9-2-risk-gate-recovery">9.2 Risk gate 与 recovery</a></li><li><a href="#9-3-vla">9.3 VLA 最小安全闭环</a></li><li><a href="#10-paired-test-matrix">10. Paired test matrix 与失败归因</a></li><li><a href="#11">11. 项目证据与真实性边界</a></li><li><a href="#12">12. 面试答题骨架与当前边界</a></li><li><a href="#12-1-30">12.1 30 秒回答</a></li><li><a href="#12-2">12.2 高频追问防线</a></li><li><a href="#12-3">12.3 独立复核后的开放项</a></li><li><a href="#13-references">13. 参考文献（References）</a></li></ol></nav>
 <h1>VOL 04 Source Audit D：Sim2Real Claim-to-Mechanism</h1>
 <div class="meta">审计日期：2026-07-16 独立复核：2026-07-20 状态：drafted / primary_papers_and_official_docs_reviewed / design_test_matrix_drafted / independent_fact_reviewed / PASS WITH WARNING 覆盖题目：VLA-WM-031..038、VLA-WM-040..044 目标：把 Sim2Real 从“加随机化”拆成 visual/sensor、dynamics、control、contact、task/protocol 与 safety 六层可测合同。</div>

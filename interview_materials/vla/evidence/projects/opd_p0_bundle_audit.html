@@ -6,7 +6,7 @@
 <title>OPD / VLM Grounding P0 Bundle Audit：Data Route / Distillation / Holdout</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\evidence\projects\opd_p0_bundle_audit.md">
-<meta name="aris:source-sha256" content="5e98b4877ba6c8d21a617e53326a9f473cb968dfba5273ca63241196d5103fe3">
+<meta name="aris:source-sha256" content="c4f5eae766ba47eeecda173548fc1e91d80cd99b466b60ac70a30bc137819b09">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,12 +140,12 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>5e98b4877ba6c8d21a617e53326a9f473cb968dfba5273ca63241196d5103fe3</code>；生成自：<code>interview_materials\vla\evidence\projects\opd_p0_bundle_audit.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>c4f5eae766ba47eeecda173548fc1e91d80cd99b466b60ac70a30bc137819b09</code>；生成自：<code>interview_materials\vla\evidence\projects\opd_p0_bundle_audit.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论</a></li><li><a href="#2-p0-gate-matrix">2. P0 gate matrix</a></li><li><a href="#3">3. 已核验的结果边界</a></li><li><a href="#4">4. 面试可用与禁用表述</a></li><li><a href="#5-p0">5. 关闭 P0 的最小动作</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>OPD / VLM Grounding P0 Bundle Audit：Data Route / Distillation / Holdout</h1>
 <div class="meta">状态：<code>p0_audited / protocol-bounded / raw-prediction-missing / ownership-pending / WARN</code> 审计日期：2026-07-21 范围：只审计五 expert 数据构造、student route metadata、coldstart/online OPD summary、10k raw-holdout manifest/table 和 point scorer 记录；不把组合路线结果升级为单因果 OPD uplift。</div>
 <h2 id="1">1. 结论</h2>
-<p>OPD 已具备可定位的数据和训练机制证据：image-hash split、五 expert 配额、route metadata、coldstart teacher rollout、student-rollout/full-vocabulary KL、OPD5000 checkpoint 曲线、10k holdout quota 和 leakage audit 均有本地脚本/表格/summary。结果可以绑定到具体 checkpoint、format/pool 子集和 protocol-limited scorer。</p>
+<p>OPD 已具备可定位的数据和训练机制证据：image-hash split、五 expert 配额、route metadata、coldstart teacher rollout、student-rollout/full-vocabulary KL、OPD5000 checkpoint 曲线、10k holdout quota 和 leakage audit 均有本地脚本/表格/summary。实现 lineage 已进一步拆开：根目录同名 trainer 是 legacy teacher-rollout/top1 CE，formal <code>point/</code> trainer 才支持 coldstart teacher rollout、OPD5000 student rollout 与 \(D_{KL}(q_\beta\Vert p_S)\)；详见 <a href="opd_training_objective_lineage_gate.html">Training Objective Lineage Gate</a>。结果可以绑定到具体 checkpoint、format/pool 子集和 protocol-limited scorer。</p>
 <p>P0 仍未闭合：模型权重、optimizer/RNG、完整 raw predictions、统一 scorer manifest、旧版 OPD final 与新版 OPD5000 的单一 lineage、SFT-only/single-teacher/no-synthetic ablation、operator/reviewer 和逐文件 ownership 缺失。</p>
 <pre><code class="language-text">P0 status = PARTIAL / PROTOCOL-BOUNDED
 eligible causal claims = 0
@@ -152,7 +156,7 @@ forbidden = “OPD alone caused uplift”, “I own OPD5000 checkpoint”, “st
 <table><thead><tr><th>P0 字段</th><th>当前证据</th><th>状态</th><th>安全解释</th></tr></thead><tbody>
 <tr><td>data split / quota</td><td>800k/20k builder、image-hash split、五 expert、10k holdout quota</td><td><code>PRESENT</code></td><td>可讲数据合同与 leakage gate</td></tr>
 <tr><td>route metadata</td><td>target/candidate expert、seen/unseen、boundary/format-conflict</td><td><code>PRESENT</code></td><td>metadata route，不称 learned router</td></tr>
-<tr><td>teacher/student training</td><td>coldstart500、student rollout、full-vocab KL、skip=64k</td><td><code>PRESENT WITH WARNING</code></td><td>可讲训练机制；coldstart-only 增益未隔离</td></tr>
+<tr><td>teacher/student training</td><td>formal <code>point/</code> trainer、coldstart teacher rollout、OPD5000 student rollout、full-vocab \(D_{KL}(q_\beta\Vert p_S)\)、skip=64k</td><td><code>PRESENT WITH WARNING</code></td><td>可讲训练机制；legacy root top1 CE 必须分开，coldstart-only 增益未隔离</td></tr>
 <tr><td>checkpoint curve</td><td>ckpt1000–5000 by-format/by-pool tables</td><td><code>PARTIAL</code></td><td>必须绑定 pool；不同指标最佳 checkpoint 不同</td></tr>
 <tr><td>raw holdout</td><td>10k manifest、dedupe/leakage audit、aggregate tables</td><td><code>PARTIAL</code></td><td>raw predictions/per-sample JSON 缺</td></tr>
 <tr><td>scorer/protocol</td><td>original strict、protocol-fixed strict、lenient point tables</td><td><code>PARTIAL</code></td><td>prompt/scorer hash 和统一版本仍缺</td></tr>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 PER-011 Source Freeze：Pseudo-label / Teacher Noise、Confidence Calibration、Leakage 与 Curriculum</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per011_pseudo_label_teacher_noise_calibration_leakage_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per011_pseudo_label_teacher_noise_calibration_leakage_source_freeze.md">
 <meta name="aris:source-sha256" content="7a883f2eed8a7779295aab0588acd443451d52b64c52b256d3e3120ad1f50942">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>7a883f2eed8a7779295aab0588acd443451d52b64c52b256d3e3120ad1f50942</code>；生成自：<code>interview_materials\vla\sources\vol_06_per011_pseudo_label_teacher_noise_calibration_leakage_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>7a883f2eed8a7779295aab0588acd443451d52b64c52b256d3e3120ad1f50942</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per011_pseudo_label_teacher_noise_calibration_leakage_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-official-local-source-ledger">2. Primary / official / local source ledger</a></li><li><a href="#3">3. 与相邻节点的去重边界</a></li><li><a href="#4-typed-pseudo-label-record">4. Typed Pseudo-label Record：先冻结“谁在什么协议下教了什么”</a></li><li><a href="#5-teacher-target-taxonomy-noise">5. Teacher Target Taxonomy 与 Noise 来源</a></li><li><a href="#6-fixmatch-confidence-gate">6. FixMatch Confidence Gate：选择规则不等于质量证明</a></li><li><a href="#6-1-reduction-probe">6.1 两样本reduction probe</a></li><li><a href="#6-2-probe">6.2 过度自信错误probe</a></li><li><a href="#7-noisy-student">7. Noisy Student：迭代、过滤与平衡都属于协议</a></li><li><a href="#8-confidence-calibration-selective-risk">8. Confidence、Calibration 与 Selective Risk</a></li><li><a href="#8-1-temperature-scaling">8.1 Temperature scaling合同</a></li><li><a href="#8-2-ece">8.2 ECE是带定义的估计量</a></li><li><a href="#8-3-ece-binning-probe">8.3 ECE binning probe</a></li><li><a href="#8-4-risk-coverage-ece">8.4 应优先画risk–coverage而非只报ECE</a></li><li><a href="#9-selection-bias">9. Selection Bias：高阈值会改训练分布</a></li><li><a href="#10-curriculum-iteration-contract">10. Curriculum / Iteration Contract</a></li><li><a href="#11-leakage-taxonomy-gate">11. Leakage Taxonomy 与分层Gate</a></li><li><a href="#11-1-alias-path-probe">11.1 Alias-path probe</a></li><li><a href="#11-2-teacher-training-model-selection">11.2 Teacher-training与model-selection边界</a></li><li><a href="#12-opd-mix-teacher">12. 本地OPD Mix：人工Teacher路由，不是置信度筛选</a></li><li><a href="#13-top-1-cache-teacher-forced-token-distillation">13. 本地Top-1 Cache：Teacher-forced Token Distillation</a></li><li><a href="#14-online-kl-veto">14. 本地Online KL / Veto：可记录不等于可筛选</a></li><li><a href="#14-1-veto-schedule-probe">14.1 Veto schedule probe</a></li><li><a href="#15-raw-holdout-gate">15. Raw Holdout：强可见Gate与剩余未知</a></li><li><a href="#16-deterministic-probes">16. Deterministic Probes 与最小测试集</a></li><li><a href="#17-fail-closed-pseudocode">17. Fail-closed Pseudocode</a></li><li><a href="#18-truth-boundary">18. 面试中的项目Truth Boundary</a></li><li><a href="#19-source-gate-slice">19. Source Gate 与下一Slice</a></li><li><a href="#20-references">20. References</a></li></ol></nav>
 <h1>VOL 06 PER-011 Source Freeze：Pseudo-label / Teacher Noise、Confidence Calibration、Leakage 与 Curriculum</h1>
 <div class="meta">状态：<code>source_frozen / VLA-PER-011 / primary_official_checked / local_opd_mix_cache_online_holdout_boundary / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本切片只冻结teacher target可靠性、confidence/calibration、selection bias、iteration curriculum与leakage gate；不生成knowledge/card，不重讲PER-009的top-1 CE/full-vocabulary KL，也不把static perception结果升级为PER-015的action/robot结论。</div>

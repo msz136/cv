@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OPD / VLM Grounding Ownership Ledger：数据、路由、训练与结果归属</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\opd_ownership_ledger.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\opd_ownership_ledger.md">
 <meta name="aris:source-sha256" content="43280ccda28125f284679d5612fac2ae1621cc9a97285970f35cf4ebe703b7ad">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>43280ccda28125f284679d5612fac2ae1621cc9a97285970f35cf4ebe703b7ad</code>；生成自：<code>interview_materials\vla\evidence\projects\opd_ownership_ledger.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>43280ccda28125f284679d5612fac2ae1621cc9a97285970f35cf4ebe703b7ad</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\opd_ownership_ledger.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. 问题（Question）</a></li><li><a href="#2-role-fit-jd">2. Role Fit 与 JD 能力映射</a></li><li><a href="#3-ownership">3. Ownership 证据合同</a></li><li><a href="#3-1-and-gate">3.1 五层 AND-gate</a></li><li><a href="#3-2">3.2 状态词汇</a></li><li><a href="#4-git-run-lineage">4. Git 与 run lineage 冻结事实</a></li><li><a href="#4-1">4.1 仓库与身份</a></li><li><a href="#4-2">4.2 结果与资产边界</a></li><li><a href="#5-per-file-per-decision-ownership-matrix">5. Per-file / per-decision ownership matrix</a></li><li><a href="#6-claim-ownership-reconciliation">6. Claim → ownership reconciliation</a></li><li><a href="#7-production-gap">7. Production Gap：抗追问最小补证据</a></li><li><a href="#8-question-tree">8. Question Tree 与回答分层</a></li><li><a href="#9-sp-ssp">9. SP/SSP 证据就绪度</a></li><li><a href="#10">10. 候选人确认表</a></li><li><a href="#11">11. 分阶段补强计划</a></li><li><a href="#12-output-pack">12. Output Pack</a></li><li><a href="#12-1-bullet">12.1 简历 bullet 三档</a></li><li><a href="#12-2">12.2 两分钟叙事骨架</a></li><li><a href="#12-3-6">12.3 面试前 6 题</a></li><li><a href="#13-ownership">13. Ownership 审计伪代码</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>OPD / VLM Grounding Ownership Ledger：数据、路由、训练与结果归属</h1>
 <div class="meta">状态：<code>ownership_audited / coarse_git_supported / candidate_confirmation_pending / WARN</code> 审查日期：2026-07-19 证据截止：2026-07-19 项目范围：<code>C:\Users\mousongzhe\muxi</code> 的 OPD / VLM grounding 数据管线、五 expert、online OPD、raw-holdout 与报告资产。 结论先行：本地仓库能直接核验五 expert mix、student route metadata、coldstart500、student-rollout OPD5000、ZeRO 配置和 10k raw-holdout 表；但 Git 是“大快照 + 后续同步”形态，且初始 OPD scaffold 使用 <code>msz136</code> 身份，后续材料使用 <code>mousongzhe</code> 身份。它们不能自动合并为“候选人逐文件独立原创”。当前可说“候选账号提交了这些快照，项目材料自述负责数据/训练/评估设计”，不可说所有代码、远端权重和指标均由候选人独立完成或拥有。</div>

@@ -16,7 +16,7 @@ T^A_B=\begin{bmatrix}R^A_B&t^A_B\\0&1\end{bmatrix},\qquad
 \tilde p_A=T^A_B\tilde p_B.
 \]
 
-记号约定：上标是输出/目标 frame，下标是输入 frame。若点 (p_B) 在 B frame，乘 (T^A_B) 得 A frame。复合必须右到左：
+记号约定：上标是输出/目标 frame，下标是输入 frame。若点 \(p_B\) 在 B frame，乘 \(T^A_B\) 得 A frame。复合必须右到左：
 
 \[
 T^A_C=T^A_B T^B_C.
@@ -66,13 +66,13 @@ def inverse_transform(T_A_B):
 (T^A_B)^{-1}=\begin{bmatrix}R^\top&-R^\top t\\0&1\end{bmatrix}.
 \]
 
-roundtrip 测试：随机或已知 (p_B)，先 (p_A=T^A_Bp_B)，再 (p'_B=(T^A_B)^{-1}p_A)，检查 (|p'_B-p_B|) 小于阈值。还要测试 `compose(T_A_B,T_B_C) @ p_C` 与先后两次变换相同。
+roundtrip 测试：随机或已知 \(p_B\)，先 \(p_A=T^A_Bp_B\)，再 \(p'_B=(T^A_B)^{-1}p_A\)，检查 \(\lVert p'_B-p_B\rVert\) 小于阈值。还要测试 `compose(T_A_B,T_B_C) @ p_C` 与先后两次变换相同。
 
 ## 5. Frame、单位与时间
 
 ROS REP-103/105 提供右手系、SI 单位和移动平台 frame 语义参照，但项目必须记录自己的 `frame_id、parent、child、timestamp、calibration_revision、source`。`camera→base` 与 `base→camera` 方向、米/毫米、光学轴 convention、旧 TF 和新标定 revision 都是高危边界。
 
-如果 observation 在 (	au_o) 捕获，而 TF 在 (	au_{tf}) 更新，不能默认二者同步；移动机器人应使用 capture-time TF 或插值，并把时间差/pose uncertainty 进入 downstream gate。
+如果 observation 在 \(\tau_o\) 捕获，而 TF 在 \(\tau_{tf}\) 更新，不能默认二者同步；移动机器人应使用 capture-time TF 或插值，并把时间差/pose uncertainty 进入 downstream gate。
 
 ## 6. 测试矩阵
 
@@ -98,7 +98,7 @@ OPD 可连接 point/box/text 坐标协议；WAM/OpenPiVLA 可连接 camera/actio
 
 ## 9. 结论与下一步
 
-手写 transform 的高分答案是：明确 (T^A_B) 方向、右到左组合、rigid inverse、point/vector/pose 的 w 差异、frame/单位/时间戳和 roundtrip 测试。矩阵运算正确只是几何层证据，不等于机器人执行成功。
+手写 transform 的高分答案是：明确 \(T^A_B\) 方向、右到左组合、rigid inverse、point/vector/pose 的 \(w\) 差异、frame/单位/时间戳和 roundtrip 测试。矩阵运算正确只是几何层证据，不等于机器人执行成功。
 
 下一步：保持 `CODE-VLA-005` 题卡为 `unseen`，进行一次白板/实现练习，或补充 TF/calibration roundtrip artifact。
 

@@ -107,7 +107,7 @@
 1. Audit A–F 的 public paper/code independent review 均已完成；A/C/D/F 为 PASS WITH WARNING，B/E 的 claim-to-code registry 仍保留 WARN（其独立事实切片已单独记录），local/runtime/oral warning 不因此消失。
 2. `VLA-ARCH-001..012` 与 `VLA-ACT-001..032` 的 knowledge/cards 44/44 已完成；44 张题卡全部 `unseen`。
 3. OpenPiVLA local gates 已新增 formatter、full-sequence CE、72→16 lossy serialization、parser absence 与 official/Qwen parallel-lineage 证据；checkpoint、normalizer、controller、97.4 lineage 与 ownership 仍开放。
-4. 下一 bounded slice 优先做候选人 ownership confirmation，或补 immutable formal checkpoint/generation bundle；无候选人回答时继续关闭 VOL 02 source registry 生命周期。
+4. 下一 bounded slice 优先做候选人 ownership confirmation，或补 immutable formal checkpoint/generation bundle；无候选人回答时继续关闭 VOL 03 source registry 生命周期。
 
 ## 7. 本 registry 能证明与不能证明什么
 

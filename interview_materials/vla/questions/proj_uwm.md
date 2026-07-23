@@ -16,17 +16,17 @@
 
 **面试意图**：判断你能否固定评估 tuple、区分本地证据与远端确认结果，并在结果冲突时避免把协议差异包装成模型 uplift 或官方复现。
 
-**30 秒回答**：先冻结协议：186/250=0.744 是 fixed-pruned-init+5-step warmup 的用户确认结果；0.928 是 reset-style diagnostic；论文约0.79 用 OOD init、shift、背景移除和多 seed。三者不能横比，当前缺 checkpoint/episode bundle，只能讲协议敏感性。
+**30 秒回答**：先冻结 tuple：0.744 是 fixed-init 用户确认 summary，0.928 是 reset-style，论文约0.79 是 OOD/shift/多seed；三者不可横比。五 task 用 task-specific checkpoint，evaluator 只读 model，raw episode 仍缺。
 
-**机制展开（约 2 分钟）**：先把 init/seed/warmup/horizon/normalizer/checkpoint、predicate、分母写入 manifest。186/250 是 fixed-pruned-init 的 5×50 结果，缺 raw JSONL/权重；0.928 用 env.seed+reset，协议更容易；论文约0.79 用 OOD init、shift、去背景、3 seeds。三者不可横比，0.928→0.744 只说明 protocol sensitivity。要归因模型，需同 checkpoint paired init、episode trace、scorer、ownership；只能讲 report/user-confirmed evidence，不称 benchmark。
+**机制展开（约 2 分钟）**：先把 init/seed/warmup/horizon/normalizer presence/checkpoint、predicate、expected/completed denominator 写入 manifest。186/250 是 fixed-pruned-init 的 5×50 结果，缺 raw JSONL/权重；0.928 用 env.seed+reset，协议更容易；论文约0.79 用 OOD init、shift、去背景、3 seeds。三者不可横比，0.928→0.744 只说明 protocol sensitivity。要归因模型，需同 checkpoint paired init、episode trace、scorer、ownership；只能讲 report/user-confirmed evidence，不称 benchmark。
 
-**诊断 / 证据**：逐 episode 保存 task、init index、seed、warmup、horizon、camera/state/action schema、normalizer hash、checkpoint hash、success predicate、terminal reason 和 denominator。先做同 checkpoint 的 reset-style↔fixed-pruned-init paired run，再按 task/失败类型分层；若要对齐论文，还要复现 OOD initialization、object shift、背景设置与多 seed，并冻结 scorer 版本。当前本地有 launcher、task mapping、协议开关、report 和用户确认 summary，但缺 250 条 raw episode、checkpoint/normalizer immutable bundle 与 ownership ledger，保持 `WARN`。
+**诊断 / 证据**：逐 episode 保存 task、init index、seed、warmup、horizon、camera/state/action schema、normalizer presence/usage、checkpoint hash、success predicate、terminal reason 和 expected/completed denominator。先做同 checkpoint 的 reset-style↔fixed-pruned-init paired run，再按 task/失败类型分层；若要对齐论文，还要复现 OOD initialization、object shift、背景设置与多 seed，并冻结 scorer 版本。当前本地有 launcher、task mapping、协议开关、report 和用户确认 summary，但缺 250 条 raw episode、task-specific checkpoint bundle、normalizer usage manifest 与 ownership ledger，保持 `WARN`。
 
-**项目挂钩**：可讲我负责把 LIBERO-90→LIBERO-10 的 UWM finetune/rollout 路径、pruned-init、warmup、rollout 数和 success predicate 固定下来，并定位 zarr 小 chunk 导致的 DataLoader stall。RoboCasa 可讲 actionheadfix 的 partial decoder init、12D contract 与 raw sweep：一条30-epoch run的full-h4为`0/54`、robot-env contact `45/54`，其它setting也只有`1–2/54`，所以只称训练/诊断推进，不称性能修复。历史`27/54`来自未对齐run摘要，不能混用。安全口径是“我负责协议迁移、诊断和验收”，不把 UWM shared diffusion architecture、远端 checkpoint 或结果写成个人原创/严格复现。
+**项目挂钩**：可讲我负责把 LIBERO-90→LIBERO-10 的 task-specific UWM finetune/rollout 路径、pruned-init、warmup、rollout 数和 success predicate 固定下来，并定位 zarr 小 chunk 导致的 DataLoader stall。要主动说明 LIBERO evaluator 只 strict-load `ckpt["model"]`，没有把 normalizer 当作已加载证据；RoboCasa 可讲 actionheadfix 的 partial decoder init、12D contract 与 raw sweep：一条30-epoch run的full-h4为`0/54`、robot-env contact `45/54`，其它setting也只有`1–2/54`，所以只称训练/诊断推进，不称性能修复。历史`27/54`来自未对齐run摘要，不能混用。安全口径是“我负责协议迁移、诊断和验收”，不把 UWM shared diffusion architecture、远端 checkpoint 或结果写成个人原创/严格复现。
 
 **追问树**：为什么 reset-style 更高？`0.744 vs 0.79` 能否说只差 4.6pp？如何证明 checkpoint 相同？DataLoader stall 如何定位？actionheadfix 为什么 loss 改善仍 `0/54`？teacher-forced x0 MSE 与 closed-loop success 差在哪里？strict `convert_action` 的 `0/6` 为什么不能算六条模型失败？
 
-**易错点**：混用 strict/fixed/reset 口径；把用户确认 JSON 当本地 raw artifact；把 Table II 论文均值当同协议 baseline；忽略 normalizer、init、seed、warmup、horizon 或 success predicate；把 DataLoader smoke 写成完整训练吞吐提升。
+**易错点**：混用 strict/fixed/reset 口径；把用户确认 JSON 当本地 raw artifact；把五个 task 说成一个 multi-task checkpoint；把 evaluator 未读取的 normalizer 说成已固定；把 Table II 论文均值当同协议 baseline；忽略 init、seed、warmup、horizon、success predicate 或 expected/completed denominator；把 DataLoader smoke 写成完整训练吞吐提升。
 
 **危险答案**：说“0.928 证明模型最好”“0.744 只比官方低 4.6pp”“loss 从 95 降到 0.22 所以 actionheadfix 已成功”“strict convert_action 0/6 都是模型失败”“Git author 证明全部代码是我写的”或“RoboCasa 已完成 benchmark”。
 

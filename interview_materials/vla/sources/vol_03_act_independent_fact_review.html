@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 03 Source Audit C：ACT CVAE / Action Chunk / Temporal Ensemble 独立事实复核</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_03_act_independent_fact_review.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_03_act_independent_fact_review.md">
 <meta name="aris:source-sha256" content="fa7e2f654760642a6c834b0c1a48f553ed500df725d520c8189ef0c073b8c3b0">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>fa7e2f654760642a6c834b0c1a48f553ed500df725d520c8189ef0c073b8c3b0</code>；生成自：<code>interview_materials\vla\sources\vol_03_act_independent_fact_review.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>fa7e2f654760642a6c834b0c1a48f553ed500df725d520c8189ef0c073b8c3b0</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_03_act_independent_fact_review.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 直接复核来源与冻结对象</a></li><li><a href="#2-act-public-i-o-chunk-contract">2. ACT 的 public I/O 与 chunk contract</a></li><li><a href="#3-cvae-posterior">3. CVAE：posterior 看什么，推理时如何消失</a></li><li><a href="#4-l1-kl-padding-loss-denominator">4. L1/KL、padding 与 loss denominator</a></li><li><a href="#5-padding-normalization">5. 数据 padding 与 normalization 边界</a></li><li><a href="#6-temporal-ensemble-target-time-oldest">6. Temporal ensemble：同一 target time，oldest 权重最大</a></li><li><a href="#7-synthetic-probes">7. Synthetic probes</a></li><li><a href="#8-vla-act-011-017">8. 对 VLA-ACT-011..017 的回写结论</a></li><li><a href="#9">9. 不能推出的本地项目事实</a></li><li><a href="#10">10. 下一步</a></li><li><a href="#section-11">参考入口</a></li></ol></nav>
 <h1>VOL 03 Source Audit C：ACT CVAE / Action Chunk / Temporal Ensemble 独立事实复核</h1>
 <div class="meta">状态：<code>independent_fact_reviewed / audit_c / cvae_loss_mask_query_ensemble_checked / PASS WITH WARNING</code> 审查日期：2026-07-19 范围：ACT v1 论文与 frozen repo 的 CVAE 输入、latent train/infer、L1/KL、padding denominator、query embedding、temporal ensemble 与 H/K/R rollout。 结论先行：ACT 的论文与官方代码都支持“连续 action chunk + CVAE style latent + Transformer queries”的主机制，但实现层必须保留三类差异：Algorithm 1 写 reconstruction MSE，正文与 frozen code 使用 L1；论文图示的 fixed/sinusoidal query 与 frozen code 的 learned <code>nn.Embedding</code> 不同；<code>is_pad</code> 乘到逐元素 L1 numerator 后，代码直接对完整 <code>B×H×D</code> 张量取 mean，padding 会稀释 loss。temporal ensemble 融合的是不同 query 对同一 target time 的预测，oldest row 权重最大；含任意零分量的 prediction row 会被 sentinel 过滤。以上均为 public paper/code facts，不证明本地 OpenPiVLA 采用 ACT 或任何指标。</div>

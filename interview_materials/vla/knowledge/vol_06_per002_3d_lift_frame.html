@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 Perception / Grounding / Navigation：2D → 3D Lift 与 Frame Contract（PER-002）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per002_3d_lift_frame.md">
-<meta name="aris:source-sha256" content="64dbc11b0ac1f8748c0181067af3e3b97d1fc8a7e940d2d0d659b4850db26f49">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per002_3d_lift_frame.md">
+<meta name="aris:source-sha256" content="2815add4306e1b6c9ca55f9b81a405b555fc3bf7ae2504b98f8f79cac37a68c5">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>64dbc11b0ac1f8748c0181067af3e3b97d1fc8a7e940d2d0d659b4850db26f49</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per002_3d_lift_frame.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>2815add4306e1b6c9ca55f9b81a405b555fc3bf7ae2504b98f8f79cac37a68c5</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per002_3d_lift_frame.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1-30-3d-lift">1. 30 秒直觉：3D lift 是一条带时间戳的链</a></li><li><a href="#2-camera-model-image-size-contract">2. Camera model：内参、畸变与 image-size contract</a></li><li><a href="#2-1-pinhole-intrinsics">2.1 Pinhole intrinsics</a></li><li><a href="#2-2-distortion-rectification">2.2 Distortion / rectification</a></li><li><a href="#2-3-calibration-evidence">2.3 Calibration evidence</a></li><li><a href="#3-depth-z-3d">3. Depth：没有 Z 就没有唯一的 3D 点</a></li><li><a href="#3-1">3.1 深度来源对照</a></li><li><a href="#4-frame-transform">4. 反投影与 frame transform</a></li><li><a href="#4-1-pixel-camera-optical-frame">4.1 Pixel → camera optical frame</a></li><li><a href="#4-2-camera-target-world-frame">4.2 Camera → target/world frame</a></li><li><a href="#4-3-ros-convention">4.3 ROS convention 是参照，不是事实</a></li><li><a href="#5">5. 时间同步与不确定性账本</a></li><li><a href="#6-3d-lift-pipeline">6. 可审计 3D-lift pipeline</a></li><li><a href="#7">7. 证据阶梯：从几何到闭环</a></li><li><a href="#8">8. 项目映射与回答边界</a></li><li><a href="#opd">OPD</a></li><li><a href="#wam">WAM</a></li><li><a href="#ownership">个人 ownership</a></li><li><a href="#9-trade-off-bad-case">9. Trade-off 与高概率 bad case</a></li><li><a href="#10">10. 面试回答检查表</a></li><li><a href="#11">11. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 Perception / Grounding / Navigation：2D → 3D Lift 与 Frame Contract（PER-002）</h1>
 <div class="meta">状态：<code>drafted / VLA-PER-002 / knowledge_1_of_phase / card_synced / WARN</code> 报告日期：2026-07-18 证据截止：2026-07-18 来源入口：<a href="../sources/vol_06_per002_3d_lift_frame_source_freeze.html">PER-002 3D Lift / Frame Source Freeze</a>。 前置知识：<a href="vol_06_per001_grounding_coordinate.html">PER-001 Grounding / Coordinate</a>。</div>
@@ -276,7 +280,7 @@ T_{t\leftarrow c}=\begin{bmatrix}R_{t\leftarrow c}&amp;t_{t\leftarrow c}\\0&amp;
 <p>常见 bad case：用 2D box 中心当 3D grasp 点；把 RGB resolution 的 <code>K</code> 用到 resized tensor；畸变点直接套 pinhole；深度单位 mm/m 混淆；忽略 depth invalid code；camera→base 方向写反；使用最新 TF 而不是 capture-time TF；只看 overlay 不做 roundtrip；把 ROS frame convention 当作项目事实；把 planner trace 当作 controller success。</p>
 <h2 id="10">10. 面试回答检查表</h2>
 <p>回答 PER-002 至少覆盖：</p>
-<ol><li>深度来源和 invalid policy；</li><li><code>K/distortion/image_size</code> 与 pixel/rectified space；</li><li>(X_c,Y_c,Z_c) 反投影公式；</li><li><code>T_target←camera(timestamp)</code> 的方向、frame ID、单位和 revision；</li><li>RGB/depth/TF/robot-state 时间同步；</li><li>uncertainty gate 与 planner/controller 分层；</li><li>OPD/WAM 当前没有 3D artifact 的证据边界。</li></ol>
+<ol><li>深度来源和 invalid policy；</li><li><code>K/distortion/image_size</code> 与 pixel/rectified space；</li><li>\((X_c,Y_c,Z_c)\) 反投影公式；</li><li><code>T_target←camera(timestamp)</code> 的方向、frame ID、单位和 revision；</li><li>RGB/depth/TF/robot-state 时间同步；</li><li>uncertainty gate 与 planner/controller 分层；</li><li>OPD/WAM 当前没有 3D artifact 的证据边界。</li></ol>
 <h2 id="11">11. 结论与下一步</h2>
 <p>3D lift 的关键不是记住一个反投影公式，而是把 depth、calibration、frame、timestamp、uncertainty 和 downstream predicate 绑定成可复查链路。OpenCV 和 ROS 文档支持机制与 convention；当前项目材料只能支持 2D grounding 或 rollout provenance，不能升级为个人 3D lift 或真机成果。节点保持 <code>WARN</code>，对应题卡已生成并保持 <code>unseen</code>；下一步进行 PER-001..004 真实口述或补一个本地 3D roundtrip artifact。</p>
 <h2 id="references">References</h2>

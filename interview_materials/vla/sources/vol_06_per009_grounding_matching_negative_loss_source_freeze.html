@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 PER-009 Source Freeze：Grounding Matching、Negative 与 Loss Reduction</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per009_grounding_matching_negative_loss_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per009_grounding_matching_negative_loss_source_freeze.md">
 <meta name="aris:source-sha256" content="d97851cd4330a8c412aaca066fbe267fbc2e8fcd5646b3938697becaab790ad0">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>d97851cd4330a8c412aaca066fbe267fbc2e8fcd5646b3938697becaab790ad0</code>；生成自：<code>interview_materials\vla\sources\vol_06_per009_grounding_matching_negative_loss_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>d97851cd4330a8c412aaca066fbe267fbc2e8fcd5646b3938697becaab790ad0</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per009_grounding_matching_negative_loss_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-official-local-source-ledger">2. Primary / official / local source ledger</a></li><li><a href="#3">3. 与相邻节点的去重边界</a></li><li><a href="#4-grounding-detector-schema">4. 显式Grounding Detector的训练schema</a></li><li><a href="#5-hungarian-matching-assignment">5. Hungarian Matching：离散assignment合同</a></li><li><a href="#6-token-classification-negative-focal-loss">6. Token Classification、Negative与Focal Loss</a></li><li><a href="#6-1-grounding-dino-token-target">6.1 Grounding DINO token target</a></li><li><a href="#6-2-focal-loss">6.2 Focal loss</a></li><li><a href="#7-box-l1-giou-loss">7. Box L1与GIoU Loss</a></li><li><a href="#8-reduction-distributed-normalization-auxiliary-loss">8. Reduction、Distributed Normalization与Auxiliary Loss</a></li><li><a href="#8-1-classification-numerator-gt-denominator">8.1 Classification numerator与GT denominator</a></li><li><a href="#8-2-distributed-denominator">8.2 Distributed denominator</a></li><li><a href="#8-3-weighted-total-auxiliary-branches">8.3 Weighted total与auxiliary branches</a></li><li><a href="#9">9. 权重冲突与版本门</a></li><li><a href="#10-probe">10. 三个确定性Probe</a></li><li><a href="#10-1-hungarian-assignment">10.1 Hungarian assignment</a></li><li><a href="#10-2-focal-easy-hard-negative">10.2 Focal easy/hard negative</a></li><li><a href="#10-3-local-route-reduction">10.3 Local route reduction</a></li><li><a href="#11-opd-objective-lineage">11. 本地OPD三条Objective Lineage</a></li><li><a href="#11-1-assistant-token-sft">11.1 Assistant-token SFT</a></li><li><a href="#11-2-routed-object-region-top-1-ce">11.2 Routed object/region top-1 CE</a></li><li><a href="#11-3-online-full-vocabulary-kl">11.3 Online full-vocabulary KL</a></li><li><a href="#12-2500-metrics">12. 本地2500行Metrics可复算边界</a></li><li><a href="#13-typed-loss-manifest">13. Typed Loss Manifest</a></li><li><a href="#14-project-truth-boundary">14. Project Truth Boundary与补证顺序</a></li><li><a href="#15-source-gate-bounded-slice">15. Source Gate结论与下一Bounded Slice</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 PER-009 Source Freeze：Grounding Matching、Negative 与 Loss Reduction</h1>
 <div class="meta">状态：<code>source_frozen / VLA-PER-009 / primary_official_checked / local_ce_top1_kl_boundary / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本切片只冻结显式grounding detector与本地OPD生成式训练的objective、matching、negative和reduction合同；不生成knowledge/card，不展开PER-010 metric/parser、PER-011 pseudo-label/noise或PER-015 controller gate。</div>

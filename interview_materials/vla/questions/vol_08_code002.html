@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 08 CODE-VLA-002 原子手撕题卡：Scaled Dot-Product Attention</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_08_code002.md">
-<meta name="aris:source-sha256" content="b7beec245465aeeeb9d5776b1e146f172eb769eb74a6ee8fcfbb6db9e471b8a6">
+<meta name="aris:source-path" content="interview_materials\vla\questions\vol_08_code002.md">
+<meta name="aris:source-sha256" content="7fca7d94ffb9758d6d010f57fe4a753d521debd59881afd6b27a137395da6078">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,14 +140,14 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>b7beec245465aeeeb9d5776b1e146f172eb769eb74a6ee8fcfbb6db9e471b8a6</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\questions\vol_08_code002.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>7fca7d94ffb9758d6d010f57fe4a753d521debd59881afd6b27a137395da6078</code>；生成自：<code>interview_materials\vla\questions\vol_08_code002.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#scaled-dot-product-attention-mask-shape">手写 scaled dot-product attention 并处理 mask/shape</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
 <h1>VOL 08 CODE-VLA-002 原子手撕题卡：Scaled Dot-Product Attention</h1>
 <div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-18 覆盖范围：<code>CODE-VLA-002</code> 难度：L2 1 题 优先级：P0 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_08_code002_attention.html">CODE-002 Knowledge</a>；来源边界见 <a href="../sources/vol_08_code002_attention_source_freeze.html">CODE-002 Source Freeze</a>。</div>
 <h2 id="scaled-dot-product-attention-mask-shape">手写 scaled dot-product attention 并处理 mask/shape</h2>
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>CODE-VLA-002</b> · 请手写 scaled dot-product attention，并说明多头 shape、causal/padding mask、dropout 和测试。</summary>
-<p><strong>面试意图</strong>：判断你能否把 Q/K/V shape、(1/\sqrt{d_k})、mask 方向、不同 query/key 长度、dtype、dropout 和 VLA loss 边界落到可运行实现。</p>
+<p><strong>面试意图</strong>：判断你能否把 Q/K/V shape、\(1/\sqrt{d_k}\)、mask 方向、不同 query/key 长度、dtype、dropout 和 VLA loss 边界落到可运行实现。</p>
 <p><strong>30 秒回答</strong>：先统一 Q/K/V 为 [B,H,L,D]，算 scores=QKᵀ/√D，沿 Lk 做 softmax；mask 在 softmax 前应用，causal 只屏蔽未来，训练才 dropout。测试 Lq≠Lk、padding、fp16 和梯度 parity。</p>
 <p><strong>机制展开（约 2 分钟）</strong>：实现时只在最后两维做 matmul，score 为 [B,H,Lq,Lk]，softmax 沿 key 维；bool/additive mask 的 True 语义先定，Lq≠Lk 不能写死方阵。fp16/bf16 可在 fp32 算 score/softmax 后 cast；全 masked 行要 reject/invalid，避免 NaN；dropout 只在 train。用手算、多头、causal future、padding、不同长度、极值、autograd/SDPA parity 验证。attention mask 决定可见性，loss mask 决定监督，continuous action 不需 softmax。</p>
 <p><strong>诊断 / 证据</strong>：白板先标注每个 tensor 的 <code>[B,H,L,D]</code>，再验证 <code>Q @ K.transpose(-2,-1)</code>、scale、mask broadcast、softmax axis 和 <code>A @ V</code>。测试 square 与 <code>Lq≠Lk</code>、单头手算、多头 merge、future blocking、padding、train/eval dropout、fp16/bf16 finite、all-masked row、autograd 与 PyTorch SDPA tolerance。记录 device、dtype、dropout seed 和 backend；forward 通过不等于 fused kernel 性能通过。</p>

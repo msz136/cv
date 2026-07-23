@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 04 Audit D：Sim2Real 独立事实复核</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_04_sim2real_independent_fact_review.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_sim2real_independent_fact_review.md">
 <meta name="aris:source-sha256" content="278f1b69bd8f414ddb597ae848ae4d97517c1c2f07355601959d4e7cc8d45136">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>278f1b69bd8f414ddb597ae848ae4d97517c1c2f07355601959d4e7cc8d45136</code>；生成自：<code>interview_materials\vla\sources\vol_04_sim2real_independent_fact_review.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>278f1b69bd8f414ddb597ae848ae4d97517c1c2f07355601959d4e7cc8d45136</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_sim2real_independent_fact_review.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 独立来源冻结</a></li><li><a href="#2-1-pdf">2.1 十份固定 PDF</a></li><li><a href="#2-2-mujoco-opencv-robosuite">2.2 MuJoCo、OpenCV 与 robosuite</a></li><li><a href="#3-paper-to-claim">3. Paper-to-claim 独立复核</a></li><li><a href="#4-reality-gap">4. 六层 reality-gap 合同</a></li><li><a href="#5-dr-sysid-simopt">5. DR、SysID 与 SimOpt</a></li><li><a href="#5-1">5.1 “越宽越好”被一手来源否定</a></li><li><a href="#5-2-sysid-dr-residual-uncertainty">5.2 SysID 给中心，DR 覆盖 residual uncertainty</a></li><li><a href="#6-camera-timing-contact-controller">6. Camera、timing、contact 与 controller</a></li><li><a href="#6-1-calibration-error-deployment-correctness">6.1 Calibration error 不等于 deployment correctness</a></li><li><a href="#6-2-latency-critical-path">6.2 Latency 必须拆 critical path</a></li><li><a href="#6-3-contact-friction-scalar">6.3 Contact 不是一个 friction scalar</a></li><li><a href="#7-adaptation-residual-safety">7. Adaptation、residual 与 safety 边界</a></li><li><a href="#8-probes">8. 十二个确定性 probes</a></li><li><a href="#9-truth-boundary">9. 五项目本地证据与 truth boundary</a></li><li><a href="#10-source-knowledge-card-reconciliation">10. Source → Knowledge → Card reconciliation</a></li><li><a href="#11">11. 审查状态与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 04 Audit D：Sim2Real 独立事实复核</h1>
 <div class="meta">状态：<code>independent_fact_reviewed / Audit D / public_facts_reconciled / PASS WITH WARNING</code> 复核日期：2026-07-20 证据截止：2026-07-20 范围：重新获取 10 份固定 arXiv PDF，固定 MuJoCo / OpenCV / robosuite 的官方源码与文档快照，复核 visual/sensor、dynamics、control/timing、contact/compliance、task/protocol、safety/recovery 六层 reality gap，以及 DR、SysID、SimOpt、UP-OSI、RMA、residual、chance constraint、recovery 与五项目真实性边界。 Bounded slice：本页只完成 Audit D 独立复核与必要状态同步；不新增知识节点或题卡，不启动 PER-019，不修改 269 张题卡的 <code>unseen</code> 状态，不创建 <code>coaching_state.md</code>。</div>

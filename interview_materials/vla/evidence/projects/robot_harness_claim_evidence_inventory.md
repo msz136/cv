@@ -110,7 +110,7 @@ HTTP/OpenAI or UI request
 R=\sum_i w_i c_i+\sum_j p_j\,\mathbf{1}[h_j\text{ 被触发}],
 \]
 
-其中 (c_i) 是 tool name/order、required coverage、argument semantic、scope、clarification、state success、cancellation compensation 等组件，(w_i) 随 task family 变化；(p_j<0) 是 forbidden tool、缺失澄清仍执行、scope 忽略、取消不补偿等 hard penalty。该式是对 `reward_spec()` 的结构化解释，不是新的训练实现。
+其中 \(c_i\) 是 tool name/order、required coverage、argument semantic、scope、clarification、state success、cancellation compensation 等组件，\(w_i\) 随 task family 变化；\(p_j<0\) 是 forbidden tool、缺失澄清仍执行、scope 忽略、取消不补偿等 hard penalty。该式是对 `reward_spec()` 的结构化解释，不是新的训练实现。
 
 ### 6.3 tool-restraint mix
 

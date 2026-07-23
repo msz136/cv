@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 04 Cosmos Policy 1 Epoch：本地证据冻结</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_04_cosmos_policy_1epoch_evidence_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_cosmos_policy_1epoch_evidence_freeze.md">
 <meta name="aris:source-sha256" content="7c9c4ea2b317a00df72b1cb29457b1acd112066c01aa25bc6e750f8d0de91aa6">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>7c9c4ea2b317a00df72b1cb29457b1acd112066c01aa25bc6e750f8d0de91aa6</code>；生成自：<code>interview_materials\vla\sources\vol_04_cosmos_policy_1epoch_evidence_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>7c9c4ea2b317a00df72b1cb29457b1acd112066c01aa25bc6e750f8d0de91aa6</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_cosmos_policy_1epoch_evidence_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2-run-contract">2. 运行合同（Run Contract）</a></li><li><a href="#3-run-ledger">3. Run ledger：两条主线与一个保存接口失败</a></li><li><a href="#3-1-save-2k-cpu-cgroup-oom-step-1903">3.1 save-2k 主线：CPU cgroup OOM，中断于 step 1903</a></li><li><a href="#3-2-no-cycle-step-1500">3.2 no-cycle 修复主线：step 1500 保存阶段失败</a></li><li><a href="#4">4. 指标与评估边界</a></li><li><a href="#4-1">4.1 可以写进面试回答的事实</a></li><li><a href="#4-2-1-epoch">4.2 不可以写成这次 1 epoch 结果的数字</a></li><li><a href="#5-evidence-classification">5. Evidence classification 与面试叙事</a></li><li><a href="#6">6. 下一步闭环条件</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 04 Cosmos Policy 1 Epoch：本地证据冻结</h1>
 <div class="meta">状态：<code>local_evidence_freeze / 1epoch_gate_not_closed / WARN</code> 复核日期：2026-07-21 证据来源：<code>C:\Users\mousongzhe\Project\report\cosmos_policy_eval</code>（只读审计） Bounded slice：本页只冻结 Cosmos Policy / Predict2 RoboCasa 1 epoch 训练 gate 的运行合同、可观测指标、失败原因、checkpoint 与评估边界；不把远端路径、训练中间指标或官方 baseline 升格为完整本地结果，不改变题卡 <code>unseen</code> 或 ownership。</div>

@@ -4,7 +4,7 @@
   "review_date": "2026-07-21",
   "status": "p0_audited / protocol-bounded / raw-prediction-missing / ownership-pending",
   "verdict": "WARN",
-  "source_sha256": "5E98B4877BA6C8D21A617E53326A9F473CB968DFBA5273CA63241196D5103FE3",
+  "source_sha256": "C4F5EAE766BA47EEECDA173548FC1E91D80CD99B466B60AC70A30BC137819B09",
   "scope": {
     "project": "OPD / VLM Grounding",
     "p0_fields": 10,
@@ -18,7 +18,7 @@
   },
   "checks": {
     "data_route": "PASS WITH WARNING (five expert mix, image-hash split and route metadata local-direct)",
-    "distillation": "PASS WITH WARNING (coldstart/student rollout/full-vocab KL documented; isolated ablation missing)",
+    "distillation": "PASS WITH WARNING (objective-lineage gate separates legacy top1 CE from formal full-vocab D_KL(q_beta||p_student), and separates coldstart teacher rollout from OPD5000 student rollout; isolated ablation missing)",
     "holdout_leakage": "PASS (quota, dedupe and leakage audit recorded)",
     "checkpoint_curve": "PASS WITH WARNING (by-format/by-pool tables; no global-best claim)",
     "scorer_protocol": "FAIL TO PROMOTE (three point protocols exist but scorer/prompt hash bundle incomplete)",

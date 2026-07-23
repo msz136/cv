@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 PER-018 Source Freeze：Navigation BC、DAgger、RL 与 Exposure Bias</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per018_navigation_bc_dagger_rl_exposure_bias_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per018_navigation_bc_dagger_rl_exposure_bias_source_freeze.md">
 <meta name="aris:source-sha256" content="af567f683bc0e7ee38efc036e4163e7b828ea37d2d7edf5b2eeba022102bf506">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>af567f683bc0e7ee38efc036e4163e7b828ea37d2d7edf5b2eeba022102bf506</code>；生成自：<code>interview_materials\vla\sources\vol_06_per018_navigation_bc_dagger_rl_exposure_bias_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>af567f683bc0e7ee38efc036e4163e7b828ea37d2d7edf5b2eeba022102bf506</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per018_navigation_bc_dagger_rl_exposure_bias_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-paper">2. Primary Paper 冻结矩阵</a></li><li><a href="#3-official-repository">3. Official Repository 冻结矩阵</a></li><li><a href="#4-official-file-ledger-27-files">4. Official File Ledger（27 files）</a></li><li><a href="#4-1-vln-ce-729d141">4.1 VLN-CE @ `729d141`</a></li><li><a href="#4-2-habitat-lab-0fb6f43">4.2 Habitat-Lab @ `0fb6f43`</a></li><li><a href="#4-3-r2r-envdrop-6f938ab">4.3 R2R-EnvDrop @ `6f938ab`</a></li><li><a href="#4-4-matterport3dsimulator-589d091">4.4 Matterport3DSimulator @ `589d091`</a></li><li><a href="#5">5. 节点边界与依赖</a></li><li><a href="#6-typed-navigation-training-manifest">6. Typed Navigation Training Manifest</a></li><li><a href="#7-behavior-cloning-teacher-forcing">7. Behavior Cloning 与 Teacher Forcing</a></li><li><a href="#8-student-forcing-scheduled-sampling-exposure-bias">8. Student Forcing、Scheduled Sampling 与 Exposure Bias</a></li><li><a href="#9-dagger-identity-vln-ce">9. DAgger Identity 与 VLN-CE 实现</a></li><li><a href="#10-return-gae-ppo-dd-ppo">10. Return、GAE、PPO 与 DD-PPO</a></li><li><a href="#11">11. 方法身份对比</a></li><li><a href="#12-training-evaluation-contract">12. Training ↔ Evaluation Contract</a></li><li><a href="#13-first-divergence-failure-diagnosis">13. First-divergence Failure Diagnosis</a></li><li><a href="#14-fail-closed-navigation-training">14. Fail-closed Navigation Training 伪代码</a></li><li><a href="#15-deterministic-probes">15. 十个 Deterministic Probes</a></li><li><a href="#16-public-method-code-mapping">16. Public Method → Code Mapping</a></li><li><a href="#17-inventory-direct-audit">17. 本地五项目 Inventory 与 Direct Audit</a></li><li><a href="#17-1-canonical-inventory">17.1 Canonical Inventory</a></li><li><a href="#17-2-local-direct-files">17.2 Local-direct Files</a></li><li><a href="#18-project-truth-boundary">18. Project Truth Boundary</a></li><li><a href="#19-source-gate">19. Source Gate 与下一切片</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 PER-018 Source Freeze：Navigation BC、DAgger、RL 与 Exposure Bias</h1>
 <div class="meta">状态：<code>source_frozen / VLA-PER-018 / primary_official_checked / independent_fact_reviewed / navigation_training_contract / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本 source slice 只冻结 navigation behavior cloning、teacher/student forcing、scheduled sampling、DAgger、GAE、PPO/DD-PPO、训练—评估身份与五项目真实性边界；不生成 knowledge/card，不修改 268 张题卡的 mastery，不创建 coaching state，也不重写 VOL 02 的通用 IL/RL、PER-004 的任务指标、PER-005 的 policy architecture、PER-017 的 exploration 或 PER-019 的完整评估节点。</div>

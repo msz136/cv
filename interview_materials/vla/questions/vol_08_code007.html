@@ -6,7 +6,7 @@
 <title>VOL 08 CODE-VLA-007 原子手撕题卡：PID Update with Anti-windup</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\questions\vol_08_code007.md">
-<meta name="aris:source-sha256" content="97a092a8b27b267b467f709b3f851679de75a090a6763e5f12a9abc1e8c89b6c">
+<meta name="aris:source-sha256" content="c1e2b7b691e0a26c1fb034a51b33c0c3ca0a7fed19640e8eb708f087aadcc58e">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>97a092a8b27b267b467f709b3f851679de75a090a6763e5f12a9abc1e8c89b6c</code>；生成自：<code>interview_materials\vla\questions\vol_08_code007.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>c1e2b7b691e0a26c1fb034a51b33c0c3ca0a7fed19640e8eb708f087aadcc58e</code>；生成自：<code>interview_materials\vla\questions\vol_08_code007.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#anti-windup-pid-update">手写带 anti-windup 的离散 PID update</a></li><li><a href="#section-2">参考来源</a></li></ol></nav>
 <h1>VOL 08 CODE-VLA-007 原子手撕题卡：PID Update with Anti-windup</h1>
 <div class="meta">状态：<code>drafted / card_1_of_1 / WARN</code> 更新日期：2026-07-20 覆盖范围：<code>CODE-VLA-007</code> 难度：L2 1 题 优先级：P0 练习状态：<code>unseen</code> 前置知识：<a href="../knowledge/vol_08_code007_pid_anti_windup.html">CODE-007 Knowledge</a>；来源边界见 <a href="../sources/vol_08_code007_pid_anti_windup_source_freeze.html">CODE-007 Source Freeze</a>。</div>
@@ -144,8 +148,8 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>CODE-VLA-007</b> · 请实现离散 PID update，处理输出饱和、积分 anti-windup、reset 与测试。</summary>
 <p><strong>面试意图</strong>：判断你能否冻结 <code>dt</code>、error sign、内部 state、output/i limits 与 anti-windup 分支，并写出可诊断的更新，而不是只把 <code>P+I+D</code> 相加。</p>
-<p><strong>30 秒回答</strong>：固定 e、dt、state 和 limits，算 u_unsat=P+I+D，再 clip 得 u_sat。conditional integration 在饱和且误差继续推向 rail 时冻结、反向时放行；back-calculation 用 (u_sat−u_unsat)/Tt 回拉积分。记录 trace，测 dt、饱和、reset、replay。</p>
-<p><strong>机制展开（约 2 分钟）</strong>：令 i_state 为积分输出贡献，u_unsat=Kp·e+i_state+Kd·Δe/dt，u_sat=clip(u_unsat)。conditional integration 按饱和方向决定是否累加 Ki·dt·e；back-calculation 用 dt·(Ki·e+(u_sat−u_unsat)/Tt) 回拉。u_clamp、i_clamp、IZone、reset 不等价，reset 绑定 episode/lease epoch。返回 action、state、trace，检查 dt、broadcast、NaN 和 limits。VLA 先绑定 action schema/norm/unit；没有 PID 或 tuning artifact，不能声称真机闭环。</p>
+<p><strong>30 秒回答</strong>：固定 \(e\)、\(dt\)、state 和 limits，算 \(u_{unsat}=P+I+D\)，再 clip 得 \(u_{sat}\)。conditional integration 在饱和且误差继续推向 rail 时冻结、反向时放行；back-calculation 用 \((u_{sat}-u_{unsat})/T_t\) 回拉积分。记录 trace，测 \(dt\)、饱和、reset、replay。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：令 \(i_{state}\) 为积分输出贡献，\(u_{unsat}=K_p e+i_{state}+K_d\Delta e/dt\)，\(u_{sat}=\operatorname{clip}(u_{unsat})\)。conditional integration 按饱和方向决定是否累加 \(K_i dt e\)；back-calculation 用 \(dt\,[K_i e+(u_{sat}-u_{unsat})/T_t]\) 回拉。<code>u_clamp</code>、<code>i_clamp</code>、IZone、reset 不等价，reset 绑定 episode/lease epoch。返回 action、state、trace，检查 \(dt\)、broadcast、NaN 和 limits。VLA 先绑定 action schema/norm/unit；没有 PID 或 tuning artifact，不能声称真机闭环。</p>
 <p><strong>诊断 / 证据</strong>：按 <code>dt/finite → error sign → state/reset → u_unsat → clamp → anti-windup branch → dtype/device → controller ack</code> 定位。做 <code>K_i/K_d=0</code>、上/下饱和、误差反向、<code>u_min=u_max</code>、reset、continuous input、fixed replay 八类 probe；记录 <code>e/p/i/d/u_unsat/u_sat/branch/dt/reset_reason</code>。白板答案应说明 <code>Tt</code> 与单位；runtime 还需 matched step/reversal、noise/jitter、episode epoch 与 action-limit artifact。现有项目只能作为接口 hook，不能升级为 PID ownership 或 robot success。</p>
 <p><strong>项目挂钩</strong>：OpenPiVLA 可连接 action shape/normalizer/parser；Robot Harness 可连接 timeout/compensation；WAM 可连接 controller/chunk diagnostic；OPD 可连接 route/teacher schedule；UWM/LIBERO 可连接 launcher/task mapping。五项目均没有 CODE-007 local PID implementation、joint feedback trace、anti-windup tuning log 或 matched controller ablation，回答时保持 evidence boundary。</p>
 <p><strong>追问树</strong>：为什么 output clamp 不会自动阻止积分增长？conditional integration 如何判断“误差正在把输出拉回”？back-calculation 的 Tt 如何调？i_state 是 Ki 前还是 Ki 后？measurement derivative 和 error derivative 有何差别？normalized action 上做 PID 还是 physical action 上做？lease/episode epoch 改变时 state 怎么处理？如何证明不是 controller limit 或单位错误？</p>

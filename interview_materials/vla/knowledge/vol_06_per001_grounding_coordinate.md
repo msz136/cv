@@ -68,7 +68,7 @@ ordering, confidence, valid, parser_version
 
 ## 3. 坐标变换：先声明假设，再写公式
 
-令原图宽高为 (W,H)，模型输出 normalized `cxcywh=(c_x,c_y,w,h)`。当没有裁剪或 padding 时，一种明确的 pixel `xyxy` 转换是：
+令原图宽高为 \((W,H)\)，模型输出 normalized `cxcywh=(c_x,c_y,w,h)`。当没有裁剪或 padding 时，一种明确的 pixel `xyxy` 转换是：
 
 \[
 x_1=W\left(c_x-\frac{w}{2}\right),\qquad
@@ -77,15 +77,15 @@ x_2=W\left(c_x+\frac{w}{2}\right),\qquad
 y_2=H\left(c_y+\frac{h}{2}\right).
 \]
 
-这里的 (c_x,c_y,w,h) 是相对于原图的归一化量；公式只负责尺度和参数化，不负责 letterbox padding、crop offset、相机外参、深度或控制器 frame。代码实现必须保留 transform metadata，否则只能得到“看起来在图上”的框。
+这里的 \((c_x,c_y,w,h)\) 是相对于原图的归一化量；公式只负责尺度和参数化，不负责 letterbox padding、crop offset、相机外参、深度或控制器 frame。代码实现必须保留 transform metadata，否则只能得到“看起来在图上”的框。
 
-若预处理先把原图缩放为 (sW,sH)，并在左、上方向加入 padding ((p_x,p_y))，则模型坐标到预处理图坐标的框为：
+若预处理先把原图缩放为 \((sW,sH)\)，并在左、上方向加入 padding \((p_x,p_y)\)，则模型坐标到预处理图坐标的框为：
 
 \[
 (x'_1,y'_1,x'_2,y'_2)=(s x_1+p_x,;s y_1+p_y,;s x_2+p_x,;s y_2+p_y).
 \]
 
-逆变换必须执行 (x=(x'-p_x)/s,;y=(y'-p_y)/s)，并在最终 rounding 前裁剪到原图边界。若把 (p_x,p_y) 忽略，目标会随横纵比变化系统性偏移；这不是模型“空间理解变差”的充分证据。
+逆变换必须执行 \(x=(x'-p_x)/s,\;y=(y'-p_y)/s\)，并在最终 rounding 前裁剪到原图边界。若把 \((p_x,p_y)\) 忽略，目标会随横纵比变化系统性偏移；这不是模型“空间理解变差”的充分证据。
 
 ## 4. 评估指标与证据阶梯
 

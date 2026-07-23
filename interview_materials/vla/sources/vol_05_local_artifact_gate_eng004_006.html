@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 05 ENG-004..006：本地 Artifact Gate 复核</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_05_local_artifact_gate_eng004_006.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_local_artifact_gate_eng004_006.md">
 <meta name="aris:source-sha256" content="e200118b2c607400586401263d27fff26f030423292d6c86f7a5b48bfcb53972">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>e200118b2c607400586401263d27fff26f030423292d6c86f7a5b48bfcb53972</code>；生成自：<code>interview_materials\vla\sources\vol_05_local_artifact_gate_eng004_006.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>e200118b2c607400586401263d27fff26f030423292d6c86f7a5b48bfcb53972</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_05_local_artifact_gate_eng004_006.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">盘点边界与证据等级</a></li><li><a href="#0-1-2026-07-21-snapshot">0.1 2026-07-21 范围补充（不改写原始 snapshot）</a></li><li><a href="#1-uwm-checkpoint-metadata-local-direct">1. UWM：训练与 checkpoint metadata 是 local-direct</a></li><li><a href="#1-1-true-save-smoke-partial-load">1.1 `true_save_smoke`：保存合同和 partial-load 报告</a></li><li><a href="#1-2-human300-native-pretrain-run">1.2 `human300_native_pretrain`：更长 run 仍缺二进制</a></li><li><a href="#1-3-uwm-fine-tune-report-supported-parent-checkpoint">1.3 UWM fine-tune：存在 report-supported parent checkpoint</a></li><li><a href="#2-opd-point-zero-lineage-manifest">2. OPD / point：ZeRO 配置存在，lineage manifest 明确保留缺口</a></li><li><a href="#3-gate">3. 节点级 Gate 结论</a></li><li><a href="#4">4. 最小验收脚本合同</a></li><li><a href="#5">5. 证据摘要与真实性边界</a></li><li><a href="#references">参考来源（References）</a></li></ol></nav>
 <h1>VOL 05 ENG-004..006：本地 Artifact Gate 复核</h1>
 <div class="meta">状态：<code>artifact_audit_slice / WARN</code> 盘点日期：2026-07-17 证据截止：2026-07-17 盘点范围：UWM / RoboCasa transfer snapshot、OPD / point remote-sync snapshot，以及它们对 <code>VLA-ENG-004..006</code>（分布式配置、数值/梯度合同、checkpoint lineage）的本地 metadata、config、load report 和 binary gate。 结论先行：本页原始 2026-07-17 snapshot 范围内存在可核验的训练 summary、world-size/DeepSpeed 配置、action normalizer、checkpoint load report 和 OPD ZeRO-2/3 manifest，但没有实际 <code>.pt/.pth/.ckpt/.safetensors/.bin</code> 文件。2026-07-21 对用户提供的 <code>C:\Users\mousongzhe\project</code> 根目录补做扫描后，在 <code>wm/uwm_robocasa_transfer/_downloads/libero_90.pt</code> 发现并冻结了 UWM base binary；该发现已由独立 <a href="uwm_libero90_checkpoint_immutable_manifest_gate.html">UWM base checkpoint immutable manifest gate</a> 记录。它只关闭 base binary existence/hash，不关闭 RoboCasa fine-tune <code>models.pt</code>、normalizer、完整 resume 或 closed-loop scorer。</div>

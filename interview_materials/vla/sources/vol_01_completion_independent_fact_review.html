@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 01 Foundations：39 卡 Completion Fact Reconciliation</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_01_completion_independent_fact_review.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_01_completion_independent_fact_review.md">
 <meta name="aris:source-sha256" content="5b64360c4012115d01355fbadac601305c4d5e80cc5b0f547bb82c0044f6a632">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>5b64360c4012115d01355fbadac601305c4d5e80cc5b0f547bb82c0044f6a632</code>；生成自：<code>interview_materials\vla\sources\vol_01_completion_independent_fact_review.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>5b64360c4012115d01355fbadac601305c4d5e80cc5b0f547bb82c0044f6a632</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_01_completion_independent_fact_review.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 审查合同</a></li><li><a href="#2-39-reconciliation">2. 39 卡逐项 reconciliation</a></li><li><a href="#3">3. 本次来源修复</a></li><li><a href="#4">4. 完成度与未完成项</a></li><li><a href="#section-5">已完成</a></li><li><a href="#section-6">仍未完成</a></li><li><a href="#5">5. 下一步</a></li><li><a href="#section-8">参考入口</a></li></ol></nav>
 <h1>VOL 01 Foundations：39 卡 Completion Fact Reconciliation</h1>
 <div class="meta">状态：<code>completion_fact_reconciliation / 39_cards / WARN</code> 审查日期：2026-07-19 范围：<code>VLA-FND-001..039</code> 的稳定 ID、短答、来源编号、项目挂钩、追问、易错点和练习状态。 结论先行：39 张卡均有可解析结构和直接来源入口，Batch 1–3 发现的公式、timeout、Jacobian、GRPO、WAM/UWM 与 advanced-control 边界已回写。这里的 completion 只表示“题卡事实链已 reconciliation”，不表示候选人已口述掌握；39 张卡继续全部 <code>unseen</code>，VOL 01 verdict 仍为 <code>WARN</code>。</div>

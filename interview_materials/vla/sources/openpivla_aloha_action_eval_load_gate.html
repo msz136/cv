@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OpenPiVLA ALOHA Action-Level Eval：Checkpoint Load / Serve / L1 Gate</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\openpivla_aloha_action_eval_load_gate.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\openpivla_aloha_action_eval_load_gate.md">
 <meta name="aris:source-sha256" content="ae425706e5d0b5507c99aed0176380431d5b87551ee0f9f787c0e4766e44f7a2">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>ae425706e5d0b5507c99aed0176380431d5b87551ee0f9f787c0e4766e44f7a2</code>；生成自：<code>interview_materials\vla\sources\openpivla_aloha_action_eval_load_gate.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>ae425706e5d0b5507c99aed0176380431d5b87551ee0f9f787c0e4766e44f7a2</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\openpivla_aloha_action_eval_load_gate.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-evidence-freeze">1. Evidence freeze</a></li><li><a href="#2-server-load-client-connection">2. Server load / client connection</a></li><li><a href="#3-action-level-eval-contract">3. Action-level eval contract</a></li><li><a href="#4-frozen-result-and-comparability">4. Frozen result and comparability</a></li><li><a href="#5-pseudocode-mapping">5. Pseudocode mapping</a></li><li><a href="#6-interview-boundary">6. Interview boundary</a></li><li><a href="#30">30 秒回答</a></li><li><a href="#section-8">高频追问</a></li><li><a href="#7">7. 公源 / 本地 / 未核实边界</a></li><li><a href="#8">8. 下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>OpenPiVLA ALOHA Action-Level Eval：Checkpoint Load / Serve / L1 Gate</h1>
 <div class="meta">状态：<code>local-direct / log-hash-frozen / official-action-eval / task-success-not-proven / WARN</code> 审查日期：2026-07-21 范围：<code>C:\Users\mousongzhe\project\openpivla_deployment\artifacts\lerobot_action_eval_aloha_sample_real_v2</code> 与对应 scripts。 结论先行：ALOHA LeRobot action-level eval 的 server log 直接确认官方 <code>pi0_aloha_sim</code> checkpoint 被 Orbax 恢复约 6.0 GiB、17.31 秒完成，norm stats 从 checkpoint assets 加载，server 在 8020 监听并接受 client；summary 冻结 4 个样本、每个 50 步、14D action 的 mean L1 <code>0.0330713950</code>、std <code>0.0205169544</code>。这是 action-vector 对齐/部署 harness 证据，不是 task-level success、fine-tune 成绩或泛化 benchmark。</div>

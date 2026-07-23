@@ -1,12 +1,12 @@
 # VLA 真实口述 Drill Queue
 
 > 状态：`queued / no_candidate_answers / no_mastery_changes`  
-> 更新日期：2026-07-21  
+> 更新日期：2026-07-22
 > 用途：把已有题卡转成一次只问一题的口述队列。这里不记录候选人答案，不替代 `coaching_state.md`；第一次真实回答后，才创建正式训练状态。
 
 ## 1. 执行协议
 
-每次只取队首一题，候选人先回答，之后才进入反馈和下一题。回答时优先给出：
+每次只取队首一题。准备阶段允许先从项目实现、配置和日志生成 evidence-bounded model answer，候选人再据此练习；只有实际说出或提交的回答才进入评分、反馈和下一题。回答时优先给出：
 
 1. 任务/问题与输入输出边界；
 2. 自己实际负责的接口、决策或验证动作；
@@ -21,7 +21,7 @@
 | 顺序 | Stable ID | 题目 | 目标 | 当前状态 |
 | ---: | --- | --- | --- | --- |
 | 1 | `PROJ-WAM-001` | 如何把 CoffeePressButton diagnostic bundle 讲成可信项目经历？ | 诊断证据、分母、失败边界 | `queued / unseen` |
-| 2 | `PROJ-WAM-002` | Cosmos/WAM 哪些部分能说是你做的？ | upstream/local/ownership 分层 | `queued / unseen` |
+| 2 | `PROJ-WAM-002` | Cosmos/WAM 哪些部分能说是你做的？ | upstream/local/ownership 分层；implementation-derived 草稿已就绪 | `queued / unseen` |
 | 3 | `PROJ-OPENPIVLA-001` | OpenPiVLA 的输入、JSON action 与 causal-CE 链路如何闭合？ | parser/shape/loss contract | `queued / unseen` |
 | 4 | `PROJ-OPENPIVLA-009` | formal、smoke、report 与 97.4% 证据如何区分？ | lineage、denominator、结果等级 | `queued / unseen` |
 | 5 | `PROJ-HARNESS-001` | Robot Harness 的工具调用闭环和个人贡献如何界定？ | schema/runtime/协作边界 | `queued / unseen` |
@@ -61,6 +61,8 @@ Stable ID: PROJ-WAM-001
 
 收到后才记录 transcript、五维评分、证据缺口和下一题；如果回答中出现无法由仓库证据支持的数字，会先降级 claim，再给补证建议。
 
+所有队列题统一使用 [`oral_drill_capture_template.html`](oral_drill_capture_template.html) 记录 Stable ID、verbatim transcript、自评、Claim–Evidence–Ownership 核验、五维评分与状态迁移。`PROJ-WAM-001` 也可以继续使用更具体的 WAM 模板；两类模板都必须在候选人真实回答后才能填写评分。
+
 ## 5. 题卡入口
 
 - [WAM 题卡](../questions/proj_wam.html)
@@ -83,4 +85,4 @@ Stable ID: PROJ-WAM-001
 - 不把 queue 的存在当作练习完成；
 - 不把示范回答或题卡内容当作候选人掌握。
 
-下一步只问队首 `PROJ-WAM-001`；可直接填写 [WAM 口述捕获模板](wam_oral_capture_template.html)，收到回答后再进行一次反馈和状态迁移。
+WAM model answer 已覆盖 `PROJ-WAM-001/002`，但实际训练顺序仍从队首 `PROJ-WAM-001` 开始：先直接作答并保存到 [通用单题捕获模板](oral_drill_capture_template.html) 或 [WAM 专用捕获模板](wam_oral_capture_template.html)，回答完成后再对照 [从项目实现反推的口述稿](wam_oral_model_answer.html)。生成稿不触发评分；收到真实回答后才进行反馈和状态迁移。

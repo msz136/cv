@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 08 SYS-003 Source Freeze：Robot Fleet 与 Multi-tenant GPU Scheduling</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_08_sys003_robot_fleet_multitenant_gpu_scheduling_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_08_sys003_robot_fleet_multitenant_gpu_scheduling_source_freeze.md">
 <meta name="aris:source-sha256" content="d2c2abad8b0ea00990523dd67f6566d89482025c28782e6f74379c507ab534bd">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>d2c2abad8b0ea00990523dd67f6566d89482025c28782e6f74379c507ab534bd</code>；生成自：<code>interview_materials\vla\sources\vol_08_sys003_robot_fleet_multitenant_gpu_scheduling_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>d2c2abad8b0ea00990523dd67f6566d89482025c28782e6f74379c507ab534bd</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_08_sys003_robot_fleet_multitenant_gpu_scheduling_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-revision-claim-boundary">2. 冻结来源、Revision、许可与 Claim Boundary</a></li><li><a href="#2-1-local-evidence-sha-ledger">2.1 Local evidence SHA ledger</a></li><li><a href="#3-claim-registry-inference">3. Claim Registry：可写、需标 inference、必须拒绝</a></li><li><a href="#4-fleet-identity-state-ownership">4. Fleet Identity 与 State Ownership</a></li><li><a href="#4-1-request-lease-identity">4.1 最小 request / lease identity（设计推断）</a></li><li><a href="#4-2-scheduler-state-ownership">4.2 Scheduler state ownership</a></li><li><a href="#5-capacity-placement-fairness-contract">5. Capacity、Placement 与 Fairness Contract</a></li><li><a href="#5-1-resource-vector">5.1 Resource vector</a></li><li><a href="#5-2-queue-fairness-priority">5.2 Queue / fairness / priority</a></li><li><a href="#5-3-heterogeneous-gpu-model-cache">5.3 Heterogeneous GPU 与 model cache</a></li><li><a href="#6-rollout-canary">6. 正常数据流、Rollout 与 Canary 边界</a></li><li><a href="#7">7. 五项目证据与真实性边界</a></li><li><a href="#8-deterministic-source-probes">8. Deterministic Source Probes</a></li><li><a href="#9-source-gate">9. Source Gate 结论与下一切片</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 08 SYS-003 Source Freeze：Robot Fleet 与 Multi-tenant GPU Scheduling</h1>
 <div class="meta">状态：<code>source_frozen / SYS-VLA-003 / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本页冻结 fleet identity、GPU/accelerator placement、queue/fairness、capacity/preemption、model replica/cache、robot lease、rollout/canary 与五项目真实性边界；下游 knowledge/card 已在独立 bounded slice 生成，仍不把 Kubernetes、Volcano、Ray 或 Triton 的公开机制写成个人项目已上线的 fleet。 前置：<a href="vol_08_coding_system_design_coverage_gap_audit.html">VOL 08 Coverage-Gap Audit</a>、<a href="vol_08_sys001_vla_training_eval_platform_source_freeze.html">SYS-VLA-001 source</a>、<a href="vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.html">SYS-VLA-002 source</a> 与 VOL 05 的 <a href="vol_05_eng016_multiteacher_memory_scheduling_source_freeze.html">ENG-016</a>、<a href="vol_05_eng018_scheduler_preemption_retry_source_freeze.html">ENG-018</a>、<a href="vol_05_eng019_config_resolution_run_identity_source_freeze.html">ENG-019</a>、<a href="vol_05_eng022_policy_server_resilience_source_freeze.html">ENG-022</a>。</div>

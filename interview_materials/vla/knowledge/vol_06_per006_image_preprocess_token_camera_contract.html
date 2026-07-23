@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 Perception / Grounding / Navigation：Image Preprocess、Patch Token 与 Camera Identity（PER-006）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per006_image_preprocess_token_camera_contract.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per006_image_preprocess_token_camera_contract.md">
 <meta name="aris:source-sha256" content="fd923e666474a599e73a013fbd5f80615b708cf027a77beffb79a1d4df30be99">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>fd923e666474a599e73a013fbd5f80615b708cf027a77beffb79a1d4df30be99</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per006_image_preprocess_token_camera_contract.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>fd923e666474a599e73a013fbd5f80615b708cf027a77beffb79a1d4df30be99</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per006_image_preprocess_token_camera_contract.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与前置依赖</a></li><li><a href="#1-30-tensor">1. 30 秒直觉：图像不是一个 tensor 名字</a></li><li><a href="#2-transform-chain">2. Transform chain：先画数据流，再谈模型</a></li><li><a href="#3-smart-resize-pixel-budget">3. Smart resize：pixel budget 不是固定分辨率</a></li><li><a href="#3-1">3.1 三个约束</a></li><li><a href="#3-2-min-max">3.2 为什么 min=max 也不精确</a></li><li><a href="#3-3">3.3 复杂度含义</a></li><li><a href="#4-patch-grid-image-tokens">4. Patch、grid 与 image tokens</a></li><li><a href="#4-1-grid">4.1 从处理图到 grid</a></li><li><a href="#4-2-spatial-merge-token">4.2 Spatial merge 后的 token 数</a></li><li><a href="#5-pixel-range-rescale-normalization">5. Pixel range、rescale 与 normalization</a></li><li><a href="#6-direct-resize-crop-letterbox">6. Direct resize、crop 与 letterbox 的坐标映射</a></li><li><a href="#6-1-direct-resize">6.1 Direct resize</a></li><li><a href="#6-2-letterbox">6.2 Letterbox</a></li><li><a href="#6-3-crop-resize">6.3 Crop + resize</a></li><li><a href="#7-opd-double-resize">7. OPD double-resize：如何讲风险，不讲伪因果</a></li><li><a href="#7-1">7.1 静态调用链</a></li><li><a href="#7-2-source-derived-probe">7.2 Source-derived probe</a></li><li><a href="#7-3">7.3 修复验证顺序</a></li><li><a href="#8-openpivla-image-lineage">8. OpenPiVLA：三条 image lineage 不能混</a></li><li><a href="#9-camera-identity-image-order">9. Camera identity 与 image order</a></li><li><a href="#9-1-token-camera-semantic">9.1 Token不等于camera semantic</a></li><li><a href="#9-2-per-003">9.2 与 PER-003 的边界</a></li><li><a href="#10-manifest">10. 最小可复现 manifest</a></li><li><a href="#11">11. 可执行审计伪代码</a></li><li><a href="#12-failure-taxonomy">12. Failure taxonomy</a></li><li><a href="#13">13. 方案比较与选择</a></li><li><a href="#14">14. 项目映射与真实性边界</a></li><li><a href="#15">15. 面试回答检查表</a></li><li><a href="#16">16. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 Perception / Grounding / Navigation：Image Preprocess、Patch Token 与 Camera Identity（PER-006）</h1>
 <div class="meta">状态：<code>drafted / VLA-PER-006 / source_synced / card_synced / WARN</code> 报告日期：2026-07-19 证据截止：2026-07-19 来源入口：<a href="../sources/vol_06_per006_image_preprocess_token_camera_contract_source_freeze.html">PER-006 Source Freeze</a>。 题卡入口：<a href="../questions/vol_06_per006.html">PER-006 Atomic Card</a>。 前置知识：<a href="vol_06_per001_grounding_coordinate.html">PER-001 Grounding / Coordinate</a>、<a href="vol_06_per003_multiview_temporal.html">PER-003 Multi-view / Temporal</a>。</div>

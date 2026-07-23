@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 08 CODE-008：Bellman TD(0) Update</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_08_code008_bellman_td0.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_08_code008_bellman_td0.md">
 <meta name="aris:source-sha256" content="fc210e0ff654f670a667948414213191b221e04fef27b80b0781e28168013c7a">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>fc210e0ff654f670a667948414213191b221e04fef27b80b0781e28168013c7a</code>；生成自：<code>interview_materials\vla\knowledge\vol_08_code008_bellman_td0.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>fc210e0ff654f670a667948414213191b221e04fef27b80b0781e28168013c7a</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_08_code008_bellman_td0.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 直觉与专业定义</a></li><li><a href="#2-transition-schema">2. Transition schema</a></li><li><a href="#3-state-value-td-0-target">3. State-value TD(0) target</a></li><li><a href="#4-q-learning">4. Q-learning 变体</a></li><li><a href="#5-batch-dtype-reduction">5. Batch、dtype 与 reduction</a></li><li><a href="#6">6. 参考实现（带边界注释）</a></li><li><a href="#7-deterministic-probes">7. Deterministic probes 与诊断顺序</a></li><li><a href="#8-vla">8. VLA 与项目真实性边界</a></li><li><a href="#9-30">9. 30 秒回答与高压追问</a></li><li><a href="#10">10. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 08 CODE-008：Bellman TD(0) Update</h1>
 <div class="meta">状态：<code>drafted / CODE-VLA-008 / knowledge_11_of_phase / card_pending / WARN</code> 报告日期：2026-07-20 证据截止：2026-07-20 来源入口：<a href="../sources/vol_08_code008_bellman_td0_source_freeze.html">CODE-008 Source Freeze</a>。</div>

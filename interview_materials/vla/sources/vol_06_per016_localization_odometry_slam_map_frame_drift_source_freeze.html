@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 PER-016 Source Freeze：Localization、Odometry、SLAM、Map Frame 与 Drift</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per016_localization_odometry_slam_map_frame_drift_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per016_localization_odometry_slam_map_frame_drift_source_freeze.md">
 <meta name="aris:source-sha256" content="3d4993db740aa38bea34efc811014f086faa902339ec36233e75f65aeb2bb6ed">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>3d4993db740aa38bea34efc811014f086faa902339ec36233e75f65aeb2bb6ed</code>；生成自：<code>interview_materials\vla\sources\vol_06_per016_localization_odometry_slam_map_frame_drift_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>3d4993db740aa38bea34efc811014f086faa902339ec36233e75f65aeb2bb6ed</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per016_localization_odometry_slam_map_frame_drift_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-paper">2. Primary Paper 冻结矩阵</a></li><li><a href="#3-official-repository">3. Official Repository 冻结矩阵</a></li><li><a href="#4">4. 节点边界与依赖</a></li><li><a href="#5">5. 五个概念必须分开</a></li><li><a href="#6-typed-localization-slam-manifest">6. Typed Localization / SLAM Manifest</a></li><li><a href="#7-frame-tree-global-consistency-local-continuity">7. Frame Tree：Global Consistency 与Local Continuity分工</a></li><li><a href="#8-state-estimation-imu-propagation-update">8. State Estimation、IMU Propagation 与Update</a></li><li><a href="#9-front-end-back-end">9. Front-end 与Back-end</a></li><li><a href="#10-local-optimization-gauge">10. Local Optimization 与Gauge</a></li><li><a href="#11-keyframe-sliding-window-marginalization">11. Keyframe、Sliding Window 与Marginalization</a></li><li><a href="#12-loop-closure-relocalization-map-merge">12. Loop Closure、Relocalization 与Map Merge</a></li><li><a href="#12-1-loop-closure">12.1 Loop Closure合同</a></li><li><a href="#12-2">12.2 三者差别</a></li><li><a href="#13-drift-taxonomy">13. Drift Taxonomy 与可观性</a></li><li><a href="#14-learned-slam">14. Learned SLAM 的位置</a></li><li><a href="#15-ate-rpe-alignment-protocol">15. ATE、RPE 与Alignment Protocol</a></li><li><a href="#16-deterministic-probes">16. 十个Deterministic Probes</a></li><li><a href="#17-first-divergence-failure-diagnosis">17. First-divergence Failure Diagnosis</a></li><li><a href="#18-fail-closed-localization-pipeline">18. Fail-closed Localization Pipeline 伪代码</a></li><li><a href="#19-public-method-code-mapping">19. Public Method → Code Mapping</a></li><li><a href="#20-inventory-direct-audit">20. 本地五项目 Inventory 与Direct Audit</a></li><li><a href="#20-1-canonical-inventory">20.1 Canonical Inventory</a></li><li><a href="#20-2-robot-harness-local-direct-exceptions">20.2 Robot Harness Local-direct Exceptions</a></li><li><a href="#21-project-truth-boundary">21. Project Truth Boundary</a></li><li><a href="#22-source-gate">22. Source Gate 与下一切片</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 PER-016 Source Freeze：Localization、Odometry、SLAM、Map Frame 与 Drift</h1>
 <div class="meta">状态：<code>source_frozen / VLA-PER-016 / primary_official_checked / localization_slam_contract / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本source切片只冻结localization、visual/visual-inertial odometry、SLAM、<code>map→odom→base</code> frame语义、state estimation、front-end/back-end、loop closure、relocalization、map merge、drift与ATE/RPE protocol；下游knowledge与一张<code>unseen</code> atomic card已在后续两个独立bounded slices同步；不重写PER-002的calibration/TF基础、不重写PER-003的multi-view/time schema、不重写PER-005的navigation policy/planner，也不进入PER-017的belief/memory/exploration。</div>

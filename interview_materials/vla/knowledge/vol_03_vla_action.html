@@ -6,7 +6,7 @@
 <title>VOL 03 VLA / Action：从多模态条件到可执行动作（完整卷）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_03_vla_action.md">
-<meta name="aris:source-sha256" content="09493517b12bf5abc57190ced4087f15f4fa68544a66edf18765c9f8099432ca">
+<meta name="aris:source-sha256" content="84dd9d5c12035509bce0ac4c39b315973e46ee4711f95489e5ee02f12eab919f">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>09493517b12bf5abc57190ced4087f15f4fa68544a66edf18765c9f8099432ca</code>；生成自：<code>interview_materials\vla\knowledge\vol_03_vla_action.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>84dd9d5c12035509bce0ac4c39b315973e46ee4711f95489e5ee02f12eab919f</code>；生成自：<code>interview_materials\vla\knowledge\vol_03_vla_action.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#section-1">目录</a></li><li><a href="#question">问题（Question）</a></li><li><a href="#section-3">一句话总口径</a></li><li><a href="#section-4">知识地图位置与批次边界</a></li><li><a href="#section-5">前置知识</a></li><li><a href="#section-6">完整卷做什么</a></li><li><a href="#section-7">仍不提前声称什么</a></li><li><a href="#vla-vlm-visuomotor-policy">VLA、VLM 与传统 visuomotor policy</a></li><li><a href="#section-9">先讲直觉</a></li><li><a href="#section-10">严谨定义</a></li><li><a href="#section-11">面试对比表</a></li><li><a href="#vla">VLA 输入输出合同与时间对齐</a></li><li><a href="#section-13">输入合同</a></li><li><a href="#section-14">时间对齐</a></li><li><a href="#section-15">两个已核实的具体实例</a></li><li><a href="#backbone-action-expert-policy-head-controller">Backbone、action expert、policy head 与 controller</a></li><li><a href="#section-17">职责不能混写</a></li><li><a href="#policy">Policy 是整条链</a></li><li><a href="#openvla-action-token">OpenVLA：逐标量 action token 路线</a></li><li><a href="#i-o">架构与 I/O</a></li><li><a href="#q01-q99-normalization">q01/q99 normalization</a></li><li><a href="#scalar-token">scalar → token</a></li><li><a href="#masked-token-ce">masked token CE</a></li><li><a href="#quantization">quantization 的三类代价</a></li><li><a href="#0-action-expert-flow-matching">π0：连续 action expert 与 Flow Matching</a></li><li><a href="#i-o-2">I/O 与架构</a></li><li><a href="#paper-convention">paper convention</a></li><li><a href="#code-convention">code convention</a></li><li><a href="#0-5-pi0fast">π0.5 不等于 Pi0FAST</a></li><li><a href="#vla-mask">VLA 架构路线、mask、适配与部署证据</a></li><li><a href="#vla-arch-007-rt-2-openvla-octo-0-head">VLA-ARCH-007：RT-2、OpenVLA、Octo、π0 不是同一 head 的尺寸变化</a></li><li><a href="#vla-arch-008-attention-visible-loss-visible">VLA-ARCH-008：attention-visible 与 loss-visible 是两件事</a></li><li><a href="#vla-arch-009-freeze-full-lora-expert">VLA-ARCH-009：freeze、full、LoRA 与独立 expert 的选择</a></li><li><a href="#vla-arch-010-schema">VLA-ARCH-010：异构动作要统一 schema，也要统一监督语义</a></li><li><a href="#vla-arch-011-pipeline">VLA-ARCH-011：延迟是 pipeline 向量，不是一个数字</a></li><li><a href="#vla-arch-012-paper-runtime-trace">VLA-ARCH-012：从 paper 一直核到 runtime trace</a></li><li><a href="#action-representation">Action representation 总览</a></li><li><a href="#section-38">五条路线各自建模什么</a></li><li><a href="#deterministic-regression">deterministic regression</a></li><li><a href="#cvae">CVAE 定义级边界</a></li><li><a href="#diffusion">diffusion 定义级边界</a></li><li><a href="#flow-diffusion">flow 与 diffusion 不只是“步数不同”</a></li><li><a href="#normalization-denormalization">Normalization / denormalization</a></li><li><a href="#0-success">为什么它是 0-success 高风险接口</a></li><li><a href="#inverse-consistency-test">最小 inverse-consistency test</a></li><li><a href="#section-46">常见穿帮说法</a></li><li><a href="#fast-action-token">FAST：频域 action token</a></li><li><a href="#section-48">它解决什么</a></li><li><a href="#section-49">算法</a></li><li><a href="#paper-artifact-model">paper / artifact / model 的默认值要分开</a></li><li><a href="#compression">compression 为什么不等于控制误差更小</a></li><li><a href="#act-cvae-action-chunk-temporal-ensemble">ACT：CVAE、Action Chunk 与 Temporal Ensemble</a></li><li><a href="#vla-act-011-h-k-r-control-period">VLA-ACT-011：H、K、R 与 control period</a></li><li><a href="#vla-act-012-cvae-transformer-chunk">VLA-ACT-012：CVAE-Transformer 如何并行输出 chunk</a></li><li><a href="#vla-act-013-style-latent-train-infer-gap">VLA-ACT-013：style latent 的 train / infer gap</a></li><li><a href="#vla-act-014-temporal-ensemble-target-time">VLA-ACT-014：temporal ensemble 融合相同 target time</a></li><li><a href="#vla-act-015-chunking-replan-ensemble">VLA-ACT-015：chunking、replan 与 ensemble 如何共同决定闭环</a></li><li><a href="#vla-act-016-chunk">VLA-ACT-016：chunk 太短或太长</a></li><li><a href="#vla-act-017-act-token-diffusion-flow">VLA-ACT-017：ACT 与 token、Diffusion / Flow 的归纳偏置</a></li><li><a href="#diffusion-policy-receding-horizon">Diffusion Policy：条件动作扩散与 Receding Horizon</a></li><li><a href="#vla-act-018">VLA-ACT-018：为什么适合多模态连续动作</a></li><li><a href="#vla-act-019-conditional-ddpm-noisy-action-target-condition">VLA-ACT-019：conditional DDPM 的 noisy action、target 与 condition</a></li><li><a href="#vla-act-020-schedule-prediction-type-horizon">VLA-ACT-020：schedule、prediction type 与 horizon 是三组合同</a></li><li><a href="#vla-act-021-receding-horizon-action-slice">VLA-ACT-021：receding-horizon 的 action slice 与执行</a></li><li><a href="#vla-act-022-sampler-warm-start">VLA-ACT-022：去噪步数、sampler 与 warm-start</a></li><li><a href="#flow-matching-cfm-ot-path-ode-0">Flow Matching：CFM、OT Path、ODE 与 π0</a></li><li><a href="#vla-act-023-probability-path-velocity-field">VLA-ACT-023：probability path 与 velocity field</a></li><li><a href="#vla-act-024-ot-path-target-velocity">VLA-ACT-024：线性 OT path 与 target velocity</a></li><li><a href="#vla-act-025-ode-solver-noise-action-chunk">VLA-ACT-025：ODE solver 如何从 noise 得到 action chunk</a></li><li><a href="#vla-act-026-diffusion-epsilon-flow-velocity">VLA-ACT-026：Diffusion epsilon 与 Flow velocity</a></li><li><a href="#vla-act-027-0-action-expert-condition-noisy-action">VLA-ACT-027：π0 action expert 的 condition 与 noisy action</a></li><li><a href="#vla-act-028-valid-dimensions-padding-loss-mask">VLA-ACT-028：valid dimensions、padding 与 loss mask</a></li><li><a href="#vla-act-029-conditional-dropout-guidance">VLA-ACT-029：conditional dropout / guidance</a></li><li><a href="#vla-act-030-loss-rollout">VLA-ACT-030：loss 正常但 rollout 失败的四层定位</a></li><li><a href="#action-dimension-padding-mask-slicing">Action dimension、padding、mask 与 slicing</a></li><li><a href="#model-d-environment-d">model D 与 environment d</a></li><li><a href="#training-loss-mask">training loss mask 是另一件事</a></li><li><a href="#mask">四个不同 mask</a></li><li><a href="#gripper-base-action">平移、旋转、gripper 与 base action</a></li><li><a href="#action-type">先报 action type，再报数值</a></li><li><a href="#translation">translation</a></li><li><a href="#rotation">rotation</a></li><li><a href="#gripper">gripper</a></li><li><a href="#base-action">base action</a></li><li><a href="#section-85">按语义组做统计</a></li><li><a href="#controller">模型输出到 controller 与最小闭环单测</a></li><li><a href="#vla-act-031-decode-unnorm-slice-schema-safety">VLA-ACT-031：decode、unnorm、slice、schema 与 safety 必须有序</a></li><li><a href="#vla-act-032">VLA-ACT-032：最小闭环测试要让错误可辨识</a></li><li><a href="#action-representation-2">如何选择 action representation</a></li><li><a href="#section-90">决策顺序</a></li><li><a href="#section-91">选择表</a></li><li><a href="#section-92">不能用单个指标选型</a></li><li><a href="#section-93">面试回答模板</a></li><li><a href="#pipeline">训练与闭环推理 Pipeline</a></li><li><a href="#batch">Batch 构造与训练</a></li><li><a href="#section-96">闭环推理</a></li><li><a href="#44">实现证据与 44 题覆盖</a></li><li><a href="#frozen-implementation-map">frozen implementation map</a></li><li><a href="#44-2">44 题覆盖矩阵</a></li><li><a href="#openpivla">OpenPiVLA 项目挂钩与真实性边界</a></li><li><a href="#section-101">可以安全连接的上游机制</a></li><li><a href="#section-102">不能自动写成本地事实</a></li><li><a href="#section-103">项目口述安全模板</a></li><li><a href="#bad-case">Bad Case 与最小检查清单</a></li><li><a href="#offline-loss-online-0-success">offline loss 正常、online 0-success 的排查顺序</a></li><li><a href="#section-106">最小单测矩阵</a></li><li><a href="#section-107">高危答案</a></li><li><a href="#section-108">后续工作</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 03 VLA / Action：从多模态条件到可执行动作（完整卷）</h1>
 <div class="meta">状态：<code>completion_reconciled_candidate / source_audits_warn / WARN</code> 报告日期：2026-07-19 证据截止：2026-07-19 完整覆盖：<code>VLA-ARCH-001..012</code>、<code>VLA-ACT-001..032</code>，共 44 题 适用岗位：VLA / 具身智能算法 / 多模态机器人策略 / Robot Learning 最后一批增量：补齐 RT-2/OpenVLA/Octo/π0 landscape、sequence/attention/loss mask、适配策略、异构动作、延迟与证据审计，以及 decode→controller 的执行闭环和最小单测。 项目边界：OpenPiVLA 的具体 checkpoint、Qwen/π 路径、action 轴序、horizon、normalization asset、97.4% protocol 与个人贡献仍须本地 artifact 证明。</div>
@@ -355,7 +361,7 @@ u_{\mathrm{code}}=\epsilon-A.
 <tr><td>RT-2</td><td>PaLI-X 5B/55B 或 PaLM-E 12B</td><td>pose/gripper 等连续维 uniform 256 bins 后成为 action tokens，另有 termination</td><td>预训练 VLM 上混合 web + robot data co-fine-tune</td><td>自回归生成 action token；论文部署用 cloud TPU</td></tr>
 <tr><td>OpenVLA</td><td>DINOv2 + SigLIP → projector → Llama-2 7B</td><td>当前动作每个 scalar 占一个 tail-vocab token</td><td>OXE robot data 上 full fine-tune；official repo 另支持 LoRA</td><td>生成 (d) 个 token → scalar decode → q01/q99 unnorm</td></tr>
 <tr><td>Octo</td><td>27M/93M block-wise transformer；image tokenizer + frozen T5-base</td><td>action readout latent 条件化 diffusion head，公开 pretrain config 为 H=4、D=7</td><td>800k OXE trajectories 预训练；新域 head-only/head-MLP-only/full FT</td><td>backbone 一次产生 readout；diffusion head 多步去噪 chunk</td></tr>
-<tr><td>π0</td><td>PaliGemma 2B VLM + 约 300M action expert</td><td>(H\times D) noisy continuous chunk 的 flow velocity</td><td>cross-embodiment pretrain + task post-train；openpi 提供 full/LoRA 示例</td><td>prefix KV 一次；expert 做多步 Euler/ODE update</td></tr>
+<tr><td>π0</td><td>PaliGemma 2B VLM + 约 300M action expert</td><td>\(H\times D\) noisy continuous chunk 的 flow velocity</td><td>cross-embodiment pretrain + task post-train；openpi 提供 full/LoRA 示例</td><td>prefix KV 一次；expert 做多步 Euler/ODE update</td></tr>
 </tbody></table>
 <p>RT-2 的论文 tokenization 还随 VLM 而变：PaLI-X 复用整数 token，PaLM-E 覆写 256 个低频 token。OpenVLA 的 frozen implementation 则使用 Llama tail vocab 和特定 255-center decode nuance。它们同属“action as token”范式，但不能交换 tokenizer 细节。[1][2][3][21]</p>
 <p><strong>回答收口</strong>：RT-2 强调 web knowledge co-fine-tuning 与 action-as-text；OpenVLA 将这条路线开放到 7B/OXE；Octo 用小型 modular transformer/readout/diffusion 做可适配 generalist policy；π0 用大 VLM context + 小 continuous expert 做 flow chunk。项目选型要再看 data、latency、H/K 与 controller，而不是把年份当排序。</p>
@@ -367,7 +373,7 @@ u_{\mathrm{code}}=\epsilon-A.
 =-\frac{\sum_i m_i\log p_\theta(y_i\mid y_{&lt;i},c)}
 {\sum_i m_i+\epsilon}.
 \]</div>
-<p>变量与实现：(y_i) 是 token，(c) 是图像/任务条件，(m_i) 是 label mask。OpenVLA prompt labels 与插入的 visual patch labels 是 <code>IGNORE_INDEX</code>，action tail 与默认 stop token 才参加 CE；因而“patch 被 action token attend”与“patch 自己有 CE label”完全不同。[2][3][21]</p>
+<p>变量与实现：\(y_i\) 是 token，\(c\) 是图像/任务条件，\(m_i\) 是 label mask。OpenVLA prompt labels 与插入的 visual patch labels 是 <code>IGNORE_INDEX</code>，action tail 与默认 stop token 才参加 CE；因而“patch 被 action token attend”与“patch 自己有 CE label”完全不同。[2][3][21]</p>
 <p>三种典型 layout：</p>
 <pre><code class="language-text"># OpenVLA: action values themselves are autoregressive labels.
 [image patches / prompt] -&gt; [a_1] [a_2] ... [a_d] [EOS?]
@@ -1054,14 +1060,14 @@ R(\hat r)=R(-\hat r).
 <div class="meta">本节对应 <code>VLA-ACT-031..032</code>。上游 decode/unnorm/queue、Octo mask 与 openpi broker/DROID example 已独立复核；本地 OpenPiVLA 的 axis、unit、controller mode 与 safety policy 仍需项目 artifact。[21][27]</div>
 <h3 id="vla-act-031-decode-unnorm-slice-schema-safety">VLA-ACT-031：decode、unnorm、slice、schema 与 safety 必须有序</h3>
 <p><strong>直觉</strong>：模型输出只是 model-space tensor。只有经过正确 tokenizer/solver、正确 normalization asset、正确维度和物理语义，再被 controller 接收，才是可执行动作。</p>
-<p>令 raw model output 为 (z)，decoder 为 (mathcal D)，反归一化为 (mathcal U)，有效维选择为 (S_e)，frame/unit/absolute-delta 映射为 (mathcal R_e)，安全投影为 (Pi_{\mathcal A_e})：</p>
+<p>令 raw model output 为 \(z\)，decoder 为 \(\mathcal D\)，反归一化为 \(\mathcal U\)，有效维选择为 \(S_e\)，frame/unit/absolute-delta 映射为 \(\mathcal R_e\)，安全投影为 \(\Pi_{\mathcal A_e}\)：</p>
 <div class="formula">\[
 a^{\mathrm{ctrl}}
 =\Pi_{\mathcal A_e}\!\left(
 \mathcal R_e\!\left(S_e\,\mathcal U(\mathcal D(z))\right)
 \right).
 \]</div>
-<p>变量与实现：(mathcal A_e) 是 controller 可接受的动作集合。顺序不能任意交换：normalized-space clip 与 physical velocity clip 不同；先 slice 再用 D 维 stats 与先 unnorm 再 slice 只有在 stats padding 规则匹配时才可能等价。[2][6][20][21]</p>
+<p>变量与实现：\(\mathcal A_e\) 是 controller 可接受的动作集合。顺序不能任意交换：normalized-space clip 与 physical velocity clip 不同；先 slice 再用 D 维 stats 与先 unnorm 再 slice 只有在 stats padding 规则匹配时才可能等价。[2][6][20][21]</p>
 <table><thead><tr><th>路线</th><th>已核实输出链</th><th>仍不属于模型的部分</th></tr></thead><tbody>
 <tr><td>OpenVLA</td><td>生成 d 个 token → tail-vocab decode → q01/q99 unnorm</td><td>axis/unit/frame/controller</td></tr>
 <tr><td>Octo</td><td>diffusion action → embodiment D slice → mean/std 或 p01/p99 unnorm</td><td>robot-specific controller wrapper</td></tr>
@@ -1075,7 +1081,7 @@ a^{\mathrm{abs}}_{t:t+H-1}
 \qquad
 a^{\mathrm{ctrl}}=s_e\odot R_ea^{\mathrm{abs}}.
 \]</div>
-<p>变量与实现：(m_\Delta) 选择 delta dimensions，(q_t) 是当前 state，(R_e) 处理轴序/坐标，(s_e) 处理单位。真实 rotation 可能需要 (SO(3)) composition，不能默认向量加法。openpi <code>AbsoluteActions</code> 只能证明按 mask 给前若干维加 state；本地 (R_e,s_e) 仍需 wrapper 与 sentinel trace。[7][21]</p>
+<p>变量与实现：\(m_\Delta\) 选择 delta dimensions，\(q_t\) 是当前 state，\(R_e\) 处理轴序/坐标，\(s_e\) 处理单位。真实 rotation 可能需要 \(SO(3)\) composition，不能默认向量加法。openpi <code>AbsoluteActions</code> 只能证明按 mask 给前若干维加 state；本地 \((R_e,s_e)\) 仍需 wrapper 与 sentinel trace。[7][21]</p>
 <p>openpi DROID example 是一条具体而非通用的 execution contract：远程返回 <code>[10,8]</code>，client 按 index 取一行、二值化 gripper、clip <code>[-1,1]</code>、调用 <code>env.step</code> 并按数据频率 sleep。[21] 面试中可以用它解释 chain，但不能把它的 8D schema 套到 OpenPiVLA。</p>
 <h3 id="vla-act-032">VLA-ACT-032：最小闭环测试要让错误可辨识</h3>
 <p><strong>直觉</strong>：全 0/random tensor 很难发现 transpose、错轴和重复行。用 prime/one-hot sentinel，让每个 horizon row 和 action dimension 都不同，再逐层断言。</p>

@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 08 CODE-001：数值稳定的 softmax / log-softmax 实现</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_08_code001_softmax.md">
-<meta name="aris:source-sha256" content="0efbe12fee77b8930e7cb19176ac46e54e43d8d6e5f341785c769d117d7642ce">
+<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_08_code001_softmax.md">
+<meta name="aris:source-sha256" content="4910eca5193c59913cd3cf65c9ca0afaef3212249f0bc09bc9511e57df9a9524">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,14 +140,14 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>0efbe12fee77b8930e7cb19176ac46e54e43d8d6e5f341785c769d117d7642ce</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_08_code001_softmax.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>4910eca5193c59913cd3cf65c9ca0afaef3212249f0bc09bc9511e57df9a9524</code>；生成自：<code>interview_materials\vla\knowledge\vol_08_code001_softmax.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 直觉：先把最大值搬到零</a></li><li><a href="#2">2. 数学与实现映射</a></li><li><a href="#2-1-forward">2.1 手写 forward</a></li><li><a href="#2-2-log-softmax">2.2 手写 log-softmax</a></li><li><a href="#3-mask">3. Mask 语义</a></li><li><a href="#3-1-attention-mask">3.1 Attention mask</a></li><li><a href="#3-2-loss-mask">3.2 Loss mask</a></li><li><a href="#3-3-masked">3.3 全 masked 行</a></li><li><a href="#4">4. 梯度与复杂度</a></li><li><a href="#5">5. 测试矩阵</a></li><li><a href="#6-vla">6. VLA 映射与边界</a></li><li><a href="#7">7. 项目挂钩与真实性边界</a></li><li><a href="#8">8. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 08 CODE-001：数值稳定的 softmax / log-softmax 实现</h1>
 <div class="meta">状态：<code>drafted / CODE-VLA-001 / knowledge_1_of_phase / card_synced / WARN</code> 报告日期：2026-07-18 证据截止：2026-07-18 来源入口：<a href="../sources/vol_08_code001_softmax_source_freeze.html">CODE-001 Source Freeze</a>。</div>
 <h2 id="question">问题（Question）</h2>
 <p>手撕 softmax 不只是写出指数公式。面试官通常会继续追问数值稳定性、<code>dim</code>、mask、低精度、全 masked 行、梯度和它在 attention/CE/action-token 中的边界。</p>
 <h2 id="1">1. 直觉：先把最大值搬到零</h2>
-<p>直接计算 (e^{1000}) 会溢出，直接计算 (e^{-1000}) 可能下溢。因为 softmax 对整体平移不敏感，可以令 (m=\max(z))，先计算 (z-m)：最大项变成 0，指数最多为 1。</p>
+<p>直接计算 \(e^{1000}\) 会溢出，直接计算 \(e^{-1000}\) 可能下溢。因为 softmax 对整体平移不敏感，可以令 \(m=\max(z)\)，先计算 \(z-m\)：最大项变成 0，指数最多为 1。</p>
 <h2 id="2">2. 数学与实现映射</h2>
 <div class="formula">\[
  p_i=\frac{\exp(z_i)}{\sum_j\exp(z_j)},\qquad
@@ -169,7 +173,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <p>生产代码优先使用框架 fused <code>log_softmax</code>；手写版本的价值在于解释 shape、dtype、mask 和测试，而不是替代高度优化 kernel。</p>
 <h2 id="3-mask">3. Mask 语义</h2>
 <h3 id="3-1-attention-mask">3.1 Attention mask</h3>
-<p>对不允许读取的位置，常见做法是将 logits 加上 (-\infty) 或使用 bool mask。它改变信息流：被 mask 的位置不应获得 attention probability。</p>
+<p>对不允许读取的位置，常见做法是将 logits 加上 \(-\infty\) 或使用 bool mask。它改变信息流：被 mask 的位置不应获得 attention probability。</p>
 <h3 id="3-2-loss-mask">3.2 Loss mask</h3>
 <p><code>loss_mask</code> 决定哪些 label 参与梯度；它不等于 attention mask。VLA 中 image/prompt token 可能可见但不计 CE loss，action token 可能需要 loss；必须分别记录。</p>
 <h3 id="3-3-masked">3.3 全 masked 行</h3>
@@ -179,7 +183,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <div class="formula">\[
 \frac{\partial p_i}{\partial z_j}=p_i(\delta_{ij}-p_j).
 \]</div>
-<p>这说明概率越尖，非主类梯度越小；过大的 logits 会使 softmax 饱和。沿长度 (L) 的 dense softmax 通常是 (O(L)) 的归一化，但 attention 的 (QK^\top) 仍可能是 (O(L^2))；不要把 softmax 稳定性误说成 attention 复杂度优化。</p>
+<p>这说明概率越尖，非主类梯度越小；过大的 logits 会使 softmax 饱和。沿长度 \(L\) 的 dense softmax 通常是 \(O(L)\) 的归一化，但 attention 的 \(QK^\top\) 仍可能是 \(O(L^2)\)；不要把 softmax 稳定性误说成 attention 复杂度优化。</p>
 <h2 id="5">5. 测试矩阵</h2>
 <table><thead><tr><th>测试</th><th>断言</th><th>发现的 bug</th></tr></thead><tbody>
 <tr><td>known small logits</td><td>沿 dim 和为 1，值接近手算</td><td>dim/keepdim 错</td></tr>
@@ -192,7 +196,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </tbody></table>
 <p>最小属性测试：随机生成不同 batch、长度、dim、dtype 和 mask，比较 <code>stable_log_softmax(x).exp()</code> 与 <code>stable_softmax(x)</code>，并与框架结果做 toleranced parity。对于全 masked 行，属性测试必须跳过或验证显式 invalid 分支。</p>
 <h2 id="6-vla">6. VLA 映射与边界</h2>
-<ul><li><strong>Attention</strong>：对 (QK^\top/\sqrt{d_k}) 做 mask+softmax，决定 token 信息流；scale、mask 和 softmax 是不同合同。</li><li><strong>Action token CE</strong>：使用 <code>log_softmax</code>/交叉熵，prompt/image label 可能由 <code>loss_mask</code> 排除。</li><li><strong>Continuous action</strong>：MSE、Huber、diffusion/flow vector field 不需要 softmax；动作维度不能因为“概率和为 1”而被错误归一化。</li><li><strong>Routing</strong>：softmax 权重可表示 mixture/router probability，但还需说明 temperature、capacity、load balance 和 auxiliary loss。</li></ul>
+<ul><li><strong>Attention</strong>：对 \(QK^\top/\sqrt{d_k}\) 做 mask+softmax，决定 token 信息流；scale、mask 和 softmax 是不同合同。</li><li><strong>Action token CE</strong>：使用 <code>log_softmax</code>/交叉熵，prompt/image label 可能由 <code>loss_mask</code> 排除。</li><li><strong>Continuous action</strong>：MSE、Huber、diffusion/flow vector field 不需要 softmax；动作维度不能因为“概率和为 1”而被错误归一化。</li><li><strong>Routing</strong>：softmax 权重可表示 mixture/router probability，但还需说明 temperature、capacity、load balance 和 auxiliary loss。</li></ul>
 <h2 id="7">7. 项目挂钩与真实性边界</h2>
 <p>OpenPiVLA 的 causal-CE、OPD 的 scorer、WAM/UWM 的 mask/routing 可用于讨论“概率/监督/条件 mask 的区别”；但当前项目没有本地 CODE-VLA-001 手写实现、dtype benchmark 或梯度 parity artifact。面试时可以解释实现和测试设计，不能声称某项目因自写 softmax 获得性能提升。</p>
 <h2 id="8">8. 结论与下一步</h2>

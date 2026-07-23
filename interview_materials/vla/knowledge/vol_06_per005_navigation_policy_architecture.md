@@ -69,7 +69,7 @@ map-free policy 把记忆压进 recurrent/transformer state，直接输出动作
  a_t = \pi_\theta(o_{t-k:t},\; l,\; s_t),
 \]
 
-其中 (o) 是视觉/传感器 observation，(l) 是 instruction/goal，(s_t) 可以是 pose/proprio/history state。即使没有显式 map，Transformer cache、RNN hidden state 或 stacked frames 仍是记忆；需要冻结 history length、stride、mask、timestamp 和 reset 行为。
+其中 \(o\) 是视觉/传感器 observation，\(l\) 是 instruction/goal，\(s_t\) 可以是 pose/proprio/history state。即使没有显式 map，Transformer cache、RNN hidden state 或 stacked frames 仍是记忆；需要冻结 history length、stride、mask、timestamp 和 reset 行为。
 
 ### 3.2 常见 failure
 
@@ -192,7 +192,7 @@ T_capture + T_transfer + T_encode/ground + T_map/planner
   + T_policy + T_controller + T_actuation
 ```
 
-若 observation 在 (t_o) 捕获、action 在 (t_a) 生成，则：
+若 observation 在 \(t_o\) 捕获、action 在 \(t_a\) 生成，则：
 
 \[
 age_{action}=t_a-t_o+T_{queue}+T_{communication}+T_{execution\ delay}.

@@ -13,7 +13,7 @@
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>CODE-VLA-005</b> · 请解释并手写 4×4 homogeneous transform composition，说明 frame 方向、逆变换和测试。</summary>
 
-**面试意图**：判断你能否处理 (T^A_B) 方向、组合顺序、point/vector/pose、刚体逆、frame/单位/时间戳和 roundtrip，而不是只会矩阵乘法。
+**面试意图**：判断你能否处理 \(T^A_B\) 方向、组合顺序、point/vector/pose、刚体逆、frame/单位/时间戳和 roundtrip，而不是只会矩阵乘法。
 
 **30 秒回答**：先定义 T^A_B 是 B→A，点用 [x,y,z,1]，direction 用 w=0；组合 T^A_C=T^A_B T^B_C，刚体逆为 Rᵀ、-Rᵀt。冻结 frame/单位/时间戳，做 identity、逆变换和 roundtrip 测试。
 

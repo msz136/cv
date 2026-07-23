@@ -102,7 +102,7 @@ RoboCasa native full action 是 12D：EEF 7D、base 4D、control 1D。actionhead
 a^{\mathrm{env}}=\operatorname{concat}\left(a^{\mathrm{eef}}_{7},a^{\mathrm{base}}_{4},a^{\mathrm{control}}_{1}\right),
 \]
 
-其中 (a^{\mathrm{eef}}_7) 是模型的连续末端动作，(a^{\mathrm{base}}_4) 和 (a^{\mathrm{control}}_1) 来自额外 head 或统计初始化。实现证据位于 `uwm_robocasa_train.py`、`uwm_robocasa_rollout.py` 与 `NativeRoboCasaDictActionWrapper`；它证明了接口设计和 trace 字段，不证明闭环成功。
+其中 \(a^{\mathrm{eef}}_7\) 是模型的连续末端动作，\(a^{\mathrm{base}}_4\) 和 \(a^{\mathrm{control}}_1\) 来自额外 head 或统计初始化。实现证据位于 `uwm_robocasa_train.py`、`uwm_robocasa_rollout.py` 与 `NativeRoboCasaDictActionWrapper`；它证明了接口设计和 trace 字段，不证明闭环成功。
 
 actionheadfix 的训练侧改动：
 

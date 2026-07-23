@@ -6,7 +6,7 @@
 <title>VOL 02 IL / RL / Post-training：独立事实与实现边界复核</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\sources\vol_02_il_rl_posttraining_independent_fact_review.md">
-<meta name="aris:source-sha256" content="614e7007f6b727dc09846d6c01aa208838222c5cfea561bb20564aaa6cde2c64">
+<meta name="aris:source-sha256" content="cf1f14af83afa65b11509da51af4c486ce84bc0e89654a33f7977497fbc0492a">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>614e7007f6b727dc09846d6c01aa208838222c5cfea561bb20564aaa6cde2c64</code>；生成自：<code>interview_materials\vla\sources\vol_02_il_rl_posttraining_independent_fact_review.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>cf1f14af83afa65b11509da51af4c486ce84bc0e89654a33f7977497fbc0492a</code>；生成自：<code>interview_materials\vla\sources\vol_02_il_rl_posttraining_independent_fact_review.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 问题与审查方法</a></li><li><a href="#2">2. 冻结来源矩阵</a></li><li><a href="#3-claim-to-source">3. Claim-to-source 复核矩阵</a></li><li><a href="#4">4. 关键公式与实现核对</a></li><li><a href="#4-1-gae-termination-truncation">4.1 GAE 的 termination / truncation 修正</a></li><li><a href="#4-2-cql-objective">4.2 CQL 只是完整 objective 的核心正则项</a></li><li><a href="#4-3-harness-grpo-style">4.3 本地 Harness 的 GRPO-style 更新</a></li><li><a href="#5-ownership">5. 本地实现与项目 ownership 边界</a></li><li><a href="#5-1">5.1 直接可读的本地证据</a></li><li><a href="#5-2">5.2 不能从这些文件推出的结论</a></li><li><a href="#6">6. 修正动作与验证状态</a></li><li><a href="#7">7. 结论与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 02 IL / RL / Post-training：独立事实与实现边界复核</h1>
 <div class="meta">状态：<code>independent_fact_review / source_checked / local_grpo_boundary_checked / WARN</code> 审查日期：2026-07-19 证据截止：2026-07-19 范围：VOL 02 knowledge、40 张题卡、primary papers、官方文档与 Robot Harness 本地 GRPO-style trainer。 结论先行：DAgger、GAE、PPO、CQL、IQL、DPO、GRPO 的核心机制与现有知识页基本一致；需要明确修正三处容易混淆的口径：GAE 的 terminated/truncated mask、CQL 公式只是保守正则项而非完整 objective、当前 Harness 本地实现是 <code>offline_grouped_reward_weighted_policy_update</code>，不能直接称 DeepSeekMath 式 online GRPO。所有题卡继续保持 <code>unseen</code>，项目指标与个人 ownership 仍由 VOL 07 evidence gate 约束。</div>
@@ -175,12 +181,12 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </tbody></table>
 <h2 id="4">4. 关键公式与实现核对</h2>
 <h3 id="4-1-gae-termination-truncation">4.1 GAE 的 termination / truncation 修正</h3>
-<p>令 (d_t^{term}) 表示环境真正终止，(d_t^{trunc}) 表示时间上限截断。GAE 的 TD residual 可写为：</p>
+<p>令 \(d_t^{term}\) 表示环境真正终止，\(d_t^{trunc}\) 表示时间上限截断。GAE 的 TD residual 可写为：</p>
 <div class="formula">\[
 \delta_t=r_t+\gamma(1-d_t^{term})V(s_{t+1})-V(s_t),\qquad
 \hat A_t=\sum_{l\ge0}(\gamma\lambda)^l\delta_{t+l}.
 \]</div>
-<p>这里 (d_t^{term}) 决定是否允许 bootstrap；time-limit truncation 通常不能当作真实 terminal。实现映射：batch 必须保存 <code>terminated</code> 与 <code>truncated</code>，不能把 Gymnasium 两个 flag 合成一个无语义的 <code>done</code>。当前 VOL 02 原文已有“termination/timeout”提醒，本复核把变量边界正式写清。</p>
+<p>这里 \(d_t^{term}\) 决定是否允许 bootstrap；time-limit truncation 通常不能当作真实 terminal。实现映射：batch 必须保存 <code>terminated</code> 与 <code>truncated</code>，不能把 Gymnasium 两个 flag 合成一个无语义的 <code>done</code>。当前 VOL 02 原文已有“termination/timeout”提醒，本复核把变量边界正式写清。</p>
 <h3 id="4-2-cql-objective">4.2 CQL 只是完整 objective 的核心正则项</h3>
 <p>离散动作的常见核心项可写为：</p>
 <div class="formula">\[

@@ -80,7 +80,7 @@ R_{\mathrm{req}}\preceq C_{\mathrm{node}},
 J=\alpha W_q+\beta L_{tail}+\gamma A_{action}+\delta M_{deadline}+\eta F_{fair}+\lambda C_{run}.
 \]
 
-(W_q) 是 queue wait，(L_{tail}) 是 inference tail latency，(A_{action}) 是 action age，(M_{deadline}) 是 deadline miss rate，(F_{fair}) 是 tenant share 偏差，(C_{run}) 是运行成本。权重不是上游默认值，必须由 task criticality、tenant SLA 和安全边界决定；应在固定 workload matrix 上做 matched A/B，而不是凭单次 utilization 报公平或性能提升。
+\(W_q\) 是 queue wait，\(L_{tail}\) 是 inference tail latency，\(A_{action}\) 是 action age，\(M_{deadline}\) 是 deadline miss rate，\(F_{fair}\) 是 tenant share 偏差，\(C_{run}\) 是运行成本。权重不是上游默认值，必须由 task criticality、tenant SLA 和安全边界决定；应在固定 workload matrix 上做 matched A/B，而不是凭单次 utilization 报公平或性能提升。
 
 ## 4. Queue、Fairness 与 Preemption
 

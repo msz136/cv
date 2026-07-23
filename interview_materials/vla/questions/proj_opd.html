@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PROJ-OPD：OPD / VLM Grounding 项目原子题卡（Direct-Evidence Batch 1 + Ownership）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\questions\proj_opd.md">
-<meta name="aris:source-sha256" content="a157bc98efcfaf165c0d71dc1c4da70c95d3b9615304d15429c9c3b6f5c1dc2d">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\questions\proj_opd.md">
+<meta name="aris:source-sha256" content="c08737c19ce9c0ff78d7d95239e30f51d72a25d679b51262c161124dcf405b7b">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>a157bc98efcfaf165c0d71dc1c4da70c95d3b9615304d15429c9c3b6f5c1dc2d</code>；生成自：<code>interview_materials\vla\questions\proj_opd.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>c08737c19ce9c0ff78d7d95239e30f51d72a25d679b51262c161124dcf405b7b</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\questions\proj_opd.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#a">A. 问题定义与数据路由</a></li><li><a href="#b-coldstart-opd">B. Coldstart 与在线 OPD</a></li><li><a href="#c">C. 评估、协议与真实性边界</a></li><li><a href="#d-ownership">D. Ownership 与可抗追问边界</a></li><li><a href="#section-5">参考来源</a></li></ol></nav>
 <h1>PROJ-OPD：OPD / VLM Grounding 项目原子题卡（Direct-Evidence Batch 1 + Ownership）</h1>
 <div class="meta">状态：<code>drafted / cards_8_of_8 / WARN</code> 更新日期：2026-07-17 当前题数：8 / 8 覆盖范围：<code>PROJ-OPD-001..009</code> 难度：L2 4 题 / L3 4 题 优先级：P0 7 题 / P1 1 题 练习状态：全部 <code>unseen</code> 前置证据：<a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD Claim–Evidence Inventory</a>；weights、raw predictions、统一 ablation 与 ownership ledger 未闭合，不得升级为强因果结论。</div>
@@ -176,24 +182,24 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <details class="qa">
 <summary><span class="lv lv-l2">L2</span> <span class="freq">P0</span> <b>PROJ-OPD-004</b> · coldstart500 和正式 OPD5000 的训练链路有什么区别？</summary>
 <p><strong>面试意图</strong>：检查你是否分清 teacher rollout、student rollout、KL 监督和训练起点。</p>
-<p><strong>30 秒回答</strong>：coldstart 从 8B base 出发，用五个 teacher rollout 做 500 steps 的 full-vocab KL；OPD5000 从该输出继续，让 student rollout，再让 route 对应 teacher 在同一 response 上 forward，完成 5000 steps 在线 KL。</p>
-<p><strong>机制展开（约 2 分钟）</strong>：coldstart 是 <code>teacher</code> rollout，<code>max_new_tokens=128</code>、prefix=64，veto beta 在 100 steps 内退火；正式 OPD 是 <code>student</code> rollout，<code>max_new_tokens=64</code>、prefix=64、skip 64,000，保存 1000–5000 checkpoints。五 teacher 以 <code>preloaded_zero3</code> 常驻并按 route 选择，做 full-vocab distillation。coldstart 先处理分布与格式启动，online 阶段再覆盖 student 实际 response；缺 coldstart-only raw-holdout 对照，不能量化各阶段贡献。</p>
+<p><strong>30 秒回答</strong>：coldstart 从 8B base 用 teacher rollout 做 500 步 full-vocab KL；OPD5000 从它继续，改为 student rollout 做 5000 步。formal <code>point/</code> trainer 计算 \(D_{KL}(q_\beta\|p_S)\)；根目录同名脚本是 legacy top1 CE。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：formal trainer 支持 teacher/student rollout。coldstart 取 teacher response，prefix64，beta 百步退火；OPD5000 取 student response，prefix64、skip64k、每千步保存。两者让 route teacher 在同一 response 上 forward；target logits=<code>teacher_logits+beta*stopgrad(student_logits)</code>，beta=0 才是 \(D_{KL}(p_T\|p_S)\)。前者启动分布和格式，后者覆盖 student 实际 response；缺 matched raw eval，不能量化阶段贡献。</p>
 <p><strong>诊断 / 证据</strong>：检查两个 run summary 的 student path、rollout source、teacher load counts、route counts、loss/entropy/top-k overlap，并保留每阶段 checkpoint 与 raw eval。当前 summaries 与 checkpoint table 有，完整权重/raw log 没有。</p>
 <p><strong>项目挂钩</strong>：回答时强调训练阶段和 artifact lineage，而不是把“5000 steps”当作算法效果本身。</p>
 <p><strong>追问树</strong>：为什么不直接 online？为什么 full-vocab KL？student rollout 的分布偏移如何处理？veto beta 是什么？</p>
 <p><strong>危险答案</strong>：把 coldstart 的 teacher rollout 说成正式 student on-policy，或说 5000 steps 自动证明收敛。</p>
-<p><strong>来源</strong>：[1][7][8]　<strong>练习状态</strong>：unseen</p>
+<p><strong>来源</strong>：[1][7][8][17]　<strong>练习状态</strong>：unseen</p>
 </details>
 <details class="qa">
 <summary><span class="lv lv-l3">L3</span> <span class="freq">P0</span> <b>PROJ-OPD-005</b> · route-based teacher selection 与 learned router 有什么区别？为什么用 full-vocabulary KL？</summary>
 <p><strong>面试意图</strong>：检查你能否把实现事实、训练目标和未验证假设分层。</p>
-<p><strong>30 秒回答</strong>：当前 teacher selection 是样本 metadata 的 target route，不是单独训练的 learned router。full-vocabulary KL 在 student 实际 response 的每个 prefix 上约束完整分布，比只蒸馏 top-k 保留更多 teacher 的不确定性与格式偏好，但成本更高。</p>
-<p><strong>机制展开（约 2 分钟）</strong>：脚本把 <code>target_expert/candidate_experts</code> 转成 route；<code>route_policy=target</code> 时每行只激活 target teacher。五 teacher 以 ZeRO-3 预加载。student rollout 后，teacher 对同一 token sequence forward，计算 full-vocab KL，并记录双方 entropy、top-k overlap、OPD loss 和 route counts。route metadata 是监督来源，不等于部署时模型会识别任务；learned router 还需要额外模型、routing loss 和同协议 ablation。</p>
+<p><strong>30 秒回答</strong>：teacher selection 来自样本 metadata，不是 learned router。formal 代码计算 \(D_{KL}(q_\beta\|p_S)\)，beta=0 时是 teacher∥student 的完整词表 KL；它比 legacy top1 CE 保留更多分布信息，但成本更高，也会复制 teacher 错误。</p>
+<p><strong>机制展开（约 2 分钟）</strong>：formal trainer 把 target/candidate expert 映射成 route；每行只激活一个 teacher，ZeRO-3 下各 rank 同步 route。student rollout 后，teacher 对同一 sequence forward，计算 \(\sum_v q_\beta(v)[\log q_\beta(v)-\log p_S(v)]\)，按 response token 数归一，并记录 entropy、overlap、loss 与 route count。route metadata 只是监督来源；learned router 还需模型、routing objective、部署输入和 matched ablation。</p>
 <p><strong>诊断 / 证据</strong>：做 target vs candidate route、single-teacher、random route、top-k vs full-vocab 的对照，并按格式/池统计错误。当前代码和 summary 支持实现路径，消融与 learned router 证据缺失。</p>
 <p><strong>项目挂钩</strong>：这是一个适合回答“工程实现与研究假设边界”的问题：可以准确讲当前做了什么，也能指出下一步研究空间。</p>
 <p><strong>追问树</strong>：candidate route 为什么存在？full-vocab KL 会不会过度复制 teacher 错误？为什么不做 MoE gate？如何防止 route imbalance？</p>
 <p><strong>危险答案</strong>：说“route id 就是 learned gating”，或说 full-vocab KL 一定比 top-k 更好且没有显存代价。</p>
-<p><strong>来源</strong>：[1][7][8]　<strong>练习状态</strong>：unseen</p>
+<p><strong>来源</strong>：[1][7][8][17]　<strong>练习状态</strong>：unseen</p>
 </details>
 <h2 id="c">C. 评估、协议与真实性边界</h2>
 <details class="qa">
@@ -242,5 +248,5 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <p><strong>来源</strong>：[1][15][16]　<strong>练习状态</strong>：unseen</p>
 </details>
 <h2 id="section-5">参考来源</h2>
-<ol><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD / VLM Grounding Claim–Evidence Inventory</a>：五 expert、student route、训练 lineage、raw-holdout、point protocol 和 ownership 边界。</li><li><code>C:\Users\mousongzhe\muxi\build_expert_mixes_seed0_v2.py</code>：expert quota、image-hash split、relation bucket 与 metadata。</li><li><code>C:\Users\mousongzhe\muxi\build_opd_student_v1.py</code>：student category、seen/unseen/hard、boundary/format-conflict 和 fingerprint 字段。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\model_assets_eval_table.md</code>：expert 训练摘要、checkpoint 资产边界和 pool readout。</li><li><code>C:\Users\mousongzhe\muxi\report.md</code>：数据构造、严格审计、point protocol 修正与历史 OPD 说明。</li><li><code>C:\Users\mousongzhe\muxi\audit_opd_student_v1.py</code>：JSON、长度、坐标、图片、重复与 overlap 审计逻辑。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\remote_model_summaries\coldstart500_opd_online_run_summary.json</code>：coldstart rollout 与 full-vocab KL summary。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\remote_model_summaries\opd5000_opd_online_run_summary.json</code> 与 <code>train_opd_online_vl.py</code>：student rollout、route、skip、checkpoint 和 full-vocab KL。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\opd5000_ckpt_eval_by_format_table.md</code>：ckpt1000–5000 的 format-level metrics。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\opd5000_ckpt_eval_by_pool_table.md</code>：八个 eval pool 的 checkpoint selection。</li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\evalset_summary.json</code>：10k holdout quota、blocklist 和格式分布。</li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\dedupe_audit.json</code>：重复与训练图片泄漏审计。</li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\raw_holdout_eval_8models_report.md</code>：旧版 OPD final 与 point protocol context。</li><li><code>C:\Users\mousongzhe\muxi\report\openai_base64_point_protocol_qwen122_qwen35_20260603\comparison_summary_table.md</code>：protocol-fixed Qwen-122B/Qwen3-35B-VL point 结果。</li><li><a href="../evidence/projects/opd_ownership_ledger.html">OPD Ownership Ledger</a>：Git identity、point/root trainer 差异、13 行 ownership matrix 与 C3 gate。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\artifact_manifest.json</code>：OPD5000 本地同步范围与明确排除的权重、optimizer、raw predictions。</li></ol>
+<ol><li><a href="../evidence/projects/opd_claim_evidence_inventory.html">OPD / VLM Grounding Claim–Evidence Inventory</a>：五 expert、student route、训练 lineage、raw-holdout、point protocol 和 ownership 边界。</li><li><code>C:\Users\mousongzhe\muxi\build_expert_mixes_seed0_v2.py</code>：expert quota、image-hash split、relation bucket 与 metadata。</li><li><code>C:\Users\mousongzhe\muxi\build_opd_student_v1.py</code>：student category、seen/unseen/hard、boundary/format-conflict 和 fingerprint 字段。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\model_assets_eval_table.md</code>：expert 训练摘要、checkpoint 资产边界和 pool readout。</li><li><code>C:\Users\mousongzhe\muxi\report.md</code>：数据构造、严格审计、point protocol 修正与历史 OPD 说明。</li><li><code>C:\Users\mousongzhe\muxi\audit_opd_student_v1.py</code>：JSON、长度、坐标、图片、重复与 overlap 审计逻辑。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\remote_model_summaries\coldstart500_opd_online_run_summary.json</code>：coldstart rollout 与 full-vocab KL summary。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\remote_model_summaries\opd5000_opd_online_run_summary.json</code> 与 <code>C:\Users\mousongzhe\muxi\point\train_opd_online_vl.py</code>：student rollout、route、skip、checkpoint 和 full-vocab KL；根目录同名脚本为 legacy top1 CE。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\opd5000_ckpt_eval_by_format_table.md</code>：ckpt1000–5000 的 format-level metrics。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\opd5000_ckpt_eval_by_pool_table.md</code>：八个 eval pool 的 checkpoint selection。</li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\evalset_summary.json</code>：10k holdout quota、blocklist 和格式分布。</li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\dedupe_audit.json</code>：重复与训练图片泄漏审计。</li><li><code>C:\Users\mousongzhe\muxi\report\raw_holdout_eval_8models_20260525\raw_holdout_eval_8models_report.md</code>：旧版 OPD final 与 point protocol context。</li><li><code>C:\Users\mousongzhe\muxi\report\openai_base64_point_protocol_qwen122_qwen35_20260603\comparison_summary_table.md</code>：protocol-fixed Qwen-122B/Qwen3-35B-VL point 结果。</li><li><a href="../evidence/projects/opd_ownership_ledger.html">OPD Ownership Ledger</a>：Git identity、point/root trainer 差异、13 行 ownership matrix 与 C3 gate。</li><li><code>C:\Users\mousongzhe\muxi\report\opd5000_newexperts_20260601\artifact_manifest.json</code>：OPD5000 本地同步范围与明确排除的权重、optimizer、raw predictions。</li><li><a href="../evidence/projects/opd_training_objective_lineage_gate.html">OPD Training Objective Lineage Gate</a>：legacy/formal trainer、rollout source、KL 方向、veto target 与 run-summary lineage。</li></ol>
 </article></body></html>

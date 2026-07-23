@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VLA Engineering / Evaluation：Forbidden Side Effect、Scope、取消与补偿</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_05_engineering_eval_eval014_forbidden_side_effect_scope_cancel_compensation.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eval014_forbidden_side_effect_scope_cancel_compensation.md">
 <meta name="aris:source-sha256" content="db83e540d8e6cf24c8db3ee17d27321019f7007cf3dd9582adf4ad6cd22318ee">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>db83e540d8e6cf24c8db3ee17d27321019f7007cf3dd9582adf4ad6cd22318ee</code>；生成自：<code>interview_materials\vla\knowledge\vol_05_engineering_eval_eval014_forbidden_side_effect_scope_cancel_compensation.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>db83e540d8e6cf24c8db3ee17d27321019f7007cf3dd9582adf4ad6cd22318ee</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_05_engineering_eval_eval014_forbidden_side_effect_scope_cancel_compensation.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 一页结论</a></li><li><a href="#2-intent-committed-effect">2. 从 Intent 到 Committed Effect</a></li><li><a href="#3-scope">3. Scope 的完整上下文</a></li><li><a href="#3-1-planner">3.1 为什么 planner 检查不够</a></li><li><a href="#3-2-false-allow-false-deny">3.2 False Allow 与 False Deny</a></li><li><a href="#4-cancellation">4. Cancellation 状态机</a></li><li><a href="#4-1-quiescence-api-latency">4.1 Quiescence 而非 API Latency</a></li><li><a href="#4-2">4.2 取消时机矩阵</a></li><li><a href="#5-compensation-undo">5. Compensation 不是 Undo 按钮</a></li><li><a href="#6-point-of-no-return">6. Point of No Return 与人工审批</a></li><li><a href="#7">7. 间接工具、组合风险与重试</a></li><li><a href="#8">8. 指标体系</a></li><li><a href="#9-adversarial-test-matrix">9. Adversarial Test Matrix</a></li><li><a href="#10-evidence-protocol-gate">10. Evidence Protocol 与 Gate</a></li><li><a href="#11-artifact-bundle">11. Artifact Bundle</a></li><li><a href="#12">12. 五项目面试边界</a></li><li><a href="#robot-harness">Robot Harness</a></li><li><a href="#opd-openpivla-wam-uwm">OPD / OpenPiVLA / WAM / UWM</a></li><li><a href="#13">13. 面试追问防线</a></li><li><a href="#14">14. 本节点状态</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VLA Engineering / Evaluation：Forbidden Side Effect、Scope、取消与补偿</h1>
 <div class="meta">节点：<code>VLA-EVAL-014</code> 状态：<code>drafted / knowledge_36_of_44 / card_1_of_1_unseen / WARN</code> 更新日期：2026-07-19 学习目标：能从authority、dispatch、effect sink、cancel/quiescence、compensation和irreversible residual构造可复算评估；不把文本安全、tool-call格式、timeout或cancel acknowledgement误写成真实副作用安全。</div>

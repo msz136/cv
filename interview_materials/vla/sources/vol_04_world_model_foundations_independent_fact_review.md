@@ -26,7 +26,7 @@
 
 ## 1. World Models：VAE、MDN-RNN 与 controller 的分解已核对
 
-World Models 论文把系统拆成视觉模型 V、记忆模型 M 和 controller C。VAE 把每帧图像压成 latent (z_t)；MDN-RNN 预测动作和历史条件下的未来 latent 分布；controller 读取 latent 与 recurrent state 产生动作。论文给出了 `env.reset → vae.encode → controller.action → env.step → rnn.forward` 的 rollout 逻辑。[1]
+World Models 论文把系统拆成视觉模型 V、记忆模型 M 和 controller C。VAE 把每帧图像压成 latent \(z_t\)；MDN-RNN 预测动作和历史条件下的未来 latent 分布；controller 读取 latent 与 recurrent state 产生动作。论文给出了 `env.reset → vae.encode → controller.action → env.step → rnn.forward` 的 rollout 逻辑。[1]
 
 论文还明确展示了在模型生成的 dream 中训练/部署 controller，并把 decoder 用于可视化。因此 Audit A 中“world model 不等于视频生成器；是否可行动要看 action condition、状态变量和执行合同”的表述有 primary 支持；“dream controller 的收益与 model exploitation 风险需要单独审计”属于同源分析边界，不是本地实验结果。
 
@@ -40,7 +40,7 @@ PlaNet 论文摘要和方法部分直接写明：latent dynamics 同时包含 de
 
 ## 3. DreamerV3 RSSM：论文因子分解与 frozen repo 路径已核对
 
-DreamerV3 论文把 world model 写成 RSSM：序列模型由前一时刻 (h_{t-1},z_{t-1},a_{t-1}) 得到 (h_t)，posterior (q_phi(z_tmid h_t,x_t)) 使用当前 observation，prior (p_phi(z_tmid h_t)) 在 imagination 时不读取未来 observation；decoder、reward、continue 预测器作用在 latent feature 上。[3]
+DreamerV3 论文把 world model 写成 RSSM：序列模型由前一时刻 \((h_{t-1},z_{t-1},a_{t-1})\) 得到 \(h_t\)，posterior \(q_\phi(z_t\mid h_t,x_t)\) 使用当前 observation，prior \(p_\phi(z_t\mid h_t)\) 在 imagination 时不读取未来 observation；decoder、reward、continue 预测器作用在 latent feature 上。[3]
 
 frozen repo 的 `dreamerv3/rssm.py` 与论文合同逐项对应：
 

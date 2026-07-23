@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 PER-012 Source Freeze：Segmentation、Depth、Keypoint 与 Manipulation Affordance</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_06_per012_segmentation_depth_keypoint_affordance_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per012_segmentation_depth_keypoint_affordance_source_freeze.md">
 <meta name="aris:source-sha256" content="2310d4ebf42f838b615e5bb8e8f2f7e37a14c735a2e983162b1a6b0e43854d83">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>2310d4ebf42f838b615e5bb8e8f2f7e37a14c735a2e983162b1a6b0e43854d83</code>；生成自：<code>interview_materials\vla\sources\vol_06_per012_segmentation_depth_keypoint_affordance_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>2310d4ebf42f838b615e5bb8e8f2f7e37a14c735a2e983162b1a6b0e43854d83</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_06_per012_segmentation_depth_keypoint_affordance_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-primary-official-local-source-ledger">2. Primary / official / local source ledger</a></li><li><a href="#3">3. 与相邻节点的去重边界</a></li><li><a href="#4-typed-dense-perception-record">4. Typed Dense Perception Record</a></li><li><a href="#5-segmentation-task-taxonomy">5. Segmentation Task Taxonomy</a></li><li><a href="#6-mask2former-query-mask-classification">6. Mask2Former：Query Mask Classification</a></li><li><a href="#7-sam-promptable-mask-candidate-semantic-oracle">7. SAM：Promptable Mask Candidate，不是Semantic Oracle</a></li><li><a href="#8-depth-relative-metric-sensor-depth">8. Depth：Relative、Metric与Sensor Depth不能互换</a></li><li><a href="#9-depth-anything-v2-relative-metric-checkpoint">9. Depth Anything V2：Relative与Metric是两条代码/Checkpoint路径</a></li><li><a href="#9-1-relative-path">9.1 Relative path</a></li><li><a href="#9-2-metric-path">9.2 Metric path</a></li><li><a href="#9-3-license-artifact-identity">9.3 License与artifact identity</a></li><li><a href="#10-depth-3d-dense-map-camera-contract-geometry">10. Depth→3D：Dense Map只有进入Camera Contract才成为Geometry</a></li><li><a href="#11-kpam-semantic-3d-keypoint-planning-constraint">11. kPAM：Semantic 3D Keypoint到Planning Constraint</a></li><li><a href="#12-where2act-point-wise-action-proposal-primitive-orientation">12. Where2Act：Point-wise Action Proposal需要Primitive与Orientation</a></li><li><a href="#13">13. 四类方法如何组合</a></li><li><a href="#14-objective-metric-task">14. Objective与Metric不能跨Task偷换</a></li><li><a href="#15-opd-affordance-named-point-dense-perception-stack">15. 本地OPD：Affordance-named Point，不是Dense Perception Stack</a></li><li><a href="#16-hook-truth-boundary">16. 项目Hook与Truth Boundary</a></li><li><a href="#17-deterministic-probes">17. Deterministic Probes</a></li><li><a href="#18-fail-closed-pseudocode">18. Fail-closed Pseudocode</a></li><li><a href="#19-truth-boundary">19. 面试中的项目Truth Boundary</a></li><li><a href="#20-source-gate-slice">20. Source Gate 与下一Slice</a></li><li><a href="#21-references">21. References</a></li></ol></nav>
 <h1>VOL 06 PER-012 Source Freeze：Segmentation、Depth、Keypoint 与 Manipulation Affordance</h1>
 <div class="meta">状态：<code>source_frozen / VLA-PER-012 / primary_official_checked / local_opd_point_only_boundary / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本切片只冻结promptable/universal segmentation、relative/metric monocular depth、semantic 2D/3D keypoint与primitive-conditioned manipulation affordance的方法链；不生成knowledge/card，不重讲PER-008的表示选择，不把dense perception输出升级为PER-015的reachable action或robot success。</div>

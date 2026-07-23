@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 Perception / Grounding / Navigation：Grounding Metric、Strict Parser 与 Protocol Comparability（PER-010）</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per010_grounding_metric_parser_protocol.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per010_grounding_metric_parser_protocol.md">
 <meta name="aris:source-sha256" content="5ecf8c5d984007b5c9b27f162d6abcc69f34cf1dccd402fd62182ac62e7c098a">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>5ecf8c5d984007b5c9b27f162d6abcc69f34cf1dccd402fd62182ac62e7c098a</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per010_grounding_metric_parser_protocol.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>5ecf8c5d984007b5c9b27f162d6abcc69f34cf1dccd402fd62182ac62e7c098a</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per010_grounding_metric_parser_protocol.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">知识地图位置与边界</a></li><li><a href="#1-30">1. 30秒直觉：先问“这个数字是怎么产生的”</a></li><li><a href="#2-valid">2. 评估栈：四层成功不能压成一个`valid`</a></li><li><a href="#2-1">2.1 四层状态</a></li><li><a href="#2-2-typed-record">2.2 Typed record</a></li><li><a href="#3-strict-parser-lenient-diagnostic">3. Strict Parser 与 Lenient Diagnostic 必须双轨</a></li><li><a href="#3-1-strict">3.1 Strict的含义</a></li><li><a href="#3-2-lenient">3.2 Lenient的用途</a></li><li><a href="#4-opd-parser">4. 本地OPD Parser到底做了什么</a></li><li><a href="#5-box-iou-mean-iou-acc-iou">5. Box：IoU、Mean IoU 与 Acc@IoU</a></li><li><a href="#6-referring-expression-recall-k-overlap">6. Referring-expression Recall@k：先冻结Overlap函数</a></li><li><a href="#6-1-mdetr-revision-trap">6.1 MDETR的revision trap</a></li><li><a href="#7-coco-ap-ar-refexp-r-k">7. COCO AP / AR 为什么不能和RefExp R@k互换</a></li><li><a href="#8-point-metrics-pck-mask-hit-fixed-distance-hit">8. Point Metrics：PCK、Mask-hit 与 Fixed-distance Hit</a></li><li><a href="#8-1-pck-correspondence-normalization">8.1 PCK需要correspondence与normalization</a></li><li><a href="#8-2-robopoint-mask-hit">8.2 RoboPoint mask-hit</a></li><li><a href="#8-3-fixed-coordinate-any-pair-hit">8.3 本地fixed-coordinate any-pair Hit</a></li><li><a href="#9-multi-point">9. Multi-point：一个最近点不能代表集合质量</a></li><li><a href="#10-invalid-empty-denominator-metric">10. Invalid、Empty 与 Denominator 是Metric的一部分</a></li><li><a href="#10-1-policy-scorer">10.1 先写policy，再跑scorer</a></li><li><a href="#10-2">10.2 分母反例</a></li><li><a href="#11-aggregation-micro-macro-episode">11. Aggregation：Micro、Macro 与Episode不是一回事</a></li><li><a href="#12-protocol-identity">12. Protocol Identity：什么时候两个数字可比较</a></li><li><a href="#13-scoring">13. 可审计Scoring伪代码</a></li><li><a href="#14-opd-reconciliation">14. 本地OPD三口径Reconciliation</a></li><li><a href="#15-failure-taxonomy">15. Failure Taxonomy 与诊断顺序</a></li><li><a href="#16">16. 面试回答模板、追问与危险答案</a></li><li><a href="#16-1">16.1 两分钟结构化回答</a></li><li><a href="#16-2">16.2 高频追问</a></li><li><a href="#16-3">16.3 危险答案</a></li><li><a href="#17-project-truth-boundary-hook">17. Project Truth Boundary 与两个项目Hook</a></li><li><a href="#18">18. 结论与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 Perception / Grounding / Navigation：Grounding Metric、Strict Parser 与 Protocol Comparability（PER-010）</h1>
 <div class="meta">状态：<code>drafted / VLA-PER-010 / source_synced / card_synced / WARN</code> 更新日期：2026-07-20 前置：<code>VLA-PER-001</code> point/box/text schema、<code>VLA-PER-008</code> representation choice；后续：<code>VLA-PER-011</code> pseudo-label/noise、<code>VLA-PER-015</code> perception→action gate。 来源入口：<a href="../sources/vol_06_per010_grounding_metric_parser_protocol_source_freeze.html">PER-010 Grounding Metric / Parser / Protocol Source Freeze</a>。本页只做已冻结证据的教学转译；atomic card已在独立切片同步并保持<code>unseen</code>，真实口述状态仍未开始。</div>

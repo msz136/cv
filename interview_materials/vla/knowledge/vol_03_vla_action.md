@@ -366,7 +366,7 @@ u_{\mathrm{code}}=\epsilon-A.
 | RT-2 | PaLI-X 5B/55B 或 PaLM-E 12B | pose/gripper 等连续维 uniform 256 bins 后成为 action tokens，另有 termination | 预训练 VLM 上混合 web + robot data co-fine-tune | 自回归生成 action token；论文部署用 cloud TPU |
 | OpenVLA | DINOv2 + SigLIP → projector → Llama-2 7B | 当前动作每个 scalar 占一个 tail-vocab token | OXE robot data 上 full fine-tune；official repo 另支持 LoRA | 生成 (d) 个 token → scalar decode → q01/q99 unnorm |
 | Octo | 27M/93M block-wise transformer；image tokenizer + frozen T5-base | action readout latent 条件化 diffusion head，公开 pretrain config 为 H=4、D=7 | 800k OXE trajectories 预训练；新域 head-only/head-MLP-only/full FT | backbone 一次产生 readout；diffusion head 多步去噪 chunk |
-| π0 | PaliGemma 2B VLM + 约 300M action expert | (H\times D) noisy continuous chunk 的 flow velocity | cross-embodiment pretrain + task post-train；openpi 提供 full/LoRA 示例 | prefix KV 一次；expert 做多步 Euler/ODE update |
+| π0 | PaliGemma 2B VLM + 约 300M action expert | \(H\times D\) noisy continuous chunk 的 flow velocity | cross-embodiment pretrain + task post-train；openpi 提供 full/LoRA 示例 | prefix KV 一次；expert 做多步 Euler/ODE update |
 
 RT-2 的论文 tokenization 还随 VLM 而变：PaLI-X 复用整数 token，PaLM-E 覆写 256 个低频 token。OpenVLA 的 frozen implementation 则使用 Llama tail vocab 和特定 255-center decode nuance。它们同属“action as token”范式，但不能交换 tokenizer 细节。[1][2][3][21]
 
@@ -384,7 +384,7 @@ RT-2 的论文 tokenization 还随 VLM 而变：PaLI-X 复用整数 token，PaLM
 {\sum_i m_i+\epsilon}.
 \]
 
-变量与实现：(y_i) 是 token，(c) 是图像/任务条件，(m_i) 是 label mask。OpenVLA prompt labels 与插入的 visual patch labels 是 `IGNORE_INDEX`，action tail 与默认 stop token 才参加 CE；因而“patch 被 action token attend”与“patch 自己有 CE label”完全不同。[2][3][21]
+变量与实现：\(y_i\) 是 token，\(c\) 是图像/任务条件，\(m_i\) 是 label mask。OpenVLA prompt labels 与插入的 visual patch labels 是 `IGNORE_INDEX`，action tail 与默认 stop token 才参加 CE；因而“patch 被 action token attend”与“patch 自己有 CE label”完全不同。[2][3][21]
 
 三种典型 layout：
 
@@ -1376,7 +1376,7 @@ mobile base 常用 \(v_x,v_y,\omega_z\) 或只用 x-y velocity。必须说明 ro
 
 **直觉**：模型输出只是 model-space tensor。只有经过正确 tokenizer/solver、正确 normalization asset、正确维度和物理语义，再被 controller 接收，才是可执行动作。
 
-令 raw model output 为 (z)，decoder 为 (mathcal D)，反归一化为 (mathcal U)，有效维选择为 (S_e)，frame/unit/absolute-delta 映射为 (mathcal R_e)，安全投影为 (Pi_{\mathcal A_e})：
+令 raw model output 为 \(z\)，decoder 为 \(\mathcal D\)，反归一化为 \(\mathcal U\)，有效维选择为 \(S_e\)，frame/unit/absolute-delta 映射为 \(\mathcal R_e\)，安全投影为 \(\Pi_{\mathcal A_e}\)：
 
 \[
 a^{\mathrm{ctrl}}
@@ -1385,7 +1385,7 @@ a^{\mathrm{ctrl}}
 \right).
 \]
 
-变量与实现：(mathcal A_e) 是 controller 可接受的动作集合。顺序不能任意交换：normalized-space clip 与 physical velocity clip 不同；先 slice 再用 D 维 stats 与先 unnorm 再 slice 只有在 stats padding 规则匹配时才可能等价。[2][6][20][21]
+变量与实现：\(\mathcal A_e\) 是 controller 可接受的动作集合。顺序不能任意交换：normalized-space clip 与 physical velocity clip 不同；先 slice 再用 D 维 stats 与先 unnorm 再 slice 只有在 stats padding 规则匹配时才可能等价。[2][6][20][21]
 
 | 路线 | 已核实输出链 | 仍不属于模型的部分 |
 | --- | --- | --- |
@@ -1403,7 +1403,7 @@ a^{\mathrm{abs}}_{t:t+H-1}
 a^{\mathrm{ctrl}}=s_e\odot R_ea^{\mathrm{abs}}.
 \]
 
-变量与实现：(m_\Delta) 选择 delta dimensions，(q_t) 是当前 state，(R_e) 处理轴序/坐标，(s_e) 处理单位。真实 rotation 可能需要 (SO(3)) composition，不能默认向量加法。openpi `AbsoluteActions` 只能证明按 mask 给前若干维加 state；本地 (R_e,s_e) 仍需 wrapper 与 sentinel trace。[7][21]
+变量与实现：\(m_\Delta\) 选择 delta dimensions，\(q_t\) 是当前 state，\(R_e\) 处理轴序/坐标，\(s_e\) 处理单位。真实 rotation 可能需要 \(SO(3)\) composition，不能默认向量加法。openpi `AbsoluteActions` 只能证明按 mask 给前若干维加 state；本地 \((R_e,s_e)\) 仍需 wrapper 与 sentinel trace。[7][21]
 
 openpi DROID example 是一条具体而非通用的 execution contract：远程返回 `[10,8]`，client 按 index 取一行、二值化 gripper、clip `[-1,1]`、调用 `env.step` 并按数据频率 sleep。[21] 面试中可以用它解释 chain，但不能把它的 8D schema 套到 OpenPiVLA。
 

@@ -45,10 +45,10 @@ VLA 面试常见的失分不是完全不会某个名词，而是把不同层次�
 
 | 术语 | 口语解释 | 严谨边界 | 常见误区 |
 | --- | --- | --- | --- |
-| Observation | 机器人此刻能读到的传感器输入 | (o_t)，可能是不完整、有噪声的状态观测 | 直接把 observation 当完整 state |
-| State | 足以决定未来转移的系统状态 | (s_t)，在 MDP 中定义转移与奖励 | 只要有一张图就一定是 state |
+| Observation | 机器人此刻能读到的传感器输入 | \(o_t\)，可能是不完整、有噪声的状态观测 | 直接把 observation 当完整 state |
+| State | 足以决定未来转移的系统状态 | \(s_t\)，在 MDP 中定义转移与奖励 | 只要有一张图就一定是 state |
 | Proprioception | 机器人自身关节/末端/速度等本体感知 | 状态向量的一部分，维度和坐标系需明确 | 不说明单位、顺序和时间戳 |
-| Action | 策略发给控制器的控制量 | (a_t)，可为位置、速度、力矩或 chunk | 忽略 action 轴顺序、尺度和执行频率 |
+| Action | 策略发给控制器的控制量 | \(a_t\)，可为位置、速度、力矩或 chunk | 忽略 action 轴顺序、尺度和执行频率 |
 | Policy | 从条件到动作的映射 | \(\pi_\theta(a_t\mid o_{\le t},c)\) | 把 action head 等同整个 policy |
 | Closed loop | 执行动作后重新观测并纠偏 | rollout 中 \(o_t\to a_t\to o_{t+1}\) 的循环 | 把一次性序列预测当稳定执行 |
 | Protocol | 评估时固定的初始化、归一化、步数和成功判定 | benchmark 的可比性条件 | 只比较最终百分比 |
@@ -161,7 +161,7 @@ learned policy 可写为 \(\pi_\theta(a_t\mid o_{\le t},c)\) 或 chunk distribut
 {\sum_{t,d}m_{t,d}+\epsilon}.
 \]
 
-(m_{t,d}) 表示第 (t) 步第 (d) 个动作维度是否有效。它与 action padding、缺失标签或只训练部分 head 直接对应；不能只写“算 MSE”，还要说明 mask 和 reduction。Huber loss 在小误差区近似二次、大误差区近似一次，通常更抗 outlier。离散 token 或工具调用则常用 cross-entropy，监督对象是目标 token 的类别，而不是连续坐标本身。
+\(m_{t,d}\) 表示第 \(t\) 步第 \(d\) 个动作维度是否有效。它与 action padding、缺失标签或只训练部分 head 直接对应；不能只写“算 MSE”，还要说明 mask 和 reduction。Huber loss 在小误差区近似二次、大误差区近似一次，通常更抗 outlier。离散 token 或工具调用则常用 cross-entropy，监督对象是目标 token 的类别，而不是连续坐标本身。
 
 ### Scaled Dot-Product Attention
 
@@ -172,7 +172,7 @@ Transformer 的核心注意力为：
 =\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}+M\right)V.
 \]
 
-(Q,K,V) 分别是 query、key、value，(d_k) 是 key 的通道维度，(M) 是 causal/padding 等 mask。除以 (sqrt{d_k}) 可以抑制点积随维度增长造成的 softmax 饱和；mask 负责禁止无效位置或未来 token。实现映射是 `scaled_dot_product_attention` 或等价的矩阵运算；在 VLA 中，图像、语言、proprio 和 action token 的拼接顺序及 mask 决定信息能否跨模态流动。
+\(Q,K,V\) 分别是 query、key、value，\(d_k\) 是 key 的通道维度，\(M\) 是 causal/padding 等 mask。除以 \(\sqrt{d_k}\) 可以抑制点积随维度增长造成的 softmax 饱和；mask 负责禁止无效位置或未来 token。实现映射是 `scaled_dot_product_attention` 或等价的矩阵运算；在 VLA 中，图像、语言、proprio 和 action token 的拼接顺序及 mask 决定信息能否跨模态流动。
 
 ### LayerNorm 与 RMSNorm
 
@@ -200,7 +200,7 @@ LoRA 将可训练更新限制为低秩矩阵：
 W'=W+\frac{\alpha}{r}BA,
 \]
 
-其中 (W) 是冻结的原权重，(A\in\mathbb R^{r\times d})、(B\in\mathbb R^{d'\times r})，(r\ll\min(d,d'))。直觉是用低秩子空间近似任务更新；它节省显存和优化参数，但低秩假设可能限制任务适应能力。OpenPiVLA 页面中的 Qwen3-VL + LoRA 属于你的本地训练路径，具体注入层和 rank 仍需以项目代码/配置核对。
+其中 \(W\) 是冻结的原权重，\(A\in\mathbb R^{r\times d}\)、\(B\in\mathbb R^{d'\times r}\)，\(r\ll\min(d,d')\)。直觉是用低秩子空间近似任务更新；它节省显存和优化参数，但低秩假设可能限制任务适应能力。OpenPiVLA 页面中的 Qwen3-VL + LoRA 属于你的本地训练路径，具体注入层和 rank 仍需以项目代码/配置核对。
 
 ## MDP、RL 与策略评估
 

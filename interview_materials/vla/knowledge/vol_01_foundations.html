@@ -6,7 +6,7 @@
 <title>VOL 01 Foundations：机器人、深度学习与强化学习的共同语言</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_01_foundations.md">
-<meta name="aris:source-sha256" content="33ebfe611adaca7d9287866f782f46f198f6562f6932e3fd75ef16488b61fa1e">
+<meta name="aris:source-sha256" content="d422ca9fad9536f743350130461fb11c98a8d75e1833b6756129699f773cf23a">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>33ebfe611adaca7d9287866f782f46f198f6562f6932e3fd75ef16488b61fa1e</code>；生成自：<code>interview_materials\vla\knowledge\vol_01_foundations.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>d422ca9fad9536f743350130461fb11c98a8d75e1833b6756129699f773cf23a</code>；生成自：<code>interview_materials\vla\knowledge\vol_01_foundations.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">口述目标</a></li><li><a href="#section-3">背景与动机</a></li><li><a href="#section-4">基础概念与术语</a></li><li><a href="#section-5">几何、状态与控制</a></li><li><a href="#observation-state-action">Observation、State、Action 的层次</a></li><li><a href="#section-7">齐次坐标与坐标变换</a></li><li><a href="#forward-kinematics-jacobian">Forward Kinematics 与 Jacobian</a></li><li><a href="#action">Action 归一化、反归一化与执行</a></li><li><a href="#pid">PID 与延迟</a></li><li><a href="#impedance-control-mpc-learned-policy">Impedance Control、MPC 与 Learned Policy</a></li><li><a href="#transformer">深度学习与 Transformer</a></li><li><a href="#mse-huber">MSE、Huber 与交叉熵</a></li><li><a href="#scaled-dot-product-attention">Scaled Dot-Product Attention</a></li><li><a href="#layernorm-rmsnorm">LayerNorm 与 RMSNorm</a></li><li><a href="#pre-norm-lora">Pre-Norm、残差与 LoRA</a></li><li><a href="#mdp-rl">MDP、RL 与策略评估</a></li><li><a href="#mdp-bellman">MDP 与 Bellman 方程</a></li><li><a href="#td-on-off-policy">TD 误差与 on/off-policy</a></li><li><a href="#proxy-online-success">为什么离线 proxy 不等于 online success</a></li><li><a href="#pipeline">Pipeline 与伪代码</a></li><li><a href="#step-mask-action">训练 step：带 mask 的连续 action 监督</a></li><li><a href="#section-23">闭环执行：重新观测、反归一化与重规划</a></li><li><a href="#section-24">实现映射与项目挂钩</a></li><li><a href="#section-25">公源/本地设计边界</a></li><li><a href="#section-26">公有设计 / 上游公开流程</a></li><li><a href="#section-27">本地证据</a></li><li><a href="#section-28">本地推断</a></li><li><a href="#section-29">尚未核实</a></li><li><a href="#section-30">方法对比与选择建议</a></li><li><a href="#section-31">风险与后续建议</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 01 Foundations：机器人、深度学习与强化学习的共同语言</h1>
 <div class="meta">状态：<code>batch1+2+3_fact_reviewed_candidate / WARN</code> 报告日期：2026-07-16 证据截止：2026-07-16 适用岗位：VLA / 具身智能算法 / 多模态机器人策略 本卷不展开：VLA 专属 action head、Flow Matching 细节、World Model 训练细节和个人项目完整复盘；这些内容分别放到 VOL 03、VOL 04、VOL 07。</div>
@@ -159,10 +165,10 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <p>这条链既能解释一般 VLA，也能连接你的 OpenPiVLA、UWM、WAM 和 OPD 项目；但具体项目 claim 仍必须回到本地页面和日志，而不是由基础公式自动推出。</p>
 <h2 id="section-4">基础概念与术语</h2>
 <table><thead><tr><th>术语</th><th>口语解释</th><th>严谨边界</th><th>常见误区</th></tr></thead><tbody>
-<tr><td>Observation</td><td>机器人此刻能读到的传感器输入</td><td>(o_t)，可能是不完整、有噪声的状态观测</td><td>直接把 observation 当完整 state</td></tr>
-<tr><td>State</td><td>足以决定未来转移的系统状态</td><td>(s_t)，在 MDP 中定义转移与奖励</td><td>只要有一张图就一定是 state</td></tr>
+<tr><td>Observation</td><td>机器人此刻能读到的传感器输入</td><td>\(o_t\)，可能是不完整、有噪声的状态观测</td><td>直接把 observation 当完整 state</td></tr>
+<tr><td>State</td><td>足以决定未来转移的系统状态</td><td>\(s_t\)，在 MDP 中定义转移与奖励</td><td>只要有一张图就一定是 state</td></tr>
 <tr><td>Proprioception</td><td>机器人自身关节/末端/速度等本体感知</td><td>状态向量的一部分，维度和坐标系需明确</td><td>不说明单位、顺序和时间戳</td></tr>
-<tr><td>Action</td><td>策略发给控制器的控制量</td><td>(a_t)，可为位置、速度、力矩或 chunk</td><td>忽略 action 轴顺序、尺度和执行频率</td></tr>
+<tr><td>Action</td><td>策略发给控制器的控制量</td><td>\(a_t\)，可为位置、速度、力矩或 chunk</td><td>忽略 action 轴顺序、尺度和执行频率</td></tr>
 <tr><td>Policy</td><td>从条件到动作的映射</td><td>\(\pi_\theta(a_t\mid o_{\le t},c)\)</td><td>把 action head 等同整个 policy</td></tr>
 <tr><td>Closed loop</td><td>执行动作后重新观测并纠偏</td><td>rollout 中 \(o_t\to a_t\to o_{t+1}\) 的循环</td><td>把一次性序列预测当稳定执行</td></tr>
 <tr><td>Protocol</td><td>评估时固定的初始化、归一化、步数和成功判定</td><td>benchmark 的可比性条件</td><td>只比较最终百分比</td></tr>
@@ -238,14 +244,14 @@ x_k\in\mathcal X,\ u_k\in\mathcal U.
 =\frac{\sum_{t,d}m_{t,d}(\hat a_{t,d}-a_{t,d})^2}
 {\sum_{t,d}m_{t,d}+\epsilon}.
 \]</div>
-<p>(m_{t,d}) 表示第 (t) 步第 (d) 个动作维度是否有效。它与 action padding、缺失标签或只训练部分 head 直接对应；不能只写“算 MSE”，还要说明 mask 和 reduction。Huber loss 在小误差区近似二次、大误差区近似一次，通常更抗 outlier。离散 token 或工具调用则常用 cross-entropy，监督对象是目标 token 的类别，而不是连续坐标本身。</p>
+<p>\(m_{t,d}\) 表示第 \(t\) 步第 \(d\) 个动作维度是否有效。它与 action padding、缺失标签或只训练部分 head 直接对应；不能只写“算 MSE”，还要说明 mask 和 reduction。Huber loss 在小误差区近似二次、大误差区近似一次，通常更抗 outlier。离散 token 或工具调用则常用 cross-entropy，监督对象是目标 token 的类别，而不是连续坐标本身。</p>
 <h3 id="scaled-dot-product-attention">Scaled Dot-Product Attention</h3>
 <p>Transformer 的核心注意力为：</p>
 <div class="formula">\[
 \operatorname{Attention}(Q,K,V)
 =\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}+M\right)V.
 \]</div>
-<p>(Q,K,V) 分别是 query、key、value，(d_k) 是 key 的通道维度，(M) 是 causal/padding 等 mask。除以 (sqrt{d_k}) 可以抑制点积随维度增长造成的 softmax 饱和；mask 负责禁止无效位置或未来 token。实现映射是 <code>scaled_dot_product_attention</code> 或等价的矩阵运算；在 VLA 中，图像、语言、proprio 和 action token 的拼接顺序及 mask 决定信息能否跨模态流动。</p>
+<p>\(Q,K,V\) 分别是 query、key、value，\(d_k\) 是 key 的通道维度，\(M\) 是 causal/padding 等 mask。除以 \(\sqrt{d_k}\) 可以抑制点积随维度增长造成的 softmax 饱和；mask 负责禁止无效位置或未来 token。实现映射是 <code>scaled_dot_product_attention</code> 或等价的矩阵运算；在 VLA 中，图像、语言、proprio 和 action token 的拼接顺序及 mask 决定信息能否跨模态流动。</p>
 <h3 id="layernorm-rmsnorm">LayerNorm 与 RMSNorm</h3>
 <p>LayerNorm 对一个 token 的特征维度做标准化：</p>
 <div class="formula">\[
@@ -262,7 +268,7 @@ x_k\in\mathcal X,\ u_k\in\mathcal U.
 <div class="formula">\[
 W&#x27;=W+\frac{\alpha}{r}BA,
 \]</div>
-<p>其中 (W) 是冻结的原权重，(A\in\mathbb R^{r\times d})、(B\in\mathbb R^{d'\times r})，(r\ll\min(d,d'))。直觉是用低秩子空间近似任务更新；它节省显存和优化参数，但低秩假设可能限制任务适应能力。OpenPiVLA 页面中的 Qwen3-VL + LoRA 属于你的本地训练路径，具体注入层和 rank 仍需以项目代码/配置核对。</p>
+<p>其中 \(W\) 是冻结的原权重，\(A\in\mathbb R^{r\times d}\)、\(B\in\mathbb R^{d'\times r}\)，\(r\ll\min(d,d')\)。直觉是用低秩子空间近似任务更新；它节省显存和优化参数，但低秩假设可能限制任务适应能力。OpenPiVLA 页面中的 Qwen3-VL + LoRA 属于你的本地训练路径，具体注入层和 rank 仍需以项目代码/配置核对。</p>
 <h2 id="mdp-rl">MDP、RL 与策略评估</h2>
 <h3 id="mdp-bellman">MDP 与 Bellman 方程</h3>
 <p>Markov Decision Process 可表示为 \((\mathcal S,\mathcal A,P,R,\gamma)\)。给定策略 \(\pi\)，状态价值为：</p>

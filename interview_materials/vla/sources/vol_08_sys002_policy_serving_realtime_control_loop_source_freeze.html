@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 08 SYS-002 Source Freeze：Policy Serving 与 Real-time Control Loop</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.md">
 <meta name="aris:source-sha256" content="45d78013c69c5727017cea56c1c563333d92b173406104bc963a3ba31da2e694">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>45d78013c69c5727017cea56c1c563333d92b173406104bc963a3ba31da2e694</code>；生成自：<code>interview_materials\vla\sources\vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>45d78013c69c5727017cea56c1c563333d92b173406104bc963a3ba31da2e694</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 结论先行</a></li><li><a href="#2-revision-claim-boundary">2. 冻结来源、Revision、许可与 Claim Boundary</a></li><li><a href="#3-claim-registry-inference">3. Claim Registry：可写、需标 inference、必须拒绝</a></li><li><a href="#4-source-direct-serving-path-schema-boundary">4. Source-direct Serving Path 与 Schema Boundary</a></li><li><a href="#4-1-frozen-openpi">4.1 frozen OpenPI 最小路径</a></li><li><a href="#4-2-request-envelope-design-inference">4.2 建议冻结的 request envelope（design inference）</a></li><li><a href="#5-state-ownership">5. 状态所有权（State Ownership）</a></li><li><a href="#6-timing-deadline-action-freshness">6. Timing、Deadline 与 Action Freshness</a></li><li><a href="#6-1-critical-path">6.1 端到端 critical path</a></li><li><a href="#6-2-chunk">6.2 chunk后续动作也会变旧</a></li><li><a href="#6-3-deadline">6.3 deadline传播</a></li><li><a href="#7-admission-backpressure-batching-boundary">7. Admission、Backpressure 与 Batching Boundary</a></li><li><a href="#8-real-time-safety-fail-closed-boundary">8. Real-time 与 Safety 的 Fail-closed Boundary</a></li><li><a href="#8-1-soft-real-time-hard-real-time-rpc">8.1 soft real-time、hard real-time 与普通RPC</a></li><li><a href="#8-2-cancellation-physical-stop">8.2 cancellation不是physical stop</a></li><li><a href="#9">9. 本地项目证据与真实性边界</a></li><li><a href="#9-1-openpivla-local-direct">9.1 本轮重新哈希的 OpenPiVLA local-direct 文件</a></li><li><a href="#9-2">9.2 五项目边界</a></li><li><a href="#10-deterministic-source-probes">10. Deterministic Source Probes</a></li><li><a href="#11-knowledge">11. Knowledge 下游允许与禁止的命题</a></li><li><a href="#11-1-sys-vla-002-knowledge">11.1 可以进入 SYS-VLA-002 knowledge</a></li><li><a href="#11-2">11.2 不能进入强回答</a></li><li><a href="#12-source-gate">12. Source Gate 结论与下一切片</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 08 SYS-002 Source Freeze：Policy Serving 与 Real-time Control Loop</h1>
 <div class="meta">状态：<code>source_frozen / SYS-VLA-002 / knowledge_synced / card_synced / WARN</code> 冻结日期：2026-07-20 证据截止：2026-07-20 本页冻结 policy client/server、request/response、action chunk/replan、deadline/backpressure 与 real-time boundary 的来源和项目真实性边界；下游 knowledge/card 已在独立 bounded slice 生成，仍不改变 mastery，不把设计建议写成 OpenPI 或个人项目既有实现。 前置：<a href="vol_08_coding_system_design_coverage_gap_audit.html">VOL 08 Coverage-Gap Audit</a>、<a href="vol_08_sys001_vla_training_eval_platform_source_freeze.html">SYS-VLA-001</a>、<a href="vol_05_eng022_policy_server_resilience_source_freeze.html">ENG-022</a>、<a href="vol_05_eval013_end_to_end_latency_deadline_jitter_source_freeze.html">EVAL-013</a> 与 <a href="../evidence/projects/openpivla_ownership_ledger.html">OpenPiVLA Ownership Ledger</a>。</div>

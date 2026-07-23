@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 04 Source Audit A：World Model / PlaNet / DreamerV3 独立事实复核</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_world_model_foundations_independent_fact_review.md">
-<meta name="aris:source-sha256" content="da16c172179cae926d329259e76955a55555fe53a15233f265d1f74a3d421ae4">
+<meta name="aris:source-path" content="interview_materials\vla\sources\vol_04_world_model_foundations_independent_fact_review.md">
+<meta name="aris:source-sha256" content="ef09b0d8ac55d76c3c9ef7276db8b93f4b27e0d37b1c8e49009cd52a4c1fe063">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>da16c172179cae926d329259e76955a55555fe53a15233f265d1f74a3d421ae4</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_04_world_model_foundations_independent_fact_review.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>ef09b0d8ac55d76c3c9ef7276db8b93f4b27e0d37b1c8e49009cd52a4c1fe063</code>；生成自：<code>interview_materials\vla\sources\vol_04_world_model_foundations_independent_fact_review.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#section-2">复核方法与证据等级</a></li><li><a href="#1-world-models-vae-mdn-rnn-controller">1. World Models：VAE、MDN-RNN 与 controller 的分解已核对</a></li><li><a href="#2-planet-deterministic-stochastic-latent-overshooting-online-planning">2. PlaNet：deterministic/stochastic latent、overshooting 与 online planning 已核对</a></li><li><a href="#3-dreamerv3-rssm-frozen-repo">3. DreamerV3 RSSM：论文因子分解与 frozen repo 路径已核对</a></li><li><a href="#4-dreamerv3-kl-free-nats-repo-provenance">4. DreamerV3 的 KL/free-nats 与 repo provenance 边界</a></li><li><a href="#5-one-step-open-loop-actionability-metric-boundary">5. one-step、open-loop、actionability 与 metric boundary</a></li><li><a href="#6">6. 题目覆盖与回写矩阵</a></li><li><a href="#section-9">复核结论与未解决项</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 04 Source Audit A：World Model / PlaNet / DreamerV3 独立事实复核</h1>
 <div class="meta">状态：<code>reviewed_slice / WARN</code> 复核日期：2026-07-16 证据截止：2026-07-16 复核范围：<code>VLA-WM-001..014</code>、<code>VLA-WM-019..021</code> 的 source audit；下一知识批只开放 <code>VLA-WM-001..010</code>。 结论先行：World Models、PlaNet、DreamerV3 的关键方法事实和 DreamerV3 frozen repo 的实现边界已独立核对；DreamerV3 repo 是 reimplementation，不应称作论文作者官方代码；PlaNet latent overshooting 不能外推为 DreamerV3 的实现事实。</div>
@@ -153,14 +157,14 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </tbody></table>
 <p>冻结对象：World Models <code>arXiv 1803.10122</code>、PlaNet <code>arXiv 1811.04551</code>、DreamerV3 <code>arXiv 2301.04104</code>，以及 <code>danijar/dreamerv3@e3f02248693a79dc8b0ebd62c93683888ddaccfe</code>。</p>
 <h2 id="1-world-models-vae-mdn-rnn-controller">1. World Models：VAE、MDN-RNN 与 controller 的分解已核对</h2>
-<p>World Models 论文把系统拆成视觉模型 V、记忆模型 M 和 controller C。VAE 把每帧图像压成 latent (z_t)；MDN-RNN 预测动作和历史条件下的未来 latent 分布；controller 读取 latent 与 recurrent state 产生动作。论文给出了 <code>env.reset → vae.encode → controller.action → env.step → rnn.forward</code> 的 rollout 逻辑。[1]</p>
+<p>World Models 论文把系统拆成视觉模型 V、记忆模型 M 和 controller C。VAE 把每帧图像压成 latent \(z_t\)；MDN-RNN 预测动作和历史条件下的未来 latent 分布；controller 读取 latent 与 recurrent state 产生动作。论文给出了 <code>env.reset → vae.encode → controller.action → env.step → rnn.forward</code> 的 rollout 逻辑。[1]</p>
 <p>论文还明确展示了在模型生成的 dream 中训练/部署 controller，并把 decoder 用于可视化。因此 Audit A 中“world model 不等于视频生成器；是否可行动要看 action condition、状态变量和执行合同”的表述有 primary 支持；“dream controller 的收益与 model exploitation 风险需要单独审计”属于同源分析边界，不是本地实验结果。</p>
 <h2 id="2-planet-deterministic-stochastic-latent-overshooting-online-planning">2. PlaNet：deterministic/stochastic latent、overshooting 与 online planning 已核对</h2>
 <p>PlaNet 论文摘要和方法部分直接写明：latent dynamics 同时包含 deterministic 与 stochastic transition；提出 multi-step variational inference objective <code>latent overshooting</code>；利用 learned latent dynamics 在 latent space 进行 online planning，并采用 receding-horizon 方式每步重新规划。[2]</p>
 <p>论文还讨论了 learned model planning 的风险，包括多个可能未来、分布外过度自信，以及模型误差造成的规划问题。因此 Audit A 中“latent overshooting 约束多步预测”和“不能从视觉质量直接推导 long-horizon planning 成功”是有 primary 依据的。</p>
 <p>一个必须保留的边界是：PlaNet 的 overshooting 是 PlaNet 论文机制；当前 DreamerV3 frozen repo 的 <code>rssm.py</code> 显示 observe/imagine、dyn/rep KL 和 free-nats，但没有足够证据把它命名为 PlaNet overshooting。题库和知识页不得写成“DreamerV3 使用 PlaNet overshooting”。</p>
 <h2 id="3-dreamerv3-rssm-frozen-repo">3. DreamerV3 RSSM：论文因子分解与 frozen repo 路径已核对</h2>
-<p>DreamerV3 论文把 world model 写成 RSSM：序列模型由前一时刻 (h_{t-1},z_{t-1},a_{t-1}) 得到 (h_t)，posterior (q_phi(z_tmid h_t,x_t)) 使用当前 observation，prior (p_phi(z_tmid h_t)) 在 imagination 时不读取未来 observation；decoder、reward、continue 预测器作用在 latent feature 上。[3]</p>
+<p>DreamerV3 论文把 world model 写成 RSSM：序列模型由前一时刻 \((h_{t-1},z_{t-1},a_{t-1})\) 得到 \(h_t\)，posterior \(q_\phi(z_t\mid h_t,x_t)\) 使用当前 observation，prior \(p_\phi(z_t\mid h_t)\) 在 imagination 时不读取未来 observation；decoder、reward、continue 预测器作用在 latent feature 上。[3]</p>
 <p>frozen repo 的 <code>dreamerv3/rssm.py</code> 与论文合同逐项对应：</p>
 <table><thead><tr><th>论文/概念</th><th>frozen code evidence</th><th>复核结论</th></tr></thead><tbody>
 <tr><td>posterior filtering</td><td><code>RSSM.observe</code></td><td><code>official-code-checked</code></td></tr>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 06 PER-017：Belief、Memory、Frontier 与 Active Exploration</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\knowledge\vol_06_per017_belief_memory_frontier_active_exploration.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per017_belief_memory_frontier_active_exploration.md">
 <meta name="aris:source-sha256" content="29c8b3d4a55dc6c403162486db04245f302ff3e5b91c8dfc3bbe8b2809b8ced5">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>29c8b3d4a55dc6c403162486db04245f302ff3e5b91c8dfc3bbe8b2809b8ced5</code>；生成自：<code>interview_materials\vla\knowledge\vol_06_per017_belief_memory_frontier_active_exploration.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>29c8b3d4a55dc6c403162486db04245f302ff3e5b91c8dfc3bbe8b2809b8ced5</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\knowledge\vol_06_per017_belief_memory_frontier_active_exploration.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#question">问题（Question）</a></li><li><a href="#1">1. 学习出口</a></li><li><a href="#2">2. 一分钟心智模型</a></li><li><a href="#3-pomdp">3. POMDP：为什么不能只看当前帧</a></li><li><a href="#4-bayes-belief-update-zero-likelihood-gate">4. Bayes Belief Update 与 Zero-likelihood Gate</a></li><li><a href="#4-1-likelihood">4.1 为什么不能把全零 likelihood 变成均匀分布</a></li><li><a href="#4-2-log-domain">4.2 Log-domain 实现</a></li><li><a href="#5-memory">5. Memory 不是一个模块名</a></li><li><a href="#5-1-recurrent-latent-memory">5.1 Recurrent latent memory</a></li><li><a href="#5-2-explicit-spatial-memory">5.2 Explicit spatial memory</a></li><li><a href="#5-3-episodic-history-memory">5.3 Episodic / history memory</a></li><li><a href="#6-typed-exploration-state-manifest">6. Typed Exploration State Manifest</a></li><li><a href="#7-memory-invalidation">7. Memory 生命周期与 Invalidation</a></li><li><a href="#8-frontier">8. Frontier 的严格定义</a></li><li><a href="#8-1-frontier-extraction-pipeline">8.1 Frontier extraction pipeline</a></li><li><a href="#9-information-gain">9. Information Gain：探索什么不确定性</a></li><li><a href="#10-exploration-utility-gate-rank">10. 综合 Exploration Utility：先 Gate，后 Rank</a></li><li><a href="#10-1-risk">10.1 为什么 risk 不能只做负权重</a></li><li><a href="#10-2">10.2 目标导向与任务无关探索</a></li><li><a href="#11">11. 公开方法如何放进同一张图</a></li><li><a href="#12-revisit-stuck-unreachable-frontier">12. Revisit、Stuck 与 Unreachable Frontier</a></li><li><a href="#13-coverage-visitation-revisit">13. Coverage、Visitation、Revisit 与效率</a></li><li><a href="#14-probe">14. 十个可手算 / 可编码 Probe</a></li><li><a href="#15-first-divergence">15. First-divergence 诊断</a></li><li><a href="#16-fail-closed-active-exploration-pipeline">16. Fail-closed Active Exploration Pipeline</a></li><li><a href="#17">17. 本地五项目真实性边界</a></li><li><a href="#18">18. 两档面试回答</a></li><li><a href="#18-1-30">18.1 约30秒回答</a></li><li><a href="#18-2-2">18.2 约2分钟机制回答</a></li><li><a href="#19">19. 高频追问与答题抓手</a></li><li><a href="#20">20. 常见错误</a></li><li><a href="#21">21. 本页证据边界与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 06 PER-017：Belief、Memory、Frontier 与 Active Exploration</h1>
 <div class="meta">状态：<code>knowledge_drafted / VLA-PER-017 / source_frozen / card_synced / project_truth_bounded / WARN</code> 更新日期：2026-07-20 权威来源：<a href="../sources/vol_06_per017_belief_memory_frontier_active_exploration_source_freeze.html">PER-017 Source Freeze</a> 学习边界：本页把已冻结的 POMDP、memory、frontier、active exploration 与 evaluation contract 转化为可学习讲义；下游单张题卡已在独立 bounded slice 同步且保持 <code>unseen</code>，不改变 mastery，不进入 PER-018 的 BC/DAgger/RL 训练，也不把公开方法写成本地项目成果。</div>

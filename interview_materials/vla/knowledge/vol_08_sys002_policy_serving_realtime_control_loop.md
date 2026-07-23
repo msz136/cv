@@ -68,7 +68,7 @@ policy server 只返回动作候选；controller apply、hold/stop、独立 watc
 
 ### 3.1 端到端 critical path
 
-令 (t_c) 为 observation capture，(t_e) 为 enqueue，(t_i) 为 inference start，(t_r) 为 client response receive，(t_p) 为 postprocess 完成，(t_a) 为 controller apply。首个动作的端到端延迟可写成：
+令 \(t_c\) 为 observation capture，\(t_e\) 为 enqueue，\(t_i\) 为 inference start，\(t_r\) 为 client response receive，\(t_p\) 为 postprocess 完成，\(t_a\) 为 controller apply。首个动作的端到端延迟可写成：
 
 \[
 T_{\mathrm{e2e}}
@@ -79,13 +79,13 @@ T_{\mathrm{e2e}}
 
 ### 3.2 Action age
 
-若一次请求在 (t_c) 捕获观测并返回 (H) 行 chunk，第 (k) 行在 (t_{\mathrm{apply},k}) 被执行，则：
+若一次请求在 \(t_c\) 捕获观测并返回 \(H\) 行 chunk，第 \(k\) 行在 \(t_{\mathrm{apply},k}\) 被执行，则：
 
 \[
 A_k=t_{\mathrm{apply},k}-t_c,\qquad k=0,\ldots,K-1.
 \]
 
-(H) 是模型输出 horizon，(K\le H) 是下一次 query 前执行的行数。它说明“首行延迟低”不代表后续行仍新鲜；实现上要记录 capture/apply timestamp，并在 `valid_until` 或 age threshold 超过时触发 replan/fallback。S5/S6/S7 只证明 client cursor 和 example cadence，不替你选择 freshness 阈值。
+\(H\) 是模型输出 horizon，\(K\le H\) 是下一次 query 前执行的行数。它说明“首行延迟低”不代表后续行仍新鲜；实现上要记录 capture/apply timestamp，并在 `valid_until` 或 age threshold 超过时触发 replan/fallback。S5/S6/S7 只证明 client cursor 和 example cadence，不替你选择 freshness 阈值。
 
 ### 3.3 剩余 deadline budget
 

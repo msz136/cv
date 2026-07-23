@@ -4,7 +4,7 @@
   "review_date": "2026-07-19",
   "status": "drafted_local_direct_audit_ownership_audited",
   "verdict": "WARN",
-  "source_sha256": "C002B2275EB1F747E1E6F383CB271539F081AE8CCEE0C8D11AFC92EBABE99AFA",
+  "source_sha256": "7FA495742B78C9FA4D56CDD9B46C9FB41FB4AB07B5E17A1202B8E860693920C8",
   "scope": {
     "project": "OPD / VLM Grounding",
     "claim_count": 12,
@@ -36,7 +36,7 @@
     "claim_id_unique": "PASS (12 unique OPD-CL IDs)",
     "expert_mix_mapping": "PASS (five experts, quotas, relation buckets and image-hash split mapped to source)",
     "student_route_mapping": "PASS (target/candidate route, seen/unseen/hard, category and format metadata mapped)",
-    "training_lineage": "PASS WITH WARNING (coldstart and OPD5000 summaries present; weights, optimizer state and raw logs absent)",
+    "training_lineage": "PASS WITH WARNING (root legacy teacher-rollout/top1 CE and formal point trainer full-vocab D_KL(q_beta||p_student) are separated by full SHA; coldstart teacher-rollout and OPD5000 student-rollout launchers/summaries agree; weights, optimizer and raw logs remain absent)",
     "opd5000_checkpoint_metrics": "PASS WITH WARNING (by-format and by-pool tables are local; checkpoint/run identity is not a self-contained binary bundle)",
     "raw_holdout_leakage": "PASS (10000 rows, 0 fingerprint/source-line/prompt-answer-image duplicates, 0 train-image leakage)",
     "opd_final_vs_opd5000": "WARN (old OPD final and new-experts OPD5000 are separate records and must not be concatenated)",
@@ -45,7 +45,7 @@
     "ablation": "FAIL (no SFT-only, single-teacher, no-synthetic or synthetic-ratio control frozen)",
     "ownership": "PASS WITH WARNING (13-row OPD ownership ledger added; msz136/mousongzhe identity, operator, tool/collaboration and result ownership remain candidate-confirmation pending)",
     "html_static_validation": "PASS (one H1, 12 H2, 9 H3, 6 tables, 1 code block; renderer SHA matches Markdown SHA)",
-    "browser_visual_check": "BLOCKED (in-app Browser file:// policy; static HTML validation used)"
+    "browser_visual_check": "PENDING (re-rendered after objective-lineage correction; representative localhost QA scheduled with the new gate)"
   },
   "open_items": [
     "Create one immutable lineage manifest for base, coldstart500 and OPD5000 with repo/config/data/scorer/checkpoint parent hashes.",

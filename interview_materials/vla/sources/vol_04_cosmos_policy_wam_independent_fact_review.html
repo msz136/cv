@@ -6,7 +6,7 @@
 <title>VOL 04 Audit C：Cosmos Policy / WAM 独立事实复核</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
 <meta name="aris:source-path" content="interview_materials\vla\sources\vol_04_cosmos_policy_wam_independent_fact_review.md">
-<meta name="aris:source-sha256" content="02ed2a95aed57d632cdff471f92b83132e7e98dcfd3db61a6425ef4dd32d95dc">
+<meta name="aris:source-sha256" content="55118a9eb36991edc760401e2a3021520f2ab9884970ea0b04f91278624fb094">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
 window.MathJax = {
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>02ed2a95aed57d632cdff471f92b83132e7e98dcfd3db61a6425ef4dd32d95dc</code>；生成自：<code>interview_materials\vla\sources\vol_04_cosmos_policy_wam_independent_fact_review.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>55118a9eb36991edc760401e2a3021520f2ab9884970ea0b04f91278624fb094</code>；生成自：<code>interview_materials\vla\sources\vol_04_cosmos_policy_wam_independent_fact_review.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 独立来源冻结</a></li><li><a href="#2-1-fixed-commit">2.1 Fixed-commit 代表文件</a></li><li><a href="#3-slot-layout-injection">3. Slot / Layout / Injection 复核</a></li><li><a href="#4-routing-condition-mask-loss">4. Routing、Condition Mask 与 Loss</a></li><li><a href="#4-1">4.1 角色概率</a></li><li><a href="#4-2-condition-target">4.2 Condition 与 target 的分层</a></li><li><a href="#4-3-flag">4.3 已确认的 flag 风险</a></li><li><a href="#5-sampler-direct-policy-planning">5. Sampler、Direct Policy 与 Planning</a></li><li><a href="#6-libero-robocasa">6. LIBERO / RoboCasa 与官方数字</a></li><li><a href="#7-model-asset">7. Model Asset 与许可证边界</a></li><li><a href="#8-wam-truth-boundary">8. 本地 WAM 再哈希与 Truth Boundary</a></li><li><a href="#8-1">8.1 当前安全口述</a></li><li><a href="#9-deterministic-probes">9. 十个独立 Deterministic Probes</a></li><li><a href="#10-source-knowledge-card-reconciliation">10. Source → Knowledge → Card Reconciliation</a></li><li><a href="#11">11. 审查状态与下一步</a></li><li><a href="#references">References</a></li></ol></nav>
 <h1>VOL 04 Audit C：Cosmos Policy / WAM 独立事实复核</h1>
 <div class="meta">状态：<code>independent_fact_reviewed / Audit C / public_facts_reconciled / PASS WITH WARNING</code> 复核日期：2026-07-20 证据截止：2026-07-20 范围：重新获取 arXiv 论文、固定 GitHub commit、固定 Hugging Face revision 与本地 WAM diagnostic artifacts；复核 slot/layout、routing、condition/target/metric mask、EDM loss、sampler、direct/planning、LIBERO/RoboCasa protocol、license 和个人项目边界。 Bounded slice：本页只完成 Audit C 独立复核及必要状态同步；不新增知识节点或题卡，不启动 PER-019，不修改 269 张题卡的 <code>unseen</code> 状态，不创建 <code>coaching_state.md</code>。</div>
@@ -144,7 +148,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <p>原 <a href="vol_04_cosmos_policy_wam_claim_to_code.html">Cosmos Policy / WAM Claim-to-Code Audit</a> 的主要公开事实成立：统一 latent-video sequence、policy/world/value 三角色、约 50/25/25 base routing、action/value latent injection、condition 与 target mask 分层、noise-weighted latent EDM loss、direct parallel generation、dual-checkpoint best-of-N planning、LIBERO 16×7 与 RoboCasa 32×7→执行16步→7D扩展12D、官方 98.5%/67.1% protocol 均可在重新获取的 paper/code/model card 中定位。</p>
 <p>本轮 verdict 为 <strong>PASS WITH WARNING</strong>，而不是无条件 PASS，原因有四类：</p>
 <ol><li><code>mask_value_prediction_loss_for_policy_prediction</code> 会构造 <code>final_mask_B_T</code>，但最终把 mask 乘到 <code>kendall_loss</code> 的条件没有包含该 flag；若它单独开启，配置名不等于 mask 真正生效。</li><li>两个约 3.91 GB policy checkpoint、T5 pickle 与 base checkpoint 未下载或加载；本轮只冻结 policy revision、远端对象 ETag/大小、两份 config 与 statistics 的本地 SHA。</li><li>本地 CoffeePressButton base/trained 两侧均为 <code>success=false</code> 的单 episode diagnostic；checkpoint 仍只是远端路径，不能证明 binary identity、模型 uplift、完整 0-success benchmark 或历史成功率。</li><li>候选人的逐文件设计、编写、运行、验收角色仍未确认；上游 latent layout、routing、planning 与官方指标不得写成个人原创或个人结果。</li></ol>
-<p>另有两项边界被本轮补强：base <code>Cosmos-Predict2-2B-Video2World</code> 固定 revision 的模型卡明确是 NVIDIA Open Model License，而两份 policy model card 是 NSCLv1；官方 LIBERO/RoboCasa shape 下 latent volume (12544) 恰好分别被 (16\times7=112) 和 (32\times7=224) 整除，因此这两种 shape 没有不完整 action tail，通用实现仍需保留整除/尾部测试。</p>
+<p>另有两项边界被本轮补强：base <code>Cosmos-Predict2-2B-Video2World</code> 固定 revision 的模型卡明确是 NVIDIA Open Model License，而两份 policy model card 是 NSCLv1；官方 LIBERO/RoboCasa shape 下 latent volume \(12544\) 恰好分别被 \(16\times7=112\) 和 \(32\times7=224\) 整除，因此这两种 shape 没有不完整 action tail，通用实现仍需保留整除/尾部测试。</p>
 <h2 id="2">2. 独立来源冻结</h2>
 <table><thead><tr><th>层</th><th>本轮重新获取</th><th>Identity</th><th>结果与边界</th></tr></thead><tbody>
 <tr><td>primary paper</td><td><code>cosmos_policy.pdf</code></td><td>arXiv <code>2601.16163v1</code>；21,715,508 bytes；SHA-256 <code>05696475C9B5481AFBF88673A65F80A46CF3FB87A5755C1410E83D0F468CC6E0</code>；22页、0空白页</td><td>best-of-N、rollout refinement、dual deployment、98.5%/67.1%、0.61s/0.16s、6000/3600 trials 可定位；不支持本地 WAM 结果</td></tr>
@@ -173,7 +177,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 <p>这张表证明下载内容与 fixed Git tree 相同；它不证明依赖、dataset、checkpoint 或本地 fork 与该 commit 等价。</p>
 <h2 id="3-slot-layout-injection">3. Slot / Layout / Injection 复核</h2>
 <p>config 与 eval source 分别明确记录：LIBERO <code>state_t=9</code>，顺序为 blank/current proprio/wrist/primary/action/future proprio/future wrist/future primary/value；RoboCasa <code>state_t=11</code>，额外包含左右两路 third-person view。两份固定 model config 又分别记录 action <code>16×7</code> 与 <code>32×7</code>，proprio 均为 9D。[2][3][4]</p>
-<p>令 action chunk 为 (A\in[-1,1]^{K\times D_a})，单个 latent frame 的元素数为 (M=C'H'W'=16\times28\times28=12544)，action 元素数为 (L=KD_a)。注入实现为：</p>
+<p>令 action chunk 为 \(A\in[-1,1]^{K\times D_a}\)，单个 latent frame 的元素数为 \(M=C'H'W'=16\times28\times28=12544\)，action 元素数为 \(L=KD_a\)。注入实现为：</p>
 <div class="formula">\[
 z_a=operatorname{reshape}\left(
 \operatorname{repeat}(\operatorname{vec}(A),\lceil M/L\rceil)_{1:M}
@@ -199,7 +203,7 @@ P(\text{value})=0.5\times0.5=0.25.
 <p>变量解释：这是 epoch structure 与随机 role selection 的期望，不是某个实际 batch 的精确计数；runtime 必须记录 realized ratio。rollout refinement 的 ALOHA planning recipe 则是 10% policy、其余90%在world/value间均分，不能与 base 50/25/25混写。[1][2]</p>
 <h3 id="4-2-condition-target">4.2 Condition 与 target 的分层</h3>
 <p><code>get_data_and_condition</code> 对 world sample 把 action slot 设为 clean condition；对 value sample 先把全部 frames 设为 clean，再把 value slot 置为需生成。V/Q variant 分别 mask current/action 或 future state。这里 <code>condition_video_input_mask=1</code> 表示 clean condition，不能当成 attention mask 或 loss mask。[2]</p>
-<p>主训练路径先注入 action、proprio、future proprio 与 value，采样 (x_t)，denoiser 输出 (hat x_0)，再形成 noise-level weighted latent MSE：</p>
+<p>主训练路径先注入 action、proprio、future proprio 与 value，采样 \(x_t\)，denoiser 输出 \(\hat x_0\)，再形成 noise-level weighted latent MSE：</p>
 <div class="formula">\[
 \mathcal L_{\mathrm{EDM}}=
 \frac{1}{BCTHW}
@@ -207,7 +211,7 @@ P(\text{value})=0.5\times0.5=0.25.
 m_{b,t}\,w(\sigma_{b,t})
 \left(x_{0,bcthw}-\hat x_{0,bcthw}\right)^2.
 \]</div>
-<p>变量解释：(m_{b,t}) 是按 latent frame 广播的 target mask/multiplier，(w(\sigma)) 是 noise-level weight。实现先构造 per-element <code>edm_loss_B_C_T_H_W</code>，再按条件乘 <code>final_mask_B_T</code>；action/future/value L1/MSE 是 component diagnostics，不等于主反向目标。</p>
+<p>变量解释：\(m_{b,t}\) 是按 latent frame 广播的 target mask/multiplier，\(w(\sigma)\) 是 noise-level weight。实现先构造 per-element <code>edm_loss_B_C_T_H_W</code>，再按条件乘 <code>final_mask_B_T</code>；action/future/value L1/MSE 是 component diagnostics，不等于主反向目标。</p>
 <h3 id="4-3-flag">4.3 已确认的 flag 风险</h3>
 <p><code>mask_value_prediction_loss_for_policy_prediction=True</code> 时，代码在 490–539 行构造并更新 <code>final_mask_B_T</code>；但 555–560 行的 apply-mask 条件只包含：</p>
 <ul><li><code>mask_loss_for_action_future_state_prediction</code>；</li><li><code>mask_current_state_action_for_value_prediction</code>；</li><li><code>mask_future_state_for_qvalue_prediction</code>；</li><li><code>action_loss_multiplier != 1</code>。</li></ul>
@@ -269,7 +273,7 @@ a^*=\arg\max_{a^{(i)}\sim\pi(\cdot\mid s)}
 <table><thead><tr><th>Probe</th><th>结果</th></tr></thead><tbody>
 <tr><td>LIBERO 16×7 action inject→extract</td><td>PASS；112完整copies、tail0</td></tr>
 <tr><td>RoboCasa 32×7 action inject→extract</td><td>PASS；56完整copies、tail0</td></tr>
-<tr><td>value frame mean + ([-1,1]\to[0,1])</td><td>PASS；<code>[-0.8,0.2,1.0]→[0.1,0.6,1.0]</code></td></tr>
+<tr><td>value frame mean + \([-1,1]\to[0,1]\)</td><td>PASS；<code>[-0.8,0.2,1.0]→[0.1,0.6,1.0]</code></td></tr>
 <tr><td>base recipe role algebra</td><td>PASS；<code>0.5/0.25/0.25</code></td></tr>
 <tr><td>RoboCasa statistics normalize→denormalize</td><td>PASS；max error约 <code>1.11e-16</code></td></tr>
 <tr><td>RoboCasa 7D→12D controller append</td><td>PASS；尾部 <code>[0,0,0,0,-1]</code></td></tr>

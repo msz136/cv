@@ -82,13 +82,13 @@ H_{\mathrm{id}}=\operatorname{SHA256}\!\left(\big\Vert_{i=1}^{n}\operatorname{u6
 | OOD | `quarantine_safety_probe` | 976 | true | true | `D45AE832A8CDF1180001FF4299E9419EA312FF9EA4F5619653AA65073055DF87` |
 | OOD | `robovlm_point_general_probe` | 400 | true | true | `F744D0D352036D4C3A9DA20007DAEF8BED406A760C7047DF831099A8A7DBEC61` |
 
-若未来冻结同一 scorer (g_j)，这六个 suite 已具备逐 case paired 计算的 ID 前提：
+若未来冻结同一 scorer \(g_j\)，这六个 suite 已具备逐 case paired 计算的 ID 前提：
 
 \[
 \Delta_{a,b}^{(j)}=\frac{1}{|C_j|}\sum_{i\in C_j}\left[g_j(y_{a,i})-g_j(y_{b,i})\right].
 \]
 
-变量解释：(C_j) 是上表冻结的共同 ID support，(y_{a,i}) 是 raw output。本轮只证明 (C_j) 的 set/order identity；`g_j` 的 code/config/backend identity 与 checkpoint binary 仍未冻结，所以本页不报告这条差值。
+变量解释：\(C_j\) 是上表冻结的共同 ID support，\(y_{a,i}\) 是 raw output。本轮只证明 \(C_j\) 的 set/order identity；`g_j` 的 code/config/backend identity 与 checkpoint binary 仍未冻结，所以本页不报告这条差值。
 
 ## 7. 28 个 Primary 文件身份
 

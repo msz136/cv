@@ -40,7 +40,7 @@ shape 与有限性检查只证明 JSONL 的结构可读；不证明动作语义�
 
 ## 4. Paired difference
 
-对齐同一 `t` 后，令 (a_t^{(b)}) 和 (a_t^{(t)}) 分别为 base/trained 的 7 维 `policy_action7`，计算：
+对齐同一 `t` 后，令 \(a_t^{(b)}\) 和 \(a_t^{(t)}\) 分别为 base/trained 的 7 维 `policy_action7`，计算：
 
 \[
 \operatorname{MAE}=\frac{1}{Td}\sum_{t=1}^{T}\sum_{j=1}^{d}|a_{t,j}^{(b)}-a_{t,j}^{(t)}|,

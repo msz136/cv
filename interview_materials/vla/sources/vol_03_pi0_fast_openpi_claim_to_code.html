@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 03 Source Audit B：π0 / π0.5 / FAST / openpi Claim-to-Code</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_03_pi0_fast_openpi_claim_to_code.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_03_pi0_fast_openpi_claim_to_code.md">
 <meta name="aris:source-sha256" content="27fbb3e860864db0206dfd29e550b8e20170ba77f053c57d0c541b516e3a715f">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>27fbb3e860864db0206dfd29e550b8e20170ba77f053c57d0c541b516e3a715f</code>；生成自：<code>interview_materials\vla\sources\vol_03_pi0_fast_openpi_claim_to_code.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>27fbb3e860864db0206dfd29e550b8e20170ba77f053c57d0c541b516e3a715f</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_03_pi0_fast_openpi_claim_to_code.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 证据层级与冻结边界</a></li><li><a href="#3-0-observation-action-chunk-action-expert">3. π0 的 observation、action chunk 与 action expert</a></li><li><a href="#3-1-i-o">3.1 论文 I/O 合同</a></li><li><a href="#3-2-prefix-suffix">3.2 prefix / suffix 信息流</a></li><li><a href="#3-3-backbone-action-expert">3.3 backbone 与 action expert</a></li><li><a href="#4-flow-matching">4. Flow Matching：论文约定与代码约定为什么等价</a></li><li><a href="#4-1-0">4.1 π0 论文约定</a></li><li><a href="#4-2-openpi">4.2 openpi 代码约定</a></li><li><a href="#4-3">4.3 等价变量替换</a></li><li><a href="#5-0-0-5">5. π0 与 π0.5：论文差异、代码差异和未覆盖项</a></li><li><a href="#5-1-0-5-hybrid-objective">5.1 π0.5 论文的 hybrid objective</a></li><li><a href="#5-2-state-timestep">5.2 论文中的 state 与 timestep 注入</a></li><li><a href="#5-3-paper-repo">5.3 必须保留的 paper / repo 缺口</a></li><li><a href="#6-fast-action-chunk-token">6. FAST：从连续 action chunk 到频域 token</a></li><li><a href="#6-1-normalization-hub-processor">6.1 normalization 不在 Hub processor 内</a></li><li><a href="#6-2-dct-frequency-first-flatten">6.2 DCT、量化与 frequency-first flatten</a></li><li><a href="#6-3-bpe-learned-component-compression">6.3 BPE 是 learned component，但 compression 不等于控制质量</a></li><li><a href="#6-4">6.4 三组容易混淆的默认值</a></li><li><a href="#7-pi0fast-decode-path">7. Pi0FAST：自回归训练与 decode path</a></li><li><a href="#7-1-token-layout-masks">7.1 token layout 与 masks</a></li><li><a href="#7-2-masked-next-token-ce">7.2 masked next-token CE</a></li><li><a href="#7-3-token-output-transform-action">7.3 推理先生成 token，output transform 再恢复 action</a></li><li><a href="#7-4-latency">7.4 latency 的来源</a></li><li><a href="#8-normalization-padding-slicing">8. Normalization、padding、slicing 与执行合同</a></li><li><a href="#8-1-checkpoint-matched-normalization">8.1 checkpoint-matched normalization</a></li><li><a href="#8-2-zero-padding-selection-matrix">8.2 zero-padding 与 selection matrix</a></li><li><a href="#8-3-quantile-unnormalize">8.3 quantile unnormalize</a></li><li><a href="#8-4-action-axis-unit">8.4 action axis 与 unit 不能靠维数猜</a></li><li><a href="#9-action-horizon-execution-window-replan">9. Action horizon、execution window 与 replan</a></li><li><a href="#10-action">10. 三条 action 路线对照</a></li><li><a href="#11-claim-to-code">11. Claim-to-code 总表</a></li><li><a href="#12-phase-0">12. 对 Phase 0 题目的支持状态</a></li><li><a href="#13-openpivla">13. 本地 OpenPiVLA 证据缺口</a></li><li><a href="#14">14. 风险与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 03 Source Audit B：π0 / π0.5 / FAST / openpi Claim-to-Code</h1>
 <div class="meta">审计日期：2026-07-19 状态：independent_fact_reviewed / pi05_fast_norm_rollout_checked / local_runtime_pending / WARN 论文版本：π0 arXiv 2410.24164v4；π0.5 arXiv 2504.16054v1；FAST arXiv 2501.09747v1 官方仓库：Physical-Intelligence/openpi frozen commit 15a9616a00943ada6c20a0f158e3adb39df2ccac FAST Hub：physical-intelligence/fast frozen revision ec4d7aa71691cac0b8bed6942be45684db2110f4 对应题目：VLA-ARCH-002..004、006、008、010..012；VLA-ACT-001..002、005..008、010..011、023..025、027..028、031..032 本页问题：π0 的连续 flow action expert、π0.5 的混合训练、π0-FAST 的自回归 token 路线以及 openpi 的 normalization / rollout 到底如何连接？哪些公开事实仍不能证明本地 OpenPiVLA？</div>

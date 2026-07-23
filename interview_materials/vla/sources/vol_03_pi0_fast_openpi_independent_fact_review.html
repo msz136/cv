@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 03 Source Audit B：π0 / π0.5 / FAST / OpenPI 独立事实复核</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_03_pi0_fast_openpi_independent_fact_review.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_03_pi0_fast_openpi_independent_fact_review.md">
 <meta name="aris:source-sha256" content="e19a70f7b653f84b412ef1916bd1f70af194f6dd396e64c5891dc29fd0eee4b7">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>e19a70f7b653f84b412ef1916bd1f70af194f6dd396e64c5891dc29fd0eee4b7</code>；生成自：<code>interview_materials\vla\sources\vol_03_pi0_fast_openpi_independent_fact_review.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>e19a70f7b653f84b412ef1916bd1f70af194f6dd396e64c5891dc29fd0eee4b7</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_03_pi0_fast_openpi_independent_fact_review.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 直接复核来源与冻结对象</a></li><li><a href="#2-0-5-hybrid-openpi">2. π0.5：论文 hybrid 目标与 OpenPI 两条路径</a></li><li><a href="#2-1">2.1 论文的两阶段合同</a></li><li><a href="#2-2-frozen-openpi">2.2 frozen OpenPI 的分叉</a></li><li><a href="#3-fast-dct-bpe">3. FAST：归一化、DCT、量化与 BPE</a></li><li><a href="#4-fast-token-mask-malformed-decode">4. FAST token mask、截断与 malformed decode</a></li><li><a href="#5-openpi-action-dimension-padding-normalization-rollout">5. OpenPI action dimension、padding、normalization 与 rollout</a></li><li><a href="#5-1-model-dimension-physical-dimension">5.1 model dimension 不是 physical dimension</a></li><li><a href="#5-2-normalization-checkpoint-contract">5.2 normalization 是 checkpoint contract</a></li><li><a href="#5-3-libero-example-replan">5.3 LIBERO example 的 replan 与视觉合同</a></li><li><a href="#6-deterministic-probes">6. Deterministic probes</a></li><li><a href="#7">7. 对下游题目的回写</a></li><li><a href="#8">8. 不能推出的本地项目事实</a></li><li><a href="#9">9. 下一步</a></li><li><a href="#section-15">参考入口</a></li></ol></nav>
 <h1>VOL 03 Source Audit B：π0 / π0.5 / FAST / OpenPI 独立事实复核</h1>
 <div class="meta">状态：<code>independent_fact_reviewed / audit_b / pi05_fast_norm_rollout_checked / PASS WITH WARNING</code> 审查日期：2026-07-19 范围：π0.5 hybrid 训练边界、FAST action tokenizer、OpenPI model/config/transform、normalization 与 LIBERO rollout example。 结论先行：π0.5 v1 明确把 pre-training 的 FAST 离散 token 目标与 post-training 的连续 flow action expert 分成两阶段；frozen OpenPI 中 <code>Pi0(pi05=True)</code> 的主 flow loss 与 <code>Pi0FAST</code> 的 autoregressive CE 是两条不同模型路径，不能互称为完整 π0.5 hybrid 复现。FAST paper 的 quantile normalization、DCT、scale-and-round、frequency-first flatten、BPE 顺序得到直接复核；FAST Hub processor 与 OpenPI tokenizer 不负责 quantile normalization。OpenPI 的 32 维 model space、7 维 LIBERO output slice、norm-stat checkpoint contract 与 replan=5 只是官方配置/example，不是本地 OpenPiVLA 事实。</div>

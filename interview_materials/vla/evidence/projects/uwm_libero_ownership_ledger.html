@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UWM / LIBERO Ownership Ledger：协议迁移、数据管线与结果边界</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\uwm_libero_ownership_ledger.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\uwm_libero_ownership_ledger.md">
 <meta name="aris:source-sha256" content="8bb8e60a91111d1a15e4101a49a4e31d42750efcc92f5ba154dfaf98d4789e2f">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>8bb8e60a91111d1a15e4101a49a4e31d42750efcc92f5ba154dfaf98d4789e2f</code>；生成自：<code>interview_materials\vla\evidence\projects\uwm_libero_ownership_ledger.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>8bb8e60a91111d1a15e4101a49a4e31d42750efcc92f5ba154dfaf98d4789e2f</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\uwm_libero_ownership_ledger.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#0-self-report-artifact-ownership">0. 候选人项目范围自述（self-report，不等于 artifact/ownership 证明）</a></li><li><a href="#1-question">1. 问题（Question）</a></li><li><a href="#2-role-fit-jd">2. Role Fit 与 JD 能力映射</a></li><li><a href="#3-ownership">3. Ownership 证据合同</a></li><li><a href="#3-1-and-gate">3.1 五层 AND-gate</a></li><li><a href="#3-2">3.2 状态词汇</a></li><li><a href="#4-git-run-lineage">4. Git、工作树与 run lineage 冻结事实</a></li><li><a href="#4-1-project-history">4.1 Project history</a></li><li><a href="#4-2-current-worktree-boundary">4.2 Current worktree boundary</a></li><li><a href="#4-3-result-artifact-boundary">4.3 Result artifact boundary</a></li><li><a href="#5-per-file-per-decision-ownership-matrix">5. Per-file / per-decision ownership matrix</a></li><li><a href="#6-claim-ownership-reconciliation">6. Claim → ownership reconciliation</a></li><li><a href="#7-production-gap">7. Production Gap：抗追问最小补证据</a></li><li><a href="#8-question-tree">8. Question Tree 与回答分层</a></li><li><a href="#9-sp-ssp">9. SP/SSP 证据就绪度</a></li><li><a href="#10">10. 候选人确认表</a></li><li><a href="#11">11. 分阶段补强计划</a></li><li><a href="#12-output-pack">12. Output Pack</a></li><li><a href="#12-1-bullet">12.1 简历 bullet 三档</a></li><li><a href="#12-2">12.2 两分钟叙事骨架</a></li><li><a href="#12-3-6">12.3 面试前 6 题</a></li><li><a href="#13-ownership">13. Ownership 审计伪代码</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>UWM / LIBERO Ownership Ledger：协议迁移、数据管线与结果边界</h1>
 <div class="meta">状态：<code>ownership_audited / coarse_git_supported / candidate_confirmation_pending / WARN</code> 审查日期：2026-07-21 证据截止：2026-07-21 项目范围：<code>C:\Users\mousongzhe\Project</code> 中的 UWM/LIBERO official repro、RoboCasa transfer、DataLoader stall diagnosis、strict/reset recovery 与用户确认结果。 结论先行：本地可以核验 LIBERO task mapping、finetune/rollout launcher、<code>pruned_init</code>/warmup 协议、DataLoader-only smoke，以及RoboCasa actionheadfix一条30-epoch run的8×54 raw rollout；但 project snapshot 是一次性快照，RoboCasa 路径经历多次同步。当前 <code>mousongzhe</code> 提交证明的是候选账号提交了这些 artifact，不证明每个函数由候选人独立设计、编写、运行或验收。LIBERO <code>186/250</code> 仍是用户确认summary；RoboCasa raw denominator虽已存在，produced checkpoint binary/hash、env/scorer/videos与个人角色仍未闭合。</div>

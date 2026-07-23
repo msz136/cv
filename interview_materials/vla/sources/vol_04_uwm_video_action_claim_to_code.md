@@ -12,7 +12,7 @@
 3. **独立 timestep 定义了 inference mode，而不是一句“多任务学习”。**一个分支固定在高噪声、另一分支迭代得到 marginal；给定 clean action 预测未来是 forward dynamics；给定 clean future 反推 action 是 inverse dynamics；两个分支一起迭代是 joint sample。[1][2][3]
 4. **frozen default 不是 language-conditioned VLA。**configs/model/uwm.yaml 设置 use_low_dim=False 和 use_language=False；默认 LIBERO 输入是两路 RGB，DROID 是否使用 low-dim 也由模型配置控制。[3]
 5. **工程默认合同是 num_frames=19、obs_num_frames=2、action_len=16、100 training steps、10 DDIM inference steps。**这些值只属于 frozen config，不是方法常数。[3]
-6. **当前代码里的 action_mask 不是 action loss mask。**它只把 video 样本的 action_t 设为最大噪声 timestep；随后 action loss 仍是全量 F.mse_loss(action_noise_pred, action_noise)。因此不能说 video 样本 action loss 已排除。[3]
+6. **当前代码里的 action_mask 不是 action loss mask。**它只把 video 样本的 `action_t` 设为最大噪声 timestep；随后 action loss 仍是全量 `F.mse_loss(action_noise_pred, action_noise)`。因此不能说 video 样本 action loss 已排除。[3]
 7. **离线 MSE 不能替代闭环 success。**仓库 validation 同时记录 marginal/inverse/joint action MSE 与 marginal/forward/joint image MSE；每项只对应一个 conditional proxy。[3]
 8. **README 的 LIBERO 命令与 Google Drive 链接不等于本地 checkpoint 或 strict 结果。**train_robomimic.py 对 libero_90 预训练直接跳过 rollout；checkpoint 没有 hash/revision。[3][4]
 9. **frozen tree 没有 LICENSE/COPYING/NOTICE。**代码可见性不等于明确复用许可，需向上游确认。[3]
@@ -31,31 +31,31 @@
 
 令 \(o\) 是当前 observation feature，\(a\in\mathbb R^{H\times D_a}\) 是 action chunk，\(y\) 是 next-observation latent，\(t_a,t_y\) 是两路 timestep。共享预测器可抽象为：
 
-\\[
-\\big(\\hat\\epsilon_a,\\hat\\epsilon_y\\big)
-=F_\\theta\\left(
-\\operatorname{concat}(E_a(a_{t_a}),E_y(y_{t_y}),R),
-E_o(o),e_t(t_a,t_y)\\right).
-\\]
+\[
+\big(\hat\epsilon_a,\hat\epsilon_y\big)
+=F_\theta\left(
+\operatorname{concat}(E_a(a_{t_a}),E_y(y_{t_y}),R),
+E_o(o),e_t(t_a,t_y)\right).
+\]
 
 变量解释：\(E_a\) 是 action MLP，\(E_y\) 是 3D video patchifier，\(R\) 是 register tokens，\(E_o\) 是 observation encoder，\(e_t\) 是两个 sinusoidal timestep embedding；输出分别与 action/video noise 同形状。代码映射是 DualNoisePredictionNet、DualTimestepEncoder、AdaLN attention blocks。[3]
 
 DDPM-style noise prediction 的通用表达为：
 
-\\[
-x_t=\\sqrt{\\bar\\alpha_t}x_0+
-\\sqrt{1-\\bar\\alpha_t}\\epsilon,\qquad
-\\mathcal L_{noise}=\\operatorname{MSE}(\\hat\\epsilon_\\theta(x_t,t,c),\\epsilon).
-\\]
+\[
+x_t=\sqrt{\bar\alpha_t}x_0+
+\sqrt{1-\bar\alpha_t}\epsilon,\qquad
+\mathcal L_{noise}=\operatorname{MSE}(\hat\epsilon_\theta(x_t,t,c),\epsilon).
+\]
 
 其中 \(x_0\) 可以是 action 或 VAE latent video，\(c\) 是 observation 与另一 modality 的 noisy token，\(\bar\alpha_t\) 来自 scheduler。frozen code 用 diffusers DDIMScheduler 的 add_noise/step；公式是通用 diffusion 记号，不是 UWM 的独有新公式。[2][3]
 
 robot tuple 的代码目标可整理为：
 
-\\[
-\\mathcal L=\\operatorname{MSE}(\\hat\\epsilon_a,\\epsilon_a)
-+\\operatorname{MSE}(\\hat\\epsilon_y,\\epsilon_y).
-\\]
+\[
+\mathcal L=\operatorname{MSE}(\hat\epsilon_a,\epsilon_a)
++\operatorname{MSE}(\hat\epsilon_y,\epsilon_y).
+\]
 
 当前 UnifiedWorldModel.forward 对两项各调用一次 F.mse_loss 后相加，没有显式 modality weight、valid-axis mask 或 per-sample denominator。[3]
 
@@ -81,7 +81,7 @@ LIBERO template action shape [7]（position/quaternion/gripper 注释）；DROID
 
 官方语义是把视频样本缺失 action 当作 fully noised。[2] frozen code 路径是：webvideo dataset 返回 zero action 与 action_mask=False；mixture dataset 给 robot/video 样本写 true/false；train.py 把 sample-level mask 传给 model.forward；uwm.py 执行 action_t[~action_mask] = num_train_steps - 1，但未对 action_loss 做 sample mask。
 
-这支持的强 claim 是“action-free video 走最大 action noise timestep”，不支持“video action loss 被完全排除”。最小审计应固定 seed，检查 video 样本 action loss 是否有非零梯度，并比较当前实现与显式 where(action_mask, ...) 的 loss、gradient、rollout 消融；该测试尚未运行，review 保持 WARN。
+这支持的强 claim 是“action-free video 走最大 action noise timestep”，不支持“video action loss 被完全排除”。最小审计应固定 seed，检查 video 样本 action loss 是否有非零梯度，并比较当前实现与显式 `where(action_mask, ...)` 的 loss、gradient、rollout 消融；该测试尚未运行，review 保持 WARN。
 
 ## 6. 独立 timestep 与 inference modes
 

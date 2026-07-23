@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OpenPiVLA Ownership Ledger：个人贡献、文件归属与面试口径</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\evidence\projects\openpivla_ownership_ledger.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\openpivla_ownership_ledger.md">
 <meta name="aris:source-sha256" content="564cf577b1dd41d98fcd8ae568a3bf68ef9a47af4ca37cacf150cd37866a4851">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -32,7 +32,7 @@ body {
   font:16px/1.65 "Source Serif Pro","Source Serif 4","Crimson Pro","Georgia","Songti SC","STSong",serif;
 }
 article { max-width:1280px; margin:0 auto; padding:40px 32px; display:flow-root; }
-article > :not(nav.toc) { margin-left:308px; }
+article > :not(nav.toc) { margin-left:308px; max-width:calc(100% - 308px); }
 article > .meta:first-child { display:none; }
 nav.toc {
   position:sticky; top:24px; float:left; width:260px; max-height:calc(100vh - 48px);
@@ -70,11 +70,12 @@ li { margin:4px 0; }
 ul li::marker { color:var(--primary); }
 strong { color:var(--accent); font-weight:600; }
 em { color:var(--ink-soft); }
-a { color:var(--primary); }
+a { color:var(--primary); overflow-wrap:anywhere; }
 a:hover { color:var(--accent); }
 code:not(.hljs) {
   padding:1px 5px; border:1px solid var(--border-soft); border-radius:3px;
   color:var(--accent); background:var(--bg-code);
+  overflow-wrap:anywhere; word-break:break-word;
   font:.86em "JetBrains Mono","SF Mono","Menlo","Consolas",monospace;
 }
 pre {
@@ -96,8 +97,12 @@ mjx-container[display="true"] { margin:12px 0 !important; }
   border-left:4px solid var(--primary); border-radius:4px; font-size:15px;
 }
 table {
-  width:100%; max-width:100%; margin:16px 0; border-collapse:collapse; overflow-wrap:anywhere;
+  display:block; width:100%; max-width:100%; margin:16px 0; border-collapse:collapse;
+  overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
+}
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
 }
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
@@ -116,25 +121,26 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 }
 @media (max-width:900px) {
   article { display:block; padding:20px 16px; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:100%; }
   nav.toc {
     position:static; float:none; width:auto; max-height:none; margin-bottom:24px;
     padding:0 0 14px; border-right:0; border-bottom:1px solid var(--border-soft);
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
-  table { display:block; overflow-x:auto; }
+  table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
   nav.toc, article > .meta:first-child { display:none; }
   article { display:block; max-width:none; padding:0; }
-  article > :not(nav.toc) { margin-left:0; }
+  article > :not(nav.toc) { margin-left:0; max-width:none; }
   body { background:#fff; }
 }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>564cf577b1dd41d98fcd8ae568a3bf68ef9a47af4ca37cacf150cd37866a4851</code>；生成自：<code>interview_materials\vla\evidence\projects\openpivla_ownership_ledger.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>564cf577b1dd41d98fcd8ae568a3bf68ef9a47af4ca37cacf150cd37866a4851</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\evidence\projects\openpivla_ownership_ledger.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1-question">1. 问题（Question）</a></li><li><a href="#2-role-fit-jd">2. Role Fit 与 JD 能力映射</a></li><li><a href="#3-ownership">3. Ownership 证据合同</a></li><li><a href="#3-1-and-gate">3.1 五层 AND-gate</a></li><li><a href="#3-2">3.2 状态词汇</a></li><li><a href="#4-git-upstream">4. Git 与 upstream 冻结事实</a></li><li><a href="#4-1">4.1 本地仓库</a></li><li><a href="#4-2-frozen-openpi">4.2 Frozen OpenPI 对照</a></li><li><a href="#5-per-file-per-decision-ownership-matrix">5. Per-file / per-decision ownership matrix</a></li><li><a href="#6-claim-ownership-reconciliation">6. Claim → ownership reconciliation</a></li><li><a href="#7-production-gap-ownership">7. Production Gap：从快照到可抗追问 ownership</a></li><li><a href="#8-question-tree">8. Question Tree 与回答分层</a></li><li><a href="#8-1">8.1 主追问树</a></li><li><a href="#8-2">8.2 高压题：这个项目到底哪部分是你写的？</a></li><li><a href="#9-sp-ssp">9. SP/SSP 证据就绪度评分</a></li><li><a href="#10">10. 候选人确认表</a></li><li><a href="#11">11. 分阶段补强计划</a></li><li><a href="#12-output-pack">12. Output Pack：当前可用与补证后表达</a></li><li><a href="#12-1-bullet">12.1 简历 bullet 三档</a></li><li><a href="#12-2">12.2 两分钟项目叙事骨架</a></li><li><a href="#12-3-6">12.3 面试前 6 题</a></li><li><a href="#13-ownership">13. Ownership 审计伪代码</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>OpenPiVLA Ownership Ledger：个人贡献、文件归属与面试口径</h1>
 <div class="meta">状态：<code>ownership_audited / coarse_git_supported / candidate_confirmation_pending / WARN</code> 审查日期：2026-07-19 证据截止：2026-07-19 项目范围：<code>C:\Users\mousongzhe\Project\openpivla_deployment</code>、OpenPI frozen upstream、当前简历和 OpenPiVLA 项目题卡。 结论先行：本地 Qwen3-VL/LoRA trainer、JSON action route、recipes、smoke、deployment/eval scripts 与报告均有可读取的 local-direct 证据；但它们一次性进入一个 1326-path 的初始仓库快照，OpenPiVLA 自身没有更早的逐文件 Git 历史。因此当前可以证明“本地快照包含一套区别于 frozen upstream 的实现”，不能仅凭 commit author 证明每个文件由候选人独立设计、编写和运行。个人 ownership 仍需候选人逐项确认，并补 before/after diff、设计记录、运行日志或协作说明。</div>

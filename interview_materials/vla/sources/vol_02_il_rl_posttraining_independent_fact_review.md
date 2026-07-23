@@ -56,14 +56,14 @@
 
 ### 4.1 GAE 的 termination / truncation 修正
 
-令 (d_t^{term}) 表示环境真正终止，(d_t^{trunc}) 表示时间上限截断。GAE 的 TD residual 可写为：
+令 \(d_t^{term}\) 表示环境真正终止，\(d_t^{trunc}\) 表示时间上限截断。GAE 的 TD residual 可写为：
 
 \[
 \delta_t=r_t+\gamma(1-d_t^{term})V(s_{t+1})-V(s_t),\qquad
 \hat A_t=\sum_{l\ge0}(\gamma\lambda)^l\delta_{t+l}.
 \]
 
-这里 (d_t^{term}) 决定是否允许 bootstrap；time-limit truncation 通常不能当作真实 terminal。实现映射：batch 必须保存 `terminated` 与 `truncated`，不能把 Gymnasium 两个 flag 合成一个无语义的 `done`。当前 VOL 02 原文已有“termination/timeout”提醒，本复核把变量边界正式写清。
+这里 \(d_t^{term}\) 决定是否允许 bootstrap；time-limit truncation 通常不能当作真实 terminal。实现映射：batch 必须保存 `terminated` 与 `truncated`，不能把 Gymnasium 两个 flag 合成一个无语义的 `done`。当前 VOL 02 原文已有“termination/timeout”提醒，本复核把变量边界正式写清。
 
 ### 4.2 CQL 只是完整 objective 的核心正则项
 

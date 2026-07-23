@@ -7,7 +7,7 @@
 
 ## 问题（Question）
 
-二连杆平面 FK 是机器人几何题的最小闭环：给定 (l_1,l_2,\theta_1,\theta_2)，输出末端位置与平面姿态，并能解释 frame、单位、组合顺序、Jacobian 和边界姿态。
+二连杆平面 FK 是机器人几何题的最小闭环：给定 \((l_1,l_2,\theta_1,\theta_2)\)，输出末端位置与平面姿态，并能解释 frame、单位、组合顺序、Jacobian 和边界姿态。
 
 ## 1. 解析推导
 
@@ -17,7 +17,7 @@
 p_1=\begin{bmatrix}l_1\cos\theta_1\\l_1\sin\theta_1\end{bmatrix}.
 \]
 
-第二杆相对第一杆的方向是 (	heta_1+	heta_2)，所以：
+第二杆相对第一杆的方向是 \(\theta_1+\theta_2\)，所以：
 
 \[
 x=l_1\cos\theta_1+l_2\cos(\theta_1+\theta_2),\quad
@@ -30,7 +30,7 @@ y=l_1\sin\theta_1+l_2\sin(\theta_1+\theta_2).
 \phi=\theta_1+\theta_2.
 \]
 
-这里 (	heta_2) 是相对 joint angle；若输入给的是 world/global angle，第二项不能再次加 (	heta_1)。
+这里 \(\theta_2\) 是相对 joint angle；若输入给的是 world/global angle，第二项不能再次加 \(\theta_1\)。
 
 ## 2. 齐次变换形式
 
@@ -51,7 +51,7 @@ def planar_fk(l1, l2, theta1, theta2):
 T^0_E=R_z(\theta_1)T_x(l_1)R_z(\theta_2)T_x(l_2).
 \]
 
-矩阵乘法右到左，先做 joint rotation，再沿当前 link frame 平移。若把 (T_x(l_2)) 放到 rotation 前，结果会错误但 shape 仍然正确。
+矩阵乘法右到左，先做 joint rotation，再沿当前 link frame 平移。若把 \(T_x(l_2)\) 放到 rotation 前，结果会错误但 shape 仍然正确。
 
 ## 3. 角度、长度与 frame
 
@@ -69,15 +69,15 @@ l_1\cos\theta_1+l_2\cos(\theta_1+\theta_2)&l_2\cos(\theta_1+\theta_2)
 \end{bmatrix}.
 \]
 
-小角度下 (Delta p\approx J\Delta\theta)。当两杆伸直或折叠时，Jacobian 可能退化，某些笛卡尔方向难以通过小关节变化实现；这只是局部可动性提示，不是完整控制器证明。
+小角度下 \(\Delta p\approx J\Delta\theta\)。当两杆伸直或折叠时，Jacobian 可能退化，某些笛卡尔方向难以通过小关节变化实现；这只是局部可动性提示，不是完整控制器证明。
 
 ## 5. 测试矩阵
 
 | 测试 | 断言 | 典型 bug |
 | --- | --- | --- |
 | zero angles | `(x,y)=(l1+l2,0)` | sin/cos 或 frame 错 |
-| (	heta_1=\pi/2) | 末端沿 y 方向 | degree/radian、轴方向错 |
-| folded (	heta_2=\pi) | 两杆相反 | 把 θ2 当 global angle |
+| \(\theta_1=\pi/2\) | 末端沿 y 方向 | degree/radian、轴方向错 |
+| folded \(\theta_2=\pi\) | 两杆相反 | 把 θ2 当 global angle |
 | negative angles | 右手系方向一致 | 符号 convention 错 |
 | matrix/analytic parity | 两种 FK 误差在阈值内 | composition 顺序错 |
 | finite-difference Jacobian | 数值导数接近解析 J | Jacobian 符号错 |

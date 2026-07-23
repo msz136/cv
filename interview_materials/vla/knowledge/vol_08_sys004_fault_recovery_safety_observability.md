@@ -73,10 +73,10 @@ Kubernetes probes 是 orchestration 机制，ROS 2 QoS 是通信语义；两者�
 
 对一条 action chunk，至少记录：
 
-[
-A_{mathrm{age}}=t_{mathrm{apply}}-t_{mathrm{capture}},qquad
-mathrm{fresh}(a)=mathbf{1}!left[A_{mathrm{age}}leq D_{mathrm{valid}}ight].
-]
+\[
+A_{\mathrm{age}}=t_{\mathrm{apply}}-t_{\mathrm{capture}},\qquad
+\mathrm{fresh}(a)=\mathbf{1}\!\left[A_{\mathrm{age}}\leq D_{\mathrm{valid}}\right].
+\]
 
 `A_age` 是观测捕获到动作 apply 的年龄，`D_valid` 是动作协议允许的有效窗口。它映射到 capture/apply timestamp、chunk cursor 和 controller apply log；缺任一时间点时只能标记 unknown，不能把 timeout 直接解释为 MDP terminal 或任务失败。
 
@@ -116,14 +116,14 @@ OpenTelemetry 的 signals 规定载体和关联方式；将其组合为 robot-sa
 
 ### 5.1 Safe apply 条件
 
-[
+\[
 \mathrm{safe\_apply}(a_t)=1
 \Longleftrightarrow
-\mathrm{fresh}(a_t)land
-\mathrm{compatible}(r,m,s,n)land
+\mathrm{fresh}(a_t)\land
+\mathrm{compatible}(r,m,s,n)\land
 \mathrm{lease\_valid}\land
 \mathrm{controller\_ready}.
-]
+\]
 
 其中 `r` 是 robot identity，`m` 是 model revision，`s` 是 action schema，`n` 是 normalizer revision。`fresh` 检查 action age/sequence，`compatible` 检查 shape、unit、parser 和 controller contract，`lease_valid` 检查 epoch/fencing，`controller_ready` 只代表 controller 明确允许接收。它是 SYS‑004 的系统设计推断，不是任一上游 API 的默认保证。
 
@@ -254,4 +254,3 @@ SYS‑004 的高分答案不是背某个 probe 或 restart 命令，而是把 id
 4. Kubernetes [probes](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/) 与 [Deployment rollback](https://github.com/kubernetes/website/blob/d19aacebe8061a6ef5dcc1e68904aaefe35c5445/content/en/docs/concepts/workloads/controllers/deployment.md)。
 5. OpenTelemetry [signals](https://opentelemetry.io/docs/concepts/signals/)。
 6. 本仓库 [SYS‑002](../sources/vol_08_sys002_policy_serving_realtime_control_loop_source_freeze.html) 与 [EVAL‑008](../sources/vol_05_eval008_perception_action_controller_recovery_failure_taxonomy_source_freeze.html)。
-

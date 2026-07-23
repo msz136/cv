@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VOL 03 Source Audit E：Flow Matching 基础、π0 特化与 ODE Claim-to-Code</title>
 <meta name="generator" content="ARIS render-html (academic, v1)">
-<meta name="aris:source-path" content="interview_materials\vla\sources\vol_03_flow_matching_pi0_claim_to_code.md">
+<meta name="aris:source-path" content="C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_03_flow_matching_pi0_claim_to_code.md">
 <meta name="aris:source-sha256" content="8e7d1607f544bf7850a9d57c3033e2a401496b5dedc834b9851c4c5f3d9fd04a">
 <meta name="aris:generated-at" content="2026-07-16">
 <script>
@@ -101,6 +101,9 @@ table {
   overflow-x:auto; overflow-y:hidden; overflow-wrap:anywhere;
   border:1px solid var(--border); border-radius:4px; font-size:14px;
 }
+article > table {
+  width:calc(100% - 308px); max-width:calc(100% - 308px);
+}
 thead { color:#fff; background:var(--primary); }
 th,td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); }
 th { background:transparent; font-size:13px; font-weight:600; letter-spacing:.02em; }
@@ -125,6 +128,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
   }
   h1 { font-size:24px; } h2 { font-size:20px; }
   table { overflow-x:auto; }
+  article > table { width:100%; max-width:100%; }
   pre,.formula { overflow-x:auto; }
 }
 @media print {
@@ -136,7 +140,7 @@ details > :not(summary) { margin-left:14px; margin-right:14px; }
 </style>
 </head>
 <body><article>
-<div class="meta">Canonical Markdown SHA-256：<code>8e7d1607f544bf7850a9d57c3033e2a401496b5dedc834b9851c4c5f3d9fd04a</code>；生成自：<code>interview_materials\vla\sources\vol_03_flow_matching_pi0_claim_to_code.md</code></div>
+<div class="meta">Canonical Markdown SHA-256：<code>8e7d1607f544bf7850a9d57c3033e2a401496b5dedc834b9851c4c5f3d9fd04a</code>；生成自：<code>C:\Users\mousongzhe\cv\interview_materials\vla\sources\vol_03_flow_matching_pi0_claim_to_code.md</code></div>
 <nav class="toc" aria-label="目录"><h2>目录</h2><ol><li><a href="#1">1. 结论先行</a></li><li><a href="#2">2. 证据层级、冻结对象与适用边界</a></li><li><a href="#3-cnf-continuity-equation">3. CNF：路径、速度场与 continuity equation</a></li><li><a href="#3-1-ode-flow">3.1 从 ODE 定义 flow</a></li><li><a href="#3-2-continuity-equation">3.2 continuity equation 是一致性条件</a></li><li><a href="#3-3-probability-path-sample-trajectory">3.3 probability path 不是单条 sample trajectory</a></li><li><a href="#4-fm-cfm-data-sample">4. 从 FM 到 CFM：为什么可以逐 data sample 训练</a></li><li><a href="#4-1-flow-matching-objective">4.1 Flow Matching objective</a></li><li><a href="#4-2-conditional-path-marginal-path">4.2 conditional path 如何组成 marginal path</a></li><li><a href="#4-3-conditional-flow-matching-objective">4.3 Conditional Flow Matching objective</a></li><li><a href="#5-gaussian-conditional-path-ot">5. Gaussian conditional path 与 OT 特例</a></li><li><a href="#5-1-affine-gaussian-path">5.1 一般 affine Gaussian path</a></li><li><a href="#5-2-ot-conditional-path">5.2 论文的 OT conditional path</a></li><li><a href="#5-3-sigma-min-0">5.3 常背的线性公式是 \(\sigma_{\min}=0\) 特例</a></li><li><a href="#6-path-loss-solver">6. 后续官方包：path、loss 与 solver 的真实接口</a></li><li><a href="#6-1-affineprobpath">6.1 `AffineProbPath` 返回什么</a></li><li><a href="#6-2-continuous-fm-mse-flow-matching-loss">6.2 continuous FM MSE 不在 `flow_matching.loss` 中自动替你做</a></li><li><a href="#6-3-ode-solver">6.3 ODE solver</a></li><li><a href="#6-4-package-cfg-supporting-example">6.4 当前 package 的 CFG 只是 supporting example</a></li><li><a href="#7-0-cfm-action-chunk-generation">7. π0：把 CFM 特化为 action chunk generation</a></li><li><a href="#7-1-data-noise-condition-output-shape">7.1 data、noise、condition 与 output shape</a></li><li><a href="#7-2-vlm-prefix-action-suffix">7.2 VLM prefix 与 action suffix</a></li><li><a href="#7-3-shifted-beta-timestep-openpi">7.3 shifted Beta timestep 与 openpi 的反向坐标</a></li><li><a href="#8-openpi-loss-euler-sampling">8. openpi 时间反转、loss 与 Euler sampling</a></li><li><a href="#8-1-code-training-convention">8.1 code training convention</a></li><li><a href="#8-2-paper">8.2 与 paper 的严格等价</a></li><li><a href="#8-3-explicit-euler">8.3 explicit Euler</a></li><li><a href="#9-diffusion-noise-prediction-flow-velocity-prediction">9. Diffusion noise prediction 与 Flow velocity prediction</a></li><li><a href="#9-1">9.1 不能只用“都是加噪再还原”回答</a></li><li><a href="#9-2">9.2 采样步数不是本质定义</a></li><li><a href="#10-action-valid-dimensions-padding-guidance">10. Action valid dimensions、padding 与 guidance</a></li><li><a href="#10-1-frozen-pi0-loss-action-valid-dimension-mask">10.1 frozen Pi0 loss 没有 action-valid-dimension mask</a></li><li><a href="#10-2-mask">10.2 mask 的四个层次</a></li><li><a href="#10-3-conditional-dropout-guidance-action">10.3 conditional dropout / guidance 的 action 风险</a></li><li><a href="#11-loss-rollout-invariant-debugging">11. Loss 正常但 rollout 失败：四层 invariant debugging</a></li><li><a href="#11-1-layer-a-target-path-algebra">11.1 Layer A：target / path algebra</a></li><li><a href="#11-2-layer-b-solver-scheduler">11.2 Layer B：solver / scheduler</a></li><li><a href="#11-3-layer-c-normalization-mask-action-schema">11.3 Layer C：normalization、mask 与 action schema</a></li><li><a href="#11-4-layer-d-online-controller-queue">11.4 Layer D：online controller / queue</a></li><li><a href="#12-claim-to-code">12. Claim-to-code 总表</a></li><li><a href="#13-vla-act-023-030">13. 对 `VLA-ACT-023..030` 的支持状态</a></li><li><a href="#14-openpivla">14. 与个人 OpenPiVLA 项目的真实性边界</a></li><li><a href="#15">15. 面试安全口径与危险答案</a></li><li><a href="#15-1-30">15.1 30 秒安全骨架</a></li><li><a href="#15-2-2">15.2 2 分钟展开锚点</a></li><li><a href="#15-3">15.3 高危说法</a></li><li><a href="#16">16. 风险、未决项与下一步</a></li><li><a href="#references">参考文献（References）</a></li></ol></nav>
 <h1>VOL 03 Source Audit E：Flow Matching 基础、π0 特化与 ODE Claim-to-Code</h1>
 <div class="meta">审计日期：2026-07-19 状态：<code>independent_fact_reviewed / theorem_endpoint_time_sign_checked / local_runtime_pending / WARN</code> 基础论文：<em>Flow Matching for Generative Modeling</em>，arXiv <code>2210.02747v2</code> 后续官方包：<code>facebookresearch/flow_matching</code> frozen commit <code>11568d37f8d5a080e12aa7b5305d9c35ae07d136</code>，CC BY-NC 4.0 VLA 特化：<em>π0: A Vision-Language-Action Flow Model for General Robot Control</em>，arXiv <code>2410.24164v4</code>；<code>Physical-Intelligence/openpi</code> frozen commit <code>15a9616a00943ada6c20a0f158e3adb39df2ccac</code>，Apache-2.0 对应题目：<code>VLA-ACT-023..030</code>；补全 <code>VLA-ACT-026</code> 的 Diffusion / Flow 对照 本页问题：Flow Matching 的 probability path、marginal / conditional vector field 与训练目标是什么？线性路径为什么只是特例？π0 如何把这套生成建模落到 <code>[B,H,D]</code> action chunk，openpi 为什么反向积分仍然等价？Flow 与 Diffusion 的 target、sampler、mask、guidance 和故障定位应如何严格区分？</div>
