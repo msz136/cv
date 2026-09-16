@@ -9,8 +9,8 @@
       --ink: #17191c;
       --muted: #59616c;
       --line: #b8bfc9;
-      --accent: #1f6f5b;
-      --accent-soft: #e7f2ee;
+      --accent: #003D79;
+      --accent-soft: #EAF2FB;
       --paper: #ffffff;
       --bg: #edf0f3;
     }
@@ -324,7 +324,7 @@
       <div class="contact">
         <div><strong>电话</strong> 13692260513</div>
         <div><strong>邮箱</strong> 1835462718@qq.com</div>
-        <div><strong>身份</strong> 2028 届硕士研究生在读</div>
+        <div><strong>身份</strong> 2029 届硕士研究生在读</div>
       </div>
     </header>
 
@@ -335,7 +335,7 @@
           <div><strong>中山大学</strong> | 数学与应用数学（本科）</div>
           <div class="date">2022.09 - 2026.06</div>
         </div>
-        <div class="sub">GPA: 4.0/5.0；数学分析 I/II/III: 99/96/94，几何与代数 I/II: 94/96</div>
+        <div class="sub">GPA: 4.3/5.0；数学分析 I/II/III: 99/96/94，几何与代数 I/II: 94/96</div>
         <div class="edu-line">
           <div><strong>上海交通大学</strong> | 数学（学术型硕士）</div>
           <div class="date">2026.09 - 在读</div>
@@ -351,9 +351,9 @@
           <div class="date">2026.03 - 2026.08</div>
         </div>
         <ul>
-          <li>面向多机器狗集群,设计 robot task harness,设计 robot memory、subagent 分工、动作互斥、任务取消补偿与多机并发调度等机制,并构建基于 VLM 语义理解的高层任务规划与执行层,协同机器人平台的导航、运动等底层控制模块完成任务。</li>
-          <li>基于 SFT 与 GRPO 强化 32B VLM 的 Agent 决策能力:围绕机器人任务拆解、工具选择、参数约束、适用范围与取消恢复等业务需求,结合公开数据集构造 62,223 条 SFT、8,916 条 GRPO 训练样本及规则奖励;训练后,在基于业务场景构建的评测中,工具调用准确率由 59.2% 提升至 100%,参数精确匹配由 17.7% 提升至 100%;OOD 评测集上工具准确率由 23.8% 提升至 85.8%。</li>
-          <li>负责基于 8B VLM 视觉理解的语义导航能力的数据、训练与评测:构建覆盖物体框定位、区域描述、空间关系、点选定位与通用问答五个领域的专家数据,对同一基座分别 SFT 得到五领域专家,再以冷启动与 OPD 在线蒸馏为单一模型;在 1 万条测试集上,相对同一基座,box 定位 IoU 由 0.385 提升至 0.476、Acc@0.5 由 40.9% 提升至 52.4%,点选定位 Hit@100 达 0.873。</li>
+          <li><strong>机器人高层策略：</strong>面向多机器人集群，构建基于 LLM/VLM 的高层任务策略，将自然语言任务转化为导航、运动等技能调用与执行参数，协同底层控制完成任务；构建 Robot Memory、并行 Subagent 与预测式推理机制，支持任务上下文保持、多机协同及执行期间的后续动作规划，并处理动作互斥、任务取消恢复与补偿；通过模型本地部署将响应延迟降低56%。</li>
+          <li><strong>策略后训练：</strong>基于 32B VLM 与高层任务策略，围绕机器人任务分解、高层动作选择、执行参数及多机作用范围，构建 62,223 条 SFT、8,916 条 GRPO 训练样本，并设计规则奖励开展策略优化。在业务场景指令评测中，高层动作选择正确率由 59.2% 提升至 100%；分布外指令评测中由 23.8% 提升至 85.8%。</li>
+          <li><strong>视觉 Grounding：</strong>面向机器人语义导航中的目标定位与空间理解，构建覆盖物体框定位、区域描述、空间关系、点选定位及通用问答的五领域数据，分别训练专家模型，再通过冷启动与 OPD 在线蒸馏整合为统一的 8B VLM。在 1 万条测试集上，相比同一基座，框定位平均 IoU 由 0.385 提升至 0.476，Acc@0.5 由 40.9% 提升至 52.4%，点选定位 Hit@100 达 87.3%。</li>
         </ul>
       </div>
 
@@ -373,33 +373,22 @@
       <div class="project-grid">
         <div class="project wide">
           <div class="row">
-            <div class="role">OpenPiVLA 动作策略训练与跨算力迁移</div>
+            <div class="role">OpenPI VLA 策略训练与评估</div>
             <div class="date">2026.06</div>
           </div>
           <ul>
-            <li>在 OpenPI/OpenPiVLA 上完成 Qwen3-VL 机器人动作策略训练:接入模型并完成 PEFT LoRA 微调改造,准备 DROID 机器人操作数据与 MindCube 视觉问答数据,并分别完成仅机器人动作数据训练的 VLA-only、仅问答数据训练的 VLM-only、以及两类数据联合训练的 co-train 三种方案。</li>
-            <li>完成训练后的评估:基于 OpenPI policy serving,在 ALOHA 与 LIBERO 仿真环境完成 rollout 评估与可视化记录。</li>
+            <li>基于 OpenPI 官方训练与推理流程，在沐曦 C500／MACA 平台开展视觉—语言—动作策略复现，完成数据准备、策略微调及推理服务适配。</li>
+            <li>基于官方 policy serving 与仿真评估流程，在 LIBERO 等环境开展闭环 rollout，记录任务成功率与执行轨迹，评估策略在机器人操作任务中的表现。</li>
           </ul>
         </div>
 
         <div class="project">
           <div class="row">
-            <div class="role">Cosmos Policy 后训练与 RoboCasa 评估</div>
-            <div class="date">2026.06</div>
-          </div>
-          <ul>
-            <li>复现 Cosmos Policy / Predict2.5 的 WAM 多目标后训练:梳理 action、future 与 value 三类监督在统一 latent 序列中的 slot 分配、条件 mask 与损失加权逻辑,并复现其训练数据构造(动作分块、world/value 采样比例与 mask 互斥约束)。</li>
-            <li>完成 RoboCasa 官方评估全流程的复现,官方 checkpoint 评估成功率为 84/118;并基于官方基座模型完成 10k 步后训练,验证训练到评估的完整流程可复现。</li>
-          </ul>
-        </div>
-
-        <div class="project">
-          <div class="row">
-            <div class="role">UWM / LIBERO 世界模型策略训练与评估</div>
+            <div class="role">UWM / LIBERO 世界模型策略复现</div>
             <div class="date">2026.07</div>
           </div>
           <ul>
-            <li>将 UWM 官方 LIBERO 训练与评估流程迁移至沐曦 C500,完成 LIBERO-90 到 5 个 LIBERO-10 下游任务的微调,并按固定初始状态、零动作预热、每任务 50 次 rollout 的封闭式协议完成评估:5 任务平均成功率 74.4%(186/250,官方 Table II 平均 0.79)。</li>
+            <li>在沐曦 C500 平台复现 UWM 官方数据准备、训练与评估流程，从 LIBERO-90 预训练模型微调至 5 个 LIBERO-10 下游任务；按官方固定初始状态与预热设置，每任务评估 50 次，平均成功率达 74.4%（186/250）。</li>
           </ul>
         </div>
       </div>
@@ -409,8 +398,8 @@
       <h2 class="section-title">技术栈</h2>
       <div class="skills">
         <div class="skill-line"><strong>研究方向</strong><span>具身智能、机器人高层任务决策、VLM / VLA Grounding、World Model Policy</span></div>
-        <div class="skill-line"><strong>训练评估</strong><span>SFT / GRPO、机器人任务表示与工具调用训练、LIBERO / RoboCasa benchmark、封闭循环评估</span></div>
-        <div class="skill-line"><strong>框架平台</strong><span>PyTorch、OpenPI / OpenPiVLA、Cosmos Policy、UWM、机器人平台工具链、MACA C500</span></div>
+        <div class="skill-line"><strong>训练评估</strong><span>SFT / GRPO、机器人高层策略训练、LIBERO benchmark、闭环评估</span></div>
+        <div class="skill-line"><strong>框架平台</strong><span>PyTorch、OpenPI / OpenPiVLA、UWM、机器人平台工具链、MACA C500</span></div>
         <div class="skill-line"><strong>基础能力</strong><span>数学建模、英文文献阅读，CET-4 618 / CET-6 568</span></div>
       </div>
     </section>
