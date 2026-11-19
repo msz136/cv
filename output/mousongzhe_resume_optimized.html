@@ -351,9 +351,9 @@
           <div class="date">2026.03 - 2026.08</div>
         </div>
         <ul>
-          <li><strong>Embodied Robotics System：</strong>团队基于 Unitree Go2 与 ROS 2 构建大模型驱动的具身自主任务系统，融合相机、激光雷达与 IMU 信息，贯通环境感知、SLAM 定位建图、全局路径规划、局部轨迹优化和运动控制；结合高层任务规划与技能调度，将用户目标转化为机器人在物理环境中的连续行动，并根据执行反馈推进后续任务。</li>
-          <li><strong>Embodied Agent · Harness：</strong>负责连接高层任务规划与机器人执行能力的 Agent Harness，将感知、导航等能力封装为模型可调用的技能，统一任务状态、技能调用与执行反馈接口；设计任务上下文缓存及中断、切换与恢复机制，使机器人在执行长时任务时能够响应新指令并继续原任务；协调多机器人、多会话下的任务分配与执行冲突。</li>
-          <li><strong>Embodied Agent · Model：</strong>基于 Qwen3-VL-32B 开展任务决策与工具使用后训练，将技能接口和执行约束转化为训练目标；在 SFT 初始化基础上，设计覆盖工具 schema、技能选择、关键参数及机器人作用域的可验证奖励，开展 GRPO 优化。在任务指令驱动的工具选择测试中，有效率较 base model 相对提升 74.5%。</li>
+          <li><strong>Embodied Robotics：</strong>团队实现了从自然语言到物理世界的闭环。基于相机与感知模型实现环境感知与理解，结合 LiDAR 与 IMU 进行 SLAM 定位与实时建图；根据地图、位姿和实时感知进行路径规划、轨迹优化与避障，通过运动控制实现自主导航。实现了场景观察、信息查询和语音交互能力，并实现了基于 LLM 的高层 Planner，完成自然语言到执行层的链接。</li>
+          <li><strong>Embodied Agent · Harness：</strong>设计 Agent Harness，围绕 status、记忆、技能与约束组织 Planner 上下文。基于 LLM 生成 skill 决策序列，并根据环境状态与 skill feedback 更新决策序列。实现了预推理的决策缓存、并发会话下的 skill 占用管理和任务抢占与恢复，以及基于 Multi-Agent 的多机器人控制。</li>
+          <li><strong>Embodied Agent · Model：</strong>针对 Planner 生成的决策序列，基于 skill 选择、顺序、参数与作用域设计 rule-based verifiable rewards，并对信息不足时先澄清、不执行的行为单独评分。对 32B VLM 进行 SFT 和 GRPO 训练。在从 ARL-SCOUT 抽取的评测样本上，训练后模型的评测通过率达 75.6%，skill 序列匹配率较 Base Model 相对提升 58.5%，并通过了全部测试 Demo。</li>
         </ul>
       </div>
 
